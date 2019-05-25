@@ -1,0 +1,429 @@
+Subject: RISKS DIGEST 10.32
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 6 September 1990   Volume 10 : Issue 32
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  New Roque Imperils Printers (Robert E. Van Cleef)
+  Floating Point Emulation required for Ultrix systems (Dave Wortman)
+  Re: Software bugs "stay fixed"? (Dave Parnas)
+  Re: Wild failure modes and COMPLEXITY (Rochelle Grober)
+  Re: Lawsuit over specification error (Brinton Cooper)
+  Re: Flight simulator certification (Steven Philipson)
+  Re: Lawsuit over simulator specifications (Robert Dorsett)
+  Computers and Safety (Bill Murray)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory listing of back issues.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Thu, 6 Sep 90 07:34:41 -0700
+From: Robert E. Van Cleef <vancleef@prandtl.nas.nasa.gov>
+Subject: New Roque Imperils Printers
+
+In the Business section of the 9/5/90 San Jose Mercury News, Page E-1,
+the column "Bits & Bytes", by Rory J. O'Connor and Valerie Rice,
+discusses an new class of "Trojan Horse" for PostScript printers.
+
+According to the article, there is a "clip art" file, written in
+PostScript, that "surreptitiously reprograms a chip inside the
+printers, changing a seldom-used  password stored there. When the
+password is altered, ...  the printer no longer functions properly."
+
+A Minneapolis company, Multi-Ad Services is listed as claiming to
+have a free "vaccine".
+
+Bob Van Cleef - vancleef@nas.nasa.gov, RNS Distributed Systems Team Leader
+
+------------------------------
+
+Date: Thu, 6 Sep 90 15:43:57 EDT
+From: Dave Wortman <dw@csri.toronto.edu>
+Subject: Floating Point Emulation required for Ultrix systems
+
+I had a very bad experience in trying to configure an Ultrix system
+that may be of interest to comp.risk readers.
+
+Most Unix systems are generated from a "configuration file" which 
+selects optional software to be included in the Unix kernel.  
+A system utility (/etc/config) processes the configuration file 
+to build a directory of components for the Unix kernel.  These 
+components are then compiled/linked together to build a Unix kernel.
+
+In the early (PDP-11) days of Unix, a package for performing emulation
+of floating point arithmetic was included in the Unix kernel because
+the underlying hardware didn't support floating point arithmetic.
+One of the options that can still get included in a configuration file is:
+
+EMULFLT		Emulates the floating point instruction set
+		if it is not already present in the hardware
+
+I was browsing through the configuration file for a DEC Ultrix
+system and decided in a fit of excessive tidiness to delete the
+EMULFLT option.  After all the machine had this expensive
+floating point hardware and I would probably gain both space
+and performance in the kernel.   The configuration tool built
+a system directory without complaint and I was able to compile
+and link a new Unix kernel without any error messages.
+
+The trouble began when I tried to boot the new Unix kernel (on a DEC 3600).
+One of the first programs that gets run once the kernel has been
+initialized is a system utility (/etc/fsck) which validates the root 
+filesystem by checking all nodes and links for reasonableness.  
+Under the new kernel /etc/fsck failed with an undocumented error 
+message and an indication that the root file system was corrupted.
+Since this check is deemed to be vital to the correct operation
+of Unix, the entire boot process aborted.
+Booting an old version of the kernel worked correctly and failed to 
+discover any problems with the root filesystem.  
+
+This was NOT an easy problem to diagnose.
+It took a long time and a lot of painful head scratching to discover
+that the fsck utility (or some routine that it called) depended in some 
+subtle way on software that was included by the EMUFLT option (on a
+3600 it may have been some complicated string instruction rather than
+a real floating point operation) .  Once I restored 
+floating point emulation to this 4th generation machine, the system
+began behaving normally again.
+
+There are several RISK-related lessons to be learned from this
+experience:
+- one shouldn't casually muck-about with system parameters unless
+  one is willing to spend the effort to learn how to adjust them
+  properly.
+- it is bad system design to document a parameter as an "option"
+  when in fact it is mandatory for the correct operation of
+  the system.  Until dependencies on floating point emulation
+  are brought under control, the user probably shouldn't have the option
+  of building a system without EMUFLT and the configuration tool
+  should enforce this restriction.  
+- EMUFLT appears to be misnamed and misdocumented as well, 
+  it probably causes the inclusion of software other than just 
+  floating point emulation.
+- it is bad system design for a utility program to depend on
+  an optional component of its environment without verifying
+  that the optional component is available.  /etc/fsck should have
+  checked for the presence of floating point emulation and
+  displayed an appropriate error message if it was unable
+  to continue.
+
+------------------------------
+
+Date: Wed, 5 Sep 90 20:02:15 EDT
+From: parnas@qucis.queensu.ca (Dave Parnas)
+Subject: Re: Software bugs "stay fixed"? (RISKS-10.31)
+
+My perception is that they stay fixed, if they were actually fixed.  Usually
+they were not properly corrected and, under new circumstances, problems
+reappear.  Then it appears as if the bug recurred.  Actually, it had 
+never gone away.
+
+------------------------------
+
+Date: Thu, 6 Sep 90 14:07:27 PDT
+From: rocky@argosy.UUCP (Rochelle Grober)
+Subject: re: Wild failure modes and COMPLEXITY
+Organization: MasPar Computer Corporation, Sunnyvale, CA
+
+With regards to wild failure modes of digital versus "continuous performance"
+of analog devices, this seems to me a pure fallacy.  Analog devices can display
+as great and rapid a change to the system as digital devices.
+
+One of the most graphic historical instances of this is the blackout of New
+York City in the '60's.  The blackout, which threw New York into a night of
+turmoil, and affected a large portion of the city, was do to one relatively
+small power generator in the Chicago area failing "open", what was considered a
+benign type of failure.  Unfortunately, New York was connected to the same
+power grid, and was a quarter wavelength away.  The distance is extremely
+significant, as the power stations in New York received the failure as a
+"short".  Massive amounts of power surged through the New York power stations
+and destroyed the safeguards along with many of the systems.  Until this event,
+no one ever considered it to be a possibility.  No computers involved, small
+error action, huge error reaction of an analog system.
+
+This is an example of why much of industry has gone to digital controls.  Yes,
+they are complex, but they have discrete, limited numbers of responses.
+Modelling simple analog systems is much more complex than modelling a digital
+system of similar complexity.  Periodic functions such as those involved in
+fluid dynamics (air, electricity, liquids, quantum mechanics, etc) require
+analysis in not just time, but frequency domain as well.  Maxwell's equations
+are generally not necessary in simulating digital designs, but must be
+accounted for in every analog electrical system.
+
+The real issue is complexity, as has been stated by others.  Every technology
+which pushes the limits of the implementor's understanding contains the
+prospect of unpredicted behaviour.  Digital controls simply have pushed the
+limits farther, by allowing the less complex (sometimes read as fewer states)
+discrete technologies to succeed the problematic, continuous state analog
+technologies.
+
+--Rochelle Grober
+
+------------------------------
+
+Date:     Tue, 4 Sep 90 23:59:13 EDT
+From: Brinton Cooper <abc@BRL.MIL>
+Subject:  Re: Lawsuit over specification error
+
+Pete Mellor and Martyn Thomas agree that
+
+>> You cannot expect crew to do better than their
+>> training under the stress of an emergency.
+
+Er...the crew are, after all, thinking humans and merely another set of
+automatons in the system.  A recent (past 5 years) air crash in the mid-US was
+less disastrous than it might have been precisely because the pilot performed
+beyond his training, in a situation which he had not been expected to
+encounter.  This is, after all, one of the differences between human and
+machine.  
+_Brint
+
+------------------------------
+
+Date: Tue, 4 Sep 90 18:41:17 PDT
+From: stevenp@decwrl.dec.com (Steven Philipson)
+Subject: Re: Flight simulator certification (RISKS-10.30)
+
+   In RISKS DIGEST 10.30 henry@zoo.toronto.edu (Henry Spencer) writes: 
+
+>There *are* certification requirements for simulators when they are 
+>involved in pilot training, [...] However, I think the emphasis has
+>been more on precision than on accuracy, i.e. on the sophistication
+>and smoothness of the simulation more than on its exact correspondence
+>to reality.  [...]
+
+   The fidelity of simulators to their real-world counterparts is
+of paramount importance.  It is intended that simulators mimic the
+performance of the actual aircraft as closely as possible, so that
+techniques learned in the simulator will actually be helpful in the
+aircraft.  A tremendous amount of effort goes into confirming the
+fidelity of these systems.
+
+   High fidelity of simulation is difficult to obtain and maintain.
+Models of aircraft performance may not be perfect, but the errors
+may be difficult to detect.  A small variation in simulator behavior
+has been suggested as a contributing factor in the crash of a DC-9.
+In this case, the simulator produced a visible yaw in the direction of
+a failed engine that wasn't present during an actual failure.  It was
+theorized by the NTSB that the crew mis-identified the failed engine
+BECAUSE they expected the yaw shown in the simulator, and that this
+led to a loss-of-control accident.
+
+   Aircraft in the field are often modified, and changes are also made
+at the factory.  Thus a given simulator may have at one time accurately
+reflected some number of airplanes, but may not be configured identically
+to any given airplane currently in use.
+
+   Full-scale simulators are intended to be so like the actual
+aircraft that one can be certified to fly the aircraft while only
+flying the simulator.  In such cases, fidelity is more important
+than reliability --  if the simulator is working, it should 
+mimic the performance of the aircraft perfectly.  An unreliable
+simulator would be more acceptable than one with low fidelity, i.e.
+it much more acceptable for a simulator to shutdown and have to be
+restarted once an hour than it would for it to run continuously
+but incorrectly mimic the performance of the aircraft.
+
+   It should be noted that perfect behavior by a simulator is not
+always necessary for the simulator to be useful.  Many low-cost
+simulators for light aircraft have some startling performance
+artifacts but continue to be effective training aids.  For example,
+when the Pacer Mark II simulator is rolled inverted, "up elevator"
+still produces a climb.  This is obviously wrong performance, but it
+is outside the stated limits of the simulator performance (bank angle
+limits are less than 90 degrees).  This particular device has other
+interesting artifacts, but it still is useful for certain types of
+training activities.  In recognition of its limitations, it is formally
+referred to as a "ground procedures trainer", but its function is to
+simulate certain modes of flight.
+
+   There is a tradeoff here, just as there is with other technological systems.
+Imperfect behavior of simulators may contribute to accidents, but by and large,
+their use helps to prevent many more.
+						Steve Philipson
+
+------------------------------
+
+Date: Tue, 4 Sep 90 19:53:07 -0500
+From: rdd@ccwf.cc.utexas.edu (Robert Dorsett)
+Newsgroups: sci.aeronautics
+Subject: Re: Lawsuit over simulator specifications (RISKS 10.27)
+Reply-To: rdd@walt.cc.utexas.edu (Robert Dorsett)
+
+Martyn Thomas <mct@praxis.co.uk> wrote:
+>: This claim seems to me to suggest (a) that once again, aircrew do not
+>: understand the side-effects (pitch-up, in this case) of flight-director
+>: commands (which I believe means that the systems are too complex).
+
+Oh, they understand it, all right--they're just encouraged to put a very high
+level of faith on it.  It's no wonder that people might become fixated on the
+flight director, and neglect the rest of the scan.  In fact, some airline
+procedures seem to encourage such a practice, these days.  
+
+When one flies a flight director, one is, in effect, flying the airplane like
+an autopilot would.  This has the effect of putting the pilot in "the loop,"
+but has the problem of having him hanging off the flight director system.
+
+
+>: critical systems such as simulators - on this evidence, a simulator used for
+>: crew training in emergency procedures is *itself* a safety-critical system.
+>: (Presumably it should therefore require certification in the same way as an
+>: in-flight system of equivalent criticality. 
+
+They are certified to a fairly hard standard.  For more information, see
+Rolfe's _Flight Simulation_.  He covers the certification, installation, and
+testing components of a simulator delivery.  However, also pay attention to how
+much of flight simulation is dependent upon specific customer requirements (no
+need, for instance, for a motion system, if all the simulator is going to be
+used for is systems familiarization) and how much perceptual data is outright
+fudged.  Flight simulation is an art, not a science.  When one flies a
+simulator, one is flying a concept of how the airplane flies; one is not flying
+in a terribly rigorously defined mathematical model.  Even though a simulator
+almost always, these days, uses actual airplane avionics, and is almost 100%
+component-identical to a real cockpit, the way the instruments WORK is always
+subject to refinement.  In the specific case of Northwest vs. CAE, it is
+Northwest's responsibility to supervise the development of the simulator, and,
+upon delivery, test it to ensure that it met specifications.  Everyone does it
+this way; I suspect that Northwest's legal department may have found a legal
+technicality to relieve them of their responsibility.
+
+>Does anyone know the certification requirements for simulators?
+
+Rolfe mentions the various certification authorities' requirements.
+In addition to these, FAR 121, Appendix H covers the training requirements.
+
+Advisory Circular 120-45 and 120-46 (1987) cover the entire spectrum of 
+Advanced Training Devices.  
+
+Advisory Circular 120-40A (1986) covers simulator and visual systems
+evaluation.
+
+Note that all documents are subject to review, as reflected in the Federal 
+Register; it often takes a couple of years for changes to be reflected in 
+the "officially" published documents.  Contact your local FAA office for more 
+info.
+
+Incidentally, I think it's only a matter of time before some bereaved widow
+attempts to sue Microsoft, after hubby tries to land on top of the World
+Trade Center. :-)
+
+Robert Dorsett             UUCP: ...cs.utexas.edu!rascal.ics.utexas.edu!rdd  
+
+------------------------------
+
+Date:  Wed, 5 Sep 90 21:49 EDT
+From: WHMurray@DOCKMASTER.NCSC.MIL
+Subject:  Computers and Safety
+
+>Synopsis of: Forester, T., & Morrison, P. Computer Unreliability and
+>Social Vulnerability, Futures, June 1990, pages 462-474.
+
+>From the synopsis and criticism posted, I have concluded that this work
+is probably useless "computer bashing."   On the other hand, the discussion
+that it has prompted has been both useful and fascinating.
+
+For example:
+
+In RISKS (10.29), David Gillespie writes:
+
+>I think one point that a lot of people have been glossing over
+>is that in a very real sense, computers themselves are *not* the
+>danger in large, safety-critical systems.  The danger is in the
+>complexity of the system itself......
+
+
+Nonetheless, the application of the computer adds a great deal of
+complexity that might not be there in its absence.  It results,
+in part from the complexity of the computer itself, in part
+from its inherent generality, and in part, from the failure,
+resistance, or reluctance of the programmer to manage it down.
+
+Much of the generality of the computer resulted from the
+perception that it had to be broad in application in order to get
+copies up and unit cost down.  The early RISC research
+demonstrated that this may not be so, but so far we have been
+reluctant to employ simple architectures.  For example, we have
+known about finite-state machines for a long time, but few have
+been successful in the market for any application, much less
+safety-critical applications.
+
+Likewise, there has been great resistance on the part of
+programmers to give up demonstrably error-prone programming
+constructs, such as the infamous GOTO.  (Even using it as an
+example is likely to start a new defense.)  Generality and
+flexibility seem to be much more highly valued than simplicity.
+The result is gratuitous and unnecessary complexity heaped on the
+necessary.
+
+Martin Thomas makes an interesting and related observation:
+
+>There is, of course, the related problem of what we mean by
+>"getting the design right" and "failure".  In general, these can
+>only be defined with hindsight - we recognise that the system
+>has entered a state which we wish it hadn't, and we define that as
+>failure.  We cannot (usually) guarantee that we have defined all
+>safe states, or all hazardous states, in advance.
+
+But part of the problem is that there are an infinite number of
+states.  A finite-state machine with a limited number of states
+would limit the potential for error.
+
+Thomas continues:
+
+>The question I would ask is: are we making our systems
+>significantly more  complex by converting to digital too soon
+>(or at all)? Would the system complexity be reduced if, instead
+>of converting to digital so that we can use a commercial
+>microprocessor, we processed the signals as analog signals,
+>using an application-specific integrated circuit (ASIC) and only
+>converted to digital where there is a clear reduction in
+>complexity from doing so?
+
+There are two questions here, not one.  The first has to do with
+the use of analog vs. digital.  And the other has to do with
+"application specific."  Each of these has the potential to
+reduce the complexity.  Each should be applied where it is
+applicable.
+
+>This is a serious question:  latest technology allows mixed
+>analog-digital ASICs, and the cost and time to produce an ASIC
+>is competitive with the cost and time to produce the software and
+>circuit board for a microprocessor system - and the technology
+>is moving so that economics increasingly favour the use of ASICs.
+
+Agreed, but then he continues further:
+
+>YOU CAN HAVE (SOME OF) YOUR FAVOURITE MICROPROCESSORS ON-CHIP,
+>TOO.
+
+You sure can, but the favoritism is part of the problem, not the
+solution.
+
+>To summarise:  the issue is system complexity - safety is
+>related (probably exponentially) to the inverse of complexity (if only we
+>could measure it) - SO REDUCING COMPLEXITY IS THE KEY TO
+>INCREASING SAFETY; can we make progress by exploiting analog
+>techniques?
+
+Perhaps, but there is no question that we can reduce it by
+employing finite-state application-specific processors.
+
+William Hugh Murray, 21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.32
+************************

@@ -1,0 +1,613 @@
+precedence: bulk
+Subject: Risks Digest 23.31
+
+RISKS-LIST: Risks-Forum Digest  Friday 9 April 2004  Volume 23 : Issue 31
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <http://www.risks.org> as
+  <http://catless.ncl.ac.uk/Risks/23.31.html>
+The current issue can be found at
+  <http://www.csl.sri.com/users/risko/risks.txt>
+
+  Contents:
+Chinooks again (Neil Youngman)
+Blackout computer failure analysis (Stephen Cohoon)
+Malware, auto-reply, and non-native languages (Drew Dean)
+Risks in Google's New "Gmail" Service (Lauren Weinstein)
+Risks in Network Solutions' domain information masking (Lauren Weinstein)
+Seeing the Light might just *not* show the right contamination (Bob Heuman)
+Re: Buffer overflows (Jon A. Solworth)
+Re: iAPX 432 (Robert I. Eachus)
+Re: 4.6-million DSL subscribers' data leaked in Japan? (Curt Sampson)
+Re: News24's not-very-restrictive access restrictions (Curt Sampson)
+Yet another version of the Beagle social engineering (John Sawyer)
+REVIEW: "Cybersquatters Beware", Chantelle MacDonald Newhook (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 08 Apr 2004 06:42:36 +0100
+From: Neil <no.spam.for.n.youngman@ntlworld.com.die.spammers>
+Subject: Chinooks again
+
+The Royal Air Force bought 8 Chinook Helicopters for 259M pounds. The
+helicopters were supposed to be in service 6 years ago, but problems with
+radar systems, mean they can not fly in cloud. According to the BBC
+
+  "The Chinooks were originally supposed to be in service in 1998 but radar
+  systems and software developed under a separate contract would not fit in
+  the cockpit, the report said."
+
+http://news.bbc.co.uk/1/hi/uk/3606325.stm
+
+  [The Chinooks are hiding in Chicrannies.  PGN]
+
+------------------------------
+
+Date: Fri, 9 Apr 2004 17:19:34 -0500 
+From: Stephen Cohoon <stephen.cohoon@voxpath.com>
+Subject: Blackout computer failure analysis
+
+Kevin Poulsen of Security Focus reports on the analysis of the Great
+Northeast Blackout of August 2003 in
+ http://www.theregister.co.uk/2004/04/08/blackout_bug_report/
+<http://www.theregister.co.uk/2004/04/08/blackout_bug_report/> .  Much is
+made of the fact that the Energy Management System built by GE had a very
+obscure, difficult to test race condition that caused it to fail during the
+early stages of the blackout thus denying the operators at FirstEnergy much
+of the information they needed to prevent or limit the blackout.
+ 
+I would agree that this is a difficult bug to root out, but there are several
+extremely important risks that need to be noted.
+
+* The alarm system failed silently - the operators did not know that it had
+  failed and was displaying stale data.
+
+* The alarm queues backed up causing that host to fail - bad design that
+  does not handle queue overflows.
+
+* The backup alarm queue processor kicked in and quickly failed - bad design
+  of an allegedly high-available system
+
+These 3 points prove that the system suffered from much more than an obscure
+race condition.  It had truly bad design problems.  Clearly, when GE created
+an energy management system that processed alarms they would have benefited
+from the experience of the telecom world where we have been building alarm
+monitoring systems for years.  We made these mistakes years ago and they
+should have known that.
+
+The best part of the article:
+
+  "But Peter Neumann, principal scientist at SRI International and moderator
+  of the Risks Digest, says that the root problem is that makers of critical
+  systems aren't availing themselves of a large body of academic research
+  into how to make software bulletproof.
+
+  ""We keep having these things happen again and again, and we're not
+  learning from our mistakes," says Neumann. "There are many possible
+  problems that can cause massive failures, but they require a certain
+  discipline in the development of software, and in its operation and
+  administration, that we don't seem to find. ... If you go way back to the
+  AT&T collapse of 1990, that was a little software flaw that propagated
+  across the AT&T network. If you go ten years before that you have the
+  ARPAnet collapse.
+
+  ""Whether it's a race condition, or a bug in a recovery process as in the
+  AT&T case, there's this idea that you can build things that need to be
+  totally robust without really thinking through the design and
+  implementation and all of the things that might go wrong," Neumann says."
+
+------------------------------
+
+Date: Wed, 07 Apr 2004 11:51:54 -0700 (PDT)
+From: Drew Dean <ddean@csl.sri.com>
+Subject: Malware, auto-reply, and non-native languages
+
+I received the (excerpted, redacted) following piece of mail.
+
+> From: ABCDEF HIJKLM <HIJKLM.ABCDEF@WXYZ.co.in>
+> Subject: Out of Office AutoReply: good morning
+>
+> Hallo
+> Your mails have not been received by me.
+> Please send all your mail to HIJKLM.ABCDEF@NOPQRST.com.
+
+My first thought was that this was a phishing expedition.  Interestingly
+enough, all of the Received: headers in the mail seemed to be valid, and the
+mail was routed through NOPQRST's mail servers.
+
+Then it hit me: NOPQRST is a large, German multinational.  I'm not familiar
+with WXYZ, although ABCDEF HIJLKM's name sounds Indian, so that's
+reasonable.  It must have been the case that some piece of malware
+(spreading its garbage) forged my name in the From: header.  "Hallo" is
+typically German.  "Please send all your mail to" is fluent, close to
+correct, but decidedly not idiomatic English -- easily explained if he's not
+a native speaker.
+
+So we have the confluence of malware, auto-reply agents, and non-native
+speakers of human languages.
+
+I decided not to forward all my spam to him. :-)
+
+Meta-RISK: I'm not using string's of X's for redaction -- as usual, in an
+attempt to get through spam filters.
+
+Drew Dean, Computer Science Laboratory, SRI International
+
+------------------------------
+
+Date: Fri, 02 Apr 2004 07:48:14 PST
+From: Lauren Weinstein <lauren@vortex.com>
+Subject: Risks in Google's New "Gmail" Service
+
+Google (or ISPs) getting into the business of routinely scanning users'
+e-mail for "interesting" keywords is of staggering import, even if the
+reason is "merely" to insert ads (or spam control, for that matter, though
+Google's plan to act as a massive long-term e-mail repository ups the risk
+ante considerably over e-mail pass-through ISPs).
+
+What would Google's legal responsibilities and actions be if they "stumbled"
+across discussions of apparently illegal activity (everything from overdue
+library books to adultery to murder...), or terrorism, or illicit
+pornography?  Since they've apparently opened the surveillance box, it's
+quite possible they'd be legally required to report everything that might
+even potentially fall into questionable categories.  
+
+This of course would include all the false alarms that would be generated by
+innocent messages that only looked suspicious but really weren't, not to
+mention purposely faked messages spiked with likely nasty keywords to try
+upset the system.  Even with the best of motives, do we really want Google
+or ISPs becoming the commercial equivalent of Total Information Awareness?
+We all want to prevent crime and terrorism, but is the creation of massive
+surveillance machines in the guise of free e-mail services the proper way to
+do so in our society?
+
+And what of the proprietary information that will inevitably find its way
+into Google's scannable e-mail treasure chest?  "Innocent" scanning could
+reveal all sorts of goodies.  (I've thought in the past about all those new
+product names and future trademarks that first drop into Google's logs when
+initial searches are performed...)  Can we trust Google not to abuse this
+potentially lucrative power?  For now the answer is probably yes, but market
+forces make the future anything but certain.
+
+Don't get me wrong.  I like Google -- a lot.  I think overall they've got a
+good attitude, and a superb search engine (though the privacy implications
+of their search logs have long been a matter of concern, as I noted).  But I
+fear that they have not fully thought through the ramifications of their new
+e-mail project, and how it can, even with the best of intentions, be rapidly
+turned to the Dark Side.  That risk won't only result from Google's
+decisions, but also from actions by government, lawyers, law enforcement,
+courts, and even ISPs and Google's competitors.
+
+E-mail is arguably the most sensitive form of Internet communications, and
+deserves the highest possible levels of protection.  Mere trust or good
+faith aren't enough.  
+
+In the classic (and highly recommended) satirical film "The President's
+Analyst," the protagonists gradually come to the realization that every
+phone call in the country is being tapped.  The 1967 film has been
+prescient in numerous ways, and doesn't seem quite so funny anymore.
+
+Centralized scanning of e-mail (even for ostensibly innocent commercial
+purposes), the push for expanded surveillance of conventional and VoIP
+telephone systems, and many other moves, together point towards a 
+future where all use of telecommunications is monitored through 
+close alliances of commercial enterprises and government, and 
+where encryption will be banned or tightly controlled.
+
+Even if one assumes completely benign motives on the part of these 
+firms and governments today, what of the future?  Will the 
+incredibly powerful and pervasive monitoring infrastructures 
+now being woven always be in the hands of such trustworthy entities?
+
+History suggests that we have a lot to worry about in these regards.
+
+
+  [Incidentally, it is now being reported that Google's terms of service for
+  Gmail (or whatever it ends up being called if there are really trademark
+  problems) apparently say they can KEEP your e-mail even after you close
+  your account!  That's what's being reported!]
+
+Lauren Weinstein lauren@pfir.org  http://www.pfir.org/lauren +1 (818) 225-2800
+Co-Founder, PFIR - People For Internet Responsibility - http://www.pfir.org
+
+------------------------------
+
+Date: Mon, 29 Mar 2004 10:22:41 PST
+From: Lauren Weinstein <lauren@vortex.com>
+Subject: Risks in Network Solutions' domain information masking
+
+Network Solutions (and other registrars in various ways) have begun offering
+services to bypass ICANN's requirement for accurate domain holder
+information being listed in WHOIS.
+
+While the issues of WHOIS information accuracy and availability vs. privacy
+are complex and controversial, NetSol's particular approach appears to
+trigger a number of interesting legal questions.
+
+For an extra charge, NetSol will mask the contact e-mail address with
+an aliased address that changes at intervals, list their own po box
+for the physical address, and list a phone number that leads to
+a "no calls accepted" recording.
+
+I do not see an obvious problem with their e-mail alias approach.  However,
+their intercepting and opening of physical mail is a different matter, since
+it makes it impossible for senders of certified mail to be assured that the
+material ever reached the actual registrant, and of course privacy of such
+mailings is lost.  If confidential legal materials were involved, the issues
+could get very dicey.
+
+Lack of an accurate phone number is of great concern.  In cases of network
+disruptions (either intentional or not) often the only recourse to restore
+normal services is to pick up the phone and call the person at the domain in
+question.  Physical mail is too slow, and if systems are disrupted e-mail
+often won't work.
+
+One also must wonder if NetSol really wants to interject themselves into the
+middle of legal and related communications involving spammers,
+pornographers, and others with less than pristine motives for wanting to
+hide their contact info -- the John Smith family who wants to protect their
+home address is not the major issue.
+
+Finally, what actions will ICANN take to enforce both the letter and spirit
+of their rules in this regard, while these issues are being hashed out in
+various policy forums?
+
+Lauren Weinstein lauren@pfir.org  http://www.pfir.org/lauren +1 (818) 225-2800
+Co-Founder PFIR <http://www.pfir.org>, Fact Squad <http://www.factsquad.org>
+
+------------------------------
+
+Date: Tue, 06 Apr 2004 11:01:11 -0400
+From: "R.S. (Bob) Heuman" <rsh@idirect.com>
+Subject: Seeing the Light might just *not* show the right contamination
+
+The real risks with the following "New Technology" are that it depends on
+the light source remaining at the correct 'frequency' throughout its
+lifetime AND somehow letting you know when it is NOT working correctly.
+Until the bulb burns out you simply will not have a clue that it is not
+working correctly should the light wave used shift frequency or the 'marker'
+detection fail. There is no discussion of failure mode, unfortunately, so we
+could all end up deep in what the product is intended to detect.
+	
+New technology could detect dirty hands, Associated Press, 5 Apr 2004
+http://edition.cnn.com/2004/TECH/ptech/04/05/cleanhand.technology.ap/index.html
+
+  With just a flicker of blue light, little Johnny's mother one day may know
+  for sure whether her son washed his hands before dinner.  New light-scanning
+  technology borrowed from the slaughterhouse promises to help hospital
+  workers, restaurant employees -- one day, even kids -- make sure that hand
+  washing zaps some germs that can carry deadly illnesses.  A device the
+  size of an electric hand dryer detects fecal contamination and pinpoints
+  on a digital display where on a person's hands more scrubbing is needed.
+
+------------------------------
+
+Date: Tue, 06 Apr 2004 10:17:33 -0500
+From: "Jon A. Solworth" <solworth@cs.uic.edu>
+Subject: Re: Buffer overflows (Cowan, RISKS-23.30)
+
+I'll take issue with Crispin Cowan's assertion that (RISKS-23.30):
+
+  "Thus hardware semantics enforcement ended because the hardware people
+  discovered that it was easier to do in software."
+
+The issue is not whether there is hardware semantics enforcement.  All
+modern architectures do have hardware enforcement via privilege modes, trap
+instructions, and memory protection.  Rather the issue is of what form they
+take, whether they provide only mechanism (and hence are policy neutral) and
+what level of semantics they provide.
+
+The problem of layering (whether to put the mechanism in the architecture,
+operating system or application is exacerbated by two issues.  The first is
+pushing to lower levels special purpose mechanisms.  The second is pushing
+to higher levels issues we don't understand and making them more complex.
+The latter is every bit as much of a problem as the former, and thereby
+following Hoare's dictum:
+
+ "I conclude that there are two ways to constructing software design: One
+  way is to make it so simple that there obviously no deficiencies and the
+  other way is to make it so complicated that there are no obvious
+  deficiencies."
+
+The higher levels of necessity depend on the lower levels for their
+security.  So the question is how, not whether, the protection is provided
+at the various levels.
+
+Jon A. Solworth, Computer Science Dept., University of Illinois at Chicago
+Chicago, IL 60607-7053  http://parsys.cs.uic.edu/~solworth 1-312-996-0955
+
+------------------------------
+
+Date: Mon, 05 Apr 2004 19:48:51 -0400
+From: "Robert I. Eachus" <rieachus@comcast.net>
+Subject: Re: iAPX 432 (Cowan, RISKS-23.30)
+
+>> Heck, software can always make up for hardware deficiencies, right?
+
+> That's a perspective, but I disagree. Burroughs was not the only lab to
+> experiment with language support on chip. Intel also tried this, with the
+> i432. The result was that the RISC processors produced *crushing*
+> performance wins over chips with complex semantics, due to the ability to
+> heavily pipeline and thus ramp up the clock on simple instruction sets.
+
+The death or rather non-success of the iAPX-432 had very little to do with
+language support.  It had a lot more to do with the fact that customers were
+not willing to pay for security--the iAPX-432 had very good hardware support
+for security.
+
+But the devastating decision was a decision not to fix a "bug" in the
+initial version of the chip.  The net effect was to make every instruction
+instruction owned by a user take two memory cycles longer to complete, and
+every OS instruction took one more memory cycle when working with user data.
+It is an instructive lesson in how software fixes for hardware problems may
+be counterproductive.
+
+The iAPX-432 was a capability based architecture.  All resources, in
+particular memory were accessed through capability descriptors.  The chip
+kept track of whether or not something was a capability, so they were not
+easily forged.  However, in the final preproduction version of the chip,
+there was a glitch.  As a result, the only way to expand the top-level
+capability table was to do a hardware reset. (Ouch!) Of course, the
+workaround that the developers used was to have a fixed set of top-level
+descriptors, which pushed all user owned descriptors one level lower.
+
+On a day when I was there for a job interview in the compiler department,
+the decision was made to ship the current version of the chip, and fixed
+this problem in a later mask release.  At lunch the discussion was not about
+how bad this decision was, but where people were going to go when they left
+Intel.  Needless to say, I didn't take the job.  (I probably should have --
+the actual result of that decision by Intel was the founding of two
+companies: Rational and Verdix.  Rational eventually bought Verdix, and was
+then acquired by IBM.)
+
+Why was the decision by Intel so bad?  Because it meant that almost anyone
+designing products around the iAPX-432 made the same workaround decision.
+Once you made that decision it didn't matter if 99.9% of the chips your
+software ran on had the fix.  You had to design your software one way or the
+other.  There was one company in England, High Integrity Products was the
+name I think, who instead decided not to support the first batch of iAPX-432
+chips.  They had quite a good business for years.  But that was it.  Well,
+BiiN, a joint venture between Siemens and Intel was developing a trusted
+operating system, and there was no reason for them to support the original
+buggy chips.  But Intel discontinued the 432 and disbanded the company
+before they shipped product.
+
+It is interesting to speculate what would have happened if absent that
+decision, the 432 became the future of computing.  Certainly most viruses
+would never have existed.
+
+------------------------------
+
+Date: Tue, 6 Apr 2004 14:16:03 +0900 (JST)
+From: Curt Sampson <cjs@cynic.net>
+Subject: Re: 4.6-million DSL subscribers' data leaked in Japan?
+
+> Date: Sun, 21 Mar 2004 01:54:11 +0900
+> From: Chiaki <ishikawa@yk.rim.or.jp>
+> ...
+> Really a good example of what one should NOT do in handling sensitive
+> information and seeing it at an large ISP is rather disappointing and
+> disgusting.
+
+It may be disappointing and disgusting, but it's my opinion that this
+is going to happen again and again. I have friends who work as computer
+technicians in various companies here, and there are other companies
+that keep similar personal information and take just as little care
+with it. Not only have the managers been informed by tech folks time
+and time again over the years that this risk exists, but even after
+management has seen this whole Yahoo brouhaha they still have done
+*nothing whatsoever* to make the information more secure. Honestly, not
+one single step.
+
+I myself in the past have been in a similar position and have tried to
+convince managers that they should spend a little to reduce the level of
+risk they were undertaking, and have always had little luck.
+
+> This incidence is a really good example of what we should not do and
+> many organizations seem to take this example seriously.
+> In that sense, it is a good thing...
+
+It would be interesting to find out how many organizations have taken
+this example seriously, and how many have not. I can't think of any
+way to do this, of course; everybody's going to say, in public, that
+this can't happen to them. The only way to find out, if you're not part
+of the organization itself, is to know someone in the right place in
+the organization who's willing to tell you about it over a beer. And
+needless to say, that kind of information, when handed to someone, is
+probably not going further. I'm left with anecdotal evidence.
+
+Possibly being able to buy insurance against these sorts of things
+would help; insurance companies would presumably then be able to come
+in and inspect for such situations, giving companies a direct financial
+incentive to fix this stuff. And I would certainly be much more inclined
+to use a company that had insurance that would pay me directly, say,
+$250 should my personal information be compromised.
+
+Curt Sampson  <cjs@cynic.net>   +81 90 7737 2974   http://www.NetBSD.org
+
+------------------------------
+
+Date: Tue, 6 Apr 2004 14:15:38 +0900 (JST)
+From: Curt Sampson <cjs@cynic.net>
+Subject: Re: News24's not-very-restrictive access restrictions (RISKS-23.30)
+
+> From: "Cody B." <cody@zone38.net>
+> Thus, foreigners can read all of News24's articles in full, at absolutely 
+> no cost, *simply by turning Javascript off*.
+> I don't even think I need to point out the many things that are utterly
+> wrong with this.
+
+It would help me if you would do so. I have often done things in a similar
+style, after doing a risk and cost analysis. In those cases, the conclusion
+that the programming team and the customer came to, after discussion, was
+that a few users getting by the access restrictions was not a big problem,
+and the cost of that was less than the cost of modifying the system so that
+no users got by the access restrictions.
+
+For a case like this, I can easily conceive of the following scenario:
+
+  1. Modifying the back-end software to deal with this would be expensive
+  because they would have to bring in an external developer to do the work
+  and to retest. There's also additional risk in that should a bug be
+  introduced, they have to call in the external developer again. (They use
+  an external developer to do the development work on this part of the
+  system because it doesn't change often enough to warrant hiring a
+  full-time programmer to do the work internally.)
+
+  2. Doing the javascript redirect is very cheap, because they already have
+  a full-time HTML guy with the expertise to do this, and the system is
+  designed to let him easily add such things to the requisite pages in the
+  system.
+
+  3. They currently have in place and use a system for analyzing their web
+  logs that can tell them how many users are getting around the restriction.
+
+None of the above points are particularly uncommon at many web-publishing
+organizations, and I could certainly see this being a situation where you
+might say, "the extra bandwidth charges for a few foreign users are not
+going to be substantial and there seems to be no other risk of us suffering
+from something we're not already suffering from now; let's do it the cheap
+way, and only re-implement it the more expensive way when we see that more
+than a certain percentage of our foreign users are getting around the
+restrictions."
+
+I didn't see any indication in your message that you have sufficient
+information to do the analysis above and have done this analysis, and found
+that this javascript course was not the best one to take.
+
+The RISK here? Perhaps it's assuming you have all the information you
+need to do an analysis of whether something is a smart or stupid move.
+
+Curt Sampson  <cjs@cynic.net>   +81 90 7737 2974   http://www.NetBSD.org
+
+------------------------------
+
+Date: Tue, 6 Apr 2004 08:52:10 +0100 (BST)
+From: =?iso-8859-1?q?John=20Sawyer?= <jpgsawyer@btopenworld.com>
+Subject: Yet another version of the Beagle social engineering
+
+Following up from my recent report on 16 Mar in RISKS-23.27 of social
+engineering to get the Beagle virus onto people's systems, here is yet
+another attempt.
+
+>Dear user of Btopenworld.com gateway e-mail  server,
+
+> Some of our clients complained about the spam (negative e-mail content)
+> outgoing from your e-mail account.  Probably, you have been infected by a
+> proxy-relay trojan server. In order to keep your computer safe, follow the
+> instructions.
+> 
+> Further details  can  be  obtained  from attached file.
+> 
+> Have a good  day,
+>    The Btopenworld.com team                         
+> 
+> http://www.btopenworld.com
+
+This time they interestingly attempt to scare people into opening the
+attachment by accusing them of already having had their computer compromised
+and being responsible for spam. An old con trick but not one I have seen in
+this context before. Another interesting feature is that the message doesn't
+seem to have any gross grammatical errors this time something that seemed to
+be standard in these things before.
+
+John Sawyer, University of Portsmouth
+
+------------------------------
+
+Date: Wed, 7 Apr 2004 08:19:07 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "Cybersquatters Beware", Chantelle MacDonald Newhook
+
+BKCYBSQT.RVW   20031118
+
+"Cybersquatters Beware", Chantelle MacDonald Newhook, 2002,
+0-07-090579-7, U$19.95/C$24.99
+%A   Chantelle MacDonald Newhook chantelle@disputewinners.com
+%C   300 Water Street, Whitby, Ontario   L1N 9B6
+%D   2002
+%G   0-07-090579-7
+%I   McGraw-Hill Ryerson/Osborne
+%O   U$19.95/C$24.99 905-430-5000 800-565-5758 fax: 905-430-5020
+%O  http://www.amazon.com/exec/obidos/ASIN/0070905797/robsladesinterne
+  http://www.amazon.co.uk/exec/obidos/ASIN/0070905797/robsladesinte-21
+%O   http://www.amazon.ca/exec/obidos/ASIN/0070905797/robsladesin03-20
+%P   290 p.
+%T   "Cybersquatters Beware"
+
+The introduction talks about branding, and the fact that companies can
+do it very inexpensively on the Internet.  Chapter one explains
+trademarks, as well as the domain name system.  The Uniform Domain
+name dispute Resolution Process (UDRP) is outlined in chapter two
+(along with other similar mechanisms), and key elements necessary to
+winning a dispute are noted.
+
+Successive chapters present a number of cases involving different
+types of principals and principles: companies (in three), institutions
+and individuals (in four), celebrities (five), sex (six), complaints
+and comments (in seven), generic names (eight), and an amalgam, in
+chapter nine, of airlines, banks, wineries, and other companies that
+have not prepared for the disputes.  Chapter ten deals with the
+process of going to court with domain name disputes.  Trends and
+indications in decisions are reviewed in chapter eleven.
+
+The book does provide a good compilation of advice on a complex and
+poorly understood topic.  There is one proviso: the text frequently
+makes the point that the race is not always to the justified, nor the
+legal battle to the prepared.  However, as current wisdom has it, the
+prepared side is the one to bet on.
+
+copyright Robert M. Slade, 2003   BKCYBSQT.RVW   20031118
+rslade@vcn.bc.ca      slade@victoria.tc.ca      rslade@sun.soci.niu.edu
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: 5 Apr 2004 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.  Alternatively, via majordomo,
+ send e-mail requests to <risks-request@csl.sri.com> with one-line body
+   subscribe [OR unsubscribe]
+ which requires your ANSWERing confirmation to majordomo@CSL.sri.com .
+ If Majordomo balks when you send your accept, please forward to risks.
+ [If E-mail address differs from FROM:  subscribe "other-address <x@y>" ;
+ this requires PGN's intervention -- but hinders spamming subscriptions, etc.]
+ Lower-case only in address may get around a confirmation match glitch.
+   INFO     [for unabridged version of RISKS information]
+ There seems to be an occasional glitch in the confirmation process, in which
+ case send mail to RISKS with a suitable SUBJECT and we'll do it manually.
+   .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> SPAM challenge-responses will not be honored.  Instead, use an alternative
+ address from which you NEVER send mail!
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+   <http://www.CSL.sri.com/risksinfo.html>
+ The full info file may appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+ *** NEW: Including the string "notsp" at the beginning or end of the subject
+ *** line will be very helpful in separating real contributions from spam.
+ *** This attention-string may change, so watch this space now and then.
+=> ARCHIVES: ftp://ftp.sri.com/risks [subdirectory i for earlier volume i]
+ <http://www.risks.org> redirects you to Lindsay Marshall's Newcastle archive
+ http://catless.ncl.ac.uk/Risks/VL.IS.html gets you VoLume, ISsue.
+   Lindsay has also added to the Newcastle catless site a palmtop version
+   of the most recent RISKS issue and a WAP version that works for many but
+   not all telephones: http://catless.ncl.ac.uk/w/r
+ <http://the.wiretapped.net/security/info/textfiles/risks-digest/> .
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    <http://www.csl.sri.com/illustrative.html> for browsing,
+    <http://www.csl.sri.com/illustrative.pdf> or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 23.31
+************************

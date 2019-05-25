@@ -1,0 +1,349 @@
+19-Mar-86 17:58:26-PST,17648;000000000000
+Mail-From: NEUMANN created at 19-Mar-86 17:54:33
+Date: Wed 19 Mar 86 17:54:33-PST
+From: RISKS FORUM    (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+Subject: RISKS-2.31
+Sender: NEUMANN@SRI-CSL.ARPA
+To: RISKS-LIST@SRI-CSL.ARPA
+
+RISKS-LIST: RISKS-FORUM Digest,  Wednesday, 19 Mar 1986  Volume 2 : Issue 31
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Still more on shuttle destruct systems (Martin J. Moore)
+  Clock Synchronization (Andy Mondore)
+  Timestamp integrity at system startup (John Coughlin)
+  Danny Cohen on SDI (Charlie Crummer)
+  Two more mailer problems (Sidney Markowitz)
+  Marking money for the blind (Atrocity Joelll)
+  Why would anyone want to computerize voting? (Larry Campbell)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@SRI-CSL.ARPA, Requests to RISKS-Request@SRI-CSL.ARPA.)
+(Back issues Vol i Issue j stored in SRI-CSL:<RISKS>RISKS-i.j.  Vol 1: MAXj=45)
+
+----------------------------------------------------------------------
+
+Received: from eglin-vax.ARPA [...] Wed 19 Mar 86 07:25:38-PST
+Date: 0  0 00:00:00 CDT
+From: "MARTIN J. MOORE" <mooremj@eglin-vax>
+Subject: Still more on shuttle destruct systems
+To: "risks" <risks@sri-csl>
+
+>From: desj@brahms.berkeley.edu (David desJardins)
+>[T]he destruction of the SRBs...is a human rather than a computer error.
+
+It was certainly a human action but I do not agree that it was an error.
+That we now -- long after the fact -- would like to retrieve the boosters
+is unfortunate; but had they not been destroyed they would either have
+ended up in the drink anyway (possibly much further away from the Cape and in
+much deeper water, making the recovery even more difficult than it is) or they
+would have endangered a land area.
+
+> NASA admits that the SRBs were not in fact endangering anything at the time
+> that they were destroyed...there must be an almost irresistible temptation 
+> for the range safety officer to do the "safe" thing. 
+
+First, the destruct decision does not come from NASA; it comes from the Air 
+Force.  Second, there is no "temptation" involved; the range safety officer
+MUST DO the safe thing based on the information available in real time.  He 
+did so.  For more on the information available to the RSO, see below.
+
+> Perhaps this is the inevitable result of having humans making
+> these decisions (error on the side of safety).
+
+Would you prefer error on the side of non-safety?  Or are you advocating the
+use of computers to make the actual destruct decision?  If the latter, you
+will have a hard time getting anyone to fly the vehicle!  Also, in the 
+Challenger case, a computer would have made the same decision to destroy the 
+SRBs.  While I was at the Cape, there was some investigation into the 
+possibility of automating the destruct decision; it was decided that even if 
+it were safe and reliable, it could only be used on unmanned launches.  Since
+the number of unmanned launches would decrease dramatically in the coming 
+years, an automatic destruct decision system would not be cost-effective.
+
+> I'm not sure that anything can really be done about this, except to
+> provide extensive training and an adequate supply of information on which
+> to base the actual decisions.  Do the range safety officers have access
+> to real-time flight-path projections and similar information that would
+> allow them to make intelligent decisions?
+
+The RSO's do receive *extensive* training.  Being an RSO is a full-time job, 
+not an extra duty; the RSO's are either Air Force officers or high-grade
+civil servants (incidentally, I was once encouraged by some of the RSO's to 
+apply for an opening in their number.  I am REALLY glad I decided not to!).
+Their training includes realistic launch simulations in which various 
+things go wrong.  The problems include not only wild trajectories but 
+equipment and people problems; during the simulations, one of the RSOs is in 
+charge of setting up the problems.  They perform this duty on a rotating basis 
+and it is quite competitive.  In addition to the real-time training, there is
+"office" training in which they study the effects of various missiles, 
+possible debris footprints, etc.
+
+Regarding flight projections:  tracking data are gathered from a variety of 
+sources, including radars, inertial guidance telemetry, and optical trackers 
+(mainly used very early in flight when radars are ineffective due to 
+multipath.)  The tracking data is fed to the Central Computer (redundant Cyber 
+740s) where through various filtering and checking the two "best" sources are
+chosen, and used to determine the vehicle's position and velocity, and to 
+compute from them the Instantaneous Impact Point (IIP), which is the point at 
+which the vehicle would impact if thrust were to terminate at that instant.
+The RSO has a lot of information displayed on his consoles: the primary and 
+alternate position, velocity, and IIP, real-time telemetry from the vehicle
+(e.g., engine chamber pressures), live video coverage, and others.  The RSO
+uses this information (plus comm links to the Flight Director in Houston on a 
+manned launch) to make his decisions.  The present position itself is not 
+critical; it is the IIP that determines when an area is endangered.  The RSO 
+has displays of the nearby land masses, with "destruct lines" drawn some 
+distance out to sea; if an IIP crosses a destruct line, the land area is 
+endangered and the missile should be destroyed.  Also, if a vehicle is 
+obviously wild (such as an orphaned SRB) it should be destroyed while still in 
+a safe area *before* it can endanger the land mass!  This is why the RSO's 
+decision was not an error.  As I understand it, although the SRB had not yet 
+crossed the destruct line, it had curved back toward the coast and would have 
+crossed the line in a few seconds.  
+
+From my observations, I evolved my own rough rules-of-thumb for destroying a 
+missile.  These are purely my personal observations, they're not official,
+and they're pretty general, so please don't nitpick at them.
+----
+IF (missile is unmanned) THEN
+   IF (IIP crosses destruct line) OR (missile is obviously out of control)
+   OR (missile is out of communications for a length of time sufficient
+   to endanger any area from its last known position) OR (pad disaster occurs
+   -- e.g., vehicle falls over after ignition) THEN
+      Destroy the missile.
+ELSE IF (missile is manned) THEN
+   IF ((IIP crosses destruct line) AND (Houston reports the flight crew is
+   *not* in control of the vehicle)) OR (pad disaster occurs) THEN
+      Destroy the missile.
+END IF
+----
+SRBs flying by themselves are certainly unmanned and obviously out of control.
+
+Sorry about the length of this message, but I'm getting a little tired of 
+hearing people second-guess the RSO's decision.  The RSO in question is one of 
+the most intelligent and capable individuals I have ever known; he made the 
+correct decision based on the real-time information, and that's what he is 
+supposed to do.  One SRB was heading toward the coast, and even though it
+had not yet crossed the destruct line, the risk to the population was 
+significant (and increasing).  He unquestionably made the right decision based 
+on the information at the time.
+                                           
+                                     Martin Moore
+                          
+Disclaimer:  I disclaim everything.
+
+------------------------------
+
+Date: Wed, 19 Mar 86 09:38:18 EST
+From: Andy_Mondore%RPI-MTS.Mailnet@MIT-MULTICS.ARPA
+To: RISKS@SRI-CSL.ARPA
+Subject: Clock Synchronization
+
+The recent discussion of computer clocks showing the wrong time
+has reminded me of a related problem -- clock synchronization on
+computers.  For example, I will sometimes receive a message from
+someone on another host on campus where the "time received" on
+my host will be earlier than the "time sent" on his machine!
+Granted, clock synchronization  with electronic mail isn't really
+that critical, but I can think of a lot of other applications where
+having clocks out of sync with each other would be totally
+unacceptable.
+
+------------------------------
+
+Date:     19 Mar 86 10:56:56 EST
+From:       John Coughlin <John_Coughlin%CARLETON.BITNET@WISCVM.WISC.EDU>
+To:  <Neumann@sri-csl.ARPA>
+Subject:  Timestamp integrity at system startup
+ReSent-To: RISKS@SRI-CSL.ARPA
+
+   The  CP-6  operating  system  has  an interesting integrity check for
+timestamp setting.  On a warm or cold boot the operator is asked for the
+date and  time.  This is compared  with the timestamp on  the last error
+log entry.  If  the 'new' timestamp is earlier than  the error log entry
+or is more  than nine hours later then a  timewarp error is reported and
+confirmation is  requested.  If the operator chooses  to reject the time
+he entered he can make a correction.
+
+   There are two  problems with this system.  First, if  a new system is
+being built there  are no error log files.  I  think the base time stamp
+(1978-01-01  00:00) is  used in  this case.   Second, it is possible for
+there  to  have  been  no  error  recorded  in a nine hour period.  This
+actually happened to us a couple of times, so we now write a dummy error
+log entry every  four hours.  I am thinking of  stepping this up to once
+per hour in case the system is down at exactly 00:00 or 04:00 or ...
+
+   This  system  has  its  drawbacks,  but  helps to reduce the risks of
+setting an unreasonable timestamp at system startup.
+                                                          /jc
+
+------------------------------
+
+Date: 07 Mar 86 20:23:58 PST (Fri)
+From: crummer@aero
+Subject: Danny Cohen on SDI
+[EXCERPTED FROM Soft-Eng Digest Wed, 19 Mar 86 Volume 2 : Issue 9]  
+
+                    [SINCE MY GUESS IS THAT MOST OF YOU ARE NOT READING 
+                     SOFT-ENG@XX.LCS.MIT.EDU, IT SEEMED WORTH INCLUDING 
+                     THIS HERE.  PGN]
+
+The following is a "summary" of a talk given by Danny Cohen of ISI.  Dr. Cohen
+is chair of the SDI Organization (SDIO) and a member of the "Eastport Group", a
+panel on computing in support of battle management:
+
+     The Eastport Group panel was appointed to devise an appropriate
+  computational/communication response to the SDI battle management computing
+  problem and make recommendations for a research and technology development
+  program to implement the response.
+      
+     The panel concluded that computing resources and battle management 
+  software for a strategic defense system are within the capabilities of the 
+  hardware and software technologies that could be developed within the next
+  several years.
+
+     However, the anticipated complexity of the battle management software
+  and the necessity to test, simulate, modify, and evolve the system make
+  battle management and command, control, and communication (BM/C3) the
+  paramount strategic defense problem.
+
+     Software technology is developing against inflexible limits in the 
+  complexity and reliability that can be achieved.  The tradeoffs necessary
+  to make the software task tractable are in the system architecture.  The
+  "applique approach" of designing the system first and then writing the 
+  software to control it is the wrong approach is the wrong approach for SDI.
+  System architecture and battle management must be developed together.  This
+  was suggested in an earlier report on SDI known as teh Fletcher Report.
+
+     One promising class of system architectures for a strategic defense system
+  are those that are less dependent on tight coordination that what is implied
+  by the Fletcher Report.  The advantages of this type of architecture include
+  robustness, simplicity, and the ability to infer the performance of full-
+  scale deployment by evaluating the performance of small parts of the system.
+
+     The panel prefers an unconventional architecture that simplifies the soft-
+  ware development and testing tasks over reliance on radical software develop-
+  ment approaches and the risk that reliable software could not be developed
+  by the "applique approach" at any cost.
+
+------------------------------
+
+Date: Wed 19 Mar 86 16:34:28-EST
+From: "Sidney Markowitz" <SIDNEY%OZ.AI.MIT.EDU@XX.LCS.MIT.EDU>
+Subject: Two more mailer problems
+To: risks@SRI-CSL.ARPA
+
+1) I did not personally see this, but I was told that Symbolics briefly
+introduced a new feature in their mail program with the current release of
+the operating system. It was a new header line that a sender could use to
+include graphics as part of the mail message.  This was implemented by
+having the header line include a lisp expression that would be evaluated
+(executed) when the receiving mailer loaded the message for display.
+Somebody pointed out the other possible ways in which an arbitrary piece of
+executed code in a mail message could be used, and that feature was dropped
+very quickly.
+
+2) This is not quite on the same level as the above problem, or the old
+control character in the message trick, but the following message appeared
+in my mailbox some 5 or 6 times over the course of a couple of days. It's
+relevant to RISKS as yet another real life example of "nothing can go
+wrong... go wrong... go wrong..."
+
+The message was sent to a net distribution list:
+
+[begin edited forwarded message:]
+
+To: info-gnu@PREP.AI.MIT.EDU, info-gnu-emacs@PREP.AI.MIT.EDU
+Subject: Duplicate messages
+
+1) Apologies from the chief gnu list maintainer.
+
+2) For a variety of reasons, this happens intermittenly on prep, an
+MIT AI Lab machine the lists are hosted on.  For a variety of reasons,
+there is little that the GNU staff can do about it, at this time.
+
+3) Thanx for your patience.
+
+[End of edited forwarded message]
+
+Sidney Markowitz <sidney%oz@mit-mc.arpa>
+
+------------------------------
+
+Date: Wed, 19 Mar 86 14:46:25 pst
+From: Andrew Scott Beals <bandy@lll-crg.ARPA>
+To: risks-request@sri-csl.arpa
+Subject: bounced mail - i bet that this is for y'all?   [THANKS]
+
+From ucdavis!uucp Tue Mar 18 22:41:20 1986
+Date: Tue, 18 Mar 86 22:17:29 pst
+
+Mail failed.  Letter returned to sender.
+>From seismo!harvard!think!mit-eddie!genrad!panda!talcott!maynard!campbell
+  Tue Mar 18 21:30:28 1986 remote from lll-crg
+             [...AS USUAL, I DELETED THE ROUTING, ALTHOUGH IT WAS EXCITING...]
+Date: Tue, 18 Mar 86 17:36:01 EST
+To: ucdavis!ucbvax!sri-csl.arpa!  
+Subject: Why would anyone want to computerize voting?  
+
+Why would anyone want to computerize voting?  Doing so only increases the
+risk of fraud, by reducing the number of people involved in the process.
+("The best deterrent to crime -- witnesses.")  Elections don't happen often
+enough that saving money can count for much -- in fact, I believe around
+here ballot counters are unpaid volunteers.  Rapidity of the count?  Who
+cares whether the results are known in two hours or two days?
+
+Sounds like yet another scheme (remember "computer literacy"?) to enrich
+computer companies at the public's expense.
+
+      [There are of course lots of reasons for automating.  But PLEASE,
+       let's not get a flurry of messages answering that one here.  This
+       is just another fine example of a more complicated solution
+       introducing new vulnerabilities and different risks.  PGN]
+
+Larry Campbell                                 The Boston Software Works, Inc.
+ARPA: maynard.UUCP:campbell@harvard.ARPA       120 Fulton Street
+UUCP: {harvard,cbosgd}!wjh12!maynard!campbell  Boston MA 02109
+
+------------------------------
+
+Date:     Wed, 19 Mar 86  18:02:22 EST
+From:  Joelll%UMass.BITNET@WISCVM.WISC.EDU  (Atrocity Joelll)
+Subject:  Marking money for the blind
+To:  risks@SRI-CSL.arpa
+
+On the subject of the bill-denomination-determining in Canada, there is a
+method that I noticed is in use in Israel when I was there recently: on
+every denomination of shekel notes there is a unique raised pattern of lines
+for the use of the sight-impaired and to aid in annoying counterfeiters.
+For example, on the five-shekel note there are three dots formed of these
+lines, each about 4 mm in diameter, and on the 500 shekel note there is an
+oval shape made of the raised lines about 12 mm long and 4 mm wide.
+
+The biggest benefits of this system, in addition to making counterfeiting
+harder, are that is is cheap, there is no computer 'denomination reader' to
+have vandalized, and that the blind persons who use this service wouldn't
+have to go out and find one of these silly machines...
+
+Atrocity Joelll
+JOELLL%Umass.Bitnet@wiscvm.wisc.edu
+
+      [One must carefully examine the code of raised symbols to see how
+       easily a lower denomination can be changed into a higher 
+       denomination.  In Braille, for example, it is easy to change a
+       TWO into a ONE (assuming the fingers do not detect a rough
+       flattened spot) and a ONE into a TWO (by raising an extra spot).  
+       By the way, there are situations in which one might wish to make
+       a higher denomination appear as a lower denomination... fooling
+       a blind customs official with Altered Braille?  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

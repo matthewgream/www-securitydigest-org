@@ -1,0 +1,262 @@
+VIRUS-L Digest              Monday, 8 May 1989         Volume 2 : Issue 110
+ 
+Today's Topics:
+re: Comment on SYS command (PC)
+POSSIBLE NEW PC VIRUS
+Virus propagation on PC. (United Kingdom)
+"Benign" viruses
+More on SecureINIT... (Mac)
+ 
+---------------------------------------------------------------------------
+ 
+Date:    8 May 1989, 09:23:14 EDT
+From:    David M. Chess  <CHESS@YKTVMV.BITNET>
+Subject: re: Comment on SYS command (PC)
+ 
+> Any competent programmer knows that the SYS command
+> has to overwrite the boot sector.
+ 
+I see a little education is needed here!   A standard fixed disk
+has at least two (2) boot records.   The first is sometimes called the
+"master boot record".   You can read it with code like
+ 
+    MOV AX,0201h               ; Read one sector
+    MOV BX,0500h               ;  into DS:0500
+    MOV CX,0001h               ;  from absolute sector 1
+    MOV DX,0080h               ;  on drive C:
+    INT 13h                    ;  now, please
+ 
+The master boot record's job is to look through the partition
+table for a bootable partition, load the partition boot sector
+(see below) from that partition, and pass control to it.  The
+master boot sector is put on the disk by FDISK (for instance).
+It is *not* written or updated by the SYS command.   If a virus
+(like the "Stoned") infects the master boot record, SYS is
+*not* going to help any.   (This is vanilla IBM PC-DOS's
+SYS command that I'm talking about; there may, of course,
+be other systems whose SYS commands do something different.)
+The master boot record is very very simple, and doesn't
+contain anything about DOS versions (take a look at it yourself
+and see!).
+ 
+The other important boot record is the partition boot record.
+This is the record that the master boot record reads in and
+passes control to.   If the partition is a DOS partition (as
+most of them are, hehe!), this is a DOS boot record.   You can
+look at it in DEBUG for instance, with commands like
+ 
+   -l 500 2 0 1
+   -d 500
+   -u 500
+ 
+You'll notice that what's displayed here includes the DOS version
+number and so on, and is *different* from what you saw when you
+did the BIOS call given above.   This DOS boot record is what
+the SYS command overwrites.
+ 
+> We have advised over 300 infected corporations involving over
+> 20,000 infected computers and 100,000 infected floppies...
+ 
+On a floppy disk, of course, there is only one boot record, and
+the SYS command does replace it.   But fixed disks have more than
+one boot record (if there are "extended partitions" on the disk,
+I think there can actually be *three* types!), and SYS only writes
+to one of them.  So SYS should not be counted on to Fix Everything,
+even if invoked from a clean system.
+ 
+Sorry if that upsets you, Alan and Tim, and I'd be glad to be
+corrected if I'm wrong!   But try the things suggested above,
+and see if you come to agree with me.   I tried it myself: made
+a change to my master boot record, SYSed the disk from a clean
+system, and noticed that the master change was still there.
+ 
+> The virus situation is not a joke, a game or a playground.
+> Many of us have dedicated full time efforts for over a year to
+> understand and deal with waht's happening.
+ 
+Couldn't agree with your more!   I've been fighting these
+ugly things since early '88 myself (brag, brag), and I know
+it's not a joke.  It's only by careful study, and tolerance
+of each other's errors and foibles, that we can efficiently
+cope with this new challenge.   Hang in there!
+ 
+Dave Chess
+IBM T. J. Watson Research Center
+ 
+* Affiliation given for identification purposes only;
+* all information herein represents the opinion of the
+* writer, and not necessarily that of his employer.
+ 
+------------------------------
+ 
+Date:    Mon, 8 May 89 09:12:01 PDT
+From:    rogers@cod.nosc.mil (Rollo D. Rogers)
+Subject: POSSIBLE NEW PC VIRUS
+ 
+Original-Subject: ->NEW VIRUS AND CURE<- for ALL IBM PC/XT/AT/386
+Original-Date: 7 May 89 19:13:57 GMT
+ 
+I do not know if this is realy a NEW virus, but this campus is now in
+the middle of a large infection.
+ 
+The virus is not destructive UNLESS the disk it is trying to infect is
+full (it needs one cluster -- 1024 bytes)
+ 
+HERE IS WHAT IT DOES:
+At some time a single character will start bouncing around the screen
+but you can still continue to do what ever you want.
+ 
+HERE IS HOW IT SPREADS:
+It loads into memory at boot time ONLY! (taking 2K of free memory)
+If you boot with a clean disk, you are safe.
+If you boot from an infected disk (hard drive or floopy) it will
+then stay in memory (until a warm reboot) and transfer its self
+to ANY disk (bootable or not) when ANY disk operation are done.
+Then if you boot that disk on another computer it will start
+transfering its self again.
+ 
+HERE IS HOW TO FIND IT:
+On your disk it marks its self as a bad cluster. BUT you can read it.
+(it picks the FIRST free empty sector, or picks a used one if your
+disk is full) In memory it takes up 2K (check your memory from a clean
+disk then the questionable disk) To find the sector in you disk do
+search of ALL sectors for FF 06 F3 7D 8B 1E F3 7D using something like
+Norton's NU If you find that and it is maked as BAD in the FAT then
+YOU HAVE IT.
+ 
+HOW TO KILL IT:
+You can do FILE by FILE back up then reformat the bad disk
+then restore the files (the virus is NOT part of a file
+it's part of the boot system)
+ 
+The long way (But it works well...and for hard drives) Make a floopy
+with the same version of the operating system you have on the bad disk
+make sure that SYS and NU and NDD are on the good disk BOOT the good
+disk...go into NDD do a "MAKE DISK BOOTABLE" from common fixes (to the
+bad disk) then do a SYS to the bad disk....YOU ARE DONE...the virus
+will no longer load....you should the go in to NU and unmark the fake
+BAD cluster (2 sectors) and zero the sectors
+ 
+REMEMBER: IT WILL INFECT ALL DISKS
+even if they are not bootable....
+the virus can still infect a cleaned disk...
+flu-shot may detect it, but by the time you run it
+the BUG is already in memory and running....
+ 
+If you find a better way to KILL it then please POST!!
+(and send me mail...)
+ 
+Andrew Lindh, a student at the University of Hartford -- Computer Science
+West Hartford, CT -- School Switchboard (203) 243-4100 -- ask for Math/CS
+BITNET: LINDH@HARTFORD.bitnet   INTERNET:  maby later....
+UUCP:   lindh@evecs.uucp   also   lindh@uhasun.uucp  (and root@evecs.uucp)
+ 
+------------------------------
+ 
+Date:       8-MAY-1989 17:56:05 GMT
+From:       ZDEE699@ELM.CC.KCL.AC.UK
+Subject:    Virus propagation on PC. (United Kingdom)
+ 
+        One of my friends who is not on the virus-l list has sent me
+the following message from Southbank polytechnic.  The message to all
+our UK subscribers is to watch-out for these programs which show
+pornographic pictures, and which students copy from each other... thus
+helping the virus contained within the program to propagate and infect
+new hard disks.
+ 
+Olivier Crepin-Leblond
+ 
+forwarded message follows
+===============================================================
+>Sender:  <MANDALR@UK.AC.SOUTHBANK-POLY.VAX>
+>
+>
+>
+>   We have a virus running on some OPUS 7 PCs, The program is
+>   call oneontwo.exe it runs by reading in data from a file
+>   call 1on2.gl, what it produces is a pornographic moving
+>   animation.
+>   Students, as usual, are very good at distributing such programs
+>   and run them without any permission. It comes with a bat file
+>   which simply has oneontwo 1on2 as command line. The effects
+>   are not noticed until later the hard disk refuses to boot up
+>   even if it does have bootable files, it refuses to read command.com
+>   but you can boot from A drive. So far one Opus 7 is very sick and
+>   also an amstrad 1640 with 20mb HD is very very sick.
+>
+>  I'am OK it's mainly our terminal room we seem to have serious
+>  problem, What happens is the PC's after a while refuse to BOOT
+>  and any EXE or COM file become infected as soon as they run
+>  We have a virus checker thats how we know about this little
+>  bug.
+>  What we are doing now is cleaning every hard disk in sight
+>  and restoring with backups that's all that can be done for
+>  now. If you know of any Virus preventer/checker for the PC
+>  that would be helpful.
+>  I supect whats happening is that the command.com file are growing
+>  as they are run causing most of the above problems.
+>
+>Ripon..
+===================================================================
+ 
+King's College London, United Kingdom.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+|Olivier M.J. Crepin-Leblond                        | - If no-one can do it  |
+|JANET   :<zdee699@uk.ac.kcl.cc.elm>                |   then do it yourself  |
+|BITNET  :<zdee699%elm.cc.kcl.ac.uk@ukacrl>         | - If you can't do it,  |
+|INTERNET:<zdee699%elm.cc.kcl.ac.uk@uk.ac.nsfnet-relay>| then  P A N I C ! ! |
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+------------------------------
+ 
+Date:    Mon, 8 May 89 10:41:16 PDT
+From:    dplatt@coherent.com (Dave Platt)
+Subject: "Benign" viruses
+ 
+In VIRUS-L 2.107, Michael Odawa writes:
+ 
+> The last thing I want is for some
+> self-proclaimed wizard to release viral code that s/he "thinks" has no
+> negative side effects.
+ 
+Agreed!  One of the first viruses in the Mac community (known
+variously as "Peace", "the MacMag virus", or "Brandow's Folly") was
+intended to be benign.  Reportedly, the programmer worked for quite
+some time to ensure that the virus would have only one effect
+(displaying a message of world peace on a specified date), would
+delete itself cleanly thereafter, and would have no unfortunate side
+effects.
+ 
+Didn't quite work out that way.  The virus was (apparently) tested on
+machines in the Mac Plus family (monochrome, 68000-based), and didn't
+take into account the differing architecture of the Mac II
+(68020-based, multi-bit-deep screen, different memory layout).  There
+were reports of Mac II systems crashing, and/or corrupting their hard
+disks, when this virus kicked in.
+ 
+A virus that's benign in one host can be deadly in another... this is
+certainly true for biological viruses, and seems to be true for
+computer viruses as well.
+ 
+Dave Platt
+FIDONET:  Dave Platt on 1:204/444        VOICE: (415) 493-8805
+UUCP: ...!{ames,sun,uunet}!coherent!dplatt     DOMAIN: dplatt@coherent.com
+INTERNET:   coherent!dplatt@ames.arpa,  ...@uunet.uu.net
+USNAIL: Coherent Thought Inc.  3350 West Bayshore #205  Palo Alto CA 94303
+ 
+------------------------------
+ 
+Date:    Mon, 08 May 89 12:28:54 EDT
+From:    dmg@mwunix.mitre.org
+Subject: More on SecureINIT... (Mac)
+ 
+Another tidbit about this application.  One of the users on the
+Twilight Clone BBS (not Joe McMahon) here in DC recently tried this on
+his system at home.  He alledges (and I believe it) that SecureINIT
+deleted some hold-dozen inits, including OnCue.  It looks more and
+more like this one's a dog.
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

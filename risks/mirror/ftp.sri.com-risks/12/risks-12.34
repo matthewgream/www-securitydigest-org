@@ -1,0 +1,549 @@
+Subject: RISKS DIGEST 12.34
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 16 September 1991  Volume 12 : Issue 34
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Network Security Lacking at Major Stock Exchanges (PGN)
+"Planted" data in databases [anonymous]
+Re: RSA vs. NIST (Greg Rose, Steve Bellovin, Dan Bernstein, Kevin McCurley)
+Re: Export controls on workstations (Hank Nussbacher, Lars-Henrik Eriksson,
+    John Mainwaring)
+RISKS of trying to get hard facts [OS/2] (Conrad Bullock via Gideon Yuval)
+RISKS (yet again) of not enough data (Bill Gunshannon)
+Re: +&*#$ (Dave Roberts)
+Re: Multics/UNIX Lessons (Dick Karpinski)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 12, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Mon, 16 Sep 91 14:28:21 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Stock Exchange Risks
+
+          "Network Security Lacking at Major Stock Exchanges --
+            GAO cites susceptibility to outages, tampering"
+
+``The General Accounting Office (GAO) found a total of 68 computer and network
+security and control problems at five of the nation's six major exchanges
+during reviews it conducted this past year for the Securities and Exchange
+Commissions.  The lack of adequate controls at the five stock markets could
+impair their ability to maintain continuous service, protect critical computer
+equipment and operations, and process correct information.''  The worst three
+in terms of numbers of problems were the Midwest (24), Pacific (18), and
+Philadelphia (18) exchanges, which were all faulted for their inadequate risk
+analysis.  The biggest problems were in the areas of contingency planning and
+disaster recovery.  The NY and American stock exchanges came off relatively
+well.  [Source: article by Wayne Erickson, Network World, 16Sep91, pp.23-24.]
+
+------------------------------
+
+Date: Mon, 16 Sep 91 09:20:21 xxT
+From: [anonymous]
+Subject: "planted" data in databases
+
+A previous poster discussed how a firm would send out false traffic reports
+over 2-way radios to confuse a rival firm.  It is indeed the case that planting
+of false data to detect copying or misuse of information has a long, long
+history.  In fact, many companies explicitly tell their customers that there is
+false data to discourage misuse, while others don't advertise the fact but
+don't make a secret of it either.
+
+For example, in the mailing list industry, it is common practice for some
+names/addresses to be "dummies" that are people in the pay of the mailing list
+firm.  These addresses are used to try detect if the terms of list use (e.g.
+one-use only) are being violated.  If two many mailings show up at one of those
+addresses from the company, the list firm knows there's a problem.  Of course,
+this also means that the company sending out the mailings is wasting some money
+sending materials to those "planted" addresses.
+
+Another field where this technique is used involves maps.  Street maps may show
+little side streets that don't really exist.  If a competing map shows up with
+the street... blammo!  Larger scale maps may show tiny towns that don't really
+exist.
+
+It goes on and on--all manner of databases may have planted entries that are
+used for detection purposes.  Of course, false entries aren't the only method
+to do such detections--other methods involve use of unusual spellings, "typos"
+that are really intentional, unique word orderings, etc.
+
+                                                   [Even the RISKS Forum?  PGN]
+
+------------------------------
+
+Date: Mon, 16 Sep 1991 14:39:15 GMT
+From: ggr@watson.ibm.com (Greg Rose)
+Subject: Re: RSA vs. NIST (Slone, RISKS-12.33)
+
+>... presumably these are logarithms that have truncated ...
+
+They are not truncated logarithms.
+
+Both schemes rely on arithmetic in a finite field (modulo n arithmetic where n
+is the product of two large primes) being RSA's operating field. If a**b .eq. c
+(all modulo n), then finding a given b and c is called the discrete logarithm
+problem. For RSA, it turns out that you can do it in (at least) two ways: one
+is brute force, and for sufficiently large numbers is infeasible, and the other
+is factoring n.  However, the problem being solved is still the discrete
+logarithm problem for both of them.
+ 
+> ...
+
+It is possible that my recollection is dated, but to my knowledge the RSA
+system is still the only known "reversible" system, where the private and
+public keys can be used for both privacy and authentication. Assuming that the
+other system doesn't allow this reversible use, the standard is significantly
+less useful than it could be.
+
+>...  These advances have forced made it necessary to
+>increase the length of encryption keys for the RSA method.
+
+However, each extra ten digits in the key at least doubles the brute-force
+difficulty. This behaviour seems able to keep ahead of hardware advances fairly
+easily.
+
+(I have no relation to RSA Inc, other than admiration for the elegance and
+utility of the system.)
+
+Greg Rose - Chance Airlines      ggr@watson.ibm.com      (914) 945 1179
+
+------------------------------
+
+Date: Sun, 15 Sep 91 23:21:36 EDT
+From: "Steven M. Bellovin" <smb@ulysses.att.com>
+Subject: RSA vs. NIST (digital security standards) (Slone, RISKS-12.33)
+
+What NIST has proposed is not an encryption standard, but a digital signature
+standard.  Digital signatures provide authentication but not secrecy.  That, to
+my mind, is the major reason this scheme was proposed instead of RSA.  Dating
+back at least to the adoption of the Data Encryption Standard, it's been
+obvious that (at least some part of) NSA is hostile to the widespread
+deployment of encryption technology.  RSA inherently provides secrecy as well
+as authentication; the NIST scheme provides only the latter.  (Incidentally,
+discrete logarithms are logarithms in a finite field, such as the integers
+modulo some prime.  For example, given that c = (a^b mod p), b would be the
+discrete logarithm.  It is indeed a hard problem to find b, though not as hard
+as had once been thought.  Put another way, p needs to be much larger than was
+realized a few years ago.  At least one important authentication system based
+on the discrete log problem has been cracked.)
+
+Numerous aspects of the NIST proposal are controversial, including the claim
+that it is free from (other) patents.  Other oddities: signing a message in
+this scheme is less expensive than verifying a signature.  That seems strange;
+for many applications, very many parties will need to validate a message that
+will be signed only once.  (I doubt that there is any real RISK to forged RISKS
+messages, but most people I know would be much happier if they could validate
+security fix announcements from CERT.)
+
+The claim has also been made that the scheme either has a trapdoor, or is
+insufficiently secure against a determined attack.  Without going into details,
+the nature of the standard is such that an attack on the system per se would
+permit solution of everyone's key; with RSA, on the other hand, each
+public/private key pair must be attacked individually.  Note, though, that this
+is a signature mechanism, not a privacy mechanism; finding a party's private
+key allows you to impersonate that party in network communications, but does
+not disclose their secrets without an active attack.  We can all imagine the
+kinds of mischief that can result from forgeries -- but NSA is generally more
+interested in listening than in speaking.
+                                            	--Steve Bellovin
+
+------------------------------
+
+Date: Mon, 16 Sep 91 06:18:29 GMT
+From: brnstnd@KRAMDEN.ACF.NYU.EDU (Dan Bernstein)
+Subject: RSA vs. NIST (digital security standards) (Slone, RISKS-12.33)
+
+In RISKS-12.33, Tom Slone comments on the NIST DSA public-key proposal.
+Discrete logarithms are not logarithms which have been ``truncated to a
+finite but large length.'' Can you tell me what power I have to raise 3
+to in order to get 77710 mod 157931? That's a discrete logarithm. Slone
+then repeats a statement from Jim Bidzos (president of RSA Inc., and of
+Public Key Partners) saying that the NIST DSA is weak, and adds ``there
+is some merit in his statement since knowledge of prime-factoring has a
+long mathematical history,'' while discrete logarithms are ``presumably
+a new sub-field.'' Actually, Bidzos's claim is entirely unjustified. We
+have learned a lot about both factoring and discrete logs over the last
+thirty years or so, and at this point there's no reason to believe that
+one will be easier than the other. The NIST DSA has the clear advantage
+of being free of patents. For that reason alone I will use it.
+                                                                 ---Dan
+
+   [I usually unjustify short or long lines to save paper/screen length
+   or make them readable on 80-character screens, but left this message
+   as received because it was remarkably right justified without having
+   any extra blank spaces inserted!  With such arguments you can have a
+   message that is entirely justified even if the contents are entirely
+   unjustified.  Just if I tried ... PGN]
+
+------------------------------
+
+Date: Mon, 16 Sep 91 13:37:26 MDT
+From: mccurley@work.cs.sandia.gov (Kevin S. McCurley)
+Subject: Re: RSA vs. NIST (digital security standards) (Slone, RISKS-12.33)
+
+The recent posting by Tom Slone on the NIST proposal for a digital signature
+standard contained some unfortunate mistakes that I would like to correct.
+
+First of all, the NIST standard is for digital signatures - not encryption.  If
+you don't know what a digital signature is, then briefly it is a means to
+"sign" an electronic document in much the same way that you would sign a paper
+document.  Its purpose is to protect the authenticity of information, not the
+privacy of information.  It provides much more than a hash or checksum, since a
+hash can be produced by anyone, but a digital signature can only be produced by
+the legitimate signer.
+
+Second, the discrete logarithm problem is not something that was plucked out of
+thin air by NIST.  In fact, discrete logarithms were applied to cryptography
+before factoring, because the discrete logarithm problem was used by Diffie and
+Hellman in their original paper on public-key cryptography, whereas factoring
+came along the following year in the RSA paper.  Certainly the problem of
+factoring is old - but the discrete logarithm problem has also been studied by
+computational number theorists going back at least to the time of Gauss in
+1801.  For more information on the discrete logarithm problem, see "Computation
+of Discrete Logarithms in Prime Fields", by B.A.  LaMacchia and A.M. Odlyzko,
+Designs, Codes, and Cryptography, volume 1, (1991), 47-62.  Also cited there is
+a survey I wrote in 1990: "The discrete logarithm problem", pages 49-74 in
+"Cryptology and Computational Number Theory", volume 42 of Proceedings of
+Symposia in Applied Mathematics, American Mathematical Society, 1990.
+
+Finally, I would like to point out that there has been relatively
+little progress made on the problem of "factoring primes".  More
+progress has been made on the problem of factoring composites...
+
+Perhaps the biggest risk is in forming opinions based on incomplete
+information.
+
+The NIST standard itself is based on a method published by ElGamal in 1984, but
+incorporates several innovations that improve its performance.  The NIST
+proposal included a call for comments, which appeared in the Federal Register
+of August 30.  Interested parties have 90 days from that date to send their
+comments to NIST.
+                              Kevin S. McCurley, Sandia National Laboratories
+
+------------------------------
+
+Date:         Sun, 15 Sep 91 09:21:52 IST
+From: Hank Nussbacher <HANK@VM.BIU.AC.IL>
+Subject:      Re: Export controls on workstations (Cooper, RISKS-12.31)
+
+>The computer-based RISK here is based upon permitting morons to make decisions
+
+The risk here is trying to use technology as a pawn for politics.  Israel has
+for the past 3 years tried to obtain export licenses for a vector processor
+upgrade for a 3090-200.  Articles about this have appeared in the Washington
+Post and the NY Times.  There was a period of a year where we could not get 486
+PCs until the Far East started producing them and then suddenly the export
+license ban was "relaxed".  We have had cases of Vax 4100s being restricted and
+as the compute curve moves upward we never know what we can obtain and what
+will be restricted.  We looked into buying a Japanese mainframe but it turns
+out that Japan and the USA have an export agreement - whereby if the USA says
+no to one country, Japan has to abide by that agreement.
+
+The risk here is not of morons making decisions but of using computers as a
+carrot for political policy decisions.  The USA government can't control
+weapons making their way to various terrorists groups so there is absolutely no
+possible way for the USA government to restrict computer technology to these
+same terrorist groups.  The reason these decisions are made is to restrict
+access to countries who wish to use these systems for education or research but
+who don't follow the exact views of the current adminstration.
+
+Hank Nussbacher, Israel
+
+P.S.  The views expressed above are my own and do not reflect the views of my
+employers nor of the government of Israel.
+
+    [Note: I normally delete all disclaimers, particularly jokey ones,
+    hoping that they are adequately covered by the masthead generic disclaimer.
+    This one seemed appropriate, however.  PGN]
+
+------------------------------
+
+Date: Mon, 16 Sep 91 09:00:46 +0200
+From: Lars-Henrik Eriksson  <lhe@sics.se>
+Subject: Re: Export controls on workstations, ... (Leichter, RISKS-12.33)
+
+> ...  The US could probably require US companies to place 
+> appropriate restrictions in their licensing agreements.
+
+They U.S. not only could, but the already do! Export licenses are needed for
+all high performance U.S. CPUs. These licenses carry the restriction that the
+equipment may not be reexported without U.S consent.
+
+Lars-Henrik Eriksson, Swedish Institute of Computer Science, Box 1263
+S-164 28  KISTA, SWEDEN   (intn'l): +46 8 752 15 09
+
+------------------------------
+
+Date:       16 Sep 91 15:02:00 EDT
+From: John (J.G.) Mainwaring <CRM312A@bnr.ca>
+Subject:    Re: Export controls on workstations ... (Leichter, RISKS-12.33)
+
+I think Jerry Leichter's response to the thread started by John Markoff and
+PGN's posting, Export controls for workstations, may be missing the point of
+the original DoD proposal.
+
+If the original posting and its followups had been specifically about sales to
+terrorist organizations or undesirable foreign governments, I might have agreed
+with Jerry's posting.  Since the IRA does not normally apply directly for
+export licenses for Sun workstations, the DoD proposes to restrict ALL exports
+of workstations to reduce the likelihood of the IRA getting one from their
+Belfast Radio Shack.  Jerry's choice of the South African security forces as an
+example also moves the discussion on in an interesting way.
+
+If Jerry chooses to argue by analogy - always a RISKy endeavor - lets try
+another one.  We disapprove of international terrorists robbing banks, so we
+should shut down the export of all equipment used in banks overseas.  Of
+course, since the disclosures about the BCCI, it appears that international
+terrorists don't rob banks, they own them - but that's the risk of not really
+understanding the problem.
+
+I admire Jerry's wish to use the influence the US has in technology to bring
+about worthy goals.  In cases such as the sale of armaments where the goods
+being sold have no peaceful use, his approach seems feasible.  However, I think
+his perception of American influence in the world of workstations and UNIX is
+not shared by those of us who have spent most of our lives elsewhere.  The rest
+of the world is willing to license American workstations and UNIX because they
+perceive the cost of developing alternatives not to be worth the effort.  This
+is based on widespread agreement that these things would not be easy to
+replace.  If American policy makes dependence on American products unacceptable
+to the rest of the world, it will create an opportunity for competition that
+would not have arisen purely on technical merit, and this will mean jobs in
+Singapore or Malaysia or wherever.  Of course, views on the goodness of this
+outcome will vary depending on where you live.
+
+As I said above, the rest of the world might applaud if the US significantly
+reduced its arms exports - to everyone - but it tends not to understand the
+logic behind placing controls on the export of Kleenex because it has been
+discovered that international terrorists are unusually susceptible to colds.
+
+------------------------------
+
+Date: Mon Sep 16 08:28:36 PDT 1991
+From: "Gideon Yuval 1.1114 x4941" <gideony@microsoft.com>
+Subject: RISKS of trying to get hard facts
+
+         [Forwarding from Gideon Yuval, Microsoft, 1 Microsoft Way, 
+         Redmond, WA 98052-6399 206-882-8080]
+
+Newsgroups: comp.os.os2.misc
+Subject: 'OS/2 Rumours' Clarification
+From: Conrad.Bullock@comp.vuw.ac.nz (Conrad Bullock)
+Date: Wed, 11 Sep 1991 12:11:16 GMT
+Organization: Dept. of Comp. Sci., Victoria Uni. of Wellington, New Zealand.
+Originator: conrad@halswell.comp.vuw.ac.nz
+
+Back on September 2nd, I posted an article about some rumours which I had heard
+from an IBM dealer, in relation to pricing and release dates for OS/2 2.0.
+
+As it turns out, he was in no way speaking for IBM officially, and any
+information that he passed on to me was purely conjecture on his part.  Due to
+the numbers that he mentioned, and in the absence of any mention to the
+contrary, I took that information at face value, and assumed it to be
+relatively reliable.
+
+Unfortunately, I took the route of posting the information that I had here, in
+order to verify whether it was true or not. (The subject line was "'Rumours'
+about OS/2 2.0 release", and I ended my message with "Can anyone confirm or
+deny any of this?").
+
+The message caused some concern to IBMers, and I can understand why.
+Larry Salomon, Jr. passed on the message to John Tiede, who said:
+
+> Larry, If you could respond on USENET that the information was not
+> correct and IBM is going to inform the misinformed IBM party (note - no
+> witch hunt, as we only want to insure accurate information and not deter
+> open dialogue, which is so important in this evolving electronic world,
+> he said stepping down off the soap box......).  Thanks for your help in
+> this.........
+
+Unfortunately, it has developed into a witch-hunt in a large way at the New
+Zealand end of things. I received a call from IBM New Zealand today, asking for
+a categorical statement saying what I had been told, and by who. The dealer
+concerned, and at least one person at IBM Wellington really are in quite
+serious trouble, and the relationship between the parties concerned, including
+myself, is strained, to say the least.
+
+I have spoken to the dealer and the IBMer concerned since, and having just been
+hauled over the coals, they were understandably angry at me -- the dealer even
+spoke to my boss, concerned that it was some form of malicious message aimed at
+`making a name for myself'.
+
+It sounds as if umbrage was taken at my mention of NZ pricing policies, and any
+parallel that I was trying to draw between NZ and US pricing - for that I am
+sorry, and for the information about release dates and final prices.
+
+Anyway, I would just like to stress that the rumours which I posted
+here were just that - rumours. There was no malice on my part. It was
+essentially a misunderstanding on my part of some conjecture from the
+dealer concerned. There was no IBM involvement, and I am dismayed to
+hear that an IBMer has got into trouble over my posting. I am writing
+letters to try and help his situation.
+
+
+For some real misinformation about OS/2, try this message, posted in
+comp.sys.ibm.pc.hardware today:
+
+> I also forgot a new version of OS/2 is coming out about the same time,
+> it is said to co-exist with DOS.  It will run under MS-DOS.
+
+Perhaps this sort of misinformation is less dangerous, as it's so obviously
+incorrect, while 'feasible' misinformation is a bit more insidious?
+
+I really want OS/2 to succeed as much as anyone. I am frustrated by the
+disinformation about OS/2 which is spread by many channels, especially in the
+press, and I did not wish to contribute to that.
+
+I am excited by the impending release of OS/2 2.0. I hope it takes the market
+by storm, and becomes the success it deserves to be - programmers the world
+over (not to mention the users), will be eternally grateful. With such a
+product on the horizon, and as yet, no official words from IBM on features or
+release dates, it should be of no surprise to IBM that there is a lot of
+speculation on what will or will not be included, and when, especially amongst
+the OS/2 faithful.
+
+
+I should have perhaps asked IBM NZ directly for clarification on these
+points, although they have generally not been much help in the past -
+I assume that they are not allowed to tell me anything anyway.
+
+In summary:
+
+- There was a misunderstanding - the dealer should have made it clear
+  that he was speculating, I should not have taken the information as
+  reliable.
+- I shouldn't really have posted the information here.
+- An IBMer is in trouble, and he shouldn't be.
+- I probably should not have passed on the dealer's name and details
+  to the IBMer concerned, but in my naivity, I did not imagine that it
+  would snowball in quite this fashion.
+
+Conrad Bullock, Victoria University of Wellington, New Zealand
+conrad@comp.vuw.ac.nz  conrad@cavebbs.gen.nz Fidonet  3:771/130
+
+------------------------------
+
+Date: Mon, 16 Sep 91 12:33:04 EDT
+From: bill@tuatara.uofs.edu (Bill Gunshannon)
+Subject: The RISKS (yet again) of not enough data (Deibele, RISKS-12.32)
+
+  I think (based on my personal experience) that a much bigger RISK is that
+this type of media (i.e., Email, Computer Conferencing) might find its use
+curtailed or, in the case of schools, restricted, based on a concept that has
+not been researched enough to justify it.
+
+  I believe that the apparent hot-headedness seen in Email, BBSes and 
+USENET are only signs of an immature communications media and do not 
+accurately reflect what we can expect in the future.
+
+  My own experience tends to bear this out.  When I was first introduced 
+to USENET and NEWS, in 1982, I was very quick to flame people for the 
+slightest remark with which I didn't agree.  Today, if I come across 
+something that I feel requires a response, I save the offending message 
+and give the whole thing some thought.  Somewhat akin to stopping to count
+to 10.  In 95% of the cases, I then decide it isn't worth raising my blood 
+pressure about and throw the article away.
+
+   As more and more people become exposed to this form of communications, I 
+feel it will develop the same mores and customs as other more conventional 
+forms of communication.
+
+   After all, we don't consider the telephone to be a disadvantage to
+communication even though we may receive the occasional obscene phone call.
+
+Bill Gunshannon, University Computing Systems, University of Scranton,
+Scranton, PA        bill@platypus.uofs.edu      bill@tuatara.uofs.edu    
+
+------------------------------
+
+Date: Mon, 16 Sep 91 11:19:33 GMT
+From: Dave Roberts <dwr@datasci.co.uk>
+Subject: Re: +&*#$ (Morris, RISKS-12.31)
+
+In RISKS-12.31 in Re: +&*#$ (Moore, RISKS-12.21) Mike Morris writes: 
+
+> ... Once I was pulled over by a cop who was as fascinated as
+> I was when my plate wouldn't come up and we spent some time with his patrol
+> car terminal discovering this quirk. [...] 
+
+It seems to me that we are all missing the risk to society here and thinking 
+only of the individual.
+
+The society we live in gives each motor vehicle a <supposedly> unique id
+so that those who need to do so can identify that vehicle easily.
+
+The society we live in takes money from each and every one of us to spend on
+the common good.
+
+Some of that money pays policemen to prevent and/or detect and recover from
+crime.
+
+Society allows people to advertise themselves by writing their name, slogan,
+etc as big as they like on their vehicles - many elements of society do that
+and the results can be seen driving down any road any day.
+
+I think Mike (and many others - nothing personal) confuse the need for a
+unique vehicle id with their wish for self-advertisement to the detriment
+of society in general.
+
+The way to do what he appears to want is to paint his call-sign in big letters
+on the side of his vehicle and accept a standard issue vehicle number for
+the tiny little plate that is there for those who "need-to-identify".
+
+Or am I missing something??
+                                           David Roberts
+
+PS. I think he also owes all the other John Does paying taxes for the time
+of one cop and one car and one computer system for the wasted effort caused 
+by his insistence on a misuse of vehicle number plates;  the RISK is loss
+of availability of a cop who could be doing something useful instead.
+
+PPS. Whether traffic cops in patrol cars EVER do anything useful is not a topic
+for this newsgroup - we all pay them so we all think that they do!
+
+------------------------------
+
+Date: Fri, 13 Sep 91 17:43:58 PDT
+From: dick@ccnext.ucsf.edu (Dick Karpinski)
+Subject: Re: Multics/UNIX Lessons (Edward Rice, RISKS-12.25)
+
+Since the people involved with the initial creation of UNIX are very much alive
+today, we could probably get the truth.  Mr. Rice's version is very different
+from the one I tell.  I claim that far from Bell Labs deciding to create a
+variant of Multics, Ken Thompson used a neglected PDP-7 lying about in a store
+room to build a little system to permit him to play a little space-war.  It
+might actually be that before it could be said to be even the origin of UNIX,
+it had become a vehicle to test some of Ken's theories about building
+appropriate systems.  Even so, I'm sure that years passed before the labs
+decided to use and support the system.
+
+To keep this short, I believe the development of the UNIX system was more like
+the stories James Burke tells than like the steady, intended progress so often
+reported in textbooks.
+                                              Dick Karpinski
+
+   [I try not to interject my own historical perspective into too many messages
+   but at this point I might as well interject that Dick is indeed closer to
+   the truth -- except for the space war.  By the way, another interesting
+   historical perspective is provided by F.J. Corbato's Turing Address Lecture
+   in the September 1991 CACM, relating to CTSS, Multics, and (incidentally)
+   Ken Thompson and UNIX.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 12.34
+************************

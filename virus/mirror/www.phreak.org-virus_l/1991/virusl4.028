@@ -1,0 +1,511 @@
+VIRUS-L Digest   Friday, 15 Feb 1991    Volume 4 : Issue 28
+
+Today's Topics:
+
+Model of "Safe" (PC)
+Sunday virus detection (PC)
+Re: Virus questions (PC)
+5120 Virus variant (PC)
+Artificial Intelligence (= AI) and viruses
+Re:Viruses via Radio
+Preventing booting from floppy (PC)
+non-sacaning anti-virus techniques
+fund for Vesselin Bontchev
+Product information sought (PC)
+Re: Virus Protection and Universities
+Re: Virus Protection and Universities
+Q: Do I Have a Virus --> answered :-) (PC)
+IBM Virus Scanner. (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    13 February, 1991
+>From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc.com>
+Subject: Model of "Safe" (PC)
+
+	For some time now I have been rambling about "layered"
+protection for PSs running MS-DOS (with modifications the same would
+be possible on any OS), but now can make a stab at putting a model
+together that would contain all of the necessary elements to provide
+protection from malicious software with minimal user and performance
+impact:
+
+1) Prevent cold boot from floppy - can only be done with hardware unless
+   already in BIOS. Only element that must be in hardware though can also
+   do others. Note: element (2) can DETECT malicious action from a cold
+   floppy boot but cannot prevent it if drive A: is present.
+
+2) Password access (if desired) in absolute sector 1. Software redirection
+   can hide hard disk from normal floppy boot. Authenticates disk access
+   mechanism to prevent "stealth" infections. Protects partition table, hidden
+   sectors, & boot record from writing, entire disk from low level format
+   once resident. Can also prevent any warm floppy boot.
+
+3) Internal executable authentication scheme. All files in system have
+   separately stored signature & are authenticated prior to execution.
+
+4) Known viral signature checks for any unknown executable presented for
+   execution. User permission required & tracking instigated.
+
+5) Background floppy access task: signature checks for malicious software
+   in system areas of any floppy on door closure.
+
+6) Warm Boot trap; prevents boot from unknowm floppy. 5 & 6 could be used
+   in multi-machine or networked environment to prevent importation/
+   recognition of "outside" floppies.
+
+7) System configuration monitor: detects any attempt for a program to go
+   resident or any attempted addition or change of an executable file. Has
+   list and configuration of programs permitted to do so. Could exclude
+   programs known by (3).
+
+Of these, the only one that has any performance impact would be item
+(4) but by confining it to executables presented for execution, this
+should not be significant.
+
+Right now, I believe only FLUSHOT and DR. PANDA attempt (7) though do
+not keep record of permitted programs - most users disable this
+feature from incessant alarms. John McAfee's VSHIELD makes a first
+pass at (6). No one (that I know of) is trying (5). Several products
+do a good job of (3) Certus' CERTUS, Enigma-Logic VIRUS-SAFE, VSHIELD,
+BEARTRAP. Some of these do (4) also (CERTUS, VSHIELD) I wrote
+DISKSECURE (beta copy sent to Ken via USnail) as an experiment to
+cover (2), and have heard a few rumours of products doing (1) but have
+not seen any, most have been password schemes with no anti-viral
+functions.
+
+Point is, to block malicious software properly, a layered approach
+consisting of ALL of these elements is necessary. Impact - my guess
+would be 5 seconds on boot, 250 milliseconds per 50k of known
+executable presented. 2 seconds per 50k of unknown executable
+presented, and about 4k of RAM on a 286 @10 mhz.
+
+Additionally, (and I am basing this on installations I have done)
+there would be a one-time hit of 3-5 minutes while signatures are
+generated to install.
+
+I know there is some rdundancy indicated, but that is because nothing
+I've seen that does everything (just like no-one checks Int 2E for a
+pseudo-TSR).
+
+My feelings are that given such a scenario, while malicious software
+would not be impossible to write, difficulty would rise at least to
+the same degree as for VMS, MVS, or a good Unix.
+
+						Padgett (comments welcome)
+
+[Ed. I saw one product which seems (IMHO) to come close to this -
+PC/DACS by Pyramid (note: I have no affiliation with them...).  It
+provides boot protection, optional hard disk encryption (required to
+prevent absolute sector access), username/password protection, file
+access control, etc.  Anyone with experience with this, or similar,
+systems care to comment?]
+
+------------------------------
+
+Date:    Wed, 13 Feb 91 12:18:00 +0100
+>From:    <wiw72@rz.UNI-KIEL.DBP.DE>
+Subject: Sunday virus detection (PC)
+
+hello
+
+I found the SUNDAY virus on some of our PC's and deleted it.  But I am
+sure that I got not all copies, because there are a lot of people
+using this PC's.  Now my question: What is the trigger condition and
+the damage effect of this virus?
+
+thanks
+Werner Ente
+
+WIW72@RZ.UNI-KIEL.DBP.DE
+
+------------------------------
+
+Date:    13 Feb 91 09:54:58 +0000
+>From:    campbell@dev8n.mdcbbs.com (Tim Campbell)
+Subject: Re: Virus questions (PC)
+
+boone@athena.cs.uga.edu (Roggie Boone) writes:
+> I have 4 questions regarding computer viruses.  I am rather new to the
+> study of compuer viruses and the texts that I have read have not answered
+> these questions for me.
+
+> 2)  Are there anti-virus packages (for PC or any computer) that use
+>     artificial intelligence techniques to protect the system, or is such
+>     an effort overkill?
+
+Depends on your idea of AI.  Some say any program that is user
+friendly, say by not giving you menu choices that you aren't allowed
+to perform at the moment constitues an "expert system" - a form of AI.
+If you're referring to something extravagant that tries to figure out
+what some program is up to, by searching a large AI database then your
+latter answer is probably correct - it's overkill.  You'll be wasting
+more memory, disk, and cpu than it's worth.
+
+> 3)  Not meaning to plant ideas, but I was talking with a facutly member
+>     in the dept. where I work, and the question arose as to whether a virus
+>     could be transmitted to an orbiting satellite and cause the same havoc
+>     that viruses cause us PC users.  Is this possible?
+
+A virus must be able to "execute" somehow.  If a satallite is just
+relaying "data", then no (unless of course some type of "trojan horse"
+was planted already in the satallite's program to be "triggered" by
+some data - but this would not truly be a "virus".)
+
+> 4)  I have also noticed that SCAN, for instance, scans basically the .EXE,
+>     .COM, .SYS, .OVL files in a directory.  Do viruses not infect .TXT or
+>     .DOC files or maybe C (Pascal, Basic) source code?
+
+Similarly to number 3 above, the program must be able to "execute".
+All these files do that.  ".doc" and ".txt" files don't execute - so
+hooking some viral instructions on could be done, but would accomplish
+little execpt to probably corrupt the affected file.
+
+Here's an interesting angle... It is technically possible to write a
+virus out of ".bat" file instructions to propogate itself to other
+".bat" files.  I've never seen or even heard of such a thing.  It
+would be relatively easy to detect and remove, and it would be
+blatently obvious to find out everything about it (what it does, how
+it spreads, etc.) so to make such a virus would probably be an
+exercise in futility.  But the point is simply that it is "possible"
+by virtue of the fact that the ".bat" file is executable.  You can
+carry this a step farther.  If it is possible to infect a ".bat" file,
+then it is also possible to infect, interpreter "basic" programs,
+"dBase" programs, and practically every other "interpretive" language
+- - even a spreadsheet macro could be infected.  (although I'm not
+fluent in macros so I'm uncertain about the ability of the macro to
+"propogate" itself to other spreadsheets - the language in use imposes
+restrictions upon what a virus can get away with.)
+
+This brings us to your final question about source code.  Yes, a virus
+can alter them.  But they can't execute unless they're compiled.  So a
+virus here can't propogate without some intervening action.  In most
+languages the virus would be obvious to anybody examining the source
+code, but I can think of at least one way to plant a virus that would
+almost NEVER be detected without a lot of thought (to someone browsing
+the source) - so the dangerous possibility does exist.
+
+ -----------------------------------------------------------------------------
+	  In real life:  Tim Campbell - Electronic Data Systems Corp.
+     Usenet:  campbell@dev8.mdcbbs.com   @ McDonnell Douglas M&E - Cypress, CA
+       also:  tcampbel@einstein.eds.com  @ EDS - Troy, MI
+    Prodigy:  MPTX77A
+ CompuServe:  71631,654
+ P.S.  If anyone asks, just remember, you never saw any of this -- in fact, I
+       wasn't even here.
+
+------------------------------
+
+Date:    Wed, 13 Feb 91 18:18:12 +0100
+>From:    swimmer@rzspc2.informatik.uni-hamburg.de (Morton Swimmer)
+Subject: 5120 Virus variant (PC)
+
+There is a new variant of the 5120 (Basic, or Vbasic) virus in
+existence.  I finally got around to looking at a disk I recieved a
+while ago and it turned out to be a variant of 5120. McAfee's Scan V72
+does not identify it. It seems to functionally similar, but I cant say
+yet.
+
+Cheers, Morton
+
+------------------------------
+
+Date:    Tue, 12 Feb 91 09:37:36 +0000
+>From:    Anthony Appleyard <XPUM04@prime-a.central-services.umist.ac.uk>
+Subject: Artificial Intelligence (= AI) and viruses
+
+Referring to this message in Virus-L vol 4 #23:-
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+Date:    Wed, 06 Feb 91 14:10:57 +0000
+>From:    boone@athena.cs.uga.edu (Roggie Boone)
+Subject: Virus questions (PC)
+.......
+2) Are there  anti-virus  packages  (for  PC  or  any  computer)  that  use
+artificial  intelligence  techniques  to  protect the system, or is such an
+effort overkill?
+.......
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+To avoid mistaken ideas wasting much time and email space, I better explain
+a few points re AI (= Artificial Intelligence). There are two sorts of AI:-
+
+(1) 'Expert system'. This is merely a very complicated computer program  of
+the  ordinary type with a lot of decision and test instructions, written by
+a programmer to try  to  copy  what  some  particular  human  expert  knows
+already.  The  actual  intelligent agent is not the computer or the program
+but the programmer. Whether you  give  the  name  'expert  system'  to  any
+existing viruses or antivirals is merely a matter of definition.
+
+(2) Genuinely intelligent (sentient) computers and computer  programs  that
+try  to  copy  how  the human brain works, capable of abstract thought etc.
+These have not been fully developed yet. They need a  (real  or  simulated)
+neural  net  computer. (There are existing now real neural net computers to
+do specialized jobs,  e.g.  I  saw  a  mortgage-risk-assessing  neural  net
+computer  said  to be as good as a skilled human mortgage assessor.) To run
+such a thing via a simulated neural net on an ordinary computer would  need
+impossibly  much  store  and  run  time.  It  is  a  sufficient feat for AI
+experimenters to simulate small  bits  of  intelligent  brain  on  ordinary
+computers:  e.g. read the new periodical 'Neural Networks'. Highly parallel
+computers like the 'Connection Machine' which is like 2**16 micros siamesed
+into a 16-dimensional hypercube, may perhaps be more  readily  programmable
+this  way.  Whether each present or future make of highly parallel computer
+and neural net computer will be liable to  viruses,  (and  whether  silicon
+neural   net   computers  will  be  liable  to  (infectious  or  otherwise)
+psychiatric disorders like biological brains  are),  remains  to  be  seen.
+{A.Appleyard} (email: APPLEYARD@UK.AC.UMIST), Tue, 12 Feb 91 09:01:12 GMT
+
+------------------------------
+
+Date:    Thu, 14 Feb 91 00:41:44 -0600
+>From:    Tim Jung <S931617%UMSLVMA.bitnet@UMRVMB.UMR.EDU>
+Subject: Re:Viruses via Radio
+
+I think that anything mught be possible. It would seem to me that you
+have to b reak their code, then stop their transmition while sending
+yours. THe question I have is, is this normal practice during war
+times, or combat times?
+
+Also you might remember the Captain Midnight ordeal, same thing so
+sataliette u ploading a virus to someone.
+
+------------------------------
+
+Date:    14 February, 1991
+>From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc.com>
+Subject: Preventing booting from floppy (PC)
+
+>From:    cosc13gb@jetson.uh.edu
+>  bye (sp.) the way, University of Houston can disable boot up from
+>  drive A: no matter that you has turn the machine off that is pretty
+>  impressive hu?  But I don't how they do it
+
+Several MS-DOS platforms can do this (Zenith, Compaq) and any PC could
+impliment it by storing a flag in CMOS. However, only a few
+manufacturers have chosen to impliment it in the BIOS (it must be done
+in ROM).  Unfortunately in the case of my Zenith, it will only look
+for disks that its BIOS can find. Failing this it will check for a
+floppy even if told not to.  (I have a hardcard that uses its own ROM
+extension and no matter how the CMOS is set, the Zenith will always go
+for the floppy first.) Computer Shopper ads indicate that a 386 BIOS
+chipset (choice of several) goes for about $70 but I do not know if
+any of those replacements impliment this.
+
+Incidently, there must be an override somewhere or maintenance would
+be a nightmare.
+					Warmly, Padgett
+
+------------------------------
+
+Date:    Thu, 14 Feb 91 08:33:32 -1100
+>From:    "Luis B. Chicaiza S." <LCHICAIZ@ANDESCOL.BITNET>
+Subject: non-sacaning anti-virus techniques
+
+> 99% of scanning for viruses just requieres looking for a "search string".
+
+What happens with new viruses?
+
+I belive that is more useful to prevent virus contamination than try
+to clean a system when it's infected.  I have a new anti-virus
+product, (named COMPUCILINA), this program vaccinate other programs
+(aplication ones, system programs, and a disk boot), and guarantees
+these programs will not be infected.  COMPUCILINA offers protection
+agaist actual and future viruses.
+
+Luis B. Chicaiza S.
+Universidad de los Andes, Bogota, Colombia.
+mail adress: <LCHICAIZ@ANDESCOL.BITNET>
+
+------------------------------
+
+Date:    Mon, 11 Feb 91 09:49:46 +0000
+>From:    Christoph Fischer <ry15@rz.uni-karlsruhe.de>
+Subject: fund for Vesselin Bontchev
+
+Every one knows Vesselin Bontchev as a reliable source of early
+warning and descriptions of virus problems occuring in eastern
+countries.  In december 90 I had the pleasure to meet him personally
+at the international conference on computerviruses held in Hamburg.
+
+Some might have noticed that there are no more contributions from him.
+This is due to his p r o m o t i o n. He was appointed head of the
+national computer virus lab of Bulgaria!  -- This means he had to
+return his PC to his boss and move to a different office within the
+Bulgarian Academy of Science. Now he only has a phone (this one works
+but is only in house) and a desk *thats all*!!!!  The promised PCs and
+personell has been cut to zero too.
+
+The Micro-BIT Virus Center at the University of Karlsruhe now collects
+material and funds to help him. We figured out a way to legally
+transfer these things to him without having him pay customs *and*
+being certain that the material arrives at its destination.  So any
+organisation or person that is willing to contribute shall contact me
+at the address below.
+
+Thanks for your efforts in advance
+   Christoph Fischer
+
+***************************************************************
+* Christoph Fischer                                           *
+* University of Karlsruhe                                     *
+* Micro-BIT Virus Center                                      *
+* Zirkel 2                                                    *
+* W-7500 KARLSRUHE 1                                          *
+* Germany                                                     *
+* E-mail: BITNET :  RY15@DKAUNI2.BITNET                       *
+*         INTERNET: ry15@rz.uni-karlsruhe.de                  *
+* Phone: +49 721 37 64 22     FAX: +49 721 32 55 0            *
+***************************************************************
+
+------------------------------
+
+Date:    Thu, 14 Feb 91 11:51:01 -0600
+>From:    Maurice Prather <MPRATHE1@UA1VM.BITNET>
+Subject: Product information sought (PC)
+
+I would greatly appreciate it if I could get a little input on the
+following items:
+
+     How does EliaShim's VIRUSAFE compare to McAfee's SCAN?
+
+     Any comments on VIREX for PC's or VIRUCIDE?
+
+     How would I go about obtaining F-PROT?
+
+[Ed. Check out Robert Slade's reviews of Virex-PC and F-PROT; both
+were recently posted to VIRUS-L/comp.virus and are available in the
+archives.  F-PROT can be obtained from the VIRUS-L/comp.virus PC
+archive sites, including mibsrv.mib.eng.ua.edu.]
+
+Thanks again,
+Maurice Prather                                     MPRATHE1@UA1VM.BITNET
+
+------------------------------
+
+Date:    Thu, 14 Feb 91 20:08:47 +0000
+>From:    jackz@izuba.ee.lbl.gov (Jack Zelver)
+Subject: Re: Virus Protection and Universities
+
+ACRAY@ECUVM1.BITNET (RAY) writes:
+>I would like to know what other universities are doing about buying
+>virus protection packages. We have a copy of Virex for our use but
+>would like to implement something in the labs. We have look at SCAN
+>but McAfee shareware site licences prices are exceptionally high.  The
+>minimum purchase is for use on 100 machines for $3250. We would
+>probably be better off buying just a few copies and putting them on
+>machines set aside for virus checking only.
+>
+>Any thoughts from other university labs?
+
+We too, tried to negotiate a site license for the McAfee software here
+at the University of California Lawrence Berkeley Laboratory.  Since
+we have at least 500 IBM type systems, you can imagine what kind of
+cost we were faced with.
+
+Since we don't like to spend the taxpayer's money frivously (that's
+YOUR money, folks!) we decided not to offer McAfee this huge windfall
+for the privilege of locally distributing his software.  We ended up
+negotiating a site license with IBM for their VIRSCAN software.  The
+price is right for that one!
+
+You might consider getting virus protection packages for a few people
+and put them on special write-protected system floppies.  Then they
+could be moved from system to system to check for suspected
+infections.
+
+Jack Zelver
+jszelver@lbl.gov
+
+------------------------------
+
+Date:    Thu, 14 Feb 91 15:12:34 -0500
+>From:    Joe Simpson <JS05STAF%MIAMIU.BITNET@OHSTVMA.IRCC.OHIO-STATE.EDU>
+Subject: Re: Virus Protection and Universities
+
+At Miami University we distribute Disinfectant for Macintosh computers.
+
+We have a copy of Virex-PC for individual cleanup use.  Virex seems to
+have a lower cost site license, but we really don't have a management
+structure that is consistant with purchase of PC/Mac product site
+licenses unless the cost is quite low.
+
+I would also be very interested in how other universities are handling
+the anti-viral problem.  Is anyone using F-Prot.  Does Fredrik
+Skullasan (appologies to FS for spelling) have a site liscence policy?
+
+------------------------------
+
+Date:    Fri, 15 Feb 91 16:01:04 +0000
+>From:    rfink@eng.umd.edu (Russell A. Fink)
+Subject: Q: Do I Have a Virus --> answered :-) (PC)
+
+Many thanks to those who responded. As you recall, I had two machines
+with identical numbers of bad bytes on their hard drives, which made
+me suspect viral infection (vi).  I solicited responses from this
+newsgroup, and received many replies.
+
+I downloaded McAfee's scanv74c (or whatever the latest version is)
+from the SIMTEL20 archives, unzipped it, ported to my PC, did all that
+was required, and found that no viruses were present on either
+machine. Barring the possibility that I have a new viral strain, or
+one which is not checked as part of McAfee's list of 166, I have
+reason to believe that the chkdsk numbers were just coincidence -- it
+is a known fact (ref: a reader from South Africa) that hard disks come
+with defective sectors.
+
+For those interested, I accessed SIMTEL20 via
+ftp 26.2.0.74
+and downloaded with the following:
+binary
+get PD1:<MSDOS.TROJAN-PRO>SCANV67C.ZIP
+get PD1:<MSDOS.TROJAN-PRO>SCANV67B.ZIP
+Since I am quoting some older mail, and I have newer versions,
+try downloading
+ascii
+mget PD1:<MSDOS.TROJAN-PRO>00-*
+which will give you the index of that particular subdirectory, which
+contains many helpful utilities and virus information.
+
+Thanks again to the Army, the NewsNet community, and all the people
+who took time to respond.
+
+- --
+   //=====   //=====   Russ Fink  ===============
+  //        //____     rfink@eng.umd.edu
+ //        //          University of Maryland
+//=====   //=====      College Park  ============
+
+------------------------------
+
+Date:    15 Feb 91 13:55:37 -0500
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: IBM Virus Scanner. (PC)
+
+"Pete Lucas" <PJML@ibma.nerc-wallingford.ac.uk>:
+>Can anyone tell me whether any new signature files have been released
+>for the IBM Virus Scanner? I currently have release 1.2 of this
+>program, which is at a guess around 6 months old; has there been any
+>update of the program??
+
+The current version is 1.3; another version should be out pretty soon.
+Price continues to be $35 for an enterprise-wide license, and
+something like $10 for upgrades.  Available through your IBM marketing
+rep, branch office, IBMLINK, etc.
+
+DC
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 28]
+*****************************************

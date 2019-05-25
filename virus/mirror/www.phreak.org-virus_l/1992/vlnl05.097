@@ -1,0 +1,958 @@
+VIRUS-L Digest   Wednesday, 29 Apr 1992    Volume 5 : Issue 97
+
+Today's Topics:
+
+Re: Misinfo detected, A/R/ or name a Bulgarian virus (PC)
+Searching INT 13H (PC)
+Unknown virus wrecking my system (PC)
+Re: Authentication of resident Anti-Viral programs (PC)
+Re: F-PROT Cascade false alarm... (PC)
+Re: Extensions (was: Viruses via MS Windows OLE?) (PC)
+Re: Increasing CBCS Security (PC)
+Re: Misinfo detected - 2 (PC)
+Re: Misinfo detected - 3 (PC)
+Re: Question about forms of the stoned virus (PC)
+Re: Viruses via MS Windows OLE? (PC)
+Re: Windows viruses? (PC)
+Re: New Myths #1: Infection during format (PC)
+Virus Differences
+Re: A short commercial break (was Re: lies and damn lies)
+Addition to FAQ section
+Re: Virus jokes (Humor!)
+Major Virus Alert (Humor!)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 27 Apr 92 20:19:14 +0000
+From:    duck@frcs.Alt.ZA (Paul Ducklin)
+Subject: Re: Misinfo detected, A/R/ or name a Bulgarian virus (PC)
+
+Thus spake sbonds@jarthur.Claremont.EDU (007):
+
+>pop in a diskette which has been newly formatted or wiped clean, which
+>has a 4 byte .COM file on it that does nothing but terminate.  If I
+>notice any changes in the file (after rebooting from a know clean
+>disk, of course) odds are I have both proof of viral activity, and a
+>clean copy of the virus for analysis.
+
+Aha! Cannon-fodder-software..a useful tool, if correctly used. But
+beware of 4-byte .COM files as your cannon fodder. Such files will
+fail to catch .EXE only infectors (eg: Mummy) altogether and will miss
+many .COM infectors which leave small .COM files alone. There are many
+viruses (both direct and indirect in action) which are happy not to
+touch tiny files. So, have a bunch of "expendables", such as:
+CANFOD1K.COM; CANFOD2K.COM; CANFOD1K.EXE etc. And watch the name: a
+number of viruses like to avoid files with a 'V' or 'S' in the name,
+and other such variations on a theme.
+
+Anyway: why 4 bytes? If you want a small .COM file, try "INT 20h"
+(2 bytes) or simply "RET" (1 byte) :-)
+
+Paul Ducklin
+Somewhere near the middle of the City of Pretoria
+South Africa
+
+------------------------------
+
+Date:    Mon, 27 Apr 92 08:59:41 -0700
+From:    <ether@bencd.gedlab.allied.com>
+Subject: Searching INT 13H (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+> ... I only didn't like that the program (as far as I
+> understood) "corrects" the boot sector if it thinks it's wrong.
+
+I agree with your concern. Was that what R. Riordan
+was suggesting?  Maybe P. Stuckey could post a clarification.
+
+> This must be done only when the user explicitely requests it, and the
+> original contents of the corrected boot sector must be saved in a
+> file. I hate the "I know better what programs you must be running"
+> approach.
+
+Yes, agreed.
+
+>> How do you find the Int13 entry point?  Simple, really.  Use
+>> DEBUG to search system ROM for typical int13 code, and try it:
+>
+>> C:>DEBUG
+>
+>> - - s f000:0 l FFFF 80 FA 80
+>
+> Good guess... But totally wrong. :-) On my XT the INT 13h handler for
+> the hard disk is on the hard disk controllers's EPROM and is at
+> address 0C800:0000h.
+
+Well, not totally wrong. It works for all the 286 and 386 machines
+I've tried it on so far (I used to have an XT around here somewhere:-)
+And if you don't find the code as suggested above, that should be a clue
+that there may be a ROM BIOS extension, in which case the second
+method I suggested should work.
+
+>> look at the first offset reported, and back up a byte (or two) if
+>> the preceeding bytes are FB (or FC).  That will be your entry
+>> point.  Un-assemble the code to make sure it looks like an
+>> int13 service routine, then try it.
+
+> Are you serious is proposing the average user to perform the above
+> operation, in order to install the anti-virus program? The same user
+> who can't make the difference between a boot sector and a partition
+> table and between a virus and a spreadsheet?
+
+No, certainly not! :-) It was my understanding that R. Riordan was
+personally installing this, not user-installed.  You are correct in
+pointing out that this must only be done by someone who understands
+what they're doing.  BTW, another check you can do before trying to
+run the code is to search the BIOS for the code "MOV AX, ####", where
+#### is the offset of the start of what you think is the INT13 entry
+point.  (The BIOS has to load the vector into low memory, and this
+code snippet seems to be fairly universal on the machines I've looked
+at - with the exception of some Compaq's.  But, all revs of Compaq
+system BIOS I've seen so far always have INT13 entry at 02E12H; does
+anyone know of an exception?  Compaq BIOS can be identified by the
+string COMPAQ at F000:FFEA).
+
+>> Another (sure-fire) way is to write a small machine-code program
+>> to replace the boot sector of a diskette.  This program just
+>> grabs the Int13 vector (before DOS or any virus can change it)
+>> and displays it on the screen.
+
+> This sounds much better...
+
+Yes, this is preferred approach.  This should also work for your XT :-)
+( It works for our machines with Hard-Cards installed, which have
+ROM BIOS extensions for INT13 ).
+
+> ... Another idea is to trace INT 13h (like some viruses do).
+
+Interesting... I had considered that, but there seemed to be too many
+pitfalls to implement it reliably.
+
+Ether   (ether@enc.gedlab.allied.com)
+
+------------------------------
+
+Date:    Tue, 28 Apr 92 07:24:42 +0000
+From:    keivjam@elof.iit.edu (James Keivom)
+Subject: Unknown virus wrecking my system (PC)
+
+It started a month ago.  The Novell system on our campus was attacked
+by a host of viruses.  After that, I started experiencing problems.  I
+used Scan 89 and Clean to detect and found out that the Taiwan 4 virus
+had slipped into my disks.  After that I felt safe, knowing that no
+virus could sneak by me.
+
+I wish things would have remained the same.  At first, I wasn't sure
+whether it was my imagination, or just a case of cheap floppy disks.
+All of a sudden, some disks would have corrupted directory listings
+ie.  the whole dir. listing was garbled with non-alpha numeric
+symbols.  As recently as yesterday, disks got zapped, programs got
+erased.  However, this has happened just to the point that I
+downloaded ALL of the virus detectors from garbo.uwasa.fi and ran
+them.  i thought atleast one of them would detect the virus.  I was
+wrong.
+
+I wonder if this virus can ever be detected.  I was copying a program
+from a friends disk yesterday and after the program was copied, the
+original disk would not work.  I ran scan 89b several times: nothing.
+I tried all of the other scan programs and all they could tell me was
+"No virus found" etc.  I am scared: what can i do to kill this virus?
+Do I have to wait till it destroys ALL my data?
+
+can anyone please help,
+
+I would appreciate any comments
+
+jim
+
+thanks
+
+All
+
+------------------------------
+
+Date:    28 Apr 92 07:26:10 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Authentication of resident Anti-Viral programs (PC)
+
+padgett@hobbes.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> One product that I know of (Enigma-Logic's SafeWord-VirusSafe) installs as a
+> device.driver and will intercept the command TYPE SWVSVERS and respond with
+> the product license screen (for a description of how this works see the *many
+*
+> postings reguarding device driver "aliases" of a few months ago).
+
+> The other possibility involves the fact that most good resident programs
+> intercept the EXEC function of DOS. It would be possible to use a code name
+> that would be a signal to display recidency information when requested.
+
+I have seen a simpler method implemented in several resident scanners.
+They contain a special dummy signature, which does not belong to any
+virus (or to any valid program for that matter). The package also
+contains a small COM file which displays a message like "The memory
+resident scanner is NOT active" when executed and also contains the
+dummy signature. If the scanner is active in memory it will intercept
+the execution of the file and will prevent it from running. The
+intelligent scanners even tell you that this is a special test file,
+not a virus. If the scanner is not active, then the file gets executed
+and displays the warning message.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 07:53:05 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-PROT Cascade false alarm... (PC)
+
+vaughan@computing-department.poly-south-west.ac.uk (Vaughan.Bell) writes:
+
+> experiment I set up an ascii file with the 141$FLu string in it as
+> well as 2000 zero characters and lo and behold F-PROT detects a
+> possible Cascade variant in it. Although I find F-PROT an excellent
+> package surely this should be fixed, a variant should NOT be assumed
+> on a 7 byte text string and 2000 or so byte length. Frisk ??
+
+Ho-hum... Unfortunately, Cascade uses variable encryption (no, it is
+not polymorphic), so the only scan string that can be used is the
+decryption routine. Of course, it is longer than 7 bytes, but there
+are a lot of Cascade variants, which have only these 7 bytes in
+common... I don't see an easy solution to this problem...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 07:37:12 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Extensions (was: Viruses via MS Windows OLE?) (PC)
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+
+> Many scanners scan somewhat more than that by default, I think.  The
+> IBM Virus Scanning Programs by default scans (rustle, rustle) all of
+> EXE, COM, OV?, INI, SYS, BIN, and PRG (2.2.2 and above also scan
+> files of extension .DOS and .OS2, and report any boot viruses they
+> find there, because of the OS/2 Dual Boot feature).  It's a good
+
+This is a very good idea, although I would like to see it extended a
+little bit. Since in most virus collections the boot sector viruses
+are stored in files (as binary dumps) with extensions .BOO, .DSK, or
+.DMP, it will be nice if you can tell the scanner to look for boot
+sector viruses in these files too. Some kind of "researchers support"
+option... :-) Currently only Dr. Solomon's AVTK does this and only for
+.BOO files.
+
+> Scanning any file starting "MZ" is an interesting idea!  There's
+> a considerable speed hit, of course (you have to Open() every file
+> so as to read the first two bytes), but it might be another good
+> option.
+
+Indeed! A very good idea... Something between "scan the common
+executables" and "scan all files". The speed will be also inbetween
+and it will catch most infected files (has anybody seen COM-type
+overlays?).
+
+> Speaking of "MZ", does anyone know of a linker or whatever that
+> produces EXE files starting with "ZM"?   DOS (and a few viruses)
+> apparently support it, but is it ever used?   Does it mean
+> anything different from what "MZ" means?
+
+I have seen only one file beginning with "ZM" and it was obviously
+created artificially. (The file also had a .COM extension, a weird
+internal overlay structure, was encrypted and other fancy things.)
+This was Dark Avenger's trojan program DOCTOR... :-)
+
+As to the meaning, the two magic numbers have exactly the same
+meaning. If you disassemble the DOS handler for EXEC, you'll see that
+it just checks for MZ and then for ZM and does exactly the same (i.e.,
+transfers control to the same place) in both cases. My guess is that
+the person who has written the code has been lazy enough to figure out
+how exactly to specify the constant in his assmbly source (since the
+bytes are swapped) and he just put code to check both cases.
+
+Most viruses that are checking for both magic numbers are Bulgarian.
+The first one who noticed this peculiarity of DOS was the author of
+the Vacsina/Yankee_Doodle viruses, so his viruses are the first that
+are checking for both identifiers. The fact that DOS checks for both
+has been published (sigh... it was me who published it...) and most
+Bulgarian virus authors implement this check too.
+
+Most non-Bulgarian viruses which are using this double check are just
+variants of the Bulgarian ones, although there are some original
+Polish and Russian ones.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 08:06:54 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Increasing CBCS Security (PC)
+
+"a_rubin@dsg4.dse.beckman.com"@BIIVAX.DP.BECKMAN.COM writes:
+
+> I don't know the details of stealth mode, but I think the basic principle
+> is that it allows you to have your own code in the same logical 20-bit
+> address space as the BIOS; somehow QEMM can determine whether a BIOS call
+> is being attempted or use of your code is being attempted on access.  (I
+> don't have QEMM V 6+, so I can't comment in detail.)  It's possible that a
+> virus looking for the real INT 13 vector couldn't find it if the areas are
+> multi-used.
+
+Oh, I see the point. If the virus begins to trace INT 13h it will get
+the address, but if it later just CALLs it, QEMM will not "see" an
+interrupt and will not switch to BIOS so the machine will probably
+hang and the virus won't execute... This has to be tested, however.
+Anybody who has both Frodo (4096) and QEMM 6+ and is wishing to test
+this?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 08:16:37 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Misinfo detected - 2 (PC)
+
+TYETISER@ssw02.ab.umd.edu (Tarkan Yetiser) writes:
+
+>    My point was, however, VDS 2.0 specifically disclaims working on such
+> systems. Taking a software package and attempting to make it work on a
+> system where it is NOT claiming to be able to run was, in my opinion, is a
+> little unwarranted.
+
+Sure, but my main point was that not working on such systems is NOT
+GOOD, especially when having in mind that there are packages that DO
+work on such systems and that are more secure than yours... All this
+combined with the claims that your package provides the "strongest
+solution"... Remember, several people didn't like (and some didn't
+even consider to try) the Untouchable (a very good product), just
+because of the blatant claims that the marketing people from Fifth
+Generation Systems made! Be more modest and provide honest information
+instead of agressive marketing, especially in the documentation of the
+product...
+
+> > How can your software package be the strongest software solution
+> > available, yet not be for everyone? It seems to me that you may have a
+
+>  Why not? Define "strong".
+
+A strong anti-virus program is a program which is able to resist to
+the possible virus attacks against this kind of anti-virus programs.
+For a scanner it means that is must check memory for resident viruses,
+perform self-check for being infected, trying to bypass the stealth
+viruses whenever possible. For a monitor there is an additional
+requirement to try to forbid tunneling viruses. Neither of those is
+fully achievable, of course, but they could at least try.
+
+For an integrity checker it means to resist to companion viruses, to
+DOS file fragmentation, and to the infect-on-modification-only attack.
+The latter is not achievable in the general case, but it would be nice
+to see at least a try (i.e., if a program is copied, the integrity
+checker is able to determine that the copy does not match the
+original). VDS does NOT match this definition. UT does, although it
+doesn't try to detect the infect-on-modification-only attack.
+Therefore VDS is NOT the strongest software solution available. QED.
+
+>   Let's not compare apples and oranges please. F-PROT is a nice virus
+> identification tool, a so-called virus scanner. VDS 2.0 is a comprehensive
+
+F-Prot is certainly NOT a virus identification tool (sorry Frisk),
+since it does not identify the viruses exactly. It's a virus
+recognition tool, since it tries to recognize them. The only true
+virus identification tool that I have seen described is the
+interpretter for the VERV language that Dave Chess described in his
+paper. Unfortunately, it is not available to the general public
+(including myself). The only -available- program that is close to a
+virus identification tool is Dr. Solomon's AVTK.
+
+>   BTW, VDS 2.1 will be a lot more compatible than 2.0. VDSFSCAN, which is
+> roughly like F-PROT, can handle network drives (tested on Netware &
+
+C'mon, let's be serious. If we are going to compare scanners, VDSFSCAN
+is certainly NOT "like" F-Prot, meaning that it is signifficantly
+worse.
+
+> disks and under DR DOS 6.0. VITALFIX will work under DR DOS 6.0. We added
+> a switch to avoid memory protection violation when EMM386.SYS is loaded.
+> VDS.EXE (integrity checker part), on the other hand, works only if you
+> have a non-compressed disk. Besides, we are trying to find a way to stop
+> it from removing DR DOS protection :-))
+>   Maybe early May, we will release VDS 2.1, for those who need more
+> compatibility.
+
+That's good news! It's a wonder what a constructive critics and free
+market economic requirements can do... :-) The basic idea of VDS is
+good; it just needs to be implemented in the right way. You could, for
+instance, add a special option to the integrity checker which will
+turn off the stealth bypassing capabilities when accessing a drive,
+controlled by a device driver. This will decrease a bit the security
+for such drives (which must be clearly mentioned in the docs) but will
+make the program compatible for lots of weird environments. You should
+also be aware of some virus attcks which speciffically target
+integrity checkers and try to prevent them. A lot of other
+improvements can (and must) be done in order to result in a good and
+strong product. And, of course, the docs must be rewritten.
+
+>   Eric, Your darn good example is based on not knowing what VDS is all
+> about, and comparing apples and oranges. How many integrity checkers are
+> you aware of do not require some kind of installation to create a
+> baseline? F-PROT is NOT an integrity checker. Please do not make
+> such assumptions if you are not familiar with a product. BTW, VDSFSCAN
+> and VITALFIX do not require installation. Only the VDS.EXE (integrity
+> checker) does.
+
+That's basically true, but the original poster meant the device
+driver, I think... BTW, why exactly the device driver must be
+partition-dependent?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 08:50:40 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Misinfo detected - 3 (PC)
+
+TYETISER@ssw02.ab.umd.edu (Tarkan Yetiser) writes:
+
+> disks. Running VDS from within Windows? Please do not scare me like that.
+
+What's wrong with running and integrity checker from within Windows?!
+Of course, when you want to run it in "safe" mode, you must boot from
+a clean floppy first, but you should be able to run the program any
+time, including from within Windows...
+
+> > Vesselin seems to have been a bit unfair here.  It is a given that a
+> > virus can be written to evade any given detection scheme it knows
+> > about.  But we have so many virus detection methods that is seems
+> > impossible to write a common virus that will evade ALL detection
+
+>   Well, that's okay. He does not seem to take sarcasm too well. The "joke
+> is on you" posting angered him a little :-)) Of course, that does not mean
+> people should be unfair just to justify their points.
+
+I have not been unfair. A secure system must not depend on the fact
+whether the attacker knows how it works or not. Otherwise you are
+advocating "security through obscurity". If a serurity system fails to
+a kind of attack, it should fail not because the attacker knew how the
+system works, but because the attack could not be prevented by this
+kind of security system at all.
+
+An example to justify my claims. The Unix password encryption
+mechanism is secure. You cannot decrypt the passwords even if you have
+the source of the program that does the encryption. Of course, it can
+be broken by a plain-text dictionary attack, but this is because it is
+not designed to prevent this kind of attack at all!
+
+Besides, it is not completely correct that "a virus can be written to
+evade any given detection scheme it knows about". A well implemented
+integrity check should be able to resist to any virus, even if the
+virus author has the full source code of the program. This is why
+integrity checkers are stronger than monitors and scanners in the
+first place! They can be bypassed only by one kind of attack, but this
+is an attack against the integrity checkers in general and does not
+require the virus author to know how exactly a particular integrity
+checker is implemented.
+
+> > I really like your idea of launching "decoys".  I use this quite a bit
+> > to see if my system is infected.  If I think I might have a virus, I
+
+>   Yes, in many cases it works fine. Does not need to know the name of the
+> active virus either.
+
+It can be improved. Lance the decoys in a randomly selected directory
+(select the current directory and the directories on the PATH with
+higher probability), use both COM and EXE files with randomly selected
+sizes (although large enough) and names. Both execute them and copy
+them with comparison with the original. This will catch more viruses
+than the current scheme and will be less prone to direct attacks.
+
+> > has a 4 byte .COM file on it that does nothing but terminate.  If I
+> > notice any changes in the file (after rebooting from a know clean
+
+>    Not necessary to limit it to 4 bytes. Many viruses do not take small
+> baits but prefer a larger and juicy one!
+
+A good example is the DataLock virus, which infects almost any EXE
+files, but only COM files that are larger than 23,000 bytes. This made
+Patty Hoffman to think that it does not infect COM files except
+COMMAND.COM... :-) This error is still present in her document.
+
+> > This method is far from foolproof, it is merely another layer in my
+
+>    No one claimed otherwise (besides Vesselin). It is just another piece in
+> a whole system such as VDS, the strongest software solution available :-)
+
+I claimed that it was foolproof?! Can you quote me on this? What I
+said was that the method is not good enough and can be improved.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 09:20:48 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Question about forms of the stoned virus (PC)
+
+neilson@cs.sfu.ca (Carl Neilson) writes:
+
+> The other day I got Stoned - actually I was warned that a disk
+> contained the stoned virus and took the appropriate steps.  in the
+> process of checking all of my diskettes, I uncovered 2 versiones of
+> the stoned virus - one called 'no-int' stoned.  What is the
+> difference?
+
+NoInt is a stealth version of Stoned. If it is active in memory and
+you look at the infected boot sector the virus will modify the request
+to read the place there the original boot sector is stored. Otherwise
+the viruses are pretty similar.
+
+> I was under the impression that Stoned only infects if an infected
+> disk is booted from yet the scanner would report Stoned in memory
+> after a dir of the infected disk.  Is this just due to the data loaded
+> during a dir or has the virus actually been activated and is now in
+> memory ready to pounce?
+
+Sigh... This must probably go to the FAQ list as a separate
+question... Yes, the reason is that when DOS executes the DIR command,
+the (infected) boot sector is read in the DOS buffers and the (silly)
+scanner detects the virus signature in memory. It shouldn't be like
+that, an intelligent scanner should know that a boot sector virus
+(particularly a Stoned variant) has nothing to do in the DOS buffers
+or in the low memory at all.
+
+> On an aside, how would I go about getting a copy of the boot sector of
+> the infected disk into a file so that it can be disassembled?
+
+Personally I prefer to use Norton Utilities. How exactly you do it
+differs from version to version, but the general idea is to select the
+boot sector, read it, and then write it to a file. You can then
+disassemble the file, having in mind that it is loaded in memory at
+address 0000:7C00h.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 09:26:36 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Viruses via MS Windows OLE? (PC)
+
+rslade@sfu.ca (Robert Slade) writes:
+
+> We've heard from the authors of antiviral software that Windows is a
+> difficult environment to work in in any case.  Having just attended a
+
+It is a difficult environment, indeed. Let's take a scanner for
+example. Before running a scanner, you are advised to boot from a
+clean diskette. Now, how are you booting Windows from a diskette? :-)
+
+If you do not boot from a diskette, the scanner must at least scan the
+memory for known viruses. Now, how are you going to check the memory
+(the whole memory!) if Windows is running in protected mode? The
+memory that does not belong to your process is protected and even if
+you try to allocate more memory the chunk is first cleared before it
+is made available to your program...
+
+Besides, how many viruses do you know that can safely work under
+Windows and infect Windows applications without destroying their
+ability to work? Windows is an excellent anti-virus tool - as soon as
+you get infected, it crashes... sometimes even before... :-)
+
+On the last anti-virus conference I asked these questions to the
+person from Central Point Software who was proudly presenting the
+version of their Anti-Virus that works under Windows. The only
+legitimate answer that I got from him was that he's working for the
+company since two weeks, that he's a marketing guy, and is unable to
+respond to such questions....
+
+Well, to be entirely honest, the second and the third problems -are-
+solvable. There are some viruses that will work correctly under
+Windows and the user must be able to run the scanner on any new
+software s/he has received, without exiting from his/her favorable
+(?!) environment...
+
+Also, it -is- possible to check the whole memory even if Windows is
+running in protected mode. For this purpose your program must
+constantly switch between protected and real modes... Unfortunately,
+this is damn slow! You can try to run Norton Anti-Virus in such
+environment and see how much time it takes to perform the memory
+check... The Virus Bulletin's reviewers of the product didn't seem to
+know this fact about Windows, so they were amazed by the speed
+degradation...
+
+> The "embedding" portion of OLE seems to refer only to printable
+> material, such as a chart, which was originally created by another
+> application.  "Embedding" such objects in the body of a document
+> merely means that a record is maintained of the original application
+> for ease of amendment.  Therefore, the executable, in this case the
+> original application, exists outside of the document.
+
+Isn't it possible to indicate a fake executable that must be run,
+which will contain the virus code? Something similar can be done with
+the .PIF files in a quite trivial way...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    28 Apr 92 09:41:50 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Windows viruses? (PC)
+
+sgr4211@uk0x08.ggr.co.uk writes:
+
+> I  disagree.   MS  Windows  is  *very*  widely used indeed!  Anyway, the
+
+Not as widely as DOS, fortunately... :-)
+
+> infected file needn't be a Windows executable; a DOS program  containing
+> any  file-infecting  virus can be embedded and can then be executed just
+> by double-clicking on it.  So the virus  could  potentially  sneak  past
+> anti-virus software that isn't looking at, say, .WRI files.
+
+What means "embedded"? Can you really put an executable -incide- the
+data file or are you just putting a pointer which executable file must
+be run?
+
+> I  don't  know if "MS-DOS viruses" can spread when infected DOS programs
+> are executed from within a Windows session  -  can  anyone  confirm/deny
+> this?
+
+Most of them can't - they crash the system, or do not infect at all,
+or the infect applications behave erratically. Some of them (very few)
+will run however... (Don't know which exactly; haven't tested and
+don't know Windows enough to deduce it myself.) And, it is certainly
+possible to write a Windows-aware virus.
+
+> What  I  was asking is "do the scanners search only the FIRST (or last?)
+> n-bytes of a file for a  virus  pattern,  and  if  not  found  the  file
+> pronounced clean?" If so, when an executable file that has been infected
+
+It depends on the particular scanner. SCAN scans only the beginning of
+the file, some code at the file entry point, and some at the end of
+the file. Dr. Solomon's AVTK scans only from the file entry point,
+reasoning that if the virus never gets control it does not need to be
+reported, even if it is there. F-Prot seems to scan the whole file at
+least when the "scan all files" option is selected.
+
+> with a virus (now occupying the first n-bytes  of  its  code),  and  the
+> infected executable is embedded within a datafile (perhaps documentation
+> in the form of Microsoft Write file), the virus code will no  longer  be
+> at  the  beginning of the "outer" file (co-host?).  This means the virus
+> may not be found even if the scanner *is* looking at all files.
+
+If what you say is true and an executable file can be indeed put
+inside a data file (I mean physically), then this is a security hole
+and presents a serious inconvenience to several scanners... One more
+argument supporting the claim that you must not rely on scanners
+alone.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Tue, 28 Apr 92 12:39:00 +0000
+From:    gary@sci34hub.sci.com (Gary Heston)
+Subject: Re: New Myths #1: Infection during format (PC)
+
+AMN@VMS.BRIGHTON.AC.UK (Anthony Naggs) writes:
+=Was "Virus surv[iv]ing format".
+  [ ... ]
+=To deal with this properly I need to quote more of the original item,
+=[New Scientist no.1813 p54 (Feedback column)], reproduced without
+=permission:
+=    "... one idea .. to safeguard .. against .. a computer virus.
+=    If you send someone data on a floppy disc, and it is returned,
+=    reformat it to wipe everything clean before reuse.  But be
+=    warned, some viruses may transfer from floppy to hard disc
+=    during formatting, before the process kills them.  The trick
+=    here is to format the floppy on a cheap and cheerful computer
+=    which has has no hard disc, preferably a portable which has its
+=    operating system stored in ROM.  That way the virus has nowhere
+=    to hide."
+
+I must take exception with this last statement by the author of the NS
+article. Having the OS in ROM doesn't mean the virus has nowhere to
+hide, it can certainly become resident in memory, and merrily infect
+every floppy immediately after formatting. It should not survive a
+powerdown, depending upon what type of laptop is being used (I believe
+some save a memory image and restore that instead of actually booting).
+
+A "cheap and cheerful computer which has no hard disc" is subject to
+the same problem, as well as risking infection of it's boot floppy.
+
+The best idea is to scan the discs immediately after you receive them,
+and format if it makes you feel better.
+
+I scan everything handed to me, including shrink-wrapped commercial
+software. So far, I haven't been infected.
+
+- --
+Gary Heston    SCI Systems, Inc.  gary@sci34hub.sci.com   site admin
+The Chariman of the Board and the CFO speak for SCI. I'm neither.
+"Always remember, that someone, somewhere, is making a product that will
+make your product obselete." Georges Doriot, founder of American R & D.
+
+------------------------------
+
+Date:    Mon, 27 Apr 92 23:46:00 -0500
+From:    <RUTSTEIN@HWS.BITNET>
+Subject: Virus Differences
+
+For some time now, we've been trying to get some consensus on "virus
+differences", i.e. what makes two given viruses different.  There's
+been quite a bit of debate here recently about defining and categorizing
+the more "advanced" strains (stealth, polymorphism, variable encryption,
+etc.), but I don't know that we really have a good answer for the more
+simple viruses.
+
+For those who haven't followed the debate over time, I'll simplify:
+We have two viruses (let's call them V1/V2).  They are, perhaps
+quite similar, or, in fact, almost identical.  At what point, then,
+are they called "different viruses".  At what point are V1 and V2
+referred to as different strains of the same virus?
+
+Some have suggested a simple byte comparison with a simple cut-off
+number.  For example, some would say that any virus with 3 bytes
+different from another is classified as a new virus.  Clearly,
+however, this cannot be so.  Changing a single byte of a trigger
+date of a virus (oh, no, please don't bring up michelangelo!) can
+have drastic consequences for the behavior of the virus.  As an
+example, consider the Jerusalem-Payday combination.
+
+The next logical basis for comparison, then, might be behavior.  Some
+have hypothesized that virus differences must be based on a behavioral
+analysis.  But what constitutes behavior?  Does behavior include methods
+of replication and coding in addition to visual cues or timed payloads?
+As an example, consider the Stoned-Sanded combination.
+
+Some of the developers we've spoken with have a very narrowly defined
+view of the problem.  In a nutshell, many of the follow the philosophy
+of "if 2 infected files can be detected and removed identically, then
+they are one and the same virus".  From their perspective, this clearly
+makes good technical sense (if lousy marketing sense).  But what about
+the user who reads about stoned, compares the message on his screen
+("Your PC is now Sanded") with his manual, and finds no match.  Isn't
+this user going to be awfully confused?
+
+There is one additional element to the problem:  reality.  :-)
+We'd love to argue this point for years and years and reach a workable
+academic solution, but right now we need a way to catalog our existing
+viruses: this means some sort of a mechanical (read automatic) process.
+
+I know, I know....everyone thinks that their collection is
+perfect and they've done all the analysis that needs to be done.
+The fact remains, however, that if you ask 20 experts, you'll
+get 20 opinions on the "virus difference" issue and you'll see the
+manifestation of their opinions in their collections.
+How about some more opinions from you, the people who will have to deal
+with this issue more and more in the near future?  If anyone would
+like to comment here, I'd be more than happy to respond/moderate, or
+please feel free to drop me an email note.  We await your responses.
+
+                                                Charles
+
+******************************************************
+*       Charles B. Rutstein, Staff Researcher        *  "What -- Me Worry?"
+*       ICSA Virus Research Center                   *     --Alfred E. Neuman
+*       Suite 35, 5434 Connecticut Ave. NW           *
+*       Washington, DC 20015                         *
+*       Voice: 202-364-8252  Fax: 202-364-1320       *
+******************************************************
+
+------------------------------
+
+Date:    Mon, 27 Apr 92 12:15:38 -0700
+From:    Mike Ramey <mramey@u.washington.edu>
+Subject: Re: A short commercial break (was Re: lies and damn lies)
+
+> From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+>...
+> So a suggestion:
+> How about establishing a table, perhaps an Appendix to the FAQ... a
+> brief summary of anti-viral products, by category. It would have the
+> latest version number, and where you can get it, and the size (&
+> checksum?) of the archive, and some other information tabulated -
+> don't know what (I'd hate to say "number of viruses spotted", and
+> scores for documentation, etc would involve a lot of work for
+> somebody, although I know there are good reviews being done now).
+
+Too much work (for Ken) and too much delay (for me)!  When Aryeh
+announces the latest version of McAfee, or Frisk announces the latest
+version of F-PROT, I want to know about it immediately.  I suggest we
+leave things alone (it's not -that- broke).  Most of what's posted is
+of no interest to me, and I sift through it to find what I want.
+
+(I'm using the 'nn' program to read comp.virus [mostly].)
+- -mike ramey, seattle wa
+
+------------------------------
+
+Date:    Tue, 28 Apr 92 10:04:05 +0100
+From:    Ms Marilyn B Nash <mbn1@forth.stir.ac.uk>
+Subject: Addition to FAQ section
+
+Mark Aitchison's suggestion of allocating a section of the FAQ's to
+a list of AV software available, its location for downloading, version
+etc. is excellent.  It would be very handy to have a summary of
+current anti-virus software at one's fingertips.
+
+Hope the suggestion is implemented.
+
+[Moderator's note: Yes, an excellent suggestion indeed, in addition to
+- - not in lieu of! - the current product announcements.  Any volunteers
+want to put the information together and to maintain it for the FAQ?]
+
+Marilyn Scott
+University of Stirling
+Stirling, Scotland
+mbn1@uk.ac.stirling.forth
+
+------------------------------
+
+Date:    Tue, 28 Apr 92 13:35:00 +1200
+From:    "Nick FitzGerald" <CCTR132@csc.canterbury.ac.nz>
+Subject: Re: Virus jokes (Humor!)
+
+Sorry, I've misplaced the original request, but someone was asking for
+computer virus jokes.  Only one I know was the following, which I saw
+ages ago in a very disparaging collection of "Real power-users ..."
+sayings (something like the "Real programmers..." ones but harsher -
+written by a fellow "user support person" I suspect 8-) ).  I also
+think someone who posts here had it in their sig for a while.
+
+"Real power-users think "Your PC is Stoned!" is part of the Microsoft
+copyright message."
+
+Enjoy,
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ Nick FitzGerald, PC Applications Consultant, CSC, Uni of Canterbury, N.Z.
+ n.fitzgerald@csc.canterbury.ac.nz    (64)(3)  642-337 Voice,  642-332 FAX
+
+------------------------------
+
+Date:    Mon, 27 Apr 92 23:58:28 -0400
+From:    Lance J. Hoffman <hoffman@seas.gwu.edu>
+Subject: Major Virus Alert (Humor!)
+
+With thanks to Michael Brodie for passing it on,
+From: Michael L. Brodie <mlb2@gte.com>
+
+       ----->   M A J O R  V I R U S  A L E R T   <-----
+
+*  George Bush Virus - Doesn't do anything, but you can't get
+rid of it until November
+*  Ted Kennedy Virus - Crashes your computer but denies it
+ever happened
+*  Warren Commission Virus - Won't allow you to open your
+files for 75 years
+*  Jerry Brown Virus - Blanks your screen and begins flashing
+an 800 number
+*  David Duke Virus - Makes your screen go completely white
+*  Congress Virus - Overdraws your disk space
+*  Paul Tsongas Virus - Pops up on Dec. 25 and says "I'm Not
+Santa Claus"
+*  Pat Buchanan Virus - Shifts all output to the extreme right
+of the screen
+*  Dan Quayle Virus - Forces your computer to play "PGA TOUR"
+from 10am to 4pm 6 days a week
+*  Bill Clinton Virus - This virus mutates from region to
+region. We're not exactly sure what it does.
+*  Richard Nixon Virus - aka the "Tricky Dick Virus" you can
+wipe it out, but it always makes a comeback.
+*  H. Ross Perot Virus - same as the Jerry Brown virus, only
+nicer fonts are used, and it appears to have had a lot more
+money put into its development.
+
+__________________________________________________________________
+Michael L. Brodie (brodie@gte.com)   GTE Laboratories Incorporated
+Phone:(617)466-2256                  40 Sylvan Road
+FAX:(617)290-0628                    Waltham, MA 02254 USA
+
+
+- --
+Professor Lance J. Hoffman
+Department of Electrical Engineering and Computer Science
+The George Washington University
+Washington, D. C. 20052
+
+(202) 994-4955
+fax: (202) 994-0227
+hoffman@seas.gwu.edu
+
+[Moderator's note: Several people have been submitting various jokes
+to the group recently.  While I certainly appreciate a good laugh, I
+want to keep the joke-bandwidth to a minimum, please.  Also, I'll only
+accept jokes which conform to the group's normal guidelines.  Comments
+on whether or not to accept jokes at all are welcomed.]
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 97]
+*****************************************

@@ -1,0 +1,629 @@
+Subject: RISKS DIGEST 14.54 
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest Monday 26 April 1993 Volume 14 : Issue 54
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+CLIPPER CHIP (Dorothy Denning, Magnus Kempe, Jeffrey I. Schiller,
+  Daren Stebner, Paul R. Coen, Tony Harminc, Padgett Peterson, 
+  A.E. Mossberg, David P. Reed, Jonathan Papai, Lauren Weinstein)
+
+ The RISKS Forum is a moderated digest discussing risks; comp.risks is its
+ Usenet counterpart.  Undigestifiers are available throughout the Internet,
+ but not from RISKS.  Contributions should be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with appropriate, substantive
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.
+
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 14, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+
+ For information regarding delivery of RISKS by FAX, phone 310-455-9300
+ (or send FAX to RISKS at 310-455-2364, or EMail to risks-fax@vortex.com).
+
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Sat, 24 Apr 93 14:39:12 EDT 
+From: denning@cs.cosc.georgetown.edu (Dorothy Denning) 
+Subject: Re: Responses to Clipper Chip Discussion in RISKS-14.53
+
+Don Alvarez wrote
+
+  Now, I have enough faith in the NSA's skills to trust that you can't pass the
+  message to the user without also passing the escrow field, but I'd like to
+  see that in writing.
+
+That is certainly the intent.
+
+  First, who knows F? If the cop on the street knows F then it quickly
+  becomes so widely known that everyone knows it and you might as well send
+  the serial number in the clear.  Ergo only the escrow agents know F.
+
+F is embedded in every Clipper Chip, but like other chip keys, unknown to the
+people who use them.  Only law enforcement will have a decoder box that allows
+the law enforcement field to be decrypted. Initially, there will be just one
+box, and it will be operated by the FBI.
+
+	Second, what information does law enforcement get from the
+	escrow agents?  Ideally, law enforcement only gets K, the
+	session key governing the conversation for which they have a
+	court order.  Unfortunately, in order for law enforcement to
+	get *only* K (and not U), the escrow agents must get together
+	and secretly combine U1 and U2 so that they can unwrap K and
+	give it to law enforcement.  But then the escrow agents would
+	also know K, and they would be able to decrypt messages
+	themselves.  That's just a very short step away from the
+	omniscient big-brother which the multiple-escrower scheme was
+	designed to prevent.  The escrow agents must not allowed to
+	exchange keys with each other.  Ergo, law enforcement must
+	assemble U itself in order to find out K.  This means that law
+	enforcement now knows the key to unlock every session key ever
+	used on this phone.
+
+It is imperative that law enforcement get U.  If they are tapping a line,
+there may be dozens of calls on that line per day.  It would be totally
+impractical to have to go to the escrow agents to get the session key for each
+call.  It would be impossible to do real-time decryption under that
+constraint.
+
+	Things are starting to look bad, but what about F?  We never
+	really figured out what F was for, we just said that only the
+	escrow agents know F.  Well, now we know what F is for.  Even
+	if law enforcement knows U, they still can't read messages
+	without court orders, because they can't obtain E[K;U] without
+	knowing F, and only escrow knows F.
+
+For the same reason as above, it is imperative that law enforcement be able to
+decode the law enforcement field in order to obtain E[K; U] and then decrypt
+this to get K.  It is completely impractical to go the escrow agents for each
+conversation.
+ 
+Steve Holzworth wrote:
+ 
+	I don't claim to be up on crypto, but it seems to me that once
+	the "authorized tap" has been performed once, the agency in
+	question now has a copy of the desired keys. They can use these
+	keys at ANY time in the future to decrypt communications
+	between these two parties (without having to go through the
+
+After a tap has been completed, government attorneys are required to notify
+the subjects of the electronic surveillance.  At that point, the subjects are
+certainly free to purchase a new device with a new chip, or perhaps the
+vendors could simply replace the chip.
+
+  I have one outstanding question that I haven't seen asked yet.  Is there a
+  time component in the encryption key? Since wiretaps are presumably
+  authorized for certain time periods with both start and end dates, it should
+  not be possible to decrypt an illegally monitored message.
+ 
+I am unaware of any time component.  Current wiretap laws protect against
+this.  Evidence collected after the warrant has expired can be thrown out in
+court.  In addition, it is illegal for the service provider to implement an
+intercept after a warrant has expired.  With the new technologies, law
+enforcers will be incapable of executing a tap without the assistance of the
+service provider.
+
+Lars-Henrik Eriksson has written
+
+  If the algorithm was made public, any weaknesses would be discovered
+  in time. If it is classified, weaknesses may never be known, or known
+  only to the parties who have access to the classified information.
+
+The NSA has a long record of success with crypto, far better than any
+individual or organization in the public community.  In addition, there are
+plans to bring in expert cryptographers to assess the algorithm.
+
+Dave Weingart wrote:
+
+	It appears ... that two encryption devices, when they initiate
+	a session, must exchange keys in order to decrypt each others
+	messages.  Great, but here's my question...what's to stop
+	someone at machine B (who's talking to machine A) from
+	"recording" the key from machine A when the session is
+	started?  Since it appears that the key is constant for each
+	chip, machine B can now _always_ decrypt machine A's messages.
+
+The unit keys that are embedded in the chips are not exchanged.  Instead,
+machines A and B negotiate a session key K that is used only for that
+particular conversation.
+
+Jim Sims wrote:
+
+        Seems a whole lot easier to just catch the key K during the
+        negotiation between the boxes....
+
+It is possible for both ends to negotiate a session key K without transmitting
+any secret information at all, including K.  One way of doing this is with a
+public-key distribution method. The Diffie-Hellman method works as follows.
+Machine A picks a secret value xa, and machine B picks xb.  A sends the public
+value ya = g^xa mod p to B and B sends yb = g^xb mod p to A, where p is a huge
+prime and g is a global constant.  Then A computes the session key K = yb^xa
+mod p = g^xbxa mod p, and B computes K = ya^xb mod p = g^xaxb mod p.  Both K's
+are the same.  An eavesdropper sees ya and yb, but since xa and xb are not
+known, cannot compute K.  For more information about key exchange, see for
+example my book "Cryptography and Data Security" or some other crypto text.
+
+Dorothy Denning denning@cs.georgetown.edu
+
+   [There were enough additional messages for several more issues,
+   some raising points already covered by the above message.  I have
+   somewhat arbitrarily selected a representative few for the rest of 
+   this issue, trying to avoid duplication where possible.  There may
+   be another issue or two yet to come out of the existing backlog.  
+   PLEASE pardon some of the duplication.  It is virtually impossible
+   for me to selectively choose a few nonoverlapping paragraphs from each
+   message.  For those of you who wonder whether RISKS has been taken over
+   by this discussion, there has been essentially no other topic of concern
+   for the past week, although something may be brewing in the recent 
+   near-fatal aircraft autopilot failure attributed to software.  PGN]
+
+------------------------------
+
+Date: Fri, 23 Apr 93 09:47:25 +0200
+From: Magnus.Kempe@di.epfl.ch (Magnus Kempe)
+Subject: Thoughts on the U.S. Encryption Proposal
+
+Mr. President:
+
+I am concerned that your proposal fails to address the following issues,
+among others:
+
+1.  Will American companies have to manufacture different lines of
+products according to the market (US vs. foreign--assuming that they
+wouldn't be allowed to export the Clipper Chip) ?
+
+2.  Will foreign companies be excluded from the American market since
+they won't have access to the Clipper Chip ?
+
+3.  If the technology is ever sold to other countries (foreign
+governments), how will the US be sure that no foreign government
+develops the ability to tap American communications, and how will
+international communications be secure (remember that the two escrow
+"agencies" are to be located in the US, a seemingly unacceptable
+proposition for non-American entities) ?
+
+4.  What guarantee is there that other encryption schemes will not be
+outlawed in the future?  In particular, what guarantee is there that
+the right retained by the people to privacy will not be ever more
+violated by the US government in the future?  Will use of other,
+private, secret encryption become a crime?
+
+5.  What guarantee is there that criminals will use the Clipper Chip,
+knowing that the US government has the ability to decrypt their
+communications?  Isn't it probable that such criminals will resort to
+publically available encryption systems that they would know are secure
+from the US government?
+
+6.  Since the secrecy of the algorithm seems to be essential, how does
+your proposal compare to the strength of currently available non-secret
+algorithms?  It is well known in Computer Science that reliance on the
+ignorance of an enemy party is the worst protection imaginable, since
+it is a very weak link in the chain of safety.
+
+7.  An American hero once said something to the effect that those who
+are willing to trade liberty for safety deserve neither.  Don't you
+think you are asking the American people to trade liberty (their right
+to privacy) in exchange for an elusive safety (listening to suspected
+criminals, if these criminals buy the government's chip)?
+
+8.  How is it justifiable to ask the American people that they spend
+money (for the Clipper Chip) in order to let the government listen on
+them?  Given the current state of the economy, is it even possible?
+
+9.  Finally, what constitutional article gives you the power to violate
+the privacy of the American people?  Didn't you swear to uphold the US
+constitution?
+
+Sincerely,
+
+Magnus Kempe
+
+Software Engineering Lab, Swiss Federal Institute of Technology, DI-LGL /
+EPFL, CH-1015 Lausanne, Switzerland +41-21 693 2580  Magnus.Kempe@di.epfl.ch
+
+------------------------------
+
+Date: Fri, 23 Apr 93 21:53:09 -0400
+From: Jeffrey I. Schiller <jis@mit.edu>
+Subject: Re: Clipper Chip (Alvarez, RISKS-14.52) 
+
+   The summary isn't very specific, but it sounds like the message stream is
+   transmitted first, followed by the escrow field.  Surely this can't be the
+   case, because all one needs to do is hang up at the appropriate point in the
+   call and prevent the transmission of the escrow field...
+
+One way of solving this "problem" is to have the escrow block consist of:
+
+  E[{E[K ; U],N,SHA[{E[K ; U],N}]} ; F]
+
+Where SHA[] represents the Secure Hash Algorithm (in the Capstone
+Chip), though frankly a CRC32 would probably do just as well. The
+receiving Clipper can then decrypt each received law enforcement block
+and verify that the SHA hash of the contents match the supplied hash.
+If they fail, the chip ceases to perform any decryption operations on
+behalf of the user.  Perhaps other information could be included in
+the encryption under "F" to make it difficult to supply a law
+enforcement block from another prior conversation. This could well be
+a detail that was left out of the explanation given to Dorothy.
+
+Btw. I will go on record as being opposed to this entire proposal. My
+interpretation of the Constitution (and the Bill of Rights) on this issue is
+that the 4th amendment (no search and seizure without a warrant) was intended
+to place limitations on the right of the government to interfere with the
+people. It is being twisted around by some to imply that we the people never
+had the right to privacy in the first place, when a warrant was issued. As
+others have mentioned here, I have a real concern that a VOLUNTARY program
+today will turn into a mandatory program tomorrow. In my nightmares I envision
+an agent of (pick your favorite large, secretive, government agency) telling
+Congress:
+
+"Yes Senator, but we gave the American Public privacy five year's ago with the
+Clipper program. They still have that privacy today. However some miscreants
+in our society... drug dealers and whatnot are still using non-Clipper
+unbreakable encryption and we must put a stop to this..."
+
+-Jeff
+
+------------------------------
+
+Date: 22 Apr 1993 22:03:55 -0600 (CST)
+From: Daren Stebner <STEBNERD@wl.aecl.ca>
+Subject: Clipper Chip Commentary (not suitable for the cynicism impaired)
+
+Short Synopsis:
+
+"We're from the government.  We're here to help...."
+
+Long Synopsis:
+
+   "No, no, no.  Don't use those regular old encryption devices; if everyone
+uses them, then criminals will use them, too.  And if criminals use them, Big
+Brother won't be able to protect you from all those nasty deals they make over
+the phone.  It just makes the work of protecting you poor lost sheep that much
+harder.
+   "Here, Big Brother will make things all better, but in order for it to
+work, you need to use this handy dandy NEW encryption algorithm that HE
+designed.  He even put it on a chip to make it easy for you to use it in all
+of your communication devices.  He even gave it a cute name -- the 'Clipper
+Chip'.  See?!  Now, since Big Brother will know how to decode the messages,
+He'll be able to listen in on the conversations of all of those yucky bad guys
+so He can put them in jail and make things all better.
+   "Could we listen in on your conversations too?  Well, yes, but we would
+never dream of infringing on innocent peoples' rights to privacy.  That would
+be a crime and Big Brother doesn't commit crimes.  He loves you all and would
+never do anything to hurt you.  Most of all, he just wants to protect you from
+those terrible, terrible, drug dealers.  That's all he would ever use the
+Clipper Chip for.  Isn't that swell of Him?"
+
+Daren Stebner  stebnerd@wl.aecl.ca
+
+------------------------------
+
+Date: 23 Apr 1993 00:46:41 -0400 (EDT)
+From: "Paul R. Coen" <PCOEN@DRUNIVAC.DREW.EDU>
+Subject: Clipper chip & databases
+
+A few things have occurred to me as I've read the announcements and the
+initial reactions. 
+
+Each chip contains and broadcasts the serial number.  To be frank, if they
+don't use a lot of different family keys, then that number is going to be
+rather public, rather quickly. 
+
+Legally, what is this going to do to wiretaps?  If I have recorded a
+conversation, have I tapped it?  Or have I only tapped it when I decrypt it?
+This could lead to recording lots of conversations, and then only getting the
+keys and actually "tapping" once I get someone for something criminal.  A
+change to the law or court ruling could establish this. For now, they need
+permission up front (with exceptions, noted below), but I could see that
+changing.
+
+Doesn't the manufacturer need to give the keys to the escrow agencies? With the
+serial number?  Am I missing something, or is there a RISK of the manufacturer
+becoming compromised?  
+
+The other thing is that companies are going to be using this for international
+calls.  And, calls in other countries.  I'm sure most of you have noticed that
+agencies of the US Government tend not to follow the procedural niceties that
+they at least have to give lip service to here when dealing with communications
+elsewhere.  If the CIA or NSA decides they want a tap, can they get the keys
+for a unit in another country without a court order, by saying "it's for
+national security" three times and throwing a rock in the air?  Besides, the
+NSA gets really itchy if they can't just monitor international calls whenever
+they want.  So, what are they going to do -- record the call data and decrypt
+it later if they need to?  They don't need specific authorization now to tap
+and record international calls.  I can't see that changing.
+
+What I read in one of the gov't documents implied that the A.G. was responsible
+for defining some sort of reasonable authorization.  Why do I have a feeling
+that "national security" is going to come up a lot?  Especially since there has
+been an increase in cold-war style rhetoric in reference to *economic*
+competition?  Regarding profitable technologies as national security concerns
+for the sake of economic competition is a scary thing. And this chip plays
+right into that desire for control.  As other people have pointed out, once
+they've got your key, they've got your key.  If someone gets it for national
+security reasons, then you might just be out of luck. 
+
+Paul Coen, Drew University Academic Computing 	pcoen@drunivac.drew.edu
+
+------------------------------
+
+Date:         Fri, 23 Apr 93 00:29:38 EDT
+From: Tony Harminc <TONY@VM1.MCGILL.CA>
+Subject:      Clipper Chip
+
+Thoughts on the Clipper Chip:
+
+1) One of the selling points of the Clipper chip is that US companies will be
+able to use it to effect secure communication between their home offices and
+branches in foreign countries.  In particular, it is implied that it is the
+governments of those foreign countries that will be thwarted in their attempts
+to listen in to the corporate secrets of America.
+
+Now why would any "friendly" foreign government (e.g. Canada, France,
+New Zealand) imaginably permit Clipper to be used on its territory
+unless it too has access to the keys for "law enforcement purposes" ?
+
+So if XYZ Corp. wants to talk in private with its French subsidiary XYZ
+France, SA., the French government will want access to the escrow agents so
+that it too can present a court order (according to French law, of course) and
+be given XYZ's key, if it suspects wrongdoing on the part of XYZ France.  But
+this clearly won't do.  The US escrow agents will presumably be subject to US
+law and might be able to refuse a French court order on some US constitutional
+grounds.  So the French will have to have their own pair of agents, and -
+since there is no advance control of which chips will end up in France - these
+French agents will have to have the complete list of all keys.  Now multiply
+this by a dozen or so friendly countries, with an equal number of different
+legal systems and constitutions...
+
+2) Presumably the reason for keeping the algorithms secret is to prevent
+competitive manufacture of chips (or software) that can communicate with
+Clippers from being produced.  (Such competitors might somehow forget to send
+their key lists to the escrow agents.)
+
+I know almost nothing of the technology, but it seems far fetched to me that a
+chip can be manufactured that *absolutely, positively* cannot be reverse
+engineered, or at least satisfies something analogous to being computationally
+infeasible to reverse engineer.
+
+There was no mention of quantum effects, but I know of no other way to even
+begin to make something that can't be examined with appropriate probes.  I
+hope some hardware experts will say something on this topic.  Or is it that
+the hardware design can be reverse engineered, but the algorithms themselves
+are one-way encrypted ?
+
+3) It is not clear to me how tapping of bidirectional communications
+works.  If the police have a court order to tap the phone of suspected
+criminal X, and they find that he is holding a Clipper-encrypted
+conversation with previously unknown person Y, will they be able to
+decrypt only what X says if they have only X's key from escrow ?
+Or will they automatically apply for Y's key too, on the grounds
+that he is an associate of X ?
+
+Ordinary analogue phones (and networks) echo a small amount of the received
+signal to the sender, but an encrypting phone will have digitized and
+encrypted the signal before it gets echoed (even if there is a modem and
+analogue circuit in the loop).
+
+Tony Harminc, Apios Systems Toronto,  tony@vm1.mcgill.ca 
+
+------------------------------
+
+Date: Fri, 23 Apr 93 08:46:34 -0400
+From: padgett@tccslr.dnet.mmc.com (A. PADGETT PETERSON, (407)826-1101)
+Subject: Baltimore Clipper
+
+With all of the sound and fury surrounding the announcement, I think a few
+things have been missed. First, no-one has said that Clipper is going to
+replace the STU-III or the Lockheed Encrypting Modem (just passed up an
+opportunity to buy a couple for $25 - only 1200 baud) or all of the other
+devices that exist. Elements of the Norton Utilities and PKZIP would also have
+to be outlawed.  The "user selected table" in UUENCODE would be right out.
+
+Second, prohibition of double encryption using Clipper as one stage would be 
+impossible to enforce through sheer mass. Comes under the same category
+as strict enforcement of the speed limit.
+
+So what is Clipper ? IMHO it will be a low-cost way to provide *reasonable*
+protection for routine traffic that up until now has been unprotected.
+Cellular telephony is the obvious first use to reduce the billion-dollar
+fraud situation. Transmittal of medical records, legal records, credit
+reports is another. Privacy laws state that these must be protected.
+Clipper provides a legal remedy that has been lacking.
+
+Telecommuting is another major problem for most companies who have been back
+through fear of unautorized interception. Clipper will provide a "warm and
+fuzzy" feeling with low-cost encrypting modems.
+
+IMHO, Clipper must meet the "good enough" test. Clipper *will* meet the "good
+enough" test because the designers are not stupid and it would be a major
+*political* embarrassment should it prove to be easily broken, we just do not
+know all of the facts yet.
+
+Technically, I can make a guess and say that little of what we have seen
+as yet is correct. For instance if the Message Key (K) is only 30 bits
+long and the message is encrypted  E(M;K) as mentioned several times,
+a massive attack with existing technology that is not particularly
+expen$ive would yield a solution in under a minute. (Hint: check out
+DSPs). Therefore the message is not encrypted E(M;K).
+
+Further, there is a Family Key (F) and a Unit Key (U) in each chip. The
+only link to these is the serial number therefore I *suspect* that the
+serial number will be sent en clair as part of the header. It would be
+possible to use only selected Family Keys and create E(s/n;F) such that 
+it would easily yield the s/n but why (more later).
+
+So most likely we will have a message key that will be a predetermined
+function of K,U,&F (FN1). The header might consist of the serial number,
+followed by an encrypted function of K,U,& F (FN2) that is different from
+(MK), then the message encrypted with MK.
+
+Before engaging Clipper, both FN1 and FN2 would have to be exchanged.
+
+On starting communication, the header would consist of the serial number,
+followed by FN2, followed by E(M;FN1). To the receiving Clipper, the
+serial number would act as a "wake up". Since the chip would have K,U, & F
+it would then reverse FN2 and create FN1 and decode the message. A longer
+header could accommodate conference calling. This removes any incentive
+to spoof the s/n since the receiving chip will assume it is for someone
+else. (Exercise is left to the student). 
+
+A "promiscuous" chip might be designed but it would have to have all 
+U and F keys (of course the total number issued is probably going to be 
+less than the number of ZIP codes so this *is* a danger point...).
+
+The "key master" would hold one element say the s/n,U function, the 
+"gatekeeper" s/n,F. On proper application each would contribute its part
+but the requesting authority would receive only FN1, not the means to 
+recreate it. Alternately, the requesting authority might receive a
+duplicate Clipper chip but not the Keys - this protects the keys from
+disclosure *and* provides physical traceability of the duplicate Clipper.
+On completion of the tap authorization, the duplicate must be destroyed.
+
+Certainly, there are still some things to be worked out but these are 
+technical details. IMHO we *need* a cheap means of "good enough" encryption,
+something that can be built into modems and cell phones at a disposable
+cost. We *need* a workable Clipper, and the government has more to lose
+in providing a flawed product than we do.
+						Padgett
+
+------------------------------
+
+Date: 23 Apr 1993 10:29:50 -0400
+From: aem@symbi1.symbiosis.ahp.com (a.e.mossberg)
+Subject: Re: Clipper Chip
+
+One thing (among several) that disturbs me about the Clipper Chip is the
+release of the decryption key to law enforcement bodies, who have various
+legal maneuverings to circumvent ever notifying the tappee, after the wiretap
+has completed, that their key has been compromised.
+
+The key, originally safeguarded by the key escrow bank, is now additionally
+held by unknown and unaudited persons within law enforcement.
+
+History has shown that the law enforcement community has not been above
+using information gained during illegal wiretaps...  Once they have the
+key, they have access forever to your conversations.
+
+And, supposing that one is actually notified that they were being
+wiretapped, and thus need a new key.  Will the agency responsible for
+the tap pay any costs for obtaining new keys?
+
+Further, the information packet provided by Mat Heyman's office fails to
+address the question of using non-clipper chip encryption.  They call their
+technology "more secure than many other voice encryption systems readily
+available" -- admitting that more secure systems are available.  Why should
+anyone believe they do not intend to make illegal competing methods of
+encryption?
+
+andrew mossberg, systems specialist, symbiosis corporation, miami, florida
+33166-6202   (305) 597-4110   fax (305) 597-4002   aem@symbiosis.ahp.com
+
+------------------------------
+
+Date: Fri, 23 Apr 93 10:52:26 PDT
+From: reed@interval.com (David P. Reed)
+Subject: time, recording, and clipper
+
+In some of the recent comments on the RISKS of Clipper, it would seem that the
+commentators are ignoring the results of including omnivorous recording.  It
+is well known that it is possible to record a substantial amount of traffic
+for archival storage and later analysis.  Such recording is not prevented by
+any encryption scheme, whether keys are escrowed or not.
+
+The resulting RISK of this assumption is that we may erode away the notion
+that pure recording is a violation of privacy (today's wiretap law prevents
+recording conversations without a warrant).  What could be wrong with law
+enforcers or others recording everything, now that it is masked by encryption?
+Surely this is NOT a violation of privacy because you can't read it.  I'd bet
+that such recordings and archival would be authorized by most governmental
+lawyers as NOT violating privacy on this basis.  But in fact, with key escrow,
+someone on a fishing expedition could in principle recover all past history
+from an archival database.
+
+I think that the design of Clipper protocols is actually more suitable for
+ex-post-facto decryption of recorded conversations, rather than for getting
+access to not-yet-happening transactions.  So the notion that we might be
+moving to a world where recording is real would make sense.
+
+I also notice that the protocol for selecting conversation keys requires an
+online conversation -- thus one cannot use Clipper for leaving secure voice
+mail in a voice mail box, as far as I can tell.  Similarly, conference
+calling, etc. need to be considered in the design of secure phones.  If
+conference calling services (such as AT&T's service) require that the security
+devices be turned off or compromised, there is a risk that users will be
+deceived about their level of security.
+
+My point, then, is that issues related to recording seem to have been
+poorly considered in this proposal.  Perhaps I'm wrong, but I'd like to
+understand this better, in the context of societal impacts that may result.
+
+David P. Reed, Interval Research Corporation, 1801-C Page Mill Road
+   Palo Alto, CA 94304
+
+------------------------------
+
+Date: 	Fri, 23 Apr 1993 11:18:42 PDT
+Sender: Robert_Ebert.OsBU_North@xerox.com
+Subject: Who will use clipper?
+
+An amazing amount of discussion and speculation has been generated by the
+clipper chip announcement.  Special thanks to Dorothy Denning for her summary,
+and kudos to Don Alvarez for asking good questions.  But I have yet to see
+anyone ask (or answer) the obvious question:
+
+Will the various government agencies be using the clipper chip?
+
+If so, I heartily endorse the policy.  It guarantees that government messages
+cannot be ultimately secret from the governed.  It seems to me that the private
+sector will continue to use whatever encryption is appropriate for their needs,
+(even should laws to the contrary be passed,) and that the only agencies
+obliged live with the consequences are those of the government itself.
+
+			--Bob
+
+bebert.osbu_north@xerox.com -or- ebert@xsoft.xerox.com -or- (415) 813-7579
+-or- XSoft/Xerox Corp. 3400 Hillview Ave. M/S PAHV203  Palo Alto, CA 94303
+
+------------------------------
+
+Date: Thu, 22 Apr 1993 23:34 ???
+From: Jonathan Papai <PAPAI@kcgl1.eng.ohio-state.edu>
+Subject: alt.privacy.clipper
+
+I guess someone should mention the existence of a new newsgroup
+alt.privacy.clipper .  Might as well be me.
+
+-Jon
+
+------------------------------
+
+Date: Thu, 22 Apr 93 19:17 PDT
+From: lauren@cv.vortex.com (Lauren Weinstein)
+Subject: privacy
+
+There is largely unique discussion of clipper going on over on the PRIVACY
+Forum Digest.  For information regarding the PRIVACY Forum, please send the
+exact line:
+
+information privacy
+
+as the BODY of a message to "privacy-request@cv.vortex.com"; you will receive
+a response from an automated listserv system.  
+
+------------------------------
+
+End of RISKS-FORUM Digest 14.54
+************************

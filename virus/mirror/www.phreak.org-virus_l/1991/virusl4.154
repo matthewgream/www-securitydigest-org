@@ -1,0 +1,544 @@
+VIRUS-L Digest   Wednesday,  4 Sep 1991    Volume 4 : Issue 154
+
+Today's Topics:
+
+Re: Norton Anti Virus (PC)
+Re: Self-scanning executables (PC)
+Re: Experiment with virus
+Re: Virus dictionary sought
+compressed with EXEPACK ?? (PC)
+VIRSIM ? (PC)
+Virus Simulators
+new virus? (PC)
+Internet Virus or FAQ info.
+Re: Viruses more common in Mac environment?
+Preventing boot from floppy (PC)
+Disassemblers (PC)
+Virus Simulator available (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    02 Sep 91 10:55:42 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Norton Anti Virus (PC)
+
+knutt@ifi.uio.no (Knut Torgersen) writes:
+
+>I borrowed Norton Anti Virus from a friend to check up my system. The
+>first thing I did, however, was to run the program on the diskette I
+>borrowed it on. First I used McAFee's SCAN.EXE. Nothing nasty showed
+>up. Then I asked NAV to scan itself. NAV told me that "NAV.EXE is
+>infected with an unknown strain."
+
+Did it tell some name? Or was it a completely unknown strain? I
+suspect the latter, so I see two possible solutions:
+
+1) You ran SCAN with the option which appends checksum signatures to
+each file scanned. Therefore, you modivied NAV. Since it checks itself
+on startup, it detects that something has gone wrong. If this is the
+case, then the solution is to run SCAN again, this time with the
+option that makes it remove the checksums from the files. Hint to
+McAfee's group: don't modify other people's files; use a database for
+the checksums instead.
+
+2) You deleted or damaged (don't know exactly how) the NAV._XE (or was
+it NAV._YS?) file on NAV's disk. This is a 77-byte hidden file, which
+contains the checksum information. If this is the case, you have to
+recreate the file (NAV has the possibility to create such files for
+every COM and EXE file scanned). Hint to Symantec: don't use huge
+number of small hidden files for each checksummed file, since this
+confuses the users; use a database to put the checksums in instead.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    02 Sep 91 11:07:20 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Self-scanning executables (PC)
+
+hartnegg@sun1.ruf.uni-freiburg.de (Klaus Hartnegg) writes:
+
+>vaitl@ucselx.sdsu.edu (Eric Vaitl) writes:
+>>    I started thinking about self scanning executables again.
+>>Unfortunately, it was way to easy to write myself a virus which gets
+>>around the whole damn thing. Here is what it does:
+>>[...]
+
+>Great idea to publish this on the net. You can be sure that such
+>viruses will appear very soon now.
+
+What he has described was almost exactly how the 4096 (Frodo) virus
+works. Such viruses exist since quite a while and we call them
+"stealth", because they are "invisible" when active in memory.
+
+But wasn't the original posting about Unix? An interesting question -
+are stealth viruses possible under Unix?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    02 Sep 91 11:10:19 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Experiment with virus
+
+monta_l@dist.dist.unige.it (Luciano Montanaro && Marco Gualdi) writes:
+
+>I have a Ms-Dos 386 with Dos 3.30 and 80 Mb HD, 3 partitions.  I want
+>to do some experiment of controlled propagation of viruses (on
+>floppies, of course) whithout risks for my HD.
+
+Hmm, not a very good idea... At least, please be EXTREMELY careful...
+
+>Which of the follow is the security level that I should use?
+
+>1 ) Unplug the power cable of HD. (what about the controller ?)
+
+This is the most secure measure. It should be sufficient. No need to
+unplug the controller.
+
+>2 ) Set the CMos data to no Hard Disk
+
+This usually works, but you have to verify it yourself. Tell the CMOS
+that there is no hard disk, then boot from a floppy and try to read
+head 0, cylinder 0, sector 1 of the first hard disk (80h), using DEBUG
+or Norton Utilities in /maintnance mode. If you don't know how to do
+this, better stop here. If you don't succed to read a sector from your
+hard disk, probably no virus will succeed too (at least none of the
+known ones). Nevertheless, disconnecting the hard disk physically is a
+better idea.
+
+>3 ) Write in the partion table that every partition is write protected.
+
+You cannot do this; there is no such field (about the write protection
+of the partitions). The program Disk Manager uses write protection on
+the virtual partitions that it creates, but it cannot stop direct disk
+write (using BIOS), so it is VERY unsecure. My advice: don't mess with
+the partition table at all; better disconnect your hard disk.
+
+Hope the above helps.
+
+Regardsm
+Vesselin
+
+P.S. One more thing. Buy several colored diskettes (preferably red).
+Copy all viruses and test programs that you intend to infect, as well
+as all tools that you'll need during the tests on these diskettes. Use
+them and ONLY them during your tests. After you finish the tests, boot
+from your hard disks and format all the red disks, WITHOUT EXECUTING
+ANYTHING FROM THEM - regardless whether is is infected or not. Thanks
+to Ross Greenberg for the suggestion.
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    02 Sep 91 11:22:52 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus dictionary sought
+
+BL163193@TECMTYVM.BITNET (Jesus Miguel Garcia) writes:
+
+>Oh, I heard about a virus called Kamikaze, F-Prot detect it, but
+>Scan of Mcaffe no...its a virus, or a ghost?
+
+Kamikaze is a HLL (High Level Language, in this case - Pascal) virus,
+so it is difficult to extract a good scan string. F-Prot 1.15 indeed
+cause false positives, but Frisk corrected the problem since 1.15a.
+Also, if the number of files, where you detect the virus does not
+increase, this means that you don't have this virus. :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    02 Sep 91 16:46:47 +0000
+>From:    ccoprdg@prism.gatech.edu (Drew Gonczi)
+Subject: compressed with EXEPACK ?? (PC)
+
+I just ran tbscan with the 7-31-91 copy of virscan.dat.  It flagged
+alot of files saying "infected by [compressed with EXEPACK]" I was
+wondering if this is a virus or just a warning about a possible
+infection.
+
+Most of the files are part of MASM 5.0 (Microsoft Assembler).  Some
+files also had flags saying compressed with EXEPACK.2 and LZH (or
+something like that)
+
+I just wanted to know if these files were ok.
+
+Thanks
+- --
+Drew Gonczi                      |  No one but me can save myself,
+Georgia Institute of Technology  |               but it's too late
+OIT / TS / OD                    |  Now I can't think, think why
+ccoprdg@prism.gatech.edu         |              I should even try.
+
+------------------------------
+
+Date:    Mon, 02 Sep 91 21:46:16 +0000
+>From:    dkarnes@world.std.com (Daniel J Karnes)
+Subject: VIRSIM ? (PC)
+
+Hi:
+
+Saw a few comments on the 'VIRSIM Virus Simulator' that is floating
+about..
+
+It does have one possible use that its detractors have ignored that
+I believe should be addressed..
+
+It is great for upsetting network administrators etc when those
+silly bogus virii start popping up at the hands of those who are
+jerks.. I spent a lot of time verifying that there were no REAL ones
+under just such circumstances recently.
+
+I am also not very happy to see that rediculous thing on BBS systems
+all over the country either..
+
+- -djk
+
+- --
+- -----------------------------------------------------------------
+ Daniel J. Karnes - WA6NDT  |  Do I know UNIX?
+ dkarnes@world.std.com      |
+ POB 7007                   |  - well.. I've met a few..
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 00:18:45 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Virus Simulators
+
+Recently, a message was posted here regarding the so-called "Virus
+ Simulator. This is *not* the VIRSIM suite of fake viruses written
+ by Joe Hirst, but rather Virus Simulator v2.0, by Rosenthal
+ Engineering, 3737 Sequoia, San Luis Obispo, California 93401.
+ In reference to the announcement, Fridirik Skulason writes:
+
+ > I fail to understand why the author of this program believes that
+ > anyone might find it of any use whatsoever.
+
+ Currently, there is no independent means of testing and verifying
+ virus software. Simply having the word of a seller/producer has, of
+ course, never been enough, and is not likely to ever be; the danger
+ of collusion is simply too great for any reasonably-cautious
+ consumer to accept it blindly.
+
+ Since the virus-software publishers have not, on their own, instituted
+ any kind of impartial test or verification that could satisfy a
+ critical prospective buyer, and since they have also decreed highly
+ restrictive sample distribution policies (which, predictably, do not
+ apply to themselves), outfits such as Rosenthal Engineering perceive
+ the obvious need for some sort of "test method" without using hard-to-
+ get actual virus samples.  Of course, it is not enough.  However,
+ instead of complaining about its inadequacy, we might have addressed
+ the reason for the appearance of such software.  I fear we are not
+ doing that at all, but should.
+
+ Quite a few people would like to test virus scanners but are unable
+ to do so because they do not have access to the large collection of
+ viruses that is necessary to perform such tests. Virus Simulator
+ doesn't test accuracy, but it does something else that's very
+ interesting.
+
+ > .....the Virus Simulator does not create viruses - therefore there
+ > is no reason why an anti-virus program should report any of the
+ > files it creates to be infected.
+
+ But they do. Every one of the hundreds of "fake virus" files produced
+ by the Virus Simulator succeed in triggering every virus scanner
+ commonly used: SCANV, F-PROT, VIRX, IBM VIRASCAN, TBSCAN, etc. etc.
+ They all denounce its "fake virus" files as if they indeed contained
+ true viruses, though not all scanners report the same virus in the
+ same file <g>. If nothing else, Rosenthal's Virus Simulator is a
+ sobering educational tool which demonstrates how easy it is to fool
+ all of the current scanners into producing false alarms, and how
+ little uniformity there exists in virus nomenclature!
+
+ > In fact, all reports of viruses in the virus-simulator files
+ > should be considered to be false alarms, as the files are not
+ > infected at all.
+
+ Precisely. In reality, the files are not infected at all, but as far
+ as the scanners are concerned, those files *appear* infected and are
+ reported as such. And that points out a weakness of the scanning
+ method better than any theoretical consideration I've seen.
+
+ > Even if a virus scanner happens by chance to use a signature
+ > contained in one of the virus fragments,......
+
+ Probably not by chance. The code used in Rosenthal's fake viruses
+ seems to trigger the scanners reliably every time... as intended.
+
+ > ...and might therefore report the file as infected, this is of no
+ > interest at all.
+
+ It is of great interest. It demonstrates to prospective users how easy
+ it is to produce false alarms using virus scanners and how deeply
+ unspecific and unreliable string scanning is as a general method for
+ detecting viruses.  In fact, I'm surprised that a program similar to
+ Rosenthal's Virus Simulator has not emerged before.
+
+ > The files created by the Virus Simulator may cause some virus
+ > scanners to trigger in some cases,...
+
+ Not `some scanners', and not `in some cases'. They cause all scanners
+ (which I tried) to trigger in all cases, every time. It's remarkable.
+
+ > ...but a perfect virus detector should be able to determine that the
+ > files are not viruses, and should not trigger at all.
+
+ Of course. And as soon as somebody invents this "perfect virus
+ detector", Rosenthal's Virus Simulator will cease to be of interest.
+ Until then, it remains a remarkable and interesting program which
+ demonstrates how imperfect the virus scanners really are.
+
+ > This statement is highly misleading.  If the author of an
+ > anti-virus program has not supplied the author of the Virus
+ > Simulator with his signatures, there is no guarantee that the
+ > scanner will detect the simulated viruses.
+
+ Not misleading. The signatures don't need to be specially "provided
+ by the author of the anti-virus program"?.  The signatures are
+ contained in each issue of each scanner. Sometimes, they are modestly
+ encrypted for reasons that were never satisfactory to me but, in any
+ case, it's child's play to decrypt them. If not decrypted, they may
+ be otherwise simply derived. I do not think that Rosenthal's
+ statement was misleading at all. In my experience, his program does
+ what he announced, and does it very competently, although some of the
+ expressions and descriptions in his message here were rather less
+ strict than what might have been desirable.
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 06:21:00 -0400
+>From:    HAYES@urvax.urich.edu
+Subject: new virus? (PC)
+
+Hello.  I found the following message on a local BBS which carries the FIDO
+virus echo.  Does anyone know anything about this new (?) virus?
+Regards, Claude.
+
+- ----- begin forwarded message --
+
+Message #1074 - VIRUS
+   Date : 29-Aug-91 22:53
+   From : Gert Franssen
+     To : all
+Subject : new virus: Europe 92
+
+Hello all: I've recently been infected with a virus that will
+hang the system when the date is january 1st (or later).
+Fortunately, this virus could be traced and destroyed fairly
+quickly, but I was wondering whether I've been the only one to
+have suffered from this virus.  It mainifested itself by
+programming-errors: being a COM-virus, it was not able to infect
+EXE files. When the virus attempted to infect bu couldn't
+succeed, it left some files open. At a certain time, too many
+files were opened for programs to work normally. These programs
+therefore returned an error-code by which the virus could be
+detected.
+
+Although I'm not an expert on virusses and therefore haven't been
+on this area very long, I did seem to understand that virus-codes
+may not be echoed in this area. Therefore I won't do this, but if
+anyone is interested (strictly for research of course), he or she
+could sent me a netmail..
+
+Please respond when you are experiencing symptoms as I mentioned
+above or have any experience with the Europe 92 4Ever Virus.....
+
+CU                  << Gert 2:283/210.5 >>
+
+- --- GEcho/beta
+ * Origin: Anyone that writes viruses
+should be torn apart... (2:283/210.5)
+
+- --- end forwarded message --
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Claude Bersano-Hayes     HAYES @ URVAX                 (Vanilla BITNET)
+University of Richmond   hayes@urvax.urich.edu     (Bitnet or Internet)
+Richmond, VA  23173
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 10:46:29 +0000
+>From:    s870694@minyos.xx.rmit.OZ.AU (Alfred Porziella)
+Subject: Internet Virus or FAQ info.
+
+ Im doing some research on viruses and I was wondering if there is a FAQ
+ that I can get my hands onto.
+ Also where can I get some Info on Mac viruses, I want to know how
+ widespread viruses are on the Mac compared to the DOS PC's.
+
+ Also can anyone pass on any information about the Internet virusthat
+ I have heard about or any other experiences (bad ones!) you have had
+ with viruses.....
+
+ thanks.......
+ _____________________________________________________________________________
+| Alfred Porziella.                  RMIT |"If builders built buildings like  |
+| Royal Melbourne Institute of Technology | programmers wrote programs then   |
+| Dept. of  Elect. and  Comm. Engineering | the first woodpecker that came    |
+| Internet:  s870694@minyos.xx.rmit.oz.au | along would destroy civilisation!"|
+|___________________________________________________________-_Weinburg's_Law._|
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 16:46:35 +0100
+>From:    Norman Paterson <norman@cs.st-andrews.ac.uk>
+Subject: Re: Viruses more common in Mac environment?
+
+Aaron Delwiche (vol 4 issue 152) writes:
+
+>>
+Somebody recently tried to convince me that viruses were more
+widespread in the Macintosh environment than the PC environment.  Is
+this true?  It seems to me that the opposite would be true.
+<<
+
+I think the relative frequency of articles in this newsletter gives a
+better picture - it should be renamed PC-VIRUS Digest.  There are
+about 50 times as many PC virues as Mac viruses: that is, there are
+about 1000 PC viruses to the Mac's 20.  So far, the excellent freeware
+products Disinfectant and Gatekeeper make virus control on the Mac
+pretty easy.  I spend much more time scanning this newsletter than
+actually fighting viruses in our department (about 100 Macs).
+
+Where did the idea that Macs are riddled with viruses come from?  It's
+not the first time I've heard it said.
+
+Norman Paterson
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 15:00:33 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Preventing boot from floppy (PC)
+
+>From:    flaps@dgp.toronto.edu (Alan J Rosenthal)
+
+>Won't this leave a window during which the user can insert a floppy
+>disk?  Insert floppy but leave the drive door open, press
+>control-alt-delete, close the door.
+
+Sure will, just like cycling the power or pressing the reset button or
+jumping directly to the BIOS boot routine will do the same thing. - As
+we have said many times, only HARDWARE can avoid this. The purpose  of
+NoFBoot is just to prevent INADVERTANT infection  of a  system  via  a
+warm boot form an infected floppy (In my estimate, the cause of 40-50%
+of all accidental - aren't most ? - infections.)
+
+BTW - in ALPHA test for almost four days now with no reported problems.
+
+							Padgett
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 15:00:55 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Disassemblers (PC)
+
+BOXALL@qut.edu.au writes:
+
+>To all virus researchers,
+
+>What disassembler do you use?
+
+I use two: Sourcer by Vi Communications (but it usually takes 3-5 passes to
+get the output I want) and Microsoft's DEBUG (boo, hiss). The nice thing
+about DEBUG is that it has no intelligence whatsoever so it does not try
+to interpret anything (unlike Sourcer). WYSIWYG. Often an intelligent
+disassembler will make assumptions that virus writers want you to make so
+that their "cute" may go unnoticed. With DEBUG, if you tell it to
+disassembe the interrupt table, it will.
+
+Often when I get something strange in, both are used to generate outputs
+which are then laid side by side and a quick run-through of the code is
+made. Like other anti-virus tools, once is not enough.
+
+						Padgett
+
+------------------------------
+
+Date:    Tue, 03 Sep 91 15:01:17 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Virus Simulator available (PC)
+
+> From:    as194@cleveland.Freenet.Edu (Doren Rosenthal) (author)
+
+The discussion so far seems to consist of a lot of flames however I can
+see quite a bit of use for a "virus simulator" though not one that just
+contains numerous search strings.
+
+To explain this contradictory attitude, first consider the domain of
+viral code. This contains all code that viruses use. Next consider the
+subset of code that ONLY viruses use. Programs who venture out of this
+smaller domain will trigger "false positives" (code found in viruses that
+is also found in legitemate code).
+
+Now, within the domain of "virus only" code (Fred C. considers this domain
+to be closing on zero, I tend to disagree) there can exist a number of
+variants of valid signature strings. Unless the "simulation" program
+contains this domain in its entirety, it cannot be expected to be a
+valid test of a scanner since the strings used may lie within the "virus"
+domain but not within the domain of the scanner.
+
+Should the scanner also use position dependanies, even if the same
+string is used, if not in the same position within the simulator, a
+valid scanner may fail.
+
+Consequently, I consider a sigmature simulator to be of limited value
+as a scanner validator.
+
+However, it would still make an excellent training tool for teaching
+technicians how to recognize virual activity. For example if a scanner
+detects the STONED virus in memory yet "655360 total bytes memory" is
+reported, one might logically expect that there has been a false negative.
+
+Thus a STONED simulation should contain code to go resident at the
+proper place in memory with the code used by the STONED (just disconnected)
+to insure a valid test.
+
+To me, this would be the real value of a simulator. Trying to extend its
+function to validation as well would seem unviable.
+
+						Padgett
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 154]
+******************************************

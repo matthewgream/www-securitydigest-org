@@ -1,0 +1,299 @@
+29-Jan-86 10:24:40-PST,15846;000000000000
+Mail-From: NEUMANN created at 29-Jan-86 10:22:54
+Date: Wed 29 Jan 86 10:22:54-PST
+From: RISKS FORUM    (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+Subject: RISKS-1.43
+Sender: NEUMANN@SRI-CSL.ARPA
+To: RISKS-LIST@SRI-CSL.ARPA
+
+RISKS-LIST: RISKS-FORUM Digest,  Wednesday, 29 Jan 1986  Volume 1 : Issue 43
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+          sponsored by the ACM, Peter G. Neumann, moderator
+Contents:
+  Reliability of Shuttle Destruct System (Martin J. Moore) (LONG MESSAGE)
+  Challenger lost (and note on self-destruct mechanism) (Earle S. Kyle, jr.)
+  Challenger ICING !!! (Werner Uhrig)
+  Big Brother, again (Col. G. L. Sicherman)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@SRI-CSL.ARPA, Requests to RISKS-Request@SRI-CSL.ARPA.)
+(Back issues Vol 1 Issue n stored in SRI-CSL:<RISKS>RISKS-1.n.)
+
+----------------------------------------------------------------------
+
+Date: 28 Jan 86 14:06:00 CDT
+From: "MARTIN J. MOORE" <mooremj@eglin-vax>
+Subject: Reliability of Shuttle Destruct System [LONG]
+To: "risks" <risks@sri-csl>
+Reply-To: "MARTIN J. MOORE" <mooremj@eglin-vax>
+
+Copyright (c) 1986 Martin J. Moore          [COMMENT: READERS -- PLEASE OBSERVE
+                                             THE RESTRICTIONS ON THIS MESSAGE
+                                             AT THE END OF THE MESSAGE.  PGN]
+
+> From: Peter G. Neumann <Neumann@SRI-CSL.ARPA>
+> For those of you who haven't heard, the Challenger blew up this morning...
+> One unvoiced concern from the RISKS point of view is the presence on each
+> shuttle of a semi-automatic self-destruct mechanism.  Hopefully that
+> mechanism cannot be accidentally triggered.  [COMMENT: I did not intend
+                                              to imply that as the cause --
+                                              only to raise concern about the
+                                              safety of such mechanisms.  PGN]
+
+Peter, I assume that you are talking about the Range Safety Command Destruct
+System, which is used to destroy errant missiles launched from Cape Canaveral. 
+From 1980 to 1983 I was the lead programmer/analyst on the ground portions of
+that system, and I am the primary author of the software which translates the
+closing of destruct switches into the RF destruct signals sent to the vehicle.
+I think I can address the question of whether the system can be accidentally
+triggered; worrying about that gave me nightmares off and on for months
+while I was on the project.  I'd like to tell you a little about the system
+and why I think the answer is No.  Note that my information is now three years
+old, and some details may have changed; there may also be minor errors in 
+detail due to lapses in my memory, which isn't as good as my computer's!
+
+On board the vehicle, there are five destruct receivers: one on the external 
+tank (ET) and two on each of the solid rocket boosters (SRBs).  There is no
+receiver or destruct ordnance on the Orbiter; it is effectively just an 
+airplane.  The casing of each SRB is mined with HMX, a high explosive; the ET 
+contains a small pyrotechnic device which causes its load of liquid hydrogen 
+and liquid oxygen to combine and combust.  The receivers and explosives are
+connected such that the receipt of four proper ARM sequences followed by 
+a proper FIRE sequence by any of the receivers will explode the ordnance.
+
+The ARM sequence and FIRE sequence must come from the ground; they cannot be
+generated aboard the vehicle.  These sequences are transmitted on a frequency 
+which is reserved, at all times, for this purpose and this purpose alone.
+There are several transmitters around the Eastern Test Range which can be used
+to transmit the codes.  These transmitters have a power of 10 kw (continuous 
+wave).  The ARM and FIRE sequences consist of thirteen tone pairs (different
+for each command and changed for each launch).  There are eight possible 
+tones, resulting in 28 possible tone pairs; thus, there are (28^13) or
+slightly over 6.5E18 correct sequences.
+
+The Range Safety Officer has two switches labeled "ARM" and "DESTRUCT".
+When he throws a switch, it generates an interrupt in the central processor
+(there are actually two central processors running and receiving all inputs,
+but only one is on-line at any time; in case of software or hardware error
+the backup is switched in.  And yes, they have different power sources.)
+The central program checks for the correct code on each of two different
+hardware lines (the correct code is different for each line); if correct,
+and all criteria are met to allow the sequence to be sent, the central program
+requests the tone pairs for that sequence from another processor.  That 
+processor (like everything else in the system, actually redundant processors)
+has only one function: to store and deliver those tone pairs.  The processor
+resides in a special vault and can only be accessed in order to program the
+tone pairs (which are highly classified) before each launch.  The data line
+between the central processor and the storage processor is electrically
+connected ONLY when the ARM or DESTRUCT switch is actually thrown; this
+prevents a wild program from retrieving the tone pairs. 
+
+When the central program has retrieved the tone pairs, it formats a message
+to the currently selected remote transmitter.  As the final step before 
+sending the message, the program checks the switch hardware one more time 
+to make sure the command is, in fact, requested.  If so, the message is sent
+to the site on two modems (with different power supplies and geographically 
+diverse communications paths) and, after sending the message, erases the tone 
+paris from its memory.  The remote site, until this time, does not know the
+tone pairs.  When the site receives and validates the message, it sends a
+request for confirmation back to the central processor.  When Central
+receives this request, it checks the switch hardware again and retrieves a 
+fresh copy of the tone pairs from the storage processor to make sure that the 
+site got the correct tone pairs.  If all these checks pass, Central issues
+a go-ahead message to the site, which then (if the message is validated) 
+actually transmits the sequence to the vehicle.  During this sequence of 
+messages, if any message fails, it is retransmitted, with a check of the 
+switch hardware before each transmission.
+
+Let's look at some areas that could cause an accidental trigger:
+
+1. Failure of switch hardware.  This would take at least six circuits failing 
+   to the "1" state, while 12 others connected to them would have to NOT fail.
+
+2. Central software error.  There is a lot of reliabilty checking, details of
+   which are too long to repeat here; but even if there is a hole through it,
+   the central program cannot get the tone pairs unless the switch is thrown!
+
+3. Site software error.  Doesn't have the tone pairs until sent by Central.
+
+4. Destruct receiver failure.  I didn't work with this directly (being 
+   strictly on the ground side) but everything I've seen makes them look
+   very reliable and fail-safe.
+
+5. External sabotage.  A hostile agent would have to (1) steal the tone pairs,
+   and (2) overpower our 10 kw CW transmitters which are saturating the
+   destruct receivers with a 70 dB margin.  Alternatively, if someone tried
+   to overpower the central area, I think they would fail.  Security is TIGHT
+   around the central control area;  I don't think I can go into detail without
+   upsetting NASA and the Air Force.
+
+7. Internal sabotage.  One thing I did was to imagine that I was a saboteur
+   and think of a way that I could program in a Trojan Horse to send a false
+   command.  Eventually, the system was such that I could not do it.  NASA
+   also hired an independent contractor to perform reliability analyses.
+   NOBODY can send a command except the Range Safety Officer when he throws
+   the switch.
+
+The Challenger explosion was NOT caused by the Range Safety system, either
+intentional or accidental.
+
+I am really sorry about the length of this message, but I wanted to get all of 
+that in.  All information contained herein is UNOFFICIAL and furnished for
+information purposes only.  It is in no way official information from my
+employer (RCA), the U.S. Air Force, NASA, or any other government agency.
+
+Due to the sensitive nature of this incident, this article is not for 
+reproduction or retransmittal without the express permission of the author.
+Permission is hereby granted to Peter G. Neumann to include this material
+in the RISKS electronic mail digest.
+
+                                      Martin J. Moore
+                                      mooremj@eglin-vax.arpa
+
+[MARTIN: MANY THANKS FOR THIS EXTRAORDINARY MESSAGE.  
+ READERS: PLEASE OBSERVE THE ABOVE CAVEAT SCRUPULOUSLY.  PGNeumann]
+
+------------------------------
+
+From: kyle.wbst@Xerox.COM       
+Date: 29 Jan 86 12:41:53 EST
+Subject: Re: news: Challenger lost (and note on self-destruct mechanism)
+To: Werner Uhrig <CMP.WERNER@R20.UTEXAS.EDU>
+cc: aviation@R20.UTEXAS.EDU, neumann@SRI-CSL.ARPA
+                             [I presume this is from Earle S. Kyle, Jr... PGN]
+
+Your mention of a destruct mechanism on airliners to foil hijackers
+raises the question of possible terrorist activity in the shuttle
+explosion. With the recent flap involving Libya, how certain are we that
+the radio code that the Air Force range safety officer uses to destruct
+shuttles gone astray was not compromised?
+
+Although the slow motion video indicates some other mechanism besides on
+board explosives initiating the destruction of the vehicle,  I'm
+wondering if a high powered rifle bullet hit either the main fuel tank
+or one of the solid boosters shortly after launch if that could have
+given the same result we saw yesterday.  What makes me think of that is
+the following: When I went to the 4th shuttle launch (STS-4), I noticed
+that things were quite different in the press site area (where I was)
+than it was for the two Apollo launches I attented (A-11, & A-17) in
+that same area. The difference at STS-4 was the large number of armed
+guards. When I asked about that, the reply was something to the effect
+that there had been some intelligence that someone with a high powered
+rifle might try to shoot at the thing during takeoff. As the shuttle
+flights got more routine, I'm wondering if the security at the site got
+a bit lax?
+
+Does anyone know if a rifle shot on the big tank would be enough to
+structurally weaken it such that during that portion of the launch with
+maximum stress the thing might rupture?
+
+------------------------------
+
+Date: Tue 28 Jan 86 14:42:45-CST
+From: Werner Uhrig  <CMP.WERNER@R20.UTEXAS.EDU>
+Subject: Challenger ICING !!!
+To: aviation@R20.UTEXAS.EDU
+cc: neumann@SRI-CSL.ARPA
+
+From TV-news coverage, I have the impression as if there might not have been
+adequate attention paid to icing which is supposed to have occurred this
+morning on the launch-pad.  Now while I have a healthy scepticism of
+news-coverage, and the highest respect for NASA-efforts and diligence, I
+still keep pondering the following news-tidbits:
+
+1)  ICICLES (!!!), several inches long, were shown, supposedly filmed on the
+	launch pad or launch-vehicle this morning.
+
+2)  NASA sources were quoted as not being concerned very much any more when
+	temperature rose above freezing around 10am.
+
+3)  NASA was quoted as having been concerned about icicles breaking off
+	during flight and puncturing some part of the craft during launch.
+	No mention was made of any concern either about "the extra weight"
+	or "the effect on flight surfaces".
+
+4)  Some observers were commenting that the launch seemed to lift slower than
+	usual (extra weight ??).
+
+5)  The explosion seemed to occur when the shuttle's 3 engines were switched
+	to "maximum - or 104% - thrust", and on my TV, seemed to occur at
+	the point where Challenger is connected to the external tank.
+	Could there have been an extra stress imposed on connecting
+	fuel-lines due to a "larger than usual differential of acceleration
+	push excerted by the solid-fuel-rocket asembly, to which the external
+	tank is (solidly) connected, and the shuttle vehicle, due to the
+	additional weight of ice on the vehicles?
+
+I assume you all are similarly puzzled about things and, maybe, made other
+observations that escaped me, which I, for one, would be most interested to
+reading ....
+
+	I sure hope it wasn't icing, the main killer of pilots ....
+
+		NO cheers today from me,	)-:	Werner
+
+------------------------------
+
+Date: Wed, 29 Jan 86 11:43:25 EST
+From: "Col. G. L. Sicherman" <colonel%buffalo.csnet@CSNET-RELAY.ARPA>
+To: RISKS <@csnet-relay.arpa:RISKS@sri-csl.arpa>
+Subject: Big Brother, again
+
+I sympathize with Keith Lynch (KFL@MC.LCS.MIT.EDU)'s argument (1:40).
+All the same, some of his assumptions can be challenged.  For example:
+
+>          The character of people in government today is very
+> different from 200 years ago.  It is obvious that the signers
+> of the constitution would have extended their protections of
+> papers and places to computer files and disks, had they heard
+> of such things. ... Had radio, TV, electronic funds transfer
+> systems, and telephones been around in the days of Jefferson
+> and Washington, I am sure that they would enjoy similar
+> constitutional protection.
+
+The structure of the U.S. government is formed for a people who get
+most of their information from the press.  When most communication
+was oral, federal government was unthinkable, because nobody knew
+or cared about what was going on 1,000 miles away!  At the same
+time, there was little need to "protect" expression that consisted of
+talking to a few friends.  It was a form of communication that
+disappeared instantly except in the minds of one's friends; there was
+no enduring record to catch the eye of a jealous ruler or set before
+a court.
+
+The novel idea that the government ought not to prosecute _anything_
+one printed arose naturally from the nature of print consumption.
+Reading is something one does in _private;_ it allows one to weigh
+conflicting ideas without getting caught up in rhetoric.  (Print
+has often been blamed for the decay of rhetoric!) Moreover, books
+as a medium have no side effects.  If a book insults you, you can
+shut it up--something you cannot always do to a patron in a bar or
+on the Net.
+
+So I agree that the founding fathers would have protected the new media,
+but only because they would not have understood the media's implications.
+Printing was always an instrument of _mass_ communication: one person
+talking to thousands.  There's an inherent, even ridiculous imbalance
+in such a medium.  Nevertheless, it was adopted as the basis of U.S.
+democracy because it was an improvement over word of mouth, and clearly
+"here to stay"--until something better came along.
+
+Electronic communication is instantaneous and ephemeral.  To the men
+of 1789, it was "obvious" that the press (and public speech) ought to
+be protected, and that checks and balances were needed in a representative
+government.  To users of the Net, it is just as "obvious" that we can
+govern ourselves, instead of electing weirdos and crooks to "represent"
+us.
+
+Col. G. L. Sicherman
+UU: ...{rocksvax|decvax}!sunybcs!colonel
+CS: colonel@buffalo-cs
+BI: csdsicher@sunyabva
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

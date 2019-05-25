@@ -1,0 +1,604 @@
+precedence: bulk
+Subject: Risks Digest 20.22
+
+RISKS-LIST: Risks-Forum Digest  Saturday 20 February 1999  Volume 20 : Issue 22
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.22.html>
+and at ftp.sri.com/risks/ .
+
+  Contents:
+Process-table attack (Simson L. Garfinkel)
+Store Baelt Bridge not Y2K safe (Debora Weber-Wulff)
+More risks of "training" on live systems (Dave Stringer-Calvert)
+A franglais booboo (Vicky Larmour)
+Cellphone risks in flight again? (Chuck Weinstock)
+Re: "Page-layout program hazards" and... (Mark Brader)
+Re: Programming Errors (Thomas J Gilg)
+The risks of on-off switches? (Elliott Potter)
+Re: Hacking Web/FTP Servers (Andy Goldstein, Rob Slade, Nigel Rantor)
+Re: Computer fraud as another kind of Y2K risk? (Chuck Karish, 
+    Dorothy Denning, Win Treese)
+8th USENIX Security Symposium: papers due March 9 (Jennifer Radtke)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Fri, 19 Feb 1999 16:08:06 -0500
+From: "Simson L. Garfinkel" <simsong@vineyard.net>
+Subject: Process-table attack
+
+Wide-ranging attack works against almost any UNIX systems on the Internet
+
+ABSTRACT:
+
+The Process Table Attack is a [relatively] new kind of denial-of-service
+attack that can be waged against numerous network services on a variety of
+different UNIX systems. The attack is launched against network services
+which fork() or otherwise allocate a new process for each incoming TCP/IP
+connection.  Although the standard UNIX operating system places limits on
+the number of processes that any one user may launch, there are no limits on
+the number of processes that the superuser can create other than the hard
+limits imposed by the operating system. Since incoming TCP/IP connections
+are usually handled by servers that run as root, it is possible to
+completely fill a target machine's process table with multiple
+instantiations of network servers. Properly executed, this attack prevents
+any other command from being executed on the target machine.
+
+DETAILS
+
+In the book Practical UNIX and Internet Security, Gene Spafford and I
+observed that the UNIX operating system originally contained few defenses to
+protect it from a denial-of-service attack. This is changing. With the
+growth of the Internet, there has been a concerted effort in recent years to
+strengthen the operating system and its network services to these attacks.
+
+Each time a network client makes a connection to a network server, a number
+of resources on the server are consumed. The most important resources
+consumed are memory, disk space, and CPU time. Some network services, such
+as sendmail, now monitor system resources and will not accept incoming
+network connections if accepting them would place the system in jeopardy.
+
+One system resource that has escaped monitoring is the number of processes
+that are currently running on a computer. Most versions of UNIX will only
+allow a certain number of processes to be running at one time. Each process
+takes up a slot in the system's process table. By filling this table, it is
+possible to prevent the operating system from creating new processes, even
+when other resources (such as memory, disk space, and CPU time) are widely
+available.
+
+The implementation of many network services leaves them open to a process
+table attack ? that is, an attack in which the attacker fills up the target
+computer's process table so that no new programs can be executed.  The
+design of some network protocols actually leads the programmer into making
+these mistakes.
+
+An example of such a protocol is the finger protocol (TCP port 79). The
+protocol follows this sequence:
+
+  1. The client makes a connection to the server.
+  2. The server accepts the connection, and creates a process to service 
+     the request.
+  3. The client sends a single line to the server consisting of the name 
+     of the entity that the client wishes to finger.
+  4. The server performs the necessary database lookup and sends the
+     information back to the client.
+  5. The server closes the connection.
+
+To launch a process table attack, the client need only open a connection to
+the server and not send any information. As long as the client holds the
+connection open, the server's process will occupy a slot in the server's
+process table.
+
+On most computers, finger is launched by inetd. The authors of inetd placed
+several checks into the program's source code which must be bypassed in
+order to initiate a successful process attack. If the inetd receives more
+than 40 connections to a particular service within 1 minute, that service is
+disabled for 10 minutes. The purpose of these checks was not to protect the
+server against a process table attack, but to protect the server against
+buggy code that might create many connections in rapid-fire sequence.
+
+To launch a successful process table attack against a computer running inetd
+and finger, the following sequence may be followed:
+
+  1. Open a connection to the target's finger port.
+  2. Wait for 4 seconds.
+  3. Repeat steps 1-2.
+
+The attack program is not without technical difficulty. Many systems limit
+the number TCP connections that may be initiated by a single process. Thus,
+it may be necessary to launch the attack from multiple processes, perhaps
+running on multiple computers.
+
+We have tested a variety of network services on a variety of operating
+systems. We believe that the UW imap and sendmail servers are also
+vulnerable.  The UW imap contains no checks for rapid-fire connections.
+Thus, it is possible to shut down a computer by opening multiple connections
+to the imap server in rapid succession. With sendmail the situation is
+reversed. Normally, sendmail will not accept connections after the system
+load has jumped above a predefined level. Thus, to initiate a successful
+sendmail attack it is necessary to open the connections very slowly, so that
+the process table keeps growing in size while the system load remains more
+or less constant.
+
+We have also seen a variety of problems on BSD-based machines being used as
+the attacker. When the target machine freezes or crashes, the attacker
+machine sometimes crashes as well. Apparently the TCP stack does not
+gracefully handle hundreds of connections to the same port on the same
+machine simultaneously going into the FIN_WAIT_2 state.
+
+There are variants of this attack:
+
+  1. Use IP spoofing so that the incoming connections appear to come from 
+     many different locations on the Internet. This makes tracking 
+     considerably harder to do.
+  2. Begin the attack by sending 50 requests in rapid fire to the telnet,
+     rlogin and rsh ports on the target machine. This will cause inetd to 
+     shut down those services on the target machine, which will deny 
+     administrative access during the attack.
+  3. Instead of initiating a new connection every 4 seconds, initiate one
+     every minute or so. The attack slowly builds, making it more difficult 
+     to detect on packet traces.
+
+There are several ways to defend against the attack:
+
+  1. inetd and other programs should check to see the number of free slots 
+     in the process table before accepting new connections. If there is less
+     than a predefined number of free slots, new connections should be 
+     accepted.
+  2. Alternatively, if there are more than a preset number of network daemons
+     for the service running, incoming requests should be queued rather than
+     serviced.
+  3. Network services (such as finger) should implement timeouts. For
+     example, the statement alarm(30) could be inserted into the finger
+     daemon source code so that the program would stop running after 30
+     seconds of execution.
+
+Simson L. Garfinkel, Sandstorm Enterprises, Inc. <www.sandstorm.net>
+
+  [Simson informed me over a year ago that he had discovered this attack
+  and had notified many relevant operating system vendors.  To the best of
+  my knowledge, no one has addressed the problem in the intervening year.
+  We thus include this item in the hopes of spurring some action, or at
+  least awareness and public discussion.  On the other hand, we of course
+  do not recommend conducting experiments to demonstrate this flaw on
+  other people's systems.  PGN]
+
+------------------------------
+
+Date: Mon, 15 Feb 1999 12:48:26 +0100
+From: Debora Weber-Wulff <Debora.Weber_Wulff@te.mah.se>
+Subject: Store Baelt Bridge not Y2K safe
+
+A small article in Syssvenskan from 1999-02-15 notes that the new bridge in
+Denmark over the Store Baelt (which was just opened last year) is not Y2K
+safe.  Tests have shown that approx. 50% of all the systems involved
+(signalling, signs, etc) will have some problem or other on 2000-01-01. But
+that is not a problem, it just means that some of the trains will not be
+able to cross the bridge.  [I hear PGN already: We'll cross that bridge when
+we come to it!]
+
+Debora Weber-Wulff MALMOe HOeGSKOLA  205 06 Malmo SWEDEN
++46-40-6657254  Debora.Weber_Wulff@te.mah.se  http://www.te.mah.se/person/dw/
+
+  [Debora may be growing too big for her bridges by preempting PGN.  PGN]
+
+------------------------------
+
+Date: Fri, 12 Feb 1999 18:39:48 -0800
+From: Dave Stringer-Calvert <dave_sc@csl.sri.com>
+Subject: More risks of "training" on live systems
+
+Palo Altans watching the city's Web site yesterday morning got a bit of a
+shock when a warning message told them Matadero Creek was half full, and
+Adobe Creek was close to spilling over.  The messages popped up on home
+computer screens because Public Works staffers holding a training session
+tweaked the city's creek monitoring system as part of a demonstration.  In
+reality, it was a sunny morning and the creeks were nowhere near
+overflowing.  [Excerpt from "Creek Web Site Snafu Causes Alarm in P.A." by
+Elaine Goodman, *Palo Alto Daily News*, 12 Feb 1999]
+
+The creek level Web site can be accessed from
+    www.city.palo-alto.ca.us/emergency/emergency.html
+Follow the link to "creek monitoring devices."
+
+  [The nicest quote in the article was Elaine's:
+    "Residents flooded City Hall with calls to see what was going on."  
+  Water you waiting for?  PGN]
+
+------------------------------
+
+Date: Wed, 17 Feb 1999 13:04:24 +0000
+From: Vicky Larmour <vicky.larmour@camcon.co.uk>
+Subject: A franglais booboo
+
+Someone on a local newsgroup noticed the following text in a promotional
+leaflet for a local health and fitness centre:
+
+> The brassiere is the perfect environment for
+> a chat over coffee or a light lunch after exercise.
+
+I saw this and immediately thought "Spelling checker" and sure enough,
+"brasserie" is not recognised in Word's spelling checker and the suggested
+replacement is "brassiere".  Seems like there's a risk of major
+embarrassment here.
+
+Vicky Larmour, Software Engineer, Cambridge Consultants Ltd, Cambridge, UK
+
+  [Au contraire!  It probably brought in a lot of new customers.  Too bad
+  Webster could not have been a Web-ster.  He would have enjoyed it.  PGN]
+
+------------------------------
+
+Date: Thu, 18 Feb 99 09:28:17 EST
+From: Chuck Weinstock <weinstoc@SEI.CMU.EDU>
+Subject: Cellphone risks in flight again?
+
+Investigations are proceeding on the Thai Airways Flight TG261 jet that
+crashed in December 1998 in southern Thailand.  Pilots had attempted a
+landing despite orders to divert to another airport after two uncessful
+approaches during a storm.  The airport's instrument landing system was
+inoperative.  There is also an unofficial report that mobile-phone calls
+from passengers are being studied to see whether they might have interfered
+with the plane's controls.  [Source: Mobile phones may have caused Thai
+Airways crash: report, 18 Feb 1999, from C-afp@clari.net (AFP), PGN
+Abstracting]
+  	   	
+------------------------------
+
+Date: Tue, 16 Feb 1999 15:06:26 -0500 (EST)
+From: Mark Brader <msbrader@interlog.com>
+Subject: Re: "Page-layout program hazards" and... (Byrd, RISKS-20.18)
+
+> ...  A _much_ simpler solution ... would simply be for TROFF to 
+> report any illegal commands it encountered ...
+
+The basic problem here is that just as in C the unlikely construct "if(x=y)"
+is a legal one, so ".garbage" or "'garbage" is legal in troff.  It is a
+defined feature of the language that macros are invoked in the same way as
+requests (commands), and that invocation of an unknown macro is permissible
+and does nothing.
+
+troff is not usually used alone, but with a macro package whose details are
+unknown to the user.  That feature allows the designers of macro packages
+to provide hooks: by calling an otherwise unknown macro at a certain time,
+they allow the user to define an action that will occur at that time.
+The same construct might also be used internally within a macro package,
+e.g. to write out a footnote if there is one pending.
+
+Several newer versions of troff, including the one that I used to maintain
+for SoftQuad, do provide an option to issue a warning on invocation of an
+unknown macro.  But for the backward compatibility reason that I've just
+explained, for at least some users this can't be the default behavior.
+
+Even this warning might not always be sufficient, because a user who doesn't
+know that ' is special might also accidentally invoke a real request or
+macro.  This is particularly true with the original troff syntax, where a
+command line like .trash or 'trash (in this case the two are equivalent)
+would be taken as .tr ash (i.e. the first two letters taken as the command,
+and the rest the argument).  That particular command introduces character
+transliteration and would turn these words into "T st psrticulsr commsnd
+introduces c srscter trsnsliterstion snd would turn t ese words into".
+
+troff *is* a tricky language to use, and this is not easily changed.
+
+Mark Brader, Toronto, msbrader@interlog.com
+
+------------------------------
+
+Date: Tue, 16 Feb 1999 10:49:52 -0800
+From: "GILG,THOMAS J (HP-Corvallis,ex1)" <Thomas_Gilg@ex.cv.hp.com>
+Subject: Re: Programming Errors (Gilham, RISKS-20.18)
+
+  [We received a large number of comments on this.   I chose to 
+  include only Thomas's blanket response to all who cc:ed him, hoping
+  that does not invite even further responses.  PGN]
+
+We all started with:
+> if ( pChar = pMyString )
+
+Thomas Gilg wrote:
+> Granted the more visually obvious coding style would have been:
+>
+> if (pMyString) {
+>    pChar = pMyString
+
+Pascal and others generally wrote:
+> Which, of course, is wrong. It's actually equivalent to:
+> 
+> pChar = pMyString;
+> if (pChar) {
+
+Pascal's form is indeed the "language" equivalent - the assignment
+is first and then the comparrison.
+
+I knowingly constructed (assumed ;-) ) my form to be an "intent" equivalent.
+Having worked with most of the major UNIX vendors on X-Windows and the
+Common Desktop Environment (CDE), and having been the architect and coder
+for several now-stardard portions of each, I was trying to recall the intent
+I had seen most often among the companies.
+
+On a related note. While most of us are used to constants appearing on the
+right, I've also seen where many people (not me) deliberately place
+constants on the left side of an intended '==':
+
+   if (NULL == pChar)
+
+While it looks weird, it does help catch '=' typos via the assignment of
+something to a constant; ex, NULL = pChar.
+
+While on the topic - the original note also mentioned 'case' statements
+without 'break's.  I'm 99% sure that such situations occur in the CDE code,
+but once again it was intended.  In this case, I doubt even coding style
+could help convey the intent, so hopefully there are comments!
+
+All in all, my own mistrust of self documenting code probably explains why a
+statistic generated by the CDE 2.0 partners (SUN, IBM and HP to name a few)
+revealed that the most heavily commented libraries and executables in all of
+CDE were written by me, and they weren't all // tomg XXX comments ;-)
+
+Thomas Gilg <tomg@cv.hp.com>
+
+------------------------------
+
+Date: Sun, 14 Feb 1999 22:16:42 -0500
+From: Elliott Potter <epotter@abraxis.com>
+Subject: The risks of on-off switches?
+
+> Surely it would be very easy for HD manufacturers to produce drives with a
+> *physical* 'off' switch which made it impossible to write to a drive unless
+> you had physical access to the server.  ...
+
+This reminds me of a problem we encountered when I worked the PC Helpdesk at
+ACS.  I came in to work one morning and there was another member of the
+Helpdesk there, staring at two brand-new inoperational ThinkPads...they
+couldn't get them to turn on.  He grabbed a battery that had arrived with a
+package of replacement batteries the day before and had been charging in a
+laptop...plugged it in to the new one, and the same thing--nothing.  He
+grabbed an old battery, plugged it in, and it worked fine.  As he was about
+to re-package the batteries and send them back, I noticed a "I O" marking on
+one--turns out that the batteries had an on-off switch, and the new ones had
+arrived switched off.  No one there had ever heard about this one, and it
+was not documented anywhere.
+
+If you're going to install a switch on something, just remember to tell
+everyone involved, or it can cost a lot of time and effort chasing around
+nonexistent problems....
+
+Elliott
+
+------------------------------
+
+Date: Tue, 16 Feb 1999 22:45:49 -0500 (EST)
+From: goldstein@star.zko.dec.com (Andy Goldstein - VMS Development)
+Subject: Re: Hacking Web/FTP Servers (Cargill, RISKS-20.21)
+
+> write-protectable hard drives.
+
+A quick perusal of the engineering specifications of the RZ-28 family (a 2GB
+3.5" SCSI disk sold in recent years by Digital, now Compaq) shows a
+write-protect jumper.  Bringing this out to a switch would be trivial.  Most
+RZ-28 models were actually manufactured by Seagate.  I can't speak for
+currently available models.
+
+> Can anyone explain to me why such a scheme would be impractical or
+> unworkable?
+
+A certain popular server operating system does not support read-only volumes
+in its native file structure. Beyond that, the primary obstacle would appear
+to be lack of market demand.
+
+  [Followup: I looked at Seagate and Quantum's web sites, and the product
+  descriptions for the high end disk drives show write protect jumpers for
+  current models.  AG]
+
+------------------------------
+
+Date: Mon, 15 Feb 1999 15:40:21 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: Re: Hacking Web/FTP Servers (Cargill, RISKS-20.21)
+
+HD write protection
+
+> ... solution; write-protectable hard drives.
+
+Great idea: simple, cheap, effective.
+
+> Surely it would be very easy for HD manufacturers to produce drives with a
+> *physical* 'off' switch which made it impossible to write to a drive unless
+> you had physical access to the server.  You would prepare updates
+
+Ten years ago, or a little longer, we were pushing for the same thing in
+regard to computer viral programs.  I suspect that some of the discussion
+can be found in the RISKS archives.  (It was about the time that PGN made an
+uncharacteristic lapse and didn't catch a reference to a "write-only" hard
+drive by one poster--or the two followups that quoted it.)
+
+> Can anyone explain to me why such a scheme would be impractical or 
+> unworkable?
+
+It would cost about as much, and be as difficult to handle, as the
+ubiquitous drive operating light.  A simple rewiring of the drive line
+(which you can do yourself, if you have the ribbon cable schematics) makes
+an effective write protect: to tell the computer that the drive is currently
+protected, in order to give an error, might be a little more somplicated.
+But not much.
+
+No, I am at a loss to explain it.  I even mentioned the fact in reviewing
+Western Digital's "Immunizer" system in 1992: they had this hugely
+complicated, interferring, and ultimately ineffective antiviral system when
+we had been asking them for years to produce a drive with a fifty cent write
+protect switch.  Of course, doing the simple, effective thing would not have
+helped them try to sell the 7855 controller chip ...
+
+rslade@vcn.bc.ca  rslade@sprint.ca  robertslade@usa.net  p1@canada.com
+
+------------------------------
+
+Date: Mon, 15 Feb 1999 12:59:02 +0000 (GMT)
+From: Nigel Rantor <wiggly@bogo.co.uk>
+Subject: Re: Hacking Web/FTP Servers
+
+I'm sure that RISKS will be deluged with answers to this particular
+question but I live in a world where web servers are my main concern at
+the moment, and so here goes; 
+
+For a web/ftp site that has no dynamic content, does not change very often
+*and* the administrator has physical access to a hardware *then*
+read/write protection switch *may* be an answer. 
+
+Unfortunately, in the real world most if not all web sites (not personal
+home pages which are even more of a nightmare from an administration point
+of view and I will not speak more of) have some form of dynamic content, and
+many of these do not use database backends, but store their data on the
+server's filesystem, either because they do not have access to a DB or they
+do not know how to use one.
+
+Any well made website will also be updated frequently, websites suffer badly
+from bitrot like any information and a couple of weeks or a month can turn a
+cool site into yet another bookmark you will never see again.
+
+Third strike coming up... How many web sites are hosted on virtual servers
+or co-located servers that have access to high bandwidth channels?
+
+Most.
+
+Our company doesn't want to invest in multiple T3's to be able to provide
+customers with class A bandwidth and support so we use a hosting company who
+provide high bandwidth, regular back ups and 24hr support with on-site
+certified specialists. This does mean that we don't have physical access to
+the boxes though, and calling a support engineer to 'flip a switch' is,
+quite frankly, taking the piss.
+
+Anyone who would support a physical system such as this because it is
+'foolproof' is also deluding themselves, just because the data cannot be
+changed without physical access does not mean that other forms of attack
+will not be launched against a site. Denial of service attacks and rigged
+portals can be used to kill off a site's access or use the real site to gain
+information from the unsuspecting.
+
+The final point I think must be this. If you think that you need a physical
+guard on your data then maybe you're not using the security tools that come
+with your system. Ensuring proper ACLs on resources is a huge step in the
+right direction. The number of sites that just let web servers write
+anywhere because it is more convenient for CGI writers is amazing.  Proper
+guidlines for programmers about how the scripts must interact with the
+webserver are also a nice bonus, tell perl coders to use the -T flag, tell
+NT admins to install the most recent hotfixes for IIS to get rid of their
+DATA bugs. You don't even have to be paranoid, its basic good
+administration.
+
+Nigel Rantor  e-mail: wiggly AT bogo.co.uk / rantorn AT crowndigital.com
+
+  [Yes, we were deluged.  I selected just three messages.  PGN]
+
+------------------------------
+
+Date: Sat, 13 Feb 1999 20:02:25 -0800
+From: Chuck Karish <karish@well.com>
+Subject: Re: Computer fraud as another kind of Y2K risk? (Martin, RISKS-20.21)
+
+In RISKS-20.21, Bruce Martin (Bruce_Martin@manulife.com) commented on the
+risk that an unscrupulous Y2K consultant might arrange to divert a client's
+funds during a period of uncertainty early next year.
+
+The risk is broader than he suggests.  Uncertainty whether systems are
+working properly will provide openings for many types of attacks, including
+social engineering as well as technical attacks: "We're fixing a critical
+problem that showed up when the clock struck midnight; would you relax
+security for a while so we can fix it?"
+
+One sobering though is that it may be weeks or months before the victims
+are certain that they can distinguish between theft and technical
+failure.
+
+------------------------------
+
+Date: Mon, 15 Feb 1999 14:05:59 -0500
+From: denning@cs.georgetown.edu (Dorothy Denning)
+Subject: Re: Computer fraud as another kind of Y2K risk? (Martin, RISKS-20.21)
+
+In RISKS-20.21, Bruce Martin raised the possibility of a
+less-than-scrupulous Y2K consultant slipping in a few lines of code in order
+to "redirect a significant fraction of an organization's wealth to a blind
+account in the Cayman Islands at the stroke of midnight on 31 Dec 1999."
+
+In June 1998, the *New York Post* ran a story about organized crime setting
+up a phony Y2K consulting firm for the purpose of diverting money into
+mob-controlled accounts.  Adam Penenberg of Forbes Digital investigated,
+however, and found that the story had no substance.  See "Phantom Mobsters":
+http://www.forbes.com/tool/html/98/aug/0828/feat.htm.
+
+Dorothy Denning
+
+------------------------------
+
+Date: Mon, 15 Feb 1999 22:43:56 -0500
+From: Win Treese <treese@acm.org>
+Subject: Re: Computer fraud as another kind of Y2K risk? (Martin, RISKS 20.21)
+
+In RISKS-20.21, Bruce Martin wonders about computer fraud perpetrated
+by miscreants among the legions of consultants working to fix Y2K problems.
+
+I've been wondering about a different kind of fraud, which doesn't even require
+expertise in computing. On January 1, 2000, withdraw $1000 from an ATM.
+When you get the statement, complain to the bank that you didn't make the
+withdrawal. When they describe their records, repeat that you never made
+the withdrawal and ask "Do you have a Y2K problem here? Maybe I should
+call my attorney."
+
+The problem for the bank, of course, is that proving that there wasn't a bug
+could be very costly--if not impossible. 
+
+Win Treese <treese@acm.org>
+
+------------------------------
+
+Date: Fri, 19 Feb 1999 01:04:32 GMT
+From: jennifer@usenix.ORG (Jennifer Radtke)
+Subject: 8th USENIX Security Symposium: papers due March 9
+
+August 23-26, 1999, Washington, D.C., USA
+Sponsored by USENIX in cooperation with The CERT Coordination Center
+If you are working in any practical aspects of security or applications
+of cryptography, the program committee urges you to submit a paper.
+
+REMINDER: Paper submissions due: 9 Mar 1999
+Please find the Call for Papers at
+          http://www.usenix.org/events/sec99/
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.22
+************************

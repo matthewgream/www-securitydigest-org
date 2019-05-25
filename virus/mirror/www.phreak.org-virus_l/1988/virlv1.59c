@@ -1,0 +1,457 @@
+VIRUS-L Digest             Thursday, 29 Dec 1988        Volume 1 : Issue 59c
+
+Today's Topics:
+DOS, BIOS and write-protect tabs (PC)
+Dirty Dozen
+Re: Brain virus (PC)
+Write Protection confusion (PC)
+
+---------------------------------------------------------------------------
+
+Date:     Mon, 26 Dec 88 14:45 EST
+From:     Dimitri Vulis <DLV@CUNYVMS1.BITNET>
+Subject:  DOS, BIOS and write-protect tabs (PC)
+
+
+I feel obliged to add my 2 bits worth to the discussion; it seems, everyone
+else did, and I happen to know more about it than authors of some previous
+postings. I hope this would be helpful. Please feel free to flame me if I
+omitted something or made a mistake.
+
+There are 3 ways an application program can access disks _via_DOS:
+
+1) (Most common) Issue INT 21h (DOS call) with a function number that has
+something to do with files, e.g. `open file', `create file' etc.
+
+2) Issue INT 25 or INT 26 to read or write a logical sector on a logical device
+(useful for system-level hacking, like CHKDSK).
+
+3) Use certain subfunctions on IOCTL call (INT 21h, AH=44) that can
+read/write/format logical devices.
+
+The code in IBMDOS.COM (in PC-DOS) or in MSDOS.SYS (in MS-DOS) will
+figure out which device you are referring to (e.g. a floppy disk, a
+hard disk, a RAM disk, a substituted disk that's really a directory, a
+network device, etc) and if it's a floppy disk or a hard disk, it will
+issue an INT 13, after loading information like track # and sector #
+into registers.
+
+An application program can also issue INT 13 directly.
+
+(I will discuss the hard disk variant below; for now, assume it's a
+floppy disk)
+
+Now, INT 13 points (ordinarily) to BIOS code in ROM. (In fact, on PS/2
+it's intercepted by DASDDRVR.SYS to patch some bugs in ROM; and many
+versions of DOS intercept it to implement some kind of caching; and
+see below; and some fast machines copy ROM into fast RAM at boot time;
+but it will end up executing BIOS code from ROM anyway). Now, there
+can be no `undocumented' BIOS calls on a machine for which a
+well-commented BIOS listing is published. BIOS code issues IN and OUT
+commands to make sure that the floppy disk is spinning, the head
+assembly is at the right track, the sector ID matches the one
+requested, the DMA circuitry copies the data from the disk controlled
+to the right location in memory.
+
+>I did my homework before I wrote my opinion.  I already knew about the
+>documented BIOS interrupt limitations.  There are undocumented BIOS
+>calls, and there are non-BIOS hardware calls.
+
+There can be no `undocumented' BIOS calls. However, there are many
+other possible commands to the disk controlled that cannot be issued
+by the INT 13 BIOS code.
+
+An application program can issue these calls too, there's no
+`supervisor mode' on the PC, but it's rather complicated. Many
+copy-protection checking programs do that. Sometimes they first issue
+and INT 13 to seek the right track and to spin the drive, and issue
+fewer IN/OUT instructions.
+
+Note: Many years ago I wrote a bunch of assembly language routines to
+access _all_ possible functions on the controller, not only the ones
+used by BIOS.  They are huge and very hard to use. If Ken really wants
+them, I'll give them to him with pleasure.
+
+_All_ the codes are documented in the Motorola book, or in the Intel
+book (Intel makes a similar controller, and their book is _much_
+easier to read).
+
+If the disk drive assembly detects that the disk drive is
+write-protected (note the IF), it refuses to write on the hard disk
+and the disk controller sets a certain flag on its latch that's read
+(IN'ed) by the BIOS code and understood to mean `write protect error'.
+It's not done `in software' in this sense.
+
+However, many cheap disk drives use unorthodox means to detect the
+tab. A vanilla full-height 5.25" IBM drive tried to stick a kind of
+lever into the notch, and if it failed to, it would assume there's a
+tab over the notch. (Note sure about the modern 3.5" drives; i.e. I'm
+sure it's hardware, but it may be optical). Now, some early
+compatibles (notably the first Compaq) tried to see if a light
+_bounces_off_ the notch (you will recall that ca 1981-82 all write
+protect tabs had mirror-like foil on the outside). This did not detect
+black tabs of Scotch tape. Newer drives flash a light on one side of
+the latch and try to detect it on the other; this does not detect
+Scotch tape either. (I know one prominent mathematician, who will
+probably read this, and who uses Scotch tape exclusively). On the
+vanilla IBM drive, one could disable the detection mechanism with a
+screwdriver, as outlined in IBM's manual for the drive.
+
+So, a driver may fail to detect a tab if the detection mechanism is
+disabled, or the drive is broken, or it does not detect this kind of
+tabs. However, it does not matter _how_ you access the drive; i.e.
+(Doz Kzem should try it) if you write-protect a disk and try to create
+a file on it and get `Write protect error writing drive A:', then
+there's no way a program can write to that disk in that drive using
+BIOS calls or directly issuing IN/OUT. On the other hand, the drive
+_may_ create the file, so I would not disregard
+
+>When the PC was a baby, one or two software vendors (obscure ones) had
+>a copy protection scheme that involved writing something to their own
+>diskettes, whether write protected or not, on the user's machine.
+
+I've never heard about it, but my conjecture is that their copy
+protection code _attempted_ to write on write-protected diskettes,
+failed on real IBMs and succeeded on cheap clones.
+
+>research (see his V1 #54 contribution) that disk controller ROM is loaded
+>into RAM at boot time.  You could tweak it as you liked, then!  You could
+>prevent it from being reloaded, you could change the logic states.
+
+No, this makes no sense. There's no need to alter the BIOS code (which
+is copied into RAM on _a_few_ fast machines), since the application
+program can issue the INs and OUTs by itself.
+
+Now, when a program issues an INT (or when it comes from the hardware)
+the instruction pointer and the flags (6 bytes altogether) are pushed
+onto the stack and a new instruction pointer is loaded from low
+memory, e.g. from [13h*4] for INT 13. Most `virus prevention' programs
+operate by intercepting various interrupts, re-directing them to a
+code that tells the user what's going on before passing control to the
+original INT 13 code. A clever worm can circumvent this, e.g. by
+issuing PUSHF and far call to F000:EC59 on almost all PC compatibles
+(For floppies only!!).
+
+With the hard disk, it's slightly trickier. On _most_ machines, at
+boot time INT 13 is redirected to another ROM routine which checks if
+the drive is a hard or a floppy, and if the latter, passes control to
+INT 40 (the original floppy-only INT 13). All the so-called
+`write-protection' for hard disks is software-only indeed (I'm _still_
+unaware of a single HD with a write-protect switch, what a damn
+shame!) So, a worm can circumvent such protection by not calling a
+straight INT 13, but jumping to the hard disk BIOS code directly.
+This will also bypass the `protection' provided by booting from a very
+old DOS that does not recognize the hard disk.
+
+I don't see how a low-level format will help (a worm-infected hard
+disk) unless the worm is hiding in the BIOS boot sector (where the
+partition table lives).  If that is the case, you can just write
+garbage there and re-run FDISK to recreate the partition table and the
+new boot record and hope that your data is intact. (Of course this
+won't work if your boot record is not vanilla, but something like DM,
+but there's no reason to use that if you have DOS 3.3) If your
+worm/virus is file-based, it'll survive the backup/restore.
+
+>A virus or Trojan already present in memory (because it was run since
+>the last cold boot) can trap keystroke combinations like Control-Alt-
+>Delete and fake a warm boot by calling a similar BIOS routine that does
+>not clear active memory.  Power users would probably detect this from
+
+The reference is, apparently, to INT 19. However, INT 19 does not
+reset any interrupt vectors. The only place where it can be used
+safely is in the boot code itself (after `press any key') If you have
+any OS code in memory and issue INT 19, the system will halt. If you
+did not know that, _try_it_ before flaming me.
+
+On machines with a `reset' button, the button tweaks a pin on the CPU
+which causes it to stop whatever it was doing and jump to an address
+in ROM (the same it jumps to when it's turned on) which does various
+diagnostics, sets the interrupt vectors, etc. I see no way to
+intercept this via software.
+
+When a user presses ctl-alt-del, the keyboard code in BIOS (which is
+invoked by INT 9 every time a key is pressed or released) jumps to
+BIOS code that does a lot of machine-specific stuff, then redirects
+interrupt vectors to their default values, then boots. A worm sitting
+in memory (not a _virus_) would have to duplicate all the
+machine-specific stuff for various possible machines, making it
+_a_lot_ bigger than the Brain, to survive a worm boot. I.e. it's
+feasible, but it would be quite large, and not generic (like the
+Yale).
+
+It's OK, I've seen worse statements associated with the Brain virus,
+e.g. a user complained that it infected the BAT files on his hard
+disk. If only we did not have so much hype/ignorance associated with
+the subject...
+
+>An IBM PC can write to a write protected floppy via a low level BIOS
+>directive which bypasses DOS and directly addresses the diskette drive
+>controller hardware.  If the BIOS directive is absent from some versions
+>of DOS, it may still be possible to address the hardware below the BIOS
+
+What nonsense, if you pardon my French. Ken should filter out such stuff.
+
+>This topic has been kicked around inconclusively here for some time
+>now, and unless someone can come up with a verifiable and duplicatable
+>method to get around a properly write-protected disk, then I think
+>that we should assume that it is not possible to circumvent.
+
+Hear, Hear! If you've read so far, I hope you're so bored with the
+subject that any further discussion of it will be banned. Why beat a
+dead horse? Why throw pearls to porcupines? Etc.
+
+Also:
+
+>From:     Robert Slade <USERCE57@UBCMTSG.BITNET>
+>Subject:  BRAIN in the USSR (PC)
+>
+>     No one has cross posted it yet, but RISKS 7.96 has an article
+>about virus infection in the USSR.  They have, of course, developed
+>the ultimate anti virus program, the details of which remain a state
+>secret ...
+
+To the best of my knowledge, the virus infected (a few of) their IBM
+S/370 compatibles on AKADEMSET, an academic network similar to BITNET.
+Apparently they still run RSCS v1, which is so full of holes that it's
+just unsportsmanlike to take over the server. They patched up some of
+the holes; a better solution would be to upgrade to ISO/OSI. What made
+you think it had anything to do with Brain or PCs?
+
+
+- -Dimitri Vulis
+- -Math Dept
+- -CUNY Graduate Center
+
+[Ed. A very enlightening message, thank you.  With regards to
+filtering out "such stuff", however, do you really think that it's
+fair and even appropriate for me to filter out things that I feel may
+not be technically correct.  For one, I just don't have the time to do
+it.  Also, I don't want to be a censor; I want VIRUS-L to be an *open*
+discussion forum where people can voice their opinions, as well as
+pass on technical information.  If someone is incorrect in a technical
+description, then it generally gets pointed out quite rapidly.  Case
+in point - write protect notches.]
+
+------------------------------
+
+Date:         Tue, 27 Dec 88 16:10:31 MEZ
+From:         Konrad Neuwirth <A4422DAE@AWIUNI11.BITNET>
+Subject:      Dirty Dozen
+
+Where can I get the last copy of DD from, or what is the last edition ?
+
+The copy from the listserv is from 05-05-88.
+
+Or will it not be updated any more because it is already too long ?
+
+tnx
+Konrad
+
+------------------------------
+
+Date:  Tue, 27 Dec 88 11:22 MST
+From:  Lypowy@UNCAMULT.BITNET
+Subject:  Re: Brain virus (PC)
+
+In Virus-L Digest 1.56 Jeff Ogata speculates on the capabilities of
+the (C)Brain virus to infect via a bootable/non-bootable floppy disk.
+My recent experience with the (C)Brain virus is thus:
+
+We (myself, a colleague, and my course supervisor) received a copy of
+the (C)Brain virus on a NON-BOOTABLE disk.  The disk's boot block,
+however, was infected.  On a clean machine we placed this disk in
+drive A: and attempted to boot with it.  We received the usual error
+message about the disk being non-bootable, so then placed a bootable
+(and write-protected) floppy into the drive.  Well, lo and behold, we
+then executed some commands on a non- write-protected disk and this
+disk became infected.  Thus we could only deduce that the machine
+first executes the contents of the boot block and THEN checks to see
+if the disk is bootable (a DOS disk).  This may have been mentioned
+previously, but I thought it was apropos with regards to Jeff's recent
+comments.
+
+
+          Greg Lypowy
+          Research Assistant
+          Knowledge Sciences Institute
+          University of Calgary
+          Calgary, Alberta, CANADA UNCAMULT.BITNET)
+
+------------------------------
+
+Date:     Thu, 29 Dec 88 15:01 EST
+From:     Dimitri Vulis <DLV@CUNYVMS1.BITNET>
+Subject:  Write Protection confusion (PC)
+
+This kind of complacent thinking can be hazardous to your data!
+
+>From: Steve Clancy <SLCLANCY@UCI.BITNET>
+>I have used Trapdisk in the past and am very pleased with it.
+>Trapdisk is a newer version of something that used to be called BOMB.
+>I like it because it allows a command line, such as TRAPDISK WF as a
+>command to write protect your disk against a write or format.  I also
+>like being able to disable it at will (TRAPDISK U), but I do not like
+>that it remains memory resident.  There is also another very good
+>program called HDSENTRY.
+>
+>I'm afraid that I cannot comment on how well either handle
+>sophisticated attempts to get around their protection.
+
+Both of these programs (and others like them) are
+_extremely_dangerous_. They give the user a false sense of security,
+while it fact they provide _very_ _little_protection. They offer some
+protection against amateurish benign programs, like Brain, that are
+not really trying to destroy any data. They would not work against
+something like ARC 5.13, which called BIOS through CALL, not via INT,
+and you are more likely to run something like it, because you believe
+that you're protected, and use less discretion in deciding what to run
+on your machine. As an illustration, `write-protect' a floppy (which
+you don't need---you will have to re-format it) _in_software_ and run
+the following code in DEBUG:
+
+    MOV     AX,0309
+    XOR     BX,BX
+    XOR     CX,CX
+    XOR     DX,DX
+    MOV     ES,DX
+    PUSHF
+    CALL    F000:EC59
+    RET
+
+This will write garbage over track 0 in floppy drive A:, and no
+software will notice. A similar approach can (and was) used for hard
+disks. Here it's a little trickier, and I will not post the code for
+obvious reasons, but the thing to remember is that such `software
+write protect' can do very little against a Trojan horse intent on
+destroying data on the hard disk.
+
+>From: Richard Baum <KREBAUM@VAX1.CC.LEHIGH.EDU>
+>...      It seems  that the  circut tried to   reflect light off  of a
+>mirror  on the opposite  side of  the  slot where  the   diskette  was
+>supposed to go....
+
+Ha Ha. Except, some early PC compatibles had this kind of sensors too.
+(I mentioned this in an earlier message.) Scotch tape does not work in
+some newer drives with optical sensors.
+
+3.5" drives use a completely different mechanism, as we all know; a
+little thing slides back and forth, etc, and I don't have a technical
+reference here to verify that it's purely hardware, but I'd bet my
+life that it is too. Since there is little doubt here that the sensor
+is optical and little choice of tab material (you use whatever's
+already on the drive!) such problems should not occur.
+
+> Leonard P. Levine
+>Sorry folks, but my technical folks tell me that the write tab on a
+>floppy is a soft thing.
+
+Whoever pays these folks salary should be informed of this, so s/he
+can stop wasting his/her $$$. The following is meant as a flame of
+Milwaukee's incompetent technical folks, not of Prof. Levine
+personally.
+
+>I now get that there is a line from the drive to its controller that
+>is high when the disk is write protected.  A switch (this was actually
+>done) in that line can emulate a write locked or unlocked state
+>independent of a tab on the disk.  Thus, at the drive level, the
+>protection is not hardware.
+
+IBM Personal Computer AT High Capacity Diskette Drive insert says:
+(Page 4)
+- -Write Gate
+An active level of this input enables the write current circuits...
+(Page 5)
+- -Write protect
+An active level of this signal means that a diskette without a
+write-protect notch is in the driver. The drive will not write when a
+protected diskette is loaded.
+
+Ditto Personal Computer AT Double Sided diskette Drive insert (same
+words, same page).
+
+The logic diagram shows a `Write protect sensor' wired to -WriteProtect.
+
+Certainly, one can disable the `Write Protect Sensor', which is a kind
+of lever on the very old driver, e.g. with a screwdriver. This is how
+software gets on those distribution disks without a notch, in case you
+wondered (i.e. the drive will write whether or not the notch is
+covered). Why insert a switch? And what is all this, if not hardware?
+Mindware?
+
+>They also tell me that the controller ROM is loaded into RAM at boot
+>time, and may be reloaded by the processor during program execution.
+>I am not sure what this implies but it seems to improve the chances
+>that a change in the driver will be corrected from time to time.
+
+The BIOS routines might conceivably be altered/sabotaged on machines
+that copy it to fast RAM. What good (or bad) will this do in terms of
+write protection?  There is no supervisor mode on the PC. The
+application program can issue the same INs/OUTs as the BIOS routines
+with the same degree of success, since the FDC microcode is not
+compromized.
+
+>My people tell me that the controller merely sets an interrupt when an
+>attempt is made to write to a locked disk.  They feel, but have not
+>tested, that an attempt to write around the bios can ignore this
+>interrupt.  If they are right, there is no such thing as a write
+>locked disk in the pc environment.
+
+I feel that people should stop wasting the bandwidth on the stuff
+other people feel, believe, or have heard. I am sorry if I'm being
+rude, but my mailbox is _stuffed_ by this write-protect discussion,
+people discussing stuff they know nothing about and saying total
+nonsense. I _used_ to enjoy reading this list very much and I'd be
+rather upset if I have to unsubscribe from it because the
+pearl-to-manure ratio continues to approach zero.
+
+>From: Ken van Wyk <luken@spot.CC.Lehigh.EDU>
+>When writing to floppy disk, the code instructs the disk controller to
+>perform the write sequence, and *THEN* it checks to see whether that
+>failed due to (among other things) a write protect situation.
+
+Precisely. To be even more precise, it initiates the operation and
+waits for the interrupt. When the operation is complete (whether
+success or failure), an interrupt routine (on page 5-72) sets the flag
+saying the interrupt has occurred. Then the routine on page 5-72 reads
+the latches from the FDC and stores their values in low memory. Their
+values are explained in the old edition of Tech ref, but not in this
+one. The FDC does not `test' for write protection until the whole
+operation is set up, and if it fails, then there's nothing to continue
+or restart. The same protocol has to be followed if you issue the
+commands from the app program.
+
+>                                            until anyone can send me a
+>few lines of MASM code that will write to a properly functioning
+>write-protected floppy disk.  Any takers?
+
+The catch phrase is `properly functioning', of course. No thanks! :)
+
+....
+>When I found some of my 5.25" floppies infected with the Brain virus,
+>some folks at the labs and computing center told me that a
+>write-protected disk couldn't get infected because the
+>write-protection mechanism was "hardware controlled" and couldn't be
+>circumvented by any software. So I was confused when I read the lines
+>(above) because the information given to me by the lab operators is
+>wrong and it is possible to bypass "write-protection" using software.
+
+Your operator knows what s/he's talking about. The user who posted the
+message does not. Trust the operator. (I'd hate to be at a place where
+users have such an attitude.)
+
+I think Ken is doing a terrific job, but it worries me that this list
+(which many people consider highly authoritative) is used to spread
+false and harmful rumors. First there was the nonsenical warning about
+a modem virus, that many `novice' users took seriously; now there's
+this. There is an incredible amount of ignorance and computer
+illiteracy out there. We all should be more careful about what we
+post.
+
+- -Dimitri Vulis
+- -Math Department
+- -CUNY Graduate Center
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

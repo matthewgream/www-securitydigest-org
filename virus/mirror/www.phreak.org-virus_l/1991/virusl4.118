@@ -1,0 +1,707 @@
+VIRUS-L Digest   Monday,  8 Jul 1991    Volume 4 : Issue 118
+
+Today's Topics:
+
+Disinfectant 2.5 Confusion (Mac)
+Self scanning executables (pc)
+GUARD - prevents h.d. infection via floppy boot (PC)
+Recalciterant infection with Frodo (PC)
+Virus for sale, cheap (general)
+Re: Recalciterant infection with Frodo (PC)
+Re: Disk Boot Failure?! (PC)
+Re: Requirements for Virus Checkers (PC)
+Re: Words
+Re: sideshow on doom2:reply (PC)
+Re: Can such a virus be written... (PC) (Amiga)
+Re: Disinfectant 2.5? (Mac)
+Apology; Malicious Program Definitions Revisited
+Stoned virus and DIR command. (PC)
+sideshow on doom2:reply (PC)
+Disinfectant 2.5.1 (Mac)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 04 Jul 91 13:16:37 -0600
+>From:    j-norstad@nwu.edu (John Norstad)
+Subject: Disinfectant 2.5 Confusion (Mac)
+
+I apologize for all the confusion regarding Disinfectant 2.5. Some
+time ago, when problems appeared with Apple's Compatibility Checker, I
+made the mistake of saying that "there will be no version 2.5." Then
+the new ZUC C virus appeared, and I released version 2.5! I had
+forgotten about the possibility of a new virus appearing before I
+finished my new verison 3.0 when I made the earlier statement.
+
+We debated naming this new 2.5 version 2.4.1 or 2.6 or something else
+for just this reason. I decided that there was going to be confusion
+no matter what I did, so I just named it 2.5.
+
+John Norstad
+Academic Computing and Network Services
+Northwestern University
+j-norstad@nwu.edu
+
+------------------------------
+
+Date:    Thu, 04 Jul 91 19:02:04 +0000
+>From:    vaitl@ucselx.sdsu.edu (Eric Vaitl)
+Subject: Self scanning executables (pc)
+
+    Just in case this may be of interest to someone, I am sending out
+this little code segment. I have added a call to vscan() right at the
+beginning of main() in a couple of programs. vscan() should (in
+theory) be able to tell if the program has been attacked by a virus
+and report it to the user.
+    Let's face it, most users don't want to have to check their
+systems for viruses. I think one alternative might be to have our
+programs start checking themselves. This should make it quite a bit
+more difficult for virus writers to cause much trouble. Also, the cost
+isn't very high. This thing seems to run pretty fast, and it only adds
+282 bytes to the size of the executable.
+    If anyone out there has access to some viruses, I would appreciate
+it if you would give me some feedback on how well this thing works.
+
+- ------------------------ cut here ------------------------------
+#include <stdio.h>
+#include <stdlib.h>
+/*
+7-4-91 Code now works off of _psp instead of _CS, it should now work in
+       all memory models but tiny and huge. Also changed nlongs to an
+       unsigned long just in case a very large number of
+       code segments might cause an overflow. eav
+7-4-91 No longer have to compute the twos complement. I decided to subtract
+       fixval from chksum instead of adding them together. eav
+*/
+/*
+Copyright 1991 by Eric Vaitl
+
+    This function only works as is with Turbo C and the small model.
+It computes a 32 bit CRC value over the entire code segment and
+compares it agaist a fixed value which is stored in the data
+segment. If the code segment has been altered, the program
+prints an error message and terminates.
+    With the small model, the code segment is the area between CS:0000
+and DS:0000. The number of thirty-two bit longs that can fit in this
+area is: (_DS -_CS) << 2.
+    The first time a program runs with this function, it will terminate.
+The programmer must then change the value assigned to fixval to the
+two's complement of the reported CRC value and recompile the program.
+
+*/
+
+void vscan(){
+    static unsigned long fixval= 0xb93916a5l;
+    unsigned long nlongs;
+    unsigned long chksum = 0l;
+    unsigned long far *ulfp;
+    nlongs = ((unsigned long)_DS - ((unsigned long)_psp + 0x10l)) << 2l;
+    ulfp = (unsigned long far *) (((unsigned long)_psp+0x10l) << 4l);
+    while (nlongs--) {
+        chksum += *ulfp++;
+    }
+    if(chksum-fixval){
+        fprintf(stderr,"\nThis program has been altered.\n"
+                       "Check your system for possible viruses\n"
+                       "Current code checksum is 0x%lX",chksum);
+        exit(5);
+    }
+}
+
+------------------------------
+
+Date:    Thu, 04 Jul 91 19:33:27 -0500
+>From:    Finnegan Southey <ACDFINN@vm.uoguelph.ca>
+Subject: GUARD - prevents h.d. infection via floppy boot (PC)
+
+Y Radai writes:
+
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+>
+>  About half a year ago, someone asked whether there was a way of
+>preventing infection of one's hard disk on cold-boot when an infected
+>diskette happens to be in drive A:.  As I hinted a couple of times, I
+>would soon be announcing a program to do this.  Well, it's called
+>GUARD and is now available in uuencoded ZIPped form to anyone who
+>requests it from me by e-mail.
+
+     I'd really like to see a review of this product.  Perhaps, Mr Slade or
+Mr. McDonald could provide another of the excellent reviews they have written.
+With something this new that plays with a crucial part of my OS, I'd like some
+more opinions before trying.  (Translation:  I'm not going to try it, you try
+it.  Hey!  Let's get Mikey...)  I'd test it, but I don't have a spare hard
+drive lying around...
+
+- -----------------------------------------------------------------------------
+ Finnegan Southey - CCS HELP DESK, University of Guelph, Ontario, CANADA
+        BitNet: ACDFINN.VM.UOGUELPH.CA  CoSy: fsouthey@COSY.UOGUELPH.CA
+            You are in a maze of twisty little passages, all alike.
+
+------------------------------
+
+Date:    Thu, 04 Jul 91 19:35:22 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Recalciterant infection with Frodo (PC)
+
+AVIR@BGUVM.BITNET (Aviel Roy-Shapira) writes:
+
+> system.  Clean (V. 77) cleaned the disk alright, but the infection
+> keeps poping up.  It has become even wierder.  Both Clean, Virus Scan,
+> and F-Fchk (115) report that all the files on my hard disk are free
+> from the virus.  But, if I boot from the hard disk, and I run
+> F-SYSCHK, it says the virus is lurking in memory.  I don't get this
+> warning if I boot from a floppy.
+
+Frodo/4096 is a "stealth" virus, and so this behaviour is perfectly
+understandable.  While the virus is in memory, it will "mask" any
+infections on the disk, making it impossible for a scanner to find the
+infected file.  (I don't mean to imply that DMDrvr.bin may be the
+infection, but if you look at its size while the system is infected, it
+will not show any change in size either.
+
+It appears that something in your boot sequence is infected, since you
+don't get the warning of an infection in memory when you boot from the
+floppy.  Boot from the floppy, therefore, and *then* run FPROT.  (Of
+course, if you have been running FPROT from the infected system, it may
+be infected as well.  Perhaps it would be a good idea to get a clean copy
+if you can.)
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Thu, 04 Jul 91 20:18:37 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Virus for sale, cheap (general)
+
+I received that following message from one of the members of INtegrity on
+SUZY:
+
+== E-Mail > > Karges, Stephen ==
+
+  Subject: Virus Reseller
+
+  Robert, I was on a Board (CRS) in a friends mail box and I found
+  a person had uploaded a message similar to the following.
+
+  Anyone wishing to buy Virus and source code please mail $7.00 for
+  a 360k disk full or $10.00 for a 1.22mb disk full. The address to
+  mail payment to was:
+      West Coast Virus Centre
+      101 Shady Hollow Drive
+      Scarborough, Ontario
+      M1V 2L9
+
+  This type of thing frosts me. Is there anything that we can to do
+  put this type of person out of business. There is in fact listed
+  in the postal code book an actual residental address.
+
+  Please forward your thoughts.
+
+  Steve Karges
+  Neutron Computers
+  Kitchener, Ontario
+
+My first thought is "A WITCH!  BURN 'ER (or him)!".
+
+My second thought is, first make sure it's for real.  It is, of course,
+quite possible that someone has posted this message as a hoax, in order
+to make trouble for the residents at said address.  This can be
+ascertained by anyone who lives in Scarborough, or likely by the
+operators of CRS (Canada Remote Systems, a local commercial BBS in
+Toronto.)
+
+Once that is determined, the first step should be to demand that CRS
+remove this account.  I would think they would be amenable, since this
+message is definitely counter to their best interests, but in case they
+hedge, a suggestion that the (paying) users of the system do not
+appreciate this might be all that is necessary.
+
+The name of the individual concerned should be publicized, in order to
+ensure that he or she is persona non grata on all possible BBS and email
+systems.
+
+The post office and telephone company should be alerted to the use that
+this person is making of their facilities, and of the fact that the
+computing community objects in the strongest manner to such activities.
+While the legality of such actions are open to question, "community
+standards" of behaviour may apply here.
+
+Some will question the fact that I have publicized the address here:
+after all, we are quite sure that some virus authors read this list.  I
+would replay, as has been suggested in the past, that they will likely
+obtain this information anyway, and we have little to gain, and much to
+lose, by suppressing it.
+
+- ------
+
+On a different subject, my recent posting regarding the two versions of
+the SCANV80.ZIP file that were available from different sources was not
+sufficiently clear.  It was never my intention to suggest that either
+McAfee Associates or Keith Peterson were in any way at fault.  I failed
+to stress the fact that I found absolutely no evidence of any problem
+with either file.  Both McAfee Associates, in maintaining SCAN over the
+years, and Keith, in maintaining the largest and most valuable source of
+shareware that I am aware of, deserve only our thanks, and I apologize
+for generating this misunderstanding.
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    05 Jul 91 09:10:29 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Recalciterant infection with Frodo (PC)
+
+AVIR@BGUVM.BITNET (Aviel Roy-Shapira) writes:
+>I thought that Frodo was only a COM and EXE file infector, yet it
+>somehow entered my system and refuses to leave. Any ideas?
+
+Two (or rather 3) possibilities.
+
+1) The original infected program is not scanned, because it has been packed
+   by LZEXE, DIET, AXE, TINYPROG, PKLITE or EXEPACK.  It is becoming ever more
+   popular to distribute viruses this way - a very effective way to hide the
+   first generation sample - It will not be detected by most scanners although
+   later generation samples are detected normally.  Try running version 1.16
+   and check if it reports any packed files.
+
+2) The virus is active while you are running the scanner, so the infection
+   is not found - this does not seem to be the case, as you described
+   the circumstances.
+
+3) The virus is present is some other file which is read and may be found in
+   memory.  It is not well known, but Frodo will "infect" any file where
+   the sum of the ASCII values of the file extension is 223 or 226.  In
+   addition to .COM and .EXE files, this includes .OLD .MEM .PIF .QLB
+   .DWG .LOG and .TBL
+
+   This can be checked by using the /ALL switch - or /A for SCAN.
+
+- -frisk
+
+------------------------------
+
+Date:    05 Jul 91 09:17:33 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Disk Boot Failure?! (PC)
+
+gburlile@magnus.acs.ohio-state.edu (Greg Burlile) writes:
+>Could someone please give me some input as to why this is happening.
+>Is it a virus?
+
+Might be - but without more information (such as a dump of the boot sector
+and the PBR) it is hard to tell.
+
+Anyhow, viruses can easily do something like this.  I was running one recently
+(on one of my test machines) and it managed to corrupt things so thoroughly
+that I was not only unable to boot from the hard disk - I was unable to boot
+from a diskette unless I unplugged the hard disk first!  When the computer
+had booted from a diskette I was able to plug the hard disk back in and
+reformat it.
+
+As this behaviour was rather unexpected I tried this particular virus again,
+with the same result.
+
+- -frisk
+
+------------------------------
+
+Date:    05 Jul 91 09:24:37 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Requirements for Virus Checkers (PC)
+
+c-rossgr@microsoft.COM writes:
+>Heck, *I* was under the impression that everybody *loved* command line
+>interfaces (maybe my UNIX background showing through?) --- but it
+>seems people are in love with those horrid little drop and shadow
+>boxes.
+>
+>Guess what Version 2.0 has in it....
+
+Don't forget the Pop-up alert messages - they are included in version 2.0
+of my program, along with the shadow boxes.  :-)
+
+But of course you can use the command-line interface if you want to - I guess
+that applies to you program as well...right ?
+
+- -frisk
+
+------------------------------
+
+Date:    05 Jul 91 09:27:51 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Words
+
+vail@tegra.com (Johnathan Vail) writes:
+
+> virus - a piece of code that is executed as part of another program
+>     and can replicate itself in other programs.  The analogy to real
+>     viruses is pertinent ("a core of nucleic acid, having the ability to
+>     reproduce only inside a living cell").  Most viruses on PCs really are
+>     viruses.
+
+But, what about:
+
+	Overwriting viruses, which destroy the programs they infect
+
+	"Companion" viruses, such as AIDS II and TPWORM, which do not
+	change the programs they "infect".
+
+	viruses which replace the victim, and include its functionality
+	(the PBR infections of Azusa are the only example I know of).
+
+- -frisk
+
+------------------------------
+
+Date:    05 Jul 91 09:45:45 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: sideshow on doom2:reply (PC)
+
+My opinions on signature encryption:
+
+I use two types of encryption in my program.  Signatures on the disk are
+encrypted using a fairly simple algorithm, which would be easy to break
+in a day or two by a determined hacker.  Nevertheless, I still find it
+worthwhile to use this simple method.
+
+    - Anybody trying to modify a virus so it is not detected by a scanner
+      can very easily do so if the signatures are not encrypted.  By
+      encrypting them (and by using two signatures per virus) I make this
+      a bit more difficult.
+
+    - It would be pointless to use a more sophisticated encryption - I could
+      encrypt the signatures using DES, for example, but my scanner would
+      have to include the decryption routine as well as the key, so it would
+      only mean slightly longer time needed to attack the signatures - no
+      real improvement in security.
+
+    - This makes it more difficult for anybody to take my set of signatures
+      and use them in a different product.  I spend considerable time selecting
+      two good signatures for each virus, and I do not like anyone using
+      my set of signatures in a competing product.
+
+Signatures in memory are encrypted in a trivial way - just so I don't have to
+worry about any other scanner finding them in memory after my program has run.
+
+I believe I more-or-less agree with what Ross had to say on the subject.
+
+- -frisk
+
+------------------------------
+
+Date:    05 Jul 91 08:56:53 +0000
+>From:    jerry cullingford <jc@crosfield.co.uk>
+Subject: Re: Can such a virus be written... (PC) (Amiga)
+
+>>However, the question was
+>>whether a virus-infected diskette could infect the system, when the
+>>user issued a 'DIR' command.
+
+>>The answer to that question is a definite NO - on a PC, that is - but
+>>I am not sure if the same applies to the Amiga or the Mac - perhaps
+>>somebody else can clarify that.
+
+The answer is the same for the Amiga.
+
+While a virus could infect the DIR command, and then infect write
+enabled disks if you did a DIR (using the infected command), there is
+no risk of BECOMING infected by using a clean DIR on an infected disk.
+
+In order to become infected, you must execute the virus code, either
+by booting off an infected disk for bootblock viruses, or by running
+an already infected program.
+
+Given a clean system, reading from an infected disk (by DIR or other
+means) is safe. booting from, or executing something from, an infected
+disk is where the danger lies.
+
++-----------------------------------------------------------------+     |
+| Jerry Cullingford  #include <std.disclaimer>     +44 442 230000 |   ,-|--
+| jc@crosfield.co.uk (was jc@cel.co.uk) or jc@cel.uucp      x3203 |   \_|__
++-----------------------------------------------------------------+ \___/
+
+------------------------------
+
+Date:    Fri, 05 Jul 91 14:22:41 +0000
+>From:    jalden@eleazar.dartmouth.edu (Joshua M. Alden)
+Subject: Re: Disinfectant 2.5? (Mac)
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+
+>What gives?
+
+    At the time, the System 7 compatibility checker was wrong.
+However, since then Disinfectant 2.5 HAS been released, despite John
+Norstad's earlier claim that it wouldn't be.  He updated Disinfectant
+so that it would be System 7 complete and so that it would deal with
+two obscure viruses.
+
+    So, the System 7 correction is dated, and there IS now a
+Disinfectant 2.5.
+
+- -Josh.
+
+- --
+Josh Alden, Consultant, Dartmouth Computing | #61 Hidden Lane
+ Private mail: Joshua.Alden@dartmouth.edu   | West Lebanon, NH 03784-9720
+   Virus mail: Virus.Info@dartmouth.edu     | (603) 643-2840
+
+------------------------------
+
+Date:    05 Jul 91 10:32:00 -0500
+>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+Subject: Apology; Malicious Program Definitions Revisited
+
+Before I start, let me say one thing  I wrote:
+> Here we go again ...
+> From:    mfr3@cunixb.cc.columbia.edu (Matthew F Ringel)
+> > Is it possible for a virus to circumvent an IBM's
+> > write-protection of a disk ...
+> NO! ...
+I apologize to Matthew for my hot response to his question.  While
+those Virus-L readers who recently participated in (or silently
+tolerated) the recent write-protect discussion may understand my
+attitude, Matthew asked an innocent question, not intending to open
+himself up to attack.  Sorry, Matthew.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+>From:    Robert McClenon <76476.337@CompuServe.COM>
+> From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+> > vail@tegra.com (Johnathan Vail) writes:
+> > > Most viruses on PCs really are viruses.
+> > If so, you will have to define "most viruses on PCs", since many
+> > of the more successful PC viri are BSI's.
+> Slade has a good question.  He is basically demanding clarification
+> of terminology.  We need that.
+
+In Virus-L V4 I060, Eldar A. Musaev started to clarify the terminology
+by classifying malicious software by differences in function.  I
+expanded on that in Virus-L V4 I071.  Tim Martin corrected some of my
+terminology in Virus-L V4 I072.  Finally, postings from several people
+caused me to correct my spelling of the plural of "virus."  The
+correct spelling is "viri," according to the rules of spelling in the
+Lincoln Library of Essential Information (my dictionary doesn't have a
+plural listed for "virus").  The digested and corrected definitions
+follow.  Comments, additions, and further corrections are invited.
+
+- - --------------------
+Malicious Program Definitions
+
+The functional criteria for classifying malicious programs are:
+I.   Replication
+     1.  Non-replicator
+         A program which does not copy itself.
+     2.  Dependent Replicator
+         A program which copies itself only when the host program is
+         executed.
+     3.  Independent Replicator
+         A program that, once started (e.g. TSR), could copy itself
+         continuously without outside assistance.
+
+II.  Host Basis
+     1.  Standalone (non-host-based)
+         A program which does not require another program to help it
+         run and/or spread.
+     2.  Host-based
+         a.  Spawning
+             A program which leaves the host program intact, but runs
+             before the host program and calls or "spawns to" it.
+         b.  Overwriting
+             A program which overwrites a portion of the host program
+             or deletes and replaces it entirely, so that it is run
+             instead of the original program.
+         c.  Parasitic
+             A program which attaches itself to the host program,
+             leaving it functionally intact.
+
+If the term "virus" ("viri") is used for host-based dependent
+replicators, and "bacterium" (plural "bacteria") is used for host-
+based independent replicators (for lack of better terms to separate
+the two), the resulting classifications and associated names are:
+
+I.   Standalone Non-replicators
+       Trojan Horses            Example:  ARC 5.13
+II.  Spawning Non-replicators
+       Spawning Trojans
+III. Overwriting Non-replicators
+       Overwriting Trojans      Example:  Twelve Tricks
+IV.  Parasitic Non-Replicators
+       Parasitic Trojans
+
+V.   Standalone Dependent Replicators
+       Replicating Trojans      Example:  CHRISTMAS EXEC (BitNet)
+VI.  Standalone Independent Replicators
+       Worms                    Example:  Morris Worm (Internet)
+
+VII. Spawning Dependent Replicators
+       Spawning Viri            Example:  Aids II
+VIII.Overwriting Dependent Replicators
+       Overwriting Viri         Example:  382 Recovery
+IX.  Parasitic Dependent Replicators
+       Viri                     Example:  Vienna
+
+X.   Spawning Independent Replicators
+       Spawning Bacteria
+XI.  Overwriting Independent Replicators
+       Overwriting Bacteria
+XII. Parasitic Independent Replicators
+       Bacteria                 Example:  Jerusalem
+
+Some of the resulting combinations don't have examples of which I'm
+aware at this time, and some of those (such as a parasitic non-
+replicator) are not likely.  Also, some people may say that the Lehigh
+virus is an overwriting virus.  I would call it parasitic, since it is
+not a complete program by itself, but attaches itself to COMMAND.COM,
+even though it overwrites the stack space.
+- - --------------------
+
+Bill Walker ( WALKER@AEDC-VAX.AF.MIL ) |
+OAO Corporation                        |
+Arnold Engineering Development Center  |  AEDC -- Home of the "Chicken Gun"
+M.S. 120                               |
+Arnold Air Force Base, TN  37389-9998  |
+
+------------------------------
+
+Date:    Fri, 05 Jul 91 11:12:27 -0700
+>From:    Mike Ramey <mramey@u.washington.edu>
+Subject: Stoned virus and DIR command. (PC)
+
+Discovered several grad students had diskettes infected with Stoned.
+Experiments confirmed that a DIR command on these diskettes caused
+Stoned to become resident in RAM.  I do not know how or when Stoned
+moves to the fixed-disk partition sector/boot record.
+Does this pose special problems for virus hunting & removal?
+- - Mike Ramey, Computer Tech., Civil Eng. Dept., U of WA, Seattle.
+
+------------------------------
+
+Date:    Fri, 05 Jul 91 15:03:29 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: sideshow on doom2:reply (PC)
+
+>From:    "zmudzinski, thomas" <zmudzinskit@imo-uvax5.dca.mil>
+
+>    Mr. Greenburg's statement describes his assessment of his
+>abilities to develop/implement a cryptographic system.  If he says
+>that he cannot do something he believes to be difficult, so be it --
+>he knows where his strengths lie.
+
+This is not just Ross's opinion. His program must be able to be
+publicly disseminated and be able to decrypt itself without the user
+providing any sort of key. What he is doing is hiding it from casual
+observation, not trying to deliver an unbreakable code (literally for
+semantics buffs, encrypting not encoding), unbreakable code cannot be
+produced given these ground rules so why should he try ?
+
+>    And on the other hand, does anyone _really_ believe that the "bad
+>guys" _don't_ run the latest crop of anti-viral software to check that
+>their "products" won't be caught immediately?
+
+Not a valid point. With encrypted strings, the "bad guys" still have
+to either de-crypt the code to find the trigger string(s), assuming
+there is one, or just keep trying variations to find one that will not
+trip the scanner either as itself or as any other virus. Given
+algorithmic signatures (not completely string related), this can be
+much more difficult than with a simple string scanner.
+
+This at least requires significantly more work for the "bad guys" than
+if the string were available "in clear".
+
+Besides, in the future I expect more scanners able to say "I cannot
+identify this file but it sure looks/acts suspicious". The early stuff
+that tried to provide such warning was just too granular and tripped
+too often, this does not have to be true today.
+
+						Cooly,
+							Padgett
+
+------------------------------
+
+Date:    Sun, 07 Jul 91 19:49:10 -0600
+>From:    j-norstad@nwu.edu (John Norstad)
+Subject: Disinfectant 2.5.1 (Mac)
+
+Disinfectant 2.5.1
+==================
+
+July 7, 1991
+
+Disinfectant 2.5.1 is a new release of our free Macintosh anti-viral
+utility.
+
+Version 2.5.1 corrects an error in the version 2.5 INIT which caused
+some programs (e.g., CompuServe Navigator) to crash on Macs using the
+Motorola 68000 processor (the 512KE, Plus, SE, Classic, and Portable.)
+
+Version 2.5.1 also corrects an error in the 2.5 program which could, at
+least in theory, cause crashes or hangs during program startup or when
+you try to do a scan.
+
+We apologize to everybody for the inconvenience caused by these errors in
+the 2.5 release. The errors are serious, and we strongly urge all
+Disinfectant users to obtain the new version 2.5.1.
+
+Disinfectant 2.5.1 is available now via anonymous FTP from site
+ftp.acns.nwu.edu [129.105.113.52].  It will also be available soon on
+sumex-aim.stanford.edu, rascal.ics.utexas.edu, comp.binaries.mac,
+America Online, CompuServe, GEnie, Delphi, BIX, MacNet, Calvacom,
+AppleLink, and other popular sources of free and shareware software.
+
+Macintosh users who do not have access to electronic sources of free and
+shareware software may obtain a copy of Disinfectant by sending a self-
+addressed stamped envelope and an 800K floppy disk to the author at the
+address given below. People outside the US may send an international
+postal reply coupon instead of US stamps (available from any post
+office.) Please use sturdy envelopes, preferably cardboard disk mailers.
+
+People in Western Europe may obtain a copy of the latest version of
+Disinfectant by sending a self-addressed disk mailer and an 800K floppy
+disk to macclub benelux. Stamps are not required. The address is:
+
+   macclub benelux
+   Disinfectant Update
+   Wirtzfeld Valley 140
+   B-4761 Bullingen Belgium
+
+John Norstad
+Academic Computing and Network Services
+Northwestern University
+2129 Sheridan Road
+Evanston, IL 60208 USA
+
+Internet: j-norstad@nwu.edu
+Bitnet: jln@nuacc
+America Online: JNorstad
+CompuServe: 76666,573
+AppleLink: A0173
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 118]
+******************************************

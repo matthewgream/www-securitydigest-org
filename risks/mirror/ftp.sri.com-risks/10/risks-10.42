@@ -1,0 +1,574 @@
+Subject: RISKS DIGEST 10.42
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Saturday 22 September 1990   Volume 10 : Issue 42
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Arbitration Myths (Peter Denning)
+  Re: Security compromise with SUN's C2 package (Li Gong)
+  Re: Expert system in the loop
+    (Henry Spencer [2], Steven Philipson [2], Walt Thode)
+  Railway Safe Working - large analogue systems (Peter Jones)
+  Re: I'm 99% Sure You're A Crook!!! (Jerry Hollombe)
+  Book suggestion: Apollo, The Race to the Moon (Martin Minow)
+  Re: Knight reference: `Shapes of bugs' (Nancy Leveson)
+  ACM Conference on Critical Issues in Computing (Harold S. Stone)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory; bye logs out.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 18 Sep 90 15:20:25 PDT 
+From: Peter Denning <pjd@riacs.edu>
+Subject: Arbitration Myths
+
+In RISKS-10.3 of 13 Sept 1990 David Murphy says, "It is completely impossible
+to build a fair arbiter or synchroniser."  He also says, "... any digital
+design technique is just a way of improving engineering confidence in the
+product, not of guaranteeing correctness."  These statements are not true.  I
+hear them repeated frequently enough that I surmise they are part of the
+folklore.  I write here with an antidote.
+
+First, a definition: An arbiter is a device that selects exactly one out of a
+set of requests represented as signals on input channels.  The arbiter must
+work even if two or more of its inputs can change simultaneously.  This
+behavior is considered "fair" since it does not give preference to any one
+input.  Arbiters are used at the ports of memory modules, in the nodes of
+interconnection networks, and in interrupt systems.  It is easy to build such
+circuits.
+
+The fundamental theorem of arbiters is: There is no fixed time bound for the
+arbiter to make its choice.  The reason is that if two inputs change
+simultaneously, the device can enter a metastable state from which it will exit
+after a random amount of time (to be precise, the probability that the circuit
+persists in the metastable state for more than t seconds is exp(-t/A), where A
+is the mean switching time of the circuit).  If we as RISKS readers demand that
+every arbitration be performed correctly, we must use asynchronous circuits
+that will wait until an arbiter has settled.  These circuits are provably free
+of synchronization errors.
+
+But if we build an arbiter into a computer that assumes a fixed time for an
+arbiter to reach every decision, there is a chance that the arbiter will not be
+settled down and the half-signals at the arbiter's output may cause a
+malfunction in the rest of the computer.  Although the probability of this
+failure might seem small, failures every few days become very likely at the
+clock speeds of modern computers.  If you are interested in reading more about
+this, you can take a look at my American Scientist article (1985) and also
+Chuck Seitz's chapter in the Mead and Conway book (1980).
+
+Another common misunderstanding about arbitration concerns the lowest level at
+which an indivisible operation must be implemented.  Dijkstra's solution to a
+concurrent programming problem (1965) was a software arbiter that relied on the
+existence of arbitration in the memory addressing circuits for individual
+memory locations.  Lamport showed how to achieve fair mutual exclusion without
+any requirement that references to memory cells are arbitrated (1974).
+
+Conclusion: we know how to build fair arbiters and how to design
+circuits that are free of synchronization errors.
+
+READINGS
+
+C. L. Seitz, Chapter 7, "System Timing," in Introduction to VLSI Systems, by C.
+Mead and L. Conway, Addison-Wesley, 1980.
+
+P. J. Denning, "The Arbitration Problem", American Scientist (Nov-Dec 1985).
+
+L. Lamport, "A new solution of Dijkstra's concurrent programming problem",
+Communications of ACM (August 1974), 453-455.
+
+------------------------------
+
+Date: Tue, 18 Sep 90 17:24:03 EDT
+From: li@diomedes.UUCP (Li Gong)
+Subject: Re: Security compromise with SUN's C2 package (Jalali, Risks-10.39)
+
+A related point: the C2 design still allows an intruder to guess user passwords
+even if rpc.pwdauthd is not present.  Everyone has a pair of public keys for
+authentication, RPC, and the like (public key K+ and corresponding secret key
+K-).  In file /etc/publickey which is readable to anybody, there stored (among
+other things)
+
+   [user_name, K+, E(p, K-)]
+
+where E(p, K-) is K- encrypted with key p (generated from user password) under
+DES.  An intruder can download this file, guess a p' and decrypt the last item
+with it to get a K-'.  Then he can choose any text X and verify 
+D(K-', E(K+, X)) = X, where D is decryption.  If the above holds, he is quite
+certain that p' is the correct password.
+
+This kind of attack is called Verifiable-Text Attacks (see my paper in
+Proceedings of Infocom '90, June).  It can be conducted off-line, then
+you have to use your own CPU of course.
+
+Li GONG,      Odyssey Research Associates, Inc.
+
+------------------------------
+
+Date: Wed, 19 Sep 90 13:44:13 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: Expert system in the loop (Philipson, RISKS-10.38)
+
+>In the case of the Vincennes, it cannot be disputed that a mistake
+>was made.  The Pentagon found no human responsible for it, so it
+>must have been a mechanical error...
+
+I fear Clifford is departing a bit from his usual standards of objectivity and
+precision, here, and the distinctions are important.  Was a mistake made?
+Clearly, yes, since there was no need to shoot down a civilian airliner.  Was
+it a *preventable* mistake?  Now this is a harder question, as is the question
+of who should have been responsible for preventing it.  (My vote goes to the
+airline and/or pilot who decided to fly an airliner through a combat zone.)  If
+I'm not mistaken, the Pentagon's finding was not that nobody was responsible
+for the mistake, but that no *blame* was attached to the captain and crew as a
+result of it, i.e. their decision was reasonable in the circumstances and no
+disciplinary action was in order.  Whether or not this finding was correct, the
+general point stands: one should beware of the assumption that there *must* be
+a villain, that either some human must be guilty or there must have been a
+mechanical failure.
+
+The Vincennes disaster could have been averted if the airliner had followed a
+safer route, if the Vincennes had not been in combat (and hence inclined to
+treat potential threats as real ones) at the time, if the captain and crew had
+been trained to be more skeptical of the computerized reports and more thorough
+about cross-checking them, or if the equipment and software had been better
+designed.  Which of these is the villain?
+
+(Actually, I agree with Clifford's main point, that meaningful human
+decision-making requires sufficient time and adequate independent sources of
+information.  It's not clear to me that the Vincennes case is a good example of
+total lack of same, however, so much as a case of how conflicting or
+doubt-casting evidence gets ignored in a crisis.)
+
+Henry Spencer at U of Toronto Zoology henry@zoo.toronto.edu utzoo!henry
+
+------------------------------
+
+Date: Wed, 19 Sep 90 14:10:23 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: Expert system in the loop (Philipson, RISKS-10.38)
+
+>... Military personnel have, by joining or
+>accepting induction into armed service, accepted certain risks. 
+>Civilians have not.  If there is any doubt whatsoever that the
+>approaching plane was hostile, the Captain should have decided not to
+>destroy it, accepting the risk of outcome #3, i.e., that his ship might
+>come under attack ...  He and his crew signed up for that risk...
+
+One should remember that soldiers are not policemen.  Policemen generally
+are required to accept risks themselves rather than passing them on to
+civilians; their *job* is reducing civilian risks.  The military are not
+in quite the same situation.  Their job is to carry out the policies of
+their government, and if innocent people get hurt, that is the policy-
+makers' problem.  Military actions often involve injury or death to
+innocent civilians, and avoiding this entirely is probably impossible,
+although minimizing it is usually desirable.  The captain and crew of
+the Vincennes signed up to risk their lives in protecting the United States
+(and its allies and interests), not in protecting civilians in general.
+
+>... The passengers of the airliner had accepted no such risk...
+
+Their government had accepted it on their behalf, by initiating warfare
+against foreign vessels, for what it presumably considered adequate reason.
+Governments in general feel that they have a right to risk the lives of
+their citizens -- without their individual consent -- for sufficient cause.
+ 
+Henry Spencer at U of Toronto Zoology henry@zoo.toronto.edu utzoo!henry
+
+------------------------------
+
+Date: Wed, 19 Sep 90 15:43:55 -0700
+From: stevenp@decwrl.dec.com (Steven Philipson)
+Subject: expert systems in battle (Cliff Johnson, RISKS-10.39)
+
+In RISKS-10.39 "Clifford Johnson" <GA.CJJ@Forsythe.Stanford.EDU>
+   writes a response to my post on expert systems.
+
+   First, I request that more care be exercised in the use of quotations.
+The excerpt that Clifford used appears to be attributed to me (through
+the use of a single greater-than sign) when the excerpt was one that I
+was quoting from someone else.  The usage in this article will be a ">"
+in the first column to denote quoted material.
+
+>In the case of the Vincennes, it cannot be disputed that a mistake
+>was made.  The Pentagon found no human responsible for it, so it
+>must have been a mechanical error.
+
+   This statement is in error.  Please, READ THE REPORT.  Human error on the
+part of two officers was specifically cited, and inadequacies with the systems
+were noted.  An error was made by a junior officer in reading both the altitude
+and speed of the approaching aircraft.  Error was also attributed to a senior
+officer for not confirming the data on his own by checking his own displays.
+The board also found that inadequacies in the design of the display increased
+the probability for misinterpretation of data under the stress of battle.  The
+board found that Captain Rogers made a correct decision to fire based on the
+data that he had available to him.
+
+>The assertion that humans have
+>time to meaningfully evaluate the computers' information in a few
+>minutes is patent nonsense (as proven by the Vincennes)
+
+   I never made that assertion, nor do I hold that it can be done.  In my
+previous post I wrote "All this may not be possible to do in practice".
+Indeed, it is not reasonable to expect that large bodies of data and rules of
+reasoning can be evaluated by a human being within a few seconds.  On the other
+hand, the raw data cannot be assessed by a human in that time frame either.
+Some amount of processing is going to be done by machine.  A decision as to how
+much should be done must be made at some point.  In the case of the Vincennes,
+only minimal processing was performed, and the radar data was presented fairly
+simply -- as a course and altitude readout.  Even that was misinterpreted under
+the stress of battle.
+
+   One must also consider that not all battlefield decisions are made on a time
+frame of seconds or even minutes.  Assessments of the enemy's intentions often
+occur over periods of days and weeks.  An expert system that finds evidence of
+significant activity and reports it could be of great value to commanders if
+the time frame is long enough to evaluate those decisions and actions.
+
+>- all humans can do is to *gamble* whether the computers (or their readings
+>of the computers' consoles) are right, and so they act as no more nor
+>less than randomizing agencies - 
+
+   In a sense, that is correct -- they do gamble that the machines are right,
+but we do this every day in all forms of endeavor.  When I drive my car, I
+gamble that my speedometer is close to correct, and that by following it I will
+avoid getting a speeding ticket.  The gamble is a good one as I have a sense
+that the probability of it being correct is high, although it could be wrong
+(and has been on occasion).  Likewise, one "gambles" on the correct performance
+from more complex systems, but these bets are far from random.  The key point
+here is that a computer system does not have to be perfect to be useful, even
+when used in critical applications.
+
+>Such decisionmaking is de facto *governed* by computer: without
+>computer prompts, no retaliatory decision at all would be taken;
+
+   Again, incorrect.  Decisions to fire were made long before we had computers
+-- they are not required to make these decisions.  Data collected by human
+observers can be and is interpreted incorrectly as well.  In addition, use of a
+computer system does not preclude the consideration of other data points.
+Friendly and/or non-hostile craft have been destroyed in the past in cases
+where there was no computer involved.  By the way, the use of the word
+"retaliatory" is incorrect here.  The decision to fire in this circumstance is
+not an act of revenge, but rather of self protection.
+
+   It is a hard reality that decisions must sometimes be made in the midst of
+chaos, with few or unreliable data points.  The presence of computers does not
+change this.  Computer systems have been involved in cases where the outcome
+was not as desired.  There have also been many cases where similar mistakes
+were made without the use of computer systems.  The banishment of computers
+from critical systems will not stop such the occurrence of such errors.
+
+------------------------------
+
+Date: Wed, 19 Sep 90 15:43:55 -0700
+From: stevenp@decwrl.dec.com (Steven Philipson)
+Subject: expert systems in battle (Jeff Johnson, RISKS-10.39)
+
+Jeff Johnson <jjohnson@hpljaj.hpl.hp.com> writes:
+
+>The captain of the Vincennes was faced with a decision that had four
+>possible outcomes:
+
+>  1. Destroy approaching plane; plane is hostile (CORRECT OUTCOME)
+>  2. Destroy approaching plane; plane is not hostile (ERRONEOUS OUTCOME)
+>  3. Don't destroy approaching plane; plane is hostile (ERRONEOUS OUTCOME)
+>  4. Don't destroy approaching plane; plane is not hostile (CORRECT 
+>     OUTCOME)
+
+   This is an interesting set of rules, but it does not reflect the rules that
+were in use in the Gulf.  The above rules assume certainty in the
+identification of aircraft.  Actual rules are based on probable identification.
+
+   This can be seen directly in the transcripts from the Vincennes, where crew
+members used terms such as "probable hostile" and "possible comm-air".  The
+captain of the Vincennes had a primary responsibility to protect his ship.  In
+this case, given a "probable hostile" aircraft on a probable attack profile,
+the correct decision is to fire.  What's more, the destruction of a non-hostile
+aircraft is NOT an erroneous outcome.  This isn't to say that it isn't a
+terrible tragedy -- it is.  It is however, a correct action given the military
+doctrine in use.
+
+   US fighter pilots in World War II made a point of staying well clear of ALL
+ships (not just enemy vessels) as they were likely to be fired upon if they got
+too close.  The pilots knew that the rule of operation for the ships was
+"better to shoot down a friendly aircraft in error than to lose a ship".  The
+captain of the Vincennes was operating by the same rule.  This was a major
+factor in his being found to have made the correct firing decision.  Whether
+this value judgment is a good one or not is a completely different question.
+
+>  Military personnel have, by joining or accepting induction into 
+> armed service, accepted certain risks. Civilians have not.  If there
+> is any doubt whatsoever that the approaching plane was hostile, the
+> Captain should have decided not to destroy it, accepting the risk of
+> outcome #3, i.e., that his ship might come under attack (Note:  not
+> even necessarily that his ship or crew would sustain any injuries).
+
+   These are reasonable statements, but irrelevant.  We can argue about what
+the rules of engagement should have been, and even whether either US warships
+or civilian traffic should have been there at all, but that will not change the
+situation that occurred nor rules that were in effect.  The rules did not state
+"fire only if *sure* of hostile intent", but rather "US warships will fire to
+protect themselves if threatened".  Part of the reason for this is that the US
+had already suffered casualties in the Gulf in the case of the Stark.  The
+board of inquiry found that the captain acted in accordance with the rules and
+his orders.
+
+   I heartily recommend that all persons who are concerned with the issues of
+computer systems in critical applications read the Vincennes report.  Many
+insights can be gained through examination of the performance of both humans
+and machines.  There is much of value here for those who design systems,
+whether they include humans, computers, or both.
+
+------------------------------
+
+Date: 20 September 1990 1316-PDT (Thursday)
+From: thode@nprdc.navy.mil (Walt Thode)
+Subject: Re: Expert system in the loop (Whose fault was the Vincennes...?)
+
+There seems to be a fair amount of interest about who is to blame for the
+mistaken destruction by the USS Vincennes of a civilian airliner.  There are
+various points of view.
+
+Clifford Johnson (in RISKS-10.39) suggests that 
+>                         (...) it cannot be disputed that a mistake
+> was made.  The Pentagon found no human responsible for it, so it
+> must have been a mechanical error.  (Recently, Captain Rogers was
+> awarded a special medal of honor for his courage in commanding the
+> Vincennes through the shootdown.)
+
+I hope he meant the above with considerable tongue in cheek.  Suggesting that
+the Pentagon's findings in a controversial case like this would be altruistic
+is naive at best.  A possible indicator of the Pentagon's actual response is
+that Capt. Rogers, despite his impressive credentials up to the time of this
+tragedy, is now unlikely to be promoted to the Flag rank (Admiral) that was
+probably a foregone conclusion before this incident.  (This is not necessarily
+a logical decision, however; the Navy tends to sidetrack any career that
+becomes besmirched with controversy or scandal, and the Captain is always
+responsible for the events in his command, even when he in fact often may have
+little control.)
+
+Johnson's further comment is right on:
+>                                      The assertion that humans have
+> time to meaningfully evaluate the computers' information in a few
+> minutes is patent nonsense (as proven by the Vincennes) - all
+> humans can do is to *gamble* whether the computers (or their readings
+> of the computers' consoles) are right, and so they act as no more nor
+> less than randomizing agencies - i.e. one would get the same level
+> of "judgment" by card shuffling.
+
+An important issue here is not mentioned.  Systems are designed by people, and
+often people do not design man-machine interfaces very well.  The interface
+should maximize the chances of making a good decision in a case like this, and
+should minimize the chances of making a bad one.  It's often the case that
+systems are designed, developed, and fielded with poor man-machine interfaces.
+(I don't have extensive knowledge of the AEGIS or other Vincennes systems, so
+I'm not in a position to judge them in particular.)  I suspect that there is
+much to yet be learned about what comprises a good man-machine interface in
+instances like this one.
+
+--Walt Thode   thode@nprdc.navy.mil   {everywhere_else}!ucsd!nprdc!thode
+
+------------------------------
+
+Date: 	Wed, 19 Sep 90 15:28:56 EDT
+From: Peter Jones <MAINT@UQAM.bitnet>
+Subject: Railway Safe Working - large analogue systems (skill, RISKS-10.36)
+
+>outside the train (by climbing down to the trip and manually resetting it).
+
+In the Canadian climate, this would introduce a risk of the driver slipping and
+falling in conditions of snow, ice or sleet. Not a procedure to be taken
+lightly.
+
+>...   signal box interlocks are implemented by requiring two largish pieces of
+>metal to occupy the same space for conflicting events to occur. The only
+>failure mode here is severe deformation of the metal rods.
+
+Or a failure in the linkage to the signal.
+
+>                                    These drop in sequence at a rate which
+>reduces the train speed to around 20 km/h.
+
+I think the elevated in Chicago has (or had in 1970) a system like this to
+regulate train speed at an 'S' bend around 39th South. A train would encounter
+a red at the the start of the 'S', which would change to yellow as the train
+arrived. Then, there was a series of signals that would change from red to
+yellow as the train proceeded slowly through the 'S'.  Speed control appeared
+to be done manually under the driver's control.
+
+>long distance diesels have a vigilance button which must be pressed every
+>sixty seconds to keep the brakes off. It's a good thing that brakes are
+>applied automatically because it is commonly believed that old hands can press 
+>this button even when sleeping. I've observed the automaton-like way that 
+>drivers press this button and I have no doubt that it happens.
+
+In 1968, I saw a film of the SNCF (French Rail) workers explaining their
+dead-man system. Originally, it was a kind of steering wheel that had to
+be held up. When the SNCF discovered the drivers were holding it up with
+a piece of string, they changed the system so the driver had to raise the
+steering wheel every 20 seconds. Drivers found this exhausting. I'm
+wondering if a less obtrusive system couldn't be used. Maybe a throttle
+with a light feel but requiring almost continuous holding. The safety
+system would detect the natural "dither" of the driver's hand.
+
+I'm also surprised at the number of cars fitted with cruise control, and
+NO vigilance system. Some drivers, to avoid the hassle of re-engaging the
+cruise control, allow themselves to almost plough into the next vehicle,
+rather that reduce speed slightly. Many controls will maintain the
+preset speed, but seem to lack a throttle-like means of reducing speed
+by say 5-10 kph.
+
+>Mind you, it all seems very safe compared to Canada where express passenger
+>trains are managed using CTC and walkie-talkie radios. I've seen passenger
+
+The Mulroney government seems to be using a probabilistic approach: make
+accidents less likely by cutting back drastically on the number of
+passenger trains :-)
+
+Peter Jones  UUCP: ...psuvax1!uqam.bitnet!maint (514)-987-3542
+
+------------------------------
+
+Date: 19 Sep 90 23:43:48 GMT
+From: hollombe@ttidca.tti.com (The Polymath)
+Subject: Re: I'm 99% Sure You're A Crook!!! (mmm, RISKS-10.39)
+
+}[To me, it seems like there is quite a range of quality in the machines used
+}to verify my credit.  Some are solid-looking hardware from NCR or IBM with
+}expensive keyswitches and plasma displays.  Others are cheapo stuff with LED
+}displays and calculator-style keypads.  I guess PW went with the system from 
+}Ma & Pa Kettle POS Systems.  mmm]
+
+This is more a marketing risk than a computer risk, but still something to
+consider. "Solid-looking hardware" with apparently expensive switches and
+displays may well mask shoddy hardware and software internals.  I've
+particularly noticed this technique in electronic products from a certain
+Japanese manufacturer.  Their smaller boom-boxes, for example, have slabs of
+metal bolted to the inside of the plastic chassis, apparently serving no other
+purpose than to give the feel of solid, heavy quality to an otherwise cheap and
+mediocre piece of equipment.
+
+With the advent of systems like NeXT that make the building of impressive
+graphic user interfaces relatively simple, we need to learn to worry about what
+internal software sins those GUI's cover.
+
+(A related risk has been around for some time: Modern word processors and
+printers make rough drafts look like finished products).
+
+The Polymath, Jerry Hollombe, Citicorp, 3100 Ocean Park Blvd., Santa Monica, CA
+90405 (213) 450-9111, x2483 {csun | philabs | psivax}!ttidca!hollombe
+
+------------------------------
+
+Date: Wed, 19 Sep 90 07:18:19 PDT
+From: "Cheap, fast, good; choose two  19-Sep-1990 1004" <minow@bolt.enet.dec.com>
+Subject: Book suggestion: Apollo, The Race to the Moon
+
+	Apollo, The Race to the Moon
+	Charles Murray & Catherine Bly Cox
+	Simon & Shuster, ISBN 0-671-61101-1
+
+RISKS folk will probably find this book interesting: it's a history of the
+Apollo project told mostly from the viewpoint of the engineers (and especially
+the flight controllers and back-room support staff). It is not a history of the
+astronauts.
+
+There is a great deal of emphasis on safety issues, including second-by-second
+descriptions of some of the emergencies: the launch-pad fire, the Apollo 11
+landing computer overload, the Apollo 12 lightning strike, and -- especially
+-- the Apollo 13 rescue.
+
+The book is journalism, not science; so RISKS readers will have to determine
+for themselves how the lessons of Apollo are applicable to their work (and how
+many have been lost since the Apollo project).
+
+I found a hard-bound edition in the remainder pile in a Cambridge (MA)
+bookstore; so you might have to dig around for it.
+
+Martin Minow				minow@bolt.enet.dec.com
+
+------------------------------
+
+Date: Tue, 18 Sep 90 12:28:11 -0700
+From: Nancy Leveson <nancy@murphy.ICS.UCI.EDU>
+Subject: Re:   Knight reference: `Shapes of bugs' (Mellor, RISK-10.40)
+
+       > However, they cross-refer another paper which describes these faults:
+       > S.S. Brilliant, J.C. Knight, N.G. Leveson: `Analysis of faults in 
+       > an N-version software experiment', University of Virginia Technical 
+       > Report No. TR-86-20, September 1986.
+
+This paper appeared in IEEE Trans. on Software Engineering, February, 1990.
+
+------------------------------
+
+Date: Wed, 19 Sep 90 09:22:13 EDT 
+From: "Harold S. Stone" <HSTONE@IBM.COM>
+Subject: ACM Conference on Critical Issues in Computing
+
+The ACM Conference on Critical Issues (6-7 November 1990, Hyatt Regency,
+Crystal City VA) is unique in the following ways:
+
+   It is a summit meeting.
+
+       The attendees will include key decision makers, IS executives,
+       researchers, and users.  AT&T, IBM, TRW, and other Fortune
+       500 companies will be represented.
+
+   It is devoted to two important practical issues
+
+       The critical issues are modeling reality and managing the complexity of
+       large systems.
+
+   It is a working meeting with audience participation.
+
+       The attendees will spend one day in working together in small groups.
+
+   It will produce an action agenda.
+
+       The joint work of the audience will identify the
+       specific problems to be attacked and who should address
+       these problems.  The output will be an agenda of actions
+       that could help to resolve the issues raised in the years to come.
+
+Besides the technical speakers listed on the program, there will be a keynote
+address by Dr. Gene Wong who is now on Allan Bromley's staff in the OSTP of the
+White House while on leave from UC Berkeley.  I am sure that you will be
+interested in his comments in regard to the government's role in setting
+strategic directions in computing for the future.  The dinner speaker will be
+Oliver Selfridge whose talk is entitled ``We can't go on programming like
+this.''  Other speakers of note on the technical program are David Parnas, Jay
+Forrester, and Stuart Dreyfus.
+
+Program:
+
+Modeling Reality Section
+
+   Speakers:  Stuart Dreyfus, Jay W. Forrester, John C. Kunz, Eleanor Wynn
+
+   Panelists: Jay David Bolter, Peter Denning
+
+Managing Complexity Section
+
+   Speakers:  David Parnas, Rod Leddy, Edward Chevers
+
+   Panelists:  Robert Charette, Peter G. Neumann
+
+       [Interested people should contact Fred Aronson at ACM HQ, 11 W 42, 
+       NY NY 10036, 212-869-7440, or send mail to issues@acmvm.bitnet .]
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.42
+************************

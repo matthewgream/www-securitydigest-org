@@ -1,0 +1,241 @@
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 12 September 1989   Volume 9 : Issue 23
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risks of RISKS: A bug in sendmail and multiple copies of RISKS-9.22 
+    (PGN, with help from Bill Sommerfeld and Jeff Schiller)
+  RF susceptibility of electronics (Pete Lucas)
+  Some background on the French Farce (Dave Horsfall)
+  Organizational Accreditation for Computer Assurance: Some Ideas
+    (Frank Houston)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Fri, 8 Sep 1989 14:44:44 PDT
+From: Peter Neumann <neumann@csl.sri.com>
+Subject: Risks of RISKS: A bug in sendmail and multiple copies of RISKS-9.22 
+
+Some of you were fortunate in receiving just one copy of RISKS-9.22, but the
+reported record thus far is TWELVE.  Apparently the mailing stumbled on a bug
+in SENDMAIL that gets activated only rarely on LONG lists (but never before for
+RISKS on the Sun CSL.SRI.COM -- although I had just added a bunch of new
+addresses before mailing out RISKS-9.23!).  
+
+The RISKS list is LONG despite my continual efforts to consolidate multiple
+addresses at the same site through redistributions and BBoards, with
+considerable volunteer help from around the net as well (for which I am
+enormously grateful -- for example, Ted Tso on behalf of MIT readers and Marc
+Shannon unwedging the BITNET LISTSERVers have been active far beyond any
+reasonable expectations).  I hope that the few of you who still get private
+copies can convert to other means of reading RISKS.
+
+Thanks to all of you who reported the multiple mailings, some even observing
+from the time stamps that the problem had to be at the CSL end.  (Surprisingly,
+nobody asked if I would CATCH 22 before it went any further.)  Unfortunately
+the repetitive mailing started happening late Wednesday afternoon, and we did
+not get a chance to kill it until Thursday morning when SENDMAIL was still
+merrily trying to send out even MORE copies!  Sorry.
+
+Yes, this is just another risk of running RISKS.  (Some of you may remember a
+few years ago getting two or three copies of one issue due to a system crash in
+the middle of processing the list.)  But for this one there may be some help.
+
+The following message from Bill Sommerfeld was very helpful.
+
+  Date: Thu, 7 Sep 89 00:10:57 -0400
+  From: Bill Sommerfeld <wesommer@ATHENA.MIT.EDU>
+  Subject: Retransmissions of RISKS Forum noticed
+
+  I noticed that we got several copies (nine, as of last count) of Risks
+  9.22 at Bloom Beacon today.
+ 
+  There is a bug in sendmail that causes it to dump core (with a longjmp botch)
+  in the middle of processing long mailing lists, with the result that the
+  addresses earlier in the list tend to get multiple copies.  	         Bill
+
+     [Bill enclosed a patch, which I omit, that was due to Jeff Schiller of
+     MIT Telecommunications.  I thought SENDMAIL users might be interested, 
+     but did not want to bother eveyone with the code.  However, Jeff's comments
+     in the code should be quite interesting to you all as an example of a
+     subtle timing problem.    Many thanks to Bill (and Jeff)...    PGN]
+
+ 	**  JIS: We change the global variable ReadTimeout to be 5
+ 	**      minutes. This variable is used by the lowlevel routine
+ 	**      sfgets to determine how long to wait for input.
+ 	**      when we get our greeting we return ReadTimeout to its
+ 	**      previous state. IMPORTANT: The older code I replaced
+ 	**      used a separate timeout (via a setjmp and longjmp)
+ 	**      this LOSES REAL BIG if the 5 minute timeout goes off
+ 	**      for then sfgets gets its stack unwound and leaves
+ 	**      a lingering event that will eventually cause a longjmp
+ 	**      to some ancient stack history, sendmail then dies horribly.
+ 	**      This usually happens only when dealing with large mailing
+	**      lists ("xpert" in this case > 200 recipients), which is
+ 	**      the LAST place you want to dump core, for then the queue
+ 	**      files are out of date and LOTS of people get a duplicate
+ 	**      copy of the message that was in progress.
+
+  [We were ready to do a major upgrade on SENDMAIL anyway, so I held off
+  on distributing this message awaiting the inclusion of the fix.  But
+  in the process of trying to rebuild our SENDMAIL, a NEW old bug was 
+  found, so I am sending RISKS-9.23 to get this news to you -- albeit with 
+  some trepidation, and with the mailing list split in twain.   I hope no
+  one gets run over by the twain.  PGN]
+
+------------------------------
+
+Date: Thu, 07 Sep 89 10:53:51 BST
+From: "Pete Lucas - NERC Computer Services U.K." <PJML@ibma.nerc-wallingford.ac.uk>
+Subject: RF susceptibility of electronics
+
+Medical electronics not RF-proof - doesn't surprise me one bit. It's not just
+the medical electronics that get troubled this way.  There was a case some
+years back where the fire alarms of a large London hospital were triggered by
+low level RF (from walkie-talkie radios operating at about 440 to 470MHz - the
+Police band).  A policeman standing in the hospital foyer could easily trigger
+the alarms if he used his radio.  The threat to life of an `accidental'
+trigerring of fire alarms and the disturbance to treatments consequent on
+patient evacuation is just as great as direct perturbation of the medical
+equipment itself.
+
+Manufacturers of electronic equipment just don't realise how RF-hostile the
+world is.  I can crash my IBM PS/2 by operating a 5-watt handheld UHF radio in
+the same room.
+                                        -=Pete=-
+
+------------------------------
+
+Date: Tue, 12 Sep 89 13:04:25 est
+From: Dave Horsfall <dave@stcns3.stc.oz.au>
+Subject: Some background on the French Farce
+
+On the off chance that no-one else has provided this, I came across
+some background information on the infamous French Farce.  Here are
+some extracts from "The Australian", Tue Sep 12, 1989:
+
+	The ministry said the mixup occurred because a central computer
+	misread magnetic bands on some 41,000 files [ mag stripes? ].
+	... the amount of the fines was not affected by the mishap,
+	meaning that speeding tickets were transformed into pimping
+	offences but carried only a F360 fine.
+
+	Motorists ticketed for failing to stop at a red light were
+	fined for "importing unauthorised vetinary medications",
+	while those whose only offence was crossing a solid white
+	line on the road were charged with "night fishing in a place
+	reserved for fish breeding".
+
+                                     [May the Farce be With You!  PGN]
+
+------------------------------
+
+Date: Tue, 12 Sep 89 13:49:45 -0400
+From: houston@itd.nrl.navy.mil (Frank Houston)
+Subject: Organizational Accreditation for Computer Assurance:  Some Ideas
+
+Some food for thought.  Some decades ago hospitals and the medical professions
+suffered credibility problems both within the health care industry and with the
+public.  The industry attempted to solve these problems through the process of
+accreditation, which has so far proved fairly successful.  I suggest that this
+model could be effective for software development.  Rather than just
+prescribing development protocols or requiring exhaustive testing, or certified
+practitioners, or relying on product history, why not combine these into a
+comprehensive evaluation?  The results could establish a basis for confidence
+that an organization produces quality software.
+ 
+Some preliminary thoughts on the model:
+ 
+ACCREDITATION MODEL
+ 
+GOAL
+ 
+     TO REDUCE THE INCIDENCE OF SAFETY, SECURITY, AND
+     "RELIABILITY" PROBLEMS IN CRITICAL COMPUTER PROGRAMS.
+ 
+INITIAL SUGGESTED ITEMS FOR EVALUATION
+ 
+     1.  Credentials (of personnel and management:  e.g.,
+education, experience, PROFESSIONAL CERTIFICATION, etc.)
+ 
+     2.  Process (of software development, a la SEI evaluation
+questionnaire)
+ 
+     3.  Product (independent evaluation and test of)
+ 
+     4.  Performance (safety and reliability records on released
+products)
+ 
+ADVANTAGES
+ 
+     Multidimensional evaluation factors (four to start) avoids
+the "single scoreboard" syndrome of maximizing the quantity being
+measured regardless of its relevance to performance.
+ 
+     Criteria are not entirely orthogonal, therefore each
+criterion provides a safety net to catch problems that one or
+more of the other criteria might miss.
+ 
+     Acquiring a significant body of data, a statistical basis
+for correlating performance with the other criteria.
+ 
+     Flexible evaluation criteria and flexible standards to allow
+for continual improvement.
+ 
+     Establishing a historical reference for measuring progress
+toward the goal, to reduce the incidence of ...
+ 
+DISADVANTAGES
+ 
+     Requires significant investment of time and effort to
+establish credibility.
+ 
+     Requires cooperation from major customers.
+ 
+     Requires a substantial corps of volunteer firms that are
+willing to fund the accreditation process by paying subsantial
+dues to the accrediting organization.
+ 
+     Requires that dues paying members be committed to the
+accreditation process, that is, be willing to accept negative
+outcomes and strive to achieve the standards set by the
+accrediting organization.
+ 
+EPILOGUE
+ 
+Such a model has worked for hospitals and health care
+organizations, the Joint Commission on Accreditation of Health-
+Care Organizations (JCAHO, formerly JCAH).  The Joint Commission
+at one time was so strong that accreditation was a significant
+factor in eligibility for Medicare payments.
+ 
+The College of American Pathologists carries on a similar
+accreditation for clinical laboratories.
+ 
+Neither of these examples is perfect, but they do work to the
+extent that they force their members to focus on important
+success factors and continually measure and report the quality of
+their products and services.  Thus, the accreditation body
+obtains a window on the norms of practice and can stimulate
+improvement where necessary.  The ultimate lever for
+accreditation is the willingness of paying customers, Medicare, to
+accept accreditation as a sufficient guarantee of quality
+service.
+
+THE VIEWS EXPRESSED ABOVE ARE MY OWN AND DO NOT IN ANY WAY REFLECT
+THE POLICIES OF THE FOOD AND DRUG ADMINISTRATION.
+
+Frank Houston, FDA/CDRH
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.23
+************************

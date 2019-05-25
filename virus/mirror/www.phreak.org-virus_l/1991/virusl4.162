@@ -1,0 +1,516 @@
+VIRUS-L Digest   Tuesday, 17 Sep 1991    Volume 4 : Issue 162
+
+Today's Topics:
+
+re: Multiple Boot Sector Infections (PC)
+Previously unknown version of Friday 13th found in Finland (PC)
+Scanners
+Yankee Doodle. (PC)
+Disinfectant and students (Mac)
+SunOS virus checker needed (UNIX) (PC)
+Re: Keypress virus and COM files (PC)
+Re: Help needed to cure Joshi virus (PC)
+Re: Extra file in F-PROT 2.00? (PC)
+Michelangelo virus info (PC)
+Preparing an Old Hard Disk (PC)
+Re: FAT Infection (PC)
+McAfee Associates anti-virus software (V82) uploaded to SIMTEL20 (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 16 Sep 91 15:37:13 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: Multiple Boot Sector Infections (PC)
+
+>From:    "Rich Travsky 3668 (307) 766-3663/3668" <RTRAVSKY@corral.uwyo.edu>
+
+>I recently had occaision to clean up a group of pcs, each having 3
+>boot sector infections (ping pong, typo, and stoned).  I wanted
+>a sample of ping pong,  but all I got was stoned (no puns intended ;)
+
+>This brings up a wuestion or two in my mind.  Stoned was the result
+>when I tried to get a sample of pong (by feeding it a disk and accessing
+>it), but disinfecting with FPROT ver 1.16, Stoned was found first.
+
+>What is the relationship (if any) between what's found in memory versus
+>what's in the boot sectors when dealing with multiple boot sector
+>infectors?
+
+Multiple infections are quite well known (a year ago Stoned & Joshi
+were popular) and quite operative given exculusive signatures and
+locations.
+
+What happens is that virus A infects a disk moving the real MBR to
+sector A' and its code into sectors A''-A'''. Virus B then infects
+moving the MBR with A to sector B' and its code to B''-B'''. Virus C
+then infects moving the MBR with B to C' and its code into C''-C'''.
+If all of these sectors (A'-A''', B'-B''', and C'-C''' are different
+the machine may work after a fashion.
+
+If you consider a 640k PC and each virus is 2k long when resident
+(Ping-Pong and Typo are 2k and Stoned is 1k according to my notes),
+a boot process will go like this:
+
+The BIOS executes POST and transfers control to the MBR (virus C)
+C executes, grabs INT 13, kicks down available memory by 2k  and
+goes resident @ segment 9F80. It then loads and transfers control
+to virus B. B grabs INT 13, kicks down available memory by 2k  and
+goes resident @ segment 9F00. It then loads and transfers control
+to virus A. A grabs INT 13, kicks down available memory by 2k  and
+goes resident @ segment 9E80. It then loads and transfers control
+to the real MBR.
+
+A floppy is inserted in drive A and accessed. Virus A (last loaded and
+first on the INT 13 chain moves the Boot Record, infects the floppy and
+chains to virus B. B moves virus A, infects the floppy and
+chains to virus C. C moves virus B, infects the floppy and
+chains to the real Int 13.
+
+A virus detector (assuming no stealth is involved) then does a memory
+SCAN and should report all three viruses in memory. Booting clean,
+a SCAN is done on the floppy and detects only virus C since most anti-
+virus products scan only the boot sectors for BSIs. A & B are on the
+disk, just elsewhere.
+
+If a viral remover is in use, it may just remove C and restore B if it
+copies the floppy boot record from where C put it. A would then be still
+connected via B. If, on the other hand, the virus remover replaces the boot
+record, A & B may be disconnected. On a floppy it is better to copy the disk
+(being careful not to reboot) and reformat it.
+
+The danger is in assuming that since the detector only reported a single
+virus on the floppy, that only one is present. This may not be true.
+
+In the case given, the fact that the STONED was reported only indicates
+that it was the last to infect the floppy (C), not that it was the only
+infection.
+
+Of course the scenario given is unlikely since the chance of encountering
+three mutually exclusive infections in the proper order is remote. I would
+suspect a specially doctored floppy created by someone with access to a number
+of viruses as the most likely vector in this case.
+
+						Sleep well,
+
+							Padgett
+
+------------------------------
+
+Date:    16 Sep 91 22:41:53
+>From:    Ari.Hypponen@hut.fi (Ari Hypp|nen)
+Subject: Previously unknown version of Friday 13th found in Finland (PC)
+
+A virus not known to the most popular virus scanners (F-PROT, SCAN and
+VIRSCAN) has been found in Helsinki, Finland. The virus infects only
+COM-files appending 440 bytes to the end of each file.
+
+The virus is apparently closely related to the "South African" family
+of viruses. It activates on any Friday the 13th, when it outputs an
+omega sign (ascii 234) on the screen and wipes out the partition
+tables of all hard drives it can find.
+
+The virus has been named "Omega". A suitable hex string for finding it
+is (in F-PROT 2.0 format)
+
+57 8B 4E 16 8B 56 18 CD 21 C3 43 3A 5C
+- --
+Ari Hypponen@hut.fi
+
+------------------------------
+
+Date:    Mon, 16 Sep 91 16:01:45 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Scanners
+
+>From:    turtle@darkside.com (Fred Waller)
+
+>Writes Bill Arnold of IBM:
+  >> Precise identification doesn't require much more space per
+  >> virus, but it does require a complete analysis of each virus
+  >> to be reliable.
+
+>But why do we need "precise identification"?
+
+Depends on your point of view. As a user, you could probably care less
+- - all that is necessary is to know that *something* has happened. But
+for the tech who comes out in response to the bleat for help, more is
+necessary.  If it is me, I try to collect all information possible
+before proceeding & then, veeerrry cautiously until I know exactly
+what we are dealing with since my purpose is to recover the machine,
+not scramble it hopelessly, and hopefully without a FORMAT.
+
+For automatic anti-viral removal software, "precise identification" is
+essential since vital information is often tucked away at specific
+offsets in the code. Information such as where the "real" Boot Record
+was stashed (for some months recovery from the Music Bug was declared
+impossible without format since the location of the boot parameter
+block was altered). Sunday-A and Sunday-B are very closely related
+except that the offset where the first ten bytes of the original
+program is stored is different.
+
+Consequently, while the user may be disinterested, to the tech,
+precise knowlege of the infection greatly speeds up recovery. Besides
+I always feel much better once I have determined exactly what we are
+dealing with.  Surprises are usually unpleasant.
+
+						Padgett
+
+------------------------------
+
+Date:    16 Sep 91 20:39:45 +0000
+>From:    sylee@icaen.uiowa.edu (Shyanglin Lee)
+Subject: Yankee Doodle. (PC)
+
+Hello there:
+
+Recently I have got a very server virus problems on my PS II and PC.
+I found most of the executable files, with .COM and .EXE extensions,
+are infected by Yankee Doodle.  I am wondering if there is some
+programs which fix the infected executable files.  Could someone out
+there kindly direct me where to find the programs (if they are
+available through anonymous ftp) or which compony has such programs.
+
+Thanks in advance.
+
+Sam Lee
+Department of IE
+The University of Iowa
+
+------------------------------
+
+Date:    Mon, 16 Sep 91 18:49:00 -0400
+>From:    <LISSA@WHEATNMA.BITNET>
+Subject: Disinfectant and students (Mac)
+
+>From:    Joe McMahon <XRJDM@SCFVM.GSFC.NASA.GOV>
+>
+>The best Mac anti-viral, Disinfectant, is free. Why don't students
+>have it?  Is there someone there to whom I can send a copy?
+
+Joe,
+
+I am a student manager for the Academic Computing Center at Wheaton
+College, where all we use in our lab are Macintosh Classics and LC's.
+
+It has been my experience that, for as long as I have worked here,
+that administrations of colleges try to keep the subject of viruses
+low-key. They don't want to worry the students, and they don't want to
+admit they have a problem.
+
+In addition, up until this past summer, our computing center used
+Virex on our machines, and didn't tell any students who bought
+computers about any type of virus protection. Fortunately, this
+summer, they switched to Disinfectant.
+
+The user group on campus (of which I am also a member) is trying to
+educate more students about Disinfectant and viruses, but it is tough.
+We can't get a listing of students who have purchased Macs, so we have
+to try and catch them as they leave...not an easy task.
+
+I think the response to the viruses is paranoid. Their way of thinking
+must be along the lines of "if we tell them, they might try to write
+their own viruses."
+
+Yes, Disinfectant is free...but on a college campus, where things like
+viruses are spoken of, it's difficult to get the word around.
+
+The opinions stated in this letter are my own, and do not in any way,
+reflect the opinions, thoughts, or feelings of my administration.
+Anything I say is my own fault! :)
+
+Melissa Jehnings
+Student Manager | Secretary
+Academic Computing Center | Computer Users' Group
+Wheaton College
+Norton, MA
+BITNET: LISSA@WHEATNMA
+        WUG@WHEATNMA
+
+------------------------------
+
+Date:    Mon, 16 Sep 91 18:10:08 -0600
+>From:    John Kida (Vienna) <jhk@ssds.com>
+Subject: SunOS virus checker needed (UNIX) (PC)
+
+Looking for SUN/OS compatible Virus checker program
+
+Like many LANs , Ours Files servers are UNIX based but also support
+the MS-DOS community. I am looking for a SUN/OS binary or coding which
+can be ran by the CRONTAB automaticly at set times.
+
+It will only need to scan the MS-DOS file sectio sections or sections
+requested.
+
+Anybody have any ideas?
+Anybody working on such a program?
+
+jhk@ssds.com
+
+Yasha "John" Kida
+
+[Ed. The COPS package, among other things, does perform CRC integrity
+checks on selected binaries.  It is available for free by anonymous
+FTP on cert.sei.cmu.edu in pub/cops, and runs on most any UNIX
+system.  Could be a good place to start.]
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 00:26:50 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Keypress virus and COM files (PC)
+
+CCDBH@cc.newcastle.edu.au writes:
+>The strain of the Keypress virus that I have had to deal with does
+>infect .com files including COMMAND.COM. Maybe McAfee's should
+>re-think their scan approach for keypress?
+
+It's been re-thought for the new release.  V82 (released this AM)
+should fix any problems removing the KeyPress.
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+>Bruce Hodge
+>Computer Support Officer
+>Newcastle University Australia
+>CCDBH@CC.NEWCASTLE.EDU.AU
+
+- --
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com  (business)
+4423 Cheeney Street	 | FAX   (408) 970-9727	| aryehg@darkside.com(personal)
+Santa Clara, California	 | BBS   (408) 988-4004	|
+95054-0253  USA		 | v.32  (408) 988-5190	| CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | or GO VIRUSFORUM
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 00:48:10 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Help needed to cure Joshi virus (PC)
+
+Hello Mr. Ellard,
+
+It sounds like you are removing the virus from your father's hard
+disk, but are eventually reinfecting yourself by booting off of
+infected floppies.  ANY floppy (including data) inserted into the
+machine during the infection and referenced by the system will have
+the virus on it.  You will need to go through all of your floppies,
+bootable or otherwise, and check them for the virus, and remove if
+found.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+- --
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com  (business)
+4423 Cheeney Street	 | FAX   (408) 970-9727	| aryehg@darkside.com(personal)
+Santa Clara, California	 | BBS   (408) 988-4004	|
+95054-0253  USA		 | v.32  (408) 988-5190	| CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | or GO VIRUSFORUM
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 07:24:40 +0000
+>From:    ayong@nuseev.nus.sg
+Subject: Re: Extra file in F-PROT 2.00? (PC)
+
+zlsiial@cs.man.ac.uk writes:
+|> I notice that the file prot200.zip released from Simtel on August 30
+|> contains two files VIRSTOP.EXE and VIRSTOP.BIN, both 8191 bytes long.
+|> VIRSTOP.EXE runs and installs itself even if VIRSTOP.BIN has been
+|> deleted.  Is VIRSTOP.BIN therefore an unnecessary file released with
+|> the others by mistake?
+|>
+|> 			-- A. V. Le Blanc
+
+VIRSTOP.BIN is needed if you want to customised VIRSTOP.EXE program.
+You can customised it such that it will print whom to call within your
+organisation (or any other message) if it detect a virus. This is
+selectable from the main menu.
+
+ayong@nuseev
+Alan YONG
+National UNiversity of Singapore
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 10:26:10 +0600
+>From:    ry15@rz.uni-karlsruhe.de
+Subject: Michelangelo virus info (PC)
+
+Name:                  Michelangelo virus
+Aliases:               none sofar!
+Family:                Stoned virus
+First occurence:       summer 1991
+Place:                 n/a
+Type:                  bootsektor / partitiontable virus
+Length:                fits well into the code space of the partitiontable
+Operating system:      not of interest, just uses BIOS interrupts
+Version:               any
+Computer:              PCs and up
+Direct detection:      The original partition table or the original boot sector
+                       can be found in sector 7 with hard disks, sector 3 with
+                       12 bit FAT media, and sector 14 with 16 bit FAT media.
+Type of infection:     Upon boot up from an infected floppy the virus will go
+                       memory resident and infect the partition table. Any
+                       INT13 is intercepted thereafter. Any floppy A: operation
+                       will infect the disk in drive A: provided the motor
+                       was off. (This cuts excessive infection testing)
+Infection trigger:     Bootup from an infected disk will infect a computer.
+                       Usage of the floppy A: drive (read, write, or format)
+                       can cause an infection of that medium.
+Infection targets:     Partition table with harddisks and bootsectors with
+                       floppy disks.
+Interrupts:            INT 13 and INT 1A
+Payload:               Data destruction by overwriting the medium, from which
+                       the computer was booted from. (with harddisks it will
+                       overwrite sector 1..17 on head 0..3 of all tracks, with
+                       floppies sector 1..9 or 1..14 on both heads and all
+                       tracks depending on FAT type)
+Payload trigger:       Date equal 6th of Mach of any year, which is
+                       Michelangelo's birthday.
+Families:              The virus seems to be an enhanced Stoned virus.
+Removal:               Boot up from a clean disk and move the original sector
+                       to its proper location (sector 1 head 0 track 0)
+                       on some systems FAT copy 1 might be damaged, so an
+                       additional copying of FAT 2 onto FAT 1 might be
+                       necessary.
+Analysis:              Christoph Fischer
+                       Micro-BIT Virus Center
+                       University of Karlsruhe
+                       Germany
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 10:57:31 +0000
+>From:    knutt@ifi.uio.no (Knut Torgersen)
+Subject: Preparing an Old Hard Disk (PC)
+
+If I am not sure whether or not I have viruses detectable with my scan
+programs. What can I do to positively kill absolutely ALL viruses on
+my computer? Will a low-level format do?
+
++----------------------------------------------+-----------------------------+
+|If you stick a stock of liquor in your locker,|  Bart! You're no longer in  |
+|It is slick to stick a lock upon your stock.  | Sunday School. Don't swear! |
+|        Or some joker who is slicker,         |-----------------------------+
+|        Will trick you of your liquor,        |       Knut Torgersen        |
+|If you fail to lock your liquor with a lock.  |      knutt@ifi.uio.no       |
++----------------------------------------------+-----------------------------+
+
+------------------------------
+
+Date:    17 Sep 91 10:57:03 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FAT Infection (PC)
+
+HTORRES@HELENA.HQ.NASA.GOV writes:
+
+> I'd like to know if there is a possibility of a virus infection into
+> the file alocation table. I understand that boot sector viruses are
+
+Yes, it is, although it hasn's been implemented yet (to my knowledge,
+of course). It is possible for a boot/partition table infector to
+store its body in the first copy of the FAT, instead of allocating bad
+clusters.
+
+> known but I have not heard about a FAT virus. If this is true, will it
+> infect the two FATs what a re thepossibilities of losing the index.
+
+If it overwrites only the first FAT copy, you won't lose anything...
+and you probably won't even notice that something nasty has happened.
+
+> What is the repair procedure to fix the FAT if an infection occurs?
+
+Boot from a known non-infected, write-protected system diskette and
+run a non-infected copy of Norton Disk Doctor (part of the Norton
+Utilities package) - also from a write-protected diskette. It is able
+to repair such problem as unequal FAT copies.
+
+Note however, that it won't help if a virus has been especially
+designed to hide in the first FAT copy - you'll need probably a
+specific disinfector.
+
+> Please reply ASAP.
+
+Hope the above helps.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 16 Sep 91 18:56:52 -0700
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: McAfee Associates anti-virus software (V82) uploaded to SIMTEL20 (PC)
+
+I have uploaded to SIMTEL20 these files, which are now available via
+anonymous FTP:
+
+pd1:<msdos.trojan-pro>
+CLEAN82.ZIP     CLEAN-UP Version 82 Virus Disinfector
+NETSCN82.ZIP    NETSCAN Version 82 File Server Scanner
+SCANV82.ZIP     VIRUSCAN Version 82 PC/Workstation Scanner
+VCOPY82.ZIP     VCOPY Version 82 Replacement for COPY, checks for viruses
+VSHLD82.ZIP     VSHIELD Version 82 Infection Prevention TSR
+
+A brief summary of the updates:
+
+49 new viruses have been added to the software, bringing the number of
+computer viruses to 297, or counting variants (who doesn't these
+days), 893.
+
+The VIRUSCAN and CLEAN-UP programs have had a /MAINT option added to
+them to scan/clean DOS 4.0+ disks that have been damaged by a DOS
+3.x-based boot sector virus.
+
+The VIRUSCAN, VSHIELD, and NETSCAN programs have had the /CHKHI option
+added or improved to scan all of memory between 0 and 1,088Kb, this
+includes system memory from 0-640Kb, upper memory from 641-1024Kb, and
+high memory from 1025-1088Kb.
+
+10 new viruses have been added to the list of viruses that can
+be successfully removed by CLEAN-UP.  They are the Anti-Telefonica
+[A-Vir], Curse [Curse], December 28 [D28], Miky Loves Bolivia [Miky],
+Mosquito [Mos], R11 [R11], Sunday-2 [Su2], and Tokyo [Tok] viruses.
+
+We have also established the Computer Virus Help Forum on CompuServe.
+Updates, announcements, and technical support are available through
+the Forum.  An Introductory Membership application is included in the
+.ZIP files for all of the programs.  One does not need to be a
+registered user to access the Forum.  The Computer Virus Help Forum
+can be accessed by typing "GO VIRUSFORUM" at any ! prompt on
+CompuServe.
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - -
+McAfee Associates        | Voice (408) 988-3832 | mcafee@netcom.com (business)
+4423 Cheeney Street      | FAX   (408) 970-9727 | aryehg@darkside.com(personal)
+Santa Clara, California  | BBS   (408) 988-4004 |
+95054-0253  USA          | v.32  (408) 988-5190 | CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | or GO VIRUSFORUM
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 162]
+******************************************

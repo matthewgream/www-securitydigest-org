@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use GD::Graph::Data;
+use GD::Graph::linespoints;
+my ($datas) = GD::Graph::Data->new();
+$datas->read(file => "look_security.txt", delimiter => ",") || die("cannot read data: $!");
+my ($graph) = GD::Graph::linespoints->new(640, 480);
+$graph->set(
+	x_label => "x",
+	y_label => "y",
+	title   => "title",
+	y_max_value => 1000,
+	y_tick_number => 10,
+	y_label_skip => 5
+);
+my ($gdata) = $graph->plot($datas);
+open FILE_IMG, ">look_security.png") || die ("can't open: $!");
+binmode FILE_IMG;
+print FILE_IMG $gdata->png;
+close FILE_IMG;
+
+

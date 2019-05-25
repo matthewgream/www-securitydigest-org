@@ -1,0 +1,266 @@
+VIRUS-L Digest              Friday, 21 Apr 1989         Volume 2 : Issue 95
+ 
+Today's Topics:
+Administrative trivia
+Reading the boot block (PC)
+Virus disassemblies (PC)
+Virus Cookbook for MS/PC-DOS (PC)
+New document for anonymous FTP
+ 
+---------------------------------------------------------------------------
+ 
+Date:    Thu, 20 Apr 89 16:36:44 EDT
+From:    luken@ubu.cc.lehigh.edu (Kenneth R. van Wyk)
+Subject: Administrative trivia
+ 
+Just a bit of trivia for you all.  VIRUS-L turns 1 year old this
+Saturday, April 22, 1989.  We're now up to about 1175 direct
+subscriptions on the mailing list, and the comp.virus Usenet newsgroup
+should be available shortly.
+ 
+I think that, if nothing else, we've helped increase awareness.  That,
+in itself, is progress.
+ 
+Thanks everyone,
+ 
+Ken
+ 
+------------------------------
+ 
+Date:    Thu, 20 Apr 89 20:32:42 CDT
+From:    "Len Levine" <len@evax.milw.wisc.EDU>
+Subject: Reading the boot block (PC)
+ 
+>From:         Peter Jaspers-Fayer <SOFPJF@UOGUELPH.BITNET>
+>Subject:      CheckSum Methods of Virus Detection (PC)
+>
+>No check is made of the BOOT sector.  Which brings me to the following
+>questions:
+>
+>1) Does anyone have a similar program that DOES checksum the BOOT sector in
+>   several sections?
+ 
+The command:
+ 
+debug <filetest.go >nul:
+ 
+With the following contained in the file 'filetest.go':
+ 
+- --- begin ---
+L cs:1000 2 0 10
+r cx
+200
+n c:\boot.blk
+w cs:1000
+ 
+quit
+- --- end ---
+ 
+will put the boot block into a file 'boot.blk'.  It uses the
+system program debug.  I got this idea from the network from a
+user Forrest Gehrke (feg@clyde.ATT.COM).  Note that everything
+from the 'L' in the first line to the 't' in 'quit' must be
+included, especially the blank line before the 'quit'.  I used a
+capital L for clarity, a lower case character works just fine.
+ 
+The code does this:
+ 
+  l cs:1000 2 0 10
+ 
+This command will load the 10h sectors of the hard disk (2)
+starting with sector 0 contiguously into memory starting at
+location cs:1000.
+ 
+  r cx
+  cx:0000   (This is what the DEBUG will come back with.  That
+             message will be lost if you use the >nul:
+             command suggested.)
+  :200      (You key in the 200  for the number of bytes
+             you want to write).
+ 
+  n d:\foo   (Naming filename FOO on drive d:)
+ 
+  w cs:1000 (Write starting at address cs:1000)
+            DEBUG will respond with a message saying it is writing
+            200 bytes. That message will be lost if you use the
+            >nul: command suggested.
+ 
+  q         (quit DEBUG)
+ 
+Any errors that I made are of course my own, not his.  The file
+'boot.blk' can then be tested by the usual means.
+ 
+Note that a virus that affects every read made from the disk,
+detects an attempt to read the boot block, and passes you a copy
+of the good boot block instead of the infected one, will defeat
+this.  If so, a very well written virus was encountered.
+ 
++ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+| Leonard P. Levine               e-mail len@evax.milw.wisc.edu |
+| Professor, Computer Science             Office (414) 229-5170 |
+| University of Wisconsin-Milwaukee       Home   (414) 962-4719 |
+| Milwaukee, WI 53201 U.S.A.              Modem  (414) 962-6228 |
++ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - +
+ 
+------------------------------
+ 
+Date:    Thu, 20-Apr-89 17:11:42 PDT
+From:    portal!cup.portal.com!Gary_F_Tom@Sun.COM
+Subject: Virus disassemblies (PC)
+ 
+Earlier this month, Jim Goodwin gave me a file containing numerous
+virus disassemblies and asked me to forward it to the researchers
+subscribing to VIRUS-L.  I consulted with Ken van Wyk on this, knowing
+that the distribution of virus disassemblies is a rather sensitive
+issue.  Ken graciously offered to allow Jim to post a message to
+VIRUS-L describing his virus disassemblies and explaining how to
+contact him to obtain them.  The following is Jim's message:
+ 
+ ---- start of forwarded message ----
+Original-Date: 04/19/89 12:03:15
+Original-From: JIM GOODWIN
+ 
+Mr. van Wyk: I appreciate your position on the distribution of
+disassembled viruses, and while we differ somewhat in our opinions on
+this issue, it was very gracious of you to express your respect for my
+own position.  I think we can gain a great deal from a detailed
+analysis of existing viruses, both from an antiviral development
+standpoint and from a psychological standpoint.  Much can be discerned
+about the nature of a perpetrator's mind from an analysis of his code.
+I have just finished the disassembly of the 1704 virus, for example,
+and can now tell you quite a bit about the perpetrator of this virus.
+The virus was surprising in a number of respects.  It has two levels
+of encryption, which made it extremely difficult to disassemble, and
+it has the most advanced activation mechanism I have yet seen in a
+virus. The activation involves randomizations, tests for machine
+types, tests for clock types and screen types, date checks and a host
+of other parameters.  It is also the first virus I've come across
+that will NOT infect a true IBM PC.  It will only infect clones.  The
+code to test for the true blue IBM machine was quite simple, and
+follows:
+ 
+.     (Checks copyright at ROM address 0F000:0E008H)
+.     MOV   CS:[BX+DS:161H],AX
+.     MOV   CS:[BX+DS:163H],ES
+.     MOV   AX,0F000H
+.     MOV   ES,AX
+.     MOV   DI,0E008H
+.     CMP   WORD PTR ES:[DI+6], 4249H   ; Check 'IB'
+.     JNZ   A_CLONE
+.     CMP   WORD PTR ES:[DI+8],4DH      ; Check 'M'
+.     JZ    KILLVIRUS
+ 
+In spite of some creativity and ingenuity within this virus, there
+were some telltale signs of a programmer that had done little "system
+level" programming before.  The virus, for example, cannot infect any
+file greater than 64K in size, and is unable to infect EXE files (only
+COM files).  There is nothing inherent in the virus architecture to
+prevent it, it simply appears that the designer was unfamiliar with
+EXE header formats and felt uncomfortable with segment register
+manipulations for large files.  Also, the designer's use of interrupts
+1C and 28 appear to be very inefficient.  In spite of this, the virus
+is effective at identifying itself (through an interrupt 21 link) and
+avoiding conflicts with other memory resident processes. The telltale
+key to the sophistication level of the programmer, however, was the
+use of interrupt 21 for the infection process.  Using this interrupt,
+almost any virus protection product will be able to stop it or detect
+it.  We tried a number of products against it and they all worked,
+even Flu-shot+, which is able to catch only the crudest of viruses.
+So the designer was apparently unfamiliar with I/O techniques that
+would avoid filter detection.  All in all it is quite a schizophrenic
+virus.
+ 
+In any case, I thank you for the opportunity to post this message
+telling everyone that my virus disassembles (12 to date) are available
+to select researchers.  They may obtain them by calling Mr. McAfee's
+Homebase Virus board at 408 988 4004 and leaving me a message.
+ 
+I have read, by the way, the Virus-L message log (provided by Gary
+Tom) and found it of interest.  It seems that the work you folks are
+doing meshes well with the research done by Mr. McAfee and his team in
+California. They have been very helpful in logging infection
+occurrences and collecting live viruses.  The Sentry program by Mr.
+McAfee has also been invaluable in the collection process and should
+be used by any team that is attempting to "trap" viruses in a large
+host collection base (we have it in over 6,000 systems now and it has
+caught us a total of 31 new viruses).  He has just made the program
+public domain so there's no excuse for anyone not to use it.
+ 
+I would also like to take this opportunity to thank Gary Tom for his
+tireless assistance in forwarding information between us.
+ 
+If I can be of any assistance in explaining any of the material that
+you already have, then please feel free to contact me.
+ 
+Jim Goodwin  From the Homebase Virus BBS
+ 
+408 988 4004
+ 
+ ---- end of forwarded message ----
+ 
+I am mailing John McAfee's Sentry program to Ken in uuencoded ARC
+format so that it can be considered for addition to the
+lll-winken.llnl.gov and LISTSERV archives.  It is available for
+downloading from John's Homebase BBS.  John also has a virus message
+section on his BBS that he has recently opened up for public access;
+VIRUS-L subscribers are invited to call up his BBS and check it out.
+ 
+Gary Tom, Tandem Computers Inc., Cupertino, CA
+garyt@cup.portal.com
+sun!portal!cup.portal.com!garyt
+ 
+[Ed. Sentry is now on lll-winken.llnl.gov for anonymous FTP in the
+file ~ftp/src/pc/sentry.arc.  Thanks!]
+ 
+------------------------------
+ 
+Date:    19 April 89, 10:43:20 EDT
+From:    <MTSJMC@GSUVM1.BITNET>
+Subject: Virus Cookbook for MS/PC-DOS (PC)
+ 
+I have a problem. I would like to modify the behavior of a .EXE file
+to solve it. I believe that the techniques for doing this are the same
+as those which a virus might employ in its effort to infect such a
+file.  "Infecting" .COM files is simple enough, but the particular
+program I would like to modify is a .EXE file.
+ 
+The program is TELIX, a pretty good little shareware communications
+program which, to my constant irritation, does not support F11 and F12
+on the enhanced keyboard. I can write the patch to fix the keyboard
+problem, but I don't know how to infect the .EXE file with the
+solution.
+ 
+If one of you kind folks could tell me how a virus program propagates
+itself to a .EXE file, I promise not to use the information for
+unscrupulous purposes. (I'm not a mad scientist. I just want to
+install a patch.)
+ 
+                            Hopefully,
+                            Jeff Clough
+ 
+Programmer for the august body of the Computer
+Center of Georgia State University.
+MTSJMC@GSUVM1.BITNET or 404-651-4537.BELLNET
+ 
+------------------------------
+ 
+Date:    Fri, 21 Apr 89 08:38:12 EDT
+From:    luken@ubu.cc.lehigh.edu (Kenneth R. van Wyk)
+Subject: New document for anonymous FTP
+ 
+I've just placed the following virus paper on lll-winken.llnl.gov for
+anonymous FTP:
+ 
+Developing Virus Identification Products
+by Tim Sankary
+ 
+The filename is ~ftp/virus-l/docs/identify.txt.  Thanks, Mr. Sankary.
+ 
+Enjoy,
+ 
+Ken
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

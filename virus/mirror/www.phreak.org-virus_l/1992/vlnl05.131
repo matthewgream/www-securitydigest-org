@@ -1,0 +1,793 @@
+VIRUS-L Digest   Tuesday, 21 Jul 1992    Volume 5 : Issue 131
+
+Today's Topics:
+
+WARNING - new viruses, Monkey.1 and Monkey.2 (PC)
+WARNING - Virus Creation Laboratory (PC)
+WARNING - New Virus Analysis, NPOX (PC)
+VET as good as Viruscan? (PC)
+vshield 93b & netware 3.1 driver (PC)
+Dark Avenger query (PC)
+Green Caterpillar (PC)
+Re: 696/Scr2/Enemy (PC)
+McAfee Products (PC)
+a report on a viral infection (PC)
+Re: Quick antiviral comparison (Mac)
+VAX virus list? (VAX/VMS)
+Methods of Virus Defense [Part 2-- Clean Boot Disks]
+Jerusalem virus part 1 (CVP)
+New files on eugene and beach (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 20 Jul 92 10:10:09 +0100
+From:    "Tim Martin; FSO; Soil Sciences" <martin@cs.ualberta.ca>
+Subject: WARNING - new viruses, Monkey.1 and Monkey.2 (PC)
+
+Virus Name:  MONKEY.1, MONKEY.2  (Empire variants)
+V Status:    New
+Discovery:   February, 1992
+Symptoms:    Memory reduction, hard drive partitions not accessible on
+             floppy bootup.
+Origin:      Alberta, Canada
+Eff. Length: 512 bytes
+Type Code:   BPRtS (Boot and Partition table infector - Resident TOM -
+             Stealth)
+Detection:   CHKDSK, F-PROT 2.04, CHKSEC from Disk Secure 1.15, KILLMONK
+Removal:     Cold boot from clean, write-protected floppy, replace MBR (hard
+             disk) or Boot Sector (floppy).
+
+General Comments:
+The Monkey viruses are Main Boot Record / Boot Sector infectors,
+derived from the Empire D virus.  Two variants of the Monkey virus
+have been identified: their most obvious difference is in the initial
+bytes at offset 0:
+Monkey.1:    E9 CD 01      (JMP 02D0)
+Monkey.2:    EB 1E 90      (JMP 0020 ; NOP)
+
+Both variants keep the original sector's data at offset 03h - 1fh.  In
+boot sectors, this region contains data required to identify the
+diskette format.  This solves the problem noticed with earlier
+variants of Empire, whereby infected 720k diskettes were sometimes
+unreadable.
+
+The Monkey viruses take 1k from the top of memory.  When active, total
+memory will be reduced by 1024 bytes.
+
+The Monkey viruses use stealth to protect both the MBR and diskette
+boot sectors.  When active in memory, Int 13h calls cannot access the
+infected sector of either hard disks or floppies.
+
+The Monkey viruses are not polimorphic.  They do not encode any of the
+virus, as was done by some of the earlier Empire variants.  But before
+saving the clean MBR or boot sector to a hiding place, the Monkey
+viruses do encode that sector, using an "XOR 2Eh".  This creates a
+problem for any disinfecting program that recover the initial boot
+sector or MBR by copying it from the hiding place.
+
+When a hard disk is infected, the encoded MBR is put at side 0,
+cylinder 0, sector 3.
+
+When a floppy diskette is infected, the original boot sector is placed
+in the bottom sector of the root directory.  This means directory
+entries will be lost only if the root directory is nearly full -- more
+than 96 entries on double density diskettes, or more than 208 entries
+on high density diskettes.  The virus is designed to identify only the
+four most common diskette formats.  If the diskette is not of a
+recognized format, the boot sector is put on side 1, sector 3.  I have
+no idea what would happen to a 2.88Mb diskette, but I suspect the
+virus would damage the File Allocation Table, causing loss of data.
+
+The Monkey viruses do not put any messages to the screen at any time,
+but the virus code does contain, encrypted, the string "Monkey",
+followed by bytes 1992h.  It may be significant that the chinese Year
+of the Monkey began in February 1992.
+
+The most remarkable characteristic of the Monkey viruses is that they
+were designed as an attack on Padgett Peterson's "Disk Secure"
+product.  When a computer is booted from an infected diskette, the
+virus first checks whether Disk Secure is on the hard disk.  If it is,
+the virus puts itself in sector 2, rather than sector 1, and slightly
+modifies Disk Secure, so that Disk Secure will load the virus after
+Disk Secure has checked the system and loaded itself.  The monkey
+viruses install themselves and above Disk Secure, in memory, at offset
+200h.
+
+The Monkey viruses do not save the partition table data in place, so
+if an infected system is booted from a clean boot disk, DOS claims to
+be unable to access the hard drive partitions.  A DIR C: command will
+return "Invalid drive specification".
+
+Detection:
+Of the popular virus scanning products, only F-PROT 2.04 finds the
+Monkey viruses, calling them a "New variant of stoned".  It will
+identify the virus in memory as well.  The F-PROT Virstop driver does
+not recognise the Monkey viruses, on boot-up.
+
+Disk Secure v. 1.15a (ds115a.zip) has a version of CHKSEC that will
+notice the presence of the Monkey viruses.  Notice that Disk Secure
+itself will not detect the infection: it is important that the CHKSEC
+command be called from the autoexec.bat file.
+
+The simplest detection still involves recognizing a 1k decrease in
+memory.  CHKDSK and MEM will return 1k less "total conventional
+memory" than normal.
+
+A special program to find and remove the Monkey viruses, called
+KILLMONK, has been written at the University of Alberta.  I hope to
+make this available to the anti-virus community shortly.
+
+Removal:
+The undocumented /MBR option of FDISK does remove the Monkey virus
+from the MBR, provided the computer was booted from a clean floppy,
+but it does not restore the correct partition table values.  The
+problem is that the partition table is not in place in sector one: the
+table is encoded, in sector 3.
+
+To clean a hard disk: If you have previously saved a copy of the clean
+MBR, then this can be restored.  (Many anti-virus products have an
+automated way of doing this.)  If you don't have a copy of the
+original MBR, and don't know what values your partition table should
+have, then the KILLMONK program may be what you need.
+
+To restore diskettes: Padgett Peterson's FIXFBR works very well,
+though it doesn't recognize that the disk is infected.  Another
+alternative is the KILLMONK program.
+
+Scan String:
+The following hexidecimal string is in both variants of Monkey.  It is
+from the code the virus uses to recognize itself.
+   26 81 bf fa 01 19 92 c3 26 81 bf 19 01 50 61
+
+Tim
+
+ -------------------------------------------------------------
+  Tim Martin                   *
+  Spatial Information Systems  *   These opinions are my own:
+  University of Alberta        *      My employer has none!
+  martin@cs.ualberta.ca        *
+ -------------------------------------------------------------
+
+------------------------------
+
+Date:    Mon, 20 Jul 92 10:11:55 +0100
+From:    "Tim Martin; FSO; Soil Sciences" <martin@cs.ualberta.ca>
+Subject: WARNING - Virus Creation Laboratory (PC)
+
+I have acquired a rather disturbing new software package, that is
+apparently available from some of the virus BBSes.  It is called the
+"Virus Creation Laboratory" v 1.00, (c) 1992 Nowhere Man and [NuKE]
+WaReZ.  The package includes the V.C.L. itself, a development
+environment written in Borland C++ and styled after the Borland
+Integrated Development Environment, MS-Windows .ico and .pif files,
+surprisingly well written documentation, and eight example viruses and
+trojans.
+
+The VCL makes virus writing a matter of picking options from pull-down
+menus.  Infection type, encryption, etc., can be selected, and a large
+range of nasty effects and conditions can also be selected.  The
+package will create MASM-compatible assembler code, and if an
+assembler is available will optionally create an executable .com file.
+The package can make *.com infecting viruses, companion viruses,
+trojans, and time-bomb object files for linking into software
+projects.
+
+The disturbing thing is that with this package any beginning DOS user
+can create working viruses.  This kind of a virus development package
+was predicted by Vesselin and others some months ago, when the MtE
+first showed up.  In fact it isn't the first attempt at such a
+package, I gather (from the documentation), but it is (to my
+knowledge) the most "user-friendly".
+
+Fortunately the viruses created by VCL v1.00 are pretty simple
+viruses.  The package cannot create viruses that stay in memory, and
+cannot create *.exe infectors.  The encryption options are rather
+simple, not nearly as complex as the MtE encryption routines.
+Unfortunately Nowhere Man hopes to improve future releases of the
+software, adding *.exe infecting abilities, better encryption, and TSR
+ability.
+
+Of the eight demo viruses included in the package, F-PROT 2.04
+suspects three of being variants of Vienna.  Using the heuristics
+option, F-PROT identifies 7 of the 8 as being suspect.  Scan v93
+doesn't identify any of the programs as viruses.
+
+I suspect it will not be hard for the writers of scanners to find
+search strings and algorithms to identify all viruses made by VCL.  It
+took about 10 minutes, with DEBUG, using carefully chosen
+"unassemble", "go", "trace" and "search" commands, to find the ascii
+code for all the assembler code output the VCL uses.
+
+It is interesting to note that Nowhere Man has the gaul to expressly
+forbid any disassembly of his code, or the use of any binary strings
+produced by his program for the purposes of scanning for viruses
+created by the package.  Yah, right, Nowhere Man.  Go ahead, sue me.
+
+Tim
+
+ -------------------------------------------------------------
+  Tim Martin                   *
+  Spatial Information Systems  *   These opinions are my own:
+  University of Alberta        *      My employer has none!
+  martin@cs.ualberta.ca        *
+ -------------------------------------------------------------
+
+------------------------------
+
+Date:    19 Jul 92 20:01:37 -0400
+From:    ESSMAN <74656.557@CompuServe.COM>
+Subject: WARNING - New Virus Analysis, NPOX (PC)
+
+Preliminary Analysis of a New Virus -- Eric J. Essman
+_____________________________________________________
+
+Proposed Names:                 NPOX or 963
+
+Place of Origin:                Unknown
+
+Discovery:                      Ft. Lee, N.J. USA (Seen in the Wild)
+				July, 1992
+
+Type of Virus:                  COM (including COMMAND.COM) and EXE File
+Infector
+
+Memory Status:                  TSR taking 1024 bytes of conventional memory.
+				Full Stealth
+
+Text Strings:                   NPOX; Evil Genius V2.0
+				R.S/NuKE C:\COMMAND.COM
+
+File Size increase:             963 Bytes
+
+Symptoms:                       COM and EXE growth by 963 bytes though not seen
+				while virus is in memory; Decrease in conventio
+nal
+				memory; Programs may fail to execute. Cross-lin
+ked
+				files and overwritten sectors on hard disk.
+
+CPU's Tested:                   8088, 286, 386SX, 386SLC, 386DX
+
+DOS Versions Tested:            MS 3.3, MS 5.0, PC 3.3, PC 5.0
+
+File Date and time:             Unchanged
+
+Detection Method:               None
+
+Removal Method:                 Delete infected files
+
+
+For further information, contact Eric Essman at CIS 74656,557
+					     or MCI 390-1560
+
+------------------------------
+
+Date:    17 Jul 92 01:55:28 +0000
+From:    D.Ivens@deakin.OZ.AU (David H. Ivens)
+Subject: VET as good as Viruscan? (PC)
+
+I have evaluated VET anti-virus software (Australia) and it seems a very
+good alternative to the expensive Viruscan.
+
+Has anyone had problems with this software?
+
+We do not get a lot of viruses and are considering a site licence for VET.
+
+- --------------------------------------------------------------------------
+David H.Ivens,                                            Ph. 61 52 272508
+Computing & Communications Services,                      Fax 61 52 272010
+Deakin University,
+Geelong, Victoria, Australia   3217             email: davidi@deakin.OZ.AU
+- --------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Fri, 17 Jul 92 09:38:03 -0400
+From:    DUSTIN FU <C015FDH@UTARLG.UTA.EDU>
+Subject: vshield 93b & netware 3.1 driver (PC)
+
+Hello,
+
+Has anyone experienced your PC locked up when you loaded Novell
+network drivers after Vshield 93b stayed resident?
+
+Dustin Fu
+Academic Computing Services
+U of TX at Arlington
+
+------------------------------
+
+Date:    Fri, 17 Jul 92 17:00:38 -0400
+From:    "UNRECOVERABLE APPLICATION ERROR: Abort? Retry? Buy OS/2?"@hooch.CC.Le
+	  high.EDU
+Subject: Dark Avenger query (PC)
+
+  Has anyone had experience with Dark Avenger infecting files on a
+Novell Network, specifically Login.exe? We've had an infection where
+the virus appears to have infected files on the server as well as the
+workstations. Can there be something else going on? Thanks in advance.
+
+Steve Grigg
+
+------------------------------
+
+Date:    Fri, 17 Jul 92 22:24:14 -0400
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Green Caterpillar (PC)
+
+I'm having a hard time trying to locate what VSUM calls 1575-D, the
+one variant of 1575 which is supposed to show a green caterpillar on
+the screen.  I have the following files from various libraries:
+
+NCSA:
+!1892.COM (a,1) !4404.COM (b,2) !4405.COM (c,3) !4914.COM (a,1)
+!1553.EXE (c,1) !4403.EXE (b,2) !2421.EXE (b,2) !4914.EXE (a,1)
+!3314.EXE (b,2) !5646.EXE (c,1)
+CERTUS:
+!6585CRT.EXE (c,3)      !7345CRT.EXE (b,2)      !6584CRT.COM (c,1)
+!7344CRT.COM (b,2)      !7346CRT.COM (c,3)      !7347CRT.COM (a,1)
+!7348CRT.COM (a,1)      !7349CRT.COM (a,1)      !7350CRT.COM (b,2)
+AVPD:
+_1575_B.EXE (b,2)
+
+The (a,1), etc. are the Green Caterpillar variant names from Solomon
+and F-Prot.  None are d or 4, unfortunately.
+
+Could someone who knows the various library collections please tell me
+which of these samples or any other samples in which libraries
+correspond to the VSUM 1575-D variant?
+
+Also, which samples in which libraries correspond to "Loa Duong" and
+the "Slayer" family?
+
+Thanks.
+
+Jimmy Kuo                          cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    Sat, 18 Jul 92 04:04:50 +0000
+From:    mjbrown@magnus.acs.ohio-state.edu (Mike J. Brown)
+Subject: Re: 696/Scr2/Enemy (PC)
+
+
+
+>>  [tale of woe, wrapped up by this, deleted ]
+>
+>uh-oh... I feel a flame coming on...
+>
+>[Moderator's note: Please take any flames to another mailing
+>list/newsgroup.]
+
+Whoops.  Poor choice of words.  I was referring to the 'tale of woe'
+but I think it sounded like I was about to make a flame of my own.
+
+>>So, Mike, you're saying you had a disc full of pirated software, and a
+>>virus burned you? Didn't even back it up after you bought it, or clean
+>>it off?
+
+He later informed me he didn't intend this as a flame, just "salt in
+the wound" sarcasm, which I admit I rightfully deserve.
+
+>Yes.  No.  No.  Seriously intended to do both, but "twas too much trouble"
+>or so I thought.
+
+For those who aren't paying attention,
+     *** IT'S NOT TOO MUCH TROUBLE TO MAKE BACKUPS! ***
+Take it from someone who learned the hard way (but still hasn't made
+his backups -- still trying to assess the damage)
+
+>>Did you ask the seller for the manuals and originals for all that neat
+>>stuff on it?
+>
+>Yes.  The thing is, he got most of his stuff from work.
+
+ (third generation piracy... I truly deserved what I got, I know)
+ (do you guys think it's silly to quote and respond to my own article?)
+
+>Both of our systems had problems at the same time.
+
+likely path:  BBS->friend->me
+I think the bbs he got it from crashed at the same time our PC's did, too.
+
+Summary on the way...
+- --
+Mike Brown
+mjbrown@magnus.acs.ohio-state.edu
+"The Universe is a spheroid region 705 meters in diameter."
+
+------------------------------
+
+Date:    Sun, 19 Jul 92 16:06:00 -0400
+From:    james.roy@synapse.isis.org (James Roy)
+Subject: McAfee Products (PC)
+
+TO: padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+
+APP>        Lately, there has been a more disturbing trend to leave off
+APP>the explicit identification and identify whole families of viruses
+APP>simply as [GEN-P] (GENeric-Partition). Since IMHO it is important for
+APP>those cleaning up after infections to know what it is they are dealing
+APP>with once an infection has been identified, I sincerely hope that this
+APP>trend will not continue.
+
+McAfee was quoted in Australia recently as saying that he didn't
+recommend using virus cleaning utilities by anyone except those without
+back-ups.
+
+The reason he said this is that such cleaning utilities are not 100%
+effective and can damage code or leave it infected.  One is better to
+identify the infected files, wipe them and restore from back-up.  As
+for those who don't maintain effective back-ups, maybe there is a
+Santa Claus, Virginia.
+
+Generic detection is the way to go if what we are talking about is the
+ability to detect --all-- viruses known and unknown.  This is the major
+weakness of scanners - they can't identify viruses they don't already
+know about.
+- ---
+ . OLX 2.1 . This tagline is umop apisdn
+
+------------------------------
+
+Date:    Tue, 21 Jul 92 06:29:18 -0400
+From:    felscher@maplog.informatik.uni-tuebingen.de
+Subject: a report on a viral infection (PC)
+
+Report on a viral infection
+
+1.
+
+On Dec.11, 1991, I was informed that a *.com file, which I
+had sent to someone, did contain the cascade virus.
+
+Immediate check with the then most recent version of scan
+reported the presence of [1701] in about 15 recently used
+*.com files on the PC.
+
+Inspection of the commentaries for the files in TROJAN-PRO
+of SIMTEL suggested that the program "dvir1701.exe" would
+remove the virus and heal the files. Consequently,
+"dvir1701.exe" was applied, and the affected *.com files
+were restored to their original sizes. They now all bore the
+date of 11.12.91 and the same time.
+
+2.
+
+Since then, the PC in question ran without trouble. Whenever
+new software was tested, it was subjected to scan before,
+and no infections were noticed.
+
+On the morning of June 28, the PC crashed after a batch file
+had been run, loading fonts into a printer, immediately
+after booting. During the crash, there appeared "110  / ?????"
+on the screen.
+
+The PC, an old PS2/80, is operated with a complicated memory
+management. It thus was suspected that a mixup had occurred
+during the cache management, and the PC was rebooted from a
+floppy (older than 11.12.92), containing the same
+configuration. Then autoexec.bat was loaded into an editor
+and several lines, which might have been the cause for the
+crash, were commented out. When the save command of the
+editor was given, the machine crashed again.
+
+An attempt to reboot the machine did fail. When the machine
+was rebooted from the original (write protected) DOS boot
+floppy, it turned out that several filenames on drive c: had
+changed, loosing characters. Also, autoexec.bat had
+disappeared. Upon these observations, it was concluded that
+a virus might be present, and the then latest version of
+scan, 91, was gotten from a SIMTEL mirror.
+
+Scan91 reported [170X] in memory, but did not report any
+affected files. It also reported the FAT of c: to be
+incorrect.
+
+Clean91 cleared the memory. Inspection of FAT with help of
+Norton Utilities showed at least one glaring error,
+
+    216 217 218 4059 EOF 221 ...
+
+while the highest block number on c: was 485 . It was
+guessed that the correct entry should read 219, and when
+this was entered manually, the FAT was reported to be
+correct.
+
+Still, the machine did not boot from c: , and it was
+concluded that the boot sector was affected.
+
+Inspection of the commentaries for the files in TROJAN-PRO
+of SIMTEL suggested that the program "m-disk.zip" might
+clean the boot sector.  As the machine runs DOS 3.3 ,
+"md33.exe" was tried. It did restore the boot sector, and
+the machine now would boot from c: .
+
+After booting in this way, Scan91 again would report [170X]
+in memory. Checking one by one the files called from
+autoexec.bat, it turned out that
+
+(1) several of them were healed *.com files from 11.12.91
+    (e.g. a tiny file, written by myself, putting NC on F2,
+    and another one removing the numerical lock)
+
+(2) whenever the PC was floppy-booted (and Scan91 then
+    reported no virus in memory) and then one of the
+    supposedly healed *.com files was run, Scan91 again
+    reported [170X] in memory.
+
+Upon this observation, all healed *.com files from 11.12.91
+were removed and replaced by either original versions or
+newly written ones.
+------------------------------
+
+Date:    Fri, 17 Jul 92 06:47:56 -0500
+From:    werner@cs.utexas.edu (Werner Uhrig)
+Subject: Re: Quick antiviral comparison (Mac)
+
+	Regarding your article which just appeared in comp.virus.
+
+	please refrain from including Macintosh software in your
+	index as you clearly are not putting in any effort to keep
+	the information up-to-date.  As the correct information has
+	been posted by others here (comp.virus) -- and widely --
+	there is no excuse for this and those of us who are working that
+	field would appreciate it if you'd not spread INCOMPLETE,
+	OUTDATED, or PLAIN WRONG information.
+
+					---  Werner
+					(comp.sys.mac.announce moderator)
+- --
+  werner@cs.utexas.edu |  ..!uunet!cs.utexas.edu!werner | werner@UTXVM.bitnet
+
+              "Free Advice and Opinions -- Refunds Available"
+
+------------------------------
+
+Date:    Mon, 20 Jul 92 01:22:40 -0400
+From:    matrix@valinor.mythical.com (JJ Kahrs)
+Subject: VAX virus list? (VAX/VMS)
+
+This may be a totally ignorant question...BUT... Does anybody have a list of
+VMS virilli?
+                      -JJ Kahrs
+- -----
+JJ Kahrs
+Internet:  matrix@valinor.mythical.com     uucp:  uunet!valinor!matrix
+- -----
+
+------------------------------
+
+Date:    Sat, 18 Jul 92 00:08:17 +0000
+From:    007 <sbonds@jarthur.Claremont.EDU>
+Subject: Methods of Virus Defense [Part 2-- Clean Boot Disks]
+
+Why have a bootable floppy handy?  There are lots of reasons-- not all
+of them virus related!
+
+What do you do if something goes wrong with your hard disk?  This
+could range from a disastrous hardware failure to an incorrect command
+in the CONFIG.SYS file.  If the hard disk won't boot, you'll still
+need to access it, either to recover whatever you can or to fix your
+typos.
+
+Ideally, Microsoft or IBM would ship clean, write-protected bootable
+floppies with every system.  These would be produced from a computer
+that had never seen any software, except software taken directly from
+its programmers.  Unfortunately, we do not live in an ideal world, so
+we have to make do with next-best.
+
+Given these limitations, there are two real choices:
+  + You boot from your original DOS disk, and hope that it wasn't infected
+    at the factory.  Then make your "clean" floppy.
+  + You hope that your computer isn't infected and go ahead and make a
+    bootable floppy.  You can check your boot sector with DEBUG to see if
+    a non-stealth boot infector is present.
+
+As you can see, neither method completely assures that no viruses are
+present.  The first method is about as close as you can get, tho.
+
+If you KNOW that you are infected, and want to make a floppy that at
+least has a chance of being clean, you might try a program like
+Teledisk, which saves an image of a disk to a file, and vice versa.
+You could ask someone with Teledisk to copy their clean floppy to a
+file and send it to you.  I have not tested this under "battle"
+conditions, but it is possible that a boot sector virus could copy
+itself to the disk immediately after the file-->disk conversion.  DO
+NOT change to the disk (i.e. type "A:") until you have write-
+protected it!  This would almost certainly spread the infection to the
+disk.
+
+Another possibility is "patching" the boot sector with a clean boot
+sector, using only BIOS calls.  Norton's DISKEDIT can do this.  (I
+think).  Note that BIOS calls can possibly be intercepted, too.  A
+good stealth virus may have you writing to somewhere else on the disk.
+The same caution about changing to the disk applies.
+
+These are both acts of desperation, and may not be effective.  A
+better bet would be to create a boot floppy on a different computer,
+preferably one that has a small chance of being infected.  (Any
+computer without active virus protection is suspect.)
+
+How to create a clean bootable floppy:
+  + Cold boot from your DOS disk, if you have one.
+  + Run your virus scanner with a memory check.  This should catch any
+    known boot sector viruses.
+  + If it finds nothing, format your floppy and SYS it.  Don't forget to
+    copy COMMAND.COM.  (Preferably from your original DOS installation
+    disks.)
+  + Copy PKunzip (original compressed archive PKZ110.EXE) onto your floppy.
+  + Copy F-prot (original .ZIP file) onto your floppy.
+  + Cold boot from your new floppy.  (Don't write protect it yet.)
+  + Uncompress PKunzip and F-prot.  Delete the compressed files.
+  + Write protect your new floppy.
+
+The reason you copy everything from the original archives is to
+minimize the possibility of file infectors attaching to your antivirus
+software.  If you're really concerned, use VALIDATE from McAffee or
+another CRC checking program to be more certain.
+
+Validate codes: (VALIDATE 0.3)
+  + DOS 5.00 COMMAND.COM
+    47,845 bytes
+    Method 1: 77B1 Method 2: 1196
+  + PKZ110.EXE
+    85,724 bytes
+    Method 1: 962D Method 2: 0D8F
+  + FP-204A.ZIP
+    269,411 bytes
+    Method 1: 0AF5 Method 2: 175A
+
+Be careful when creating AUTOEXEC files that you do not execute ANY
+programs from your hard disk.  This kinda defeats the purpose of the
+clean floppy, since these programs could be infected.  Accessing data
+files on the hard disk should be OK.  (For example, stacked drives.
+Be sure to copy STACKER.COM onto the floppy, DO NOT use the copy on
+the hard disk.)
+
+I also find it useful to keep a clean boot floppy with nothing but
+COMMAND.COM on it.  This is used not so much for anti-virus activities
+as it is for checking for software incompatibilites.  Whenever
+something bizarre happens, like a new program refuses to load, I start
+from this disk to eliminate the possibility of TSRs interfering with
+one another.  If the program starts after rebooting, it is probably a
+software conflict.
+
+Other programs that may be useful on your floppy:
+  + A text editor for viewing F-prot's documentation.
+  + Device drivers that you NEED to have.  (STACKER.COM if you want to scan
+    your stacked drives, required video/hard disk drivers, etc.)
+  + DEBUG and/or Norton's DISKEDIT.
+
+Things you should NOT have on your floppy:
+   + A PATH statement that includes ANY hard drive letters.  (DO NOT put
+     PATH=C:\DOS in your AUTOEXEC!)
+   + Batch files in your path that access the hard drive.  This includes
+     DOSKEY aliases, etc.  I would advise anyone just to skip the path
+     statement altogether on your floppy.
+
+Wishing your computer the best of health,
+
+  -- 007
+- --
+ 000   000  7777 | sbonds@jarthur.claremont.edu
+0   0 0   0   7  |-----------------------------------------------------------
+0   0 0   0  7   |        Childhood is short...
+ 000   000   7   |                    ...but immaturity is forever.
+
+------------------------------
+
+Date:    Sat, 18 Jul 92 12:22:41 -0700
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Jerusalem virus part 1 (CVP)
+
+HISVIR3.CVP   920714
+
+                   The "Jerusalem" virus - part 1
+
+In the MS-DOS world the Stoned virus is currently the most successful
+virus in terms of the number of infections (copies or reproductions)
+that the virus has produced.  (Boot sector viral programs seem to
+have an advantage among microcomputer users.)  Among file infecting
+viral programs, however, the Jerusalem virus is the clear winner.  It
+has another claim to fame as well.  It almost certainly has the
+largest number of variants of any virus program known to date.
+
+Initially known as the "Israeli" virus, the version reported by Y.
+Radai in early 1988 (also sometimes referred to as "1813" or
+Jerusalem-B) tends to be seen as the "central" virus in the family.
+Although it was the first to be very widely disseminated, and was the
+first to be "discovered" and publicized, internal examination
+suggests that it was, itself, the outcome of previous viral
+experiments.  Although one of the oldest viral programs, the
+Jerusalem family still defies description, primarily because the
+number of variants makes it very difficult to say anything about the
+virus for sure.  The "Jerusalem" that you have may not be the same as
+the "Jerusalem" of your neighbour.
+
+A few things are common to pretty much all of the Jerusalem family.
+They are file, or program, infecting viri, generally adding
+themselves to both COM and EXE files.  When an infected file is
+executed, the virus "goes resident" in memory, so that it remains
+active even after the original infected program is terminated.
+Programs run after the program is resident in memory are infected by
+addition of the virus code to the end of the file, with a redirecting
+jump added to the beginning of the program.  Most of the family carry
+some kind of "date" logic bomb payload, often triggered on Friday the
+13th.  Sometimes the logic bomb is simply a message, often it deletes
+programs as they are invoked.
+
+David Chess has noted that it is a minor wonder the program has
+spread as far as it has, given the number of bugs it contains.
+Although it tends to work well with COM files, the differing
+structure of EXE files has presented Jerusalem with a number of
+problems.  The "original Jerusalem", not content with one infection,
+will "reinfect" EXE files again and again so that they continually
+grow in size.  (This tends to nullify the advantage that the
+programmer built in when he ensured that the file creation date was
+"conserved" and unchanged in an infected file.)  Also, EXE programs
+which use internal loaders or overlay files tend to be infected "in
+the wrong place", and have portions of the original program
+overwritten.
+
+copyright Robert M. Slade, 1992   HISVIR3.CVP   920714
+
+==============
+Vancouver      ROBERTS@decus.ca         | "Don't buy a
+Institute for  Robert_Slade@sfu.ca      |     computer."
+Research into  rslade@cue.bc.ca         | Jeff Richards'
+User           p1@CyberStore.ca         | First Law of
+Security       Canada V7K 2G6           | Data Security
+
+
+------------------------------
+
+Date:    Fri, 17 Jul 92 09:26:51 -0500
+From:    "John A. Perry" <perry@andre.utmb.edu>
+Subject: New files on eugene and beach (PC)
+
+Hello everyone!
+
+	I apologize for the delay in posting these new files to eugene
+and beach. You wouldn't believe how incredibly busy I have been
+setting up a new system. Anyway the following files have been posted
+to eugene.utmb.edu (129.109.9.21) and beach.utmb.edu (129.109.1.207).
+If you have any questions, please send email to perry@eugene.utmb.edu.
+
+asig9207.zip
+clean93.zip
+fp-204b.zip
+mteavr22.zip
+netscn93.zip
+scan93.zip
+tbscan40.zip
+vshld93.zip
+wscan93.zip
+
+Additionally I have posted some new anti-viral files for the amiga on
+eugene.
+
+- --
+John A. Perry - perry@andre.utmb.edu
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 131]
+******************************************

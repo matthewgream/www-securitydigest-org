@@ -1,0 +1,354 @@
+Subject: RISKS DIGEST 13.56
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 9 June 1992  Volume 13 : Issue 56
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Vote-by-telephone disaster in Nova Scotia (Daniel MacKay, Richard P. Taylor)
+Computer Injury and Product Liability -- RSI (Gary Chapman)
+Printer `ruined firm' (Paul Leyland)
+BBS Fraud (Tokyo) (Shaun Lawson)
+Endeavour rendezvous software fix (James Paul)
+ACM TOSEM mailing label problem (David Lamb)
+Re: Slot Machines, etc. (Tom Watson)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 13, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+   
+    **************************************************************
+    *** If you cannot read RISKS on-line, try FAX!  For info,  ***
+    *** please telephone 310-455-9300 (or send FAX to RISKS at ***
+    *** 310-455-2364).  EMail to risks-fax@cv.vortex.com .     ***
+    **************************************************************
+
+----------------------------------------------------------------------
+
+Date: Sun, 7 Jun 92 13:38:09 ADT
+From: daniel@nstn.ns.ca (Daniel MacKay)
+Subject: Vote-by-telephone disaster in Nova Scotia
+
+Well, I'm pretty close to the source, so I thought I'd write about it.
+
+Some time ago, the Liberal party of the province decided they'd use a high-tech
+voting system, fairly simple in structure.  They would contract with the local
+telco, Martime Tel and Tel, to use a phone/computerized phone system so that
+people could vote from the main leadership convention here in Halifax or from
+regional rallies (where they had banks of phones installed) or from home using
+their touchtone phones.
+
+The method:
+ 1) Each candidate got a 1-900- number.
+ 2) Each card-carrying Liberal would get a PIN and instructions.
+ 3) Come convention day, each Liberal could dial the number for the candidate
+    of his or her choice, the candidate's recorded voice would state for whom
+    that vote was about to be cast, and request the Liberal to enter the PIN.
+ 4) After entering it, the candidate would thank the Liberal for his or her 
+    vote, and hang up.  
+
+Voting was supposed to begin at 12:30, and take 90 minutes for the first
+round.  If necessary, several voting rounds could be cast during the day.
+
+Everything went wrong.
+
+A chronology:
+12:30	Voting begins.  However, voters do not get the thank you after
+	entering their PIN.
+12:35	Confusion takes the throne, and reigns for the rest of the day.
+	Some telco reps said that your vote was registered even if you
+	didn't get a thank-you.  Others said that the votes were being 
+	counted, don't worry.
+~1:00	Voting is suspended while everyone works things out.
+1:40	The electoral officer announces that all votes will be cancelled,
+	and that voting will begin again at 2:30.
+2:00	A kid with a scanner calls the Canadian Broadcasting Corporation
+	to tell them that he has a recording of the Party's conversation
+	with the telco via celphone, giving the results so far.  The CBC
+	passes the report up their hierarchy, trying to decide if it's a
+	faked report.  The kid calls back thirty seconds later with the
+	contents of *their* conversation with an Executive Producer, also 
+	by celphone.  The CBC decides to run the story.
+2:30	Voting begins again.  Callers are instructed that unless they
+	get the thank-you message, their vote has not been counted.  Some
+	people get a thank-you on the first try, others try for 20 or 30
+	times.  In a desperate move, the telco cuts down on the number of
+	circuits into the system, to no avail.  Voters now have busy
+	signals as well as no acknowledgements to deal with; they report
+	that the far end phone either sends the thank-you within a few
+	seconds, or does nothing for about ten minutes before hanging up.
+3:00	Voting is extended until 4:00.  Many voters complain that their
+	PIN is being rejected.  Officials say to never mind, just try to
+	vote again in this case.
+4:00	Less than half the conventioneers have voted.  Voting is extended
+	until 5:00.
+5:00	Voting is extended until 6:30.
+5:30	Reports begin arriving that members have been able to vote twice.
+6:30	The convention is called off.
+
+What went wrong?  System-design-wise?  Considering the PIN as a password --
+each member knew only his -- there was no UID (member number) to PIN matching.
+So anyone who knew your PIN could vote on your behalf.  So the problems of a)
+PINs being rejected, and b) voting twice could easily be explained as people
+making finger errors.  If you made a mistake with your PIN, either you got
+someone else's number and voted for them, or you got rejected -- no way to
+tell.  If you later went back and used your correct PIN after having used
+someone else's, why, that would look a lot like being able to vote twice.
+Users couldn't, of course, change their PINs.
+
+Anyone with a programmable dialler could have voted for many, many Liberals if
+he knew the format of the PINs.  Given the profoundly bad management we saw, I
+wouldn't be surprised to see them as six-digit numbers ranging from 100001 to
+107290; there were 7289 registered voters.  This prospect hasn't even been
+discussed yet in the local media.
+
+There was no backup voting system for this, the inaugural use of the system.
+The telco convinced the Party there was no need for it -- the telco (the
+newspaper report says) reminded the Party that it handles hundreds of thousands
+a call a day, and there was no possibility of the system failing.
+
+Operationally, there was either a bug in the voting software, or it was
+incapable of handling the volume of traffic, causing it to fail to thank-you
+most of the time.  And, of course, the kid with the scanner telling all just
+added icing to the cake.
+
+It was not a great day for the telco, or for the Liberal Party.  There hasn't
+been any discussion of responsibility, but there sure will be next week!  The
+convention cost hundreds of thousands of dollars, and it was *entirely* a
+wasted effort.
+
+Daniel MacKay, NOC Manager, NSTN Operations Centre, Dalhousie University,
+Halifax, Nova Scotia, Canada     daniel@nstn.ns.ca  	902-494-NSTN
+ 
+   [The METHODS paragraph above was lightly edited by PGN for clarity.]
+   [This case was also reported by Richard Taylor of AECB, Aidan Evans
+      <AE@AC.DAL.CA>, and parnas@triose.eng.McMaster.CA (Dave Parnas).]
+   [Another example of a case for public key encryption?  PGN]
+
+------------------------------
+
+Date: Mon Jun  8 13:46:17 -0800 1992
+From: atomcon/I=R/S=TAYLOR/O=AECB.CCEA@mhs.attmail.com
+Subject: Phone-in Voting in Nova Scotia
+
+   [WARNING: ATTMAIL may reject this address.  It has been doing so for weeks
+   for all RISKS mailings.  Richard included extracts from a Canadian Press 
+   article by Alan Jeffers in The Ottawa Citizen, Sunday, June 7, 1992, not 
+   included here, along with the following comment:]
+
+Again on CBC Radio this morning: there is now talk about having to run the
+entire campaign over again since the candidates who were listed as faring badly
+in the cellular telephone message are protesting that this disadvantages them
+in a new polling. A second campaign would severely drain the resources of the
+party and would put them at a disadvatage in subsequent elections.  RPT
+
+Richard P. Taylor, Ottawa, Canada.
+
+------------------------------
+
+Date: Mon, 8 Jun 92 10:14:22 -0400
+From: chapman@silver.lcs.mit.edu (Gary Chapman)
+Subject: Computer Injury and Product Liability
+
+The lead story in the business section of the New York Times 8 Jun 1992 says
+that "a surge of litigation" is expected in cases alleging repetitive strain
+injury (RSI) caused by information-based equipment, "pitting telephone
+operators, supermarket cashiers, journalists, and a wide variety of clerical
+workers against many of the world's biggest manufacturers and a number of
+smaller makers of high technology equipment."
+
+The reason for this "surge," says the article, is last week's ruling by a
+Federal Court in Brooklyn consolidating plaintiff cases of all hand, arm, and
+wrist injuries allegedly caused by using high tech equipment, especially
+keyboards.  There are 57 defendants in the case that the Court ruled on last
+week, including IBM, AT&T, Unisys, DEC, Apple, Xerox, Eastman Kodak, and
+Hewlett Packard.  The defendants also include the U.S. subsidiaries of Northern
+Telecom, Sony, NEC, Fujitsu, Samsung, and Phillips.
+
+The article says that victims of RSI have previously relied on workers'
+compensation awards, but workers' compensation does not provide for judgments
+based on pain and suffering or on negligence on the part of the defendants.
+The Federal Court's ruling last week will allow plaintiffs to sue manufacturers
+under product liability laws, which means jury trials and, potentially,
+punitive damages, although the latter seems unlikely.
+
+RSI injuries are potentially one of the largest pools of product liability
+cases in the country. The article says that the Bureau of Labor Statistics
+estimates that 45 million people use computers on the job in the United States.
+
+Consolidation of cases has risks to both sides of a product liability dispute.
+Rulings and decisions in a consolidated case can affect thousands of
+plaintiffs, so if the case comes before a judge with a tendency to rule in
+favor of one side or the other, the effects of the rulings are magnified.  The
+judge in the subject case consolidated the plaintiffs' cases in order to get a
+baseline of scientific testimony on the connection between computer equipment
+and RSI, but that could mean that companies that have taken more care in terms
+of equipment safety could be lumped with companies that haven't done anything.
+Plaintiffs have the advantages of seeing their case come to trial sooner and
+getting better testimony from top expert witnesses, as well as sharing the risk
+of failure, but they tend to get lower awards when they share a judgment or a
+settlement than if their case was successfully tried on its own.
+
+The judge in Brooklyn, Judge Jack B. Weinstein, said that the decision to
+consolidate does not rule out the possibility that the cases may be separated
+in the future, or that they could be dismissed altogether.  Judge Weinstein is
+one of the most famous figures in American product liability law, having
+presided over the consolidation of cases involving asbestos (the world's
+largest product liability pool to date), Agent Orange, and DES
+(diethylstilbestrol).
+
+Gary Chapman, Coordinator, The 21st Century Project    chapman@lcs.mit.edu
+Computer Professionals for Social Responsibility, Cambridge, Massachusetts
+
+------------------------------
+
+Date: Tue, 9 Jun 92 13:23:06 +0100
+From: Paul Leyland <pcl@ox.ac.uk>
+Subject: "Printer `ruined firm'"
+
+A printer who thought that his employers were trying to avoid paying him
+\pounds 2,000 he believed was owed hacked [sic] into the firm's computer and
+disabled the machine, Southwark Crown Court, south London was told yesterday.
+Richard Goulden, 35, a freelance typesetter of Uxbridge, west London, who had
+used a password that only he knew, refused to free the computer until the firm,
+Ampersand Typesetting Ltd, of Camden, north London, had paid up.  The computer
+refused and, after allegedly losing more than \pounds 36,000 of business
+because it did not have access to information on the computer, went bankrupt.
+The prosecution claims that Mr Goulden's action contributed to the bankruptcy.
+Mr Goulden denies illegal modification of computer material under the 1990
+Computer Misuse Act.  [_The Times_, London, 9 June 1992]
+
+------------------------------
+
+Date: Mon, 8 Jun 92 10:06:27 JST
+From: shaun@isr.recruit.co.jp (Shaun Lawson)
+Subject: BBS Fraud (Tokyo)
+
+This is a summarized translation from Japanese of a posting of H. Murakami
+(mhiroshi@tansei.cc.u-tokyo.ac.jp) regarding the use of a bulletin board
+service in Japan to commit fraud.
+
+Method:
+
+        1) The perpetrator opens a BBS.
+        2) Passwords and E-mail addresses are collected.
+        3) The passwords and E-mail addresses are used to gain
+           access to the BBS users Nifty Serve or PC-VAN accounts.
+           (Similar to Compuserve and Prodigy)
+        4) The passwords of these accounts are changed to prevent
+           access of the real users.
+        5) A bank account is opened under an assumed name.
+        6) 'For Sale' notices for PC's etc. at low prices are posted
+           from the stolen accounts.
+        7) Victims replying to the postings are requested to transfer
+           money into the bogus bank account.
+        8) The money is withdrawn and the victims are out of luck.
+
+The police were able to arrest the perpetrator after his face was
+recorded by bank security cameras when he withdrew the money.
+
+Morals of this story:
+
+        A) Use different passwords for different accounts.
+        B) Log on regularly to check for irregularities.
+
+Shaun Lawson, Institute for Supercomputing Research, 1-13-1 Kachidoki, Chuo-ku,
+Tokyo, Japan 104             (03)3536-7770             shaun@isr.recruit.co.jp
+
+------------------------------
+
+Date: Mon, 08 Jun 92 15:53:25 EDT
+From: James Paul <jpaul@nsf.gov>
+Subject: Endeavour rendezvous software fix
+
+Aviation Week and Space Technology (8 June '92, p. 69) states that
+"NASA Will Modify Rendezvous Software To Avoid Repeat of Endeavour
+Problem"  The article reads:
+
+NASA will change the specifications on the IBM software used to calculate space
+shuttle rendezvous maneuvers to avoid problems on future missions like the one
+that occurred at a critical point during Endeavour's final rendezvous with the
+Hughes/ Intelsat 6/F3 spacecraft (AW&ST May 25, p. 79).
+
+Engineers have traced the problem to the sensitivity of NASA-developed
+equations to a particular set of numeric values that arose when Endeavour was
+making one of the final computer-targeted rendezvous maneuvers.  Test show the
+software had been properly coded by IBM and therefore passed all preflight
+tests, according to Ted Keller, senior technical staff member at the IBM
+Shuttle Project Coordination Office, Houston.
+
+The numerical values that caused the problem so closely resembled each other
+that the software recognized them as identical values -- which they were not.
+This resulted in the software providing incorrect targeting data for the
+maneuver.
+
+By relaxing the tolerances in the software, orbiter computers should be better
+able to differentiate between values that are similar and provide proper
+targeting information, Keller said.
+
+------------------------------
+
+Date: Mon, 8 Jun 1992 13:53:52 GMT
+From: dalamb@qucis.queensu.ca (David Lamb)
+Subject: ACM TOSEM mailing label problem
+
+This might be "the risks of asking for subscriptions 2 years before you can
+deliver any issues": I received 3 copies of the 2nd issue of ACM TOSEM
+(Software Engineering and Methodology) last week.  I called up ACM Member
+Services and they said there had been "a problem printing the mailing labels"
+(which, at least, they didn't blame on "the computer".  A careful examinination
+of the labels shows they're all identical, except one says "EXP 9012", another
+"EXP 9112", and the third "EXP 9212".  It's nearly certain those are a series
+of dates on which my ACM membership expires (it's a common practice with
+subscriptions these days to include the expiry date on the mailing label).
+
+I got to thinking after the phone call about how this problem might have
+occurred.  I'm quite absent-minded, as befits an academic, but I think I signed
+up for TOSEM as soon as ACM announced it, which may well have been back in
+1990.  At some point, perhaps later in 1990 when I paid my dues, I paid for a
+subscription.  The first issue came out in January 1992; I wonder if some
+attempt to remember ACM's multi-year obligation to send things to me resulted
+in records for each of the 3 years?  It doesn't explain why the problem didn't
+occur with the first issue.
+
+If a lot of people had such a problem, it may well have cost ACM a lot of
+money.
+
+------------------------------
+
+Date: Mon, 8 Jun 92 20:16:09 -0700
+From: johana!tsw@apple.com (Tom Watson)
+Subject: Re: Slot Machines, etc. (Frankston, Ouellette, RISKS-13.55)
+
+I read several years ago (Datamation, or some similar 'free' magazine) that
+there is an offical testing lab in New Jersey (for Atlantic City) that tests
+these things.  In order to be 'certified' they need to produce the software in
+source form, the diagrams of the circiuts, and copies of the ROM's used in the
+machines.  The testing lab used all sorts of tools (ICE's Logic Analyzers,
+etc.) to verify that the opeation of the game (Slot Machine, Video Poker, etc.)
+was up to specification (odds, etc.).  The article went on to say that the
+testing lab did all it could to prevent non-random payoffs (not too cool).  It
+sounds as though the testing was not complete for the given games, or the
+testing facility (funded part of gaming commission) was not funded.  Perhaps
+someone else can remember the exact article, as it has been a few years
+(probably about 4 or so) since I saw it.
+
+Tom Watson, johana!tsw@apple.com
+
+------------------------------
+
+End of RISKS-FORUM Digest 13.56
+************************

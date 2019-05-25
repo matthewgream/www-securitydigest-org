@@ -1,0 +1,544 @@
+VIRUS-L Digest   Friday, 22 Feb 1991    Volume 4 : Issue 31
+
+Today's Topics:
+
+Naming/Identifying new viruses (PC)
+Report for virus trackers (PC)
+McAfee ProScan ineffective? (PC)
+Re: non-sacaning anti-virus techniques (PC)
+Hungarian anti-virus companies.
+SCANV73 Trojan (PC)
+Re: IBM Virus Scanner. (PC)
+New Version 74B of McAfee's SCAN (PC)
+Request from the Virus-L index compiler
+Viruses in the USSR
+Virus Catalog Index Feb.1991
+New files uploaded (PC)
+Details of Scan 74-B (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Thu, 21 Feb 91 11:18:00 +0100
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Naming/Identifying new viruses (PC)
+
+There is a continual problem with people finding what seems to be a
+new virus, but not wishing to broadcast the whole (dangerous) boot
+sector to identify it.  I have a solution to the identification
+problem:
+
+I have devised a "hashcode" algorithm specially designed for boot
+sectors, that gives a reasonably short (12-character) code (of A-Z,
+0-9, '#' and '.')  that pretty well uniquely identifies a boot sector,
+is very difficult for virus writers to get around, and is useful in
+its own right (i.e. you can look at the code and get a reasonable idea
+of what the boot sector is like).
+
+I can let anyone have the source to this (knowing the source doesn't
+help virus writers), and I'm happy to make it public domain - in fact
+I hope many people adopt the same standard encoding system.  For that
+reason, I suggest some discussion of the format and method before it
+is used in a serious way.
+
+Briefly, what I have done is to generate code which is...
+(1) able to be passed through e-mail systems, etc without distortion
+(2) cannot be used to recreate a live virus
+(3) is a valid DOS filename, and short enough to say over the telephone easily
+(4) always starts with the same character, "#", so people can immediately
+    recognise it as a hashcode
+(5) has a built-in check against typos (including transposition errors), and
+    avoids case distinction or confusing characters (like "/" and "\")
+(6) is reasonably easy to calculate
+(7) generates the same code on all systems (e.g. no floating point arithmetic
+    subject to round-off error or different formats on different systems)
+(8) includes four (and a half) bytes of high-order polynomial checksum, making
+    it difficult for virus writers to give a bad boot sector the same code as
+    a good one. (It would involve very lengthy trial-and-error methods)
+(9) The last bytes include bit flags, indicating the presence of dubious code
+    of various types, and the absence of important features (such as a reboot),
+    making it useful in itself, and making it even harder for virus writers to
+    circumvent!
+(10)The size of messages and null bytes and code are also taken into account,
+    since more sneaky viruses will need more code than a good boot sector, so
+    encrypted boot sector viruses would have a tough time getting past!!
+(11)DOS 4 diskettes (with serial numbers) get the same hashcode, irrespective
+    of serial number (except in a small number of cases, where the serial numbe
+r
+    happens to contain forbidden instructions).
+(12)Minor variations of the same virus get similar hashcodes (the last 3 bytes
+    and first 3 bytes should be the same or close).
+
+The code is not...
+A sure-fire way of indicating the presence of a virus. You could
+simply look at the last byte of the code, and if it isn't '0' than it
+is probably a virus. Not a great check, but old viruses (including
+Stoned) are easy to spot that way. Or you could have a list of known
+good and bad boot sectors, and ring alarms when it isn't a good disk.
+But that isn't really the aim. It is intended to identify boot
+sectors, so somebody can say "I know that disk"... whether you are
+describing the disk over the net or over the phone.
+
+I can send the program, BOOTID.PAS to anyone interested via e-mail;
+hopefully it, and it's big brother (CHECKOUT.EXE) will soon be
+available via anonymous ftp.
+
+Mark Aitchison, Physics, University of Canterbury, New Zealand.
+
+------------------------------
+
+Date:    20 Feb 91 17:26:15 -0500
+>From:    Pat Ralston <IPBR400@INDYCMS.BITNET>
+Subject: Report for virus trackers (PC)
+
+I remember that several months ago a new system for reporting virus
+occurrences was established.  I apologize that I cannot remember what
+the reporting procedure was; so I am sending my information to the
+list.
+
+Starting at the very end of January we (IUPUI Indiana University -
+Purdue University at Indianapolis) have had scads of virus activity.
+I am amazed at the number of new (that is new to us) viruses we have
+had reported on campus.  In fact, in that short time we have have more
+reports of "new" DOS viruses than the TOTAL number of new viruses we
+had ever had reported. We have been keeping a log of newly reported
+infections for about 2 years.
+
+Some of the reports were made by our student consultants who work in
+our open computer clusters and other from various "isolated"
+departments.  Our undergraduate campus is shared with a medical school
+and a law school.
+
+The following are FIRST time reports of viruses on our campus:
+          (The time frame is from January 25th to February 18th.)
+Joshi
+Music Bug
+Yankee Doodle
+Stoned
+
+Scan72 was the virus checker used to find the above mentioned
+virueses.  We continue to find Mac viruses as well but no new ones
+have reached us.
+
+Our open clusters have been undergoing major upgrades.  For instance
+this semester marks the first time when we have had Hard Drives
+available.  I cannot draw a definite link with the upgrades and the
+flourish of new (and old viruses) but I do find it coincidental.
+
+Pat Ralston   IUPUI
+
+------------------------------
+
+Date:    21 Feb 91 04:20:34 +0000
+>From:    tbrown@lehi3b15.csee.lehigh.edu (Thomas Brown [901015])
+Subject: McAfee ProScan ineffective? (PC)
+
+I have been using McAfee's SCAN/CLEAN V72 for quite some time with
+good success.  I recently discovered an "end-user" version with a nice
+screen interface, etc. called ProScan (also by McAfee) which is
+supposed to perform the same functions as SCAN/CLEAN.  I have found,
+however, the following problems:
+
+     1.  ProScan does not scan system memory for viruses (even though
+         documentation says it should)
+     2.  ProScan does not test both boot sector AND partition table
+         for viruses
+     3.  Even with the library of 200+ viruses, ProScan does not
+         detect even older viruses such as Stoned or Jerusalem,
+         while SCAN/CLEAN V72 find them immediately, whether they
+         exist in the boot sector, partition table, data area, or
+         even in memory.
+
+The version of ProScan is the latest commercial offering which was
+made available (for retail sale to customers) to a computer
+store/service department which I work for part time.
+
+Any thoughts?
+
+Regards,
+Tom
+- --=--
+Thomas Brown, KA2UGQ          BITNET: twb0@lehigh.bitnet
+Lehigh University UC Box 855    ARPA: tbrown@lehi3b15.csee.Lehigh.EDU
+Bethlehem, PA  18015            UUCP: ..!uunet!twb0@lehigh.bitnet
+(215) 758-0093                 AX.25: ka2ugq@ka2ugq.nj.usa.na
+
+'You can't have everything...where would you put it?' -S.W.
+
+------------------------------
+
+Date:    21 Feb 91 07:58:16 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: non-sacaning anti-virus techniques (PC)
+
+LCHICAIZ@ANDESCOL.BITNET (Luis B. Chicaiza S.) writes:
+>I belive that is more useful to prevent virus contamination than try
+>to clean a system when it's infected.
+
+I think everybody will agree with this.
+
+>I have a new anti-virus product, (named COMPUCILINA), this program vaccinate
+>other programs (aplication ones, system programs, and a disk boot), and
+>guarantees these programs will not be infected.  COMPUCILINA offers
+>protection agaist actual and future viruses.
+
+Truly interesting, if this is 100% true - but I doubt it.  It is easy
+to add code to programs and boot sectors which will detect infection
+by 98% of currently known viruses - all the 400 or so known variants,
+other than a few "stealth" viruses.
+
+Adding code which PREVENTS something from being infected is an
+entirely different story - what if the computer is booted from a
+floppy and some infected program run ?  No additions to other
+programs, no matter how sophisticated could prevent the programs from
+being infected.  The additional code MIGHT detect the infection, but
+as I said before, detection and prevention are two different things.
+
+- -frisk
+
+Fridrik Skulason      University of Iceland  |
+Technical Editor of the Virus Bulletin (UK)  |  Reserved for future expansion
+E-Mail: frisk@rhi.hi.is    Fax: 354-1-28801  |
+
+------------------------------
+
+Date:    Thu, 21 Feb 91 13:24:33 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Hungarian anti-virus companies.
+
+I hope somebody on the net has information on the anti-virus scene in
+Hungary, as I am trying to determine if the companies there are
+trustworthy or not.
+
+I understand one of the companies there is Azsio-Microtrade Ltd. Co.,
+a German-Hungarian joint venture. I have been told that Ralf Burger
+works on the German side, and if this is true, it is sufficient for me
+to refuse to cooperate with them in any way whatsoever.  Can anybody
+confirm this ?  The no.1 guy in the Hungarian part of the company is
+Szegedi Imre, but he has been making various accusations against the
+other company, Ferenc Leitold and other folks at the University of
+Budapest.
+
+Can anyone clarify what is going on there ?
+
+- -frisk
+
+------------------------------
+
+Date:    Thu, 21 Feb 91 20:42:36 +0000
+>From:    qualcom!news@UCSD.EDU (Ron Dippold)
+Subject: SCANV73 Trojan (PC)
+
+Just a quick warning on something that I haven't seen here, if it was
+here please excuse it....
+
+According to the latest SCAN (V74B), there has been a SCANV73 going
+around.  This is a TROJAN!!!  Just be on the lookout for it...  And
+watch for the PKZIP verification shell to make sure you have something
+authentic when you unpack it.
+
+------------------------------
+
+Date:    21 Feb 91 14:00:30 +0000
+>From:    campbell@dev8n.mdcbbs.com (Tim Campbell)
+Subject: Re: IBM Virus Scanner. (PC)
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+> "Pete Lucas" <PJML@ibma.nerc-wallingford.ac.uk>:
+>>Can anyone tell me whether any new signature files have been released
+>>for the IBM Virus Scanner? I currently have release 1.2 of this
+>>program, which is at a guess around 6 months old; has there been any
+>>update of the program??
+>
+> The current version is 1.3; another version should be out pretty soon.
+> Price continues to be $35 for an enterprise-wide license, and
+> something like $10 for upgrades.  Available through your IBM marketing
+> rep, branch office, IBMLINK, etc.
+
+I have Virscan ver. 1.23.  I did dial into IBMLink to see if I could
+find version 1.3.  I learned two things... #1) It was very hard to
+find.  I could not locate it in any of the software catalogs or the
+announcement letters, etc.  I finally found it in the Bulletin Board,
+burried a few pages deep (the last release seems to have been a while
+back) - and #2) It indicated that this was version 1.2 of the program
+(I myself have 1.23 - maybe they just don't indicate minor revs -
+possible because they still mark DOS 4.01 boxes as 4.0.)  The program
+can be obtained online (electronically) by using the "fastpath" name
+ESD (Electronic Software Distribution) which should have a list of
+files that can be downloaded (for a cost) - you're supposed to send a
+check to IBM after downloading (I guess).  The cost is $35 if you're
+getting it for the first time, or $10 if your just updating an old
+copy.
+
+This leaves me back at square 1.  Unless their documentation is wrong,
+I *have* the most current version.  Are you sure you have version 1.3?
+Also there is no mention of getting more signatures (I think this is
+all I *really* need.)
+
+I haven't looked at other virus scanners, but I imagine most are set
+up to allow users to add more signatures as they learn of them.
+(otherwise they'd become obsolete pretty quick).  Is ANYBODY aware of
+a source for virus signatures (specifically IBM-PC (DOS))??
+
+All of the listed virus sites are indicated by internet addresses.
+This is of course completely useless to people who are not on the
+internet.  Is anybody aware of dial-up access for any of these sites?
+
+Any help is greatly appreciated.  I'm sure there are others who would be
+equally interested in this info.
+
+   -Tim
+
+  ---------------------------------------------------------------------------
+	  In real life:  Tim Campbell - Electronic Data Systems Corp.
+     Usenet:  campbell@dev8.mdcbbs.com   @ McDonnell Douglas M&E - Cypress, CA
+       also:  tcampbel@einstein.eds.com  @ EDS - Troy, MI
+ CompuServe:  71631,654	 	         Prodigy:  MPTX77A
+ P.S.  If anyone asks, just remember, you never saw any of this -- in fact, I
+       wasn't even here.
+
+------------------------------
+
+Date:    Fri, 22 Feb 91 10:49:28 -0500
+>From:    Thomas Heil <ICH211@DJUKFA11.BITNET>
+Subject: New Version 74B of McAfee's SCAN (PC)
+
+Hello!
+
+Recently I got the new version 74B of SCAN. When I enter
+
+          SCAN C:
+
+with C: being a 40MB Tandon DataPac that has 1K-Sectors, SCAN reported
+that the partition table size was too large to be processed, and it
+stopped all further checking of the files. The previous version 72
+also complained "Sorry, I cannot read the partition table", but at
+least it continued checking the files. When I tried
+
+          SCAN C:\*.*
+
+it scans all files in the root directory, but does not recurse into
+the subdirectories. Anyone who knows a way to make it work on the
+whole disk?
+
+/T.H.
+
+------------------------------
+
+Date:    Fri, 22 Feb 91 09:50:48 +0000
+>From:    Anthony Appleyard <XPUM04@prime-a.central-services.umist.ac.uk>
+Subject: Request from the Virus-L index compiler
+
+As the author of the classified index  to  Virus-L,  I  would  make  a  few
+requests to people who send messages to Virus-L:-
+
+(1) If you wish to write about two or several  different  subjects  at  the
+same  time,  please  do  not  send  in  one long message containing several
+chapters, but a separate message for each subject.
+
+(2) If you feel that I have mis-classified something in this index,  please
+email to me about it. My email address is below.
+
+{A.Appleyard} (email: APPLEYARD@UK.AC.UMIST), Fri, 22 Feb 91 09:40:40 GMT
+
+------------------------------
+
+Date:    Mon, 18 Feb 91 13:47:13 +0300
+>From:    eldar@lomi.spb.su (Eldar A. Musaev)
+Subject: Viruses in the USSR
+
+This is my paper on the situation with viruses in the USSR.
+It was written in october-november of 1990, so there are
+some notes to it:
+1)It does not names all viruses in the SU, but this number
+  is NOT too high. Maybe there are a couple of dozens, not more.
+  If you'd got an information about hundred and more viruses
+  in the USSR, don't beleive it !
+2)Vienna (648) virus is dated by 1987 there. I don't know how
+  it could be and where is a bug but three my friends independently
+  points out to 1987 as a first time of our problems with
+  this virus. This is the reason why I've left out this date
+  in the paper, though ALL other sourcers points out to the 1988.
+
+I try to make who-is-who in our field so I am interested in
+names, adresses, fields of interests of antiviral researchers
+all over the world. Another (and ORIGINAL) reason for this
+interest is that I am writing (and modifing) the book devoted
+to the problems connected with the different badware. I don't
+want to make a catalog, but a textbook for students and future
+antiviral researchers. It is going concurrently with a research
+work, so I'm interested to discuss different ideas as wide as
+possible.
+
+[Ed. Dr. Musaev - many thanks for your paper, and welcome to
+VIRUS-L/comp.virus!  The text of the paper has been placed on
+cert.sei.cmu.edu under pub/virus-l/docs/viruses.ussr for anonymous
+FTP.]
+
+Eldar A. Musaev
+Ph.D., Researcher
+Leningrad Division of the Mathematical Institute
+Academy of Sciences of the USSR        email: eldar@lomi.spb.su
+USSR 191 011 Leningrad              (maybe through fuug.fi, or
+Fontanka 27                     demos!lomi.spb.su!eldar@fuug.fi)
+
+------------------------------
+
+Date:    Fri, 22 Feb 91 08:40:00 -0500
+>From:    "Kenneth R. van Wyk " <krvw@cert.sei.cmu.edu>
+Subject: Virus Catalog Index Feb.1991
+
+Dr. Brunnstein has sent me the most recent index of his Virus Catalog,
+as well as the most recent PC addition to the Catalog.  Both of these
+are available by anonymous FTP on cert.sei.cmu.edu in
+pub/virus-l/docs/brunnstein.  Thanks to Dr. Brunnstein for these
+additions to the archives.
+
+Regards,
+
+Ken
+
+
+------------------------------
+
+Date:    Wed, 20 Feb 91 11:41:52 -0600
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files uploaded (PC)
+
+The following files have been uploaded to 130.160.20.80 (mibsrv) in the
+directory pub/ibm-antivirus for anonymous FTP:
+
+avs_e224.zip  -  AVSearch: Virus Search Program v2.24
+scanv74b.zip  -  McAfee's Scan v74b
+cleanp74.zip  -  McAfee's Clean uP v74
+netscn74.zip  -  McAfee's NetScan v74
+vcopy74.zip   -  McAfee's VirusCopy v74
+vshld74b.zip  -  McAfee's Virus Shield v74b
+vsum9102.zip  -  Virus Summary List (Feb. 1991)   *binary*
+vsum9102.txt  -  Virus Summary List (Feb. 1991)   *text*
+vc200ega.zip  -  Virus Central v2.00 (EGA or higher monitors)
+
+- -------------------------- New List! ----------------------------------
+
+This list is for the *announcement* of updates to mibsrv.mib.eng.ua.edu.
+If you want to get update announcements send directly to your userid@node,
+Bitnet folks should send the following message via TELL to LISTSERV@UA1VM
+
+
+SUB MIBSRV-L (your_name)
+
+
+Internet (or Bitnet) folks can send a mail message to LISTSERV@UA1VM.UA.EDU
+containing the line SUB MIBSRV-L (your_name).
+
+Virus-related discussions should not be sent here.
+- ----------
+Experience is what you get when you didn't get what you wanted.
+- ----------
+James Ford -  JFORD@UA1VM.UA.EDU, JFORD@MIB333.MIB.ENG.UA.EDU
+              The University of Alabama (in Tuscaloosa, Alabama  USA)
+
+------------------------------
+
+Date:    Thu, 21 Feb 91 11:32:18 -0800
+>From:    ozonebbs!aryehg@apple.com (Aryeh Goretsky)
+Subject: Details of Scan 74-B (PC)
+
+VERSION 74-B
+	Version 74-B fixes a bug which caused the programs misidentify
+the Swedish Disaster virus on Syquest 10Mb tape drives and machines
+formatted with some versions of Zenith-OEM MS-DOS.  The machines in
+question were said to have the "Stoned/Swedish Virus" present in the
+boot sector of infected hard disks and disk packs.
+
+VIRUSCAN Version 74
+     Version 74 of VIRUSCAN adds 51 new viruses and over one
+hundred new strains of existing viruses, bringing the total number
+of known computer viruses to 475.  In addition, version 74 improves
+the throughput of the scanning algorithm and handling of
+nonstandard hard drives, and now provides the option of displaying
+all messages in French.
+     The 1575/1591 virus was sent to us from multiple sites in
+Quebec, Canada, Oslo, Norway, and the United States.  It is a
+memory-resident file infector that attaches to .COM and .EXE files
+when a disk is accessed via internal DOS commands.
+     The 903 virus was sent to us by Djennad Nasser from France.
+It is a .COM file infector.
+     The Holocaust virus was sent to us by David Llamas of
+Barcelona, Spain.  It is a .COM file infector that uses "stealth"
+type techniques.
+     The BeBe, Kuka, Kuka/Turbo, Lozinsky, MGTU, Nina, Off Stealth,
+Polish-532, Sverdlov, Tiny-133, USSR-series, and Voronezh viruses
+were discovered in the Soviet Union and Eastern Europe and sent to
+us from numerous sources there and in Western Europe.  They are not
+believed to exist in the West.
+     The Christmas Violator, F-Word, Parity, Beeper, Best Wish,
+Leapfrog Destructor, Happy New Year Hymm, Justice, Label, V961,
+Swiss-143, Sentinel, Plague, Monxla-B, Little Pieces, IKC528,
+Hybrid, Dir-Vir, Stone90, Saddam, and Iraqui Warrior viruses were
+sent to us from various sources around the globe.
+     For summary information about these viruses, please refer to
+the enclosed VIRLIST.TXT file.  For a detailed description of all
+known viruses, please refer to the Virus Summary Document (VSUM),
+copyrighted by Patricia Hoffman and available and most bulletin
+boards.
+     A trojan version of VIRUSCAN, Version 73, appeared on BBSes
+in Miami, Florida USA.  In order to prevent confusion, we have used
+the next version number, Version 74.
+
+CLEAN-UP Verison 74
+     Version 74 of CLEAN-UP adds removal of the 1575/1591 and the
+Music Bug viruses, as well as several new variants of the Jerusalem
+virus.  For more information about these viruses, please refer to
+the enclosed VIRLIST.TXT file.
+
+VSHIELD Version 74
+      Two new commands have been added to VSHIELD:  The /CONTACT
+option allows a custom message to be displayed if a virus is found.
+The /CERTIFY option provides control over file execution.  It will
+prevent any program from being executed if it has not been
+validated as an authorized program for a given site.
+
+FOREIGN LANGUAGE SUPPORT
+     Both VIRUSCAN and CLEAN-UP can now display messages in French.
+When the /FR option is specified, all messages will be displayed
+in French instead of English.
+
+VIRLIST.TXT ENTRY FOR 1575/1591 VIRUS
+     Version 74 went out without an entry in the VIRLIST.TXT file
+for the 1575/1591 virus.  The correct entry should be:
+
+1575/1591  [15xx]          Clean-Up    . . x x x x . . . .    vary   O,P,L
+
+Sorry 'bout that, folks.
+
+Aryeh Goretsky
+
+     +----------------------------------------------------------------+
+     |  Aryeh Goretsky, Tech Support               vox (408) 988-3832 |
+     |  McAfee Associates                          fax (408) 970-9727 |
+     |  4423 Cheeney Street                        bbs (408) 988-4004 |
+     |  Santa Clara, California  95054-0253                        // |
+     |  Internet:  aryehg@ozonebbs.uucp                           //  |
+     |  UUCP:  apple!netcom!nusjecs!ozonebbs!aryehg             \X/   |
+     | "Opinions expressed are my own and do not neccessarily reflect |
+     |  those of my employer."--universal disclaimer applied herein.  |
+     | "How is a cat like a meatloaf?"--John R. De Palma, M.D.        |
+     +----------------------------------------------------------------+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 31]
+*****************************************

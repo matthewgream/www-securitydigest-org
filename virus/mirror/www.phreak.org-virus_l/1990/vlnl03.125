@@ -1,0 +1,317 @@
+VIRUS-L Digest   Monday, 16 Jul 1990    Volume 3 : Issue 125
+
+Today's Topics:
+
+Worm source code
+Re: new virus 1022 (PC)
+Electric Toothbrush (PC)
+The aftermath of Ogre/Disk Killer (PC)
+First Documented sighting of the "4096" virus in the U.S.A. (PC)
+640 K ? (PC)
+Ping Pong virus infection (PC)
+Issues of Virus-L received truncated
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Thu, 12 Jul 90 23:28:51 +0600
+From:    mweiner@bene.at (Michael Weiner)
+Subject: Worm source code
+
+The source of the UNIX worm can be obtained at
+
+            2600 magazine
+            PO Box 752
+            Middle Island, NY 11953 U.S.A
+
+for US$ 10.
+
+- --mike
+
++------------------+-----------------------------------------------+
+I  Michael Weiner  I  UUCP: mweiner@bene.at	                   I
+I  Ghelengasse 4   I  {...!uunet.uu.net}!mcsun!tuvie!bene!mweiner  I
+I  A-1130 Wien	   I  Fido: 2:310/7.123 (InfoLink)                 I
+I  Austria         I  Voice: ++43 1 82 32 400	                   I
++------------------+-----------------------------------------------+
+
+------------------------------
+
+Date:    Fri, 13 Jul 90 23:43:36 +1000
+From:    cc_davidson@vaxa.mqcc.mq.oz.au
+Subject: Re: new virus 1022 (PC)
+
+lexw@idca.tds.PHILIPS.nl (Lex Wassenberg) writes:
+>ddavidso@mqccsunc.mqcc.mq.OZ.AU (Dean Davidson) writes:
+>>
+>>Detection:
+>>running STRINGS on an infected file reveals :
+>>
+>>This message is dedicated to  $
+
+>> *** deleted stuff  ***
+
+>>GREP -d+ dedicated *.EXE
+>>[The GREP I used is the one that comes with Turbo Pascal]
+>>[I chose "dedicated" for the search string as it is the most
+>> unique word in the message]
+>
+>Is the text you mentioned contained in straight ASCII in the virus
+>itself?  In that case, If you own a virus scanner which is modifiable
+
+To clear up a point:
+
+It is a DUMB virus - the strings are in ASCII not encrypted in any way.
+
+'dedicated' is NOT a good signature as the editor points out.  It can
+appear in many files - it was but a quick and dirty way to check.
+
+Using GREP, the context in which the string appears becomes apparent and
+thus you know if you have an infected file or not.
+
+BTW the program STRINGS is something I have had for years - it goes
+searching through any specified file and reports all the ASCII text
+it can find - a very useful utiity.
+
+By now John McAfee should have a copy of 1022 so expect to see
+a forthcoming version of SCAN being able to detect 1022.
+
+There is also an Australian scanning product, NBY, put out by a
+local anti-virus guru - Claude Almer.
+His latest version of NBY (Version 122) already detects 1022
+
+If you wish to get a copy and don't mind the cost of the phone call
+you can call his BBS on 61 2 482 1716
+
+------------------------------
+
+Date:    13 Jul 90 13:48:33 -0500
+From:    "Dr. Ruth Mazo Karras" <RKARRAS@PENNSAS.UPENN.EDU>
+Subject: Electric Toothbrush (PC)
+
+A colleague found a program listed in RAM (as revealed by
+WordPerfect's shell program memory map) identified as Electric
+Toothbrush.  He thinks it could be evidence of a virus, although scan
+v.64 did not find one.  I think it more likely to be something that
+WordPerfect's clipboard mistakenly picked up, but he tells me that
+those words were not used in a document or otherwise that day.  The
+machine is a 286 IBM clone with DOS 3.3 and WordPerfect's Library.
+Any suggestions?
+
+Chris Karras  RKARRAS@PENNSAS.BITNET     or     RKARRAS@PENNSAS.UPENN.EDU
+
+------------------------------
+
+Date:    14.07.90 21:14:56
+From:    "Morton Swimmer" <swimmer@infohh.rmi.de>
+Subject: The aftermath of Ogre/Disk Killer (PC)
+
+The aftermath of Ogre/Disk Killer
+
+     It was  mentioned by  me and others that the damage done by Ogre/Disk
+Killer can  be repaired.  Unfortunately we  were wrong.  The  virus  plows
+through the  disk, encrypting  every track  as it  goes. As the encryption
+method used is reversable, I assumed that it would be no problem to create
+a routine  to restore  the disk.  I made  the mistake of assuming that the
+routine the  virus-programmer used  was flawless. Well, it wasn't. In fact
+it containes  at least  three major  mistakes, that  make it impossible to
+restore an encrypted disk automatically.
+     The virus  saves the  original Master-Boot-Sector (MBS) on the second
+absolute sector,  irrespective of what was originally there. My experience
+is that  more hard  disks do  not use  that sector,  but can one guarantee
+this? On  floppies this  sector IS  used by  the FAT,  so floppies  can be
+excluded from  restoration right from the start. After the encryption, the
+first absolute  sector is  replaced by a sector containing the data needed
+to restore  the hard disk. This is where the first major mistake lies: the
+programmer forgot  to save  the number of heads the hard disk has. This is
+not that serious though, as one usually knows how many heads the disk has.
+I used another trick: my program decrypts the MBS in sector 2 and uses the
+number of heads stored there. The virus itself uses the number of heads as
+stored in  the bootsector.  There might  be some  outlandish  partitioning
+where the  actual  number  of  heads  differs  from  that  stored  in  the
+bootsector.
+     As the first sector is overwritten after encryption, some information
+is lost  that is  needed to  decrypt the  MBS in sector 2. It is possible,
+using a trick, to decrypt everything except the first two bytes.
+     The virus  records whether an error occured while encrypting a track.
+It does this by setting a bit corrosponding to the track in a table stored
+in sector  1. Due  to a  programming error,  the routine  to calculate the
+index of  the bit  in the  table will cause a division by zero error after
+800h/(number of  heads) tracks  (eg. 341  on a disk with 6 heads). Because
+the virus does not handle this eventuality, the routine will abort and all
+of the information that is necessary for restoration and usually stored in
+sector 1 will not be written: ie. the disk is in an unknown state. This is
+the second major mistake.
+     So far  the errors can be circumvented by manually selecting the disk
+parameters and  the sectors to be restored. The last error I found, dashed
+all my  hopes of  restoring the  disk in question. While moving the MBS to
+sector 2,  the programmer  made the mistake of assuming that BIOS restores
+the contents of the AL register on return from a read. It usually doesn't,
+although the programmer's machine must have. My BIOS returns a zero in AL.
+When the  virus executes a write to disk without resetting the AL register
+to one,  unpredictable things  happen. The virus has affectively told BIOS
+to write  zero sectors  to disk.  What happened on my machine was that the
+FAT and  the ROOT directory were overwritten with junk. This left the disk
+quite unusable. :-(
+     After encrypting what one can on the disk, it is possible to use disk
+utilities to  access the  data on a sector-to-sector basis, but not in any
+sensible manner.  I expect  that for  some people even this is better than
+losing their  data completely.  The encryption  process should  be left to
+experts, as it is risky and you only have one shot. I have done this for a
+customer before, but unfortunately all three errors had occured and little
+could be saved. (One of Murphy's Laws had something about this...*sigh*.)
+     I expect  the programmer of the virus had an strange BIOS version and
+a small  hard disk.  Under those  circumstances the  errors would not have
+occured in  testing. I doubt if these mistakes were intentional. There are
+cheaper ways of destroying a disk.
+     This virus gives me yet another good opportunity for my usual pitter-
+patter: Back  up your  disks REGULARLY;  back up  DATA, not programs; keep
+original program disks WRITE-PROTECTED in a safe (from yourself) place; do
+not rely entirely on antiviruses, but rather on your COMMON SENSE and STAY
+CLEAN. This  goes for  all viruses and for other mishaps. (A cup of coffee
+is still a computer's worst enemy.)
+
+Cheers, Morton
+Virus Test Center, University of Hamburg, West Germany
+
+------------------------------
+
+Date:    15 Jul 90 16:03:07 -0400
+From:    Ray Glath <76304.1407@CompuServe.COM>
+Subject: First Documented sighting of the "4096" virus in the U.S.A. (PC)
+
+July 13, 1990
+
+*** First Documented sighting of the "4096" virus in the U.S.A. ***
+
+The 4k (a.k.a. 4096, IDF, Israeli Defense Forces, Frodo, 100 Years,
+Stealth) virus has turned up in the Dallas TX area.
+
+A computer dealer about 50 miles south of Dallas TX noticed a few
+unexplainable system crashes over the last 2 weeks. Upon investigation, he
+found that EXE file sizes were increased by 4 - 5k bytes. He copied a
+sample off to diskette, and sent it to RG Software Systems, Inc. for
+examination. A quick check using our Vi-Spy product found the 4k virus.
+
+This dealer is now undergoing an intensive operation to locate and remove
+all occurrances of the 4k using Vi-Spy. Thus far he has found his demo
+systems infected; several customers' systems infected; and believes that
+some demo disks that he has shipped have carried the virus. In addition to
+clearing up the problem in his own shop, he's contacting his customers and
+has taken the very unusual and commendable position of "going public"
+through an interview with Tom Steinert-Threlkeld of the Dallas Morning
+News, to let others in the Dallas area know of the problem. The story is
+in the Monday, July 16 edition of the paper.
+
+The dealer believes he received the infection from a local software
+consultant who believes he got it from a local private BBS. (This
+consultant utilizes "many" private BBS'es and works for several companies
+in the Dallas area.)
+
+At this stage, we do not know how widespread the infection is, however due
+to the "Stealth" logic this virus employs to avoid detection, and the
+extremely prolific nature of its infection logic (infects any EXE or COM
+file OPENED, AND it infects COMMAND.COM) it can go a long way before
+becoming noticed. Once a system is infected, this virus gives no obvious
+signs of its presence. Only an experienced and very perceptive user may
+notice its activity, and then probably only by accident.
+
+Since there is no direct trigger, the system crashes seem to be occurring
+only after massive infection whereby many program files have been expanded
+by 4 - 5k bytes and disk resources are used up.
+
+[Ed. After posting this message, Ray called me back to inform me that
+the virus does indeed have a trigger - on or after September 22, 1990
+- - at which time it will crash the system and/or delete the boot
+sector, while attempting to display a message, "Frodo lives".]
+
+Upon examination at RG, we've determined this virus matches the sample we
+have in our Lab, which we had received from colleagues in Europe.
+
+Raymond M. Glath
+President
+RG Software Systems, Inc.
+2300 Computer Ave. A-7
+Willow Grove, PA  19090
+
+(215) 659-5300
+
+Compuserve 76304,1407
+
+------------------------------
+
+Date:    Mon, 16 Jul 90 13:48:00 +0700
+From:    "A. SOLOMON EAGLSTEIN" <WELFARE@ILNCRD.BITNET>
+Subject: 640 K ? (PC)
+
+I just ran Immune version 9.0 and was informed that there was only
+639K insatead of 640K (PS/2 - 60). I then ran Scanres 1.4V61 and it
+checked out ok at 640K ! Is anyone familiar with the probl Do I
+have some mean and nasty bug ?
+Thanx,
+Sol Eaglstein
+Director of Research
+Ministry of Labor and Social Affairs
+Jerusalem, Israel
+FAX: (Israel) 2-731640
+BITNET:WELFARE @ ILNCRD
+
+------------------------------
+
+Date:    Sat, 14 Jul 90 09:02:31 -0400
+From:    tpirnat@wpi.wpi.edu (Thomas Charles Pirnat)
+Subject: Ping Pong virus infection (PC)
+
+    We (Worcester Polytechnic Institute) were also hit with the Ping Pong
+ virus!  Our strain appeared to do nothing but destroy/write over a random
+ program/file on our hard disks.  However, I had the same experience as
+ you did (sys doesn't work) with one hard disk out of ~100 infections.
+    The only explanation that I could think of for such a rare/strange case
+ of a virus was that the sys command was executed from a different DOS
+ version.  In my case, I think that the computer I was trying to fix was
+ running DOS v. 3.2.  However, the rest of this school is running DOS
+ v 3.3a!  If this was the case, I could see were my problem developed!
+    Please keep me updated on your situation (I do not think that our
+ Ping Pong infection will EVER go away).  Good luck...
+
+ Thomas Pirnat--Manager of Worcester Poly. Tech./Higgins Computer Labs...
+
+  |       o    |  Thomas Pirnat (WPI X5505 or email tpirnat @wpi.wpi.edu)    |
+  |   _  /-+_  |  "Logic is a systematic method of coming up with the wrong  |
+  |  (_) > (_) |   conclusion with confidence." -- One of Murphy's Laws      |
+  +------------+-------------------------------------------------------------+
+
+------------------------------
+
+Date:    Mon, 16 Jul 90 16:21:20 +0100
+From:    Anthony Appleyard <XPUM04@prime-a.central-services.umist.ac.uk>
+Subject: Issues of Virus-L received truncated
+
+Some users including  me have been  receiving  some issues of  Virus-L
+truncated.  (When I  manage to get a complete  copy  of  the truncated
+issue,  I notice  that th e  next line  after the  truncation point is
+fullstop-by-itself, which some  emai l nodes treat as end-of-message).
+How many other users have had this problem ?
+
+This can also be caused  by a sentence ending at  the end of a line of
+81 characters.  When the  line is split after  its 80th character, the
+terminating fullstop is left on a line by itself.
+
+{A.Appleyard} (email: APPLEYARD@UK.AC.UMIST), Mon, 16 Jul 90 16:13:24 BST
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 125]
+******************************************

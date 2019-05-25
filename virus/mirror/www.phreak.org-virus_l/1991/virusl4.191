@@ -1,0 +1,619 @@
+VIRUS-L Digest   Tuesday, 15 Oct 1991    Volume 4 : Issue 191
+
+Today's Topics:
+
+Response re DIET (PC)
+Re: Hardware
+Help needed in testing software security combination, please.
+Measures
+Experiences with hardware protection (Thunderbyte)
+Re: is vshield working? (PC)
+Origins of "Worm"
+More hardware!
+BGS9 (Amiga)
+Rejects unformatted disk (Mac II)
+New files on risc (PC)
+safembr 1.3 available (PC)
+Appenders and prependers
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Sun, 13 Oct 91 13:55:03
+>From:    c-rossgr@microsoft.com
+Subject: Response re DIET (PC)
+
+>From:    turtle@darkside.com (Fred Waller)
+>
+> I wasn't familiar with the DCOMPRESS program, so I went and
+ >downloaded its source code before posting this reply. I found that
+ >DCOMPRESS is a rather different animal from DIET: it requires that
+ >the user prepare ahead of time special ASCII files for each
+ >subdirectoruy, listing files to be excluded, requires that a
+ >separate utility (PCMANAGE) be used to compress the files also
+ >ahead of time, and has other requirements, including the need to
+ >change the system date by one week, then run PCMANAGE, then reset
+ >the system date back again, etc., which render it much less elegant
+ >and more difficult to use than DIET.  I intend no offense against
+ >DCOMPRESS' author, but DCOMPRESS is not equivalent to DIET v1.10a.
+
+No offense taken, Fred.  When I wrote it, it was designed as a method
+for me to compress files on my hard disk that hadn;t been accessed
+within a certain time frame.  The initial time you ran it, you'd
+*either* set the date back a week or so so that all compressable files
+would be marked as "old" and a compression attempt would be made, *or*
+you'd not play with the clock/calendar at all and simply run the
+stand-alone compressor later and let the compression take place on a
+"regular" basis.  Since this was a program for publication and the mag
+it was printed in (PCMag) often requires lots of sizzle to what they
+print: it wouldn't look good to print an article for one of the free
+utilities that says "it won't do much for the first two weeks, and
+then there's no way of telling what it will do". So, the date change
+stuff allowed people to get something immediately -- immediate
+gratification is something that PC owners are used to, right?
+
+It was a program intended for an entirely different purpose than DIET,
+but it could be used, sorta, in the same way.  In fact, if not for
+some legal questions, chances are that a commercial version of it
+would have been available that included many of DIET's features: I
+have the code sitting here....
+
+ >Thus, I repeat that the functionality offered by DIET v1.10a is
+ >not found in any other program that I know.  Its usefulness and
+ >functionality are achieved, to an important extent, by the use
+ >of what might be termed `virus programming techniques'.
+
+All that said: I would not consider DIET to have "virus programming
+techniques anymore than a standard TSR that can have different
+functionality when it is invoked multiple times should be considered
+as having these programming techniques.
+
+Ross M. Greenberg
+ Author and Copyright Holder, PCManage & DCOMPRES
+
+------------------------------
+
+Date:    14 Oct 91 15:55:53 +0000
+>From:    eric@zen.maths.uts.edu.au (Eric Lindsay)
+Subject: Re: Hardware
+
+I tried hardware protection against virus attack in a student PC lab.
+It only "sort of" worked.  Basically pulled the write gate via a low
+ohm resistor.  The "switch" was a self closing 3.5 mm audio socket.
+The "key" was a 3.5 mm plug.  This was a while ago, and of course will
+only work on ST506 style interfaces (not on SCSI or IDE).  I tried it
+only on XT clones.  On most of them, the hard disk wouldn't work (the
+drive cards must test to see if they can get to the drive), and
+therefore the machine would only boot from floppy.  I eventually found
+that an LCS brand card didn't check, and therefore could be used.
+
+A better solution (albeit more complex) that doesn't require two hard
+disks would be an add-on for an ST506 drive controller.  It would have
+a comparator on board, and step-up step-down counters run from the
+direction and step pulse lines.  Reset from the track zero line.  You
+would set switches to the track area you want protected (eg, track 0
+to 200) and partition your disk at that boundary.  Thus the C: area
+would be protected and the D: drive open for R/W.  I never built it -
+we moved to a Novell system instead, with diskless PCs (ptui!)
+
+- --
+eric@zen.maths.uts.edu.au  Eric Lindsay, Sch of Maths, Uni of Tech
+Don't take life too seriously.
+It is only temporary.
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 14:47:00 +1300
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Help needed in testing software security combination, please.
+
+Could someone with a good library of viruses (incl DIR II, hopefully)
+please try the following combination of software virus protection, and
+tell me what file infectors still get through?
+
+  Disk Manager's DMDRVR.BIN with the partition set to be READ-ONLY, *PLUS*
+  Digital Research's DRDOS 6 with all executables password-protected, *PLUS*
+  The partition(s) compressed with DRDOS 6's SSTOR (or STACKER, maybe).
+
+Notice that none of the software products are advertised as trying to
+fight viruses. What I want to end up with (and I know others would
+like too) is to have a read/write partition for user files, and
+another read-only partition with executables. I guess that at least
+one type of virus would still work in such an environment, that would
+be defeated if all partitions were read-only, but I'm looking for a
+reasonable compromise of convenience and protection, and can put some
+proper anti-virus software after I know what sort of viruses get
+through the cracks.
+
+If any kind person would like to try out the setup, I can chat about
+configuartion details, like using JOIN, and DCONFIG.SYS and so on,
+which might be important to improve security and convenience.
+
+What I predict is that the combination of simple software will defeat
+file infectors that go through DOS and those that go through int 13.
+Obviously, the software combination wouldn't prevent boot sector
+viruses, but I expect it would stop all the common file infectors
+(including DIR II & Dark Avenger).
+
+Thanks in advance,
+Mark Aitchison, Physics, University of Canterbury, New Zealand.
+
+------------------------------
+
+Date:    Sun, 13 Oct 91 19:29:35 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Measures
+
+AGUTOWS@WAYNEST1.BITNET (Arthur Gutowski), quotes from my post:
+
+ > I disagree.  Even hardware solutions can be overcome by the
+ > ignorant or impatient.
+
+ Of course. We weren't discussing idiot-proof measures.  But the
+ virus problem is not user-created, although a recent article by Mark
+ Aitchison makes an extremely good point that public education must
+ play a very important part in any attempt to solve it.
+
+ Rather, my view is based on (Waller's) Pecking-order Metaphysics:
+
+       1. Generally considered, symbolic entities can overcome
+          other symbolic entities. (A symbolic defense can always
+          be devised against any symbolic attack and viceversa).
+
+       2. Consequently, a given symbolic entity cannot permanently
+          overcome the class of symbolic entities.  (Viruses and
+          antiviruses will battle each other till doomsday, without
+          conclusive results, as they have been doing).
+
+       3. However, physical entities can always overcome symbolic
+          entities, unconditionally.  (There is no way for a symbolic
+          entity to resist a physical entity, unless intended or
+          allowed by the physical entity as an operation within
+          its capabilities or intent).
+
+       4. As a result of (3), symbolic entities cannot overcome
+          physical entities, either temporarily or permanently,
+          unless the physical entity is first disabled. (Thus, no
+          software, no matter how sophisticated, can ever defeat
+          even the simplest hardware protection. This is also why
+          viruses can affect hard disks: they are ALLOWED to do so).
+
+       5. Generally considered, physical entities can overcome
+          symbolic as well as other physical entities.  (While their
+          overcoming symbolic entities is permanent, their control
+          of other physical entities may be only temporary, similarly
+          to (1), above).
+
+       6. Neither software nor hardware, being creatures of humans,
+          are ultimately able to resist a user's damaging or careless
+          action when exercised at the hardware level. (Users are a
+          higher class of agent that can overcome both symbolic and
+          physical entities by exercising access to (5) above, or by
+          using a hammer).
+
+ So the "pecking order" is: 1. software; 2. hardware; 3. operator,
+ ascending. (Above that, you have to resort to mythical or government
+ forces... both yield unpredictable results).
+
+ From (Waller's) Pecking-order Metaphysics, one readily derives the
+ Waller Principle:
+
+         "If You Really Want to Stop a Software Virus, Stop
+          it with Hardware".
+
+ and the Waller Afterthought:
+
+      "Anything Else is Probably a Waste of Time and Effort, and
+       May Actually Be Counterproductive".
+
+ > ...who's to say that there won't come a day when we can create
+ > (or encounter) infectious "beings"?)..
+
+ We encounter them all the time, in the air we breathe, the water we
+ drink, the food we eat and the things we touch.  Zillions of them
+ live within and on our bodies - permanently.   As for creating new
+ ones, we've done that, too.
+
+ > ...there are reasonable approaches, both hardware and software.
+ > (See Padgett Peterson's paper on the six-byte integrity checking,
+ > and some of the programs he and others have written, as well as
+ > his recent "Interesting Laptop Configuration" posting).
+
+ I feel Peterson's post was extremely interesting and appropriate.
+ The ideas presented there (and in several other articles of his)
+ were the sort of thing that should be explored seeking more definite
+ solutions to this problem.  They should be pursued further.
+
+ > ...What's the use of having a computer if you can't share data?
+ > Answer:  There is none.
+
+ NOBODY is proposing to make it impossible to share data. Such a
+ suggestion was NEVER advanced by me.  And the ideas I did mention
+ were NOT equivalent to `not sharing data'.  Stopping viruses by
+ hardware means DOES NOT equal `stop the flow of data'.   It does,
+ however, restrict and regulate the *uncontrolled* flow of
+ executables, which is the main thing that enables virus spread.
+ (It may also restrict a kind of programming that's becoming very
+ popular, but will not eliminate it; only a modification is needed).
+
+ > You might as well power it down, lock it in a lead safe, cast
+ > it in cement, and drop it to the bottom of a shark-infested
+ > sea (cf. Gene Spafford)...
+
+ Oh, I really hope it won't be necessary to get rid of our beloved
+ toys.  Why not just send Spafford to a remote (but tropical) island
+ instead?  His rounded figure will get a suntan that should go well
+ with the beard...    :-)
+
+ > .... and we're back in the forties.
+
+ Todo tiempo pasado fue' mejor.
+
+ > Yes, but the Apple OS is still *software*, isn't it.  For that
+ > matter, so is MVS and VM, and we see very few mainframe viruses,
+ > too.
+
+ Of course it's easier to infect MS DOS systems (Can many users
+ write to a mainframe executable or system file?). But another (not
+ minor) consideration is that there are some 60 million MS DOS PCs
+ out there.  That's a market.  Both viruses and antiviruses must
+ perceive that fact.   It's likely to be a main motivator.
+ In both cases.
+
+ And a comment on etiquette:
+
+ > Or, maybe we're just growing weary of going around and about
+ > the same points over and over again.  I for one, am growing
+ > tired of paging through mounds of postings with nothing new
+ > to say.
+
+ People who feel this way should, by now, have grown very tired
+ of the endless give and take between viruses and antiviruses, the
+ pursuit of the unreachable Holy Grail, the eternal promise, never
+ realized, and the eternal threat, always renewed.  The monthly
+ updates and the weekly new-virus reports, the more-ingenious
+ attacks, and the ever-newer defenses.  People who feel this way
+ should perhaps try to contribute not just a negative comment, or
+ not just comments whose intention is to stop discussion, but rather
+ some encouragement of discussion in this forum.
+
+ People who are tired of repetition should have grown EXTREMELY
+ tired of the virus/antivirus repetition.  Currently, that's the
+ grandmother of all repetitions.
+
+ Fred Waller
+ turtle@darkside.com
+
+------------------------------
+
+Date:    14 Oct 91 11:30:42 +0000
+>From:    Reinhard Kirchner <kirchner@uklirb.informatik.uni-kl.de>
+Subject: Experiences with hardware protection (Thunderbyte)
+
+Hello,
+
+I got produkt information about a hardware virus protector called
+'Thunderbyte' which intercepts all mysterious writings to the disk, e.g.
+absolute ( not through dos ), writing to exe/com files etc.
+
+Such a thing costs appr. the same as a software package, and it does not
+depend on updates for new viruses.
+
+So I want to ask: Is there any experience with such devices, thunderbyte
+or others ?   Is it worth the money ?
+
+>From the documentation I have such a hardware protector looks like a
+ultimate solution.
+
+Reinhard Kirchner
+Univ. of Kaiserslautern, Germany
+kirchner@uklirb.informatik.uni-kl.de
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 18:49:05 +0000
+>From:    greg@irl.ise.ufl.edu (Greg O'Rear)
+Subject: Re: is vshield working? (PC)
+
+RY01@ns.cc.lehigh.edu (Robert Yung) writes:
+>...How do I know that [vshield] is working up there without actually
+> getting my system infected???
+>...Does vshield (v82) work right in UMBs?
+
+When my department purchased a site license (yes, we actually PAID for it!),
+one of the principal reasons I chose McAfee was VShield.  I installed a test
+copy on a heavily used grad student PC, with the option to print a message
+saying to notify me in case of a virus.  The other day, it happened.  Someone
+came to my office saying that they tried to use the computer but it wouldn't
+let them continue, it just posted a message saying to contact me at once.
+When I got to the computer, I saw the VShield message advising the user to
+remove the floppy and run Scan on it.  Even though it was only the Stoned
+virus, it could have been much worse if not for VShield, so I regard it as
+money well spent (good thing I bought it when I did, what with our governor's
+budget axe...).
+
+The usual disclaimers apply (even the ones for mutual funds (past performance
+does not necessarily indicate future performance) :-)....
+- --
+Greg O'Rear
+Industrial and Systems Engineering Department, University of Florida
+Address: O'Rear@ise.ufl.edu
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 19:54:17 -0400
+>From:    Andrew Brennan <BRENNAAA@DUVM.OCS.DREXEL.EDU>
+Subject: Origins of "Worm"
+
+      Last I knew ... The original 'worm' was from John Brunner's
+   "Shockwave Rider."  There has been at least one book on shutting
+   down the phone 'network' - I can't remember the title right now,
+   but it came out after Esquire's article (70's) on phreaking.  As
+   far as I know, there haven't been too many early novels on this
+   type of stuff (pre-cyberpunk lit).
+
+      Andrew.  (brennaaa@duvm.ocs.drexel.edu)
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 22:21:17 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: More hardware!
+
+The origin of the following is lost to me in the thread but
+ someone recently wrote, referring to hardware vs. software
+ antiviral protection:
+
+  > It is the classic and eternal argument between authority and
+  > freedom, order and chaos.
+
+ Hardly!  In our case, it was an argument of hardware protection
+ vs. software protection.  Having seen over the last two years
+ that (software) antiviruses cannot protect us against (software)
+ viruses, the idea of using stronger medicine was being brought up
+ by Padgett Peterson and others, including myself.
+
+  > These problems do not lend themselves to global solutions.
+  > While the hardware solution is attractive, it is Draconian.
+
+ Few problems as complex as computer viruses truly lend themselves
+ to "global" solutions.  I dare say the people who propose hardware
+ protection, as posted here, are aware that many practical problems
+ have neither a "global" nor a "total" solution. Only naive software
+ proponents continue seeking the Holy Grail of the "perfect virus
+ detector".... :-)   But hardware protection is a practical, much
+ more effective overall solution, as has been demonstrated in actual
+ practice.  Still, it's not "global" or "perfect" or "absolute".
+ Nor does it need to be!
+
+  > The virus problem is not a problem of the machines that we sell
+  > today, but of those that have already been deployed.
+
+ Actually, the virus problem threatens BOTH new machines being sold
+ and those already installed.
+
+  > We have seen examples, described here, of machines that include
+  > features that make them more resistant to viruses. While they may
+  > offer some protection to the owners of those machines, they have
+  > a vanishingly small effect on the global problem.
+
+ Are there no means of hardware protection applicable to machines
+ currently in use?   I think there are.
+
+  > Since the population of machines in the world is obviously large
+  > enough to guarantee the success of some viruses, and since that
+  > population is likely to persist for a decade or more, new hardware
+  > features are not likely to have much effect.
+
+ The world population of PCs is a main attractant for both viruses
+ and antiviruses.  However, most of them (about 60%), are located in
+ the USA.   With the advent of the IBM/Apple arrangement, and the
+ announced introduction of a new hardware architecture AND a new kind
+ of OS, it is not unreasonable to speculate that this nation of
+ disposable-article lovers may junk/trade in their old PCs at a fast
+ rate to acquire the new marvels.  Anyway, old PCs are worth only a
+ small fraction of the price of an automobile...  and we regularly
+ junk those every few years....     :-)
+
+  > The issue is not preventing the execution of all viruses all
+  > of the time.  Rather, it is resisting the execution of most
+  > viruses most of the time.
+
+ Not really.  That's never been the practical issue.  If we could
+ stop just 10 or 12 viruses, we would have stopped something like
+ 90% of all viral attacks.  The rest of the 1,000 or so "known
+ viruses" are a very minor REAL threat.  In fact, if we could just
+ stop ONE virus, the old Stoned, we would have prevented the great
+ majority of viral infections in the USA! But the Stoned continues
+ on its merry way, and software antiviruses have not been able to
+ stop its advance.
+
+ In any case, it's important to note that, regardless of the kind or
+ number of viruses we want to stop, hardware protection will stop
+ them more effectively than software protection. And THAT's worth
+ thinking about.
+
+  > Software can contribute to this more readily than can hardware,
+  > if only because it can be readily retrofitted to the existing
+  > population, where the problem is.  That is why it is called
+  > "soft," rather than "hard," ware.
+
+ The term "hardware" had been in use among electronics professionals
+ for a very long time to refer to circuit components and related
+ parts.  Some of it could be "retrofitted", some could not.  Later,
+ when computers appeared, not very useful without programming, the
+ term "software" was created, by analogy but in contrast, to indicate
+ the other, symbolic half of the system.
+
+ Unlike other machines, the IBM PC and its clones make it nearly as
+ easy to modify the hardware as modifying the software, if not
+ easier.  That's one of its main virtues.  People (most?) who have
+ trouble installing complex software (e.g., Windows) can easily open
+ the case and insert a new video card, attach a monitor or change
+ keyboards, all major hardware components. And in many cases, new
+ software cannot even be installed before making changes in hardware!
+
+ So, in the case of the IBM PC and its clones, "retrofitting" of
+ many hardware components is childishly simple and certainly not
+ limited to software.
+
+ It's understandable that software-oriented people might be less aware
+ of this facility, but their restricted view should not be taken as
+ indicative of general user's capability.  But we might stop saying
+ that software is easier to install than hardware - often it isn't.
+
+ Fred Waller
+ turtle@darkside.com
+
+------------------------------
+
+Date:    Tue, 15 Oct 91 06:13:00 -0500
+>From:    KENNETH@ducvax.auburn.edu
+Subject: BGS9 (Amiga)
+
+Anybody know anything about an Amiga virus called BGS9?
+
+------------------------------
+
+Date:    Tue, 15 Oct 91 16:55:30 +0000
+>From:    hoshor@mdd.comm.mot.com (Alan Hoshor)
+Subject: Rejects unformatted disk (Mac II)
+
+We are experiencing a localized problem on a network of MAC IIs and
+SE30s.  The primary symptom is failure to recognize an inserted disk.
+Especially if it is unformatted.  The symptom is never consistent.
+But once displayed, requires the rebooting of the MAC to resolve.
+These MACs are protected by current releases of either Disinfectant
+2.5.1 or SAM 3.0.
+
+Has there been anyone else experiencing similar problems?
+
+Alan
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 11:35:18 -0500
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files on risc (PC)
+
+The following files have been placed on risc.ua.edu (130.160.4.7) for
+anonymous FTP in the directory pub/ibm-antivirus:
+
+             vsumx109.zip - Virus Summary Listing, v1.09
+             wscan84b.zip - McAfee's Scan for Windows
+             validate.crc - Latest listing of validation codes
+                            from McAfee's BBS.
+- ----------
+The advantage to being a pessimist is that all your surprises are pleasant.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@risc.ua.edu
+
+------------------------------
+
+Date:    Tue, 15 Oct 91 12:17:00 -0400
+>From:    HAYES@urvax.urich.edu
+Subject: safembr 1.3 available (PC)
+
+Just received and made available A. Padgett Peterson new version of SAFEMBR.
+
+file name:      SAFEMBR.ZIP
+Site address:	University of Richmond <urvax.urich.edu> IP# 141.166.1.6
+directory:	[.msdos.antivirus]
+
+This is a VAX/VMS system!  login user= anonymous,
+password <your_e-mail_address>.
+.ZIP file must be downloaded as binary (one user though we were as big as
+simtel20 and using TENEX <grin>).
+
+Best, Claude
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Claude Bersano-Hayes     HAYES @ URVAX                 (Vanilla BITNET)
+University of Richmond   hayes@urvax.urich.edu     (Bitnet or Internet)
+Richmond, VA  23173
+
+------------------------------
+
+Date:    Mon, 14 Oct 91 15:11:35 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Appenders and prependers
+
+
+
+FUNPIV3.CVP   911013
+
+                      Viral code addition
+
+In order to avoid damage to the original program, which might
+lead to detection of the infection, the viral code can be added
+to the beginning or end of the program.  (Or not attached at
+all.)
+
+Adding code at the beginning of the original program ensures
+that the viral code is run whenever the program is run.  (This
+also ensures that the virus is run before the program runs.  The
+virus thus has priority in terms of operation, possible
+conflicts and detection.)  With the addition of code to the
+beginning of the program, it is possible to avoid any change to
+the original code.  It *is* necessary to alter the file/disk
+allocation table, at least, in order to ensure that the program
+"call" starts with the viral code, and that the viral code is
+not overwritten by other changes to the disk or files.  While
+the original code may be left unchanged, the file will be,
+essentially, altered, and, unless techniques are used to
+disguise this, will show a different creation date, size and
+image.
+
+It is also, however, possible to add viral code to the end of
+the original program, and still ensure that the viral code is
+run before that of the original program.  All that is necessary
+is to alter the file header information to reflect the fact that
+you want to start executing the file towards the end, rather
+than at the normal location.  At the end of the viral code
+another jump returns operation to the original program.
+
+(This kind of operation is not as odd as it may sound.  It is
+not even uncommon.  A legacy from the days of mainframe "paging"
+of memory, it is used in a great many MS-DOS executables, either
+in single .EXE files or in overlays.  It is, therefore, not a
+coding indication that can be used to identify viral type
+programs or infected files.)
+
+Appending, or prepending, viral code to an existing program
+therefore avoids the problems of damage and potential failure to
+run which plague overwriting viral programs.  Even these viral
+programs, however, are not foolproof.  Programs which load in
+very non-standard ways, such as KEA's "Zstem" terminal emulation
+program, use the header information which the viral programs
+alter.  Although not originally designed for virus detection,
+the "Program abort - invalid file header" message thus generated
+is an indication of viral infection.  Sometimes the first
+indication that users have.
+
+copyright Robert M. Slade, 1991   FUNPIV3.CVP   911014
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "Power users think
+Institute for      Robert_Slade@mtsg.sfu.ca |  'Your PC is now
+Research into      CyberStore               |  Stoned' is part of
+User                (Datapac 3020 8530 1030)|  the DOS copyright
+Security           Canada V7K 2G6           |  line." R. Murnane
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 191]
+******************************************

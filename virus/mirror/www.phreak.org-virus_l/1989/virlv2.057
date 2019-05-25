@@ -1,0 +1,415 @@
+VIRUS-L Digest             Thursday, 2 Mar 1989         Volume 2 : Issue 57
+
+Today's Topics:
+Viruses and System Security (a story)
+UofU infestation?
+Why people write viruses...
+FluShot+ 1.51 (PC)
+Re: More Info on definitions
+Lab Procedures
+Re: Closed virus list proposal
+Virus psychology information
+Flushot+ 1.51 question (PC)
+
+---------------------------------------------------------------------------
+
+Date:         Fri, 3 Feb 89 04:00:00 EST
+Sender:       SECURITY Digest <SECURITY@PYRITE.RUTGERS.EDU>
+From:         AMSTerDamn System <R746RZ02@VB.CC.CMU.EDU>
+Subject:      Viruses and System Security (a story)
+
+[Ed. reprinted from SECURITY Digest]
+
+The following story was posted in news.sysadmin recently.
+
+The more things change, the more they stay the same...
+
+Back in the mid-1970s, several of the system support staff at Motorola
+(I believe it was) discovered a relatively simple way to crack system
+security on the Xerox CP-V timesharing system (or it may have been
+CP-V's predecessor UTS).  Through a simple programming strategy, it was
+possible for a user program to trick the system into running a portion
+of the program in "master mode" (supervisor state), in which memory
+protection does not apply.  The program could then poke a large value
+into its "privilege level" byte (normally write-protected) and could
+then proceed to bypass all levels of security within the file-management
+system, patch the system monitor, and do numerous other interesting
+things.  In short, the barn door was wide open.
+
+Motorola quite properly reported this problem to XEROX via an official
+"level 1 SIDR" (a bug report with a perceived urgency of "needs to be
+fixed yesterday").  Because the text of each SIDR was entered into a
+database that could be viewed by quite a number of people, Motorola
+followed the approved procedure: they simply reported the problem as
+"Security SIDR", and attached all of the necessary documentation,
+ways-to-reproduce, etc. separately.
+
+Xerox apparently sat on the problem... they either didn't acknowledge
+the severity of the problem, or didn't assign the necessary
+operating-system-staff resources to develop and distribute an official
+patch.
+
+Time passed (months, as I recall).  The Motorola guys pestered their
+Xerox field-support rep, to no avail.  Finally they decided to take
+Direct Action, to demonstrate to Xerox management just how easily the
+system could be cracked, and just how thoroughly the system security
+systems could be subverted.
+
+They dug around through the operating-system listings, and devised a
+thoroughly devilish set of patches.  These patches were then
+incorporated into a pair of programs called Robin Hood and Friar Tuck.
+Robin Hood and Friar Tuck were designed to run as "ghost jobs" (daemons,
+in Unix terminology);  they would use the existing loophole to subvert
+system security, install the necessary patches, and then keep an eye on
+one another's statuses in order to keep the system operator (in effect,
+the superuser) from aborting them.
+
+So... one day, the system operator on the main CP-V software-development
+system in El Segundo was surprised by a number of unusual phenomena.
+These included the following (as I recall... it's been a while since I
+heard the story):
+
+- -  Tape drives would rewind and dismount their tapes in the middle of a
+   job.
+
+- -  Disk drives would seek back&forth so rapidly that they'd attempt to
+   walk across the floor.
+
+- -  The card-punch output device would occasionally start up of itself
+   and punch a "lace card" (every hole punched).  These would usually
+   jam in the punch.
+
+- -  The console would print snide and insulting messages from Robin Hood
+   to Friar Tuck, or vice versa.
+
+- -  The Xerox card reader had two output stackers;  it could be
+   instructed to stack into A, stack into B, or stack into A unless a
+   card was unreadable, in which case the bad card was placed into
+   stacker B.  One of the patches installed by the ghosts added some
+   code to the card-reader driver... after reading a card, it would flip
+   over to the opposite stacker.  As a result, card decks would divide
+   themselves in half when they were read, leaving the operator to
+   recollate them manually.
+
+I believe that there were some other effects produced, as well.
+
+Naturally, the operator called in the operating-system developers.  They
+found the bandit ghost jobs running, and X'ed them... and were once
+again surprised.  When Robin Hood was X'ed, the following sequence of
+events took place:
+
+  !X id1
+
+  id1:   Friar Tuck... I am under attack!  Pray save me!  (Robin Hood)
+  id1: Off (aborted)
+
+  id2: Fear not, friend Robin!  I shall rout the Sheriff of Nottingham's men!
+
+  id3: Thank you, my good fellow! (Robin)
+
+Each ghost-job would detect the fact that the other had been killed, and
+would start a new copy of the recently-slain program within a few
+milliseconds.  The only way to kill both ghosts was to kill them
+simultaneously (very difficult) or to deliberately crash the system.
+
+Finally, the system programmers did the latter... only to find that the
+bandits appeared once again when the system rebooted!  It turned out
+that these two programs had patched the boot-time image (the /vmunix
+file, in Unix terms) and had added themselves to the list of programs
+that were to be started at boot time...
+
+The Robin Hood and Friar Tuck ghosts were finally eradicated when the
+system staff rebooted the system from a clean boot-tape and reinstalled
+the monitor.  Not long thereafter, Xerox released a patch for this
+problem.
+
+I believe that Xerox filed a complaint with Motorola's management about
+the merry-prankster actions of the two employees in question.  To the
+best of my knowledge, no serious disciplinary action was taken against
+either of these guys.
+
+Several years later, both of the perpetrators were hired by Honeywell,
+which had purchased the rights to CP-V after Xerox pulled out of the
+mainframe business.  Both of them made serious and substantial
+contributions to the Honeywell CP-6 operating system development effort.
+Robin Hood (Dan Holle) did much of the development of the PL-6
+system-programming language compiler; Friar Tuck (John Gabler) was one
+of the chief communications-software gurus for several years.  They're
+both alive and well, and living in LA (Dan) and Orange County (John).
+Both are among the more brilliant people I've had the pleasure of
+working with.
+
+Disclaimers: it has been quite a while since I heard the details of how
+this all went down, so some of the details above are almost certainly
+wrong.  I shared an apartment with John Gabler for several years, and he
+was my Best Man when I married back in '86... so I'm somewhat
+predisposed to believe his version of the events that occurred.
+
+- --
+Dave Platt
+  Coherent Thought Inc.  3350 West Bayshore #205  Palo Alto CA 94303
+
+------------------------------
+
+Date:    Sat, 25 Feb 89 00:15 CST
+From:    Gordon Meyer <TK0GRM1@NIU.BITNET>
+Subject: UofU infestation?
+
+I was speaking with my mother tonight and she said that the local news
+had a story about a recent virus infestation at the University of
+Utah.  She couldn't recall any of the details.  Any VIRUS-L readers
+know of this?
+- -=->G<-=-
+Gordon R. Meyer, Dept of Sociology, Northern Illinois University.
+GEnie: GRMEYER  CIS: 72307,1502  Phone: (815) 753-0365
+Bitnet: tee-kay-zero-gee-are-em-one at enn-eye-you
+Disclaimer: Grad students don't need disclaimers!
+            I'll have an opinion when I get my degree.
+- --- BE YE NOT LOST AMONG PRECEPTS OF ORDER... (book of Uterus) ---
+
+------------------------------
+
+Date: 25 February 1989 14:26:00 CST
+From: "Michael J. Steiner  " <U23405@UICVM.BITNET>
+Subject:  Why people write viruses...
+
+After listening to the VIRUS-L discussion for a few months, it finally
+hit me that maybe some people write viruses because... (well, let me
+explain it in detail):
+
+The people who write viruses are usually (if not always) people who
+are very knowledgeable about computers. Being very knowledgeable about
+computers, these people might look down upon novices, and might write
+a virus, which would mostly affect novices (who sometimes barely even
+know that viruses exist) while not affecting other experts (who are
+aware of viruses and know the necessary precautions to avoid
+infection). Thus, a virus-writer can get pleasure out of
+confusing/disrupting the novices' efforts at learning about computers.
+(I hope I explained this clearly enough.)
+
+Any replies, comments, flames, accepted.
+
+Disclaimer #1:  I am an undergrad. :-)         Michael Steiner
+Disclaimer #2:  Don't take this note           Email: U23405@UICVM.BITNET
+                personally.
+
+------------------------------
+
+Date:     Sat, 25 Feb 89 22:19 EDT
+From:     Llamas are bigger than frogs <PCOEN@DRUNIVAC.BITNET>
+Subject:  FluShot+ 1.51 (PC)
+
+I've just downloaded FluShot+ 1.51 from the RAMnet BBS in NYC and I've
+noticed that I'm having the same problem with it that I had with
+version 1.4......it gives me bad checksums on my command.com,
+ibmbio.com and ibmdos.com.  However, all 3 files are okay.  Is it
+looking for the "True Blue" versions of these files?  I have a Zenith
+z-157 with MS-DOS 3.2.  Has anyone else had this problem?  I glanced
+in the manual, there didn't seem to be a way to alter what it's
+looking for (hardly suprising...that would be a major hole, in all
+likelyhood....).  Any tips/advice would be appreciated.
+
+Paul Coen, Drew University         Bitnet:  PCOEN@DRUNIVAC, PCOEN@DREW
+
+------------------------------
+
+Date:     Mon, 27 Feb 89 09:51:53 GMT
+From:     UA0095@SYSB.SALFORD.AC.UK
+Subject:  Re: More Info on definitions
+
+Hi there folks, Me again.
+
+Many thanks for the replies to my plea for help about the definitions.
+(comments etc are still welcome).  I was suprised to find that out
+those who replied, who obviously consider themselves knowledgeable
+about the subject, their definitions did all slightly differ.  Below
+is a summary of the replies I got, hopefully they are as correct as
+the subject will allow (due to it's non-descript nature).  I would
+gratefully receive anything that you would like to add.
+
+TROJAN HORSE
+
+A Trojan horse is a program that does something that the programmer
+intended it to, but the user did not.  (And, generally, that the
+user would not have approved of had he/she known about it.)
+
+A trojan horse is a program which is concealed inside another, for the
+purpose of executing inside another user's protection boundary (on his
+PC, or in a job he runs on a system, or in his virtual machine in VM).
+
+( The term also applies to programs which masquerade as others, as
+might a password-stealing program which emulates a legitimate system,
+and thereby fools a user into entering a password, which the TH then
+"steals".  A compiler which, when executed, copies an unrelated file
+to the compilerdiskette would be an example, too. )  Is this strictly
+true?  I thought a Trojan Horse actually did something also.
+
+
+WORM
+
+A worm is a program which replicates itself through a network,
+generally with the goal of consuming more system resources than would
+be otherwise available to it.
+
+
+VIRUS
+
+A virus is, to quote Fred Cohen, "a program that can 'infect' other
+programs by modifying them to include a possibly evolved copy of
+itself".
+
+A virus is a program which attaches itself to other programs (or
+possibly to a disk, although that is a minor distinction in my view;
+it is then attaching itself to the boot record, which is a program)
+and when it gets control, attaches itself to more programs.  It may
+also take some action, possibly at random or timed, in addition to the
+replication.
+
+Well that's it, who's Fred Cohen?
+
+Thanks in advance ( we should abbreviate that, in the time honoured
+tradition, like the best things are in computing to "T.I.A."  what do
+you think?)
+
+                                        Steve.
+
+------------------------------
+
+Date:         Mon, 27 Feb 89 08:34:42 MST
+From:         Jim Howard <KGJHH@ASUACAD.BITNET>
+Subject:      Lab Procedures
+
+We have a number of IBM-PC networks with read only file servers. We
+have never had a virus problem there in their 5 years of existance. We
+can boot from the network due to boot proms on our network interface
+cards.  Our Appletalk/Mac labs are another story. We have to go thru
+the disk washing procedure like many others here have described. We
+would like to have a network interface card with a boot prom on our
+Mac's also.  We would need a faster interface such as ethernet, but
+the extra speed would benefit the customers as well as give everyone
+some security from infection. We have been showing every Apple person
+we get on campus how well our IBM labs work and saying we need the
+ability to boot from Mac networks. Most Mac II ethernet cards have an
+empty PROM socket and there is a mention of optional Prom functions in
+the Apple adapters documentation. A scheme (or modification to MAC OS)
+would have to be developed to allow people to customize their own
+screens, desktops, etc.  as they are accustomed to. Of course the very
+nature of the Mac OS and its modification of files (resources, etc) is
+tailr made for the infection process of viruses.  Regardless the
+ability to be able to boot from a network file server is very high on
+our wish list from Apple. It would be well worth the additional cost
+of an ethernet card for every Mac.
+
+------------------------------
+
+Date: Tue, 28 Feb 89 14:37:50 CST
+From: Kenneth W. Loafman <convex!loafman@a.cs.uiuc.edu>
+Subject: Re: Closed virus list proposal
+
+I am against the formation of the list for a list of reasons:
+
+1) I have yet to see a 'live' virus of any description and I have
+downloaded and run probably 30Mb or more of PC software in the last
+year.  How do I know that this list will not be the basis for the
+creation of the first virus I will see?  How can I trust you any more
+than you can trust me?
+
+2) The information on how to 'protect' from viruses, if it is not to
+be commercial, will tell how to build the very viruses that they
+protect against.  How do I accept someone's word that the virus
+protection program someone is hawking for $100 is useful much less
+whether it is a valid program unless I know how it works?  If I know
+how it works, what's the advantage of the list?
+
+3) I do know how to build viruses.  What I'm looking for in this list
+is further information on what else can be done to protect against
+them.  I cannot get that information without being able to write them
+as well.  Item 1 above led me to the construction of a couple of test
+cases so I could check out a hardware solution to the problem using a
+hardware debugger.  >From the descriptions of the viruses on the PC so
+far, this solution should be complete, i.e. a software virus should
+not be able to get past hardware protection methods.  I'm still
+looking for a 'live' virus to try it out on.
+
+4) I _refuse_ to purchase commercial software for virus protection and
+may need all the informational help I can get.  Crime should not pay
+for anyone and we all need to band together to keep the virus scare
+from producing yet another market segment.  The formation of a private
+list fosters that market segment by keeping information secret.
+
+Now before anyone accuses me of heresy, let me add another comment.
+If the list is formed, I need to be on it.  I do a great deal of
+collection and review of PC software for the North Texas PC Users
+Group and have valid need for the information that might be withheld
+if this list is formed without me.  A single virus that slips past the
+reviewers could fan out to several hundred people in a very short
+time.  That would be very bad news!
+
+- -----
+Kenneth W. Loafman @ CONVEX Computer Corp, Dallas, Texas
+email:  {allegra,uiucdcs,ctvax}!convex!loafman
+phone:  (214) 952-0829
+
+------------------------------
+
+Date:         Mon, 6 Feb 89 16:31:25 EST
+Sender:       SECURITY Digest <SECURITY@PYRITE.RUTGERS.EDU>
+From:         FLORY <hxwy@VAX1.CIT.CORNELL.EDU>
+Subject:      Virus psychology information
+
+In response to "Commander Spock"'s question about sources of
+information on why people write virus's, I suggest he look at a few
+recent magazine articles (I really doubt any books have been on the
+topic as of yet)
+
+In the Summer issue of 2600 magazine there is an article by "The
+Plague" called "How to Write a Virus: The Dark Side of Viruses".  He
+claims to have written a viruse called CyberAIDS which attacks the
+Apple II series, but besides his "qualifications" you can get a pretty
+good idea of the twisted kind of mind who enjoy this kind of thing
+(Mr. "Plague" claims to have no moral objections to trashing people's
+hard work) The article goes into the theory of virus writing (not
+system specific) A careful reading between the lines can provide a
+psycological outline of one kind of virus writer.
+
+you can get a back issue of 2600 by writing to 2600 Magazine, PO Box
+752, Middle Island, NY 11953-0752.
+
+You also may want to look up the Winter 1988 issue of "High Frontiers
+Reality Hackers" for an article called "Cyber Terrorists / Viral
+Hitman" Reading it between the lines also reveals a lot about the type
+of person who would voluntarily release a virus.
+
+David James Flory
+
+PS I don't support, condone, or agree with any of these authors, I am
+just bringing them up for a view of why people would write these
+things.
+
+------------------------------
+
+Date:    Thu,  2 Mar 89 13:47 CET
+From:    "Jelle Uenk" <LETTXN@HLERUL2.BITNET>
+Subject: Flushot+ 1.51 question (PC)
+
+I've used FluShot+ 1.51 now for two weeks, and I'm quite satisfied
+with it. I've noticed some strange behaviour when using PC-Tools (I
+believe its version 4.5 (?)). Even with FSP installed I'm able to
+rename, delete etc. the system files command.com, ibmbio.com and
+ibmdos.com. When I try to do the same with any other utility (and
+DEL/REN on the commandline too) FluShot behaves as expected: It warns
+about the action.  I'm wondering what I'm doing wrong with my setup of
+FSP+.  Or is PC-Tools using some very special method of writing to the
+harddisk? (It uses neither INT13 nor INT26 for the DEL/Rename, because
+if I EDIT (with PCTOOLS) COMMAND.COM FluShot gets triggerd).
+
+Can anyone give me some more information?
+
+Jelle Uenk
+Student Assistent
+Leiden University - The Netherlands
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

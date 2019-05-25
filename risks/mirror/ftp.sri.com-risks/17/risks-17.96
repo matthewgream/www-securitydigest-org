@@ -1,0 +1,642 @@
+Subject: RISKS DIGEST 17.96
+
+RISKS-LIST: Risks-Forum Digest  Monday 1 April 1996  Volume 17 : Issue 96
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** NOTE: THIS IS THE END OF VOLUME 17.  RISKS-17.00 PROVIDES THE     *****
+***** VOLUME SUMMARY, BUT IT WILL NOT BE DISTRIBUTED.  Use FTP or a     *****
+***** website.  It is about 74K.  See first item below for explanation. *****
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+END OF VOLUME 17: Summary issue available (PGN)
+Breakthrough in cryptographics: ROT n+1 new algorithm discovered (Peter Simons)
+Flash ROM virus (J.R.Valverde jr)
+"IRS computer project a four-billion-dollar fiasco" (Edupage via 
+    Prentiss Riddle)
+Eglitch in RISKS-17.95 (Peter Ladkin)
+Notes on e-mail: Use diaeresis (Jon Callas)
+BC Health Minister Bans sale of Prescribing Profiles to Drug Companies
+    (Kelly Bert Manning)
+Re: An uncertainty principle for risks (Matthew S. Jaffe, Bob Blakley III)
+Re: Technology "deterioration" (Doug Sewell)
+IBM posts info on the Web about "Year 2000" problem (Paul Robinson)
+Persistence of links such as URLs (Johan Strandberg)
+ACM/IEEE Letter on Crypto (Dave Banisar)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 1 Apr 1996 16:33 PST
+From: "Peter G. Neumann" <Neumann@CSL.sri.com>
+Subject: END OF VOLUME 17
+
+As a courtesy to all of you whose mailers break at 32K or 64K, or whose
+mailboxes are already overflowing with RISKS issues, we are breaking
+precedent and not distributing the end-volume issue (RISKS-17.97) as a
+regular issue.  It will remain available on the ftp site as risks-17.00 in
+the main directory, and will eventually appear in the new subdirectory 17 as
+both risks-17.00 and risks-17.97 -- along with the rest of volume 17.
+
+------------------------------
+
+Date: 1 Apr 1996 00:00:00 GMT
+>From sci.crypt Mon Apr  1 15:32:22 1996
+Path: csl.sri.com!unix.sri.com!news.Stanford.EDU!agate!howland.reston.ans.net!newsjunkie.ans.net!newsfeeds.ans.net!news.dfn.de!gina.zfn.uni-bremen.de!marvin.pc-labor.uni-bremen.de!news.uni-stuttgart.de!news.rhrz.uni-bonn.de!rhein!phoenix.rhein.de!usenet
+From: simons@peti.rhein.de (Cryptography Today)
+Newsgroups: sci.crypt,alt.security.pgp,talk.politics.crypto
+Subject: Breakthrough in cryptographics: ROT n+1 new algorithm discovered
+Followup-To: sci.crypt
+Organization: Institute of slowly and painfully working out the surprisingly obvious
+Xref: csl.sri.com sci.crypt:40328 alt.security.pgp:16271 talk.politics.crypto:10509
+
+	       Unbreakable encryption algorithm discovered:
+
+	   ######  ####### #######                            #
+	   #     # #     #    #             #    #    #      ##
+	   #     # #     #    #             ##   #    #     # #
+	   ######  #     #    #             # #  #  #####     #
+	   #   #   #     #    #             #  # #    #       #
+	   #    #  #     #    #             #   ##    #       #
+	   #     # #######    #             #    #          #####
+
+Another milestone has been added to the exciting history of research in
+cryptography. For several decades, the one-time pad had the reputation of
+being the most secure algorithm in existence. Not anymore. In the sleepy
+city of Bonn, Germany, the new ROT n+1 algorithm was invented by Peter
+Simons, a 22 year old student of Computer Science.
+
+``I had the idea for the algorithm in 1993, when I was reading Douglas
+Adams' famous book "Hitchhiker's Guide to the Galaxy". In one chapter Adams
+was talking about bistromatics, a newly discovered branch of mathematics.
+He furthermore wrote, that the phenomenon of numbers behaving differently
+in a restaurant was well known to the common people, just, nobody took the
+time to really research the behavior.
+
+``Then the idea of the n+1 phenomenon struck me. It happens every day. You
+have carefully planned your trip to the airport to reach your plane in time.
+You absolutely have to be there at 7:00 AM, not a minute later.  Though you
+can be sure that due to mystical events, you'll reach the airport exactly at
+7:01 AM. Or take the case of ordering a pizza. You have exactly $20 in your
+wallet and you order a pizza and drinks for just that amount. And when the
+delivery service arrives, you notice the $1 fee for orders after 4PM.
+
+``I thought about using this law of nature for cryptographical purposes and
+ROT n+1 was almost invented. I was still missing the tools to device this
+effect, though. It took me three years of research to come up with a method
+to control the n+1 effect: Reverse Temporal Engineering.''
+
+Unfortunately the details of Reverse Temporal Engineering are patented by
+Peter Simons and must not be described in detail here. To summarize it: You
+make up a random number. Then you take the ASCII-representation of your
+plaintext and add the number to each byte. If the result lies beyond the
+'z' character, you'll simply start over with an 'a' again. Just like it has
+been done by Caesar a two-thousand years ago.
+
+Formally, the algorithm is described as follows (readers who are not
+mathematically oriented might want to skip this paragraph): f() is the
+function which yields the numerical-representation of a character. f'() on
+the other hand, yields the character represented by the number, it receives
+as parameter:
+
+ (1)     f'(f(x)) = x
+
+Given the magical number n and the pool of available characters Z, the
+encryption works as follows:
+
+ (2)     f'((f(x)+n) mod |Z|)
+
+Decryption is done just the other way round:
+
+ (3)     f'((f(x)-n) mod |Z|)
+
+If both, the sender and the recipient, use the same character set and the
+same key n, the system works. So far so good.
+
+Of course anybody can attack use brute force to attack the encrypted
+message, simply by trying all possible 'n's. Due to the modulo operation, n
+is actually limited to the number of characters available, usually less
+than 60 or 70 characters. A brute force attack can be done by anybody
+fortunate enough to own a piece of paper and a pencil, not even to mention
+todays high-power computers.
+
+Here comes the Temporal Reverse Engineering into play. The message is not
+really encrypted with n, but with n+1. Not literally n+1, but the "n+1
+effect" Peter described above. n is not a fixed constant, it is a flowing
+number always escaping your attempts to catch it. When you attack the
+message with "1", the real n will be "2". But when you try "2", n will
+already be "3". There's no way to catch it unless someone proves that the
+natural number do have a upper limit. Only the indented recipient is able to
+use the real n -- for reasons, nobody but Peter Simons quite understands.
+
+One even more obscure thing is, that you are able to choose zero (0) as
+encryptor, which does not encipher the message at all. Nonetheless, nobody
+but the recipient will be able to read it!
+
+It isn't astonishing at all, that the infamous three letter agencies are
+not very fond of this invention. For decades, they fought their battle
+against encryption algorithms invented by the so called "opponent". But
+here comes an opponent they will not be able to beat. ROTn+1 gives
+unbreakable encryption to the masses. And unlike, say, RSA, it doesn't
+require much computer power to utilize it. The encryption itself is very
+straightforward and the determination of n can be done by a three year old
+child. Peter Simons has been quoted saying that ``the Temporal Reverse
+Engineering is so damned easy, you wouldn't even believe it if I told you
+how it works''.
+
+Furthermore he said: ``My ROTn+1 algorithm renders all cryptographic
+software in existence useless. Throw it away. PGP? Forget about it.
+Clipper? An April fools day joke -- not more.''
+
+  [Speculation on whether the above-cited newsgroup postings violate any U.S.
+  export-controls restrictions is left as an exercise to the reader.  PGN]
+
+------------------------------
+
+Date: Mon, 01 Apr 1996 15:14:09 WET
+From: "J.R.Valverde (jr)" <jrvalverde@samba.cnb.uam.es>
+Subject: Flash ROM virus
+
+A recent posting in comp.firewalls describes a new kind of PC virus.
+This one zaps the flash BIOS of Pentium motherboards.
+
+What makes it more interesting is that on the Endeavour EV-2 motherboards
+this behaviour is a killer, it renders it unusable; see:
+
+   http://www.mrbios.com/ftp/big_risk.txt
+
+As it seems, this particular motherboard features: "(1) Its flash ROM does
+NOT implement a write-protected failsafe recovery "boot-block".  (2) The
+flash ROM is soldered directly onto the system board.  If anything at all
+happens to the flash that causes it to be inoperable, no practical method
+exists to restore it.  No "recovery" utility can be run if the system won't
+boot."
+
+I can't but wonder what kind of demential design gave birth to such a
+sensitive piece of hardware: the BIOS ROM in a PC is a fundamental part of
+it: without it the machine is totally unusable. A FlashROM is by definition
+writable, and as such one can expect that a variety of circumstances may
+erase or rewrite it with bad data. And there are many!
+
+Not having a protected recovery block is bad enough. But soldering it so it
+can't be replaced is something I can't but qualify as "evil" (or "greedy" at
+least).
+
+The RISKs? Just let your imagination run wild: viruses like the
+'Flash_killed' one, programming errors (yes, I've zapped the BIOS config of
+a PC this way a couple of times), power failures, using the wrong BIOS image
+or loader for an update, etc... Any of them (and many more) will render the
+machine totally worthless.
+
+------------------------------
+
+Date: Mon, 1 Apr 1996 08:33:48 -0600 (CST)
+From: Prentiss Riddle <riddle@is.rice.edu>
+Subject: "IRS computer project a four-billion-dollar fiasco" (Edupage, 31 Mar 1996)
+
+Treasury Secretary Robert Rubin has admitted to a congressional committee
+that his department doesn't have an overall master plan or blueprint for
+the multibillion modernization effort intended to replace the Sixties-era
+mainframes now in operation at the Internal Revenue Service and to link IRS
+offices across the nation.  Congressman Jim Lightfoot characterized the
+project as "a $4-billion fiasco that is floundering because of inadequate
+planning."  Secretary Rubin says the only plan that exists (and which he
+has not read) is a highly technical 6,000-page document that "is not what
+we need."  (*Los Angeles Times*, 29 Mar 1996, D1)
+
+------------------------------
+
+Date: Mon, 1 Apr 1996 22:31:27 +0200
+From: ladkin@TechFak.Uni-Bielefeld.DE
+Subject: Eglitch in RISKS-17.95
+
+Our immoderate moderator said
+
+>email      e-mail      Electronic mail [Distinguishing itself from every
+>                          other term on this list, the unhyphenated version 
+>                          has no natural meaning whatever ...]
+
+I conclude the meanings of Email (German) and e'mail (French) are 
+unnatural. Our moderator may consider himself lacquered. 
+Es ist aber mir..
+NO-        YES-        Interpretation
+egal       e-gal       It bothers me a whole lot electronically.
+
+Peter Ladkin
+
+    [Peter, I am glad you are enameled with German and French (sorry; that
+    is a Chinese pun).  You must belong to the e-galite' sororite'?  PGN]
+
+       [The French was also noted by Bertrand Meyer <bertrand@eiffel.com>.
+       The German is of course borrowed from the French.  I knew that, 
+       but was carefully distinguishing Email and e'mail from email in 
+       noting the lack of (strict) misinterpretations for ``email''.  PGN]
+
+------------------------------
+
+Date: Mon, 1 Apr 1996 13:58:10 -0800
+From: jon@worldbenders.com (Jon Callas)
+Subject: Notes on e-mail: Use diaeresis
+
+I think PGN has a very good proposal, and there's an addendum I'd like to
+make. In English, we have a little used stress mark that denotes precisely
+what you mention, although in the general case. This stress mark is called
+the diaeresis, and it looks like (and is commonly confused with) the umlaut
+that German has.
+
+The purpose of a diaeresis is to note that a vowel is supposed to be
+pronounced when ordinarily it would not be. For example, the word
+"co=F6perate" has a diaeresis on the second "o" so we can tell the difference
+between "working with" (co - operate) and "the process of becoming someone
+who makes barrels" (cooper-ate). Similarly, the word "na=EFf" is spelled
+with a diaeresis on the "i" so we know it is pronounced "nigh-EEF" and not
+"nay-f." It is also used on a final vowel that would ordinarily not be
+pronounced, like in the name "Bront=EB."
+
+In the past in RISKS we've talked about the hazards that have come from
+losing punctuation marks -- for example, the people who refused to stop
+spelling their name with an umlaut. While these problems are less
+wide-spread in English than some other languages, they still exist. Computer
+scientists have only recently admitted that there are lower case letters,
+and only the howling of Europeans got accented characters into ISO Latin-1.
+Anglophones had to put up with na=EFve people who thought there were no
+accents in English, or were used only by people putting on some sort of a
+r=F4le. Even today, the Unicode folk still refuse to admit that there is
+such a thing as lower case numerals (yes, there are, and no they are NOT
+simply a display style), and I strongly suspect that the diaereses I put
+here (and shock horror, a circumflex) will get eaten somewhere along the
+way, most likely because early computer people could not count past seven
+unaided.
+
+Nonetheless, I don't think we should be daunted. We should use good old
+English, and spell "e-mail" "=EBmail". It looks cool (why do you think you
+see them liberally slathered on heavy-metal albums?), and best of all, it's
+correct usage. The diaeresis means to pronounce the e, so when some tin-horn
+techno-pedant complains, you can put them in their place and show them how
+us real technos do things.
+
+Jon Callas
+
+  [Not a bad idea for folks who can deal with diaeresis, but 
+  there are still lots of problems that does not handle.  PGN]
+
+------------------------------
+
+Date: Mon, 1 Apr 1996 15:44:58 -0500
+From: bo774@freenet.carleton.ca (Kelly Bert Manning)
+Subject: BC Health Minister Bans sale of Prescribing Profiles to Drug Companies
+
+See http:/www.health.gov.bc.ca/newsrel/nrdate.html
+
+How does this relate to computers, since the root issues are generic?
+
+Well, for one thing having the data in machine readable form makes it 
+much easier to merge and relate data and perform this kind of data mining.
+
+For another thing, the Single Payer system assigns unique province wide
+Practitioner ID numbers that makes it easier to relate data from separate
+points of sale. The same applies to Personal Health Numbers, but that
+doesn't seem to be at issue in this matter.
+
+Finally, when systems interact, it doesn't seem to be enough to ensure that
+Privacy/Confidentiality is protected on just one system. While Pharmanet
+wasn't the source of this information it defines a province wide standard
+that could simplify the task of combining information from different points
+of sale.
+
+For background the URL above has a couple of press releases about Minister's
+statements about regulation of Pharmaceutical company prices and profits.
+See Feb 26 and Feb 13. This has been getting a lot of news coverage since
+the Mulroney government ended "compulsory licencing" about a decade ago.
+
+------------------------------
+
+Date: Mon, 01 Apr 1996 12:01:36 -0700
+From: mjaffe@msmail3.hac.com (Matthew S. Jaffe)
+Subject: Re: An uncertainty principle for risks (Mills, RISKS-17.94)
+
+The subject of asynchronous, real-time, HMI design has been addressed
+(although almost certainly not yet "infallibly") by the literature in our
+field.  As implied by Lauren Weinstein, however, in 'Technology
+"deterioration" ' earlier in the same issue of RISKS, the difficulty in
+keeping up with the literature is obviously a problem that contributes to
+risks.
+
+For those who are interested, the end of section 15.4.5 of Nancy Leveson's
+book "Safeware: System Safety and Computers," Addison-Wesley, contains an
+extract of a fuller discussion found in "Implications of the man-machine
+interface for software requirements completeness in real-time,
+safety-critical software systems," Proceedings of IFAC/IFIP SAFECOMP '89,
+Dec, 1989.  The original IFAC article, addresses (among other topics)
+exactly the situation that Dick Mills described above and presents a design
+principle to prevent such situations --- disclaimer: Leveson and I wrote
+that article so mine is not an unbiased recommendation.  It is also true
+that our solution, intended for safety critical systems, seems too elaborate
+for a simple, non-critical device such as a car radio.  But, for
+safety-critical systems, some principles are known --- there might not need
+to be quite so much cause for despair.
+
+...Matt    mjaffe@msmail3.hac.com
+
+------------------------------
+
+Date: Mon, 01 Apr 96 15:36:05 EST
+From: blakley@VNET.IBM.COM (Bob Blakley III)
+Subject: Re: An uncertainty principle for risks (Cook, RISKS-17.95)
+
+That is not to say that NO bad effects are possible; even in _verite'_
+systems, combining two devices can have unpleasant side effects.  My new
+1996 Chevy Lumina (generally an excellent specimen) exhibits such an effect.
+It has a radio with a built-in cassette player, just like my old 1990 Chevy
+Lumina (they're kinda habit-forming...).  Well, not *just* like the 1990
+model - the 1996 model has added a feature called a "cut tape detector".
+This device somehow (tension?  optics?) continuously monitors the deck to
+insure that there is really tape running through the play heads.  If it
+determines that there's no tape, it assumes that instead of running through
+the heads, the tape is snarling up inside the deck, and it ejects the
+cassette.
+
+This is a nice feature from some points of view, but from my perspective
+it's a dead loss.  Why?  Because I almost never use the cassette player to
+play tapes; in the 1990 Lumina I use it, with a Radio Shack adaptor, to play
+CDs on a portable CD player.  But on the 1996 Lumina, I can't do this,
+because the CD-cassette adaptor has no tape!  It just has a magnetic head
+which mates with the read head in the tape deck and "pretends to be a tape"
+from the point of view of the read head.
+
+No one has yet produced a CD-cassette adaptor which *also* pretends to be a
+tape from the point of view of the cut-tape detector, so I can't listen to
+CDs in the new car.  (Naturally, I didn't know about this "feature" when I
+decided against the CD player option in the 1996 model...)
+
+Bob Blakley, IBM Austin, 11400 Burnet Rd. Bldg 903 Rm 7b-01
+blakley@vnet.ibm.com  FON 512 838-8133 t/l 678, FAX 823-8805 t/l 793
+
+------------------------------
+
+Date: 26 Mar 1996 10:39:34 -0500
+From: doug@cc.ysu.edu (Doug Sewell)
+Subject: Re: Technology "deterioration" (Weinstein, RISKS-17.94)
+
+I've found a number of `technologically deficient' `features' in cellular
+telephone equipment, having had various phones over the last eight years
+(right now I'm on my fourth, a handheld with a booster in the car).
+
+Brand X telephone uses only a three-digit lock-code, and the lock code is
+not changeable by the user.  This same Brand X telephone displays the phone
+number at power-up.  Given that the initial lock code put in by the cellular
+vendor is the last X digits of the phone number, this isn't very secure.
+You have to take the phone back to the vendor to change the lock code.
+
+Brand Y telephone has a four-digit lock code and a five-digit security code.
+The lock code is used to lock/unlock the phone and set a few security
+parameters, and is resettable by the user.  The security code is used to
+validate other parameters (including the lock code), and may not be reset by
+the user.  The default settings are very easy.
+
+It is entirely possible, using the security code, to reset the lock code on
+a locked Brand Y phone, rendering the locking useless.  I proved it to
+myself yesterday.
+
+Doug Sewell (doug@cc.ysu.edu) (http://cc.ysu.edu/~doug/)
+Youngstown Ohio is now area code 330.
+
+------------------------------
+
+Date: Fri, 29 Mar 1996 02:01:13 EST
+From :Paul Robinson <paul@TDR.COM>
+Subject: IBM posts info on the Web about "Year 2000" problem
+
+[Note: the URLs of items in this article are posted in HTML format so that
+if you are reading this article via a browser, you can automatically
+reference the items mentioned.  A plain-text list of all URLs used in this
+article will appear at the bottom.]
+
+One of IBM's World Wide Web sites contains an interesting summary of
+issues relating to the use of 6-digit dates and 2-digit years where the
+century was not included and thus are now and will cause problems in the
+future as calculations and other manipulations of dates will erroneously
+consider Saturday, January 1, 2000, to be 01/01/00 and thus an earlier
+date than Friday, December 31, 1999, being 12/31/99. 
+
+There is a fairly well thought out <a 
+href="http://www.s390.ibm.com/stories/tran2000.html> article</a> for
+people to consider on dealing with programs to correctly handle 4-digit
+dates.  It also mentions the fact that the upgrading of old software is
+going to be expensive in people, resource and money terms. 
+
+It includes URL references to other documents including an FAQ on the year
+2000 problem, an article from 
+<a href="http://www.cnn.com/TECH/9601/2000/index.html"> CNN Interactive</a>
+about the issue of two-digit years failing at 01/01/00.
+
+They also have a 500K+ white paper in that can be retrieved in several
+formats or in printed form by an E-mail request about the subject and what
+to do whether you use IBM hardware/software or not.  The paper can be
+obtained from the <a href="http://www.s390.ibm.com/stories/tran2000.html>
+article</a> reference I indicated above.
+
+>From what I read, it sounded interesting, neither an attempt to minimize
+the problem, nor an attempt to overhype it.  It also points out that IBM
+was just as much responsible as everyone else was in developing software
+using 2-digit years.
+
+URL's used in this article:
+
+IBM Article: http://www.s390.ibm.com/stories/tran2000.html
+CNN Story:   http://www.cnn.com/TECH/9601/2000/index.html
+ 
+Paul Robinson, General Manager, Tansin A. Darcos & Company/TDR, Inc.
+
+------------------------------
+
+Date: Mon, 1 Apr 1996 14:58:30 -0800
+From: Johan Strandberg <johan@acm.org>
+Subject: Persistence of links such as URLs
+
+I am a bit concerned seeing how many articles in RISKS quote external
+document through the use of URLs.  Most of the time it is great how this
+makes information easier to get to, but what can we do to protect these
+links over time?
+
+RISKS is archived (Thanks!) so important information is preserved.  However,
+many recent articles have had key information excluded and replaced with a
+URL (a recent article by Fred Cohen <fc@all.net> in 17.94 about the incident
+at all.net comas to mind, but there are others).
+
+URLs do a great job of handling some of the copyright and ownership issues
+as well as reducing clutter and expanding coverage.  But--until we have Ted
+Nelsons (possibly utopian) Xanadu Hypertext docuverse with guarantee
+persistence of information--URL's will simply decay and destroy information.
+
+I think great care should be taken in such an important archived journal as
+RISKS to use URLs with care.  They are great for off-loading long and
+boring conference announcement details where there is a built-in time limit
+for relevance anyway, but let us all make sure we preserve what is
+important.
+
+Johan Strandberg           1444 Jeffery Avenue          (408) 723 5462
+Clear Blue Software       San Jose CA 95118-1134         johan@acm.org
+
+------------------------------
+
+Date: 1 Apr 1996 16:26:01 -0500
+From: "Dave Banisar" <banisar@epic.org>
+Subject: ACM/IEEE Letter on Crypto
+
+              Association For Computing Machinery
+                     Office of US Public Policy
+                     666 Pennsylvania Avenue SE
+                             Suite 301
+                      Washington, DC 20003 USA
+              (tel) 202/298-0842 (fax) 202/547-5482
+
+      Institute of Electronics and Electrical Engineers
+                     United States Activities
+                        1828 L Street NW
+                              Suite 1202
+                   Washington, DC 20036-5104 USA
+              (tel) 202/785-0017 (fax) 202/785-0835
+
+2 April 1996
+
+Honorable Conrad Burns
+Chairman, Subcommittee on Science, Technology and Space
+Senate Commerce, Science and Transportation Committee
+US Senate SD-508
+Washington, DC 20510
+
+Dear Chairman Burns:
+
+	On behalf of the nation's two leading computing and engineering 
+associations, we are writing to support your efforts, and the efforts of 
+the other cosponsors of the Encrypted Communications Privacy Act, to 
+remove unnecessarily restrictive controls on the export of encryption 
+technology.  The Encrypted Communications Privacy Act sets out the 
+minimum changes that are necessary to the current export controls on  
+encryption technology.  However, we believe that the inclusion of issues 
+that are tangential to export, such as key escrow and encryption in 
+domestic criminal activities, is not necessary.  The relaxation of 
+export controls is of great economic importance to industry and users, 
+and should not become entangled in more controversial matters.
+
+	Current restrictions on the export of encryption technology harm 
+the interests of the United States in three ways: they handicap American 
+producers of software & hardware, prevent the development of a secure 
+information infrastructure, and limit the ability of Americans using new 
+online services to protect their privacy.  The proposed legislation will 
+help mitigate all of these problems, though more will need to be done to 
+assure continued US leadership in this important hi-tech sector.
+
+	Technological progress has moved encryption from the realm of 
+national security into the commercial sphere. Current policies, as well 
+as the policy-making processes, should reflect this new reality. The 
+legislation takes a necessary first step in shifting authority to the 
+Commerce Department and removing restrictions on certain encryption 
+products.  Future liberalization of export controls will allow Americans 
+to excel in this market.
+
+	The removal of out-dated restrictions on exports will also enable 
+the creation of a Global Information Infrastructure sufficiently secure 
+to provide seamless connectivity to customers previously unreachable by 
+American companies.   The United States is a leader in Internet 
+commerce.  However, Internet commerce requires cryptography.  Thus 
+American systems have been hindered by cold-war restraints on the 
+necessary cryptography as these systems have moved from the laboratory 
+to the marketplace.  This legislation would open the market to secure, 
+private, ubiquitous electronic commerce.  The cost of not opening the 
+market may include the loss of leadership in computer security 
+technologies, just at the time when Internet users around the world will 
+need good security to launch commercial applications.
+
+	For this legislation to fulfill its promise the final approval of 
+export regulations must be based on analysis of financial and commercial 
+requirements and opportunities, not simply on the views of experts in 
+national security cryptography. Therefore, we urge you to look at ways 
+to further relax restrictive barriers.
+
+	Finally, the legislation will serve all users of electronic 
+information systems by supporting the development of a truly global 
+market for secure desktop communications.  This will help establish 
+private and secure spaces for the work of users, which is of particular 
+interest to the members of the IEEE/USA and the USACM.
+
+	On behalf of the both the USACM and the IEEE/USA we look forward 
+to working with you on this important legislation to relax export 
+controls and promote the development of a robust, secure, and reliable 
+communications infrastructure for the twenty-first century.
+
+	Please contact Deborah Rudolph in the IEEE Washington Office at 
+(202) 785-0017 or Lauren Gelman in the ACM Public Policy Office at (202) 
+298-0842 for any additional information.
+
+				Sincerely,
+
+				Barbara Simons, Ph.D.3
+				Chair, U.S. Public Policy
+				Committee of ACM
+
+				Joel B. Snyder, P.E.
+				Vice President, Professional Activities and
+				Chair, United States Activities Board
+
+cc:	Members of the Subcommittee on Science, Technology and Space
+ 
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Previous-volume issues are in the subdirectory corresponding to the volume
+ number.]  Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.96 
+************************

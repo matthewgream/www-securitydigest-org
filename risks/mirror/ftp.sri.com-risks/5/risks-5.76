@@ -1,0 +1,381 @@
+RISKS-LIST: RISKS-FORUM Digest  Wednesday 16 December 1987  Volume 5 : Issue 76
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Designing for Failure (Don Wegeng)
+  Computer MTBF and usage (Andy Freeman)
+  Liability and software bugs (Nancy Leveson)
+  Re: Need for Reporting Systems (Paul Garnet)
+  Tom Swift and his Electric Jockstrap (Arthur Axelrod)
+  Re: Expert Systems (Amos Shapir)
+  The Saga of the Lost ATM Card (Scott E. Preece)
+  Telephone Billing Risks (Fred Baube)
+  Re: F4 in 'Nam (Reversed signal polarity causing accidents) (Henry Spencer)
+  For Lack of a Nut (NASDAQ Power outage revisited)  (Bill McGarry)
+  Dutch Database Privacy Laws (Henk Cazemier)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+Volume summaries for each i in max j: (i,j) = (1,46),(2,57),(3,92),(4,97).
+
+----------------------------------------------------------------------
+
+Date: 16 Dec 87 15:59:38 EST (Wednesday)
+Subject: Designing for Failure
+To: RISKS@KL.SRI.COM
+From: Don Wegeng <Wegeng.Henr@Xerox.COM>
+
+In RISKS 5.75 Wm Brown III makes some interesting observations about the
+reliability differences between microprocessors and relay logic (prompted by a
+discussion about using microprocessors to control railroad switching). What I
+would like to discuss here is how systems react when a portion of the system
+*does* fail. Since I am involved in the design of microprocessor-based
+real-time control systems, this area is of great interest to me.
+
+In my opinion designers should always consider the worst situation that can
+result from the failure of a component. Part of this should include determining
+what events might be missed or ignored if a particular component fails. The
+system's reaction to the component failure must take these events into account.
+For example, a microprocessor might be used in a robot arm to monitor an
+electric eye that detects when something is in the path of the arm. If the
+microprocessor fails the system's reaction must include whatever it would do if
+the electric eye beam had been broken, for there is no way for the system to
+determine the state of the beam (and it must assume worse case). Note that all
+of this does little good if the system does not detect that the microprocessor
+failed (and detecting the failure may be a bigger problem than reacting to it).
+
+Computer control has the potential to allow greater flexibility than previous
+technologies. This flexibility brings with it new risks (which have been
+discussed many times in RISKS). It is essential that such systems be designed
+so that their reaction to failures will be predictable and safe.
+                                                                     Don
+
+------------------------------
+
+Date: Tue 15 Dec 87 19:20:17-PST
+From: Andy Freeman <ANDY@Sushi.Stanford.EDU>
+Subject: Computer MTBF and usage
+To: RISKS@KL.SRI.COM, Brown@[128.81.38.39]
+
+Wm Brown III <Brown@GODZILLA.SCH.Symbolics.COM> writes:
+    Computers typically have a fairly constant MTBF, regardless of what
+    they are doing for those hours.  Turning them on and off may
+    substantially reduce this time, ...
+
+Professor Ed McCluskey at Stanford has shown that the MTBF of computer
+systems does depend on usage/load.  This isn't surprising for software, but
+I remember seeing something (in an abstract) about how load affects hardware
+failures as well.  It was surprising enough to remember, but not interesting
+enough for me to investigate further.
+                                                -andy
+
+------------------------------
+
+To: risks%csl.sri.com@ROME.UCI.EDU, lcc.ghb%seas.ucla.edu@ROME.UCI.EDU
+Subject: Liability and software bugs
+Reply-To: nancy@ics.UCI.EDU
+Date: Tue, 15 Dec 87 19:20:03 -0800
+From: Nancy Leveson <nancy%murphy.uci.edu@ROME.UCI.EDU>
+
+In Risks 5.75, George Bray writes with respect to the Therac accident:
+
+   >On the other hand, I believe that the bug was due to an unforeseen
+   >interaction that would be very hard to eliminate.  These kinds of bugs
+   >probably exist in much of the software in thw [sic] world.
+
+If a reasonable person would agree that bugs exist in much of the present
+software, then it seems that it is also reasonable that features be built into
+the system to protect against such bugs.  Non-computerized versions of such
+machines usually contain interlocks to prevent such catastrophic behavior.
+These same interlocks can be built into the software (or into the hardware) to
+protect against software errors.  If it is standard practice to include such
+features by hardware engineers, should it not be standard practice for software
+engineers?  Shouldn't somebody have thought to include "reasonableness" checks
+in the AECL software?  I have heard aeronautical engineers speak of a "safety
+envelope" and seen them include design features to detect when the safety
+envelope is violated and to recover from such events.  It is often possible to
+determine the "safety envelope" of software behavior and include checks when it
+is being violated.  Of course, checking routines can also have bugs in them,
+but they are often much simpler than the original software and provide an
+independent check that reduces the risk, probably significantly.
+
+Do we teach programmers to expect software errors and to build the software
+to detect and handle erroneous or unsafe states resulting from software bugs?  
+If manufacturers of hardware devices can be sued for not taking reasonable care 
+by including safety features in their devices, couldn't manufacturers of 
+software be similarly liable for not doing the same?
+
+[By the way, for those interested, I have heard that AECL has settled out of
+court with the families of the victims.  There is still one suit outstanding in
+which the hospital where two people were killed is suing for their money back.
+They do not believe that the problems have truly been fixed and do not want to
+use the machine anymore.  One might note that AECL claimed the problem was
+fixed before a third person was killed a year ago in Yakima].
+
+Nancy Leveson, UCI
+
+------------------------------
+
+Date: Wed, 9 Dec 87 14:09:01 est
+From: pgarnet@nswc-wo.ARPA
+To: RISKS@csl.sri.com
+Subject: Re: Need for Reporting Systems
+Cc: pgarnet@csl.sri.com
+
+In Risks 5.71 Eugene Miya suggests 
+
+< If we are ever going to progress out of the software muck, we are going 
+< to have to come up with mechanisms to replace all of our anecdotal
+< information with better information.
+
+I agree.  One part of the 'software muck' is illicit code, e.g., Trojan
+horses, viruses, etc.  It is EXTREMELY difficult to obtain any examples of
+illicit code, as any organization which has been bitten by one of these
+bugs does not want to be responsible for exacerbating the situation by
+letting the illicit code out to possibly infect another system.
+
+The software security community needs to study the diseases which we are
+trying to defend against, as potential defenses created in a vacuum of
+information will only work in a vacuum.  A clearinghouse, repository,
+library, or whatever name one wants to give to such a function should be
+set up so that those of us who are trying to build defenses can have
+subjects to study.  
+
+There are, however, a number of sticky issues revolving about setting up
+such a clearinghouse.  
+
+	1) How do you trust the repository?  How does one know that
+information given to the repository will not be abused, nor will it be used
+against the giver? 
+
+	2) How does the clearinghouse know who to disseminate which
+information to in order not to violate issue number 1?  How does one decide
+on who has a legitimate need to see 'dangerous' information, e.g., details
+on viruses, trap doors, etc.
+
+	3) The clearinghouse must not be an information sink, sucking up
+information from anyone willing to donate their examples but never giving
+any information out.  It must be clear that the purpose of the
+clearinghouse is to facilitate the sharing of information in a non-
+threatening way.
+
+	4) The clearinghouse must not be an organization that people are
+inherently scared of, "If I tell them what happened, what are they going to
+do to me?"
+
+	5) There must be some mechanism to validate the information coming to
+the clearinghouse to insure that it is correct.  We do not want a
+repository of misleading, invalid data.
+
+	6) Who's going to pay for this service?
+
+There are organizations which collect information about computer crime. 
+One which immediately comes to mind is SRI.  Maybe this or some other
+organization could be a starting point?
+
+One issue which will certainly come up in trying to collect, organize, and
+disseminate this information will be classification.  Is the data
+unclassified, classified (C,S,TS,...), sensitive, proprietary, ...?  I
+believe that if issue number one, trust in the clearinghouse, is solved,
+the issue of putting information in its proper category is administratively
+solvable.  
+
+I could see great value in collecting examples of illicit code (and, of
+course, corresponding risks).  What have people really done?  How can we
+learn from the examples?  What generic technical defenses can be developed
+which specific companies/organizations can then apply to their systems?
+
+Anyone interested in discussing these issues in a workshop setting, either
+classified or unclassified, commercial or government - please contact me.
+
+Maybe we can come up with a workable mechanism to not only replace all of
+our anecdotal information, but to persuade some of the hidden information
+to come out of the woodwork.
+                                    Paul Garnett (pgarnet@NSWC-WO.ARPA)
+
+------------------------------
+
+Date: 14 Dec 87 13:48:43 PST (Monday)
+Subject: Tom Swift and his Electric Jockstrap
+From: "Arthur_Axelrod.WBST128"@Xerox.COM
+To: RISKS@csl.sri.com
+
+  From the Rochester (NY) Democrat and Chronicle, Sunday Dec. 13, 1987.
+  Without permission.
+  
+  GAMBLER WHO WIRED HIMSELF TO COMPUTER FACES TRIAL
+  
+  Carson City [AP] -- The [Nevada] state Supreme Court upheld a ruling against 
+  a man who wired his athletic supporter to a hidden microcomputer to improve 
+  his odds of winning at blackjack.  The ruling Thursday revived a charge of
+  possessing a cheating device that had been filed against Philip Preston
+  Anderson in Las Vegas.
+  
+  According to the court, Anderson strapped a microcomputer to his calf.  Wires
+  ran to switches in his shoes that he could tap with his toes to keep track of
+  the cards that had been played.  The computer calculated Anderson's advantage
+  or disadvantage with the house and sent "vibratory signals to a special
+  receiver located inside an athletic supporter," the Supreme Court said.
+  
+[The gentleman must be very well endowed.  Otherwise the state Supreme Court
+would have declined to hear the case, on the ancient legal principle, "de
+minimis non curat lex." -- ARA]
+
+------------------------------
+
+To: nsc!comp-risks@Sun.COM
+From: nsc!taux01!taux01.UUCP!amos@Sun.COM (Amos Shapir)
+Subject: Re: Expert Systems (RISKS DIGEST 5.75)
+Date: 16 Dec 87 14:35:05 GMT
+Organization: National Semiconductor (Israel) Ltd. Home of the 32532
+Hdate: 25 Kislev 5748
+
+It seems the main problem is blindly relying on expert systems, because of lack
+of time and expertise. A well designed expert system should therefore give not
+only the answers, but also the decision path by which it got at them. A country
+doctor may not have all the knowledge that a hospital system provides, but may
+well be qualified to judge whether a decision like 'the patient has blue eyes
+therefore it's pneumonia' is valid in a particular case.
+
+Amos Shapir, National Semiconductor (Israel)
+6 Maskit st. P.O.B. 3007, Herzlia 46104, Israel  Tel. +972 52 522261
+amos%taux01@nsc.com (used to be amos%nsta@nsc.com) 
+
+------------------------------
+
+Date: Tue, 15 Dec 87 09:26:28 CST
+From: preece%fang@gswd-vms.Gould.COM (Scott E. Preece)
+To: RISKS@csl.sri.com
+Subject: The Saga of the Lost ATM Card
+
+  From: Alan Wexelblat <wex%SW.MCC.COM@MCC.COM>
+> They helpfully informed me that they had no way of retreiving my card,
+> but if I was willing to hang around for a while "...the machine will
+> probably spit it out."  ...  MBank returns them cut up, you see. ...
+
+Well, that's better than having it hand the card to the next person to use the
+machine, anyway.  Actually, my own bank's machine swallowed my card once, for
+no known reason (it never even acknowledged that the card had been inserted).
+The bank sent me a new card and said the machine cut the card when it claimed
+it.  In retrospect, this is probably a good idea -- the machine probably
+claimed the card because it couldn't read the stripe; I would imagine the
+probability of a read failure on a card which has already failed once is
+higher than on a card picked at random.  So I'd rather not have a
+known-to-be-flakey card, anyway.
+
+Of course, I also have a wife who has a card, so I'm easier about the
+time delay than if that were my only access to the system...
+
+scott preece, gould/csd - urbana    uucp: ihnp4!uiucdcs!ccvaxa!preece
+
+------------------------------
+
+To: risks@csl.sri.com
+Subject: Telephone Billing Risks
+Date: Fri, 11 Dec 87 11:45:25 -0500
+From: Fred Baube <fbaube@note.nsf.gov>
+
+This is a follow-up to the article about the woman in West Germany who
+incorrectly returned her telephone handset to its cradle after a call to
+Africa, generating a phone bill of $1710 for 10 hours.  It was reported here
+that the woman was told she could settle for one-third the amount, $570.
+
+  From _World_Weekly_News_, excerpted without permission:
+
+  "The stubborn old widow flatly refused to pay the bill.  Then a
+  judge ordered that she need only pay $570.  Still she refused.
+
+  The judge threatened to toss her in the slammer.
+
+  "I said 'OK, go ahead and put me in prison,'" she declared ..  
+  " Well, that's what he did.  They took me to jail .. I spent one 
+  night in jail.  It was horrible .. The next day they said I could 
+  go if I would pay for only five minutes of the call.
+
+  "I said sure I would .. but not a penny more.  Then I came home.
+  But I'm still hopping mad !"
+
+------------------------------
+
+Date: Thu, 10 Dec 87 13:11:29 EST
+From: mnetor!utzoo!henry@uunet.UU.NET
+To: RISKS@kl.sri.com
+Subject: Re: F4 in 'Nam (Reversed signal polarity causing accidents)
+
+> ...the low-tech means that the pilots developed to deal with the problem...
+> was to wire a pair of bayonets to the "rails" on either side of the ejection
+> seat so that the points projected above the pilot's head.
+
+There are ejection-seat systems nowadays, in fact, that rely on such "canopy
+breakers" rather than using a canopy-ejection system.  This does depend on
+having a relatively thin canopy; it wouldn't work on the thick one-piece
+canopies used on most new US fighters.  But it's certainly simpler and more
+reliable than automatic canopy ejection.
+
+Mind you, there is a negative side to having a relatively thin canopy.  There
+was a recent accident in Britain, not yet explained in detail, which *might*
+have been due to the parachute-deployment system of an ejection seat firing
+*through* the canopy by accident (i.e. not as part of an ejection) and pulling
+the pilot out of the plane after it.  The plane (a Harrier) unfortunately
+kept on flying and eventually ran out of fuel over deep ocean.  Recovering
+it will be difficult, but may be tried because more information is badly
+needed.
+
+(In case you're wondering why a parachute-deployment system should operate
+so violently:  in an ejection at low altitude, getting the parachute out and
+inflated *immediately* is very important.)
+
+Henry Spencer @ U of Toronto Zoology {allegra,ihnp4,decvax,pyramid}!utzoo!henry
+
+------------------------------
+
+From: decvax!bunker!wtm@ucbvax.Berkeley.EDU (Bill McGarry)
+To: CSL.SRI!NEUMANN@ucbvax.Berkeley.EDU
+Date: Sun, 13 Dec 87 23:23:00 EDT
+Subject: For Lack of a Nut (NASDAQ Power outage)   [Refinement of RISKS-5.72]
+
+[As noted in RISKS-5.72, the NASDAQ over-the-counter computer system was
+knocked out of service for several hours on December 9th].  A squirrel
+carrying a piece of ALUMINUM FOIL made contact with some electrical equipment
+at a electrical substation.  Although there was a power outage in the area,
+apparently NASDAQ suffered only a power dip (I assume that they have some form
+of backup power) but this power dip was enough to shut the system down [...
+for] over 3 1/2 hours before most services were restored.
+                              				     Bill McGarry
+{philabs, decvax, fortune, yale}!bunker!wtm
+
+   [Curses, FOILED again?  Maybe the squirrel was hungry and went for the 
+   power DIP (which was SPIKED).   (By the way, this was at least the THIRD
+   squirrel power case noted in RISKS -- see RISKS-4.2 for two others.)  PGN]
+
+------------------------------
+
+Date: Thu, 10 Dec 87 12:02:41 EST
+From: cognos!henkc@zorac.ARPA (Henk Cazemier)
+To: RISKS@KL.SRI.COM
+Subject: Dutch Database Privacy Laws (Re: RISKS-5.68)
+Organization: Cognos Inc., Ottawa, Canada
+
+>From: Robert Stanley <roberts%cognos%math.waterloo.edu@RELAY.CS.NET>
+>Subject: Dutch Database Privacy Laws
+>First of all, there is the classic problem of protected software. We use Sun/3
+>workstations, and the first engineering response to problems is swap out the
+>processor board (our workstations are single-board).  [...]
+
+Actually, most replacement boards do NOT have an idprom when we receive them
+from SUN. SUN highly recommends that you retain your original idprom, which
+is what we do.
+
+Henk Cazemier                                    P.O. Box 9707
+Cognos Incorporated                              3755 Riverside Dr.
+VOICE:  (613) 738-1440   FAX: (613) 738-0002     Ottawa, Ontario
+UUCP: decvax!utzoo!dciem!nrcaer!cognos!henkc     CANADA  K1G 3Z4
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

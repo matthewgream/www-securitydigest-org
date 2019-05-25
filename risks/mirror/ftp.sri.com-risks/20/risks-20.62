@@ -1,0 +1,663 @@
+precedence: bulk
+Subject: Risks Digest 20.62
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 12 October 1999  Volume 20 : Issue 62
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.62.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Serious security flaw in Microsoft Java (Edward W. Felten)
+Latest British train collision (PGN)
+TCAS unit flaw (Steve Bellovin)
+Glitch switches Nevada 911 calls to San Diego CHP (Carl Maniscalco)
+Supercomputer lost to fire, weather predictions reduced (Andrew Klossner)
+Calif government computers fail, cars impounded, ... (Declan McCullagh)
+Re: Massive fiber cut (Doneel Edelson)
+ICD's save ISS: *not*! (Erann Gat)
+Floyd/EDS (William Addams Reitwiesner)
+Re: Internet Explorer 5.0 flaws (Dan Wallach)
+GPS rollover *did* cause DoD Problems (Peter B. Ladkin)
+NT Stung Again by Y2K Bug (Paul Walczak)
+Iraq decides to wait and see on Y2K oil disruption (Keith A Rhodes)
+FBI warns some Y2K fixes may be suspect (Jonathan de Boyne Pollard)
+"Self-destructing e-mail" (Brad Arkin)
+Re: Linux banned (Mark Brader)
+Where do you want to be *mis*directed today? (Mark Brader)
+Maybe Microsoft owns stock in Canada? (Mark Brader)
+Risks of screen saver messages (Nick Brown)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Tue, 12 Oct 1999 16:29:03 -0400
+From: "Edward W. Felten" <felten@cs.princeton.edu>
+Subject: Serious security flaw in Microsoft Java
+
+Karsten Sohr at the University of Marburg has discovered another serious
+security flaw in Microsoft's Java Virtual Machine.  A bug in Microsoft's
+bytecode verifier allows the construction of code sequences that illegally
+cast values of one Java type to values of another unrelated type, in
+violation of Java's typing rules, without detection by Microsoft's verifier.
+A malicious applet can exploit this flaw to breach the JVM's security, and
+can then proceed to do anything it wants to do on the victim's computer.
+For example, a malicious applet might exploit this flaw to read private
+data, modify or delete files, or eavesdrop on the user's activities.
+
+Dirk Balfanz and I, at Princeton University, have constructed a
+demonstration applet that exploits this flaw to delete a file.
+
+All recent versions of Microsoft's JVM for Windows appear to be vulnerable,
+so users of recent versions of Internet Explorer are affected by this flaw.
+A malicious applet could also be embedded in an e-mail message read using
+Microsoft Outlook or Eudora.  Users of other JVMs, browsers, and email
+readers are generally not affected.  (Thanks to Reliable Software
+Technologies for their help in testing on various platforms.)
+
+We have reported this flaw to Microsoft and they are working to address it.
+
+For more information, contact Karsten Sohr (sohr@mathematik.uni-marburg.de) 
+or Edward Felten (felten@cs.princeton.edu, phone (609) 258-5906).
+
+Edward Felten, Secure Internet Programming Lab, Dept. of Computer Science
+Princeton University
+
+------------------------------
+
+Date: Sun, 10 Oct 99 12:16:57 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Latest British train collision
+
+The latest head-on collision occurred at the same Signal 109 near Ladbroke
+Grove in Western London as the collision that occurred two years ago (almost
+to the day).  The previous accident occurred when one driver was looking
+downward and somehow missed two Red signals.  The latest accident was also
+attributed to a driver missing a Red signal, this time the driver of a
+commuter train that crashed with a high-speed intercity train from
+Cheltenham.  The train had an Automatic Train Protection System, but it was
+switched off because it was ``not operational''.  Its operation might have
+helped, although it reportedly would not by itself have prevented the
+accident.  A new Train Protection Warning System had been scheduled to be
+installed at Signal 109 in December 2003, along with many other places.
+[Source: *The New York Times*, 9 Oct 1999, which noted at least 70 deaths
+and 64 people unaccounted for.]
+
+  [Owen Hopkins noted that 8 trains have run past this signal in the past 
+  6 years.  Signal 63 has an even worse record.  Comments also from 
+  Jonathan Pritchard...  With the breaking up of British Rail, there is no
+  one organization left to rail at?  PGN]
+
+     [CORRECTION: My statement that the previous accident involved the
+     same signal is INCORRECT.  It will be corrected in the next issue. PGN]
+
+       [Second correction: The number of deaths was incorrectly reported.
+       See RISKS-20.68.  PGN]
+
+------------------------------
+
+Date: Tue, 12 Oct 1999 10:00:40 -0400
+From: Steve Bellovin <smb@research.att.com>
+Subject: TCAS unit flaw
+
+There's a fascinating article in the 12 Oct 1999 *Wall Street Journal* about
+how a flaw in a TCAS (Traffic Alert and Collision Avoidance System) nearly
+caused a crash, rather than preventing one.
+
+On 28 Jun 1999, a British Airways jet and a Korean Air jet nearly collided
+when the latter's TCAS unit told the pilot to climb.  The Korean Air plane
+was 2000 feet below the British Airways plane; however, the pilot was told
+that it was in fact 400 feet *above* it.  That's too close, so the pilot was
+advised to climb.  And that, of course, almost induced a collision.
+
+Part of the problem was with a circuit that sends the plane's altitude to
+the TCAS system and to the transponder.  The circuit uses an 11-bit code
+over a parallel connection; a single-bit error, which occured in testing,
+would correspond to a 2400 foot difference in altitude -- precisely the
+error here.  (The article also notes that on a previous flight, the crew of
+this plane was advised that their transponder was giving the wrong
+altitude.)
+
+The British Airways jet, though, had a TCAS system that noticed an
+instantaneous jump in the altitude of the other plane.  Since that's
+impossible, the bad readings were properly ignored, which in turn meant that
+there was no warning to the crew.  When the TCAS system finally did detect
+that the other plane was climbing towards it, it could only say tell the
+pilots to dive, since the other plane was climbing.  But that, according to
+the article, was precisely the wrong thing to do.
+
+The Korean Airways jet's TCAS system does include a comparator circuit to
+verify the altitude reading.  Due to a wiring problem, however, that circuit
+was silently disabled; there is no warning to either pilots or mechanics of
+this condition.  And the faulty altitude reading occurred when engineers
+left the air-data computer "on for a long time and added extra electrical
+power".
+
+The article closes by noting that the only thing that saved the two planes
+was marginally inaccurate navigation, and that if GPS-based systems were in
+use, the planes would have collided head-on.
+
+------------------------------
+
+Date: Thu, 7 Oct 1999 14:40:09 -0800
+From: Carl Maniscalco <caman@earthlink.net>
+Subject: Glitch switches Nevada 911 calls to San Diego CHP
+
+On the afternoon of 30 Sep 1999 and continuing to the next day, dispatchers
+at the California Highway Patrol's San Diego communication center started
+receiving cellular 911 calls from Nevada, with callers reporting accidents
+at local Nevada street name unfamiliar to the dispatchers.  When they
+finally figured out what was happening, calls were transferred back to the
+Nevada Highway Patrol for redistribution an appropriate dispatcher.
+Apparently, the problem was at the Nevada switching center for Sprint PCS
+and Pacific Bell.  [Source: *San Diego Union-Tribune*, 2 Oct 1999, PGN-ed]
+
+------------------------------
+
+Date: Thu, 07 Oct 1999 10:10:19 -0700
+From: Andrew Klossner <andrew@pogo.WV.TEK.COM>
+Subject: Supercomputer lost to fire, weather predictions reduced
+
+The U.S. National Centers for Environmental Prediction (NCEP) lost their
+Cray C90 supercomputer in a fire, as reported in
+
+	http://www.ncep.noaa.gov/director/supercomputer/
+
+Weather prediction runs have moved to slower backup machines.  They are not
+being run as often and are not looking as far in the future.  "There is no
+objective basis for making forecasts at the 8-14 day range, and no further
+messages of forecasts will be issued until model guidance at that range
+again becomes available."
+
+Andrew Klossner (andrew@pogo.wv.tek.com)
+
+------------------------------
+
+Date: Mon, 04 Oct 1999 15:59:03 -0400
+From: Declan McCullagh <declan@well.com>
+Subject: Calif government computers fail, cars impounded, ...
+
+Massive computer crashes have repeatedly forced California agencies to turn
+away customers for driver's licenses, food vouchers and other services.  The
+Highway Patrol suddenly had difficulty checking criminal records.  Child
+Protective Services could not get quick access to abuse files.  For two days
+Glendale's DMV office had to process driver's license renewals manually. And
+one consulting firm clocked 19,000 minutes of intermittent outages in the
+first half of 1999.  Some cars were impounded because computer records
+incorrectly showed licenses had expired.  The Women, Infants and Children
+program reported a severe drop in participation, and had to return $5.7
+million in unspent Federal funds.  There were lots of long lines.  [Source:
+PacBell Blamed for Failures of State Computers By VIRGINIA ELLIS, *Los
+Angeles Times*, 4 Oct 1999
+http://www.latimes.com/HOME/NEWS/STATE/topstory.html; PGN-ed]
+
+------------------------------
+
+Date: Thu, 7 Oct 1999 17:03:22 -0400
+From: "Edelson, Doneel" <doneeledelson@aciins.com>
+Subject: Re: Massive fiber cut (Farber, RISKS-20.61)
+
+The fiber-optic cable cut by a gas-company employee 30 miles east of
+Cleveland, Ohio, disrupted Internet traffic nationwide for almost 12 hours
+on 29 Sep 1999.  On the good side, here is a quote from *PCWeek*: ``As bad
+as it was, [Vaughan] Harring [a spokesman for GTE Internetworking] said it
+might have been worse without the redundancies most ISPs have built into
+their networks.  "This was a significant cut.  If something of this size
+happened a year ago, it would be more than degraded service.... We'd be
+talking about a hard outage." ''
+[<http://www.zdnet.com/pcweek/stories/news/0,4153,1017468,00.html>, PGN-ed.]
+
+------------------------------
+
+Date: Wed, 6 Oct 1999 11:30:02 -0700 (PDT)
+From: Erann Gat <gat@binkley.jpl.nasa.gov>
+Subject: ICD's save ISS: *not*!
+
+>From http://www.space.com/news/spacestation/iss_metric_991005.html
+
+Space Station Immune to Metric Mishap, NASA Says
+By Daniel Sorid, 05 Oct 1999
+
+  The International Space Station will not fall victim to the measurement
+  units problems which ruined the Mars Climate Orbiter, according to a NASA
+  spokesman.  In the early 90s, engineers put together a so-called interface
+  control document, which identifies the use of metric or English units for
+  every piece in the station, according to NASA spokesman Dwayne Brown.
+  "This is not a new issue for us," Brown said. "It's so well documented
+  that we don't have that problem."  The document also shows where metric
+  and non-metric units interact with each other, and calls for the
+  development of adapters that standardize the units.  "Engineers got
+  together and said, 'Here's the piece of hardware. Let's see where they
+  interconnect.'  If we've got a metric piece and an English piece, that
+  will show up very clearly in the document."  [...]
+
+There's one little problem with this theory: Mars Climate Orbiter had an
+interface control document too.  (JPL is ISO9000 certified!  We have
+documents for everything.)  It was obviously not enough to save MCO; why
+should it be any different for ISS?
+
+Most accounts in the press make the MCO disaster sound like a massive
+breakdown in communications, with one group of people doing everything in
+Metric and another doing everything in English units, and no one talking to
+anyone else for months on end.  I was told this morning by a member of the
+MCO team that this is not true.  Everyone knew that everything was supposed
+to be Metric across the board.  The problem was a single number in the
+software that was accidentally entered incorrectly.  The exact same thing
+has happened on at least one previous mission, but the problem was caught
+before it became a news story (that is, before we drove the spacecraft into
+a planet.)
+
+Regular readers of RISKS will no doubt be shocked -- shocked! -- by these
+revelations.
+
+Erann Gat <gat@jpl.nasa.gov>  [Usual disclaimers]
+
+------------------------------
+
+Date: Tue, 5 Oct 1999 21:53:57 -0400 (EDT)
+From: William Addams Reitwiesner <wrei@erols.com>
+Subject: Floyd/EDS
+
+At the Library of Congress, where I work, the ATM network for the LC Credit
+Union was down for most of a week, with typed fliers pasted to the ATMs
+blaming the outage on Floyd-related flooding in New Jersey, and saying that
+we were one of a number of institutions which were affected by this.  I was
+mildly surprised to see nothing about this in RISKS, but I found the
+following in a Y2K Usenet newsgroup (version below lifted from
+www.deja.com):
+
+>      >> Forum: comp.software.year-2000
+>         >> Thread: Detailed reports on Floyd-EDS glitch
+>           >> Message 8 of 9
+>   
+>   Subject: Detailed reports on Floyd-EDS glitch
+>   Date: 1999/09/27
+>   Author: John Denver <jd@howdyfolks.org>
+>     Posting History Post Reply 
+>   
+>   The following articles were found in the Bergen County Record. Glen
+>   Rock, NJ is located in Bergen County.
+>   
+>   (9/23/99) Floyd struck a hub linking 23 centers
+>   
+>   From the article:
+>   "Banks whose data lines fed into the local phone system via the
+>   Rochelle Park hub lost their ATMs. A large facility down the street
+>   owned by Electronic Data Systems Corp. also flooded, disrupting
+>   service to their network of 8,000 ATMs across the country. Those
+>   troubles were largely unrelated to the phone company's problems."
+>   
+>   Also, see:
+>   (9/26/99)Dress rehearsal for Y2K distress: Can millennium match Floyd?
+>   http://www.bergen.com/news/ytkrg199909262.htm
+>   
+>   Apparently, hearings are being conducted today (9/27) on this
+>   fictitious unconfirmed problem:
+>   "These questions could be raised in regulatory proceedings against the
+>   company, as well as at a meeting Monday involving phone company
+>   officials and U.S. Sen. Frank R. Lautenberg, D-N.J., and U.S. Reps.
+>   Steve Rothman, D-Fair Lawn; Marge Roukema, R-Ridgewood, and Bill
+>   Pascrell Jr., D-Paterson."
+>   
+>   Oh yeah, and a search for "Rochelle Park" at EDS.com yields... nothing.
+
+  [I noted in RISKS-20.58 that my Maryland course on survivable systems
+  had survivability problems in the second and third lectures (lightning and
+  Floyd, respectively.  Here is an update.  For the fourth lecture (I was at
+  SRI), the students in the classroom had intermittent video failures,
+  attributed to ISDN lines still being flaky after the hurricane.  For the
+  fifth lecture, the classroom had audio only.  The problem was eventually
+  traced to the aftermath of the lightning strike three weeks earlier: the
+  PC reboot had not included some updates for the video configuration.  
+  Mercifully, the sixth lecture was uneventful.  So, only two of the six
+  lectures failed to exhibit self-referential survivability problems.  PGN]
+
+------------------------------
+
+Date: Tue, 05 Oct 1999 22:44:02 -0500
+From: Dan Wallach <dwallach@cs.rice.edu>
+Subject: Re: Internet Explorer 5.0 flaws (Risks 20.61)
+
+Steve Wildstrom points out (in Risks 20.61), that ActiveX has been a thorn
+in Microsoft's side, which is certainly true.  He seems to suggest, however,
+that *all* of Microsoft's problems boil down to problems in ActiveX, which
+is *not* true.
+
+Together with colleagues at Princeton and Xerox PARC, we recently found a
+bug in Microsoft's Java VM (see Risks 20.55) that would let an attacker
+compromise the VM, irrespective of the target's ActiveX settings.
+Historically, it seems bugs have been found throughout Microsoft's systems,
+ranging from TCP/IP fragment reassembly (e.g., "the ping of death") through
+Microsoft's Web services, such as the recent HotMail privacy incident.
+
+While I would certainly enjoy seeing Microsoft reinvent their ActiveX
+architecture in favor of something that provided reasonable security
+guarantees (and, heaven forbid, portability across operating systems), that
+would only be the first step on the road ahead for Microsoft.
+
+Dan Wallach, Rice University
+
+------------------------------
+
+Date: Fri, 08 Oct 1999 16:11:47 +0200
+From: "Peter B. Ladkin" <ladkin@rvs.uni-bielefeld.de>
+Subject: GPS rollover *did* cause DoD Problems
+
+Mike Martin reported on the problems with Tokyo taxicabs caused by the
+August GPS rollover (Risks-20.55). Aviation Week reports (Oct 4, p32)
+that US DoD systems also had problemswith weapons systems, even though the
+situation had been anticipated. "...the fault lay in the way the Pentagon's
+two primary mission planning systems, the Air Force Mission Support System
+AFMSS) and the Navy's Tactical Aircraft Mission Planning System, were
+providing the data to weapons systems." 
+
+The mission planning tools provide, amongst other things, the approximate
+location of the GPS satellites to a weapons system GPS receiver so that the
+receiver can  avoid large-sweep searching for the satellites.
+Some receivers work with 16-bit week data; the satellites and 
+mission planners rolled over; and the different formats caused
+"conflicting data sets" and thus problems, according to AvWeek.
+
+"Short-term fixes...include editing the missions planning data manually,
+having the receivers find the satellites unaided or downloading the
+almanac data directly from the satellite, which takes about 13 min.
+The likely long-term fix is a software modification to AFMSS and TAMPS,
+which is considered cheaper than modifying weapons systems hardware."
+
+Peter Ladkin  		http://www.rvs.uni-bielefeld.de
+University of Bielefeld, Germany
+
+------------------------------
+
+Date: Thu, 30 Sep 1999 21:39:37 -0400
+From: pwalczak@mail.arl.mil
+Subject: NT Stung Again by Y2K Bug
+
+Microsoft's May 1999 Service Pack 5 (SP5) was supposed make Windows NT 4.0
+ready for Y2K.  However, so many bugs arose that fixes have been included in
+SP6, which has been in beta since July.  There are problems with the Net
+User command line security utility for setting log-in times, with real-time
+clock dates when not in a daylight-saving time zone, and with multiprocessor
+kernels, another problem with Outlook Express, etc.  The problems are
+considered minor.  Problems with other systems are also noted.  [Source: NT
+Stung Again by Y2K Bug, Joseph McKendrick, 22 Sep 1999
+<http://www.entmag.com/displayarticle.asp?ID=9239933447PM>, PGN-ed]
+ 
+------------------------------ 
+
+Date: Fri, 01 Oct 1999 11:21:49 -0400
+From: "Keith A Rhodes"<rhodesk.aimd@gao.gov>
+Subject: Iraq decides to wait and see on Y2K oil disruption
+
+  [Keith sent in a Reuters item noting that Iraq is has decided to avoid
+  the costs of Y2K upgrades, and may have to shut down production for the
+  new year instead.  Many of their computers are reportedly old process
+  controllers.  Keith comments that with Iraq and Venezuela both lagging in
+  Y2K fixes, it could be an expensive millennium for many drivers.  PGN-ed]
+
+------------------------------
+
+Date: Wed, 06 Oct 1999 11:19:55 +0100
+From: Jonathan de Boyne Pollard <J.deBoynePollard@tesco.net>
+Subject: FBI warns some Y2K fixes may be suspect (RISKS-20.61)
+
+> The Federal Bureau of Investigation says that some of the
+> Y2K-related programming fixes that were undertaken by 
+> foreign contractors may contain malicious code.  [...]
+> Such code could contain "time bombs" set to detonate at
+> some future date, [...]
+
+And how, exactly, would that be any different from the code that was there
+before ?  (-:
+
+JdeBP
+
+------------------------------
+
+Date: Fri, 08 Oct 1999 09:25:52 -0400
+From: Brad Arkin <barkin@rstcorp.com>
+Subject: "Self-destructing e-mail"
+
+Intrigued by the headline "'Self-destruct' e-mail offers virtual privacy"
+(http://www.usatoday.com/life/cyber/tech/review/crg441.htm), I did some more
+investigating.  Disappearing Inc. (http://www.disappearing.com/) has few
+technical details on its web site, but the general idea is that by using
+their plug-in two people can send and receive encrypted messages with the
+added feature that the key is held by Disappearing Inc.  Anytime the
+recipient wishes to read the message, they must authenticate themselves to
+Disappearing Inc. in order to retrieve the key.  Disappearing Inc. logs all
+accesses to the key and destroys the key at the end of its life span.
+Disappearing Inc. claims that once the key is destroyed the message can
+never be read again, and thus the message has effectively self-destructed
+like a Mission:Impossible assignment.
+
+While it is possible (although sadly, unlikely) that Disappearing Inc.  has
+implemented this system using an appropriate mix of good authentication
+scheme, strong encryption algorithm, secure key generation, high level of
+site security, and secure key transmission it doesn't really matter.  All
+Disappearing Inc. offers is a variant of third party key escrow and nothing
+more.  The problems with key escrow have been well documented.
+
+By forcing users to go across the network to retrieve a key (which may have
+already expired) every time they want to read a locally stored message, it
+is a certainty that users will instead simply cut and paste any message
+worth reading again into a plaintext file outside the control of
+Disappearing Inc.'s encryption.  The potential problems with this scheme are
+too many to list here, and my opinion is that users should cut out the
+middle man and use a package like PGP instead.
+
+Brad Arkin, Software Security Group  Reliable Software Technologies
+
+------------------------------
+
+Date: Mon, 4 Oct 99 8:43:48 PDT
+From: Mark Brader <msbrader@interlog.com>
+Subject: Re: Linux banned (Fitzpatrick, RISKS-20.61)
+
+By the way, Brian Fitzpatrick's item in RISKS-20.61 about Linux being banned
+from a company for silly reasons reminds me of another anecdote in Feynman's
+books.  From memory:
+
+Filing cabinets at Los Alamos were provided with combination locks, but
+these were seriously flawed; a person who had physical access to the cabinet
+while it was open could subsequently discover the combination and open it in
+a few minutes.  Feynman identified this security risk and informed the
+people in charge... who responded by ordering all people with such cabinets
+*that Feynman had had physical access to* to change their combinations!
+
+------------------------------
+
+Date: Fri, 1 Oct 1999 00:52:38 -0400 (EDT)
+From: msbrader@interlog.com
+Subject: Where do you want to be *mis*directed today?
+
+  [Erwin Mascardo <mascardo@admin.assurenet.com> posted the
+  following to rec.humor.funny.  (It's in their archive at
+  <http://www.netfunny.com/rhf/jokes/99/Sep/expedia.html>.)]
+
+My wife recently went on a business trip, and in filling out her expense
+report, she noted that she could claim the mileage to and from the
+airport. My first attempt at using MapQuest to calculate the distance
+failed, so I tried Microsoft Expedia Maps. After the shock wore off, my only
+regret was that my wife couldn't really claim this mileage figure, as we had
+no way to prove that we'd spent 9 days driving to Newfoundland and
+back. Highlights from the Microsoft-generated directions follow:
+
+Summary
+>From: Laurel, Maryland 
+To: Baltimore-Washington International Airport, Maryland 
+Driving Distance: 5865.1 miles 
+Time: 9 day(s) 3 hour(s) 22 minute(s) 
+
+Driving Directions
+
+   Time Instruction
+   0:00 Depart Laurel, Maryland 
+   1:01 Entering Delaware 
+   1:17 Entering New Jersey 
+   3:24 Entering New York 
+   3:51 Entering Connecticut 
+   5:51 Entering Massachusetts 
+   7:29 Entering New Hampshire 
+   7:44 Entering Maine 
+  12:20 Entering New Brunswick 
+  20:20 Take the North Sydney-Argentia Ferry
+  34:32 Entering Newfoundland 
+  36:35 Turn left onto Local road(s) (4543.1 mi)
+ 219:22 Arrive Baltimore-Washington International Airport, Maryland
+
+I guess when Microsoft asks "Where do you want to go today?" that *how*
+you get there isn't always important...
+
+(A subsequent attempt at MapQuest gave the correct figure of 16.5 miles.)
+
+[Forwarded to Risks by Mark Brader]
+
+------------------------------
+
+Date: Fri, 1 Oct 1999 01:01:24 -0400 (EDT)
+From: msbrader@interlog.com
+Subject: Maybe Microsoft owns stock in Canada?
+
+ This one was posted to rec.humor.d, the followups-to-jokes group, by Bill
+ Seurer <BillSeurer@vnet.ibm.com>.  Some misformatting in his posting is
+ fixed in this copy.  --Mark Brader]
+
+X-no-archive: yes
+
+Erwin's wife wasn't the only one to get misdirected.  I wonder if Microsoft
+owns that North Sydney-Argentia Ferry?
+
+Here is the trip Expedia proposed for a brother of one of my buddies.  I
+left off the compass directions and mileage parts.  Do note that 14 hour
+ferry ride, too!
+
+Summary
+>   From:                 Hastings, Minnesota
+    To:                   Saint Charles [St. Charles], Minnesota
+    Driving Distance:     6758.6 miles
+    Time:                 9 day(s) 17 hour(s) 30 minute(s)
+
+   Driving Directions
+    Time           Instruction
+    0:00           Depart Hastings, Minnesota
+    0:03           Entering Wisconsin
+    1:47           At I-94 Exit 88, turn right onto I-94
+    2:41           Go onto I-90
+    4:51           Entering Illinois
+    6:40           Entering Indiana
+    7:01           At I-80 Exit 16, bear left onto I-94
+    7:29           Entering Michigan
+    10:42           At I-94 Exit 204A, turn right onto SR-39
+    10:46           At I-75 Exit 41, turn left onto I-75
+    10:55           At I-75 Exit 47, turn right onto SR-3
+    10:56           Turn right onto W Grand Blvd
+    10:57           Entering Ontario
+    10:57           Bear left onto S-3
+    11:04           Turn left onto S-2
+    11:06           Bear right onto S-3B
+    11:08           Bear left onto S-401
+    18:50           Entering Québec
+    18:50           Go onto C20
+    19:31           Bear left onto C720
+    19:37           Turn right onto S-134
+    19:40           At Longueuil, turn left onto C20
+    23:39           Bear right onto TC-185
+    24:39           Entering New Brunswick
+    24:41           Bear left onto TC-2
+    28:10           Go onto S-695
+    28:20           Turn left onto S-710
+    28:31           Turn left onto TC-2
+    28:35           Turn right onto S-112
+    29:17           At Salisbury, turn left onto S-106
+    29:46           Bear right onto  TC-2
+    30:04           Entering Nova Scotia
+    30:06           Turn right onto TC-104
+    30:51           At Wentworth Centre, turn left onto S-246
+    31:02           Bear right onto S-256
+    31:42           Turn right onto S-6
+    31:44           At Pictou, bear right onto TC-106
+    31:50           Go onto TC-104
+    32:03           Bear right onto S-4
+    32:05           Go onto TC-104
+    32:08           Go onto S-4
+    32:14           Bear left onto TC-104
+    32:19           Bear left onto S-4
+    32:28           Bear left onto TC-104
+    33:01           At Mulgrave [Port Mulgrave], go onto TC-105
+    34:23           At Sydney Mines [Sidney Mines], bear left onto S-223
+    34:27           At North Sydney, turn left onto Local road(s)
+    34:29           Take the North Sydney-Argentia Ferry *CHECK TIMETABLE*
+    48:40           Take the Local road(s)
+    48:41           Entering Newfoundland
+    48:44           At Freshwater, go onto S-100
+    49:14           Bear right onto TC-1
+    49:41           Bear right onto S-13
+    49:54           At Bay Bulls, turn right onto S-10
+    50:43           Turn left onto Local road(s) (SE 4543.1 miles)
+    233:30           Arrive Saint Charles [St. Charles], Minnesota
+
+Bill Seurer, Compiler Development, IBM Rochester, MN
+Bill_Seurer AT us.ibm.com  Bill AT seurer.net   http://www.seurer.net/ 
+
+------------------------------
+
+Date: Wed, 6 Oct 1999 12:44:53 +0200 
+From: BROWN Nick <Nick.BROWN@coe.int>
+Subject: Risks of screen saver messages
+
+France Info radio reported today (1999-10-06) that an investigation into
+police racism has been started in a small French town after a citizen,
+visiting the police station, observed a slogan with racist overtones
+scrolling across the screen of a PC on a desk in the reception area.
+
+The officer responsible for the PC claimed that the reference to "melons" (a
+French racist term of abuse, but also a legitimate word for the round fruit
+which has the same name in English) referred to his daughter's passion for
+harvesting said fruit.
+
+Regardless of the plausibility or otherwise of that statement, the RISK is
+clear: your screen saver message, scrolling away in bright mauve 24 point
+type, and quite possibly the only thing moving to catch people's attention,
+might say more about you than, say, a poster inside your locker ever could...
+
+Nick Brown, Strasbourg, France.
+
+email address updates : @coe.int replaces  @coe.fr
+for more information, http://dct.coe.int/info/emfci001.htm
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.62 
+************************

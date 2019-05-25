@@ -1,0 +1,588 @@
+precedence: bulk
+Subject: Risks Digest 21.38
+
+RISKS-LIST: Risks-Forum Digest  Wednesday 9 May 2001  Volume 21 : Issue 38
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/21.38.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Partial Causal Analysis of the December 2000 Osprey Accident (Peter B. Ladkin)
+Lucent workers charged with selling secrets to Chinese (NewsScan)
+Citibank's meaningless privacy notice (Vassilis Prevelakis)
+Fox... hen house... (Hendrik)
+Bluetooth risks airline safety? (Tom Worthington)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 07 May 2001 17:22:56 +0200
+From: "Peter B. Ladkin" <ladkin@rvs.uni-bielefeld.de>
+Subject: Partial Causal Analysis of the December 2000 Osprey Accident
+
+Acknowledgement
+
+Credit for the following line of reasoning is due in large part to the New
+Scientist reporter Duncan Graham-Rowe. The formulation here is (obviously)
+mine.
+
+Disclaimer
+
+The interpretation and reasoning presented here is based entirely on the
+publicly-available JAG briefing and Blue Ribbon Panel report documents,
+which I shall refer to as JAGB and BRPR respectively.  Although written to
+be readable by non-specialists, it employs methods to be found in formal
+failure analysis techniques such as WBA. There may be errors in the
+reasoning and analysis, although I am reasonably confident that all such
+errors are minor.  Please bring any errors you remark to my immediate
+attention (email usually suffices). The focus of this note is causal
+analysis and I have nothing to say here about social phenomena such as blame
+or responsibility.
+
+The Sequence of Events
+
+First, a brief review of what the JAG determined happened in the December
+crash. A hydraulic line ruptured in the left nacelle. This line was part of
+the primary flight control system hydraulics and activates the swashplate
+actuators. There are three such systems, in a partially redundant
+configuration. At the rupture point, the line was common to Systems 1 and 3;
+System 1 was fully disabled, System 3 was isolated in the left nacelle, but
+continued to function in the right nacelle, System 2 worked left and right.
+
+This event caused the nacelle transition to stop, and the PFCS reset button
+to illuminate in the cockpit. The aircrew pressed the reset button, as per
+procedure. The PFCS computer software then caused "rapid" pitch and thrust
+changes to be commanded and actuated. The rotors responded differentially in
+time, because the physical actuation authority in each nacelle was
+different: the right nacelle had two working hydraulic systems, and the left
+nacelle only one. The aircrew pressed the reset button "as many as eight to
+10 times [sic]" (JAGB) during the last 20 seconds of flight. The response
+asymmetry and resulting flight behavior of the aircraft was directly
+responsible for loss of control (LOC) of the aircraft and the aircraft
+impacted the ground in a LOC condition.
+
+Proposed Failure Analysis based on JAGB
+
+JAGB says: "The published procedure for responding to [a hydraulic system
+failure as multiply indicated in the cockpit] is to press the primary flight
+control system reset button. When the primary flight control reset button
+was pressed, a software anomaly caused significant pitch and thrust changes
+in both prop rotors. Because of the dual hydraulic failure on the left side,
+the prop rotors were unable to respond at the same rate. This resulted in
+uncommanded aircraft pitch, roll and yaw motions, which eventually stalled
+the aircraft.
+
+During the last 20 seconds of the flight, the primary flight control reset
+logic was energized as many as eight to 10 times. This, coupled with the
+dual hydraulic failure, caused large prop rotor changes. These changes
+resulted in decreased airspeed and altitude and a left yaw. The crew pressed
+the reset button in their attempt to reset the system and maintain control
+during the emergency."
+
+This clearly says 
+  (*) that the PFCS software caused the PFCS to command "significant
+      pitch and thrust changes" and that this software behavior was
+      anomalous;
+  (**) that recycling the reset button "eight to 10 times" was a causal
+       factor (in the WBA sense) of "large prop rotor changes", which
+       were in turn a causal factor (we might wish to infer: the sole
+       causal factor) in the LOC.
+
+What kind of "software anomaly" can this have been? There are, according to
+a common taxomony of complex system failures, only a few possibilities. (I
+shall use the term "rotor excursion" for a one-time pitch and thrust change
+of the sort being talked about here, whatever that may consist in.)
+
+1. A bug: the code did not fulfill the design specification; or
+
+2. The software functioned as designed, but the design was incompatible
+   with the overall PFCS control requirements (which implied for this
+   situation that the PFCS should not command a rotor excursion); or
+
+3. The software functioned as designed, and the design was compatible
+   with the overall PFCS control requirements (that is, the PFCS
+   requirements allowed or even implied that a rotor excursion
+   should take place in this situation), but rotor excursions
+   in this situation were not "expected" nor required by 
+       (a) the aircraft designers; 
+       (b) OPS manual; 
+       (c) crew; or
+
+4. That although a rotor excursion may have been anticipated by
+   designers, that the effects of multiple cycling of reset, namely,
+   multiple rotor excursions, were not anticipated by 
+       (a) aircraft engineers; 
+       (b) OPS manual; 
+       (c) crew.
+
+I shall say "software bug" for case 1, "software design error" for case 2,
+"requirements failure" for cases 3 and 4. I concluded in my Risks-21.33 note
+that the JAG had unequivocally indicated a software bug or a software design
+error had occurred. I will give my precise reasoning forthwith and I believe
+that reasoning is correct. However, after consulting and analysing BRPR, I
+see reason now to doubt the truth of the conclusion.
+
+JAGB Quotes
+
+In the light of these possibilities, following comments from JAGB are
+relevant. The briefer is Maj. Gen. Berndt, assisted by Lt. Col.  Wainwright
+on aircraft technical matters. If unascribed, the quotes are from
+Maj. Gen. Berndt.
+
+A. "an anomaly in the control logic in the computer software control
+   laws which caused rapid and significant changes to prop rotor pitch
+   each time the primary flight control system reset logic was
+   energized."
+
+B. "This anomaly rendered procedures outlined in the [...] NATOPS
+   flight manual ineffective."
+
+C. "This mishap was not the result of human factors."
+
+D. [in response to a query: "what does "anomaly" mean exactly?"] "An
+   anomaly [here] means that something happened that was not supposed
+   to happen, and whether that's a fault of design or structure or
+   composition, manufacture or installation, [Maj. Gen, Berndt] do[es]
+   not know."
+
+E. [Lt. Col. Wainwright] "The question was what should have happened 
+   when the PFCS button was reset with the dual hydraulic failure. The
+   short answer is absolutely nothing."
+
+F. "The recommendation has been to address the anomaly within the system
+   that caused the aircraft to accelerate and decelerate with rapid
+   pitch changes over a short period of time."
+
+G. [Wainwright] "The [reset] button is multipurpose. In this 
+   particular case, it should have done nothing. [...] Because of the
+   logic, it lights up. But when you press it, other than putting the
+   light out, it shouldn't have really done anything at all. 
+
+Interpreting the Quotes: Reasoning to bug or software design error
+
+Quote A clearly says that the anomaly in software-implemented control logic
+in software caused rotor excursions. It also says that these excursions
+happened upon each reset. Quote D says that something happened because of
+the software-implemented control logic that was not supposed to happen. One
+of these has the form "A caused B", the other "something with property P
+happened because of A". We may presume that the rotor excursions were the
+sole relevant causal consequence of the anomaly; I conclude that the rotor
+excursions happened and were not supposed to. It does not yet tell us what
+requirement is referred to by "not supposed to". It gives us a choice
+between 1, 2, and 3(a), but does not distinguish between them.
+
+Quote B entails that one of 3(b) or 4(b) was the case.
+
+Quote C appears to be inconsistent with the other information.  (**) implies
+that recycling the button appears to be a causal factor in LOC. Now, either
+the pilots recycled the button because (i) it was NATOPS manual procedure to
+do so, or because (ii) it was their choice to do so. Either (i) or (ii),
+whichever is the case, is a causal factor in recycling the button, which
+itself is a causal ancestor of the LOC.  But both (i) and (ii) fall within
+the domain commonly termed "human factors". Hence it appears that human
+factors phenomena were causal ancestors of the LOC. That is in direct
+contradiction to Quote C.  The Marines' testimony appears to be
+inconsistent. (That may be because they are not speaking as precisely as I
+am trying to.)
+
+Quote G lets us distinguish somewhat between our choice of 1, 2, or 3(a). It
+says that pressing the button should have done "nothing", that is, it should
+not have caused a rotor excursion. That clearly suggests that the design was
+not compatible with control system requirements, and rules out 3(a). It was
+therefore a software bug or a software design error.
+
+This is the conclusion contained in my Risks-21.33 analysis.
+
+Quote F puts the anomaly "in the system". Design specification is not
+normally considered part of the system by most engineers (although I have
+argued elsewhere that this may be mistaken), so I take this quote to support
+(in the sense of giving extra credence to) the conclusion that there was a
+software bug or software design error.
+
+Software Reparatory Measures
+
+It should now be clear what reparatory measures would be recommended by a
+professional software engineer on the basis of this conclusion.  The control
+software can be regarded as providing a "service", a particular
+functionality, to the PFCS. In the case of a failure of type 1, the behavior
+did not provide the service specified in the software design. In the case of
+a failure of type 2, the software provided the function specified in the
+design, but this was not the service that the rest of the PFCS
+required. General prophylactic measure for these cases are:
+
+M.1) For software bugs. Inspect software against design specs; test
+     software against design specs; remove bugs.
+
+M.2) For software design errors. Inspect software design against
+     PFCS design; perform integrated PFCS bench tests; remove
+     incompatibilities between software behavior and PFCS expected
+     behavior
+
+It is significant, therefore, that neither of these two standard
+prophylactic measures was recommended by the BRPR.
+
+Quote from the BRPR
+
+The BRPR section on software is short and worth quoting in full.
+
+[begin quote]
+
+The fly-by-wire flight control system is highly dependent on high-quality
+computer hardware and software. The logic that is the basis for the many
+flight control laws and algorithms must be consistent with the overall
+requirement for FO/FS. This implies that if the aircraft suffers any single
+failure in the electrical, mechanical or hydraulic parts of the system,
+there cannot be any software logic characteristic or failure that would
+result in an unsafe condition. The integrated flight control system must be
+designed, analyzed, and tested with these facts in mind.
+
+Boeing has the lead role in development and testing of the integrated flight
+control system. Their Philadelphia facility has the capability to conduct
+integrated hydraulics, flight loads, and software testing using the Flight
+Control System Integration Rig. Before the mishap, the facility had limited
+pilot-in-the-loop capability. During the downtime, and in response to the
+preliminary mishap investigation results, Boeing has upgraded the
+capabilities of the integrated simulation facilities and is in the process
+of validating a set of off-nominal and failure scenarios that had been
+checked only by analysis during the 1996 validation and verification of the
+flight software.  Boeing also has begun validating all flight control system
+emergency procedures with pilot-in-the-loop simulation runs. In addition,
+the company is holding an integrated flight control system review, with
+participation from "graybeard" experts from within and outside the company
+to review the requirement and the implementation of the requirements in the
+design.
+
+Conclusion: The North Carolina mishap identified limitations in the V-22
+Program's software development and testing. The complexity of the V-22
+flight control system demands a thorough risk analysis capability, including
+a highly integrated software/hardware/pilot-in-the-loop test capability.
+
+Recommendation: Conduct an independent flight control software development
+audit of the V-22 program with an emphasis on integrated system safety.
+
+Recommendation: Conduct a comprehensive flight control software risk
+assessment prior to return to flight.
+
+Recommendation: The V-22 Program should not return to flight until the
+flight procedure and flight control software test cases have been reviewed
+for adequacy and have been evaluated in the integrated test facilities.
+
+[end quote]
+
+Analysis of the BRPR Section on Software Reliability
+
+There is nothing in the commentary or recommendations that implies M.1 or
+M.2. This is remarkable. Instead, the report emphasises integrated system
+safety, and integrated test facilities (in which they appear to emphasise
+pilot-in-the-loop testing).
+
+Standard system-safety and risk assessment involve identification and
+analysis of hazards, including assessing the likelihood of a hazard
+condition, and identifying the likelihood that an accident will result from
+a specific hazard. The hydraulic failure is a specific hazard; they say from
+this hazard "there cannot be any software logic characteristics or failure
+that would result in an unsafe condition".  They do not say "result in an
+accident", or "result in an unsafe condition or accident". This suggests
+that they believe that more factors were involved in the accident than the
+software logic alone.
+
+>From the JAGB, we concluded that there was a bug or a software design error
+that caused behavior that resulted, along with multiple resets and the
+asymmetric physical response of the rotors, in the LOC, which itself
+resulted in the accident. An informal WB-Graph of the accident according to
+the analysis of JAGB would contain the following chains of causal
+factors. (To obtain a partial graph from these chains, superimpose
+identically labelled features, e.g., "PFCS behavior" in the first three
+chains. I emphasise: the WB-Graph will be partial.)
+
+C1) HF -> multiple resets -> PFCS behavior -> dynamic behavior of AC ->
+     -> LOC -> Accident
+
+C2) Physics of AC design and configuration -> dynamic behavior of AC
+
+C3) PFCS intentional design -> PFCS behavior
+
+C4) PFC anomalies -> PFCS behavior
+
+C5) Software subsystem design anomalies or bugs -> PFC anomalies
+
+Prophylactic measures are supposed to break the causal chains somewhere.
+Integrated testing including pilot-in-the-loop enables C1 to be broken by
+modifying the human behavior that led to the multiple resets, by changing or
+modifying procedures. C2 cannot be broken, because it is physically
+necessary, although the specific behavior can thereby be changed. No
+recommendation is made here to do this. Likewise C3 cannot be broken,
+because it represents physical necessity: PFCS design will causally result
+in behavior of the PFCS whenever the PFCS is activated (although of course
+it will not if the PFCS is never activated). PFCS design may be changed, to
+result in different behavior, of course, and this is what I take to be the
+purpose of risk assessment: how to mitigate the consequences of the hazard
+through PFCS change. C4 may be broken by removing anomalies; similarly C5
+may be broken by removing anomalies in the software subsystem.
+
+In a thorough safety audit, all chains that could be broken would be
+considered. But the BRPR speaks nowhere above of breaking C4 and C5, because
+nowhere is anything approaching M.1 or M.2 suggested. The BRPR concentrates
+instead on C1 (integrated testing with pilot-in-the-loop) and modifications
+in C3. (We may presume that modifications concerning chain C2 are all
+considered in another section of the report.)
+ 
+Comparing with the goals of the report and the qualifications of the panel
+members, this selection is comprehensible only on the hypothesis that these
+chains C4 and C5 aren't in fact there. But the JAG report implied that they
+were.
+
+Well, are they or aren't they there? JAGB says yes, BRPR implies no. 
+
+Suppose they are not there, and that the PFCS functioned as designed and
+expected by its engineers. What would the accident scenario look like,
+consistent with the other information provided by JAGB?  Considering the
+taxonomy 1-4, I think only three possibilities present themselves.
+
+One possibility, suggested by Peter Neumann, is that the basic behavior with
+single reset was known, but the behavior with multiple resets was not
+considered either in the NATOPS flight manual procedure definition, or by
+the designers. The effects of multiple resets was not known. The resulting
+behavior turns out to interact badly with the asymmetric hardware response
+and resulted in this incident in the LOC.
+
+The second possibility is that the behavior even of a single reset was not
+considered in the integrated control systems. It was known by PFCS engineers
+that a rotor excursion would be commanded, but the physical characteristics
+of that rotor excursion, especially the asymmetrical rotor response, had not
+been determined.
+
+The third possibility, and I would imagine the least likely, is that the
+potential behavior in this situation was generally anticipated by engineers,
+but not known by or to the flight crew.
+
+I believe it is known whether one of these possibilities was the
+case. However, it is not inferable from the public information.  It is not
+my purpose to speculate. I shall stop here.
+
+Peter B. Ladkin <http://www.rvs.uni-bielefeld.de>  University of Bielefeld
+
+------------------------------
+
+Date: Fri, 04 May 2001 06:30:13 -0700
+From: "NewsScan" <newsscan@newsscan.com>
+Subject: Lucent workers charged with selling secrets to Chinese
+
+Federal authorities arrested two Lucent scientists and a third man
+yesterday, charging them with stealing software associated with Lucent's
+PathStar Access Server and sharing it with a firm majority-owned by the
+Chinese government. The software is considered a "crown jewel" of the
+company. Chinese nationals Hai Lin and Kai Xu were regarded as
+"distinguished members" of Lucent's staff up until their arrests. The
+motivation for the theft, according to court documents, was to build a
+networking powerhouse akin to the "Cisco of China." The men face a maximum
+five years in prison and a $250,000 fine. (*USA Today*, 4 May 2001
+http://www.usatoday.com/life/cyber/tech/2001-05-03-lucent-scientists-china.htm
+NewsScan Daily, 4 May 2001, written by John Gehl and Suzanne Douglas,
+editors@NewsScan.com)
+
+------------------------------
+
+Date: Thu, 3 May 2001 02:03:04 -0400 (EDT)
+From: VASSILIS  PREVELAKIS <vassilip@dsl.cis.upenn.edu>
+Subject: Citibank's meaningless privacy notice
+
+Citibank(South Dakota, N.A.) sent a leaflet to its customers to "...tell you
+how you can limit our disclosing personal information about you."
+
+Observe what great choice Citibank customers have:
+
+    [...]
+
+    Categories of Nonaffiliated Third parties to whom we may disclose
+    personal information
+
+    Nonaffiliated third parties are those not part of the family of
+    companies controlled by Citigroup Inc.
+
+    We may disclose personal information about you to the following
+    types of nonaffiliated third parties:
+
+    * Financial services providers, such as companies engaged in banking,
+      credit cards, consumer finance, securities and insurance,
+
+    * Non-financial companies, such as companies engaged in direct
+      marketing and the selling of consumer products and services
+
+    If you check box 1 on the Privacy Choices Form, we will not make
+    those disclosures except as follows. First, we may disclose information
+                      ^^^^^^^^^^^^^^^^^
+    about you as described above in "Categories of Personal Information
+    we collect and may disclose" to third parties that perform marketing
+    services on our behalf or to other financial institutions with
+    whom we have joint marketing agreements. Second, we may disclose
+    personal information about you to third parties as permitted by law,
+                                                    ^^^^^^^^^^^^^^^^^^^
+    including disclosures necessary to process and service your
+    Citi Card account.
+
+    [...]
+
+    Sharing with Citigroup Affiliates (Box 2)
+
+    The law allows us to share with our affiliates any information about
+    your transactions or experiences with you.
+    Unless otherwise permitted by law, we will not share with our
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    affiliates other information that you provide to us or that we
+    obtain from third parties (for example credit bureaus) if you check
+    Box 2 on the Privacy Choices Form.
+
+    [...]
+
+The options the clients are given are non-sensical as the bank retains the
+right to share information "as permitted by law" with just about everybody.
+
+Let's consider Box 1. Assuming that Citibank does not break the law, if the
+customer does not check the box, Citibank can share personal information
+with third parties. If the customer checks the box, Citibank "may disclose
+personal information to third parties"
+
+So whether Box 1 is checked or not the effect is the same unless Citibank
+breaks the law in sharing information with third parties.  Only in this case
+checking the box makes a difference. If the box is checked, the customer
+essentially asks Citibank to stop performing these illegal activities.
+
+Let us now consider box 2. Regardless of the state of the box, Citibank can
+share with its affiliates "any information about [Citibank's] transactions
+or experiences with [the customer]."
+
+The information that box 2 is supposed to control is information "obtain[ed]
+from third parties". Again if the box is not checked then this information
+may also be shared, while if the box is checked personal information may
+still be shared unless prohibited by law.
+
+Great choice!
+
+On their web site "http://www.citibank.com/privacy" Citibank claims:
+    "6. We will tell customers in plain language initially, and at
+        least once annually, how they may remove their names from
+        marketing lists. ..."
+
+If the language that was used in the leaflet is "plain" then Citibank must
+assume that all their clients are lawyers.
+
+In fact the whole purpose of the leaflet is to *pretend* that Citibank cares
+about the privacy of the customers, while retaining the right to distribute
+the personal information of their customers in any way they like.
+
+I have no problem with that - if I want privacy I can open a dollar account
+with a European bank and enjoy the protection of the EU laws.  I *do*
+object, however, to being handed a document like that which treats me like
+an idiot.
+
+Vassilis Prevelakis, University of Pennsylvania
+
+------------------------------
+
+Date: Tue, 8 May 2001 19:55:20 +0900
+From: Hendrik <subsc15@hiz.bc.ca>
+Subject: Fox... hen house...
+
+  Microsoft strikes banking deal [Excerpt from AP Internet news service]
+
+  Microsoft Corp. on Monday announced a deal to provide banks with software
+  designed to make their Internet transactions ultra-secure.  The
+  technology, which works in the Windows 2000 operating system, is designed
+  to allow banks to be sure of whom they're dealing with on the Internet.
+  It matches a security framework designed by Identrus, an alliance of 150
+  of the world's largest banks.  The deal involves Microsoft, Unisys
+  Corp. of Blue Bell, Pa., and Ireland-based Baltimore Technologies, which
+  has its U.S. headquarters in Boston.  Baltimore is providing its Public
+  Key Infrastructure security system, and Unisys is providing help using the
+  system.  [Full article at:
+  http://www.infobeat.com/fullArticle?article=406981693]
+
+No, there is no risk of me believing this will work.  Maybe owners of
+Microsoft Encarta can find the suitable definition of the term
+"ultra-secure", when applied in the context of Windows 2000...?
+
+------------------------------
+
+Date: Tue, 08 May 2001 12:43:52 +1000
+From: Tom Worthington <tom.worthington@tomw.net.au>
+Subject: Bluetooth risks airline safety?
+
+An advertisement by Toshiba in the Australian Financial Review Monday 7 May
+2001 (page 10: "Portege 3490 with Bluetooth - always ready to network")
+suggests that Toshiba laptops can be routinely carried on aircraft switched
+on, with Bluetooth devices transmitting:
+
+> "Imagine two strangers, each carrying Bluetooth-enabled Portege 3490s ...
+> In a fraction of a second the Bluetooth module within each detects the
+> presence of the other. ... And complete strangers can start playing chess
+> together on long flights"
+
+Apart from being misleading as laptop computers are not designed to be left
+on while being carried, this appears at odds with routine airline practice
+requiring electronic devices to be switched off during take-off. The use of
+radio transmitters by passengers is usually prohibited at any time on an
+airline. This is discussed in the Draft Advisory Circular AC 91.22 (0),
+FEBRUARY 2000, "PORTABLE ELECTRONIC DEVICES" from the Australian Civil
+Aviation Safety Authority:
+  http://www.casa.gov.au/prod/avreg/newrules/download/ac/091%5F22.pdf
+
+In practice, Bluetooth's very low-power spread-spectrum transmitter would be
+unlikely to cause interference to an aircraft's systems. However, it would
+be unwise to encourage Bluetooth's use on airlines until this is accepted by
+airline safety authorities.
+
+PS: It is possible to use a transmitter in some aircraft. Particularly when 
+it is a hot air balloon over Parliment and you have a Senator assisting 
+you: http://www.tomw.net.au/nt/balloon.html
+
+PPS: More on wireless: http://www.tomw.net.au/2001/wwgw.html
+
+Tom Worthington FACS; Director, Tomw Communications Pty Ltd ABN: 17 088 714 309
+http://www.tomw.net.au; Vis.Prof AustralianNatlUniversity; Austrl. Computer Soc
+
+------------------------------
+
+Date: 12 Feb 2001 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) 
+ which now requires confirmation to majordomo@CSL.sri.com (not to risks-owner)
+ [with option of E-mail address if not the same as FROM: on the same line,
+ which requires PGN's intervention -- to block spamming subscriptions, etc.] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 20" for volume 20]
+ http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+   Lindsay Marshall has also added to the Newcastle catless site a 
+   palmtop version of the most recent RISKS issue and a WAP version that
+   works for many but not all telephones: http://catless.ncl.ac.uk/w/r
+ http://the.wiretapped.net/security/info/textfiles/risks-digest/ .
+ http://www.planetmirror.com/pub/risks/ ftp://ftp.planetmirror.com/pub/risks/
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    http://www.csl.sri.com/illustrative.html for browsing, 
+    http://www.csl.sri.com/illustrative.pdf or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 21.38
+************************

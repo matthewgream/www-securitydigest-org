@@ -1,0 +1,437 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday 3 November 1988   Volume 7 : Issue 69
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Virus on the Arpanet - Milnet (Cliff Stoll)
+  More on the virus (Gene Spafford, PGN, Matt Bishop)
+  A320 update (Robert Dorset via Steve Philipson)
+  Re: Conspiracy to Defraud (Dan Franklin)
+  Re: Telephone answering machines (Vince Manis)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp kl.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85),(6,95).
+
+----------------------------------------------------------------------
+
+Date:  Thu, 3 Nov 88 06:46 EST
+From: Stoll@DOCKMASTER.ARPA
+Subject:  Virus on the Arpanet - Milnet
+
+Re Arpanet "Sendmail" Virus attack November 3, 1988
+
+Hi Gang!
+
+It's now 3:45 AM on Wednesday 3 November 1988.  I'm tired, so don't believe
+everything that follows...
+
+Apparently, there is a massive attack on Unix systems going on right now.
+
+I have spoken to systems managers at several computers, on both the east
+& west coast, and I suspect this may be a system wide problem.
+
+Symptom:  hundreds or thousands of jobs start running on a Unix system
+bringing response to zero.
+
+Systems attacked:  Unix systems, 4.3BSD unix & variants (eg:  SUNs) any
+sendmail compiled with debug has this problem.  See below.
+
+This virus is spreading very quickly over the Milnet.  Within the past 4
+hours, I have evidence that it has hit >10 sites across the country,
+both Arpanet and Milnet sites.  I suspect that well over 50 sites have
+been hit.  Most of these are "major" sites and gateways.
+
+
+Method:
+
+Apparently, someone has written a program that uses a hole in SMTP
+Sendmail utility.  This utility can send a message into another program.
+
+Step 1:  from a distant Milnet host, a message is sent to Sendmail
+       to fire up SED, (SED is an editor)  This is possible in certain
+       versions of sendmail (see below).
+
+2:  A 99 line C program is sent to SED through Sendmail.
+
+3:  The distant computer sends a command to compile this C program.
+
+4:  Several object files are copied into the Unix computer.
+        There are 3 files:  one targeted to Sun
+                            one targeted to SUN-3
+                            one targeted to vax    (ultrix probably, not vms)
+
+5:  The C program accepts as address other Milnet sites
+
+6:  Apparently, program scans for other Milnet/arpanet addresses and
+     repeats this process.
+
+
+
+The bug in Sendmail:
+
+When the Unix 4.3 BSD version of Sendmail is compiled with the Debug
+option, there's a hole in it.
+
+Most Unix systems (BSD 4.3 and Suns) apparently do not have this bug.
+It exists only where the system manager recompiled Sendmail and enabled
+debugging.
+
+
+This is bad news.
+
+  Cliff Stoll dockmaster.arpa
+
+------------------------------
+
+Date: Thu, 03 Nov 88 09:52:18 EST
+From: Gene Spafford <spaf@purdue.edu>
+Subject: More on the virus
+Organization: SERC, Department of Computer Sciences, Purdue Univ.
+
+All of our Vaxen and some of our Suns here were infected with the virus.  The
+virus forks repeated copies of itself as it tries to spread itself, and the
+load averages on the infected machines skyrocketed.  In fact, it got to the
+point that some of the machines ran out of swap space and kernel table entries,
+preventing login to even see what was going on!
+
+The virus seems to consist of two parts.  I managed to grab the source code for
+one part, but not the main component (the virus cleans up after itself so as
+not to leave evidence).  The way that it works is as follows:
+
+1) Virus running on an infected machine opens a TCP connection to a
+victim machine's sendmail, invokes debug mode, and gets a shell.
+
+2) The shell creates a file in /tmp named $$,l1.c (where the $$ gets replaced
+
+by the current process id) and copies code for a "listener" or "helper"
+program.  This is just a few dozen lines long and fairly generic code.  The
+shell compiles this helper using the "cc" command local to the system.
+
+3) The helper is invoked with arguments pointing back at the infecting
+virus (giving hostid/socket/passwords as arguments).
+
+4) The helper then connects to the "server" and copies a number of files
+(presumably to /tmp).  After the files are copied, it exec's a shell with
+standard input coming from the infecting virus program on the other end of the
+socket.
+
+From here, I speculate on what happens since I can't find the source to
+this part lying around on our machines:
+
+5) The newly exec'd shell attempts to compile itself from the files copied over
+to the target machine.  I'm not sure what else the virus does, if anything --
+it may also be attempting to add a bogus passwd file entry or do something to
+the file system.  The helper program has an array of 20 filenames for the
+"helper" to copy over, so there is room to spare.  There are two versions
+copied -- a version for Vax BSD and a version for SunOS; the appropriate one is
+compiled.
+
+6) The new virus is dispatched.  This virus opens all the virus source
+files, then unlinks the files so they can't be found (since it has them
+open, however, it can still access the contents).  Next, the virus
+steps through the hosts file (on the Sun, it uses YP to step through
+the distributed hosts file) trying to connect to other machines'
+sendmail.  If a connection succeeds, it forks a child process to infect
+it, while the parent continues to attempt infection of other machines.
+
+7) The child requests and initializes a new socket, then builds and invokes a
+listener with the new socket number and hostid as arguments (#1, above).
+
+The heavy load we see is the result of multiple viruses coming in from multiple
+sites.  Since local hosts files tend to have entries for other local hosts, the
+virus tends to infect local machines multiple times -- in some senses this is
+lucky since it helps prevent the spread of the virus as the local machines slow
+down.
+
+The virus also "cleans" up after itself.  If you reboot an infected machine (or
+it crashes), the /tmp directory is normally cleaned up on reboot.  The other
+incriminating files were already deleted by the virus itself.
+
+Clever, nasty, and definitely anti-social.  
+
+--spaf
+
+------------------------------
+
+Date: Thu, 3 Nov 1988 14:27:22 PDT
+From: Peter Neumann <neumann@csl.sri.com>
+Subject: More on the virus attack
+
+Remember that the above are preliminary messages relating to an event in
+progress.  There seem to be many unanswered questions.  Perhaps someone will
+contribute a definitive report to the next issue of RISKS.
+
+Examination of the code suggests a fairly sophisticated person writing
+relatively high quality (although undocumented) code, exploiting several flaws
+that exist(ed) on many UNIX systems, and written with considerable good
+practice in self-checking, reliability, etc.  From the evidence thus far, I
+would guess it that this was a deliberate attack, not an accidental experiment
+run astray. 
+
+Although it was primarily a denial of service attack, it did some remarkable
+things, taking advantage of many different approaches.  The spawned
+processes appear to have been doing attacks on encrypted passwords to enable
+ftps (in case the .rhost attack would not work -- cf. the Stanford breakins
+described in CACM and SEN by Brian Reid).  Separate versions to run on Suns
+and Vaxens were apparently propagated in DES encrypted form, decrypted, and
+both programs tried to see which one would work.
+
+We quoted Henry Petroski here over a year ago to the effect that we do not
+learn from our successes, but that we have an opportunity to learn from our
+failures.  Once again we are presented with the opportunity to learn that many
+of our computer systems have serious security vulnerabilities, and that we need
+to take pains to defend against the really malicious attacks.  Strangely some
+people take heart in the fact that the security attacks to date (whether
+penetrations, exploitations of privilege, Trojan horses, or legitimate viruses)
+have been relatively modest in scale, perhaps to justify the absence of
+concern.  I am afraid that it will take a Chernobyl- or Three-Mile-Island-like
+disaster before the community at large wakes up.  PGN
+
+------------------------------
+
+Date: Thu, 3 Nov 88 16:32:25 EST
+From: bishop@bear.Dartmouth.EDU (Matt Bishop)
+Subject: More on the virus
+
+...  This program introduced itself through a bug in sendmail.  At these sites,
+sendmail was compiled and installed with a debugging option turned on.  As near
+as I can figure (I don't have access to the sendmail sources), by giving a
+specific option to the "debug" command in sendmail (there are lots of those,
+controlling what exactly you get information about) you can cause it to execute
+a command.  As sendmail runs setuid to root, guess what privileges the command
+is executed with.  Right.
+   Apparently what the attacker did was this:  he or she connected to sendmail
+(ie, telnet victim.machine 25), issued the appropriate debug command, and had
+a small C program compiled.  (We have it.  Big deal.)  This program took
+as an argument a host number, and copied two programs -- one ending in
+q.vax.o and the other ending in .sun.o -- and tried to load and execute them.
+In those cases where the load and execution succeeded, the worm did two things
+(at least):  spawn a lot of shells that did nothing but clog the process table
+and burn CPU cycles; look in two places -- the password file and the internet
+services file -- for other sites it could connect to (this is hearsay, but I
+don't doubt it for a minute.)  It used both individual .rhost files (which it
+found using the password file), and any other remote hosts it could locate
+which it had a chance of connecting to.  It may have done more; one of our
+machines had a changed superuser password, but because of other factors we're
+not sure this worm did it.
+   This last part is still sketchy; I have the relevant sun.o file and will
+take it apart to see just what it was supposed to do.  As of now, it appears
+there was no serious damage (just wasted CPU cycles and system administrator
+time).
+   Two obvious points:
+1.  Whoever did this picked only on suns and vaxen.  One site with a lot
+    of IRISes and two Crays (ie, NASA Ames) got bit on their Suns and Vaxen,
+    but the attempt to get the other machines didn't work.
+2.  This shows the sorry state of software and security in the UNIX world.
+    People should NEVER put a program with debugging hooks in it, especially
+    when the hook is (or can be made) to execute an arbitrary command.  But
+    that is how the sendmail which was used was distributed!
+   One more interesting point:  initially, I thought an application of the
+"principle of least privilege" would have prevented this penetration.  But
+the attacker used a world-writeable directory to squirrel the relevant programs
+in, so -- in effect -- everything could have been done by any user on the
+system!  (Except the superuser password change, of course -- if this worm
+did in fact do it.)
+   I think the only way to prevent such an attack would have been to turn
+off the deug option on sendmail; then the penetration would fail.  It goes to 
+show that if the computer is not secure (and like you, I don't believe there
+ever will be such a beastie), there is simply no way to prevent a virus (or,
+in this case, a worm) from getting into that system.
+   I know this is somewhat sketchy, flabby, and fuzzy, but it's all I know
+so far.  I'll keep you posted on developments ...
+
+Matt
+
+------------------------------
+
+Date: Mon, 31 Oct 88 11:39:11 PST
+From: Steve Philipson <steve@aurora.arc.nasa.gov>
+Really-From: Robert Dorset via Steve Philipson
+Subject: A320 update
+
+Henry Spencer's recent article on the A320's first six months in
+service states that the fly-by-wire system has "behaved perfectly."
+It should be noted, however, that the article he was referring
+to clearly pointed out that there were failures of the primary 
+flight guidance computer, which were rectified by backup systems.
+
+
+More information from Flight:
+
+
+ From Flight International, 9/24/88:
+
+"Five months after entry into commercial service with Air France, British
+Airways, and Air Inter, Airbus Industries' A320 fly-by-wire 150-seat
+airliner still has many teething problems, but fewer than other Europ-
+ean or American transport aircraft in their first year, say the man
+ufacturers and operators [Note: Air France and BA have been running
+rather old fleets for a LONG time]
+
+"Air France's Airbus A320 Ville de Paris, on flight AF914 from Paris
+to Amsterdam on August 26, had to turn back shortly after takeoff 
+from Charles de Gaulle with 81 passengers on board.  A series
+of warnings included a toilet fire indication, which subsequently
+proved to be a false alarm.
+
+"When the pilot attempted to land the aircraft, yet another warning
+light erroneously indicated that the landing gear was not down.  The
+A320 made a pass over the airport, and the control tower confirmed 
+that the landing gear was down.  A second pass was then made, and
+Air France ground engineers andmechanics confirmed that the gear
+was down. The pilot made a perfect landing, although the computer
+display system displayed many false warnings.
+
+"Passengers on the A320, which had taken off 40 min. late because of
+heavy traffic, had to transfer to two other aircraft, causing a 
+4 hr delay.  
+
+"The faulty A320 was grounded for two days pending thorough checks,
+but is now back in regular service to Dusseldorf, Amsterdam, and
+Geneva.
+
+"Earlier, on August 19, an Airbus A320 belonging to French domestic
+carrier Air Inter reported a double power failure on a flight from
+Nice Cote d'Azur to Paris.  According to a computer system warning,
+the auxilliar power unit broke down at the same time as one of the
+two main generators, a little while before landing at Orly airport.
+The pilot made a safe landing, as his aircraft still had three
+additional power sources--the second main generors, batteries, and 
+the other auxilliary power unit.
+
+"On March 28, Air France's Ville de Paris had encountered similar pro-
+blems on its inaugural flight over Paris and the Champs Elysees with
+then Prime Minister Jacques Chirac and 150 other passengers.
+
+"Since entry into commercial service, only three per cent of A320 flights
+have been delayed beyond the accepted 15 min. by technical problems, says
+Airbus Industrie technical vice-president Bernard Ziegler.  'This 97
+per cent rate of technical regularity is very close to the best aircraft
+in service, which have attained 98 per cent or 98.3 per cent,' he says.
+"For a brand new aircraft with revolutionary avionics and fly-by-wire,
+the A320 hasmade a remarkable achievement.'
+
+The loss of Air France's third A320, Ville d'Amsterdam, at Mulhouse
+Habsheim airport during a local aero club rally on June 26, with three
+dead and 50 injured among its 153 joyriding passengers, has caused
+great concern, although the aircraft has been cleared of any malfunc-
+tion and the accident was  attributed to pilot error.  Air Inter's
+pilots' union added to the general concern by striking in protest 
+against the A320's two-man crew [but largely on the basis of pay and
+seniority, with safety as a propaganda gimmick].
+
+'Every day in Europe, five airliners on average turn back for various
+technical reasons,' says Bernard Ziegler.  'That does not make news.
+But when the A320 is one of the five, then the mass media cries out.
+That's the rule of the game.  But we are satisfied the A320 is all
+right--nothing wrong with it.  It's a very good plane.'
+
+Any new aircraft undergoes a series of technical adjustments in its
+first months of operation, he notes.  'It took Boeing two-and-
+a-half years for the 757, a year for Airbus Industrie with the A300,
+and hopefully it will only take us nine months for the A320,' says
+Ziegler."
+
+-----------
+I find Ziegler's rationale for the failures of the A320 somewhat 
+disturbing.  With only a handful of airplanes in service, for any
+significant percentage of in-flight or on-ground failures to occur,
+and then say it should be compared to the massive fleets of existing
+aircraft, is to obfuscate the issue.
+
+His confidence in the A320's backup electrical systems is also rather
+odd, considering the airplane's susceptibility to transient controls,
+and his company's failure to provide even a mediocre cabin lighting
+control system.
+
+------------------------------
+
+Date: Tue, 01 Nov 88 16:39:47 -0500
+From: dan@WILMA.BBN.COM
+To: Martyn Thomas <mct@praxis.uucp>
+Subject: Re: Conspiracy to Defraud 
+
+Re the Confederation of British Industry's proposal to change the law on
+defrauding to include deception of computers as well as people:
+
+To state the obvious, computer programs are so limited in their ability to
+understand what someone might be trying to do, and what information is
+necessary for that purpose, that it's often necessary to "deceive" them just to
+get them to do the right thing.  It's much like the problem of figuring out
+what to put on a complex form, like tax forms: every individual situation is
+different, and the form either provides no way at all to say what your
+situation is, or provides several equally plausible ways to express it.  But at
+least forms have margins, and you can attach additional pieces of paper to
+them.  Computer-based "forms" have neither.
+
+Here's an example: in the process of trying to provide some service, a computer
+asks for my telephone number.  I don't believe it has any right to that number
+for this purpose, so I refuse to answer.  But it won't go on to the next query
+until I answer that one.  I find someone in charge: "I don't want to give my
+phone number out.  Is that OK?"  "Sure.  Just give it a fake number and go on."
+The computer is now "deceived".  It's ridiculous to think that both I and the
+computer's owner could now be charged with fraud!
+
+Taken literally, such a law would also preclude thorough testing of computer
+software.  In testing, you're almost always "deceiving" the computer in order
+to see whether it will handle some case correctly, particularly if you're
+checking error handling.  Are testers going to have to insert special routines
+that print out "It's OK, I know this is a test" before giving any answers, to
+avoid prosecution?
+
+There are also serious theoretical problems with the notion of "deceiving" a
+computer.  In theory, deception occurs when an individual is deliberately led
+to believe X when not-X is true.  But what does "belief" mean when applied to a
+computer system?  If I have a file on a computer system that says I'm 3 years
+old, does that mean the computer "believes" I'm three years old?  Of course
+not, you say.  What if it's in a database?  Is it deception then?
+
+I think it's all the fault of some AI people who would like us to think that
+all it takes to be able to say that a computer system believes a fact is that
+it's in a Lisp-based inference system that includes a "believes" predicate!
+
+	Dan Franklin
+
+------------------------------
+
+Date: Tue, 1 Nov 88 16:30:36 PST
+From: manis@grads.cs.ubc.ca (Vince Manis)
+Subject: Re: Telephone answering machines
+
+I was concerned about security when I bought a new answering machine this
+spring. I finally settled on a GE model which has an 8-bit security code (which
+you set in octal!), believing that a search space of 256 is large enough.
+(There--all you have to do is look me up in the phone book and you have enough
+information to crack my code. Some people are just not security-conscious
+enough.)
+
+The search space seemed large enough on the following grounds:
+
+1) there aren't many answering machine hackers around;
+
+2) I rarely store confidential data on my machine;
+
+3) people aren't patient enough to call a number 256 times just to break in.
+
+Now, what I'm surprised at is that this is *exactly* the reasoning that those
+operating computers have used, and I knew that at the time, having read lots of
+papers on security. I hadn't even thought about only allowing non-destructive
+operations, though again this is something that anybody who has ever used
+anonymous ftp knows about immediately.
+
+Am I overreacting, or is it really better to say that those who are cognisant
+of history are also doomed to repeat it?
+
+Vincent Manis, Manager, Instructional Laboratories, 
+Department of Computer Science, University of British Columbia
+
+------------------------------
+
+End of RISKS-FORUM Digest 7.69
+************************

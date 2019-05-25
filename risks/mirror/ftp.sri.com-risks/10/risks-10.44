@@ -1,0 +1,467 @@
+Subject: RISKS DIGEST 10.44
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 24 September 1990  Volume 10 : Issue 44
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Arbitration Myths (Leslie Lamport, Mark S. Day)
+  Overbilled by 6 orders of magnitude (Jeff Johnson)
+  Risks of "automated guided vehicles" (Brad Dolan)
+  Field commanders using UNIX? (Tom Beattie)
+  Expert system in the loop (Matt Jaffe, Clifford Johnson, bahn_pr)
+  Apollo, The Race to the Moon (R.I. Cook)
+  Failed mail ("after 246 days"!) and comment on long header lines (PGN)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory; bye logs out.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Mon, 24 Sep 90 10:36:11 -0700
+From: lamport@src.dec.com (Leslie Lamport)
+Subject: Arbitration Myths (Peter Denning, RISKS-10.42)
+
+Peter Denning correctly observes:
+
+   The fundamental theorem of arbiters is: There is no fixed time bound
+   for the arbiter to make its choice.
+
+It may make things a bit clearer to phrase this as follows.  A designer
+of a circuit that has an arbiter has two choices:
+
+   1. Have his circuit wait arbitrarily long for the arbiter to make
+      up its mind, thereby guaranteeing that his digital circuit elements
+      will operate digitally, "seeing" only 0's and 1's.
+
+   2. Bound the length of time the circuit waits for the arbiter,
+      thereby introducing the possibility that his digital circuit 
+      will behave like an analog circuit, with 1/2's flowing
+      along the wires, and do strange things.
+
+Peter then asserts:
+
+   Lamport showed how to achieve fair mutual exclusion without any
+   requirement that references to memory cells are arbitrated (1974).
+
+While perhaps correct, this statement is misleading.  The bakery algorithm
+achieves mutual exclusion without assuming any arbitrated access to memory.
+However, reading a memory cell that may be written while it is being read
+requires that the reader have an arbiter.  (The reader needs an arbiter to
+decide whether the change from 0 to 1 occurred before or after a read
+operation.)  In fact, the mutual exclusion problem is characterized by the fact
+that any solution requires an arbiter.  (It is a testimony to Dijkstra's
+insight that certain requirements set down in his original 1965 paper,
+apparently regarded as irrelevant and omitted by others in later statements of
+the problem, are necessary to distinguish mutual exclusion from theoretically
+easier problems that can be solved without an arbiter.)
+
+As Peter observes, the only way to build a computer that is safe from
+"arbitration failure" is by making choice 1, which means that the computer must
+turn off its clock while waiting for an arbiter to decide.  Note that the
+computer can't keep its clock ticking while waiting for the arbiter to make up
+its mind, since it would then require another arbiter to decide within the
+current clock cycle whether or not the first arbiter had made up its mind.  I
+know of no computer that turns off its clock in this way.  Moreover, doing so
+necessarily eliminates the possibility of fault-tolerance.  Omission faults can
+be detected only by time-out, which means by keeping a clock running.  Thus, a
+system that is impervious to arbitration failure cannot be fault-tolerant.
+
+Thus, Peter's 
+
+   Conclusion: we know how to build fair arbiters and how to design
+   circuits that are free of synchronization errors.
+
+is again perhaps correct, but misleading.  We know how to design those
+circuits, but we also know that they are impractical.
+
+Having said all this, I should now add that the situation, although hopeless,
+is not serious.  We cannot make circuits with no theoretical possibility of
+arbitration failure, but we can make them with no practical possibility of such
+failure.  By arguments that would constitute a proof to a physicist, and a joke
+to a mathematician, I think one can show that if a circuit has normal reaction
+time of order T0, then an optimimum arbiter has probability about e^(-T/T0) of
+not having reached a decision by time T.  It appears possible to build such an
+optimal arbiter.  Thus, by simply allowing enough time for the arbiter to
+decide, the probability of an arbitration failure can be made negligibly small.
+
+Of course, note the "can be".  How many of the engineers designing digitial
+circuitry are aware of the problem?  Once, in the late 70's or early 80's, I
+had the horrifying experience of spending 1/2 hour trying to explain the
+problem to computer designers at Bendix, with an utter lack of success.
+
+Leslie Lamport
+
+P.S.  People interested in the arbiter problem might like to read my
+unpublished paper "Buridan's Principle", available by request.
+
+------------------------------
+
+Date: Sat, 22 Sep 90 18:34:11 EDT
+From: mday@brokaw.LCS.MIT.EDU ("Mark S. Day")
+Subject: Arbiters and glitches
+
+Peter Denning is absolutely right (in Risks 10.42) to correct the
+claim that "it is impossible to build a fair arbiter." However, the
+fact that reliable arbiters are possible is quite different from
+saying that they are implemented in most systems.
+
+As Denning's "fundamental theorem of arbiters" shows, the interface
+between an asynchronous system and a clocked system is a source of
+unreliability (not unfairness) and it is not possible to eliminate
+glitches except by eliminating the interface (using an entirely
+asynchronous system). The probability of glitches can be reduced, but
+only by reducing the performance of the interface (lengthening the
+decision time).  The original writer might well have been assuming
+clocked systems (which are, after all, the vast majority of digital
+systems in the world) in which case there is an important kernel of
+truth to the original claim of impossibility, even though it is indeed
+technically incorrect.
+
+--Mark Day
+
+------------------------------
+
+Date: Sat, 22 Sep 90 16:32:21 PDT
+From: Jeff Johnson <jjohnson@hpljaj.hpl.hp.com>
+Subject: Overbilled by 6 orders of magnitude
+
+Excerpted from the 9/21/90 San Jose Mercury-News:
+
+PHONE BILL'S WRONG NUMBER:  $8.7 MILLION
+
+Chicago (AP) -- Cori Ward's mother got a little defensive when she
+received a phone bill for three weeks' service -- $8.7 million.
+
+"She says, 'I only called my sister,'" said Ward, who handles her
+elderly mother's bills.
+
+The bill from Illinois Bell should have read $87.98, not $8,709,800.33.
+
+...
+
+Ward said she had a hard time explaining the mistake to the phone company.
+
+The error occurred when someone incorrectly typed a "correction" into
+the computer system, said Larry Cose, a Bell spokesman.
+
+------------------------------
+
+Date:    Mon, 24 Sep 90 12:07:24 GMT
+From: pine_ridge%oak.span@Sds.Sdsc.Edu
+Subject: Risks of "automated guided vehicles"
+
+Excerpted from the Maryville/Alcoa (Tenn.)  _Daily Times_, 
+September 10, 1990, p.1. :
+
+ALCOA Worker Killed
+
+Donnie W. Britton, 48, of Madisonville, a 24-year employee of
+ALCOA, died shortly before noon Saturday at UT Hospital following
+an accident at ALCOA's North Plant.  
+
+Elton Jones, ALCOA's director of public relations, said Britton, an
+electrician, was working on an overhead crane that was not 
+operating when the crane's tray grab, the part that hangs down and
+lifts trays of coils (of aluminum sheet), was struck by the top of
+a coil being transported at ground level by an automated guided
+vehicle.  The impact caused the crane to move toward Britton who
+was crushed between an access platform on the crane and the
+personnel lift he had used to reach the crane .......
+
+    This looks to me like (1) poor work practice and (2) poor a.g.v.
+    design.  Comments?
+
+    Brad Dolan, Science Applications International Corp (my opinions)
+    pine_ridge%oak.span@sds.sdsc.edu    bdolan@cup.portal.com
+
+------------------------------
+
+Date: Mon, 24 Sep 90 16:28 EDT
+From: twb@hoqaa.att.com
+Subject: Field commanders using UNIX?
+
+I came across this in a news digest.
+As you can see it is attributed to UNIX Today:
+
+           "To combat the use of chemical weapons by the Iraqis, the 
+         Pentagon is planning a two-pronged, high-tech defense using UNIX-
+         based laptops.  Using meteorological-type programs, the laptops 
+         could quickly determine how widespread the attack will be, where 
+         the troops can safely be deployed and how quickly they should be 
+         moved.  The information would then be fed into UNIX-based PCs,
+         and field commanders would run a variety of attack scenarios.  A 
+         full meteorological model, able to forecast likely future wind 
+         conditions over the entire risk area, could be generated within 60 
+         seconds.  [UNIX Today, 9/17/90]"
+
+Field commanders using UNIX?
+Meteorological models in 60 seconds on a Unix-based laptop?
+
+Tom Beattie     att!hoqaa!twb     t.w.beattie@att.com
+
+                    [Whether it's cold, or whether it's hot, 
+                     weather is weather, whether or not.  
+                     It's known as whethering the storm.  PGN]
+
+------------------------------
+
+Date: 24 Sep 90 19:06:26 GMT
+From:  <jaffe@safety.ICS.UCI.EDU>
+Subject: Re: Expert system in the loop (Thomas, RISKS-10.37)
+
+>Martyn Thomas reports:
+
+>>According to Electronics Weekly (Sept 12th, p2): [...]
+>In fact, he has contradicted his own assertion that the AEgis system was
+>responsible by pointing out the shortcomings in human judgement, human
+>psochology, and human I/O.  The principal (and significant) shortcoming
+>of AEgis in this scenario is that its database apparently did not
+>include a readily available schedule of commercial airline flights for
+>the region in which AEgis was deployed.
+
+I was one of the principal designers of the MMI for Aegis so I have read the
+past and current discussions on this subject with some interest.  A couple of
+years ago PGN posted a summary of some remarks I made on the subject of the
+Aegis MMI at an informal sidebar to one of the sessions of the 5th
+International Workshop on S/W Specification; I won't repeat them here -
+interested readers are referred to the Risks archives.  
+
+      [See RISKS-8.74, 26 May 1989.  It was a really fine item, and it also 
+      appeared in ACM SIGSOFT Software Engineering Notes, vol 14, no 5, 
+      July 1989, pp. 20-22.  PGN]
+
+Here, I only want to interject a comment on the more recent post extracted
+above.  It is certainly true that Aegis as originally deployed did not include
+a database of commercial flight data.  I recall some informal discussions about
+that possibility at the time.  Our Navy customer had not specified anything
+like that in their requirements, but the possiblity was mentioned by me (and
+others), none-the-less.  There were several reasons why it was not further
+pursued:
+
+(1) Philosophic disagreements on the nature of probable Aegis employments.  In
+a blue-water, all out conflict, commercial flight data processing would be
+irrelevant and unused.  The Navy did not want to spend scarce development
+funding on what they perceived of as marginal requirements.  It is my personal
+perception (shared, I'm sure, by many others) that the armed services tend to
+design systems for "pure" threats and scenarios.  Aegis was conceived of as
+providing defense for the carrier task force in open water conflicts.  The then
+recent experiences of employing missile cruisers in close in the Gulf of Tonkin
+(NORSAR and PIRAZ, specifically) seemed to be regarded as an aberration:
+"Vietnam was a mistake; we won't make that mistake again; no more confused
+little conflicts for the U.S."  We often heard the sentiment that we (Navy and
+contractor jointly) did not want to be guilty of the oft repeated mistake of
+designing systems to meet the requirements of the last war.  The risk, of
+course, was and is that we could fail to institutionalize what some of us so
+painfully learned from our experiences.
+
+(2) Logistic/design problems relating to the complexity of flight data
+processing (keeping track of commercial flight plans and correlating real-time
+tracks with possible flight plans).  The Navy did not then (nor I presume does
+it now) have any facilities aboard tactical vessels for obtaining and
+distributing commercial flight plan data.  The resources required are
+significant, both personnel and computational.  At the time, the Navy was under
+intense pressure to reduce manning requirements for the Aegis ship.  I also
+doubt whether the UYK-7 technology of the day could have handled the
+computational load required.  There also would have had to be additional
+communciations bandwidth dedicated to the distribution, update, and
+coordination of flight data.  In those days, digital bandwidth to ships was
+extremely limited (it almost certainly still is).
+
+The point is that the issue of designing Aegis to handle commercial flight data
+was addressed and rejected as not cost-effective.  Whether one agrees with this
+specific decision or not, the general point is that no military system (or any
+system) can be designed to deal with all contigencies that someone thinks of as
+appropriate.  All the ideas that the anyone on the team came up with got
+discussed, some were selected, some were not.  As always, the operational users
+wound up having to make do with a system that was not optimized for the
+environment in which they found themselves and whose limitations neither they
+nor the policy decision makers who directed them fully understood. I am still
+not sure whether any of the "what-ifs" represent design flaws or shortcomings.
+
+------------------------------
+
+Date:      Mon, 24 Sep 90 11:36:46 PDT
+From: "Clifford Johnson" <GA.CJJ@Forsythe.Stanford.EDU>
+Subject: Expert system in the loop (Henry Spencer, RISKS-10.42)
+
+> the Pentagon's finding was not that nobody
+> was responsible for the [Vincennes] mistake, but that no *blame*
+> was attached to the captain and crew as a result of it...
+> The [military's] job is to carry out the policies of
+> their government, and if innocent people get hurt, that is
+> the policy- makers' problem....
+
+Since the Vincennes' very mission was to keep the Gulf safe for
+civilian traffic, the point argued by Henry here, even were it
+elsewhere valid, in fact weighs against his argument that Captain
+Rogers' reasonably decided to risk civilian life.   As for the
+the general case, there certainly are regulations drawn up in
+international law, that protect civilians from risk, even in battle.
+(An air embargo against Iraq cannot now be *enforced* under
+this sort of international law.)  Likewise, a suit filed in
+international court in Costa Rica against the U.S., for its
+bombing of a civilian mental hospital in Grenada, was *settled* by
+the U.S. (albeit without admission of blame).  In brief, the U.S.
+would have had to show sufficient probable cause for the bombing,
+by objective standards, had trial been reached.
+
+>>>In the case of the Vincennes, it cannot be disputed that a mistake
+>>>was made.  The Pentagon found no human responsible for it, so it
+>>>must have been a mechanical error.
+> This statement is in error.  Please, READ THE REPORT . . .
+> The board found that Captain Rogers made a correct decision to fire
+> based on the data that he had available to him.
+
+The data was generated by computer, and the misinterpretation of
+screens that occurred was deemed foreseeable (and was forgiven)
+in the circumstances. I fail to see even a small error in my claim,
+let alone a capitalized error.  Given the facts, which we agree on,
+it is a matter of definition as to whether we say that the computers
+"made" the decision to shoot, which is the definition I assert as
+a matter of commonsense and law.
+
+>>>Such decisionmaking is de facto *governed* by computer: without
+>>>computer prompts, no retaliatory decision at all would be taken;
+> Again, incorrect.  Decisions to fire were made long before we
+> had computers -- they are not required to make these decisions.
+
+Well, yes, but I'm not saying that mistaken visual identification
+is a computer error, I'm talking about decisionmaking taken by
+commanders whose only inputs are computer screens of information.
+There's a qualitative difference, though I agree that drawing the
+line meaningfully is not easy, it's clear to me that momentary
+decisions taken in the Vincennes windowless control room are properly
+deemed computer-governed.
+
+------------------------------
+
+Date: Mon, 24 Sep 90 16:28:18 -0400
+From: bahn_pr%ncsd.dnet@gte.com (Wheels in Wheels)
+Subject: vincennes incident (Henry Spencer, RISKS-10.42)
+
+I believe Henry failed to observe a key point in the navy review of the 
+Vincennes incident.  The Assistant Anti-Air warfare officer failed to set
+the range gate for the IFF unit to allow for the changing distance to the target.
+Consequently instead of pinging the transponder on the A300, they were
+pinging an F-14 on the ground at Bandar Abbas.  Also no consideration
+was given that F-14 lack an anti-ship capability.
+
+	The Radar operator also mis-read his screen, interpreting
+range for altitude, and also was unaware of the fact that a civil
+air corridor ran through the gulf, and that the A300 was in fact in the center
+of the corridor.  The Vincennes lacked VHF radios to interrogate Iranian
+Civil air also.  Civilian aircraft at 33,000 feet are also by definition
+well clear of ships, and probably would not even be able to identify them
+without optical instruments.  
+
+	As I read the Navy report, there were two distinct personnel failures
+by Vincennes crew, compounded by Inability to interrogate the A300.  The Navy
+review board faulted the design of the screens for not presenting information
+in a clear manner.  Heat of battle was also considered a mitigating factor.
+
+	What is not understood by readers of Risks, is the Persian gulf is
+an exteremely busy commercial zone.  Hundreds of Planes and Boats ply those
+waters every day.  To shoot at every moving target is negligent on our part.
+THese systems are designed for high intensity combat with dozens of combatants
+and numerous inbound threats.  Trying to pick out a single hostile among
+hundreds of non-combatants is a much more difficult task.
+
+	The Iran-Iraq war contrary to one readers opinion was not WW2.  In WW2,
+there were clear sides.  CLearly marked hostile zones and very few nuetrals.  
+WW2 was also a total war.  No tactic was untried save for Gas.  THe Iran Iraq
+war was a relatively small war between tow neighbors in a very crowded
+environment.  Interjecting High strung war ships into such an environment was
+only bound to cause such errors.
+
+	THe Stark had made a type 2 error.  Actually hostile, Failed to shoot.
+	THe Vincennes made a type 3 error.  Actually Civil, Did shoot.
+
+	I am sure in the mind of the captain of the Vincennes was the court
+martial of the Stark's captain and his claim that the electronic systems had 
+failed to identify the threat, increasing the probablity now of a type 3 error.
+
+	While the Navy review board did reccomend changes involving Man-machine
+interfaces, knowledge of commercial routes, Addition of VHF radios and 
+upgrading of the IFF system.  I feel the fundamental error was placing
+military vessels into a environment crowded with non-combatants.  These
+vessels are designed to fight WW3, not police brush-fire wars.  This was
+a major problem for US troops in Vietnam also.
+
+------------------------------
+
+Date: Mon, 24 Sep 90 15:06:54 EST
+From: cook@csel1.eng.ohio-state.edu
+Subject: Apollo, The Race to the Moon
+
+The excellent book recommended by M.Minow is available in paperback for $12.95.
+The reference is
+
+   Murray, Charles & Cox, Catherine B.
+   Apollo, The Race to the Moon.  Simon & Schuster, 1989.  ISBN 0-671-90625-X
+
+R.I.Cook	cook@csel.eng.ohio-state.edu
+
+------------------------------
+
+Date:     Mon, 24 Sep 90 0:18:31 EDT
+From: "helios.northeastern.edu mmdf IIb upd 43" <mmdf@helios.northeastern.edu>
+Sender: mmdf@helios.northeastern.edu
+Subject:  Failed mail  (msg.aa00705)
+
+    After 246 days (5891 hours), your message could not be fully delivered.
+          ^^^       ^^^^                                                  <==PGN
+
+    It failed to be received by the following address(es):
+
+	nu-risks@nuhub.acs.northeastern.edu (host: nuhub.acs.northeastern.edu)...
+
+    Problems usually are due to service interruptions at the receiving
+machine.  Less often, they are caused by the communication system.
+
+    Your message follows:
+
+Received: from HERCULES.CSL.SRI.COM by helios.northeastern.edu id aa00705;
+          21 Jan 90 11:11 EST
+Received: by hercules.csl.sri.com at Sat, 22 Sep 90 13:26:33 -0700.
+	(5.64+/XIDA-1.2.8.35) id AA28066 for oneil%NASA-JSC.CSNET@RELAY.CS.NET
+From: RISKS Forum <risks@csl.sri.com>
+Date: Sat, 22 Sep 1990 13:26:31 PDT
+Subject: RISKS DIGEST 10.42 
+
+RISKS-LIST: RISKS-FORUM Digest  Saturday 22 September 1990   Volume 10 : Issue 42
+RISKS-LIST: RISKS-FORUM Digest  Wednesday 22 September 1990  Volume 10 : Issue 42
+
+  [Northeastern has always been an interesting host.]
+
+    [By the way, I am sorry about the 81-character line ending with
+    Volume 10 : Issue 42 where many of you could not read the "2" at the end.
+    Yes, I know, Issue 43, also.  Mark Brader <msb@sq.com> pointed this out to
+    me, and I replied with a comment such as how on double-digit Wednesdays and
+    occasionally Saturdays in September my masthead lead could run over 80
+    characters (in Volume 10 and from now on, unless I am on my toes, as I was
+    in RISKS-10.36.)  (I've shortened the line by one character in this issue,
+    so now it is just Wednesdays in September 1991, etc., that I'll have to 
+    watch out for.  I'll set my calendar program to remind me, if I am still 
+    running RISKS then.)  PGN]
+
+       "... when the moon is in the third quarter? :-)"  says Mark.
+
+       "[Jupiter's] satellites are invisible to the naked eye and therefore 
+       can have no influence on the Earth and therefore would be useless 
+       and therefore do not exist."	-- Francesco Sizi, quoted by T. Cox
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.44
+************************

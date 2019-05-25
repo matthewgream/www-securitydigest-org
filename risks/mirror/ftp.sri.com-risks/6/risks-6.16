@@ -1,0 +1,394 @@
+RISKS-LIST: RISKS-FORUM Digest  Wednesday, 27 January 1988  Volume 6 : Issue 16
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Computer error blamed for diplomatic fiasco (Bernard de Neumann)
+  A feedback loop in tax preparation algorithms (Lawrence R. Bernstein via PGN)
+  IBM's meaning of "open" in the abbreviation OSI (Peter Sylvester)
+  Bank abandons fouled-up computer system (Rodney Hoffman)
+  Business view of software productivity (Rodney Hoffman)
+  VMS and login failure logins (Jerry Leichter)
+  Software Power Switches (Mike Russell)
+  A risk of using spelling checkers (Andy Freeman)
+  Re: RISKS in Cable TV? (Andy Goldstein)
+  Re: Calendar bomb in the Ada language (Jim Purtilo)
+  Time Bombs in Bank Computers (John McLeod)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date: Wed 27 Jan 88 17:10:57-PST
+From: Peter G. Neumann <NEUMANN@csl.sri.com>
+Subject: Computer error blamed for diplomatic fiasco
+
+Bernard de Neumann of Marconi Research in Chelmsford, England, sent me an
+article from the Sunday Telegraph, 10 January 1988:
+
+Computer error causes a diplomatic nightmare
+by Anne-Elisabeth Moutet in Paris
+
+The French Foreign Ministry's Protocol Office has committed an extraordinary
+gaffe by mistakenly inviting the Iranian charge' d'affaires to a party for
+diplomats at the Elyse'e Palace.  [...] [France had of course broken ties with
+Iran.]  Upon later interrogation, the Quai d'Orsay swore the whole mistake was
+due to a computer error and formally apologised -- although Mr Mitterand
+confided that he suspected the foreign minister, Mr Jean-Bernard Raimond, had
+planned the whole thing to try to get back in the good graces of the Iranians.
+
+------------------------------
+
+Date: Wed 27 Jan 88 16:55:45-PST
+From: Peter G. Neumann <NEUMANN@csl.sri.com>
+Subject: A feedback loop in tax preparation algorithms
+
+Lawrence R. Bernstein, in an article entitled "The Great Tax-Form Headaches of
+'88" (S.F. Chron) Personal Finance section, page 23), has discovered an
+apparent recursion that California taxpayers must encounter in completing
+their federal and state returns.  The state had a bright idea to peg the state
+tax to the federal return.  Thus, you cannot complete your state return until
+you have completed your federal Schedule A.  Unfortunately, as in past years,
+you cannot complete your federal return until you have completed your state
+return (assuming you want to pay the correct taxes).  A nice deadly embrace?
+No, just an opportunity for many successive iterations through the state and
+federal computations if you want to be precise.
+
+Schedule CA is the new Cal form to itemize fed/state differences.  Details: 
+
+  CA line 20.  Itemized deductions from federal Schedule A, line 26.
+
+  CA line 21.  State, local, and foreign income taxes from federal
+               schedule A, lines 5 and 7.
+
+Strict adherence requires repeated iterations through federal schedule A and
+state schedule CA until the process converges.  PGN's solution is of course to
+declare the state taxes actually paid during 1987 and forget about the
+iterative convergence.  Seems like common sense, but apparently not what is
+implied if you wish to be accurate.  (I presume LRB finally figured out that
+he should overpay the state somewhat during 1987, so he could take that amount
+as the [larger] deduction!)
+
+------------------------------
+
+Date:    Wed, 27 Jan 88 15:51 CET
+From: Peter Sylvester +49 228 303245 <GRZ027%DBNGMD21.BITNET@CUNYVM.CUNY.EDU>
+Subject: The meaning of "open" in the abbreviation OSI -- IBM's version
+
+It seems that IBM is not able to understand the meaning of the word
+"open" in the phrase "Open systems interconnection".  The company
+offers a product called GTMOSI that should help to implement
+OSI software for IBM MVS systems.
+
+For more than half a year we have been trying to get a fix for severe
+system integrity problems of this product.  Just by reading the
+documentation -- the product is available only in "object code only"
+format -- we discovered that something must be wrong:
+
+The documentation says that application programs are able to use highly
+privileged functions of the operating system but GTMOSI itself must not be
+installed in an authorized library.  This means that at least one part of the
+program system must do some trick. It turned out that the guilty party is one
+small module (a few hundred bytes in size) running as a supervisor routine.
+
+There is no clue how this supervisor routine identifies its caller, thus we
+expected that all users on the same system can write a small program and use
+the authorised function.  At that state of investigation (after half an hour
+of reading the documentation) we disassembled the routine.
+
+What we found was even worse than what we expected:
+
+1: Any normal user program is able to get full authority of the
+   CPU (supervisor state).
+
+   This problem was solved after three months but a authorized
+   function namely RACINIT can still be called from any program.
+
+2: The program allows any sort of accounting records (SMF) to be
+   written.
+
+   This problem is not yet solved. The recent "fixes" reintroduced an
+   integrity problem. Again we are able to destroy data in protected
+   memory.
+
+We just gave the program back to IBM so we can no longer follow up on
+the problem.  The problem is a small design bug, the program had been
+developed as a normal user program and later on some authorized
+function was added.  The easiest solution was to "open" the system and
+bypass all security features of the operating system.
+
+Peter Sylvester -- GMD Bonn
+
+------------------------------
+
+Date: 27 Jan 88 09:54:11 PST (Wednesday)
+Subject: Bank abandons fouled-up computer system
+From: Rodney Hoffman <Hoffman.es@Xerox.COM>
+
+This is a follow-up to the story "$23-million computer banking snafu" in
+RISKS-5.16 (25 July 1987).  
+
+That story told how Bank of America had lost $23 million trying to convert to a
+new trust accounting and reporting system, a product of Premier Systems Inc. of
+Wayne, Pa.  As one trust department official said at the time, "They committed
+two cardinal sins.  They took down the old system before the new system was up
+and running.  And they were the first big bank to install the system.  A key
+rule in computer software is: Never go first."
+
+Now they're giving up:
+
+Edited and excerpted from the Los Angeles Times, Tuesday, January 26, 1988:
+
+  B OF A ABANDONS COSTLY COMPUTER FOR TRUST CLIENTS
+
+Bank of America acknowledged Monday that it has abandoned a computerized
+accounting program after spending $60 million over several months in an
+unsuccessful attempt to fix the system.  Recurring problems meant months of
+delays in issuing account statements and a system that was supposed to attract
+customers wound up driving away some and angering others.
+
+The system, MasterNet, originally cost $20 million and took five years to
+develop.  It was supposed to be up and running last March.  But from the
+outset, MasterNet was plagued by computer crashes that shut it down for days at
+a time.  Despite extra shifts of workers and consultants, the bank fell three
+months behind in delivering account statements to clients. Since the problems
+began, customer accounts which may total billions of dollars have left.
+
+Following an internal investigation, two bank executives were forced to resign
+in November after being held responsible for the difficulties.  Scrapping the
+system is now expected to lead to substantial layoffs.
+
+Most of the bank's $34 billion in institutional trust accounts will be
+transferred to subsidiary Seafirst National Bank in Seattle.  Seafirst uses a
+IBM-based computerized accounting system devised by SEI Corp. of Wayne, Pa.  It
+was designed 15 years ago and was last updated in 1981.  5% of the accounts are
+too complicated for that system, and those will be given, not sold, to State
+Street Bank of Boston, according to one anonymous source.
+
+    [Also noted by Randy Neff <neff@shasta.stanford.edu>]
+
+------------------------------
+
+Date: 27 Jan 88 13:06:38 PST (Wednesday)
+Subject: Business view of software productivity
+From: Rodney Hoffman <Hoffman.es@Xerox.COM>
+
+The 'Wall Street Journal' for Friday, Jan. 22, 1988 ran a page 1 story with the
+headline PATCHING UP SOFTWARE OCCUPIES PROGRAMMERS AND DISABLES SYSTEMS
+
+The story breaks no new ground.  Using mainly examples from the banking and
+securities industry, it recites the typical stories:  
+
+  * Programmers spending 80% of their time repairing and updating software.
+  * Projects 100% over budget and a year behind schedule.
+  * Computer hardware and speed overwhelming programmers.
+  * Computer departments with three years backlog.
+  * New management changing specs or discarding whole systems.
+  * Little correlation between management goals and the way the 
+    computer department spends its money. 
+  * Program documentation shortcomings.
+  * Productivity of 5 to 10 lines of code a day.
+  * Unrealized promises of fourth-generation programming languages and
+    computer-aided software engineering.
+  
+A couple of quotes:
+
+  Ken Hamilton, a senior VP at Manufacturers Hanover, says one programmer 
+  labeled the parts of his program using the initials of his friends...
+  Once dozens of programmers leave their mark on software as it starts moving
+  through its life cycle of 10 to 20 years, it becomes like a dangerous inner
+  tube.  "It's been patched and extended and enhanced to the point that it is 
+  now a maintenance nightmare," says Michael Bealmear, a partner at Coopers 
+  & Lybrand. 
+  
+  Some hope for a solution [to low software productivity] is seen in what 
+  are called fourth-generation languages... This is like giving reporters 
+  something that would let them just write an outline for an article rather
+  than having to write the whole thing.  Some users talk of quintupled
+  productivity... But the new languages... may work just for one part of a
+  project on one type of operating-system software on one type of computer.
+  Software that uses them also runs more slowly.... New Jersy's vehicle-
+  registration and driver-license operations slowed almost to a halt a few
+  years ago, and officials are still sorting through the mess....
+  
+  IBM says it has been improving its programmers' productivity about 7% a
+  year simply by managing matters more carefully. 
+  
+  "It took us a lot of years to get into this mess," says Ray Stanley, a VP
+  at American Express Co., "and it's going to take us a lot of years to get
+  out of it." 
+
+------------------------------
+
+Date: Wed, 27 Jan 88 12:35 EST
+From: "Jerry Leichter (LEICHTER-JERRY@CS.YALE.EDU)"
+ <LEICHTER@VENUS.YCC.YALE.EDU>
+Subject: VMS and login failure logins
+
+Recent notes on these lists have reported a "bug" in VMS, in which a failed
+login attempt can cause the username being logged into to be reported at the
+system console.  Since it is a common error for a typist to get "out of sync"
+with the prompts and enter his password for his username, this can reveal a
+password.
+
+The "bug", however, is in a faulty - and foolish - setting of a VMS parameter
+at the site involved.  VMS will log the actual username typed in EXACTLY one
+case:  When it has decided that an attempted breakin may be in progress at the
+terminal.  It so decides when it sees more than L failed login attempts from
+the same source with T seconds.  L is normally 5, and T is normally 300.  "The
+same source" specifies a physical source - a terminal line or a specific
+remote network node - and, optionally, a particular username.
+
+The site at issue here had set L to either 1 or 2 - the message was ambiguous,
+since it said "2" but then described a scenario in which the second attempt to
+log in caused a message with the username to be logged, which would imply that
+L was actually 1.  In any case, both 1 and 2 are absurd choices; they are
+presuming a breakin attempt as the result of ONE typo!  Apparently the system
+manager at this site doesn't understand the various elements of the VMS login
+security system.  For example, if his goal was simply to get a security alarm
+on a failed login, he could have done that directly (SET AUDIT/ENABLE:LOGFAIL).
+Those alarm messages do not contain the username.
+
+To answer two obvious questions:
+
+	- Why include the username information at all, ever?  It's needed
+		sometimes.  If you came in on Monday and found a record of
+		several hundred failed attempts to log in, wouldn't you
+		think it important to know which accounts had been the
+		targets?  Obviously, there are risks in recording this
+		information; but there are also risks in NOT recording it.
+		VMS tries to balance them by only logging this information
+		in situations that are very unlikely to arise accidentally.
+		You can change the balance any way you like.  This site had
+		unwittingly changed the balance to "record very often".
+
+	- Why log the information to the console, "where everyone can see it",
+		rather than only to a log file?  A log file can be altered;
+		it's much harder to alter a paper record.  If you really don't
+		want security messages to appear on the console, you can
+		disable them (REPLY/DISABLE:SECURITY).
+
+		In any case, a site seriously concerned with security must
+		provide physical security for its console terminal!
+
+I've seen more harm done by security managers who didn't understand basic
+security issues than by almost any other single group.  If you manage security
+on a VMS system, read the "Guide to VAX/VMS System Security", CAREFULLY,
+before you start screwing around with the VMS security systems.  Then read it
+AGAIN, and really understand what you are trying to accomplish and what the
+side-effects will be, before you start changing defaults that are not
+haphazard but the result of some thought, design, and review.
+    							           Jerry
+
+------------------------------
+
+Date:         Wed, 27 Jan 88 12:57:58 EST
+From: SC400000@BROWNVM
+Subject:      Software Power Switches
+
+I was recently using my SHARP EL-506P calculator when it hung up.  I wasn't
+   in the middle of an important calculation, so I tried to clear it and
+   finally, pressed the OFF button.  But, alas, the OFF button was locked
+   along with the rest of the keypad.  So, I popped the back cover off and
+   pulled out the batteries, put them back in and I was back in business.
+   I'd have to assume that SHARP never expected their calculator code to
+   hang so felt that a processor controlled OFF button was fine.  What if
+   it had been one of the solar-powered calculators?  I'd have shut off my
+   office lights and waited, I suppose.
+                                        -Mike Russell
+
+------------------------------
+
+Date: Wed 27 Jan 88 06:34:56-PST
+From: Andy Freeman <ANDY@Sushi.Stanford.EDU>
+Subject: A risk of using spelling checkers
+
+In RISKS DIGEST 6.15, you wrote:
+   [I fixed a spelling error and happened to ask Geoff about it.  He said
+   his speller had barfed on that word, so -- assuming the word was absent
+   from the dictionary -- he added the (accidentally, identically incorrectly
+   spelled) word.  An interesting risk of using spellers.  PGN]
+
+I think that someone at PARC studied this and discovered that a larger
+word list is bad thing for precisely this reason, i.e., English isn't
+quite sparse enough.  This work discussed what good sizes were and may
+have mentioned contents as well.
+
+Of course, some languages are more sparse (the lexical distance between
+words tends to be larger than it is in English) while others are less
+sparse.  I've heard that Russian is a sparser language than English
+while Arabic is less sparse.
+
+In other words, the risks of using "lookup a word" spelling checkers
+are language dependent.
+                                     -andy
+
+ps - Brian Smith noted than English is just about right for crossword
+puzzles in two dimensions while Russian crossword puzzles should have
+fewer (or lots of blacked-out squares) and Arabic ones need more to
+make the clues necessary for filling in the blanks.  Of course, one
+could argue that the point is to fill them in correctly, but English
+penalizes wrong words while a 2-d crossword puzzle in Arabic won't.
+
+------------------------------
+
+Date: Wed, 27 Jan 88 07:39:58 PST
+From: goldstein%star.DEC@src.dec.com (Andy Goldstein)
+Subject: RE: RISKS in Cable TV?
+
+In reply to [...]'s story of the cable remote box going off...
+
+Save your paranoia for the folks that are really out to get you.  The
+fluorescent lamp is the giveaway. A power interruption of a fraction of a
+second will shut off a manual-start fluorescent lamp.  There's nothing the
+cable control signals can do that would affect power delivery to the lamp.
+Look for a loose fuse, a flaky circuit breaker, or flaky wiring. Soon,
+before it starts a fire.
+
+------------------------------
+
+Date: Tue, 26 Jan 88 22:25:14 EST
+From: Jim Purtilo <purtilo@brillig.umd.edu>
+Subject: Re: Calendar bomb in the Ada language
+
+Douglas Jones (RISKS-6.15) doesn't need to wait until 2100 for more time
+surprises.  If he can be patient until fourteen minutes and eight seconds
+after 10pm on January 18, 2038, then those of us still running Unix 4.nBSD
+on our 32-bit dinosaurs will find our ``gettimeofday'' system call returning
+integers that roll over into a very negative number (remember the Unix
+convention, time is based on `number of seconds since January 1, 1970').
+Other system calls that (correctly or otherwise) take this value as a signed
+integer will then tell us we have gone back to the simpler days of the early
+20th century (my ctime call tells me this flashback will be to December 13,
+1901, at 15:45:52.)
+
+As an aside, it is interesting that, due to apparent errors in how the ctime
+call operates on the integer argument in the conversion, I have found at
+least one Unix implementation we regularly know and love which predicts this
+hackers' millenia will occur 0x45FF seconds later than the correct moment.
+
+Either way, I'm looking forward to it.                                Jim
+
+------------------------------
+
+Date: Wed, 27 Jan 88 11:56:13 EST
+From: jm7@pyr.gatech.edu (John McLeod)
+Subject: Time Bombs in Bank Computers (Re: RISKS-6.11)
+
+I was told by a professor recently that Nobody should have any money in a 
+bank between december 31 1999 and jan 1 2001.  As there are so many 
+cobol programs in existence with a two character year field.
+
+JOHN MCLEOD, Georgia Insitute of Technology, Atlanta Georgia, 30332
+uucp: ...!{akgua,allegra,amd,hplabs,ihnp4,seismo,ut-ngp}!gatech!gitpyr!jm7
+ARPA: jm7@pyr.ocs.gatech.edu
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

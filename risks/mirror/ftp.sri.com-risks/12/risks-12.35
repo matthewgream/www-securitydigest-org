@@ -1,0 +1,542 @@
+Subject: RISKS DIGEST 12.35
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 17 September 1991  Volume 12 : Issue 35
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Computer security breach at Rocky Flats nuclear weapons plant
+    (Fernando Pereira, Allen Miller)
+DSA is weak (Jim Bidzos)
+The difficulty of RSA (Jerry Leichter)
+Re: RSA vs. NIST (digital security standards) (Richard A. Schumacher)
+Re: Export controls on workstations, ... (John R. Levine)
+Virus halted government computers in south China (PGN)
+Smart Pill Bottles (Joe Abernathy) (from CACM via VOGON)
+Retraction: The seriousness of statistics mistakes (Jeremy Grodberg)
+The seriousness of statistical mistakes (Clifford Johnson)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 12, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 17 Sep 91 09:03:35 EDT
+From: pereira@klee.research.att.com (Fernando Pereira)
+Subject: computer security breach at Rocky Flats nuclear weapons plant
+
+AP writer Steven K. Paulson reports on 9/16/91 that security lapses at the
+Rocky Flats nuclear weapons plant included the storage of top-secret bomb
+designs for a week on a VAX accessible from the public phone network. In other
+instances, workers transferred classified working materials from secure
+computers to lower security ones, including PCs, because they were tired of
+constant changes in the secure systems and wanted to work on familiar [stable?]
+systems.
+
+Head of DOE operations at Rocky Flats Bob Nelson said that the agency started
+last year a $37M program to correct security problems, following the
+recommendations of outside security experts.
+
+Nelson also said that the unclassified VAX was used by employees working from
+home, but that if someone tries to break in ``bells and whistles go off'' [is
+he so sure???]
+
+According to other documents obtained by the AP, other DOE computers had been
+found to be vulnerable to break-ins.
+
+   [Also noted by Nathaniel Borenstein <nsb@thumper.bellcore.com> and by
+   miller@lamar.ColoState.EDU (Allen Miller), who added the following comment.]
+
+------------------------------
+
+Date: Tue, 17 Sep 91 13:26:05 -0600
+From: miller@lamar.ColoState.EDU (Allen Miller)
+Subject: Nuclear weapons plans in unsecure computer
+
+   [...]
+
+For those unfamiliar with Rocky Flats, it is a plant between Denver and Golden
+which manufactures the Plutonium "triggers" for nuclear weapons.  These parts
+are essentially small fission bombs which detonate much more powerful fusion
+reactions in H-bombs.  These triggers are then shipped to the Pantex plant in
+Texas where the bombs are assembled.  Rocky Flats has been shut down for
+several years due to safety concerns but is apparently about to resume
+production soon.
+
+------------------------------
+
+Date: Tue, 17 Sep 91 10:52:55 PDT
+From: jim@RSA.COM (Jim Bidzos)
+Subject: DSA is weak (Bernstein and Bellovin, RISKS-12.34)
+
+Bernstein comments in RISKS that my claim that "DSA is weak" is "entirely
+unjustified" since we have learned equally about factoring and discrete logs.
+As Bernstein himself notes, Greg Rose offered the discrete log-factoring
+comparison, not me. (Greg Rose is not entirely incorrect, however.) Get it
+right, Bernstein.
+
+Since Bernstein obviously does not understand why I called DSA weak, I will
+state my reasons again, and the group can decide rather than accept Bernstein's
+erroneous statement.
+
+DSA is cryptographically weak for 2 reasons.  (There are other serious flaws
+not related to its cryptographic strength, but that's another story.)  First,
+DSA proposes to limit the prime modulus p to 512 bits.  (Why is there a limit
+at all?)  In "Computation of Discrete Logarithms in Prime Fields," (LaMacchia
+and Odlyzko, from "Designs, Codes, and Cryptography 1," Kluwer, 1991) the
+authors note that in systems with a fixed p, numbers of 512 bits "should
+definitely be avoided."
+
+Quoting from the conclusive paragraph of that paper, "Furthermore, since many
+discrete log cryptographic schemes have the feature that they use a fixed prime
+which cannot easily be changed, one has to allow for attacks that consume not
+just a couple of months, but even a couple of years of computing time.
+Therefore, even 512-bit primes appear to offer only marginal security." So,
+with discrete logs and factoring being roughly equal problems, DSA is weak (one
+or so p's to compute discrete logs over compared to factoring many 512
+composites, not mentioning that the discrete log problem is "brittle") as I
+stated.
+
+Since NIST refuses to say whether p will be fixed for all users (or small
+groups; maybe there will be 4 or 5 or a dozen or so p's), we have to assume
+primes will be shared.  Hmmm. Like sharing needles.
+
+Another weakness is that every signature requires a random value to be used in
+its computation.  The NIST proposal does not warn you that if an attacker can
+get one random value/signature pair, your private key is history.  (Maybe a
+standard random value will be proposed...)
+
+I'd say that's weak. And that the claim is justified.
+
+Also, Steve Bellovin comments that DSS is only a signature standard and that
+"breaking" it lets you forge signatures, but not violate privacy.  He's right,
+but consider this: Public-key is inherently complex and the supporting
+infrastructure (certificates, directories, etc.) is too difficult to recreate
+such that DSA almost certainly will become the basis for a privacy proposal
+from NIST/NSA.  Of course, two years from now, the controversy over shared p,
+etc., will be over.  NIST refuses to rule out DSA as a future privacy standard,
+so we should assume it will be the basis for one.  Remember, NIST stated
+clearly that it took the needs of law enforcement (shades of S266) into
+consideration in the preparation of DSA.  Will the Justice Department benefit
+from being able to forge signatures? Maybe, but I would ask NIST if they are
+proposing a future privacy standard so at least I'd know what we were getting.
+                                                              --Jim Bidzos
+
+------------------------------
+
+Date: Tue, 17 Sep 91 07:00:58 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: The difficulty of RSA
+
+Recent RISK's have contained a number of incorrect statements about what is
+known about RSA, and the difficulty of computation problems in general:
+
+	1.  It has never been proven that inverting RSA is "as difficult as
+		factoring".  This little link has been tantalizing people
+		since the original RSA paper (and presumably tantalized
+		R, S, and A before publication).  It has long been known
+		that CERTAIN KINDS OF ATTACKS ON RSA imply the ability to
+		factor the modulus, but that's it.
+
+	2.  It is not known that factoring (expressed properly so that the
+		statement makes sense) is NP-complete.  That is, even if
+		P != NP, it is possible that a polynomial algorithm for
+		factoring exists.
+
+		It is widely believed that factoring is, in fact, NP-complete.
+		However, the same was believed of linear programming until
+		Khachian's algorithm.
+
+	3.  It's often claimed that factoring has been studied for hundreds of
+		years.  This is true but VERY misleading.  The basis for the
+		recent computational advances, both in factoring and in the
+		related but (as it turns out) much easier problem of primality
+		testing (which make RSA possible), are based on randomizing
+		algorithms.  The very notion of a randomizing algorithm is no
+		more than thirty or so years old.  Essentially, all the great
+		mathematicians of the past searched carefully under the lamppost,
+	        and dawn has now revealed that there's a lot more street out
+		there than anyone suspected.
+
+	4.  Ultimately, we don't yet know that P != NP, though it's hard to
+		find any mathematicians who doubt it.  If P = NP, public
+		key cryptography becomes impossible.  (However, private key
+		cryptography can still be possible.)
+
+	5.  Lest anyone think that 1-4 are an unfair attack on RSA and related
+		algorithms, whatever the state of our ignorance here, we
+		know even less about the security of many other systems.  In
+		particular, as far as I'm aware the only thing known about the
+		security of DES is that it has resisted determined attacks.
+		We have a theory for avoiding certain weaknesses in DES-like
+		algorithms (and DES does seem to avoid all the known weaknesses),
+		but we have not even the glimmering of a general theory
+		relating the difficulty of DES to NP or any other well-studied
+		class of hard problems.  (Well, maybe the NSA knows more - but
+		they aren't saying!)
+
+	6.  RSA is by no means the only known private-key system.  Several
+		others have been proposed and have survived some attack.
+		(Others have NOT survived attacks.)  In particular, Rabin many
+		years ago proposed a "variation on the RSA theme" which has
+		the nice property that it is provably as hard as factoring.
+		Rabin's scheme has some disadvantages (it requires some tricks
+		to use it to produce digital signatures) and, as far as I
+		know, it has for the most part been ignored.
+
+	7.  One has to be VERY careful about applying "proofs" to systems
+		involving adversaries.  It APPEARS that the proof (such as
+		it is) of security RSA implies that you don't have to worry
+		about other aspects of security, such as protocol design.  In
+		fact, this is false; a classic paper (something like "How and
+		Why to Use a Private Key in a Public Network", by Goldwasser,
+		Micali, and Tong) displayed a generic protocol-related weakness
+		of all private-key systems.  It was one of the things
+		that inspired all the work on zero-knowledge proof techniques
+		and such, work in which Goldwasser and Micali played central
+		roles.  (I don't know what happened to Tong.)  Beyond 
+                considerations of efficiency, it is also the reason that today's
+		systems usually propose to use RSA for securely exchanging
+		private session keys, rather than for all encryption.
+   -- Jerry
+
+------------------------------
+
+Date: Tue, 17 Sep 1991 05:41:39 GMT
+From: schumach@convex.com (Richard A. Schumacher)
+Subject: Re: RSA vs. NIST (digital security standards) (Slone, RISKS-12.33)
+
+Ah, but he did have to cheat, a little, by using pairs of single quotes instead
+of a lone double-quote character.
+
+------------------------------
+
+Date: 16 Sep 91 14:35:03 EDT (Mon)
+From: johnl@iecc.cambridge.ma.us (John R. Levine)
+Subject: Re: Export controls on workstations, ... (Leichter, RISKS-12.33)
+
+>  a)  Is it RIGHT that such machines [high-end workstations] should be
+>
+>  b)  Is there a PRACTICAL way to implement such controls, should the
+>      answer to (a) be yes?
+>I'll contend that hardly anyone will disagree with (a), posed in isolation,
+
+Jerry goes on to say that since practically all high end microprocessors are
+manufactured or at least licensed by U.S. companies, appropriate legal
+agreements would keep them out of the hands of people we don't like.
+
+It seems to me that we have here a severe of confusing paperwork with reality.
+Workstations are not supercomputers.  They are physically small and portable.
+They are sold in large enough numbers that manufacturers cannot even now track
+the location of every workstation they have sold.  If a bad guy wants to buy a
+few workstations in the U.S. or Europe, put them in a station wagon or a boat,
+and take them east or south, there is no way to prevent that short of making
+workstations unavailable to everyone.  In the U.S. at least, border controls
+are targeted almost entirely at regulating what comes into the country, not
+what leaves, and they have not been notably successful at stopping the incoming
+flow of workstation-sized bales of marijuana.
+
+Recent reports in the paper have described DOD proposals for extremely onerous
+security devices that would audit every program run on a computer in a
+putatively tamper-proof way.  This sounds to me like something that would cause
+only the mildest trouble to the station wagon smugglers while bringing useful
+domestic work to a halt.  ("Sorry, pal, if we fix that bug the program's
+checksum will change and it'll take six weeks to have it added to the approved
+list.")
+
+Furthermore, even claim (a) is pretty dubious.  A few months ago, I expect many
+people would have claimed that it was not in the U.S.'s interest to provide
+large numbers of powerful PCs to the Soviet Union, but those very PCs were
+instrumental in maintaining the flow of uncensored information during the coup.
+You can make a strong case that tyrannical regimes are undermined by spreading
+information technology, e.g. the cassette tapes that spread rebellion against
+the Shah of Iran.
+
+Any export controls that attempt to distinguish between desirable and
+undesirable recipients of technology will inevitably cause some harm to the
+desirable recipients, ranging from extra paperwork to complete cessation of
+work.  There are some goods, e.g. plutonium, where pretty clearly the value of
+keeping it away from the bad guys is worth the trouble to the good guys.  But
+for workstations, export controls that had any real effect would be so
+heavy-handed that the "cure" would be far worse than the disease.
+
+John Levine, johnl@iecc.cambridge.ma.us, {spdcc|ima|world}!iecc!johnl
+
+------------------------------
+
+Date: Tue, 17 Sep 91 8:27:01 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Virus halted government computers in south China
+
+   HONG KONG, Sept 16 (AFP) - A spate of computer virus attacks put computers
+in more than 90 Chinese governmental departments out of order, prompting the
+authorities to have all software checked by police, a semi-official Chinese
+news agency reported here Monday.  More than 20 kinds of the rogue disruptive
+programmes hit more than 75 per cent of the offices' computers in southern
+China's Guangdong province, the Hong Kong China News Service said.
+   The provincial public security bureau had ordered all government units not
+to use software from unknown origin or software which had not been inspected by
+the bureau.  In addition, units or individuals were banned from engaging in the
+study of computer viruses, or to hold training courses on them.  The new
+regulations also forbid the sale of software capable of neutralising the
+viruses.
+   The report said the public security bureau had set up a testing department
+for all software against the computer viruses.
+
+------------------------------
+
+Date: Tue, 17 Sep 91 15:09:25 CDT
+From: edtjda@magic322.chron.com (Joe Abernathy)
+Subject: Smart Pill Bottles
+
+<><><><><><><><>  T h e   V O G O N   N e w s   S e r v i c e  <><><><><><><><>
+
+VNS TECHNOLOGY WATCH:                           [Mike Taylor, VNS Correspondent]
+=====================                           [Littleton, MA, USA            ]
+                                 Rx Remedy
+
+    Medical researchers have created a method for determining whether
+    patients have failed to take prescribed pills. A minuscule computer
+    chip, embedded into a bottle's cap, can record every date and time
+    the vial is opened. Recent medical reports confirm that patient
+    compliance to prescription regimes is a growing problem with
+    potentially dangerous consequences should a doctor alter a
+    prescription assuming the previous dose is not strong enough. A
+    recent study of epileptics indicates most patients take only 76% of
+    their antiseizure medication. the chip may be one remedy, although
+    at this point an expensive one at $7 a cap.
+    {CACM August 1991}
+
+------------------------------
+
+Date: Sat, 14 Sep 91 00:38:22 PDT
+From: jgro@summit.lia.com (Jeremy Grodberg)
+Subject: Retraction: The seriousness of statistics mistakes (RISKS 12.31)
+
+See, now I'm doing it too :-(.  I've just spent the last 6 hours in a medical
+library researching some of the questions my posting raised, and I now need to
+retract almost all of my previous posting concerning the risks of statistics
+mistakes.
+
+First, I need to apologise to Mr. Fulk, as I accused him of not knowing what a
+false positive was, and I now have no basis for that accusation; rather it is I
+who didn't know what a false positive was.
+
+I thought I had the right definition for false positive on the basis of
+information provided to me by someone who did the research for me, backed up by
+the guesses of the medical researchers I mentioned in the original posting as
+guessing it right (and I can now say were all wrong, every one of them), and
+sanity-checked by the analysis I presented in the posting.  Well, I was wrong
+about what a false positive was, although the definition I attributed to Mr.
+Fulk was also wrong (one cannot deduce from his posting whether he used the
+right definition or the one I attributed to him.)  He was, however, misinformed
+about many of the numbers he presented.
+
+Also, as I have noted in an interim posting, my example of the smallpox vaccine
+was poor at best.  I will correct that part more definitively later in this
+posting.
+
+So, now that I have been properly humbled, let me share my new-found
+information, so that future researchers won't be mislead by me more recent
+mistakes.
+
+
+In the realm of diagnostic and screening tests, there are 2 variables and
+4 possible outcomes.  The test results can be positive or negative, T+ or T-,
+and the "correct diagnosis" is either positive (has the disease) or negative,
+D+ or D-.  The "False Positive rate" is the number of T+ given D-, divided
+by the number of D-.  In other words, if you tested only people without
+the disease, the False Positive rate is the rate of positive test results
+you would get.  Similarly, the "False negative rate" is the T- given D+,
+divided by the number of D+.
+
+So, the one thing I criticized Mr. Fulk about turned out to be one of the few
+things I cannot quarrel with from his original posting.  However, I can quarrel
+with all the other numbers he presented.  I'm not actually sure now what he
+defined as what I called "the disease", but I believe it was basically anything
+that the MSAFP test would detect, which is all neural tube defects
+(anencephaly, spina bifida, etc.).  It may, however, have excluded anencephaly,
+which is the most common neural tube defect, but which can be very reliably
+detected with ultrasound.  For the rest of this discussion, I will be talking
+about all neural tube defects except anencephaly; and referring to them all as
+a single disease.
+
+Mr. Fulk cited a prevalence of less that 1 in 10,000 for the disease.  The
+studies I looked at, including some very recent ones, gave a range of
+prevalences from 1 in 1,000 to 6 in 1,000.  Based on my readings of the
+studies, and giving greater weight to the more recent studies (which take into
+account the earlier studies), I would propose 2 per 1,000 as the most likely
+rate of incidence for a healthy woman who was 29 when she got pregnant.
+
+Mr. Fulk cited a false positive rate of 10% for the MSFAP test.  This test is
+not a yes/no test, but rather yields a quantitative result.  The medical
+literature recommends making it a yes/no test by comparing the results to a
+threshold level, but there are odds charts available for more specifically
+determining the likelihood of having the disease based on the quantitative
+result.  There are two thresholds recommended in the literature, with false
+positive rates of 3% and 1.4%.
+
+(The threshold which yields the higher false positive rate is the one that was
+originally recommended, and continues to be used because it greatly reduces the
+false negative rate, which can be as high as 44%.)
+
+The rate of abortion caused by amniocentesis is much the subject of controversy
+in the medical community.  One reasons is that the skill of the person
+performing the amniocentesis, and the method used, have a significant impact on
+the safety.  Another complication is that something like 1% of pregnancies are
+terminated due to spontaneous abortion occurring after the gestational stage
+where an amniocentesis would have been done, so it is hard to know how many
+additional abortions are caused by the amniocentesis.  I found studies ranging
+in their conclusions about the number of spontaneous abortions due to
+amniocentesis from 2 in 1000 to 1 in 100; the figure I would chose based on my
+reading is 5 in 1000.
+
+Another very important point not mentioned by Mr. Fulk is that ultrasound has
+essentially 0% false positive, and 20%-40% false negative for spina bifida,
+which represents the great majority of the problems MSAFP is testing for
+(remembering that ultrasound is a nearly-perfect diagnostic tool for
+anencephaly, and ignoring the hints in a 1988 study that says the MSAFP might
+be useful for detecting Down's syndrome).  The existence of this test greatly
+changes the numbers involved with deciding whether or not to have the MSAFP.
+
+Anyway, crunching all these numbers around yields a range of very roughly from
+5 to 50 incidents detected by the MSAFP for every 10 healthy fetuses
+accidentally aborted by the amniocentesis.  So, in the end, Mr. Fulk made the
+right choice, given the utility values he spoke of (he had a strong bias in
+favor of having a sick baby over killing a healthy one).
+
+All the studies I could find recommended counseling for patients who might
+benefit from amniocentesis, and in most cases indicated that doctors could not
+make a strong recommendation either way; it was a matter of values.  In the UK,
+where the first studies on this stuff were done, researchers found that most
+couples were more worried about having a sick (i.e.  seriously handicapped)
+child than they were worried about inadvertently killing a healthy fetus as a
+side effect of the testing or through misdiagnosis.  Still, the recommendations
+generally take the form of "its too close to call, let the patient decide,"
+although the medical bias is toward testing.
+
+So, there it is, more than you wanted to know about this stuff.
+We see the risks of bad data, the risks of bad research (on my part), the
+risks of believing what people tell you, as well as the risks of medical
+testing.  And, of course, we see that even the people who complain loudest
+about other people's ignorance and mistakes occasionally come up just as short.
+
+Now, about smallpox.  I knew there weren't any smallpox patients; I just
+shouldn't have brought it up.  What's worse, the risks of the smallpox 
+vaccine do not include getting smallpox!  Smallpox (variola) vaccine is made
+from vaccina virus, which provides cross immunity, but causes something like
+50 serious adverse reactions/illnesses per million people. Vaccination 
+with smallpox virus was ended in the (early?) 1800's because it carried a
+1-3% risk of death due to a full-blown smallpox infection developing.
+
+The last case of smallpox occurred in 1978, wide-spread vaccinations in North
+America were curtailed in 1970, although laboratory researchers and some
+military personnel continued to receive vaccinations into the '80s.  (So, if I
+had made the statements in question in 1974, they would have been accurate.)
+The only stocks of smallpox known to exist in the world are at the Centers for
+Disease Control in Atlanta, and the Research Institute for Viral Preparations
+in Moscow.  According to the journal "Nature", these stocks "should be
+destroyed by the end of 1993, after US and Soviet laboratories have finished
+sequencing the smallpox viral genome."  This in spite of the fears of some
+archeologists that the smallpox virus may still exist in nature, waiting to
+re-infect to world.  (An Egyptian mummy was found of someone who appears to
+have died of smallpox.  An attempt to detect the smallpox virus in the "pox"
+remnants failed, but since the museum authorities were understandably reluctant
+to give the researchers lots of the mummy's skin, the researchers didn't really
+get as much sample as they would have liked.)
+
+The military doesn't think much of the smallpox virus as a weapon (too hard to
+transmit, takes to long to work), the vaccine doesn't require the virus, and
+the danger of an outbreak is huge, so it looks like the smallpox virus may
+become extinct in only 2 years.
+
+One last note: my email address will be changing next week, probably to
+jgro@netcom.com.  I don't know if or for how long mail will be forwarded to my
+new address, so I apologize in advance if I don't answer my mail, because I may
+not get it.
+                            Jeremy Grodberg   jgro@lia.com   
+
+   [It seems important for RISKS to include correction of 
+   earlier errors, even when we drift from relevance.  But,
+   it is certainly nice when contributors take pains to get 
+   it right the first time!
+
+------------------------------
+
+Date:      Fri, 13 Sep 91 14:53:30 PDT
+From: "Clifford Johnson" <GA.CJJ@Forsythe.Stanford.EDU>
+Subject: The seriousness of statistical mistakes
+
+> What is worse, for some reason Mr. Fulk did not find it
+> unbelievable that his doctor would recommend a test which was
+> 10 time more likely to kill his fetus than the disease was . ...
+> If the test was as bad as Mr. Fulk thought, standard practice
+> would have been formulated to recommend against testing in his case.
+
+There's at least one field of medicine where Mr. Fulk would be right to
+disregard the medical profession's routine application and endorsement of
+life-changing tests, namely, clinical psychology.  An exemplary test is the
+Minnesota Multiphasic Personality Inventory (MMPI), which is used routinely as
+an admissions classification procedure for mental patients, and is used
+routinely outside medical applications to screen job applicants, decide
+parental suitabilities in custody cases, etc.
+
+Like other such tests, the MMPI is a computer-scored questionnaire requiring
+some 550 yes/no responses to questions such as "There is life after death", "I
+am important", "My father is a good person", "I would like to be a flower
+seller".  The computer calculates from the responses normalized scores on about
+ten psychotic scales, e.g.  manic-depressive, schizophrenic, hypochondriac,
+paranoid, etc.  If an examinee's score is in the top 5% for any scale, he's
+generally diagnosed (by the computer) as having that mental condition.  (Worse,
+most such computer tests nowadays print-out pages of detailed analysis, drawn
+from a text library of case histories.)
+
+What is the probability that a person diagnosed by the test as having a mental
+problem (being in the top 5% of a scale) is in fact in the top 5% of that
+scale?  The answer is sensitive to the population being tested.  Applied to
+mental patients, the probability of a correct diagnosis is obviously much
+higher than when the test is applied to the population at large.  But most
+applications of the test (with life-changing decisions being dependent thereon)
+are to the population at large.  In those cases, if a person is diagnosed as,
+for example, "paranoid", the chance of that person really being clinically
+paranoid is at an unrealistic best about 1 in 4 (whereas without the test it
+would be 1 in 20, assuming our 5% cut-off/base rate).  Thus, a positive test,
+on which people are rejected for employment / parenthood etc., is known to be
+much more likely to wrong than right in each instance of application.
+
+What does the profession have to say about this?  I've made a hobby of reading
+personality measurement "validation" studies in academic journals, and am
+appalled by the myopic presentations of statistics by the foremost authorities
+(i.e. Minnesotan academics).  Their prestigious journal articles claim to
+validate the MMPI scales (and sub-scales), affirming the value of their
+continued application throughout society, but the figures simply do not support
+their salesmanlike claims.  A significant correlation over a large sample is
+the quintessential proof of "validity", when the correlations are nevertheless
+between purely subjective variables and even so are so low that an accurate
+diagnosis remains improbable in any particular case.
+
+Worse, the articles often contain statistical nonsense, and in some cases the
+data presented, when properly analyzed, flatly contradicts the conclusions
+drawn from it by the authors.  Worse, my pointing out these contradictions
+results in nothing whatsoever, the authors evidently can't be bothered to make
+corrections or recognize criticism.  I do believe that statistics as applied to
+physical medicines is much more rigorous, but let's at all times be on our
+guard against people called "Professor" who nevertheless misuse statistics and,
+in so doing, abuse us through computers.
+
+------------------------------
+
+End of RISKS-FORUM Digest 12.35
+************************

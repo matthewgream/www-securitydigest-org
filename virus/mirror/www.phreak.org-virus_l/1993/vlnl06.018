@@ -1,0 +1,939 @@
+VIRUS-L Digest   Thursday,  4 Feb 1993    Volume 6 : Issue 18
+
+Today's Topics:
+
+Re: On the definition of viruses
+scanners.
+Clarification on concepts
+Decisions, decisions
+Re: Virus Calendar
+Dr. Cohen and viral properties in finite machines
+Virus scan on a compressed drive (PC)
+Re: 696 Virus? (PC)
+Re: Here virus (PC)
+New varient of kampana? (PC)
+Re: Untouchable (PC)
+Re: Vshield vs Virstop (PC)
+Re: Mr. BIOS (PC)
+Re: Apparent new PC virus (PC)
+Re: need help with Green Caterpillar!! (PC)
+Pkzip Version 204E (PC)
+Re: CANSU V-SIGN at GA Tech (PC)
+malta amoeba? i know, i know... (PC)
+Virus/Security conference announcement - New York City
+New NIST Virus Pub
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    01 Feb 93 18:13:07 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: On the definition of viruses
+
+RADAI@vms.huji.ac.il (Y. Radai) writes:
+
+>   To illustrate the generality of the situation, I'll even offer a
+> choice between three reasonable informal definitions of "virus":
+> (a) a virus is a sequence of instructions which replicates on *every*
+>     execution;
+> (b) a virus is a sequence of instructions which replicates on *at
+>     least one* execution;
+> (c) A sequence of instructions is a virus in a given run-time environ-
+>     ment if and only if it replicates in that environment.
+
+Hmm... How about
+
+  (d) A virus is a sequence of instructions for which an environment
+      exists, in which this sequence of instructions replicates at
+      least once.
+
+I guess it is most close to (b), with the "environmental" correction
+of (c).
+
+>   If the definition is (a) or (b), then we can do even better: we can
+> show that in some cases the question cannot be decided even by running
+> the program any finite number of times.  For example, suppose the
+> program asks the user to input four positive integers i, j, k, n
+> (where n must be > 2).  If you choose definition (b), I shall take
+> <condition> to be "i^n + j^n = k^n".
+
+Naw, you have just demonstrated that solving the problem whether a
+program contains a virus or not can be made as difficult as any yet
+unsolved computational problem. However, with this you can only show
+that the universal virus detecting problem is a difficult, which we
+already knew... :-) The only way to show that it is -undecidable- is
+to insert some undecidable problem, instead of an yet unsolved one.
+I.e., put the halting problem, instead of Fermat's theorem. And we're
+back to square one, i.e. to Cohen's proof. Of course, this only shows
+that the two proofs are equivalent.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Mon, 01 Feb 93 13:12:15 -0500
+From:    Ed Street <TAWED@etsu.bitnet>
+Subject: scanners.
+
+I know this is probably a dumn question but I was wondering about the
+realistic aspects of scanners like do they really protect as much as
+some of the people that I have talked to seem to think?  In my opinion
+they are just merely an aid to problem solving and should not be used
+as a general "cure-all"
+
+thanks.
+
+ed.
+
+------------------------------
+
+Date:    Mon, 01 Feb 93 15:59:29 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Clarification on concepts
+
+>From:    Y. Radai <RADAI@vms.huji.ac.il>
+
+>It is true that an algorithm for detection of viral infection on a
+>given machine can be cryptographically unsophisticated if it depends
+>on an unknown key.  But why do you contrast this with "a public key"?
+>We are dealing here with authentication, and the situation in which an
+>authentication algorithm does have to be strong is in inter-machine
+>authentication, wherein *keyless* algorithms are used.
+
+Mr. Radai made quite a long posting indicating confusion with what I
+was trying to say (understandable since to the crypto world what I
+postulate with respect to viruses is untenable). Unfortunately, what
+is clear to me since I have been thinking about it for quite a few
+years is not obvious at first glance.
+
+The crypto view of authentication is that each object (message,
+program, etc.) must be authenticated or it cannot be trusted. Further,
+the authentication must be essentially unique and unforgable for each
+entity.  Also, the authentication mechanism *is* trustworthy.
+
+The major difference between remote message authentication and malicious
+software activity is that for authentication you can trust the authenticator.
+In dealing with viruses, as many have pointed out:
+1) You can't reliably tell malicious software by looking at it (else scanners
+   would be all that we would need).
+2) Once granted execution rights in a PC, malicious software can do *anything*.
+3) The anti-viral software may be the first target.
+
+For this reason, it is pointless to have an authentication mechanism
+more powerful (slower) than the mechanism's ability to protect itself.
+
+From this was generated the concept of the simple but unpredictable
+"checksumming" algorithm with a unique seed/key/signature for each
+platform.  - possible because the values are only used internally,
+never externally.
+
+This is what I meant by " In a PC, virus protection is different and
+what we are looking for is immediate detection, the use of a checksum
+implies that we expect the file to be changed/infected/damaged." It
+might be clearer if I had said that we actually trust neither but are
+looking for an alarm. Even if we miss the first change, an alarm on
+the second will be adequate warning.
+
+Does this make more sense now:
+> Given a group of files (without knowledge of the key or seed), it be com-
+> putationally difficult to create a single file with the same checksum
+> as the given one and infeasible that two or more files could be affected
+> in the same way without detection.
+
+Given that we cannot protect the checksums, then it must be expected
+that the intruder could associate files and checksums (e.g.
+COMMAND.COM and its checksum). In this case a unique checksum could
+enable an intruder to use a table to determine the algorithm. This is
+what the following referred to: > Further, CRC "uniqueness" may be a
+clue that an intruder could use as > a test for success of a given
+attack. Better to alow for a (small) number > of duplications
+possible.
+
+The whole purpose was to reiterate that a compact, fast, simple
+validation routine is *enough* so long as it is unique for each
+machine and used internally only while for public transmission of an
+object that is unknown at the distant end requires a much more
+thorough and trusted mechanism.
+
+Again, I apologise for springing such a complex consideration on the
+group without adequate preparation (seemed simple to me) but it is
+evident that it did stimulate some thought.
+
+					Warmly,
+						Padgett
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 00:14:05 -0500
+From:    fergp@sytex.com (Paul Ferguson)
+Subject: Decisions, decisions
+
+* Posted in USENET area comp.virus/Virus-L
+* Cross-Posted in FIDONET VIRUS_INFO Conference
+* Cross-Posted in FIDONET VIRUS Conference
+
+With due respect to the academic minds which frequent this newsgroup,
+I've found myself weighing the value of the numerous posts concerning
+the intrinsic definitions of a virus (versus a worm). Frankly, (not to
+muddy anyone's water), my personal opinion is that the folks who most
+value the importance of this medium care naught what the mathematical
+formula really is behind either definition or how they are derived.
+The computer community wants straight talk and answers geared towards
+sanity. Hats off to the gentleman who reminded us that "all computer
+users are not idiots". It doesn't take a slide rule or scientific
+quoatations to differentiate between a virus and a worm.  Or the need
+to actually differentiate between the two at all. ;-)
+
+As Bruce Sterling so succintly put it in his book, "The Hacker
+Crackdown" --
+
+"... American society is currently in a state approaching permanent
+technological revolution. In the world of computers particularly, it
+is practically impossible ever to stop being a 'pioneer,' unless you
+either drop dead or deliberately jump off the bus."
+
+That strikes home for me, a consultant, (like many of you), who goes
+to great lengths to stay technologically "challanged".  Viruses, for
+those of us who have had the fortune (misfortune?)  to have studied
+them since their appearance in the latter '80's, are nothing more than
+a nuisance. Due to media hype, (and more than a few scofflaw antivirus
+developers), a majority of computer users are scared stiff, totally
+misinformed and buying all the commercial "antivirus" trivialities
+they can get their hands on.  Of course, this is only my humble
+opinion, but I think I can speak for the majority of corporate
+consultants out there in misinformation-land.
+
+I'll leave the chastising of misadvertising to someone who can stomach
+it.
+
+Basically, we've all agreed that there are two terms which are
+(incorrectly at times) used interchangeably: replication and
+propogation. Both terms deserve further definition; they continue to
+be misused and misunderstood by the "computer community", the virus
+neophytes.
+
+Both processes may rely specifically on their operating environment. A
+virus which can effectively be defined as a "virus" in DOS can hardly
+be classified as "virus" in another OS. Viruses are specifically
+written to exploit a particular operating system. That's a given. It
+can, however, replicate (hence the classification) and propogate in a
+DOS environment.  Sure, there are some caveats, but let's be
+practical: the propogation requires execution (perhaps with human
+intervention) and the replication may be dependent on a number of
+factors (e.g. DOS version, disk partitioning). A virus replicates --
+and it propogates, as well. Even if the virus is as simplistic as
+STONED, and even if it is "sneaker-netted" across half of California,
+it's still propogated. (In a sense.) But not in the same fashion as a
+worm. At least not by the characteristic qualities that I've studied
+in the past four years.
+
+A worm may also meet several of the same classifications as a virus,
+but certainly not all (again, by my own musings). A worm may need the
+execution (or the aid of execution) of another program to do it's
+bidding. A worm may need a particular flavored OS. A worm may require
+(or may not) a particular transfer protocol (e.g. TCP/IP, XNS). A worm
+may (or may not, as exemplar in the Morris worm) need human
+intervention. But replication? Morris' worm did create images of
+itself (limited in scope) in the target systems, but that is not
+inherent replication.  Morris' worm simply created copies of itself
+(again, limited in scope) in the target computer's memory.  It
+eventually dumped itself, (or at least planned to), however.
+Replication, in regards to viruses, infers attachment to a host
+executable (for all intrinsic purposes, an executable code segment).
+Propogation classifies it as a worm, by this definition. Replication
+would surely classify it as a virus, no? No. Worms are "travelling"
+programs; they move from system to system (via a network connection)
+and leave none of themselves behind (Virginian colloquial, no pun
+please).
+
+Could it be said, then, with a certain amount of practical assurance,
+that -
+
+1.) A program must REPLICATE to be a virus.
+2.) A virus which REPLICATES, inherently PROPGATES.
+3.) A program must PROPGATE to be a worm.
+3.) REPLICATION may infer PROPOGATION.
+4.) PROPOGATION may infer REPLICATION, but not always.
+5.) A program which PROPOGATES but which does not REPLICATE is
+    certainly a worm.
+6.) A program which PROPOGATES but which does not REPLICATE is
+    certainly not a virus.
+
+Okay, you can insert "A" and "B" wherever you see fit (even throw in a
+"C" or a "V" or two), but let's be practical, ladies and gentlemen.
+This is not complicated, as much as it would appear.
+
+Computer viruses, the cat and mouse game surrounding them, the folks
+that research them and the creators of this type of code are all
+reaching an apocalyptic summit. Polymorphyism seems to have finally
+uprooted the basic needs of raw integrity management. Computing
+environments demand more computerisms; birth the age of DOS-less
+machines (again). It's funny how things have gone full circle.
+
+Protected mode OS's are more and more in demand in the corporate
+computer environment. DOS will be the homestead of [P]ersonal
+[C]omputer users for a while to come (witness: DOS v6.00). What's the
+answer? Perhaps a little straight-forwardness is in order.
+
+Comments and discussion welcome. Flames routed to /device/nul.
+
+And by the way, stop picking on Fidonet. We're doing pretty damned
+good, compared to a few years ago. I should know -- I'm the moderator
+of the Fidonet VIRUS_INFO Conference.
+
+Paul Ferguson                  | "The goal of all inanimate objects
+Network Integration Consultant |  is to resist man and ultimately
+Alexandria, Virginia USA       |  defeat him."
+fergp@sytex.com  (Internet)    |                -- Russell Baker
+sytex!fergp      (UUNet)       |
+1:109/229        (Fidonet)     |
+
+- ---
+fergp@sytex.com (Paul Ferguson)
+Sytex Systems Communications, Arlington VA, 1-703-358-9022
+
+------------------------------
+
+Date:    02 Feb 93 09:50:36 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Virus Calendar
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>>     VSUM and F-prot did not know about it ?!?
+
+>Nope, this is not true. Get a recent version of VSUM (2.12 is what we
+>have here) and look carefully. It has the virus described, under the
+>name Hymn. Of course, the description is wordy/incomplete/incorrect as
+>usual. And F-prot -does- recognize this virus. It can even disinfect
+>it, I think...
+
+Right.  F-prot recognises three members of the Hymn family...Hymn, Sverdlow
+and 2144, and can disinfect them all.  They are not common viruses (in the
+West, at least), but can be nasty, if they hit.
+
+- -frisk
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 10:53:40 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Dr. Cohen and viral properties in finite machines
+
+From:    fc@turing.duq.edu (Fred Cohen)
+
+>The problem is that in the Turing Machine model, there is no `input'!
+>All the information needed for the computation is on the tape and in the
+>FSM, and is thus provided a-priori.  Input is modeled as a preexisting
+>tape state.  The undecidability proofs I generated relate to ANY inputs
+>(i.e. any tape state can exist outside the virus).  They are thus `input'
+>independent.
+
+Fred is correct here, to the PC an interrupt occurs and data is "found"
+in a buffer. On examination the dilligent student will find that there
+are actually at least five "processors" in the most bare-bones PC. The
+Intel (or AMD or Cyrex or IBM or C&T) CPU executes in ignorance of anything
+except the state of its digital connections.
+
+
+>Not right.  For finite sized systems, these problems are not unsolvable.
+>They merely take a lot of time to solve.  We could literally try all
+>possible integers that could fit in the finite sized computer.
+
+Again Fred is exactly right however even for a PC testing the totality of
+finite possibilities would exceed the MTBF of the system.
+
+>All unsolvable problems of this sort depend on the size of the integers
+>being infinite. - As above.  There is no undecidability for finite sized
+>computers, and there can never be.
+
+Correct, any program can be completely "reverse engineered" and all possible
+conditions examined. Even this is often not enough to determine intent
+(is that a bug or a feature ?)
+
+>	The reason undecidable problems are undecidable is that they CAN
+>NEVER be solved by ANY Turing Machine.  It does not depend on the state
+>of mathematics of the day or a proof not yet found or the number of
+>computations we can perform per unit time.  In that sense, it is an
+>absolute limit of the nature of the machine.
+
+This I will take slight (but important) exception to. I would agree that
+it is *impractical* to identify every virus prior to execution. Further
+I will stipulate that after a virus has executed you cannot trust a
+machine to be able to detect that fact. However, in the above statement
+I would replace "...by ANY Turing Machine." with "...by any SINGLE Turing
+machine."
+
+Anyone who studies redundancy management will realize that with two machines
+it is possible to determine that a change (infection, failure) has occured,
+with three, it is possible to determine *which* machine is in error and in
+what way. This is the basis of my recent postings concerning the power of
+client-server relationships.
+
+Two points which should be of more importance to those concerned about viruses
+is the following: while the question of whether a given program contains
+a virus or not prior to execution, viral action is *always* detectable
+following inception *and for anyone concerned with integrity rather than
+definition, this is enough*. In addition, as yet *none* of the infections
+seen to date even approach sufficient complexity to invoke "the Turing
+Halting Problem" - some are difficult to detect on the fly and with
+commercially salable speed, but so far even these limitations have not
+been a problem - *and this is marketing - it does not relate to Turing at
+all*.
+
+					Warmly,
+						Padgett
+
+
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 19:02:00 +0000
+From:    wongja@ecf.toronto.edu (WONG JIMMY PAK-YEN)
+Subject: Virus scan on a compressed drive (PC)
+
+Hi,
+
+I'm considering getting some sort of disk compression utility for my
+PC (such as Stacker).  Are virus scan programs still able to detect a
+virus on a compressed hard drive?  Presently, when I download some ZIP
+files, I SCAN the disk containing the zipfile, unzip the files onto my
+hard disk, and scan the unzipped files.  Will this still work on a
+compressed drive?  Besides uncompressing onto a floppy first and
+scanning the floppy(too inconvenient!), what other options are there?
+
+Thanks in advance,
+Jim
+
+------------------------------
+
+Date:    01 Feb 93 16:42:45 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: 696 Virus? (PC)
+
+mark@walt.CS.MsState.Edu (Mark Rauschkolb) writes:
+
+> A co-worker just told me that his home machine is heavily infected by
+> the 696 virus (according to McAfee SCAN).  I looked for 696 in the
+> VSUM "program" but could not find it.
+
+SCAN 99 reports as "Scream2 [696]" the following viruses:
+
+	Screaming_Fist.II.B
+	Screaming_Fist.II.C
+	Screaming_Fist.II.D
+	Screaming_Fist.Stranger
+
+Since it is so poor on identification, I cannot tell you which one of
+them has been found in your case. In VSUM you can find the virus
+described under the entry "Scream-2". VSUM 2.12 also contains a
+cross-reference with the identifiers that SCAN uses, so you may check
+for "[696]" there.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    01 Feb 93 17:06:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Here virus (PC)
+
+ingar@cee.heriot-watt.ac.uk (Ingar F Pedersen) writes:
+
+> I've just scanned my HD with scan 99, and it reported that some of my
+> files are infected with the Here virus. Have anybody got any
+> information on this virus? The only thing I know is that it infects
+> com files.  What I would like to know is what it can do, how do I get
+> rid of it, is there a way to find out where it came from etc etc
+
+Well... The only thing from our collection that SCAN 99 reports as
+"Here [Hre]" is the We're_Here virus (incorrectly listed as "Were
+here" in VSUM). It is a non-resident COM-only infector, which infects
+only files in the current directory which are smaller than 60,000
+bytes. On 3rd of any month, it installs a memory-resident payload
+which hooks the timer interrupt and occasionally prints "We're here".
+
+In general, that's a pretty uninfective virus, so I'm also curious how
+did it get in your files...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    01 Feb 93 20:00:38 +0000
+From:    woodgate@vax.oxford.ac.uk
+Subject: New varient of kampana? (PC)
+
+Hello,
+	My PC has just been infected by a virus.  It would appear that
+the partition table has been corrupted/remove as I cannot access drive
+C. DR Dos 6 Fdisk says that there is no partition table when I boot off
+a clean floopy.
+
+	I have traced the virus down to be a boot sector virus on a
+disk I was given today.  The disk contained four Latex files and 4
+hidden .sys files.  Then I ran this disk throught Dr Solomons Toolkit
+it said that there was a new boot sector virus and also that there
+was Telefonica on the disk. The toolkit version is 6.07
+I also ran the same disk with the lastest version of F-Prot 2.06b
+and it reported a new varient of Kampana. None of the system files
+are infected - according to the programs.
+
+	What action can I take to repair the HD?  Does it mean I will
+have to build another Partition table and reinstall the contents of
+the drive?  If I do this can I be sure that the virus will no longer
+be on the system?  Any comments would be helpful
+
+Thanks,
+Mark Woodgate
+woodgate@uk.ac.ox.comlab
+
+------------------------------
+
+Date:    01 Feb 93 19:53:26 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Untouchable (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+> VB> have heard that the product has been completely redesigned.) Integrit
+> VB> Master is undoubtedly the best shareware integrity checker around, bu
+> VB> it is still MUCH worse that the integrity checker in Untouchable...
+
+> I have both the commercial, and share ware versions of Integrity Master
+> 5.0, and I found the Integrity checking to be pretty good. I would like it
+
+I have seen only the shareware version of Integrity Master, so I can
+comment only about it.
+
+> Personally; I like Integrity Master better than the integrity checking in
+> Untouchable for the following reasons.
+
+I am afraid that you don't have the necessary knowledge to determint
+which of the two integrity checking methods is more secure and are
+speaking from the "look and feel" point of view.
+
+> 1. IM creates two CRCs per file
+
+Which is completely useless, since two CRC are as easy to forge, as a
+single one, generated by a polynomial, which is the LCM of the
+polynomials used to compute the two different CRCs. The same goes for
+McAfee's VALIDATE, BTW...
+
+Much more important is to make the CRC unpredictable, i.e. different
+on the different computers, even if the files that are checksummed are
+always one and the same... As far as I know, both programs use
+randomly generated CRC polynomials for the checksums. I know the
+method used by Untouchable and -know- that it is secure. I have less
+information about IM, except that the polynomial is "random".
+
+> 2. integrity Master creates can create CRCs for all files instead of just
+>    the subset of executable files.
+
+So can Untouchable. Just what Untouchable calls "all files" (one of
+the pre-defined sets) actually is "all executable files". If you want
+to make it to checksum really all files (including the data), you have
+to define this set yourself. Which is rather easy, BTW, having in mind
+how flexible UT's mechanism for defining sets of files to be
+checksummed is.
+
+> Granted Integrity Master can be improved. In fact I'm trying to talk
+
+IM does not take into account several attacks against integrity
+checking software, described in my paper. UT handles almost all of
+them. That's why I keep saying that UT is more secure than IM. The
+"look and feel" of the user interface is a matter of personal taste,
+that's why I am not commenting on it. BTW, the part that I liked the
+most in IM was its installation program.
+
+And if you are comparing the features of the two products (not just
+the security), IM does not have:
+
+1) The flexible network support provided in UT.
+
+2) Handling the database of checksums in a single file.
+
+3) Generic virus removal, based on the information saved about the
+files prior to infection.
+
+4) Heuristics which try to determine whether the modification of an
+executable object has been indeed caused by a virus and thus reduce
+the number of false alerts.
+
+> Wolfgang into updating the scanner in IM to detect boot sector droppers.
+>
+> Untouchable doesn't detect droppers either, and I consider them to be a
+> fairly large security hole.
+
+Well, you probably mean UTScan, because an integrity checker cannot
+detect droppers... But I was discussing the capabilities (and the
+security) of the integrity checker, not of the scanner of the two
+products.
+
+> Prevention is always the best policy.
+
+Then just use a scanner or a monitoring program... Unfortunately, as
+we all know, this doesn't always work, so we need to introduce
+integrity checking as a second and more powerful line of defense.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    01 Feb 93 20:27:30 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Vshield vs Virstop (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+> Vshield can detect new and unknown viruses except for two types.
+>
+> 1. Stealth
+> 2. Companion infectors.
+
+  3. Unknown viruses that patch VShield in memory to deactivate it.
+  4. Unknown viruses that patch VShield on the disk to deactivate it.
+  5. Unknown viruses that intercept the alert message VShield tries to
+output and prevent its output.
+  6. Unknown viruses that remove the checksums created by SCAN.
+  7. Unknown viruses that patch the database of checksums after they
+infect the file, so that the new checksum entry corresponds to the
+already infected file.
+  8. Unknown viruses that forge the checksum algorithm used by SCAN
+and infect the files without changing their size/time/checksum
+computed with this algorithm.
+  9. Unknown viruses that modify the CONFIG.SYS/AUTOEXEC.BAT files to
+prevent VShield from being run (and that optionally put a call to a
+fake program that generates a fake message that VShield is loaded and
+running).
+ 10. Unknown viruses which infect only floppies.
+ 11. Unknown viruses which infect only objects known to be modifiable.
+ 12. Unknown slow viruses.
+
+Makes quite a long list of exceptions for a claim "can detect new and
+unknown viruses", doesn't it?... Never underestimate what an unknown
+virus could do...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    02 Feb 93 09:43:47 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Mr. BIOS (PC)
+
+tapio@nic.funet.fi (Tapio Keih{nen) writes:
+
+>My 386sx has the Mr Bios too (That name always brings some Pac Man
+>game to my mind:-). The antivirus thing prevents write attempts to
+>MBR. I haven't had too much time to test it well, but this far every
+>virus which writes something to MBR has been stopped by it.
+
+Hm...well, what does the user do if he really wants to write to the MBR -
+for example to re-partition the hard disk ?  Maybe change a CMOS entry
+allowing MBR writes ? (if so, a virus could do that too)...
+
+- -frisk
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    02 Feb 93 10:07:39 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Apparent new PC virus (PC)
+
+nmurrayr@cc.curtin.edu.au (Ron Murray) writes:
+
+>* Using DEBUG to look at memory in the area above 9E00:0E00 shows, apart from
+>  the usual junk, the string "Dudley". There's no evidence of this in infected
+>  files, so perhaps it's encrypted. It also may be an artifact of the system
+>  I was using at the time.
+
+Aha...yes I just got a copy of this one...a bit too late for F-PROT 2.07,
+which I am just about to start sending out...I guess it will have to wait
+for 2.07a
+
+F-PROT 2.06 will, as expected, detect it in "heuristic" mode - reporting the
+infected files as being self-modifying, (using encryption),
+
+This virus "Dudley" is actually a much improved variant of the "No Frills"
+virus, and probably written by the same author.
+
+>* Reputed to stop operation of Windows
+
+As somebody said - "Windows is a great virus-detector...infect it and it
+crashes."
+
+- -frisk
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    02 Feb 93 10:15:09 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: need help with Green Caterpillar!! (PC)
+
+MCHLG%CUNYVM.BITNET@mitvma.mit.edu writes:
+
+>bootable floppy (MS-DOS 5, QEMM, Himem, RAMdisk, Virstop) copied the
+>infected files to the ramdisk ( which Virstop allowed... Hmmm.. )
+
+Why the "Hmmm.." ?  Virstop only intercepts the execution of infected files,
+but allows you to copy them freely.   However, for those who want it to
+intercept file copy operations also, I have added a switch "/COPY" to version
+2.07 - if it is used VIRSTOP will intercept all COPY and  XCOPY operations,
+as well as almost any attempts to access the files.
+
+- -frisk
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 09:26:45 -0500
+From:    WILLIAM.D.BAUSERMAN@gte.sprint.com
+Subject: Pkzip Version 204E (PC)
+
+I noticed the following in the V204E.NEW file included in the new
+release of PKZIP:
+
+   2)  The Norton AntiVirus program FALSELY reported that PKZIPFIX and
+       PKUNZIP contained the Maltese Ameoba virus.  The software DID
+       NOT contain the virus.  All files in this release have been
+       modified so as to not trigger any false virus reports by the
+       Norton AntiVirus program.
+
+Being a dedicated follower of Frisk, I always thought that this was
+Symantec's problem to fix...Gee, anybody have a contact with Symantec
+that will pre-test any shareware programs I plan on releasing in the
+future &:)
+
+Bill Bauserman
+william.d.bauserman@gte.sprint.com
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 17:18:08 +0000
+From:    mechalas@expert.cc.purdue.edu (John Mechalas)
+Subject: Re: CANSU V-SIGN at GA Tech (PC)
+
+keith.watson@stucen.gatech.edu writes:
+>I have had three confirmed reports of the CANSU or V-SIGN virus on the
+>Georgia Tech campus. At least one workstation in the computer science
+>department was infected. There is no formal reporting system on campus so I
+>suspect that this is just the tip of the iceberg.
+
+Add two sightings at Purdue University to this....we had two 386 machines
+turn up infected just yesterday evening.
+
+- --
+John Mechalas                    \ If you think my opinions are Purdue's, then
+mechalas@expert.cc.purdue.edu     \     you vastly overestimate my importance.
+Purdue University Computing Center \           Help put a ban on censorship :)
+General Consulting                  \                    #include disclaimer.h
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 17:27:06 +0000
+From:    cass8806@elan.rowan.edu (Kyle Cassidy)
+Subject: malta amoeba? i know, i know... (PC)
+
+another one of those annoying messages....
+
+cpav found something called a malta amoeba on some faculty members disk. he
+brought it down to me here in the dungeon lab and i scanned it with macafee
+scan 99 (i know there is a 100 out, don't beseage me with e-mail), and it
+found nothing. although in the virus list that comes with scan 99, it says
+that it will find the "maltese amoeba".
+
+any idea what's going on? is this a false positive or should i grab myself
+another virus scanner, if so, which one???
+
+thanks
+
+
+------------------------------
+
+Date:    Wed, 03 Feb 93 08:24:11 -0800
+From:    Richard W. Lefkon <dklefkon@well.sf.ca.us>
+Subject: Virus/Security conference announcement - New York City
+
+ SIXTH INTERNATIONAL COMPUTER SECURITY & VIRUS CONFERENCE and Exposition
+          sponsored by DPMA Fin.Ind.Chapter in cooperation with
+ACM-SIGSAC, BCS, CMA, COS, EDPAAph, ISSAny, NUInypc, IEEE Computer Society
+       Box 894 Wall Street Station, NY NY 10268 (800) 835-2246 x190
+
+
+      MARCH SECURITY CONFERENCE ADDS EXHIBITS TO 90 SPEAKERS
+      ------------------------------------------------------
+
+Among 70+ MAINSTREAM VENDORS with Exhibits and/or products being shown are
+AIM, American Power Conversion, Arcus, ASP, Banyan, Central Point, ChiCor,
+Comdisco, Computer Associates, DEMAX, DCA, Dr.Solomon/OnTrack, Fifth Gene-
+ration, Fischer, Futurex, Intel, International Business Machines, Janus,
+LeeMah Datacom, McAfee Associates, Microcom/Dataguard, Novell, Norton, Racal
+Guardata, Raxco/Clyde, Safetynet, Security Dynamics, Spring, Sun, Symantec/SAM,
+USL, Uti-Maco/Safeguard, Xtree. Exhibits mgt by Expoconsul (DEXPO originators).
+
+Among the 90 SPEAKERS & CHAIRS in prelim 5 TRACK (46 Sessions) schedule:
+
+Conference Committee (plus those asterisked below):
+   K.Brunnstein,U.Hamburg; H.Highland,Compulit; R.Lefkon, NYU;
+   G.Mallen,U.Iberoamerica; W.Murray,Deloitte; E.Okamoto, JAIST
+Keynote Speaker: Kanwal REkhi, Novell EVP for Netowrks & UNIX
+Heads of Electronic Security:
+   Apple: J.Paradise*; IBM: W.Vance; MCI: Nora Mae; Novell:
+   E.Babcock(viruses); Sprint: R.Storck; Sun: R.Borgia; others
+Government and project leaders:
+   S.Charney,U.S.Justice; K.Citarella,WestchesterD.A.; D.Delaney,
+   NYS PoliceLabs; I.Gilbert,NIST; H.Hosmer; S.Katzke*, NIST;
+   N.Lynch,NIST; K.vanWyk*,DISSP; P.Toth,NIST;G.Thackeray*,MaricopaCo
+Network Protectors:
+   J.J.Bloombecker, NCCCD; T.Duff*,AT&T; S.Garfinkel,NeXT;
+   M.Gomoll,ChiCor; S.Gordon,Fidonet;J.Hawkins, Schmidt;
+   W.Houston,Comdisco; D.Parker*,SRI; S.Purdy,Kroll; others
+  and crackers: I.Murphy (Capt.Zap; White House); R.Schiffreen (Buckingham P.)
+Leading UNIX/DOS anti-malware figures:
+   M.Bishop,Dartmouth; V.Bontchev,Bulgaria; F.Cohen*,ASP: C.Fisher, Karlsruhe;
+   D.Gryaznov,Russia; P.Kane,Panda; K.Levitt*,U.C.Davis; P.Peterson*,M-Marietta
+   R.Riordan,Michelangeo; F.Skulason*,F-PROT; A.(Dr) Solomon; P.Tippettt,Certus
+
+With the wide cross-sponsorship shown above for this its sixth year,
+the conference will be held Wednesday thru Friday March 10-12, 1993,
+at the Madison Square Garden Ramada Hotel in New York City.  Most food,
+a 900-page bound Proceedings, Empire State Building Observatory reception,
+and discounted hotel rooms ($44.50 p/p dbl) are available with registration.
+
+The Ramada is convenient to all three New York airports, Amtrak (accross
+the street in Pennsylvania Station), and parking.
+
+Fees range from $325 for repeat attendees through $395 for association
+members who sign up on time.  The four-for-three group rate is $975.
+Complete faxed information is available by calling (800) 835-2246 x190.
+
+
+
+------------------------------
+
+Date:    Tue, 02 Feb 93 13:37:26 -0500
+From:    Tim Polk <polk@csmes.ncsl.nist.gov>
+Subject: New NIST Virus Pub
+
+NIST recently issued a new "special publication", NIST SP 800-5,
+"A Guide to the Selection of Anti-Virus Tools and Techniques"
+by W. Timothy Polk & Lawrence E. Bassham III.
+
+SP 800-5 is primarily intended for people who are tasked
+with selecting appropriate anti-virus tools for an agency
+or organization.  This document augments the guidance found
+in SP 500-166, "Management Guide to Computer Viruses", with
+technical guidance concerning anti-virus tools.
+
+                   SP 800-5's abstract:
+
+   Computer viruses continue to pose a threat to the integrity
+   and availability of computer systems.  This is especially true for
+   users of personal computers.  A wide variety of anti-virus tools
+   are now available to help manage this threat.  Such tools can detect,
+   identify, and remove viruses.  Different tools utilize a wide range of
+   techniques to perform these basic functions.  The different techniques
+   result in important differences in the functionality,
+   practicality, and convenience of these tools.
+
+   This guide details factors for judging the functionality, practicality,
+   and convenience of anti-virus tools. It does not weigh the merits of
+   specific tools, however it forms a basis with which readers can then
+   evaluate which tools are best suited to target environments.
+
+SP 800-5 is 39 pages in length, excluding references and indices,
+and is available from the Government Printing Office for $3.75 a copy.
+GPO stock number is SN003-003-03188-7.
+
+Complimentary copies (one per person, please) are available from NIST.
+Please contact:
+
+	Ms. Dianne Ward
+	NIST
+	B151 Technology
+	Gaithersburg, MD 20899
+	(301) 975-2821
+
+For more immediate gratification, the PostScript file for SP 800-5
+may be downloaded from the NIST Computer Security Bulletin Board
+at (301) 948-5717/5140 [2400/9600 baud service].  The file is
+named 800-5ps.zip and is ~100K.  Internet users may obtain the
+file via anonymous ftp from csrc.nist.ncsl.gov; the file name is
+pub/nistpubs/800-5.ps and is ~420K.
+
+SP 500-166 is also available from those sources.  On the BBS and
+ftp server, the file is in ascii text form and is named sp500166.txt.
+On the ftp server, the file is in directory pub/nistpubs.
+
+Thanks,
+  Tim Polk
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 18]
+*****************************************

@@ -1,0 +1,687 @@
+VIRUS-L Digest   Thursday, 14 Nov 1991    Volume 4 : Issue 217
+
+Today's Topics:
+
+Re: Hardware...
+Re: Efforts
+Re: F-Prot 2.01 (PC)
+Re: Am I infected ? (PC)
+Re: Virus removals vs. Virus classification
+Re: Am I infected ? (PC)
+Computer virus report from Bulgaria
+virus again? (PC)
+Re: Am I infected ? (PC)
+The Bulgarian Damage 1.3 virus (PC)
+Re: Hardware forever!
+Warning! SCAN 82 trojanized! (PC)
+Re: Disk Compression (PC)
+Re: Virusproof systems; hardware
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    11 Nov 91 12:34:11 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Hardware...
+
+turtle@darkside.com (Fred Waller) writes:
+
+>   > (Protected mode) ...can be circumvented,
+
+>  Correct. It can be circumvented, and offers no inherent protection
+
+Both Fred and Frisk are wrong here, IMHO... A program, which uses the
+protected mode correctly CANNOT BE CIRCUMVENTED. Period. There is no
+way to do anythig that such a program cannot intercept and control. I
+won't argue whether this is a software or hardware solution, but it is
+just as reliable as the write protection tab.
+
+Of course, the design of the 80286+ might be buggy (which I don't
+believe) and there might be some backdoors, but so what? There are
+(buggy) floppy drives on which the write protection tab does not
+protect as well.
+
+The point, however, is not whether protected mode programs or write
+protection tabs can be circumvented. They can't. The point is, that
+they are not a virus protection. A virus might wait until the
+protected objects are made available for writing, or might trick the
+operator to it... A virus does not -need- to circumvent anything
+(although most Messy-DOS viruses do, since there is almost no
+protection, which is pretty easy to circumvent), in order to spread.
+The reason is that the current OSes provide secrecy, instead of
+integrity. All this is very well explained in Fred Cohen's
+dissertation, papers, and his excellent "A Short Course in Computer
+Viruses".
+
+>  Which illustrates that no software protection is ultimately useful;
+>  it can always be defeated by other, newer software.
+
+One can argue whether a protection is useful or not, since it is a
+matter of taste - what level of protection us useful for someone, is
+pretty useless for another. However, it is very easy to design a
+software-only protection, which is not possible to circumvent by
+software only.
+
+Just write a small TSR program, which intercepts the Exec function
+call and aborts it. This way, once this program is executed, you have
+no way to start an infected program, and therefore, introduce a virus.
+No virus, no matter how clever, is able to circumvent this. A pure
+software protection, that cannot be circumvented by software. It is
+also pretty useless, but this is not the point.
+
+BTW, I thought that I've already explained you this in our private
+communication...
+
+>  False.  Hardware offers inherent protection which is totally
+>  undefeatable by software in the realm where applied.  This is
+>  not true of software.
+
+As the above examples shows, your statement is false as well. The
+point is that any protection (regardless whether hardware or software)
+cannot stop viruses in -some- cases, and no protection (regardless
+whether software or hardware) is useful in -all- cases. Let everyone
+select what s/he thinks is best suited to him/her.
+
+>  Runtime software is a function of hardware, but not the other
+>  way around. Hardware protection is permanent. Doesn't need to be
+>  updated for each new software attack.
+
+Well, in fact the hardware also needs to be updated, just not so
+often... Will you use an (old) floppy drive if you discover that it
+simply ignores the write-protection tab? Aren't we seeing the hardware
+around us to be constantly updated with new models?
+
+>  A virus can be _written_,  of course (anything can be written),
+>  but it cannot defeat sensible but simple hardware protection.
+>  Ever.
+
+Well, if it was all that simple, we wouldn't need any protection any
+more... Since we already have the write-protection tabs on our
+diskettes, since they don't need to be updated, cannot be circumvented
+and so on. The hard disks? Oh, well, if no virus can infect a diskette
+(since we have this wonderful write-protect tab hardware protection),
+how it will make it to the hard disk?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 12:17:35 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Efforts
+
+padgett%tccslr.dnet@mmc.com (A. Padgett Peterson) writes:
+
+> Just as an example: how does software get around an PC that does not
+> recognize (or have) any .EXE .COM or .BAT files ? (no, I am not going
+> to say what the real executable extensions are - if it is possible,
+> you tell me 8*) It runs all my DOS applications just fine (after
+> automated "fixing").
+
+Oh, it's easy. If you are executing it, it must be executable. The
+virus only needs to hook the Exec function and infect everything that
+it tries to exec, regardless of its extension. The exact type of the
+file (EXE or COM) can be determined from the first two bytes of its
+contents. Most intelligent viruses (even Cascade!) proceed like that,
+so changing the extensions does not help a lot (except agains the
+stupid viruses).
+
+>       Untested product: for all the people trying to write to write-
+>       protected floppies to see if the have the DIR-2, I have this to
+>       say: CD 24 CD 20.
+
+Ooops, the above two-instruction program has a bug... :-) I just
+tested it, it does not detect Dir II at all. The reason is that Dir II
+hides the write protection error at device driver (sector input)
+level, not at critical error handler error. So, it's still safer to
+try to delete files from write protected floppies... :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 12:25:45 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-Prot 2.01 (PC)
+
+MONAT%UOTTAWA@acadvm1.uottawa.ca writes:
+
+> 1. I have a lot of clients who work on their stand-alone computer
+>    for quite some time and then decide to access a network. They
+>    load virstop.exe at boot time but then at network time, the load
+>    gets rejected with an "already installed" message. Couldn't
+>    virstop.exe disable its first copy and then reload itself?
+
+Or even better, couldn't Frisk supply a program like his previous
+F-NET.EXE? Frisk?
+
+> 2. What are we suppose to do with the file virstop.bin?  It's exactly
+>    identical to virstop.exe and both can be loaded at boot time.
+
+It isn't, if you install another language (not English)...
+
+> 3. I would like a new f-test.exe so that I can test if virstop.exe
+>    worksa once installed in memory. There are so many ways to install
+>    TSRs nowadays and so many operating systems, that it is necessary
+>    to find out if it works. Just the fact that a program loads doesn't
+>    mean success!
+
+Yeah, I'll second that. Frisk?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 11:13:15 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Am I infected ? (PC)
+
+HSR4@vax.oxford.ac.uk (Old Baldie) writes:
+
+> My PS/2 55sx developed an odd condition without warning - memory is recorded
+> as 639K instead of 640K, but none of the anti-viral packages which I use has
+> been able to identify any virus being present.
+
+A lot of resident viruses show such behaviour, indeed, especially the
+boot sector ones. However, the controller configuration of some
+computers make them eat up 1 Kb of RAM too. On most intelligent setups
+(those that are built in ROM), it is possible to specify whether this
+amount of memory will be taken from the top of the available memory
+(therefore reducing the amount of memory available to DOS) or from one
+of the low-address segments (was it 0300h?). The latter does not show
+any decreasing of the amount of memory available. Unfortunately, the
+PS/2 systems do not have this good feature (what is really good on IBM
+originals?). They are meant to be set up by a special setup program,
+which is specific for the particular model. I believe that in your
+case you are not infected. BTW, the PS/2 50 Z on which I am working
+right now says that it has 639 Kb available only as well... :-)
+
+> It's a failure on my part, I know, but I wasn't aware that the RAM had been
+> reduced until I ran NEWDET (the only package which reports the size as being
+> suspicious) after installing a tapestreamer card.
+
+No, I bet that this is how you received your machine - with 639 Kb
+memory available.
+
+> I had wondered if a PS/2 specific virus had somehow got itself into battery-
+>backed system configuration RAM, but I can find no sources of information whic
+h
+> would confirm/deny this possibility.
+
+Sorry, but the above has almost no sense...
+
+> I have checked through a list of known viruses looking for one which fits the
+> bill, but without success to date.  If anyone can offer advice or (polite and
+> biologically feasible) suggestions, I would be grateful.
+
+Again, you're probably not infected, but nevertheless, check it with a
+good scanner, just to be on the safe side. Hope the above helps.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 15:29:16 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus removals vs. Virus classification
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  What Vesselin Bontchev wrote was that because some virus-removal
+>  program managed to remove a certain virus from an infected file,
+>  then that virus must belong to the family of viruses for which the
+>  removal program was designed. First, the inference is not strict.
+>  Second, the "family" he was talking about remains un undefined
+>  entity. Third, from a technical standpoint, the use of a curing
+>  program to make a taxonomical classification is abominable.
+
+First, you misquoted me... :-) I didn't say that a virus belongs to a
+certain family just because a program is able to disinfect it. I said
+that a general algorithm for disinfecting close Jerusalem variants has
+been implemented by a friend of mine, and that this algorithm happened
+to work on the Fu Manchu virus as well. Therefore, Fu Manchu belongs
+to this class.
+
+>  A program isn't "able" to do anything. It does whatever it was
+>  programmed to do. Period.
+
+Yes, a program is able to do everything it was programmed to... :-)
+
+>  It doesn't determine any such thing. It only determines its
+
+You have not seen the program, so please don't judge what it is able
+to do and what not. You have no way to know it in advance.
+
+>  Many viruses can be removed in a "similar" way. It doesn't mean they
+>  are taxonomically related.
+
+It depends what the taxonomy is based on.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 16:28:53 +0000
+>From:    sigurd@chopin.udel.edu (Sigurd Andersen)
+Subject: Re: Am I infected ? (PC)
+
+	HSR4@vax.oxford.ac.uk (Old Baldie) writes:
+:	...
+: My PS/2 55sx developed an odd condition without warning - memory is
+: recorded as 639K instead of 640K, but none of the anti-viral packages
+: which I use has been able to identify any virus being present.
+:	...
+: I had wondered if a PS/2 specific virus had somehow got itself into
+: battery-backed system configuration RAM, but I can find no sources
+: of information which would confirm/deny this possibility.
+
+Many PS/2 models use 1K of RAM in their standard mode of operation.  I'm
+not sure whether it's for loading ROM to RAM or for some other purpose,
+but contrary to numerous warnings I've seen posted, having 639K on a
+PS/2 is NOT (necessarily) indicative of being infected by a virus.
+
+- --
+Sigurd Andersen    Internet: sigurd@brahms.udel.edu    CNS User Services
+			    Bitnet: ACS20833@UDELVM      002A Smith Hall
+			      Phone: (302) 451-1992    Univ. of Delaware
+				fax: (302) 453-4205     Newark, DE 19716
+
+------------------------------
+
+Date:    11 Nov 91 16:16:48 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Computer virus report from Bulgaria
+
+Hello, everybody!
+
+I just received a report from the Laboratory of Computer Virology at
+the Bulgarian Academy of Sciences in Sofia, Bulgaria, about the
+news in the virus situation there. These are news since I left
+Bulgaria, which was about three and a half months ago.
+
+First of all, a project for a law, concerning copywright of computer
+software, has been introduced to the Bulgarian Parliament. Having in
+mind the expeditivity with which this parliament works, with a bit of
+luck we could have this law voted in 2-3 years... :-)
+
+Next, two known non-Bulgarian viruses have reached Bulgaria. Both are
+boot sector infectors. They are the Azusa and the Michael Angelo
+viruses. The Azusa virus has even caused a small epidemic in
+Mihajlovgrad. The people from the Lab have advised the victims of the
+attack to use a newer version of McAfee's CLEAN, since the one that
+the victims already had (something before 82) was not able to remove
+the virus.
+
+The domestic virus writers don't sleep either. At least 7 new viruses
+have been discovered, all of them of Bulgarian origin. These are
+Damage 1.1 and 1.3 (which, according to a string in them are made in
+Plovdiv), a new version of Murphy, a new version of Terror, a new
+virus, called Brainy (file infector, has nothing to do with the Brain
+virus), and two new variants of the Dir II virus. Needless to say, the
+two new Dir II variants are not detected by SCAN 84... :-(
+
+Since there already exists a virus, called Damage (a Diamond variant),
+I changed the name of the new ones to "Bulgarian Damage". The people
+from the Lab have described one of the variants (1.3) in a Computer
+Virus Catalog Entry format and I'll publish it in a separate message.
+
+There has also been a case of trojanization of McAfee's SCAN (again!),
+which I'll describe in a separate posting as well..
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 11 Nov 91 14:12:29 +0000
+>From:    pekrides@images.cs.und.ac.za (Hercules Pekrides)
+Subject: virus again? (PC)
+
+I'm having problems with what appears to be a virus. The symptoms are
+the the machine freezes/hangs if the keyboard hasn't been press for
+over about 5 minutes. A hard boot is necessary. The system I'm using
+is a 286 with DOS 4.01.  I've tried various virii scanning programs
+(e.g McAfee's v7.2C76,virscan) to no availe. Originally I though it
+was a hardware problem related to my autoscreensaver herc card.
+However I now know two other users who are experiencing the same
+symptoms, with one user haveing lost data.
+
+I would appreciate help on this one
+
+H. Pekrides,
+PEKRIDES@LOLA.PH.UND.AC.ZA
+
+------------------------------
+
+Date:    Mon, 11 Nov 91 16:43:00 +0000
+>From:    bdh@gsbsun.uchicago.edu (Brian D. Howard (CS))
+Subject: Re: Am I infected ? (PC)
+
+HSR4@vax.oxford.ac.uk (Old Baldie) writes:
+
+>My apologies to all and sundry if this is a FAQ, but I'm wondering if I am
+>infected :-).
+
+>My PS/2 55sx developed an odd condition without warning - memory is recorded
+>as 639K instead of 640K, but none of the anti-viral packages which I use has
+>been able to identify any virus being present.
+
+Thats the normal state of affairs for the PS/2.  I believe some other
+systems such as Hewlett-Packard Vectras also have the same 'feature'.
+
+- --
+Dallas,TX "Where we shoot Presidents and shoot people who shoot Presidents."
+
+------------------------------
+
+Date:    11 Nov 91 16:37:24 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: The Bulgarian Damage 1.3 virus (PC)
+
+Here is the description of a new virus, found in Bulgaria. It is in
+the VTC's Computer Virus Catalog entry format.
+
+===== Computer Virus Catalog 1.2: Bulgarian Damage 1.3 (14.02.1991) ==========
+Entry...............: Bulgarian Damage 1.3
+Alias(es)...........: ---
+Virus Strain........: Bulgarian Damage Virus Strain
+Virus detected when.: Sep 1991
+              where.: Plovdiv, Bulgaria
+Classification......: Program virus, Extending, Resident
+Length of Virus.....: 1000 in files, 1328 bytes in memory
+- --------------------- Preconditions -----------------------------------
+Operating System(s).: MS-DOS
+Version/Release.....: 2.xx and upward, special support for 3.30
+Computer model(s)...: IBM-PC, XT, AT and compatibles
+- --------------------- Attributes --------------------------------------
+Easy identification.: The virus contains the string "(c)Damage inc.
+                       Ver 1.3 1991 Plovdiv S.A.".
+Type of infection...: Self-Identification: The virus identifies infection
+                       by the seconds field in file time.
+                      Executable Files: Size increased in 1000 bytes.
+                      System infection: RAM-resident. Allocates a memory
+                       block at high end of memory, 1344 bytes long.
+                       If MS-DOS version is 3.30 finds original address
+                       of INT 21h and INT 13h handlers, therefore
+                       bypasses all active monitors.
+Infection Trigger...: Programs are infected at load time (using the
+                       function Load/Execute of MS-DOS), and whenever
+                       a file is Opened with the extension of .COM or .EXE.
+Media affected......: Any logical drive
+Interrupts hooked...: INT 21h functions 4Bh, 3Dh are used to infect
+                       files. Functions 11h and 12h are used to hide
+                       virus infection in files.
+                      INT 24h and INT 13h are temporary captured to
+                       mask out errors.
+                      INT 32h contains original INT 21h handler.
+Damage..............: The virus formats all available tracks on current drive.
+Damage trigger......: The virus carries an evolution counter that
+                       is decreased every time the virus is executed.
+                       When the counter is equal to 0, the virus reads
+                       the system timer. If the value of hundreds is greater
+                       than 50, the virus will format all available tracks
+                       on current drive(this is effectively a 50% chance
+                       of destruction). "Current" drive is any logical drive
+                       on which file is opened, executed or searched thru
+                       FindFirst/FindNext.
+Particularities.....: The virus knocks out the transient part of COMMAND.COM
+                       forcing it to be reloaded and thereby infected.
+			Therefore, it is a "fast infector".
+Similarities........: Bulgarian Damage 1.1
+- --------------------- Agents ------------------------------------------
+Countermeasures.....: VirusClinic 2.00.007+ (Ivan Trifonoff)
+Countermeasures successful: VirusClinic 2.00.007+ (Ivan Trifonoff)
+Standard means......: text search of string "Damage"
+- --------------------- Acknowledgement ---------------------------------
+Location............: Laboratory of Computer Virology, BAS, Bulgaria
+Classification by...: Ivan Trifonoff
+Documentation by....: Ivan Trifonoff
+Date................: 2 Oct 1991
+Information Source..: ---
+===================== End of Damage 1.3 - Virus ==========================
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 11 Nov 91 17:03:59 +0000
+>From:    bdh@gsbsun.uchicago.edu (Brian D. Howard (CS))
+Subject: Re: Hardware forever!
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>There is a card, called Disk Defender, with which you can select a
+>range of cylinders on the hard disk, that are physically write
+>protected by switching another switch.
+
+I concur that DiskDefender is a great product.  It has two relatively
+minor problems.  The first is that it is only available for MFM drives
+and will not be availible for any other drives.  The second, and also
+the cause of the first, is the company is out of business.
+
+Other than that, its a great product.  (We have probably 75 in service.)
+
+(Oh, it has a third problem I just remembered about.  It fails open.
+Yep, when it fails it usually renders the drive writable.  Again, this
+isn't going to be fixed in any later releases due to #2 above.)
+
+- --
+Dallas,TX "Where we shoot Presidents and shoot people who shoot Presidents."
+
+------------------------------
+
+Date:    11 Nov 91 16:44:19 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Warning! SCAN 82 trojanized! (PC)
+
+Hello, everybody!
+
+Version 82 of McAfee's program SCAN has been trojanized in Bulgaria.
+The executable file has been modified to include a new virus and the
+archive, modified in such a way has been uploaded to a Bulgarian BBS.
+
+It was a pure luck that the virus didn't spread. Due to a bad
+installation of the BBS, the uploaded archive was sent to an area, in
+which nobody noticed it (even not the SysOp) and it has not been made
+available for download. Just by chance, Eugene Nikolov, who is
+currently the head of the Laboratory of Computer Virology in Sofia and
+also turns to be a SysOp (of another BBS) as a hobby, noticed the
+forgotten file when he visited the SysOp of the victim BBS to discuss
+something about installation. He also noticed that the archive was
+about 1 Kb larger than the one he has received recently from me.
+
+Further investigation showed that:
+
+1) The file SCAN.EXE from the archive has been modified (not
+infected!) in a special way, in order to include a virus between the
+EXE header and the code part of the file.
+
+2) The virus was new, but of the Phoenix familly, or at least it used
+the same encryption method and mutated. The virus is currently
+investigated simultaneously at the LCV in Sofia and in the VTC
+Hamburg. It seems to infect COM files only, therefore making the
+chances that somebody will look for it in an EXE program even lower.
+
+3) No version of SCAN (including 84) was able to detect the virus.
+
+4) The documentation files in the archive have been modified, in order
+to include the new (infected) values for SCAN's length and VALIDATE
+codes.
+
+5) SCAN.EXE has been modified not to detect that it has been infected.
+
+6) The authentification code of the ZIP archive was almost intact. The
+command
+	pkunzip -t SCNAV82.ZIP
+would output the following:
+
+PKUNZIP (R)    FAST!    Extract Utility    Version 1.1    03-15-90
+Copr. 1989-1990 PKWARE Inc. All Rights Reserved. PKUNZIP/h for help
+PKUNZIP Reg. U.S. Pat. and Tm. Off.
+
+Searching ZIP: SCANV82.ZIP
+Testing: SCAN.EXE      OK -AV
+Testing: VALIDATE.COM  OK -AV
+Testing: VALIDATE.DOC  OK -AV
+Testing: AGENTS.TXT    OK -AV
+Testing: COMPUSER.NOT  OK -AV
+Testing: SCANV82.DOC   OK -AV
+Testing: REGISTER.DOC  OK -AV
+Testing: README.1ST    OK -AV
+Testing: VIRLIST.TXT   OK -AV
+
+Authentic files Verified!   # AOR041   McAfee Associates (408) 988-3832
+			      ^^^^^^
+Note that everything seems OK, except the code AOR041 and the string
+after it. I can't remember it for SCAN 82, but for version 84 it is
+
+Authentic files Verified!   # NWN405   Zip Source: McAFEE ASSOCIATES
+
+I have received reports from several places that breaking PKZIP's
+authentification code is relatively easy. It also seems that the
+Bulgarian hackers have found an authomated way to do it. Anyway, all
+SCAN trojanizations about which I know, have the string displayed
+about changed in some ways. So, it seems to be a good idea to always
+check for it, not only for the presence of the -AV info...
+
+A copy of the trojanized archive has been forwarded to Morgan Schweers
+from McAfee Associates. Encrypted, of course. Meanwhile, I strongly
+urge all the users to stop using version 82 of SCAN and to upgrade to
+version 84. I also strongly urge McAfee Associates to find a more
+reliable way to distribute their programs, especially having in mind
+that they are the most often trojanized programs in the world.
+
+The current version of the package uses three levels of protection.
+	- The ZIP authentification code
+	- The VALIDATE info in the docs
+	- The self-checking that each of the executables perform
+All of these have proven to be unnecessary sophisticated and
+completely useless against a dedicated attack. It -IS- possible (and
+even relatively easy) to devise an authentification scheme, based on
+public-key digital signatures, which -will- work. The only problems
+might be legal ones (the RSA public-key cryptosystem which I have in
+mind is patented, but I guess that a large company like McAfee
+Associates can afford the license, in order to provide security for
+their users).
+
+If nobody from McAfee Associates is able to devise such scheme, I
+could figure one out myself and post it here.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    11 Nov 91 11:28:42 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Disk Compression (PC)
+
+PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+
+> Now, has anyone tried a combination of software read-only partition
+> (e.g. by DMDRVR.BIN or DISKGARD) plus Stacker/SSTOR/etc (and maybe
+
+While this has nothing to do with viruses, I just tried to create an
+encrypted disk partition (with Norton's DISKREET) and to install
+Stacker on it (couldn't do the opposite, since encrypted stuff does
+not compress). Stacker complained that it cannot be installed on a
+logical volume... :-( Probably it won't be possible to install it on a
+DiskManager partition as well...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 11 Nov 91 17:38:36 +0000
+>From:    bdh@gsbsun.uchicago.edu (Brian D. Howard (CS))
+Subject: Re: Virusproof systems; hardware
+
+RADAI@HUJIVMS.BITNET (Y. Radai) writes:
+[other good dialogue deleted]
+
+>  My other reservation is based on the fact that I have personal
+>experience with one hardware product, Disk Defender, and even aside
+>from its price of $240, my experience was rather negative.  When
+>activating the accompanying installation software, one could specify
+>what cylinders one wanted to be write protected, but it had to be the
+>trailing cylinders (i.e. from a given cylinder to the end of the
+>disk).  And since the Master Boot Record has to be on Cylinder 0, it
+>couldn't be protected.  Neither would the DD software (which called
+>FDISK) allow me to make drive C: protected.  Only by using Disk
+>Manager instead, were we able to put C: at the end of the disk, and
+>thus to protect it.  But I still wasn't able to protect the MBR.  This
+>was apparently deliberate because there was an accompanying device
+>driver which modified the MBR at boot time.  But this left the MBR
+>wide open to infections by Stoned, etc.  I'm not claiming that DD is
+>your idea of true hardware protection (btw, does anyone know if DD is
+>still being sold?), but if you ever get around to naming any flesh-
+>and-blood product for us, just make sure that it doesn't suffer from
+>the same weakness ... and that it's inexpensive.  Maybe *then* we'll
+>have something to talk about.
+
+Not to be extolling the virtue of a dead horse instead of beating it
+but, I use DD on older systems (at this point less than 10 of about
+70 still in service) protecting the MBR against Stoned and other
+similar ilk.
+
+(Anybody wants to buy new, sealed DD boards let me know)
+
+- --
+Dallas,TX "Where we shoot Presidents and shoot people who shoot Presidents."
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 217]
+******************************************

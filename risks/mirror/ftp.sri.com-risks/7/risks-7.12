@@ -1,0 +1,322 @@
+RISKS-LIST: RISKS-FORUM Digest   Thursday 30 June 1988   Volume 7 : Issue 12
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Airbus 320 (Steve Philipson)
+  Background on the A-320 incident (Willis Ware)
+  Fly-By-Wire (John O. Rutemiller)
+  Airbus 320 (H.Ludwig Hausen)
+  $40 million Pentagon computer system failure (Rodney Hoffman)
+  Re: Another "silent fault tolerance" example: DWIM (Tim Budd via Mark Brader)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+PLEASE use a relevant "Subject:" line, not just "RISKS DIGEST i.j...".  THANKS.
+  For Vol i issue j  /  ftp kl.sri.com  /  get stripe:<risks>risks-i.j ... .
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85),(6,95).
+
+----------------------------------------------------------------------
+
+Date: Thu, 30 Jun 88 13:18:20 PDT
+From: Steve Philipson <steve@aurora.arc.nasa.gov>
+Subject: Airbus 320 (RISKS-7.11)
+ 
+Here are some comments on the A-320 crash, official reports, and 
+unofficial speculation.
+
+   It is truly amazing that official sources attributed the accident
+to pilot error virtually before the investigation began.  A decision 
+seems to have been made to protect Airbus and blame the flight crew
+no matter what the facts.  It was grossly irresponsible to exonerate
+the aircraft before the flight data recorders were examined, or experts 
+had time to analyse the video tapes and other data.  
+
+   There are several questions that many people have not asked that are
+critical to an understanding of this accident.  If the aircraft was
+indeed only at 30 feet of altitude, why was it that low?  Did the pilot
+intend to descend to that height?  What was the minimum altitude authorized
+for the low pass?  What was the actual airspeed, the pilot-commanded/desired
+airspeed, and the minimum authorized airspeed?  
+
+   Observers claimed that they heard the engines spool-up too late.  The 
+conclusion is that the pilots did not allow for the spool-up delay.  Such 
+a delay is NOT specific to the A-320 but is rather a characteristic of all 
+turbo-jet engines.  Why would an experienced crew have delayed adding power, 
+or even throttle back to low idle, when a high-speed idle would have made 
+engine response much quicker.  When did the crew command a power-increase?  
+Was it several seconds BEFORE witnesses heard the engines START to spool-up?
+
+   Some maintain that the "computer was turned off".  This is an interesting
+concept for an aircraft that flies completely by electronic controls.  There
+are no direct manual controls of the primary flight surfaces or engine
+controls.  Some auto-matic features may have been de-selected. It is of 
+great interest which these were and how the selected systems operated.
+
+> The planes automatic escape chutes, which opened as soon as the plane crashed,
+
+   That's an interesting report.  As far as I know, there is no automatic
+door opening / escape slide deployment mechanism.  Slides inflate auto-
+matically once doors are opened manually.  The likely reason that so few
+lives were lost is that the aircraft contacted the trees in wings level,
+controlled flight, with the nose up.  The lower fuselage structure and wings
+absorbed much of the impact, and as trees were destroyed they relatively
+gradually slowed the aircraft.  
+
+> I believe that manslaughter proceedings may be brought against the pilot.
+
+   What will be the outcome if we find that an aircraft system was at 
+fault? Do we bring charges against Airbus management, engineers, or 
+software programmers?  
+
+   It is interesting that British Airways is satisfied that the aircraft 
+was not at fault.  How could they have made that decision before any data on
+the accident was released?  Every day that their airplanes sit on the ground
+costs a lot of money in lost revenue, and is negative publicity for their
+shinny new airplanes.  The airlines thus have a proprietary interest in
+keeping them flying.
+
+
+   Officials blame a flight crew that was chosen for its experience and
+abilities.  This crew was extensively trained and passed certification
+exams on systems and flight of this aircraft.  That such a crew could be
+involved in an accident like this indicates that the aircraft is not
+immune to accidents, even with it's advanced technology.
+
+   The A-320 may have been designed to be more safe than older technology 
+craft, but this does not mean that it is.  Only operational experience 
+will establish the actual risk.  A major concern of systems analysts and
+pilots is that automated systems may actually increase risk as the pilot 
+is not "in the loop", at the least not to the extent he is in other 
+aircraft.  Operational experience has shown us that automation introduces
+new problems as it addresses some old ones.  As of yet, we have no data
+to show that the highly automated A-320 will be as safe, less safe, or 
+more safe than older aircraft.  We may learn a lot about the aircraft
+from an analysis of this accident.  We will certainly not know why the
+accident occurred or if anyone is to blame until the investigation is
+complete.
+
+						Steve Philipson
+
+------------------------------
+
+Date: Thu, 30 Jun 88 10:14:10 PDT
+From: willis@rand-unix.ARPA
+Subject: Background on the A-320 incident
+
+Given the extensive commenting on the A-320, perhaps these observations
+will be useful.  They're based on my personal knowledge of avionics as it
+is implemented and practiced in USAF aircraft and in the 757/767.
+
+Incidentally Klaus Brunstein quotes the investment in the A-320 as $10
+Billion.  I wonder whose "billion" he's using; if it's the English
+billion, that's an investment of $ 10*13 -- lotsa bucks.
+
+The USAF F-16 tactical fighter is a fly-by-wire and implements flight
+control with a quad-redundant analog (YES - analog) computer in the belly
+of the plane.  It is a microcircuit analog implementation to be sure, but
+nonetheless avoids the software problem in flight control.  There are no
+cables from the cockpit to the control surfaces except for trim tabs.  If
+the quad-redundant machines are lost, the pilot can try to land the plane
+by manipulating trim tabs.  Needless to say, one of the earliest changes
+to the aircraft was to put protective armor around the flight controllers.
+
+There is a separate 65K (as I recall) computer that integrates aircraft
+functions, delivers signals to the flight control analog system, receives
+signals from it, talks to the software-controlled heads-up-display, receives
+digital inputs from the inertial navigator and from manual pilot inputs,
+manages the radios, receives signals from and sends control signals to the
+software-controlled radar, transmits pilot inputs to the digital
+weapons-control subsystem and receives status information from it, receives
+and logs all fault indications from the entire aircraft and runs diagnostic
+tests on itself and on other subsystems, AND manages cockpit instrumentation
+and display.  The sytem also monitors for some danger conditions, e.g.,
+wheels up but ground clearance approaching zero.  Everything communicates
+with everything else on a 1 Megabit/sec digital redundant MUX bus.
+
+As I recall, pilot intentions (originating by a non-moving pressure-
+senstive side stick) are communicated directly to the flight control
+system which then relays them to the digital systems.  Thus the pilot
+could fly the airplane IF the master digital system failed, although he
+might have no instrumentation (at one time there was a debate about
+leaving a few "round instruments" in the cockpit as fallback).
+
+USAF has experimented with and test flown a digital fly-by-wire system,
+but I don't know whether it's been implemented in more recent aircraft, or
+even in the upgraded F-16.  Odds are that newer fighters (e.g., F-18s and
+F-20s) are all-digital.  Almost surely the ATF will be all-digital.
+
+Even though the analog system actually flys the F-16, it gets inputs and
+control from the digital systems.  In particular, the acclerometers of the
+inertial nav system report dynamic acceleration and if it's too high, the
+intent of the pilot is overriden by the software controls to avoid tearing
+the wings off the plane and blacking out the pilot.  In fact pilots have
+complained about this because they would be willing to risk aircraft
+damage and/or blackout to escape a pursuer or perform some maneuver.
+
+In US commercial aircraft that have "glass cockpits" (as the CRT displays
+are called), flight control has continued to be traditional direct cable
+linkage for the most part although hydraulic boost is almost always
+needed.  There are aircraft in which the stick motions control only a
+hydraulic system which is the only linkage to the surfaces.
+
+There usually is an all-digital system called by some such name as "Flight
+Director" that does or helps with navigation (especially on inertial-nav
+equipped aircraft), controls the aircraft trajectory in conjunction with
+an autopilot or other nav inputs, might support fuel management, might
+handle the aircraft through Cat III (blind-landing) procedures, controls
+the descent from flight altitude to minimize fuel consumption, handles the
+throttles to conserve fuel consumption, etc.
+
+Without a lot of technical details, one cannot know how the A-320
+designers implemented their software and distributed the functionality
+across one or more computers.  Odds are that the flight control is in a
+separate and redundant set of machines for safety.  If the designers were
+astute, the redundant machines are powered from separate power sources and
+through individual circuit breakers. [There is a recorded instance in a
+commercial aircraft of the pilot losing an important instrument because it
+was powered through a circuit breaker that also happened to control some
+inconsequential other thing -- such as lighting.]
+
+So any comment about "shutting off the computer" (in the A-320) must refer
+to the flight management system, not to flight control.  Airlines are
+forever interested in optimizing cost of operation, and who knows what
+flight-profile or flight-maneuvers may have been incorporated into the
+A-320 systems?  Who knows what combination of danger situations have been
+programmed in -- and the flight crew blundered into?  Who knows whether
+the aerodynamically possible and economically desired flight envelope
+has been built into the software -- and the flight crew accidentally
+violated?
+
+One can easily imagine a software requirement that says something like:
+
+   IF   engines throttled back AND wheels down AND altitude less
+	than ..... AND rate of descent equal to .... AND speed less
+	than .....
+
+   THEN aircraft is landing and adjust angle of attack to .....;
+	also check for proper fuel-flow conditions for landing, check
+	flap position, ......
+
+In spite of what has been said, I personally am not yet ready to conclude
+that a software anomaly lurks in the A-320.  Personal opinion of course,
+but it sounds suspicious to me.
+
+There is one other observation about glass cockpits that my friends in the
+business have told me.  Round instruments not only indicate some parameter
+but they also convey rate-of-change information.  Glass instruments
+evidently have been implemented to convey only the parameter value, not
+the derivative of the parameter.  If true, one can imagine that in some
+circumstances the flight crew is denied helpful and possibly critical
+information about events.
+
+					Willis Ware
+
+------------------------------
+
+Date:  Thu, 30 Jun 88 09:12 EDT
+From: "John O. Rutemiller" <Rutemiller@DOCKMASTER.ARPA>
+Subject:  Fly-By-Wire
+
+When considering the safety of a fly-by-wire system compared to a "normal"
+system, you must consider whether the overall safety of the system is improved.
+Granted there are failure modes in fly-by-wire that would not otherwise
+exist, but there are also a lot of things you can do with fly-by-wire that
+you would not be able to do with a "normal" system.  If the overall safety
+of the system is improved, then it is a better system.
+
+   [But don't forget that if the aircraft is designed to be aerodynamically
+   unstable (i.e., without the computer) -- as are some high-performance planes
+   -- overall safety can be nonexistent under certain conditions.  At the
+   IEEE COMPASS '88 this week, John Cullyer noted that in a fully
+   fly-by-wire plane such as the planned Eurofighter, the pilot will
+   have at most two seconds in which to decide whether to eject, after
+   which it may generally be too late.  (The Experimental Aircraft Project
+   is developing a plane that will be -12% (un)stable.  John described the
+   VIPER effort, which is being subjected to extensive formal proofs, and
+   which is being designed for the EAP.)  PGN]
+
+------------------------------
+
+Date:    Thu, 30 Jun 88 09:54
+From: "H.Ludwig Hausen +49-2241142426"            <HAUSEN%DBNGMD21.BITNET@CUNYVM.CUNY.EDU>
+Subject: Airbus 320 (Re: RISKS-7.10)
+
+ There was a video on German TV Newsshows (ARD, ZDF, SAT1)
+indicating that the Airbus plane
+1. was 10 meters above the ground
+2. in a position making the pilot unable to see the trees at the
+   end of the runway (which was too short for landing an Airbus)
+3. engines got power far to late to get back into secure hights.
+
+Seeing the video one will get the impression that the whole thing
+(going to a small, badly equipped airfield and doing demonstrations)
+was a very risky PR manoeuver.  There might be some serious
+problems with this Airbus plane (see B. Littlewoods comments) but
+I guess this time it was the pilot's fault.  H.L. Hausen
+
+------------------------------
+
+Date: 30 Jun 88 07:45:04 PDT (Thursday)
+From: Rodney Hoffman <Hoffman.es@Xerox.COM>
+Subject: $40 million Pentagon computer system failure
+
+From the Los Angeles Times, June 29, 1988:
+
+   PENTAGON COMPUTER SYSTEM CALLED A $40-MILLION FAILURE
+
+The Pentagon's latest effort to unscramble its tangled foreign military sales
+accounts has been a $40-million failure, the House Government Operations
+Committee said Tuesday.  It said a costly new computer system for straightening
+out the botched program was two years behind schedule, had thousands of
+unresolved problems and ultimately could cost $75 million without performing
+well.
+
+As a result, the committee said, the Defense Department cannot say why there is
+an unreconciled $1-billion difference between cash on hand in a special trust
+fund and total payments by foreign countries that purchase U.S. military
+equipment through the foreign military sales program.  "The [foreign military
+sales] trust fund system is in shambles," Committee Chairman Jack Brooks
+(D-Tex.) said.... 
+
+The new accounting system, developed by the SAGE firm of Rockville, Md., for the
+military, was supposed to be ready in October, 1986.  Now the completion date
+has been postponed until next October, or two years behind schedule.
+
+------------------------------
+
+Date: Mon, 27 Jun 88 16:11:44 EDT
+From: msb@sq.com (Mark Brader)
+Subject: Re: Another "silent fault tolerance" example: DWIM
+
+Path: sq!utfyzx!utgpu!utzoo!attcan!uunet!husc6!bloom-beacon!tut.cis.ohio-state.edu!rutgers!orstcs!mist!budd
+From: budd@mist.cs.orst.edu (Tim Budd)
+Newsgroups: comp.lang.misc
+Subject: Re: What makes a language "easy" to program in?
+Date: 17 Jun 88 20:31:42 GMT
+Organization: Oregon State Universtiy - CS - Corvallis, Oregon
+
+No, I'm not sure you want a ``do what I want'' command.
+
+The following story is true, I've just forgotten some of the less important
+details.  There was a Lisp system once that had something called DWIM (do
+what I mean).  If you typed an expression, if it didn't make sense, it would
+try various techniques to see if something close to it made sense, and do
+that.  Now a friend of mine was using this system and kept having amazingly
+slow programs.  It turned out he was saying things like (CAR ...) when the
+system wanted (car ...).  It would not recognize CAR, go through some
+analyzing, discover that a probable meaning was car, then do it.  Problem
+was there was no feedback - no indication he was doing anything wrong, it
+produced the right answer, just slowly.  So there are dangers in ``do what I
+want'' systems even when (and this is a big if) they can exactly figure out
+what it is that you want.
+
+[Forwarded to Risks by Mark Brader] 
+     [That was Warren Teitelman's INTERLISP environment.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 7.12
+************************

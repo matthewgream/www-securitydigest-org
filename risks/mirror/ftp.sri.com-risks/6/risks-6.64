@@ -1,0 +1,344 @@
+RISKS-LIST: RISKS-FORUM Digest   Monday 18 April 1988   Volume 6 : Issue 64
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risks of reprogramming keyboards (John Coughlin)
+  Fear of flying? (Daniel B Dobkin)
+  "Flight international" magazine about civil avionics (L. Strigini)
+  Another STARK investigation; faulty simulation implicated? (Jon Jacky)
+  Re: Ethnics and UCB (Bob Ayers)
+  Re: More evidence for an old risk -- Enigma (Henry Spencer)
+  Re: DEC's recent security patch (Darren Griffiths)
+
+    NY TIMES ARTICLE BY JOHN MARKOFF ON THE LAWRENCE BERKELEY LAB SAGA NOTED
+    IN RISKS-6.63 BY CLIFF STOLL IS IN KL stripe:<risks>risks-6.markoff for 
+    FTPing.  I will RISKS it if the demand is sufficient.  But I'll wait a few 
+    days to see what else hits...  PGN
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, ftp kl.sri.com, get stripe:<risks>risks-i.j ... .
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date:     18 Apr 88 11:21:00 EDT
+From: John Coughlin <JC%CARLETON.BITNET@CORNELLC.CCS.CORNELL.EDU>
+Subject:  Risks of reprogramming keyboards
+
+   Last week a user of one of our mainframe systems called me with a couple of
+problems.  She had logged on to a printer terminal to produce a hardcopy of
+important electronic mail messages.  After a couple of messages had printed,
+garbage characters appeared on her terminal.  "Sounds like a problem with flow
+control, this shouldn't be difficult to set right," I assured her.  She then
+explained that when she later logged on to her CRT, the messages which she has
+tried to print had been deleted from her email folder.  She insisted that she
+had not typed the DELETE command herself. It was not very likely that some
+malicious individual had selectively deleted the exact same range of messages
+which had been displaying, so I was at a loss to explain their disappearance.
+I was able to restore most of her email from backup tapes, after which I
+proceeded to investigate her terminal problem.
+
+   The mainframe she uses recognizes several different flow control algorithms
+for asynchronous terminals, although DC1/DC3 is the only one honoured under
+most conditions.  The user's hardcopy terminal had a microswitch set to use
+ACK/ETX protocol, so I switched it to use DC1/DC3.  Before I had changed the
+position of the microswitch the terminal would have been sending ACKs to the
+mainframe, which would have passed them through to its typeahead buffer. Now, I
+knew that this user's logon was one of a large group which operate within a
+more-or-less canned environment.  All users within this group share a set of
+key bindings defined using a program called the Input Manipulation Processor
+(which is aptly known as IMP for short).  I discovered (to my horror) that one
+such IMP key binding mapped ^F (the ACK character) to the string 'DELETE'
+followed by a carriage return. So what must have been happening is this:
+
+   1. The  unfortunate  user enters the mail program and directs  it  to
+      display a range of messages (this also has the effect of selecting
+      them for further operations).
+
+   2. At  some point the terminal's buffer is getting full,  so it  ACKs
+      the mainframe to instruct it to stop sending for a while. This ACK
+      is translated to  a  DELETE  command,  which  is  placed  into the
+      typeahead buffer for processing. Meanwhile, the mainframe keeps on
+      blasting data at the terminal.
+
+   3. The terminal's buffer is overrun,  so many characters are lost and
+      garbage is spewed  upon  the  paper.  Hidden  at  the  end of this
+      garbled  mess is an illegible message informing the user that some
+      of her email messages have been deleted, as "requested".
+
+   This experience brings to light three RISKS.  First, it is risky to set up
+naive users to have automagical key bindings of which they are unaware.  Such
+users are not likely to understand the possible ramifications under unusual
+circumstances (or even normal operation).  Second, destructive commands, such
+as deletions not requiring confirmation, should not be bound to 'magic'
+keystrokes such as PF keys, escape sequences and so on, for *any* user. This
+just makes it too easy to cause irreversible damage with a typing mistake.
+Finally, system-defined keystrokes are not a good place to start redefining
+one's keyboard.  Communications control characters (DC1, DC3, ACK, etc.) and
+interrupt keys (BREAK/ATTN, ^C or ^Y on many systems, etc.) should probably be
+left alone.
+
+------------------------------
+
+Date: Mon, 18 Apr 88 11:52:56 EST
+From: Daniel B Dobkin <dbd@vx2.GBA.NYU.EDU>
+Subject: fear of flying?
+
+The following is excerpted, without permission, from the May 1988 issue
+of "Private Pilot" magazine:
+
+  The problem of maintenance is sometimes aggravated by the occasional
+  mechanic or technician who doesn't believe that any pilot can report symptoms
+  accurately and therefore ignores whatever the pilot says.  I encountered
+  this with an instrument years ago, when the technician flatly refused to
+  believe what the instrument was doing.  Instead, he just assumed it was
+  something else for which he performed some unnecessary repair and returned
+  the instrument with the original defect still preseent.  This resulted in
+  four separate attempts to correct the malfunction.  Admittedly, some pilots
+  are not precise in their reports, an this naturally leads to some degree of
+  skepticism on the mechanic's part, but in most cases a few questions and a
+  little discussion will clarify the uncertainties.
+
+  The most important way to avoid this trap is to tell the mechanic exactly
+  what you observed, @i{without interpretation}.  There's plenty of chance to
+  compare your conclusions with his after he knows what symptoms there are.
+  If you tell a person your conclusion in advance, it can bias and channel his
+  thinking into a particular problem, which may be incorrect and delay the
+  ultimate resolution.
+
+This was passed on to me by a friend who reports similar failures of
+communication between the systems group and the data center operators; he
+has been awakened at 4:30 too many times by operators who report their
+analyses of the problem, rather than the clear, concise descriptions he
+needs.  Of course, at that hour he is more likely to follow the operator's
+erroneous logic at first, thereby prolonging his discomfort; during the day,
+SOP is to reject the operator's conclusions and attempt to coax him into
+describing the problem.
+                                              \dbd
+
+------------------------------
+
+Date:         Mon, 18 Apr 88 18:00 SET
+From: L. Strigini <STRIGINI%ICNUCEVM.BITNET@CNUCE-VM.ARPA>
+Subject:      "Flight international" magazine about civil avionics
+
+The April 16 issue of "Flight international" features a 4-page article
+"Software versus the black box", about current trends in civil avionics
+(software-based fly-by-wire, etc.).
+
+There is much about the A-320 (partially critical: maintainance still
+difficult, for instance), some discussion of the pros and cons of
+innovation: e.g. some think multifunctional displays to be difficult to deal
+with in emergencies, more software in fewer black boxes should simplify
+maintenance (of the boxes) but increase complexity, etc.
+
+On software diversity: comments by several people to the effect
+that it is possible to build "a lot more" than in the past in software,
+but "Software risk cannot be quantified in meaningful terms" (attributed
+to Brian Tucker, GEC Avionics): hence the need to protect oneself
+somehow. On the other hand, one of the managers in the Airbus
+program is quoted as saying "Common mode failures are not possible"
+("confidently" says the magazine. !!!).
+
+Other topics: the huge costs of avionics maintainance and ways to deal
+with it (redundancy, self-reconfiguration to keep aircraft
+flying, automated diagnosis to help repair, expert systems - of course);
+proposals to "increase" airport capacity by better precision
+in arrival times of flights (computers making sure an aircraft fits
+exactly in the time slot reserved for it).
+
+It may make interesting reading for RISKS readers, in particular because it
+is written for non-computer specialists with an interest in computer risks.
+Final quote: "What the airlines want .. is avionics designed for
+certification and operating profits - a discriminate use of new technology".
+Worth considering in relation to the recent discussions about responsibility.
+
+Lorenzo Strigini
+
+------------------------------
+
+Date: Mon, 18 Apr 88 16:52:15 PDT
+From: jon@june.cs.washington.edu (Jon Jacky)
+Subject: Another STARK investigation; faulty simulation implicated?
+
+From IEEE INSTITUTE 12(5) May 1988 p. 1:
+
+FRIGATE DEFENSE SYSTEM IS INVESTIGATED BY CONGRESS by John A. Adam
+
+Apparently unsatisfied by US Navy reports, the Congress is investigating
+the combat capability of FFG-7 class frigates - those similar to the USS
+STARK.  The STARK failed to deter two Exocet missiles, fired by an Iraqi
+fighter jet in the Persian Gulf May 17, 1987, that resulted in 37 deaths
+and more than $100 million in damage to the ship. ...
+The investigation was requested in November 1987 by Rep. Barbara Boxer
+(D-Calif), a member of the House Armed Serviced Committee and its 
+investigations subcommittee. ... (Much discussion of weapons systems 
+under investigation...) 
+
+(Former STARK captain Glenn R.) Brindel told THE INSTITUTE that the Navy
+combat systems doctrine manual said both the SPS-55 surface search radar
+and the SPS-49 air search radar should detect Exocets fired from aircraft
+at ranges over 15 miles.  "That is just a bunch of baloney," he added.
+It gave the persons in the ship's combat information center a false sense
+of security, he said.  The Navy's reported to have found that the 
+capability listed in the manuals, put out by the commanders of the Atlantic
+or Pacific surace fleets to address the capabilities of each ship class 
+against specific missiles, was "significantly overoptimistic."  Boxer's aide
+says the GAO is investgating how these capabilities are derived.  Brindel
+says much of the data for these manuals is based on simulations. ...
+
+The NAVY TIMES, quoting an unnamed source, reported on March 28 that (in a 
+live test) Exocets (obtained for testing) "popped up" and were detected 
+briefly by the frigate's radar while they were at high altitude.  But
+after the missiles swooped low over the wave tops and began homing in on
+the ships, the frigate was unable to detect them. (This test occured before
+the STARK attack.  Discussion followed of whether the fleet was informed 
+of the test results).
+
+- Jonathan Jacky, University of Washington
+
+------------------------------
+
+Date: Mon, 18 Apr 88 09:52:03 PDT
+From: ayers@src.dec.com (Bob Ayers)
+Subject: Re: Ethnics and UCB (RISKS-6.63)
+
+    This is hearsay, so take it with a grain of salt, but I was told by a
+    friend that he started filling the ethnicity slot on forms at UCB with
+    "prussian".  This apparently did not default to "white".
+
+Of course not. It defaulted to blue.
+
+------------------------------
+
+Date: Mon, 18 Apr 88 06:02:29 EDT
+From: mnetor!utzoo!henry@uunet.UU.NET
+Subject: Re: More evidence for an old risk -- Enigma 
+
+Those interested in this should probably also read Patrick Beesly's book
+"Very Special Intelligence" (1977).  It's the story from the user end:
+an account of the British Admiralty's Operational Intelligence Centre,
+which was charged with putting intelligence information together into a
+useful form for naval operations.  In particular, it was effectively the
+nerve center for the Battle of the Atlantic.  It had a dedicated teletype
+link to the Bletchley Park cryptanalysts.  Apart from the inherent interest
+of the user's-eye view, most of what OIC did is declassified, unlike a lot
+of the detailed doings of the cryptanalysts.
+
+Concerning "probable word" attacks on ciphers, Beesly observes that a
+possible factor in the success of the cryptanalysts was that situation
+reports from weather aircraft were often sent to shore in relatively low-
+security ciphers and then rebroadcast verbatim in the high-security naval
+ciphers.  Later in the war the Admiralty had to make a substantial effort to
+discourage the RAF from shooting down those aircraft, without revealing why!
+
+He also sheds some light on the question of why the cryptanalysis was not
+discovered.  The Germans did persistently suspect either treachery or
+cryptanalysis.  Against the former they took increasingly elaborate
+precautions.  The possibility of the latter was investigated not once but
+several times.  Unfortunately, the investigation was always run by the
+signals people themselves, and the conclusion invariably was that they
+were not at fault, i.e. the ciphers were unbreakable.
+
+The situation wasn't as obvious as people might think, also.  Encryption
+keys changed daily, and the cryptanalysts were often two or three days
+behind in finding the new ones.  Cryptanalysis was often incomplete. And
+the Germans used increasingly-elaborate map codes for geographic locations,
+meaning that a message was often hard to interpret even if cryptanalysis
+was complete.  The result was that OIC had to work hard to put things
+together with other intelligence reports (e.g. direction-finding and actual
+sightings), and errors did creep in.  These errors showed, and made it
+harder to see that cryptanalysis was involved.
+
+(For the same reasons, Beesly has a low opinion of some of the popular
+books on wartime cryptanalysis.  Some of them make it sound like the Allies
+knew everything the Germans were doing, and if any Allied ships were lost,
+it was because of Machiavellian scheming by Allied commanders.  Beesly
+makes it clear that it just wasn't that simple.)
+
+A contributing factor may have been something that Beesly mentions as a
+problem with OIC:  because there were few people qualified, cleared, and
+available to do the work, and the workload was heavy, and the atmosphere was
+one of constant crisis, nobody ever really got a chance to stand back for a
+while and think about the deeper implications of events.  Nobody was charged
+with looking for things like signs of hostile cryptanalysis.  Only a lucky
+hunch by a senior man would reveal such a situation.  The British got lucky:
+early in 1943 the head of OIC, Rodger Winn, noted for his lucky hunches,
+concluded (correctly) that the *Germans* were reading the *Allied* naval
+ciphers, and made enough of a stink to get things done about it.  Evidently
+none of his German counterparts ever had a similar stroke of insight.
+
+Beesly's account also has something to say about the perils of becoming
+obviously dependent on one information source.  OIC had little cryptanalytic
+intelligence for most of 1942, because the Germans had changed ciphers
+and the cryptanalysts took a long time to solve the new one.  The OIC
+people decided to try to continue detailed tracking of all U-boats,
+recognizing that there would be many more errors.  Many people thought that
+this was silly and wasn't going to work.  In fact it worked moderately
+well, and the skeptics were proved wrong, but only because Winn and others
+insisted that this "obviously" ridiculous scheme was worth trying.
+
+Henry Spencer @ U of Toronto Zoology   {ihnp4,decvax,uunet!mnetor}!utzoo!henry
+
+------------------------------
+
+Date:     Mon, 18 Apr 88 16:42:34 PDT
+From: dagg@Csa1.LBL.Gov (Darren Griffiths)
+Subject:  Re: DEC's recent security patch
+
+This is a follow up to my recent article.  In the article I talked about
+problems with the latest security patch from DEC.  In summary the problems
+were caused by a fix to the TTDRIVER that helped stop trojan horse programs.
+The fix, in some situations also broke the VAX Workstation Software, stopping
+uses from autologging into a window.  Other things that were broken include
+programs like PHOTO that use psuedo-terminal drivers to act as session loggers.
+
+It seems that some of the programs that use psuedo-terminal drivers will
+have to be modified before they will be able to work again.  This is
+unfortunate, but it is necessary to provide extra security on VMS systems.
+I believe DEC is planning to send out a letter describing these problems.
+
+The problems with workstation software being broken can easily be fixed.
+Patches to WTDRIVER.EXE and UISBG.EXE were distributed with the security
+update, when these patches are installed the workstation software will work
+as advertised with a secure TTDRIVER.  The problem is that the procedure
+that checks to see if the workstation has VWS installed has a bug in it, and
+it sometimes reports that the workstation software isn't installed when it
+is.  If this happens the good software won't be installed and things will be
+broken.  The easy fix is to look in the install save set for four images:
+
+   WTDRIVER031.EXE;1   WTDRIVER032.EXE;1  
+   UISBG031.EXE;8      UISBG032.EXE;1       
+
+Take the ones appropiate for your versions and place them in
+SYS$SYSTEM:WTDRIVER.EXE and SYS$SYSTEM:UISBG.EXE, that should fix things up.
+
+I do encourage everyone to install these security fixes.  They ARE important
+and they do help protect your system.  DEC has been getting a lot of flames
+regarding their policy towards security issues, I am not sure that all of these
+flames are deserved.  DEC engineers have spent a lot of time helping find this
+problem, and they have always been eager to look for problems and suggest
+solutions.  Before we go and flame DEC, why not spend some time flaming the
+people (pond-scum?) who are trying to break into systems and wasting valuable
+time and resources.  It is people like this who are the true cause of the
+problem, not companies like DEC. 
+
+I have heard comments recently that suggest it is the computer manager's
+responsibility to maintain a secure environment for the users.  While this is
+true it can only be taken so far.  It is reasonable to ask home owners to lock
+their front door when they leave, it is not reasonable to ask them to hire
+security guards and install a $10,000 alarm system.  At the same time it is
+reasonable to ask computer managers to have a secure environment, it is not
+reasonable to ask them to spend a good part of their life tracking down idiots
+who persist on penetrating systems, particularly when the majority of these
+systems have no useful or interesting information online.
+                                                                  --darren
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

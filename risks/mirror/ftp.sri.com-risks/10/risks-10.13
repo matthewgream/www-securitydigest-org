@@ -1,0 +1,556 @@
+Subject: RISKS DIGEST 10.13
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 28 June 1990   Volume 10 : Issue 13
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  The F9 factoring result (Ron Rivest via J.Bidzos/S.Kent/S.Crocker/TMPLee)
+  Risks from using laptops with cellular phones (Jan I Wolitzky)
+  Re: carpal tunnel syndrome (Mike Tanner, Henry Spencer)
+  Re: The Hubble Telescope (Steve Bellovin, Henry Spencer)
+  My A320 "Article" (Gregory Travis)
+  Re: The A320's attacks of nerves (Gimli) (Robert Dorsett, J.G. Mainwaring)
+  Virus experiences in GDR (Klaus Brunnstein)
+  A misdirected letter or Chain mail (Greeny)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory listing of back issues.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+
+----------------------------------------------------------------------
+
+Date: Wed, 27 Jun 90 22:19:44 -0400
+From: Theodore Lee <lee@TIS.COM>
+Subject: The F9 factoring result
+
+MESSAGE FROM RON RIVEST VIA JIM BIDZOS VIA STEVE KENT VIA STEVE CROCKER:
+Thanks to Robert Silverman for keeping many people honest.
+As an additional effort to that end, I attach an analysis of
+the recent factoring effort, done by Ron Rivest.  The early 
+reports of RSA's demise have been greatly exaggerated...
+Note: Be sure and read the end of Rivest's note.
+Jim Bidzos, RSA Data Security
+
+To:	Whom It May Interest (Feel free to distribute further...)
+From:	Ronald L. Rivest
+Date:	June 21, 1990
+Re:	Recent Factoring Achievement
+	(Preliminary draft; may contain typos or other inaccuracies.
+	Please send corrections to rivest@theory.lcs.mit.edu)
+
+This note is in response to the numerous inquiries I've received regarding
+the recent factoring of a 155-digit number by A. Lenstra, M. Manasse, and
+others.  (See the New York Times article of 6/20/1990 by G. Kolata.) 
+This note attempts specifically to correct some of the misimpressions that
+may arise from a reading of such popular press articles.
+
+Using an ingenious new algorithm, Lenstra, Manasse, and others have
+factored the 155-digit number known as "F9", the ninth Fermat number:
+		F9 = 2^(2^9) + 1 = 2^(512) + 1 .
+In binary, this number has the form
+		100000....000000001
+where there are 511 zeros altogether.  (F9 is a 513-bit number.)
+This is a fascinating development, and the researchers involved are to be
+congratulated for this accomplishment.
+
+The algorithm used is known as the "number field sieve", or "NFS" (not
+to be confused with a network protocol of the same acronym!).  The NFS
+algorithm is described in the Proceedings of the 1990 ACM STOC Conference.
+The NFS algorithm is based on an idea due to Pollard, as developed further by
+Arjen Lenstra, Hendrik W. Lenstra, and Mark S. Manasse.
+
+The NFS algorithm is specifically designed to factor numbers that,
+like F9, have a very simple structure: they are of the form
+		a^b + c 
+where c is relatively small.  (For F9, we have a=2, b=512, and c=1.)
+Some simple extensions of this algorithm are also possible, to handle
+numbers whose binary representation has many zeros, and related kinds
+of numbers (ternary, etc.)  Numbers that have such a special structure are
+extremely rare and are unlikely to be encountered by chance.  That is,
+the NFS algorithm does not apply to the kind of "ordinary" numbers that
+arise in practical cryptography, such as using RSA.  They only apply to
+numbers with "sparse" representations having few nonzero components.
+(Let us call such numbers "rarefied".)
+
+When working on a rarefied number, the NFS algorithm has an estimated
+running time of the form (for an input number n):
+		exp(1.56 (ln n)^1/3 (ln ln n)^2/3)			(1)
+For n = F9, this evaluates to 
+		4.1 x 10^15 operations,
+which, at 3.15 x 10^13 operations/year for a 1 MIP/sec machine (i.e. a
+MIP-year), gives a workload estimate of
+		130 MIP-years,
+only off by a factor of two from the actual work of 275 MIP-years. (That is,
+formula (1) may be roughly too low by a factor of two.)
+
+It is instructive to see the effect of doubling the size of the number
+being dealt with.  A 1024-bit (332-digit) rarefied number requires an estimated
+		1.54 x 10^21 operations
+	=	4.9 x 10^7 MIP-years,
+a dramatic increase in difficulty.  The NFS algorithm algorithm is not a
+"polynomial-time" algorithm; the difficulty of factoring still grows
+**exponentially** with a polynomial function of the length of the input.
+
+What has this to do with RSA and cryptography?  I think there are three
+basic points:
+	-- This development indicates that the status of factoring is
+	   still subject to further developments, and it is wise to be
+	   conservative in one's choice of key-length.
+	-- The NFS algorithm may yet be generalized to handle "ordinary"
+	   numbers, and the potential impact of this should be considered.
+	-- Factoring is still a very hard problem, despite everyone's best
+	   efforts to master it.
+
+Regarding the further extensions of NFS to handle ordinary numbers, this is
+judged to be a reasonable possibility by those working on NFS, so it is 
+helpful to consider what impact this may have.
+
+It is conjectured (see the ACM STOC paper referenced above) that a successful
+extension of the NFS algorithm to ordinary numbers would have a running time
+of the form:
+		exp(2.08 (ln n)^1/3 (ln ln n)^2/3)			(2)
+This is similar to equation (1) except that the constant 1.56 is
+replaced by the constant 2.08.  Note that a practical version of such
+an extension does NOT yet currently exist (to the best of my
+knowledge), but even granting its plausibility we arrive at an
+estimate of the tie required to factor a 512-bit number of
+		6.5 x 10^20 operations
+	= 	2 x 10^7 MIP-years
+which (in my opinion) is a substantial degree of security.  It is 
+interesting to note that this work factor is actually GREATER than that
+required by the ``standard'' factoring algorithms (e.g., the quadratic sieve),
+which have a running time of
+		exp((ln n)^1/2 (ln ln n)^1/2);
+for a 512-bit number, this gives a work-factor estimate of only
+		6.7 x 10^19 operations.
+Indeed, the NFS algorithm (when extended) will be asymptotically superior than
+the quadratic sieve algorithm, but will be slower for numbers with less 
+than about 200 digits.  That is, assuming that (2) is indeed the correct
+running-time estimate for any extension of NFS, then NFS will not affect the
+security of any numbers of less than about 215 digits.  So any "standards"
+that have been considered using 512-bit RSA moduli are not likely to be
+affected by any NFS extensions.  (At most, one could imagine that the
+RSA key-generation process might be extended to check that the resulting
+modulus n is not a rarefied number.)
+
+In the truly worst-case scenario, we would have that an extension of
+NFS would be found that allows ordinary numbers to be factored with a
+work-factor that is governed by equation (1); in this case one would
+need to adjust the sizes of moduli used by RSA upwards by a factor of
+less than two to more than offset the new algorithm.  A factor of two
+in size affects the running time of public-key encryption (or
+signature verification) by a factor of four and the running time of
+private-key encryption (or signature generation) by a factor of eight.
+Noting that the speed of workstations has increased by a factor of
+over 100 in the last decade (indeed, such factors have been the
+technological advance that made the successful implementation of NFS
+possible!), such performance penalties, if necessary, seem to be
+easily absorbed by expected technological advances in the speeds of
+the underlying RSA implementation technologies.  That is, the NFS-like
+factoring algorithms do not, even in this worst-case scenario, prevent
+successful implementations of the RSA cryptosystem.
+
+As a cryptographer, I am actually very happy with all the effort that
+is being spent trying to determine the exact level of difficulty of
+factoring.  Achievements such as the recent development of NFS help to
+pin down the best-possible rate of growth of the difficulty of
+factoring, so that users of cryptographic schemes can pick key sizes
+with an increased degree of confidence that unforeseen developments
+are unlikely to occur.  The best way to ensure confidence in a
+cryptographic system is to have it attacked vigorously and
+continuously (but unsuccessfully) by well-qualified attackers.  If,
+despite their best efforts, the difficulty of cracking the system
+remains intrinsically exponential, then one can have a reasonably high
+degree of confidence that the system is actually secure.  This is the
+process we have been seeing at work in the recent work on factoring.
+The results of the attacks can be used to guide the selection of the
+necessary key size for a desired level of security (with an
+appropriate margin of safety built in, of course).
+
+(As a closing note, here's a prediction: I expect that the 128-digit
+``challenge RSA cipher'' published in the August 1977 issue of
+Scientific American to be cracked (probably by the quadratic sieve
+algorithm or a variant, not NFS) during the next 1-3 years.  This
+accomplishment will require substantially more computer time than the
+275 MIP-years required to factor F9.)
+
+------------------------------
+
+Date: Thu, 28 Jun 90 10:01:35 EDT
+From: wolit@mhuxd.att.com (Jan I Wolitzky)
+Subject: Risks from using laptops with cellular phones
+
+I'm concerned by the increased use of laptop computers with
+cellular phones, to connect to remote host machines.  Given the
+ready availability of scanner radios capable of receiving
+cellular phone frequencies, this practice seems to amount to
+broadcasting your passwords, proprietary information, etc., to
+anyone who cares to listen.  (Yes, I know that federal law
+prohibits listening to such calls, but everyone who has a scanner
+or knows someone with one knows that it's done all the time.)
+Is there any record of anyone breaking systems this way yet?
+Has any company adopted a policy discouraging its employees from
+using laptops with cellular phones, or, for that matter, from
+broadcasting other sensitive information over cellular phones?
+
+-- 
+Jan Wolitzky, AT&T Bell Labs, Murray Hill, NJ; 201 582-2998
+    att!mhuxd!wolit or jan.wolitzky@att.com
+(Affiliation given for identification purposes only)
+
+------------------------------
+
+Date: Thu, 28 Jun 90 09:06:49 -0400
+From: Mike Tanner <tanner@cis.ohio-state.edu>
+Subject: Re: info on carpal tunnel syndrome (CTS) (RISKS-10.12)
+
+At the risk of turning this into a medical forum I wanted to add to the
+excellent summary on carpal tunnel syndrome that there is a related problem
+called ulnar nerve syndrome.  As with CTS, those of us who spend lots of time
+using keyboards are prone to ulnar nerve syndrome, too.  The main difference
+in the symptoms is that with CTS the numbness and tingling is in the thumb and
+first two fingers, with UNS it is in the other two fingers and along the
+outside of the forarm.  (When you "hit your funny bone", what you've done is
+bash your ulnar nerve.  The symptoms are similar to that feeling, but they
+don't go away.)
+
+My wife's neurologist (she's been going through a bout of it) said there are
+many causes, but a common one is some activity that constantly rubs the elbow.
+In her case it is almost certainly typing while resting her elbows on the arms
+of a chair.  One danger is that carpal tunnel syndrome is so hot, such a fad
+right now, that a physician might automatically connect "numbness" with
+"programmer" and say "carpal tunnel".  My wife's physician did this, and only
+changed his mind after we had looked in some medical books and found that CTS
+symptoms did not match hers.  (Physicians deny that they reason this way.
+Experience tells otherwise.)
+
+Treatment is basically like CTS:  ice, avoid bending the elbow as much as
+possible (not easy to do), don't do things that rub the elbow a lot,
+anti-inflammation drugs.  There is surgery, but unlike CTS, ulnar nerve
+surgery is not a good option.  Apparently it has about a 50% chance of making
+things worse, according to my wife's neurologist.  (That might have been an
+estimate that took the nature of her condition into account, i.e., there are
+cases where it has a high probability of success, but hers isn't one of them.)
+
+-- mike
+
+------------------------------
+
+Date: Thu, 28 Jun 90 14:11:52 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: info on carpal tunnel syndrome (CTS)
+
+>One point the author does not mention is that the "force-depression curve" of
+>your keyboard may also play a role.  It is better to have a linear 
+>relationship between force and depression...
+>...  People have suggested that this sort of dynamic may
+>aggravate or even induce CTS...
+
+What was the incidence of CTS twenty years ago, when electric typewriters
+routinely had non-linear force-depression curves?  Or before that, when
+manual typewriters required far more finger pressure than any modern
+keyboard?  Yet again, we have here a case of a "computer risk" that isn't
+really new, and data from olden days could be very useful in deciding what
+*really* causes it.
+
+Data would be particularly useful because it's easy to construct an argument
+that points in precisely the opposite direction!  Once you've pushed a
+non-linear keyboard key "over the hump", you can relax pressure.  But with
+a linear keyboard, you have to push all the way down, since you get no
+"that's enough" feedback until the key hits bottom.
+
+Some of this may be a risk not of nonlinear keyboards, but of lack of proper
+training.  Pre-computer typing courses taught you to *strike* the keys rather
+than *pushing* them, so your muscles were already relaxing when the key
+bottomed out.  One side effect of the proliferation of keyboards is that far
+more people are using them without formal training, or with training from
+"touch typing" programs that teach you which keys to hit but don't teach
+posture or hand position.
+                                         Henry Spencer at U of Toronto Zoology
+
+------------------------------
+
+Date: Thu, 28 Jun 90 00:01:37 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: The Hubble Telescope (RISKS-10.10) 
+
+> Tonight's news was really distressing -- that there is a fundamental
+> mirror flaw that cannot be repaired until 1993 or so.
+
+It's not *quite* that bad.  The optics do seem to have a significant case
+of spherical aberration -- so perfect that it's almost certainly the
+result of an incorrectly-figured shape, rather than a manufacturing
+deviation from the desired shape -- and this will hurt the cameras
+badly, but the spectrographs and the photometer (3 out of 5 of the
+instruments) shouldn't be badly affected.  Unfortunately, the affected
+instruments are the ones that would produce all the nice crowd-pleasing
+pictures, so the public-relations disaster is much worse than the
+scientific one.
+
+The Wide Field / Planetary Camera was slated for replacement in 1993-4
+anyway, and it may be possible to build the replacement in time for a 1991
+flight (about the earliest NASA could launch a repair mission anyway).
+
+The big question is, how did this happen?
+
+Henry Spencer at U of Toronto Zoology                            utzoo!henry
+
+------------------------------
+
+Date: Thu, 28 Jun 90 16:49:21 EDT
+From: smb@ulysses.att.com
+Subject: Hubble telescope
+
+The Hubble space telescope, which cost $1.5e9 to build (and a lot
+more to store and launch), isn't working properly.  There appears to
+be a problem with one of the two mirrors being flawed.  Weren't
+they tested?  Yes, they were -- but they were tested individually,
+not in the final assembly.  It seems that the test jig would have
+cost too much.
+
+Lessee -- the components all worked individually, but not as a system.  Where
+have I heard that one before?
+                              		--Steve Bellovin
+
+------------------------------
+
+Date: Mon, 25 Jun 90 21:51:33 EST
+From: Gregory TRAVIS <greg@cica.indiana.edu>
+Subject: My A320 "Article"
+
+Just to get the record straight, I originally wrote and posted the entire
+story to rec.aviation, a newsgroup I felt would appreciate the humor without
+undermining the serious aviation-related discussions also posted there.
+
+I considered submitting the story to RISKS orginally, but decided against it
+because of the harm it might have done to RISKS serious nature.  Robert
+Dorsett, I believe, passed the submission on to RISKS (through PGN?) much to my
+delight.  Personally, considering the flood of mail I've received, I think we
+might well start a serious discussion in RISKS about the risks of computer
+types who cannot recognize a blunt-faced satire when it hits them.
+
+Gregory Travis
+
+------------------------------
+
+Date: Wed, 27 Jun 90 21:50:44 -0500
+From: rdd@ccwf.cc.utexas.edu (Robert Dorsett)
+Subject: Re: The A320's attacks of nerves
+
+Robert L. Smith <rlsmith@mcnc.org> wrote:
+
+>    I'm afraid Robert Dorsett is mistaken when he states "And nobody's
+>crashed a 757/767 yet. . ."  On July 23, 1983, a 767 operating as Air
+>Canada Flight 143 crashed at Gimli, Manitoba.  
+
+Actually, it's difficult to classify that as a crash.  Part of the dif-
+ficulty is terminology: "crash" is not defined by either ICAO or the FAA.
+The two relevant terms are "accidents" and "incidents."  
+
+US NTSB 830-3 defines "aircraft accident" as "an occurrence associated with 
+the operation of an aircraft which takes place between the time any person 
+boards the aircraft with the intention of flight and all such persons have 
+disembarked, and in which any person suffers death or serious injury, or in 
+which the aircraft receives substantial damage."
+
+"Incidents" are anything other than crashes, which could affect the future
+safety of operations.
+
+The Air Canada landing at Gimli can certainly qualify as an accident.  How-
+ever "crash," as used by the industry in general, has more permanent connot-
+ations.  The airplane was under control at impact, did not suffer substantial 
+damage, and nobody was seriously injured.  I therefore hesitate to classify it 
+a crash.
+
+On the other hand, there *was* a rather nasty incident in Florida a few years
+ago, a result of a "hard landing."  The airplane was damaged sufficiently 
+enough that it was a marginal-recovery issue, but it remained under pilot
+control, and nobody was seriously injured.  Both the Gimli 767 and that
+767 are back in the air.
+
+Perhaps I should rephrase my original comment: there have been two A320 hull
+losses.  There have been no 757 or 767 hull losses.
+
+
+> That crash may well have been a proper "risk"  subject.  
+
+Indeed; it's been popular in the past.  Here's the review of _Freefall_ I 
+posted to rec.aviation last year.  It may be of interest to RISKS readers.
+
+======
+
+_Freefall_ (by William and Marilyn Hoffer, St. Martin's Press: New York, 1989) 
+deals with the near-crash of Air Canada Flight 143, a Boeing 767-200 which ran 
+out of fuel over near Winnipeg, Manitoba in 1983. 
+
+The book is partially investigative reporting, partially schlock: while it 
+provides a detailed accounting of the events leading up to the eventual landing,
+it also wastes an enormous amount of space on what the passengers think, feel, 
+etc--and in that respect rather closely resembles the style Arthur Haily used 
+in _Airport_.  In other words, it's light reading, and tries to be something
+for everyone.  Fortunately, though, the authors kindly segregate the chapters 
+into what's happening in the cockpit, and what's happening elsewhere.  If one 
+sticks to the "Cockpit" (clearly labelled) chapters, it's tolerable (but since 
+the book itself is only 263 pages of double-spaced large print and large 
+margins, and less than half of it deals with the technical issues, the 
+$17.95 price tag isn't exactly worth it).
+
+To save people the some time and effort, here's what it boils down to:
+
+1.  A fuel-metering device failed on a previous flight.  A maintenance worker,
+through trial and error, got the system to work again.  A subsequent worker
+mistakenly flagged the system as inoperative.
+
+2.  To verify how much fuel was on board, "dripsticks," a  series of fuel-
+measurement devices mounted under the wings, were used.  A flotation device 
+("donut") is mounted on the top of the stick; when the stick is released, it 
+drops.  Where it stops (a length unit, represented by how much of the stick 
+is pointing out) can be used to determine how much fuel is in that 
+compartment.  The procedure then is to use a chart to convert the unit read 
+into liters, then to kilos, then, finally, to use a conversion factor to 
+get pounds.  All such measurements are then added to determine the total load 
+on board.  In Flight 143's case, an incorrect conversion factor was used for 
+the last step.  Confusion among ground workers and the flight crew as to the 
+correct conversion factor (the 767 was the only metric aircraft in Air Canada 
+service) induced them to launch with half tanks.
+
+3.  The captain launched with his fuel metering system inoperative, in 
+violation of the minimum equipment list (but there may have been justification 
+for doing so, as several references contradicted each other on this point).  
+To overcome the loss of the totalizer, they set the flight management system 
+with what they thought was a full load, which then provided them with a fuel 
+burn total for the rest of the flight.  GIGO.
+
+4.  They ran out of fuel near Winnipeg, Manitoba, which resulted in a loss
+of nearly all of their electrical power, including the EFIS and EICAS systems
+(electronic flight instrumentation and engine control and monitoring in-
+strumentation).  Radios and backup instrumentation was supplied by battery
+power (and, initially, APU power); some hydraulic power was obtained from 
+a ram air turbine (optional equipment, I believe, on the 767--Air Canada
+bought them in anticipation of extended-range twin oceanic operations).  The
+turbine serviced basic flight controls, but did not provide power for other
+surfaces, such as flaps.  They were eventually forced to deadstick the plane 
+to an abandoned military base near Gimli.  They landed on top of a social 
+event being held on a disused runway, fortunately not killing anyone.  The 
+nose gear collapsed, there was a small fire (from the nose brakes) and there 
+was some damage to the airplane, but the plane was eventually put back in 
+service.
+
+5.  The flight crew was initially fired, then rehired.  The first officer, 
+according to the book, is starting his captain's training.
+
+------------------------------
+
+Date: 	Thu, 28 Jun 90 09:52:00 EDT
+From: John (J.G.) Mainwaring <CRM312A@BNR.CA>
+Subject:  The Gimli Glider
+
+Robert L. Smith in his posting re: the A320's attack of nerves refers to the
+crash of an Air Canada Boeing 767 at Gimli Manitoba.  He seems to be using the
+word 'crash' in a sense with which I was previously unfamiliar.
+
+The plane ran out of fuel because of a combination of factors.  The fuel guages
+(computerized?) were malfunctioning, and Air Canada was in the early stages of
+conversion to metric.  Reports at the time suggested that the refuelling was
+measured in pounds and the measurement was used un- or incorrectly converted in
+a formula that expected kilos.
+
+When the engines flamed out, the rather small WW 2 training field at Gimli was
+the closest airport, 100 miles away.  The pilot was highly praised for making a
+successful dead stick landing, and the plane became known as the Gimli glider.
+I believe it was flown out a few days later, without the passengers and with a
+very carefully calculated fuel load.
+
+The subsequent investigation was somewhat acrimonious, with the airline
+pointing out that the pilot had ultimate responsibility for the fuel on board,
+opposed by a strong public sympathy for the pilot and a feeling that the system
+was designed to fail.  I suppose the risks are pretty much the same whether a
+computer was involved or not - large organizations occasionally screw up when
+they try to run complicated systems.  This case also shows the value of
+properly trained people retaining ultimate control of the system.
+
+------------------------------
+
+Date: 22 Jun 90 15:38 GMT+0100
+From: Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.dbp.de>
+Subject: Virus experiences in GDR
+
+On June 19-21, 1990, IBM held some kind of a development conference for GDR
+universities, in the research center of the ministry for science and technology
+in (east) Berlin-Koepenick. Similar to an annual conference for West German 
+universities (`IBM university forum'), invited speakers from West and East 
+German universities as well as from IBM informed about their actual work. A 
+broad diversity of areas was covered, from CD-ROM based 'Thesaurus Linguae 
+Graecae' to CAD, simulation of complex molecules and synthetic speech. The
+conference was accompanied by an exhibition where many additional applications
+and software products of scientific interest were shown by East and West German
+scientiests as well as IBM people, on IBM owned PS-2s. Many demonstration 
+diskettes were freely available.
+ 
+Among the exhibitors, the Virus Test Center demonstrated how to detect and
+eradicate viruses. In many discussions, we were surprised to learn that
+many scientists regarded viruses as some kind of a joke as they had suffered
+mainly from viruses of the funny kind, e.g. playing Yankee Doodle in the Bulga-
+rian version "TP 44" or "legalizing marijuana"; only a few seemed to have 
+experiences in really damaging viruses such as Israeli or Dark Avenger. Yet at
+the end of the exposition, our essential task was to eradicate some damaging
+viruses such as Dark Avenger (the Bulgarian "Eddie" which broadly migrates
+through Eastern Europe) from most of IBM's PS-2 as neither protection 
+nor careful work had been practized nor prescribed.
+
+With surprise we learned that there existed a secret research unit in GDR
+to which every virus or other threat had to be reported; this secret group 
+would then produce an antivirus and send it to concerned institutions. In its
+latest version (which we hope to receive afterwards), 11 viruses could be 
+detected and eradicated. 
+
+Lesson learned: there should be a special antivirus service for exhibitions,
+not only for large ones (in FRG's CeBIT and Systems exhibitions, about 15-20%
+of the workstations and PCs were found to be infected *at exhibition's end*).
+
+Klaus Brunnstein       University of Hamburg
+
+------------------------------
+
+Date:     Tue, 19 Jun 90 03:28 CST
+From: GREENY <MISS026@ECNCDC.BITNET>
+Subject:   A misdirected letter or Chain mail
+
+Recently, the LISTSERV which I get my risks digests from sent me a copy of
+one of those unsolicited mailings that I always get via the US MAIL.  You know
+the type, "You can make 50,000 bucks overnight with my ...".  Yeah, yeah
+right.  Those are one of the reasons (besides bills) why I dont go to my
+mail box any more, and deal with electronic mail.
+
+Now I get to deal with this kind of crapola via the BITNET?  Regardless of
+whether or not the message was accidently sent to a LISTSERV and redistributed
+to everyone that the LISTSERV knows about, I never should have been able to
+receive the message.  LISTSERV software should be modified to include some
+sort of authentication.  Granted, an individual with enough know-how can
+bypass a simple "authentic address" in the "Received From/By:" headers, but
+it would prevent those "whoops, I accidently did its...".
+
+Maybe the author did, maybe he didn't.  Either way, I really dont enjoy reading
+that stuff, and am sure that others don't as well.  Also, the proposed
+scheme is a pyramid, and is quite illegal here in Il.  Anyone for prosecution?
+
+Greeny
+
+      [Abuses of the BITNET and USENET RISKS addresses have happened
+      before, although they could easily be blocked were it not for the
+      intentional sandbox orientation.  Fortunately for the rest of 
+      us, we did not see the abuse.  The author did apologize to me
+      that it was not intentional, however...   PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.13
+************************

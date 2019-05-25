@@ -1,0 +1,584 @@
+Subject: RISKS DIGEST 11.48
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 18 April 1991  Volume 11 : Issue 48
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+US Gov't is not careful with its supplies (Garrett Wollman)
+Trap doors and such (Jerry Leichter)
+Re: S. 266 (Steve Bellovin, Bill Murray [2], Brint Cooper)
+On Toffler (Rob Kling)
+Simulation: Minus heart disease, etc... (Gregory G. Woodbury)
+Social Engineering (CERT Advisory)  [more password scams]
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 11, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ FTPs may differ; e.g., UNIX prompts for username and password.  
+ If you cannot access "CRVAX.SRI.COM", try Internet address "128.18.10.1".
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Wed, 17 Apr 91 7:58:13 GMT-6:40
+From: wollman@emily.UVM.EDU (Garrett Wollman)
+Subject: US Gov't is not careful with its supplies
+
+[Related to me by my father, who works for the Federal Courts.  -GW]
+
+On Monday, April 15, a truck containing thousands of dollars worth of US
+Government forms, stationery, and supplies (250 line-items, as it happened) was
+delivered to the US District Court in Burlington, Vt.  At about the same time,
+five small items ordered by the court were delivered to the US Mint in San
+Francisco.  Neither office got what it needed--"did you say *six* paper
+cutters?"
+
+How did this happen?  It turned out, on further investigation, that there is a
+very large flaw in the computerized ordering system the General Services
+Administration uses for Government offices to enter their supply orders.  When
+logging in, the user is required to enter a location code and a password.
+However, it seems that the program *never bothered to check* whether the
+password (which was, of course, valid) corresponded to the location code that
+was entered.  Thus, anyone who has access to this system could literally cause
+millions of dollars of equipment to be shipped--and billed--to another agency
+which doesn't need or want it, without anyone being the wiser until the trucks
+pull in.
+
+The cause of our error?  A single letter in the location code was changed from
+'c' to 'd'.
+
+Garrett A. Wollman - wollman@emily.uvm.edu
+
+------------------------------
+
+Date: Wed, 17 Apr 91 12:23:34 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: Trap doors and such
+
+Bill Murray dislikes my claim that S. 266 would not require "trap doors", and
+goes on to long philosophical discussions of whether one should trust the
+government.
+
+Let's try and keep the issues separate.
+
+	a)  The phrase "trap door", as used in computer science, has a
+		fairly specific referent:  It is a technique for getting
+		around a security provision in a system, inserted into
+		that system by its designers, of which the user of the
+		system is generally unaware.
+
+		A cryptographic system based on a central authority that
+		issues keys does NOT have a trap door.  It is plain to
+		every user of the system that the issuing authority has
+		access to the key.
+
+		Beyond the difference in knowledge, there is another
+		quite significant distinction:  A trap door is a general
+		mechanism.  Knowledge of the trap door may leak out, or
+		an outside party may discover the trap door on its own.
+		Once that knowledge is out, ALL users of the system have
+		been compromised.  This makes a trap door an extremely
+		dangerous thing to have in a cryptosystem.
+
+		On the other hand, compromise of a given user's key by
+		the central authority only compromises that given user's
+		security.  Yes, the central authority adds one additional
+		place for compromise to occur.  However, there is no analog
+		in this setup to a third party finding the trap door:  The
+		only thing he can do is find the key, i.e., make a tradi-
+		tional attack on the cryptosystem.
+
+	b)  There is a difference between the government HAVING THE CAPA-
+		BILITY to decrypt your private mail, and its actually
+		choosing to do so.  The government today has the capability
+		to tap your phone, intercept your mail, plant bugs in your
+		office, and so on.  Your ONLY protection from such actions
+		(and it's certainly a protection that has at many times proved
+		insufficient) are the legal limitations on what the government
+		may do.
+
+	c)  As a result of (b), I'll repeat:  Truly strong widely-available
+		cryptosystems would provide a capability that no one in
+		history has ever really had:  The ability to shield communi-
+		cations and records in a way that the government cannot
+		get around, whether or not it is bound by law.
+
+Whether, on balance, we wish to provide a capability as in (c) is worth
+debating.  There are strong arguments on both sides.  But a rational debate on
+these issues isn't possible unless we begin by being clear about what the
+choices actually are.
+ 					 -- Jerry
+
+------------------------------
+
+Date: Wed, 17 Apr 91 14:17:17 EDT
+From: smb@ulysses.att.com
+Subject: Re: S. 266
+
+I think we should separate any discussion of S. 266 from discussion of the
+secure telephone units (STU-III) that NSA is willing to let its friends buy.
+Paranoia aside, there are sound technical reasons, or at least justifications,
+for some of the decisions made by NSA (there -- I've uttered the Name) in the
+design of the new cryptogear.  And there are reasons to doubt that NSA has
+quite as much control of the key space as has been portrayed; if there's a
+trapdoor, it's more subtle.  I'll try to explain what little I know without
+straying into material more suited to sci.crypt.
+
+I should preface my comments with a few disclaimers.  First, I don't really
+know that much about what I'm talking about; I've never had (and don't want)
+any sort of security clearance.  Second, very little about this system has been
+disclosed to the public.  For the most part, those who do know something aren't
+talking, even if they are reading this.  (And some probably are reading RISKS,
+often quite legitimately.  The parent organization of NCSC is not classified
+information....)  For the most part, my information about the secure phones
+comes from Diffie's paper ``The First Ten Years of Public Key Cryptography'',
+Proc. IEEE 76,5, May, 1988; other information comes from Aviation Week, June 2,
+1986 and Feb 27, 1989.
+
+There is little doubt that public-key technology is used for key distribution.
+Among other useful properties, this means that the actual session keys are
+generated randomly by the STU-IIIs themselves, for each conversation, and no
+permanent record of them exists.  NSA's key distribution center is manifestly
+not involved in supplying such keys.  Rather, its role appears to be limited to
+issuing and renewing the public-key certificates used for authentication, as
+opposed to secrecy.  They certainly could issue themselves bogus certificates
+to allow them to impersonate any user, but that's a different issue entirely.
+(The KDC might be involved in authorizing pairs of individuals to talk; I'm not
+sure.  I'd welcome any (public) information on that topic.  A revoked
+certificate list is definitely maintained by the KDC; some references indicate
+that this list is consulted on every call, though that seems unwieldy.)
+
+Next, it strikes me as highly improbable that the actual encryption algorithm
+used contains trap doors.  That's just too big a risk to take.  Those phones,
+in some versions, are rated for top-secret traffic; NSA cannot assume that its
+opponents (whomever they may be) are incompetent cryptanalysts.  Nor would they
+take the risk that one defection could blow the entire secure phone network.
+If there is a back door, I'd speculate (note: *speculate*) that it's more along
+the lines of the ``key-or'' techniques discussed by Gifford in ``Cryptographic
+Sealing for Information Secrecy and Authentication'' (CACM 25,4, April 1982),
+or perhaps Shamir's multipart keys (``How to Share a Secret'', CACM 22,11,
+November 1979).
+
+Furthermore, there are often valid technical reasons for a restricted key
+space.  DES itself has a handful of weak and semi-weak keys.  Historically, the
+M-209 cipher machine used by the U.S. Army during World War II had a number of
+restrictions on key selection.  (``Cipher Systems'', Beker and Piper.)  These
+restrictions are often inherent in the design of an otherwise-excellent
+cryptosystem.  Again, I'll use DES as an example.  The first step in employing
+DES is to expand the 56-bit key into a ``key schedule'' of 16 48-bit subkeys.
+The key schedule only has 56 bits of information; an obvious way to try to
+strengthen DES is to let the user specify all 768 bits.  Remarkably enough,
+that doesn't work nearly as well as might be expected -- among other things,
+Biham and Shamir (Crypto '90, I think) showed that that variant of DES was only
+slightly stronger than the standard version.  And you'd likely lose other
+valuable properties, such as independence of the key bits.  In DES, if you flip
+one key bit, you'll (statistically) invert half of the output bits for a given
+plaintext.  I doubt that that's true if you change individual subkey bits.
+
+Incidentally, it also seems apparent now that NSA actually strengthened DES
+against outside attacks.  While they may have buried a trap door in the
+S-boxes, they also produced one that's very resistant to the Biham-Shamir
+attack.  Regardless of whether or not they can now crack DES (and there's some
+reason to think that they can, even if they couldn't 15 years ago), they did do
+a credible job of helping folks protect their secrets from other opponents.
+
+If the equipment is really as good as I say it is, why do I think NSA runs the
+KDC?  Simply because the equipment really is that good, and they want to make
+sure that only their friends have that quality of encryption gear.  NSA, as an
+organization, has at several different goals: protecting U.S. confidential
+information, reading foreign traffic, and -- maybe -- reading as much domestic
+traffic as they can.  While deploying weak cryptosystems furthers the latter
+two goals, it directly conflicts with the first.  They won't give up that
+mission lightly.
+
+To summarize, while there's ample reason to be suspicious of NSA's motives,
+either in general or with respect to S.266 or the secure phones, I don't think
+the evidence presented supports the conclusions drawn.  (Of course, there's
+always Nixon's Law: just because you're paranoid doesn't mean they aren't out
+to get you....)
+                    		--Steve Bellovin
+
+------------------------------
+
+Date:  Wed, 17 Apr 91 14:44 EDT
+From: WHMurray@DOCKMASTER.NCSC.MIL
+Subject:  Re: S. 266
+
+>I think we should separate any discussion of S. 266 from discussion of the
+>secure telephone units (STU-III) that NSA is willing to let its friends buy. 
+
+Steve, okay.  I am not sure that they are not related, but I will agree
+to the separation for sake of orderly argument.
+
+However, if you are thinking of Jerry Leichter's posting to RISKS and my
+response, we did not have STU-III in mind.  We were talking about a different
+proposal; one that was proposed as a replacement for the DES in commercial data
+applications.  While it had many of the same properties, and may have shared
+some origins, it was different.
+
+William Hugh Murray, Information System Security, Consultant to Deloitte &
+Touche Wilton, Connecticut 203-966-4769
+                                        
+------------------------------                                        
+                                        
+Date:  Wed, 17 Apr 91 14:58 EDT
+From: WHMurray@DOCKMASTER.NCSC.MIL
+Subject:  Re: S. 266
+
+Steve, my original reply stands.  We were not talking about STU-III and your
+new reply, if anything is more restricted to that than the original.  I think
+that there may be some small errors in your response, and I think that you
+insert some discussion that is not relevant to Jerry's point or my rebuttal.
+However, I am not moved to a response.
+                                                William Hugh Murray
+
+------------------------------
+
+Date:     Mon, 15 Apr 91 22:44:09 EDT
+From: Brinton Cooper <abc@BRL.MIL>
+Subject:  [WHMurray: Status of S. 266]
+
+NO!  NO!  Mr Biden of DELAWARE, Please!!!   [not Maryland]
+
+------------------------------
+
+Date: Thu, 18 Apr 91 09:24:16 -0700
+From: Rob Kling <kling@ics.uci.edu>
+Subject: On Toffler
+
+I just saw an enthusiastic posting about Alvin Toffler's books "Future Shock"
+and "The Third Wave" on RISKS. Toffler's a provocative and popular journalist.
+But I recommend that readers of RISKS read him VERY critically. Toffler's Third
+Wave is a technologically utopian treatise whose assumptions undermine the
+kinds of social realism which are essential commentaries on RISKS. In Toffler's
+Third Wave, there would be no need for a RISKS!
+
+I see some value to utopian and anti-utopian analyses. But technological
+utopianism is so seductive to technologists, and dangerous (IMHO), that we
+should be aware of how its rhetoric "works."
+
+I've written about the character of technological utopianism, anti-utopianism,
+and social realism as genres of analysis which give selective insight into
+issues of computerization, but which also have important systematic
+limitations, in:
+
+     "Reading 'All About' Computerization: Five Common
+     Genres of Social Analysis" in Directions in Advanced
+     Computer Systems, 1990 Doug Schuler (Ed.). Norwood,
+     NJ:Ablex Pub. Co. (in press) and 
+
+my new book, 
+
+     "Computerization and Controversy: Value Conflicts and
+     Social Choices" (co-edited with Chuck Dunlop).
+     (Academic Press, 1991).
+
+I'm attaching a commentary Toffler's "The Third Wave" from "Computerization and
+Controversy." The following paragraphs are from the introduction to a section
+I, which examines Technological Utopianism and Technological Anti-Utopianism.
+
+      ====================================================
+
+Alvin Toffler's best seller, The Third Wave, helped stimulate popular
+enthusiasm for computerization. Toffler characterized major social
+transformations in terms of large shifts in the organization of society, driven
+by technological change.  The "Second Wave" was the shift from agricultural
+societies to industrial societies. Toffler contrasts industrial ways of
+organizing societies to new social trends that he links to computer and
+microelectronic technologies. He is masterful employing succinct breathless
+prose to suggest major social changes.  He also invented terminology to help
+characterize some of these social changes -- terms like "second wave", "third
+wave", "electronic cottage", "infosphere", "technosphere", "prosumer",
+"intelligent environment", etc.  Many of Toffler's new terms did not become
+commonly accepted.  Even so, they help frame a seductive description of social
+change.  These lines from his chapter, "The Intelligent Environment" illustrate
+his approach. (Toffler devoted ONLY ONE PARAGRAPH in his chapter to possible
+problems of computerization.)
+
+     Today, as we construct a new info-sphere for a Third Wave
+     civilization, we are imparting to the "dead" environment
+     around us, not life, but intelligence. A key to this
+     revolutionary advances, of course, the computer (Toffler,
+     1980:168) . . . .
+
+     As miniaturization advanced with lightning rapidity, as
+     computer capacity soared and prices per function plunged,
+     small cheap powerful minicomputers began to sprout
+     everywhere. Every branch factory, laboratory, sales office,
+     or engineering department claimed its own . . . .  The
+     brainpower of the computer . . . was "distributed." This
+     dispersion of computer intelligence is now moving ahead at
+     high speed (Toffler, 1980:169).
+
+     The dispersal of computers in the home, not to mention their
+     interconnection in ramified networks, represents another
+     advance in the construction of an intelligent environment. 
+     Yet even this is not all.  The spread of machine
+     intelligence reaches another level altogether with the
+     arrival of microprocessors and microcomputers, those tiny
+     chips of congealed intelligence that are about to become a
+     part, it seems, of nearly all the things we make and use . .
+     . . (Toffler, 1980:170)
+
+     What is inescapably clear, however, whatever we choose to
+     believe, is that we are altering our infosphere fundamental-
+     ly . . . we are adding  a whole new strata of communication
+     to the social system.  The emerging Third Wave infosphere
+     makes that of the Second Wave era -- dominated by its mass
+     media, the post office, and the telephone -- seem hopelessly
+     primitive by contrast. . . . (Toffler, 1980:172)
+     In all previous societies, the infosphere provided the means
+     for communication between human beings. The Third Wave
+     multiplies  these means. But it also provides powerful
+     facilities, for the first time in history, for machine-to-
+     machine communication, and, even more astonishing, for con-
+     versation between humans and the intelligent environment
+     around them. When we stand back and look at the larger
+     picture, it becomes clear that the revolution in the info-
+     sphere is at least as dramatic as that of the technosphere -
+     - in the energy system and the technological base of soci-
+     ety. The work of constructing a new civilization is racing
+     forward on many levels at once. (Toffler, 1980:177--178).
+     [(pages from paperback edition of 1980].
+
+Toffler's breathless enthusiasm can be contagious -- but it also stymies
+critical thought.  He illustrates changes in the infosphere with The Source --
+a large commercial computer-communication and messaging system which has
+thousands of individual and corporate subscribers.  (Today, he could multiply
+that example with the emergence of competing commercial systems, such as
+CompuServe, Genie, and Prodigy, as well as tens of thousands of inexpensive
+computerized bulletin boards that people have set up in hundreds of cities and
+towns.)  However, there have been a myriad of other changes in the information
+environment in the United States which are not quite as exciting to people who
+would like to see a more thoughtful culture.
+
+For example, television has become a a major source of information about world
+events for many children and adults.  (Many children and adults report that
+they watch television for well over 5 hours a day.)  Television news, the most
+popular "factual" kind of television programming, slices stories into
+salami-thin 30 to 90-second segments.  Moreover, there is some evidence that
+functional illiteracy is rising in the United States (Kozol, 1985).  The
+problems of literacy in the United States are probably not a byproduct of
+television's popularity.  But it is hard to take Toffler's optimistic account
+seriously when a large fraction of the population has trouble understanding key
+parts of the instruction manuals for automobiles and for commonplace home
+appliances, like televisions, VCRs, and microwave ovens.
+
+Toffler opens up important questions about the way that information
+technologies alter the ways that people perceive information, the kinds of
+information they can get easily, and how they handle the information they get.
+Yet his account -- like many popular accounts -- caricatures the answers by
+using only illustrations that support his generally buoyant theses.  And he
+skillfully sidesteps tough questions while creating excitement (e.g., "The work
+of constructing a new civilization is racing forward on many levels at once.").
+
+              =====================================
+
+Utopian images permeate the literatures about computerization in society.
+Unfortunately, we have found that many utopian writers distort social
+situations to fit their preferences .....  We are not critical of utopian
+ideals concerned with a good life for all. The United States was founded on
+premises that were utopian premises in the 1700s. The Declaration of
+Independence asserts that "all men are created equal" and that they would be
+guaranteed the right to "life, liberty, and the pursuit of happiness".
+
+Although utopian visions often serve important roles in stimulating hope and
+giving people a positive sense of direction, they can mislead when their
+architects exaggerate the likelihood of easy and desirable social changes. We
+are particularly interested in what can be learned, and how we can be misled,
+by a particular brand of utopian thought -- technological utopianism.  This
+line of analysis places the use of some specific technology -- computers,
+nuclear energy, or low-energy low-impact technologies -- as the central
+enabling element of a utopian vision. Sometimes people will casually refer to
+exotic technologies -- like pocket computers that understand spoken language --
+as "utopian gadgets." Technological utopianism does not refer to a set of
+technologies. It refers to analyses in which the use of specific technologies
+plays a key role in shaping a utopian social vision.  In contrast,
+technological anti-utopianism examines how certain broad families of technology
+facilitate a social order that is relentlessly harsh, destructive, and
+miserable.
+
+[From Introduction to Section I of Computerization and Controversy: Value
+Conflicts and Social Choices Charles Dunlop and Rob Kling (Editors). Academic
+Press, Boston, 1991.]
+
+Rob Kling, Information & Computer Science, University of California - Irvine
+
+------------------------------
+
+Date: Thu, 18 Apr 1991 02:15:45 GMT
+From: ggw@wolves.uucp (Gregory G. Woodbury)
+Subject: Simulation: Minus heart disease, etc...
+
+>From: [anonymous]
+>
+>New Heart Disease Study Issued
+>   BOSTON (AP) [14 Apr 91]
+>   Completely eliminating heart disease, the nation's leading killer, would
+>increase the average 35-year-old American's life span by just three years, a
+>new study concludes.
+	:
+>   [What are the computer-related risks, you ask?  Here are people using
+>   computer models to yield results that could have drastic impact on health
+>   care and research funding...]
+>
+>     [But the results may be quite sound...  On the other hand, the elimination
+>     of heart disease would undoubtably have many concomitant effects, which
+>     overall probably could dramatically increase longevity.  PGN]
+
+	As System Programmer for one of the leading competitors to the
+program cited in the Circulation article I would like to comment on the
+AP article and the problems that the general press has with statistics.
+
+	The readers of RISKS (I am sure) are aware of the difference between
+the median and the mean.  The popular press is much less prone to keep the fine
+distinction in mind when writing.
+
+	We have a set of programs that allow us to deal with similar public
+health interventions and the resulting population shifts (I think that our
+population stuff is unique).  Both their program and our program create
+actuarial "life tables" which trace a group of individuals over time and
+calculate various statistics on the basis of mathematical models.
+
+	Briefly, our results tend to agree with theirs in most categories.  The
+main thing to note, though, is that the shift of three years or so is in median
+expectation of life!  Not the mean life expectancy at the starting age.  What
+this means is that the projections are ONLY useable for populations and mean
+nothing applied to individuals.
+
+	It is interesting to note that this "insignificant" gain in median life
+expectancy produces a dramatic change in the population pyramid in the future.
+For example, in a paper to be published in one of the gerontological journals,
+we are showing results that are more than twice as large for males and females
+over age 65 in the year 2060 than the census bureau "high" figures.
+
+	All the details (of course) are at the office right now (and I'm at
+home).
+
+	The RISKs are even more striking when one knows what use these models
+are being put to for future policy making.  Our models are used by NIA(NIH) and
+WHO(UN) in providing information about future population structures here and
+abroad.  The models get more and more complex and draw on larger and larger
+data sets, and (I suspect) that we run on the verge of some kind of chaotic
+condition where the results are wildly sensitive to input conditions.  We DO do
+some checking for non-chaotic behaviour in the models, but there could be some
+places in the function space that are chaotic that we have not seen.
+
+	Other models that I help program and compute on my work network are
+used in other fields of medical economics (like HCFA (medicare) and SS) to
+project and analyze the results of the Medicare Prospective Payment System and
+the Diagnosis Related Groups (DRGs) for budget projections and changes in the
+systems.
+
+	Certainly, my office is NOT the only think tank that advises HCFA and
+NIA and WHO, but ALL of the advising grantees and contractors use computer
+modelling with varying degrees of sophistication.  From simple LOTUS-1-2-3 and
+Excell spreadsheets on DOS micros, to large scale economic models running on
+supercomputers, computing power underlies all of modern economic medical
+planning.
+
+Gregory G. Woodbury @ The Wolves Den UNIX, Durham NC ggw%wolves@mcnc.mcnc.org
+           UUCP: ...dukcds!wolves!ggw   ...mcnc!wolves!ggw          
+
+------------------------------
+
+Date: Thu, 18 Apr 91 16:57:35 EDT
+From: CERT Advisory <cert-advisory-request@cert.sei.cmu.edu>
+Subject: CERT Advisory - Social Engineering
+
+CA-91:04                       CERT Advisory
+                               April 18, 1991
+			     Social Engineering
+
+DESCRIPTION:
+
+The Computer Emergency Response Team/Coordination Center (CERT/CC) has received
+several incident reports concerning users receiving requests to take an action
+that results in the capturing of their password.  The request could come in the
+form of an e-mail message, a broadcast, or a telephone call.  The latest ploy
+instructs the user to run a "test" program, previously installed by the
+intruder, which will prompt the user for his or her password.  When the user
+executes the program, the user's name and password are e-mailed to a remote
+site.  We are including an example message at the end of this advisory.
+
+These messages can appear to be from a site administrator or root.  In reality,
+they may have been sent by an individual at a remote site, who is trying to
+gain access or additional access to the local machine via the user's account.
+
+While this advisory may seem very trivial to some experienced users, the fact
+remains that MANY users have fallen for these tricks (refer to CERT Advisory
+CA-91:03).
+
+IMPACT:
+
+An intruder can gain access to a system through the unauthorized use of the
+(possibly privileged) accounts whose passwords have been compromised.  This
+problem could affect all systems, not just UNIX systems or systems on the
+Internet.
+
+SOLUTION:
+
+The CERT/CC recommends the following actions:
+
+    1)  Any users receiving such a request should verify its authenticity
+        with their system administrator before acting on the instructions
+        within the message.  If a user has received this type of
+        request and actually entered a password, he/she should immediately
+        change his/her password to a new one and alert the system 
+        administrator.
+
+    2)  System administrators should check with their user communities
+        to ensure that no user has followed the instructions in such
+        a message. Further, the system should be carefully examined for
+	damage or changes that the intruder may have caused.  We also
+	ask that you contact the CERT/CC.
+
+    3)  The CERT/CC urges system administrators to educate their users
+	so that they will not fall prey to such tricks.
+
+SAMPLE MESSAGE as received by the CERT (including spelling errors, etc.)
+
+     OmniCore is experimenting in online - high resolution graphics
+     display on the UNIX BSD 4.3 system and it's derivitaves [sic]. But, we     
+     need you're help in testing our new product - TurboTetris.
+     So, if you are not to busy, please try out the ttetris game in your
+     machine's /tmp directory. just type:
+
+     /tmp/ttetris
+
+     Because of the graphics handling and screen-reinitialazation [sic], you
+     will be prompted to log on again. Please do so, and use your real password.
+     Thanks you for your support. You'll be hearing from us soon!
+
+                 OmniCore
+
+END OF SAMPLE MESSAGE
+
+If you believe that your system has been compromised, contact CERT/CC via
+telephone or e-mail.
+
+Computer Emergency Response Team/Coordination Center (CERT/CC), Software
+Engineering Institute, Carnegie Mellon University, Pittsburgh, PA 15213-3890
+
+412-268-7090 24-hour hotline: CERT/CC personnel answer 7:30a.m.-6:00p.m. EST,
+on call for emergencies during other hours.     E-mail: cert@cert.sei.cmu.edu
+
+Past advisories and other computer security related information are available
+for anonymous ftp from the cert.sei.cmu.edu (128.237.253.5) system.
+
+                        [Don't forget Tom Lehrer's "Don't write naughty words
+                        on walls that you can't spell.  "sic"s added by PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 11.48
+************************

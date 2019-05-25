@@ -1,0 +1,402 @@
+Subject: RISKS DIGEST 9.91
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Sunday 13 May 1990   Volume 9 : Issue 91
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Hubble Telescope pointing in the wrong direction (Raymond Chen)
+  "Feds Pull Plug On Hackers" (James K. Huggins)
+  Airline booking cancellation (Pete Mellor)
+  Simple tone dialler bypasses British Telecom charging (Nigel Roberts)
+  Risks of caller identification (David A. Honig)
+  Avoiding ANI by Dialing 1-900 (Gary McClelland)
+  Duplicate Mailings of RISKS 9.89 -- BITNET (Emmett Hogan)
+  Re: Hazards of laser printers (Paul DuBois, Peter Jones)
+  IFIP Conference Call for Papers (Rick Schlichting)
+  CALL FOR PAPERS: Computing and Ethics (Donald Gotterbarn)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.00 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Fri, 11 May 90 12:53:29 PDT
+From: raymond@bosco.Berkeley.EDU (Raymond Chen)
+Subject: Hubble Telescope pointing in the wrong direction
+
+[excerpted from the San Francisco Chronicle, 10 May 1990]
+
+   ... Jean Olivier, NASA's deputy manager of the Hubble project, said that
+  when they designed pointing instructions for the telescope, astronomers
+  relied on star charts made in the 1950s.  But the stars have moved since
+  then from Earth's vantage point.  The mistake was made when the scientists
+  factored in the extent of that movement.
+    They corrected in the wrong direction and "instead of subtracting it they
+  added it or vice versa," Olivier said. ...
+
+[end of excerpt]
+
+However, I've heard that the Daily Telegraph attributed the miscalculation
+to programmer error; a programmer mistyped the addition as a subtraction.
+
+I'm more likely to believe the Chronicle's report, as the media nowadays prefer
+to attribute errors to "computer error" if they can; otherwise they'll try to
+attribute it to "programmer error".  Saying that the scientists messed up is
+much less exciting-sounding and doesn't sell as many papers.
+                                                                   --rjc
+
+------------------------------
+
+Date:  Fri, 11 May 90 12:26:08 -0400
+From: James K. Huggins <huggins@dip.eecs.umich.edu>
+Subject: "Feds Pull Plug On Hackers": Newspaper Article
+
+>EXCERPTED From The Detroit News, Thursday, May 10, 1990, Section B, p.1:
+
+FEDS PULL PLUG ON HACKERS
+Computer-fraud raid hits two homes in Michigan
+
+By Joel J. Smith, Detroit News Staff Writer
+
+Secret Service agents got a big surprise when they raided a Jackson-area home
+as part of an investigation of a nationwide computer credit card and telephone
+fraud scheme.  They found a manual that details how almost anybody can use a
+computer to steal.  It also describes how to avoid detection by federal agents.
+On Wednesday, James G. Huse, Jr., special agent in charge of the Secret Service
+office in Detroit, said the manual was discovered when his agents and Michigan
+State Police detectives broke into a home in Clark Lake, near Jackson, on
+Tuesday.  Agents, who also raided a home in Temperance, Mich., near the Ohio
+border, confiscated thousands of dollars in computer equipment suspected of
+being used by computer buffs -- known as hackers -- in the scheme.
+
+The raids were part of a national computer fraud investigation called Operation
+Sundevil in which 150 agents simultaneously executed 28 search warrants in 16
+U.S. cities.  Forty-two computer systems and 23,000 computer disks were seized
+across the country.  The nationwide network reportedly has bilked phone
+companies of $50 million.  Huse said the Secret Service has evidence that
+computers in both of the Michigan homes were used to obtain merchandise with
+illegally obtained credit card numbers.  He said long-distance telephone calls
+from the homes also were billed to unsuspecting third parties.
+ 
+There were no arrests, because it was not known exactly who was using the
+computers at the homes.  Huse also said there was no evidence that the suspects
+were working together.  Rather, they probably were sharing information someone
+had put into a national computer "bulletin board".  [...]
+
+------------------------------
+
+Date: Fri, 11 May 90 01:36:59 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Airline booking cancellation (Now there's a funny thing...!)
+
+Narrative in a nutshell:
+
+Requirement: Fly to Toulouse from London late on Sunday 6th May (but not
+too late to get a good French meal!). Install and check software for demo at
+workshop in 2 weeks' time.  Return afternoon of Monday 7th May.
+
+Implementation: Travel agent books Dan-Air flight. Sends tickets in folder
+with "6/5/90" scribbled on cover (no proper itinerary provided). Understand
+from secretary flight is 1430 from Gatwick.
+
+Bug: Check ticket at 0530 Sunday morning. (Academic life isn't as relaxed as it
+used to be pre-Thatcher :-) Flight actually booked for 1430 Saturday 5th May.
+Ring travel agent in panic. Agent apologises for cock-up. Promises no problem:
+rebook flight for 1430 Sunday, flight nowhere near full. Grateful relief. Begin
+to feel sorry I woke his wife up so early.
+
+Operation: Uneventful flight out. Nice dinner. Software works (!! :-). Arrive
+Toulouse airport for return flight.
+
+Another bug: "You don't seem to be booked on this flight, monsieur! But I see
+that your ticket is valid. No problem! The flight is not full. We can book you
+a seat."
+
+"But how the..."
+
+"Mais oui! If you did not show up for the outward flight, your return booking
+would be automatically cancelled. But as it happens, we have spare seats, so
+do not worry!"
+
+Diagnosis: Minor communications problem, aggravated by Dan-Air's natural
+assumption that someone who hadn't bothered to turn up to fly *out* to Toulouse
+wouldn't be turning up *in* Toulouse to fly *back*.
+
+But wait...
+
+In-depth diagnosis (Courtesy of Ralph Adam, offering consultancy at the usual
+City University rate in the Saddlers' Bar, Thursday 11th May, late):
+
+Dan-Air use the Texas Air Services airline booking system "System 1". (This is
+one of the 'big four', all based in the US, and is owned by US Airlines.)
+Built into this database is a requirement that a return flight be reconfirmed
+after departure on the outward leg of the journey. The reason is to prevent
+passengers in the US buying a return ticket (cheaper than a single in some
+cases) and using the return half only. My problem on return had nothing to do
+with Dan-Air. It was a side-effect of an attempt to close a loophole in the
+ticket price structure of various US airlines.
+
+The database is physically situated in the US. On-line access for seat booking
+is, well, on-line. Any other information retrieval requires 3 to 4 weeks of 
+bureaucratic delay. If the flight had been full, if I had been stuck in
+Toulouse for a couple of days, and if I had raised hell (Oh, no! Not another
+hot oysters in champagne and steak tartare at the Brasserie des Beaux Arts!
+'Allo, 'allo! C'est moi encore! Il n'y avait plus de places sur l'avion.
+Ah, ton mari! Quelle bonne surprise! :-), it might have taken a month to answer
+my query about why the return flight had been cancelled (assuming the travel
+agent and airline didn't already know!).
+
+I am assured by Ralph that this sort of thing is old hat to veteran readers
+of RISKS, but if anyone is interested in the economics of airline booking
+systems, the following should be a good read:
+
+Adam R.: "A Licence to Steal", J. of Information Science, Iss. 2, 1990
+
+Peter Mellor, Centre for Software Reliability, City University, 
+Northampton Square, London EC1V 0HB  Tel.: +44 (0)71-253-4399 Ext. 4162/3/1
+
+------------------------------
+
+Date: Thu, 10 May 90 08:09:11 PDT
+From: Nigel Roberts <roberts@egse.enet.dec.com>
+Subject: Simple tone dialler bypasses British Telecom charging
+
+The following is extracted from a front page article in today's DAILY MIRROR.
+The 2 inch high headline reads:
+
+			F R E E P H O N E
+			T H E   W O R L D
+
+
+"BRITISH TELECOM is being conned out of millions by fiddlers making free
+international calls ... using a BT gadget.
+
+Shocked Telecom chiefs secretly tried to withdraw the GBP 9.95 "magic box"
+which is supposed to be used with phone answering machines -- a month ago.
+
+But the DAILY MIRROR can disclose they are still on sale in BT stores."
+
+...
+
+"And there is a thriving black market for them on street corners and in pubs
+where they are changing hands for up to GBP 1000.  The 3in x 2in device, known
+as a remote interrogator, is designed to enable people to phone home and pick
+up messages from their answering machines.  But cheats have discovered that by
+using it in some phone boxes and pressing two vital numbers, they can call
+anywhere in Britain or the world without charge."
+
+				---
+
+There's a full colour photograph of the "device" on the front-page. It 
+appears to be a simple 12-key DTMF tone dialler. I seriously doubt that they
+are changing hands for GBP 1000, but if they are, I have this bridge that
+their purchasers might also be interested in ....
+
+The risk management (or utter lack of it) in this case is so obvious that I'll 
+refrain from adding any further comment.
+
+Nigel Roberts.                                       Tel: +44 860 57 860 0
+
+------------------------------
+
+Date: Thu, 10 May 90 09:48:33 -0700
+From: "David A. Honig" <honig@bonnie.ICS.UCI.EDU>
+Subject: risks of caller identification
+
+I recently had an unpleasant taste of the disadvantages of the caller
+identification that may be more widespread soon.  
+
+A few weeks ago I called the university police's business line from my
+office phone and asked a few minutes of questions about how to find
+out about outstanding warrants (I had heard of someone getting
+arrested while renewing his driver's liscence).  I informed the
+officer that I spoke with that this was entirely moot. After receiving
+my replies, I thought that was the end of it. 
+
+Thus you can imagine my surprise and annoyance to find that two
+uniformed, armed officers and their sargeant came to my workplace
+(having located that using the campus centrex's caller-id ability on
+phones with appropriate displays), spoke with my coworkers, knocked on
+my office door, and via suprise and intimidation verified my ID. This
+permitted them to run a warrant check on me.  I was clean, which was
+no surprise to me.  They skulked away shortly thereafter. 
+
+Conversations with the chief of police indicated that the rather
+zealous instigating officer's behavior was within "acceptable" bounds,
+and if you raise "enough" suspicion (on a slow day?), this constitutes
+justification for nosing about your workplace.  
+
+The RISK is that the officer wouldn't have been able to easily trace
+the number except for the abilities of the private exchange. 
+
+------------------------------
+
+Date: 12 May 90 11:42:00 MDT
+From: "Gary McClelland" <gmcclella@clipr.colorado.edu>
+Subject: Avoiding ANI by Dialing 1-900    (Gary McClelland)
+
+Summary of report on All Things Considered (NPR), Friday, May 11, 1990:
+
+Private LInes, Inc. of Beverly Hills provides a telephone service for those
+wanting to avoid automatic number indentification.  You simply call a 900
+number which then lets you call out through Private Lines WATS numbers.  ANI at
+the receiving end of course then displays only the Beverly Hills number of
+Private Lines.  NPR interviewed president of Private LInes who defended need
+for such a service.  He of course said that the service was not intended to
+help obscene callers and their rates would make obscene calling through Private
+LInes a very expensive habit ($2/minute, I think).  (NPR noted that ANI had
+already resulted in several arrests of obscene callers in the Atlantic Southern
+area where ANI is heavily promoted for that purpose.)  He cited the following
+legitimate reasons for avoiding ANI and any billing record of the numbers
+called.  (1) Boss is quietly working on a merger deal and doesn't want
+secretaries and accountants in the firm noticing a sudden increase in calls to
+a particular other firm. (2) Separated spouse wants to call kids but doesn't
+want spouse to know from where he or she is calling.  (3) Caller to crisis
+line or crime tip line wants to guarantee annonymity.
+
+Gary McClelland		gmcclella@clipr.colorado.edu
+
+------------------------------
+
+Date: Mon, 07 May 90 14:17:49 -0700
+From: Emmett Hogan <hogan@csl.sri.com>
+Subject: Duplicate Mailings of RISKS 9.89
+
+[As root@csl,] I received several replies from people who got two copies of
+RISKS 9.89.  All these people have one thing in common....BITNET !!
+
+I have asked these people for the headers of the RISKS digests in
+hopes of narrowing it down to one listserv machine.
+
+I will keep you up to date on my findings,
+-E-
+
+    [The above problem was clearly a BITNET problem.  Later news indicates the
+    surprise discovery of a lurking CHRON problem that forced another pass
+    over a random sublist when a time-out occurred.  The resulting cleanup --
+    without changes to our sendmail -- has resulted in no duplicate mailing
+    problems on our end for the last four four issues.  Perhaps our main woes
+    are over.  Stay tuned for details.  PGN]
+
+------------------------------
+
+Date: 7 May 90 19:12:59 GMT
+From: bin@primate.wisc.edu (Brain in Neutral)                <Paul DuBois>
+Subject: Re: Hazards of laser printers (RISKS-9.89)
+
+New England Journal of Medicine, 3 May 1990, has a letter to the editor, 
+p. 1323, titled "Laser-printer rhinitis".   
+
+------------------------------
+
+Date: 	Sat, 12 May 90 07:11:55 EDT
+From: Peter Jones <MAINT@UQAM.bitnet>
+Subject:      Photocopier hazards
+
+The purpose of this posting is to thank those who recently posted regarding the
+possible environmental hazards of photocopiers -- and to invite them to repost
+to the SAFETY list at UVMVM!
+
+Peter Jones                    (514)-987-3542
+
+------------------------------
+
+Date: Sun, 6 May 90 22:38:26 MST
+From: "Rick Schlichting" <rick@cs.arizona.edu>
+Subject: IFIP Conference Call for Papers
+
+                           **CALL FOR PAPERS**
+                    Second IFIP Working Conference on
+              DEPENDABLE COMPUTING FOR CRITICAL APPLICATIONS
+                        Can we rely on computers?
+
+                 Hotel Park Tucson, Tucson, Arizona, USA
+                          February 18-20, 1991
+Organized by
+    IFIP Working Group 10.4 on Dependable Computing and Fault Tolerance
+
+This is the second Working Conference on this topic, following a successful
+initial conference held in August, 1989, on the campus of the University of
+California at Santa Barbara (USA). As evidenced by papers that were presented
+and discussed at that meeting, critical applications of computing systems are
+concerned with differing service properties, relating to both the nature of
+proper service and the system's ability to deliver it. These include thresholds
+of performance and real-time responsiveness that demark loss of proper service
+(failure), continuity of proper service, ability to avoid catastrophic
+failures, and prevention of deliberate privacy intrusions. The notion of
+dependability, defined as the trustworthiness of computer service such that
+reliance can justifiably be placed on this service, enables these various
+concerns to be subsumed within a single conceptual framework.  Dependability
+thus includes as special cases such attributes as reliability, availability,
+safety, and security. In keeping with the goals of the previous conference, the
+aim of this meeting is to encourage further integration of theory, techniques,
+and tools for specifying, designing, implementing, assessing, validating,
+operating, and maintaining computer systems that are dependable in the broad
+sense.  Of particular, but not exclusive, interest are presentations that
+address combinations of dependability attributes, e.g., safety and security,
+through studies of either a theoretical or an applied nature.
+
+Submitting a Paper: Five copies (in English) of original work should be
+submitted by August 13, 1990, to the Program Chair:
+
+    John F. Meyer, EECS Department, 2114B EECS Bldg., 
+    The University of Michigan, Ann Arbor, MI 48109-2122, USA
+    Tel:    +(1) 313 763 0037  Fax:    +(1) 313 763 4617 
+    E-mail: jfm@eecs.umich.edu
+
+Papers should be limited to 6000 words, full page figures being counted 
+as 300 words. Each paper should include a short abstract and a list of 
+keywords indicating subject classification. 
+
+Important Dates:
+    Submission deadline: August 13, 1990
+    Acceptance notification: November 25, 1990
+    Camera-ready copy due: January 14, 1991
+
+General Chair
+    R.D. Schlichting
+    The University of Arizona, USA
+Vice-General Chair
+    J.J. Quisquater
+    Philips Research, Belgium
+Program Committee
+    J. Abraham (USA), A. Costes (Fr.), M.C. Gaudel (Fr.), V. Gligor (USA),
+    J. Goldberg (USA), D. Gollmann (FRG), G. Hagelin (Sweden), 
+    H. Ihara (Japan), H. Kopetz (Aus.), J. Lala (USA), C. Landwehr (USA),
+    G. Le Lann (Fr.), J. McDermid (UK), M. Morganti (Italy), 
+    J.M. Rata (Fr.), D. Rennels (USA), J. Rushby (USA), E. Schmitter (FRG),
+    S. Shrivastava (UK), D. Siewiorek (USA), L. Simoncini (Italy), 
+    R. Turn (USA), U. Voges (FRG)
+
+------------------------------
+
+Date: 10 May 90 15:32:17 CDT
+From: gotterbarn@wsuiar.UUCP
+Subject: CALL FOR PAPERS: Computing and Ethics
+
+        The *Journal Of Systems and Software* is preparing
+    a special issue on Computing and Ethics.  Although the
+    major emphasis will be ethical issues faced by the
+    Computing Professional, other subjects will be considered.
+ 
+        Please send your papers by July 1, 1990 to:
+ 
+        Donald Gotterbarn
+        The Wichita State University
+        Computer Science, Box 83
+        Wichita, KS  67208
+
+	Send questions by email to: 
+        gotterbarn@wsuiar.wsu.UKans.EDU, gotterbarn@twsuvax.bitnet
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.91
+************************

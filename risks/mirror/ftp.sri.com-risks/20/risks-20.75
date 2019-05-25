@@ -1,0 +1,453 @@
+precedence: bulk
+Subject: Risks Digest 20.75
+
+RISKS-LIST: Risks-Forum Digest  Sunday 16 January 2000  Volume 20 : Issue 75
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.75.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+More on Pentagon satellite data outage (PGN)
+Credit-card data used for extortion (Steven M. Bellovin)
+British Visa source-code compromised (Frank Markus)
+Greek tax information system experiences black-out (Diomidis Spinellis)
+Berlin Fire Department with Y2K Problem? (Debora Weber-Wulff)
+Kremlin press office Y2K problems (Greg Lastowka via Declan McCullagh)
+Re: Y2K99????? (Drew Davis via Mark Brader)
+Sidekick98 Y2K bug squashed (Michael Froomkin)
+Lookout Outlook! (Bruce Sterling)
+Resume system creates "Profile" for you... without permission (Tom Malaher)
+Woman ordered to pay back four pence (Alan Barclay)
+More on RISKS-20.73 (Clive D.W. Feather)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Sat, 15 Jan 2000 22:21:16 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: More on Pentagon satellite data outage (RISKS-20.72)
+
+We noted in RISKS-20.72 that the Pentagon satellite intelligence system was
+unable to process data for 2.5 hours after the midnight GMT Y2K rollover.
+Apparently the situation was much worse than initially realized.  UPI
+reported on 12 Jan 2000 that the problem was actually self-inflicted,
+resulting from a misguided supposedly preventive software patch in a
+sensitive NRO intelligence program called Talent Keyhole at Fort Belvoir.
+For the next few days, there was only a trickle of data from 5 satellites.
+
+------------------------------
+
+Date: Mon, 10 Jan 2000 14:31:29 -0500
+From: "Steven M. Bellovin" <smb@research.att.com>
+Subject: Credit-card data used for extortion
+
+*The New York Times* today reported an extortion attempt involving credit
+card numbers stolen from online merchant CD Universe.  Someone who called
+himself "Maxim" and claimed to be Russian said that he had copied 300,000
+credit card numbers from their system, and that he would post them on the
+Internet unless he was paid $100,000.  The article quoted the chairman of
+eUniverse, the company that operates the site, as confirming that Maxim did
+indeed have their data.  eUniverse declined to pay the $100,000; Maxim
+posted 25,000 card numbers to a Web site.  Several thousand people
+downloaded the file before it was yanked.
+
+What's interesting, though, is not that this can occur.  In fact, security 
+folks have been warning for years about wholesale theft of card numbers.  But 
+most sites can't or won't do anything about it.  Consider, for example, the 
+security statement currently posted on the cduniverse.com Web site (I saw
+no mention of the incident):
+
+  Security - Is Internet Shopping Safe?
+
+  We have all heard a lot of talk about whether shopping on the internet is
+  safe. The main concern of online shoppers is that their credit card
+  information will somehow end up in the wrong hands. We use Netscape's
+  Secure Commerce Server technology, which encrypts your order information,
+  keeping it private and protected. It's a Netscape technology called "SSL"
+  (Secure Sockets Layer) and it's used by us and all the other major
+  commercial shopping sites, including: The Wall Street Journal, Barnes &
+  Noble Books, FTD Flowers, Microsoft, and Netscape itself. It is actually
+  safer to transmit your credit card info over the Internet than it is to
+  use your credit card around town.
+
+By focusing on transport encryption, they miss the point entirely.  The
+real risk is bulk theft, as has happened here.  Consider the following
+text from their Web site:
+
+  If you have previously placed an order and want to use the same credit
+  card, you can select the "Use previous credit card info" option. You do
+  not need to enter your credit card information unless your credit card
+  expiration date has passed.
+
+By maintaining this information online, they (and many other Web merchants,
+of course) are inviting trouble.
+
+It is tempting to say "use SET", which would provide for digitally-signed
+payment authorization.  Unfortunately, SET may send your credit card number
+to the merchant anyway.  Many stores use credit card numbers as the database
+key for user purchasing patterns; they didn't want to lose the link if SET
+ever took off.  But this means that card-number data still exists on the
+merchant's site somewhere.
+
+The CD Universe security statement concludes with this note:
+
+  What most people don't realize is that shopping with your credit card is
+  actually safer than paying by check. In the event that there is a problem
+  with your purchase, the credit card company will remove the purchase from
+  your bill and the on-line merchant is not paid. In the event that your
+  credit card number is stolen, the credit card companies do not hold you
+  responsible for any unauthorized purchases.
+
+It is, I believe, accurate, though there may still be $50 liability to the
+consumer under U.S. law.  (And they don't say anything about credit card
+numbers belonging to non-Americans, even though they list shipping charges
+for international destinations.)  But *someone* is going to have to swallow
+the fraudulent charges -- and we won't see an overall improvement in
+computer security until the *real* injured parties apply appropriate
+pressure.
+
+  [The NYT article also noted by Scott Lucero.  PGN]
+
+------------------------------
+
+Date: Sun, 16 Jan 2000 09:44:26 -0500
+From: "Frank Markus" <fmarkus@pipeline.com>
+Subject: British Visa source-code compromised
+
+According to an article by Jon Ungoed-Thomas and Stan Arnaud in the *Sunday
+Times* of London for 16 Jan 2000, British hackers have compromised the
+source code for the Visa card system and have sought ransom for it.
+Excerpts from the story which I found online under the headline ``Hacker
+gang blackmails firms with stolen files'' follow:
+
+  Visa confirmed last week that it had received a ransom demand last month,
+  believed to have been for 10M pounds.  "We were hacked into in mid-July
+  last year" [despite layers of firewalls], said Russ Yarrow, a company
+  spokesman.  It is understood the hackers stole critical source code, and
+  threatened to crash the entire system.  Visa's system handles nearly 1
+  trillion pounds of business a year from customers holding 800M Visa cards.
+  No further incursions were detected.  [PGN-ed]
+
+But this begs the question of what they should have done -- if anything --
+after receiving notification that their system had been penetrated.  After
+CD Universe's credit-card database was compromised by a hacker/blackmailer,
+their system was (apparently) shut down temporarily and its customers
+notified (of which I, alas, was one.)  Visa seems to have had no fall back
+plan for this crisis except to call in the police and hope for the best.  If
+the hackers have not disseminated the code more widely, Visa has been very
+lucky and the damage has been controlled.  But how certain can anyone be of
+that?  And how certain can they be that there was only one penetration?
+
+------------------------------
+
+Date: Fri, 14 Jan 2000 13:04:38 +0300
+From: Diomidis Spinellis <dspin@aegean.gr>
+Subject: Greek tax information system experiences black-out
+
+According to the Athens financial newspaper "Naftemporiki" (14 Jan 2000,
+p. 7) the Greek tax information system TAXIS has been down since Tuesday
+January 11th.  All computerised regional state finance offices (DOY) have
+been affected as they are unable to connect to the system's main computer.
+I was personally able to verify this at my local state finance office where
+tax liability certificates were not issued on Wednesday.  According to
+Naftemporiki, the affected services include the provision of tax liability
+certificates, the issue of new tax registry numbers (AFM), and the
+validation of ledgers and receipts.  Many of these services are needed for
+the lawful conduct of business.
+
+According to sources within the ministry (department) of finance, the
+system's hard disk was overloaded by the large number of applications that
+were running on it.  Another source claims that while data was transferred
+from one hard disk to a larger one an error resulted in the loss of all
+data.  The disk (referred to in the article as "the system's main memory")
+has been sent to the United Kingdom to be repaired and to attempt to recover
+the lost data.
+
+Some of the above accounts are contradictory: it is not clear whether the
+disk suffered a catastrophic failure, or the problem is a result of a human
+error.  In any case, the reported attempt to recover data from the disk in
+question suggests that database resiliency, backup and recovery procedures,
+and contingency planning were not adequate.  In addition, it appears that a
+system whose failure can disrupt business, trade, and everyday life of
+millions of citizens (tax liability certificates are needed for many
+important transactions) was not designed to withstand centralised failures.
+
+Diomidis Spinellis, University of the Aegean
+http://kerkis.math.aegean.gr/~dspin
+
+------------------------------
+
+Date: Wed, 12 Jan 2000 12:04:39 +0100
+From: Debora Weber-Wulff <weberwu@tfh-berlin.de>
+Subject: Berlin Fire Department with Y2K Problem?
+
+There has been heated debate in the Berlin newspapers about the fire
+department's computer problems over New Year's. It seems that just after
+midnight the dispatching systems broke, but they broke in an unexpected way:
+they told the dispatchers that an alarm had been given to a fire station,
+when in reality the fire station did not receive the alarm, and kept playing
+cards and wondering why there were no fires this nice New Year's Eve.  [This
+is in itself a very hard to avoid security risk.] At one point an
+exasperated police car drove to a fire station, which was just around the
+corner to ask if they needed an engraved invitation or what?!
+
+The systems also logged fire engines as being somewhere in use when they
+were actually sitting in the fire house, and thus tried to alarm fire
+engines that were further away from the fire.
+
+There has been lots of finger-pointing. The systems were "Y2K-secure"
+because they were tested for this 2 weeks ago. [Gosh, I didn't realize that
+someone had found out how to prove by test that software functions properly!
+-dww] The chief fire fighter had to be called in at about 1.30 am to figure
+out what to do, eventually falling back on very old equipment: people, paper
+and pencil.
+
+The blame has been put on the massive number of calls to the fire department
+during the night, which had overloaded the system. Maybe I ought to invest
+in a second fire extinguisher...
+
+Some on-line articles:
+http://www.BerlinOnline.de/wissen/berliner_zeitung/archiv/2000/0103/lokales/0064/index.html
+http://www.tagesspiegel.de/archiv/2000/01/04/ak-be-kr-13983.html
+http://www.tagesspiegel.de/archiv/2000/01/06/ak-be-st-24269.html
+
+Interesting too the article in August 1999
+http://www.tagesspiegel.de/archiv/1999/08/05/ak-be-st-23279.html 
+where an official says that the fire department is just spreading panic by
+saying that they will be having problems on New Year's Eve...
+
+Prof. Dr. Debora Weber-Wulff, Technische Fachhochschule Berlin
+weberwu@tfh-berlin.de, http://www.tfh-berlin.de/~weberwu/
+
+------------------------------
+
+Date: Fri, 14 Jan 2000 06:28:09 -0800 (PST)
+From: Greg Lastowka <greglas@yahoo.com>
+Subject: Kremlin press office Y2K problems (via Declan McCullagh)
+
+The Kremlin press office's computer communication system was victimized by
+Y2K, blocking their ability to send e-mail.  Reportedly, they will have the
+problem fixed by ``the end of the month''.  [Source: Agence France Presse,
+13 Jan 2000]
+
+Greg Lastowka, University of Virginia Law School  lastowka@virginia.edu
+http://hobbes.itc.virginia.edu/~fgl2q/home.html
+
+------------------------------
+
+Date: Fri, 14 Jan 2000 23:07:02 GMT
+From:  Drew Davis via Mark Brader
+Subject: Re: Y2K99?????
+Newsgroups: alt.fan.cecil-adams
+
+"Wulfdog" <johnw@icok.net> excerpt: 
+
+>I turned on a 286 PC in my office today.  I looked at the date and it said
+>Jan 05 2000.  Previously I had ran the date forward on my new HP and it went
+>to 2099 and rolled back to 1980.  I quickly ran the 286 date up and to my
+>surprise it went to 2099 and rolled back to 1980.   I wonder what those
+>little diskettes with the Y2K test were actually checking for,  the size of
+>your wallet/checking account?  My other question is.  Will any of us
+>remember to tell the New Millennium babies that they are the ones who will
+>see the "REAL Y2K bug"?
+
+Hey, I've got a Y2K issue.   My fax driver/app "Delrina WinFax Lite 3.0 Fax
+Administrator" can't recognize years 00 to 09 as the send date.   I have to
+go and change the send date to 99 or before.   Neat.
+
+-Drew
+
+------------------------------
+
+Date: Tue, 11 Jan 2000 11:51:03 -0500 (EST)
+From: "Michael Froomkin - U.Miami School of Law" <froomkin@law.miami.edu>
+Subject: Sidekick98 Y2K bug squashed
+
+Having assured everyone that Sidekick98 was Y2K OK, Starfish software's
+calendar/scheduler product developed a bug last week in which attempts to
+view your daily appointments produced a complaint of "Invalid file to
+complete this action! mast:wk".  Some users also reported troubles with
+past "to-do" items not done failing to appear on the current day's list.
+
+Starfish have released <A HREF =
+"ftp://ftp.starfish.com/pub/sk98/sk98patch.exe">a patch</A> that certainly
+fixes the first problem and may fix the second too (I didn't have it so I
+cannot report on this).
+
+Although there is a Sidekick99, many users refuse to "upgrade" because the
+feature set in '99 is a feeble subset of the more powerful '98.  
+
+No word from the company on what was missing from their testing procedure.
+
+A. Michael Froomkin, U. Miami School of Law, P.O. Box 248087, Coral Gables, 
+FL 33124 USA  +1 (305) 284-4285   http://www.law.tm   froomkin@law.tm
+
+------------------------------
+
+Date: Sat, 15 Jan 2000 18:13:09 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Lookout Outlook!
+
+>From: Bruce Sterling <bruces@well.com>
+>Subject: Viridian Note 00124: Viridian Movement Officially
+
+Viridian Curia Member Laura Stinson points out that people unwise enough to
+use "Microsoft Outlook" cannot read the entire "Manifesto of January 3,
+2000."  That's because one line of the text happens to begin with the word
+"begin," followed by two spaces.  When Microsoft Outlook sees this, it
+interprets everything that follows as an attachment.
+
+I'll bet you didn't know that you could blind Microsoft Outlook readers
+merely by placing the innocuous term "begin" in a text, thus giving a
+preferential advantage to readers who spurn Microsoft products. Now you know
+this.  I hope you don't put your newfound powers to any sinister use.
+
+------------------------------
+
+Date: Thu, 13 Jan 2000 17:07:57 -0700
+From: Tom Malaher <risks@netstart.com>
+Subject: Resume system creates "Profile" for you... without permission
+
+I got the following e-mail out of the blue today:
+
+> We have added your resume to our Resume Database.  We have received your
+> resume in response to an ad; or your resume was available in the resume
+> database of an employment site to which we subscribe.
+
+  [...description of Metro Information Services elided...]
+
+> If you are interested in a position with Metro, please use the following
+> URL to verify/update your e-Profile on Metro's Resume Database.  The URL
+> below will connect you to a private area of Metro's website containing
+> only your information.  The information you provide us is not publicly
+> available on the Internet. Metro does not sell, trade, or publicly
+> distribute any personal information we receive from any source.
+
+> When updating your e-Profile, do not click the <Submit> button until after
+> you have completed updating your resume information.  Once the <Submit>
+> button is clicked, you will no longer have access to your e-Profile.
+> After you have submitted changes to your e-Profile, if your expertise
+> matches an open position, a recruiter may contact you about the
+> opportunity.  
+> 
+> http://metroweb.MetroIs.com/eProfile/<string of random digits>.asp
+
+So they've created a "secret" web page for me, from which I can "update" my
+profile. Presumably as soon as I <Submit> the profile, this secret file will
+go away.
+
+Risks?  Here are some I can think of:
+
+1) They did this without asking me. It appears that they slurped a
+   resume I have posted on my web site. (And didn't do a very good
+   job of it, much of the information is missing or incorrect.)
+2) There's no authentication on the URL.  Whoever receives or is able
+   to snoop the "secret" URL is able to update my profile, at which
+   point I will not be able to!  What if my e-mail address has changed
+   since I created the web page?
+3) How do I go about *keeping* my profile up to date with them, since
+   this "secret" URL goes away after the first submission?  Presumably
+   there is some mechanism, and maybe they would e-mail that to me as
+   well, once I've completed the initial update... it just gets
+   worse...
+
+Tom Malaher - Web Developer - NetStart Consulting Ltd. - www.netstart.com
+
+------------------------------
+
+Date: Tue, 11 Jan 2000 11:07:43 -0500
+From: Alan Barclay <gorilla@elaine.drink.com>
+Subject: Woman ordered to pay back four pence 
+
+http://news.bbc.co.uk/hi/english/uk/scotland/newsid_598000/598625.stm
+
+The BBC is reporting of the problems Mrs Pringle George is having after
+receiving benefits in June & July last year, after being injured in a car
+accident.  In November, she was contacted by the Credit Recovery Group of
+the Benefits Agency, who informered her that she was accidentally overpaid
+for one week of benefit Pounds 43.16, however when she wrote a cheque to
+repay the overpayment, the cheque was for the amount 43.12, an underpayment
+of 4 pence.
+
+Mrs George said she was shocked when she received a letter at the weekend
+informing her of the debt and telling her that legal action was being
+considered.
+
+A spokesman for the Benefits Agency said he was unable to discuss individual
+cases but explained that if the agency received a cheque for the wrong
+amount the computer automatically produced a generalised letter."The
+computer cannot differentiate between 4p and 400 pounds," he said.
+
+Two questions come to mind, first why was there a five month gap between the
+overpayment and the first attempt to reclaim payment, and secondly why can't
+the computer differentiate? It would seem simple to write off small amounts,
+and indeed most billings systems do this.
+
+------------------------------
+
+Date: Mon, 10 Jan 2000 08:32:11 +0000
+From: "Clive D.W. Feather" <clive@demon.net>
+Subject: More on RISKS-20.73
+
+All following up to 20.73:
+
+(1) Robert Rathbone <rr@dragonheart.net> writes:
+> It would be like performing a check to see if there were more than 60
+> seconds in a minute.
+
+There can be 61 seconds in a minute.  It's called a "leap second".
+
+(2) Andrew M Greene <agreene@pageflexinc.com> talks about *The New York
+Times* changing its numbering.  Does this mean that numbers are going to be
+duplicated for the next year or two, or will all references to issues since
+1898 be suddenly invalid ?
+
+(3) "John J. Francini" <francini@progress.com> writes:
+> The UNIX98 standard changed the localtime() function so that the year
+> value is redefined to be the "year in the current century"
+
+This is the second time I've seen this claim recently.  As far as I know it
+is false, since such a change would be incompatible with existing practice
+and also with the ISO C Standard.  Can someone provide a URL for the UNIX98
+definition?
+
+Clive D.W. Feather <clive@demon.net>   +44 20 8371 1138
+Internet Expert, Demon Internet   http://www.davros.org 
+
+------------------------------
+
+Date: 13 Dec 1999 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ Also, new AUSTRALIAN archive http://mirror.aarnet.edu.au/risks/ 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.75 
+************************

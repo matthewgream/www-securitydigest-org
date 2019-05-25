@@ -1,0 +1,475 @@
+RISKS-LIST: RISKS-FORUM Digest   Sunday 17 April 1988   Volume 6 : Issue 63
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  The Phantom of the Arpanet (Cliff Stoll)
+  New VMS security problems? (Klaus Brunnstein and Darren Griffiths)
+  Printers as perforators (Stephen Page)
+  Another ATM story (Win Treese)
+  Re: Accountability (Eugene Miya)
+  BENEFITS! of RISKS (Post Office Stamp Machines) (Eugene Miya)
+  Color blindness (Rick Sidwell)
+  Race, Sex, and other imponderables (Joe Dellinger)
+  Ethnics and UCB (Peter da Silva)
+  Re: Enfranchising the disenfranchised: our responsibility? (Paul Shields)
+  Diving ascent computer (Mike)
+  Productivity: Progress, Prospects, and Payoff --  Preliminary Program 
+    (Charles Youman)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, ftp kl.sri.com, cd stripe:<risks>, get risks-i.j ... .
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date:     Sun, 17 Apr 88 19:28:43 PDT
+From:     cliff@Csa3.LBL.Gov (Cliff Stoll)
+Subject:  The Phantom of the Arpanet
+
+Extra! Extra! Read all about it!  
+
+Yes, informed sources report that this week's newspapers may carry a 
+story about how a persistent intruder broke into over 30 US computers.  
+This tale, brewing for about 2 years, tells of a methodical attack on 
+hundreds of military and defense contractor's computers.  Unknown to 
+him, we silently monitored him at Lawrence Berkeley Laboratory, 
+where we traced his connections and recorded all his keystrokes.  
+
+The intruder used a variety of networks, including the Milnet/Arpanet, MFEnet,
+Tymnet, Datex-P, and analog telephone services.  Despite his convoluted
+pathways, we traced him back to his lair in West Germany.  By cooperative
+efforts of law enforcement people and network managers, we developed traceback
+methods to trace him halfway around the world in less than 2 minutes.
+
+A part of the story is in the German popular magazine QUICK of April 12, 1988.
+Apparently, they somehow got a copy of my laboratory notebook.  From those
+notes, they wove a tale of high-tech intrigue, starring a mad scientist who
+dwelled in a "communal living situation" in Berkeley.  Following their
+publicity, reporters have interviewed me, and I expect newspaper publicity in
+either the Daily Planet or some other great metropolitan newspaper.
+
+But the complete story will appear in the May issue of the Communications of
+the ACM.  We had planned no publicity until the issue was in the mail, but
+alas, the German magazine printed it, and the cat was out of the bag.  The
+real scoop is in the May CACM, so make sure your ACM dues are paid up!
+
+Cheers to all RISKeeS,
+Cliff Stoll      CPStoll@lbl.gov
+
+     [I am very grateful to Cliff, the super-scoop-er, for contributing this 
+     mere bag-cat-tell tale teaser.  This is the eve of the annual IEEE
+     Symposium on Security and Privacy, at which more than a few RISKS
+     participants will be taken away from their RISKS fixes -- so they'll
+     just have to watch the papers.  Stay tuned for further developments.  PGN]
+
+------------------------------
+
+From: Klaus Brunnstein <brunnstein%rz.informatik.uni-hamburg.dbp.de@RELAY.CS.NET>
+Subject: New VMS security problems? (RISKS-6.58)
+Organisation: University of Hamburg, FRG, Faculty for Informatics
+Date: April 15, 1988
+
+After some contacts with some well-informed DEC users and DEC
+software engineers, I have gathered the following information:
+
+The `urgent update' solves some problems with Local Area VAX clusters
+(LAVc), associated with VAX Workstation Software (VWS).  Following the `new
+DEC philosophy', DECs security staff doesnot wish to more precisely inform
+its users; moreover, only a few DEC software engineers have been informed.
+The update contains 1134 blocks (plus Kid Install), and it contains totally
+new images of 5 VWS modules: SYS, TTDRIVER, WTDRIVER,UIBSG, DBGSSISHR,
+together with a list of several more patches. The reason for this update has
+evidently been discussed in the German DECUS meeting, held in Aachen, March
+1988; when the discussion is available in printed form, I will inform you.
+
+Unfortunately, the update may have produced a new secutity problem, as
+indicated in the INFO-VAX letter of Darren Griffith which I add for your
+information:
+
+     ----------copy of D.Griffith INFO-VAX letter--------------
+Delivery-date: Tuesday, April 12, 1988 at 13:59 GMT+0100
+Send-date: Monday, April 11, 1988 at 13:50 GMT-0100
+From:Darren Griffiths <S=dagg;OU=csa4;O=lbl;P=gov;C=nn>
+To:<S=info-vax;OU=kl;O=sri;P=com;C=nn>
+Subject:DEC's security patch.  Just say no!
+
+Date:     Thu, 7 Apr 88 20:10:22 PDT
+
+DEC recently released a mandatory update to VMS that fixes some problems in
+SYS, TTDRIVER, WTDRIVER, UISBG and DBGSSISHR.  Upon installing this update
+on a LAVc some problems were experienced, people running VAXstations that
+use the VAX Workstation Software may want to read this before installing the
+fixes on their systems.
+
+It seems that one of the fixes was to a known problem with the way device
+protections are assigned under VWS.  When you create a new window the software
+creates a new device WTAx: that is basically a copy of the template workstation
+device WTA0:.  The "problem" that was "fixed" is that some of the protection
+bits get changed when the new device is created, the fix stops this from
+happening.  The problem does introduce a security hole so I am trying to avoid
+being too specific. 
+
+So far all of this sounds quite nice, the problem is corrected and things
+should go on as normal.  Unfortunately another problem is introduced.  When you
+create your first window on the workstation LOGINOUT is running with a system
+UIC and the window is created by opening the template device WTA0 and having
+another device created for you, when you then decide that it would be exciting
+to have a second window and you try to auto-login, the process is created with
+your UIC and privileges.  LOGINOUT opens up WTA0: expecting to get a device
+allocated to it, the device is created but cannot be allocated to you because
+the security patch fixed the protection bits very nicely and your process
+doesn't have privilege to look at the device. 
+
+This problem can be avoided in four ways.  
+
+   1)   Don't install the patches at all.
+
+   2)   The problem doesn't occur if your **DEFAULT** privileges include
+        something like READALL, that way you will be able to get the DEVICE.
+        Note that all you need is read access to be able to allocate a
+        non-shareable device like a workstation window.
+
+   3)   If you've already installed the patch and don't want to be give
+        everyone privileges you can remove the patched version of
+        SYS$SYSTEM:TTDRIVER.EXE, put the old one back and reboot.
+
+   4)   You can uncomment the lines in SYS$MANAGER:UISBG.DAT that allow
+        you to have another option in the workstation menu that will let
+        you login without auto-login.  This way you just have to type 
+        your username and password each time a window is created.
+
+
+I have contacted DEC about the problem and hope to have an answer very soon,
+I'll let the net know when this answer comes in.  If anyone has any questions
+or further information let me know.
+
+   --Darren
+ 
+   Lawrence Berkeley Labs
+   DAGG@LBL.GOV
+   ------------------end of Darren's e-letter------------------   
+
+After having discussed the problem described here with DEC
+security experts, there could be a problem with AUTO-LOGIN
+when a second window is opened; nevertheless, I follow DEC's
+advice that users should NOT follow one of `Darren's four ways'
+since this might re-install the security problem just patched away.
+
+Klaus Brunnstein, University of Hamburg, Faculty for Informatics
+
+------------------------------
+
+Date:    Sat, 16 Apr 88 13:03:54 bst
+From: Stephen Page <sdpage%prg.oxford.ac.uk@NSS.Cs.Ucl.AC.UK>
+Subject: Printers as perforators
+
+In RISKS Volume 6 : Issue 49 the following program fragment appeared:
+	10 PRINT 1000
+           GOTO 10
+      1000 FORMAT ('+', 132*'-')
+
+This reminded me of a colleague at the University of Queensland who used
+to use a loop with the same FORMAT statement to almost-perforate forms
+("tear along dotted line"). The risk, of course, was not when he had got
+it right, but in all the attempts to find the right value for the
+iteration limit... The operators became pretty fed up with reloading the
+paper when the value was too high and he sliced it through!
+
+------------------------------
+
+Date: Sat, 16 Apr 88 23:25:28 EDT
+From: treese@ATHENA.MIT.EDU
+Subject: Another ATM story
+
+A friend of mine recently received a new ATM card in the mail, with a notice
+saying the old one had expired.  In the following, card A is the old, expired
+card, and card B is the new one.  Here's what happened:
+
+1. Not realizing that A had expired, he used it in an ATM.  Since it had
+	expired, the machine ate the card.
+2. The bank discovered the card in the machine, and a "new card event"
+	occurred -- he was issued a third card (C).  Apparently, the
+	bank did not check to see *why* the card was in the machine.
+3. Next, he tried to use card B.  This time, the machine ate it because
+	previous cards were invalidated when the bank issued card C.
+
+Now, his question is: will the machine eat card C when he uses it? The
+person he talked to at the bank assured him it would not, but he's a
+little skeptical....
+                              	Win Treese, 	DEC/Project Athena
+
+------------------------------
+
+Date: Fri, 15 Apr 88 21:17:34 PDT
+From: Eugene Miya <eugene@ames-nas.arpa>
+Subject: Re: Accountability
+
+>I suppose all I'm saying is that if it was forseeable or deduceably likely a
+>programmer is in some way culpable when the system breaks down.
+>                                                            (yes/no ?)
+
+As noted by another RISKS author in the same issue: it's under our
+noses.  See John Shore's article in the April 1988 CACM.
+
+--eugene miya
+
+------------------------------
+
+Date: Fri, 15 Apr 88 10:05:08 PDT
+From: Eugene Miya <eugene@ames-nas.arpa>
+Subject: BENEFITS! of RISKS (Post Office Stamp Machines)
+
+We always talk about computer induced RISKS in this group.  I encounter
+a wrongly programmed cash register every month and the system crackers
+are scanning telephone pre-fixes all the time (my answering machines
+fields these).  Let's talk about some personal BENEFITS! 8-)
+
+Yesterday, I went to the post office to purchase several rolls of stamps for
+an ACM chapter mailing.  The Office has these vending machines with a big
+added box to the side to recognize and collect large sums of money.  I don't
+know if they have micros in them (I hope so otherwise this isn't a computer
+BENEFIT).  I've done this before, but I feel a bit uncomfortable putting
+$20s into these machines (just the size).  With the increase in postage, I
+now also have to put $5s in as well.
+
+The $5s I got from McDonalds (near the on-base Post Office) were a bit worn.
+The first was not accepted (fair enough).  The second had some trouble, but
+it was taken.  Time to insert the next $20 for a roll.  It would not take it.
+But it was clean and just came from my automatic teller.  I looked up to
+discover that the $5 had registered twice ($10) even though it took only
+one bill!  Now that's postage!  Let me know when Email can do this.
+
+Anyway, these machines have "programmed limits" on the amount of money
+they can process.  It won't take $20 (I need a ROLL for a stamp machine
+and these cost $25).  I can't get change, the coin return is not hooked up
+to the bill recognizer, so I have to buy some smaller packages of stamps.
+The ACM (me in this case) comes out $5 in stamps ahead.
+
+Forget color copiers (oops, almost said that trademark) and change makers,
+how do I repeat what I just did?
+
+--eugene miya  NASA Ames Research Center, Moffett Field, CA
+
+   [Be sure to read the instructions FIRST.  They say PLEASE READ THE 
+   INSTRUCTIONS BEFORE DEPOSITING BILLS...  There can be some nasty 
+   side-effects if you don't -- e.g., if the selction you want is OUT --
+   no facility for a refund.  PGN]
+
+------------------------------
+
+Date: Thu, 14 Apr 88 21:00:54 -0700
+From: Rick Sidwell <sidwell@commerce.UCI.EDU>
+Subject: color blindness
+
+In Risks 6.61, Will Martin suggests using a color chart for finding the
+answer to the "Skin color:" question on various forms.  Although his
+suggestion was made in a humorous sense, I would like to point out a risk
+to this as well as other areas more applicable to this forum.  Not all
+people see colors in the same way.  Many people are color blind to one
+extent or another (actually, the preferred medical term is color deficiency,
+since most "color blind" people can see some colors just fine--I prefer
+color blindness since most people know what it means).  I personally am
+red-green color blind, which means that I have difficulty distinguishing
+some shades of red, green, and brown (pink and purple are also sometimes
+difficult).  When we recently purchased an aquarium, I, enjoying scientific
+experiments, purchased a number of water test kits to monitor pH, ammonia
+levels, water hardness, etc.  Every time I test the water, I carefully mix
+the water with the reagent... and ask my wife what the result is!
+
+Many potential risks associated with color blindness have been identified
+and dealt with.  For example, the colors in most traffic lights are chosen
+to be identifiable to color blind people--the reds and greens which can
+cause problems are ignored.  However, many software developers do not
+consider such matters.  For example, I recently saw a videotape demo of
+a distributed systems modeling tool which used color to indicate the
+state of the various parts--green meant one thing, and gold meant another.
+The problem is, I couldn't tell them apart easily.  A good design practice
+is to let the user customize the colors to his or her own tastes and
+abilities, but this raises another risk:  that you get used to your own
+customized setup, and have problems interacting with other people
+who use a different one.  For example, when I use Unix, I have an alias
+"ty" which uses the program "more" to display a file a screenfull at
+a time.  When a novice Unix user needs help, I invariably try to use
+my personal command on their account, which doesn't work.
+
+A related problem is the fact that red is often used to indicate danger or
+urgency.  Red is also the hardest color for me to see--some shades seem much
+darker than they really are.  On many color terminals and computers (such as
+the IBM PC), I can barely read red characters on a black background--the color
+choice for many important warning messages.  Many color blind friends have the
+same problem.  May I suggest treating red as black, and for urgent messages
+either using white on red or red on white?  I probably don't need to stress the
+importance of color choice (and possibly field testing with color blind people)
+for systems where a missed warning message can cause a serious risk.
+
+Rick Sidwell
+                                  [I trust Stendhal was not color blind!  PGN]
+
+------------------------------
+
+Date: Fri, 15 Apr 88 01:56:44 pdt
+From: Joe Dellinger <joe@hanauma.STANFORD.EDU>
+Subject: Race, Sex, and other imponderables
+
+	In the end any attempt to neatly categorize animals of any kind,
+including people, is bound to fail... there must always be problematical
+borderline cases. This goes for such obvious cases as Race and Religion,
+but applies equally well to such things as gender, nationality, and species.
+
+	Eastern Blue Jays interbreed with Scrub Jays in Texas and
+Stellar's Jays in Colorado. But they are still considered separate
+species, because the indeterminate cases are so rare --- 99.9% of the
+time the birds you see WILL look like one of the ones in the field guide.
+If intermixing continues, the distinction will eventually have to be dropped.
+For example, red-shafted and yellow-shafted flickers are now considered
+only commonly-occuring color patterns of one species.
+
+	The same goes with race in people --- it is a useful identifying
+trait only because the "problem" cases have been for the most part exceptions.
+As the number of mixed-race people increases, as it must, the distinction
+gradually loses statistical value.
+
+	The only sure way to create clean-cut categories is to force
+your measured property onto some well-defined set like the Real Numbers
+and put in an arbitrary dividing line, or to legislate that indeterminate
+cases are not legally recognized.
+
+If the value on line 16 is at least 14,451 but not over 14,550 and your
+filing status is 1 or 3 your California tax is $338...
+
+    [Note that if you use the tax schedule instead of the tax table, you get
+    a (slightly) different result.  And whether or not you round to even
+    dollars or not throughout your return also produces different results.
+    Clean-cut, but not clear-cut.  PGN]
+
+------------------------------
+
+Date: 15 Apr 88 14:09:36 GMT
+From: nuchat!sugar!peter@uunet.UU.NET (Peter da Silva)
+Subject: Ethnics and UCB (Re: RISKS DIGEST 6.55)
+
+Re: a message about "RACE=OTHER" defaulting to "RACE=WHITE".
+
+This is hearsay, so take it with a grain of salt, but I was told by a friend
+that he started filling the ethnicity slot on forms at UCB with "prussian".
+This apparently did not default to "white".
+
+------------------------------
+
+Date: Thu, 14-Apr-88 03:56:17 EST
+From: yunexus!nccnat!root@uunet.UU.NET (Paul Shields)
+Subject: Re: Enfranchising the disenfranchised: our responsibility? 
+
+Tom Betz writes in RISKS DIGEST 6.58:
+ 
+> A question I would find most interesting to discuss here would be the 
+> question of this Republic within the Republic.  How are the lives of those 
+> who are too ill-educated to use these tools effectively going to be affected 
+> by the increased power of those of us who >do< use them?
+
+They are going to be affected greatly.  "Power Corrupts" is not precisely
+what I'm getting at, but power permits abuse.
+
+Did the FCC know what hit them when those x-thousand letters arrived? 
+Put that power in the hands of the few who would abuse it, and they will. 
+So it's important to temper their ability to do so.  Can someone be 
+slandered through a public forum if there are 100 other people in the forum 
+willing to stand up and help defend them? 
+
+When it's out of the public eye, then it's a different thing.  With power 
+comes responsibility, and networks have to be able to teach responsibility 
+and tolerance to their members to assure that they are not used wrongly. 
+
+> Do we have a responsibility to do whatever we can to spread the power around
+> to these people? 
+
+To prevent abuse, we must give those who would be abused the ability to 
+defend themselves.  In order to do this, we must get them to use the tools.
+
+>               How can we do this?  How can our computers help us help them?
+
+Good question. It's difficult.  But I think distance education is a 
+start. Promote the use computer networks as an educational tool throughout 
+the world.  Teach people to speak, read and write.  As this happens, 
+new communities are created:  isolated people discover that they are not 
+alone in life, that others share their thoughts and feelings.  This will
+give them the initiative to bring themselves up out of dispair.
+
+>      Serious questions....
+
+The world has a number of BIG problems to solve, like pollution, wars, 
+overpopulation, and famine.  Perhaps, through computer networks, we can 
+enable the world the to save itself. 
+
+Paul Shields, Technical Support Manager for the 
+Native Computer Communications Network, York University, Toronto Canada.
+shields@yunccn.UUCP, ...utzoo!yunexus!gen1!yunccn!shields
+
+------------------------------
+
+Date:     14-APR-1988 09:02:50 GMT
+From: F026%CPC865.UEA.AC.UK@CUNYVM.CUNY.EDU
+Subject:  Diving ascent computer
+
+> .. test button to see if the LED has failed
+
+Better still would be to have (say) a green LED for positive indication of 'it
+is safe to ascend'. Green might be difficult to see underwater. Maybe just a
+solid red LED for 'safe' and a *seperate* flashing red LED for 'wait'.
+                                                                          Mike
+
+------------------------------
+
+Date: Fri, 15 Apr 88 11:55:11 EST
+Subject: Productivity: Progress, Prospects, and Payoff --  Preliminary Program
+From: Charles Youman (youman@mitre.arpa) <m14817@mitre.arpa>
+Organization: The MITRE Corp., Washington, D.C.
+
+Preliminary Program -- PRODUCTIVITY:  PROGRESS, PROSPECTS, AND PAYOFF
+    27th Annual Technical Symposium of the Washington DC Chapter of ACM
+    Gaithersburg, Maryland  June 9, 1988
+Sponsors:
+     Washington DC Chapter, Association for Computing Machinery;
+     Institute for Computer Sciences & Technology, National Bureau of Standards
+Key Dates:
+     Register by June 1, 1988 and save over 10% of at door rate
+     Register by May 1, 1988 and save an additional 15%
+     Special rate for full time students
+
+Productivity is a key issue in the information industry.  Information
+technology must provide the means to maintain and enhance productivity.  The
+symposium "Productivity:  Progress, Prospects, and Payoff" will explore
+theoretical and practical issues in developing and applying technology in an
+information-based society.
+
+Keynote address:  "Near Term Improvements in Productivity"
+     Howard Yudkin, President and CEO, Software Productivity Consortium
+
+Plenary panel:  "What Are the Impediments to Improving Productivity?"
+     Walter Douherty, IBM
+     Phil Kiviat, SAGE Federal Systems
+     Marshall Potter, U.S. Navy
+     Al Scherr, IBM
+
+Parallel sessions:
+     Processes and Tools for Higher     Software Economics and Reuse
+       Software Productivity            Uncertainty in Software Requirements
+     Software Specification Tools         Development       
+     Panel-Data Management Standards    Expert Systems and Knowledge 
+       A Key to Enhanced Productivity     Engineering in Software Engineering
+
+For more information, contact the Symposium General Chairman: 
+Charles E. Youman, DC Chapter ACM, P.O. Box 12953, Arlington, VA 22209-8953
+(703) 883-6349                                            youman@mitre.arpa
+
+PRODUCTIVITY: PROGRESS, PROSPECTS, AND PAYOFF -- Preliminary Program 
+                                  [Please Pardon Persistent Alliteration.  P.]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

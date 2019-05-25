@@ -1,0 +1,339 @@
+VIRUS-L Digest              Monday, 13 Feb 1989         Volume 2 : Issue 45
+
+Today's Topics:
+Valentine's Day VTxxx DECNET virus
+re: Alert against Possible VMS Virus/Trojan Horse
+RE: Valentine's day trojan horse (VIRUS-L V2.n43) (VMS)
+Re: Vt100 fun
+Media: a different aspect
+
+---------------------------------------------------------------------------
+
+Date: Fri, 10 Feb 89 14:55:23 PST
+From:     PJS%naif.JPL.NASA.GOV@Hamlet.Bitnet
+Subject: Valentine's Day VTxxx DECNET virus
+
+A warning about this rumored trojan horse was recently distributed
+here and below is the analysis which I sent back:
+
+- - - - - - - - -
+
+I have to wonder about the validity of this claim.  The "answerback"
+is a feature of VT100-compatible terminals that can be programmed in
+SETUP mode and sent by pressing CTRL-BREAK; it can also be triggered
+by the host with the control character ENQ (05).  The thesis of this
+claim appears to be that the answerback is reprogrammed with a control
+sequence, presumably to contain something of the form "^ZDEL
+*.*;*<CR>" and then an ENQ follows, which causes the terminal to send
+the answerback, which is interpreted as typed commands by the host, in
+this case to exit MAIL and delete files.
+
+The problem with this is that I can find no way of setting the
+answerback with a control sequence.  The VT100 and VT240 programmer's
+guides, while notoriously poorly-indexed and arranged, are mum on this
+point.  The Pericom MG400 (VT100-compatible) manual is more explicit;
+it states that there is *no* way to program the answerback remotely.
+This makes sense, in that the answerback is intended to be a function
+of that specific terminal and there would be no reason to want the
+capability to change it from a remote location.
+
+All control characters can be sent in mail messages, so it is possible
+to send the ENQ.  For that matter, you can send a ^S and freeze
+someone's terminal so they have to reset it to get it working again
+(of course, I have never done anything like that...).  However, I
+don't think there is any way to change the answerback message from the
+host and therefore I disbelieve this claim.
+
+It *may* have happened at another site when some malicious user gained
+access to another person or persons' terminal(s) and reprogrammed
+their answerbacks to the string I described above *from the keyboard*
+(which does not require any account access), then sent the message out
+so that it would be read by users once they were logged in, when the
+answerback could affect their account just as if they had typed the
+commands themselves.
+
+Peter Scott (pjs@grouch.jpl.nasa.gov)
+
+------------------------------
+
+Date: Fri, 10 Feb 89 18:39 EST
+From: "Jerry Leichter (LEICHTER-JERRY@CS.YALE.EDU)" <LEICHTER@YaleVMS>
+Subject: re: Alert against Possible VMS Virus/Trojan Horse
+
+I'm including more text than I normally do because of the nature of this
+message.
+
+   [LT Stuart L Labovitz reports:] I am forwarding the following message,
+   in full, from the VALERT virus alert mailing list.  I do not know if
+   this is a valid message, or even if such a trojan could be
+   constructed, but definitely want to pass the warning along to all the
+   Info-Vaxers out there.  Please send copies of any comments on this
+   warning to the original author (address at the end of the message), as
+   to myself.  I will forward any comments I receive to the Virus-L
+   mailing list at Lehigh University (VIRUS-L@LEHIIBM1.BITNET, moderator
+   is Ken Van Wyk, LUKEN@LEHIIBM1.BITNET or LUKEN@SPOT.CC.LEHIGH.EDU).
+
+   ================ORIGINAL MESSAGE FOLLOWS==============================
+
+   The following was posted on our local bulletin board, so we're
+   definitely getting into third- and fourth-hand information here.  This
+   is really just a Trojan Horse rather than a virus, but I thought I'd
+   pass it along.
+
+   ------------------------
+   Folks,
+   What I am about to relate was triggered by a second-hand rumor,
+   but it reflects a very valid security concern and is something that we
+   may wish to deal with immediately.
+
+   The rumor is that a Valentine's Day message has been prepared
+   that has the potential for causing lots of personal (and operational)
+   havoc.  Any user who reads this message, on a VAX system, using a
+   standard DEC terminal, will have all of his files deleted.  This
+   little nastygram is rumored to also put a sweet message and heart on
+   the screen while doing its dirty work.  A nice touch.
+
+   At the risk of being alarmist, I suggest that we immediately
+   inform our users to be suspicious of any messages of unknown origin.
+   Information is limited and we do not know if it will appear or how to
+   recognize it if it does. If I get more information I'll send it along.
+   -------------------------
+
+   I have a few questions for anyone who knows VTxxx terminals:
+
+   1)  Is it possible to do this on a VT1xx or VT2xx terminal?  I know it
+           is possible to cause the answerback message to be echoed, but
+           I don't know of a command to load the answerback message from
+           the host; it is possible to load a definition into a (shifted)
+           function key, but that requires the user to press the key;
+           I know of no command to echo the contents of the screen back
+           to the host as input.
+
+   2)  If it is possible, is there a setup option that will immunize the
+           terminal from this particular disease?
+
+   This sort of attack has been known for years, especially on
+   forms-oriented terminals, but I had believed that my terminal (a
+   VT220) was not subject to this particular vulnerability.
+
+   Has anyone else heard about this?  Has anyone actually SEEN this
+   beast?  If you notice it ahead of time, it should be simple to
+   determine what it does and where it came from (unless it's
+   self-perpetuating like the XMAS EXEC -- but there's no easy list of
+   destinations on VAX/VMS).
+
+            Gary Ansok
+                <ANSOK@STSCI.BITNET>   or   <ANSOK@SCIVAX.STSCI.EDU>
+
+   P.S.  The lack of a way for this thing to hide its origins from anyone
+           who is looking for it makes me wonder if it is real.  But I'll
+           be looking over my incoming mail extra carefully for a few
+           weeks anyway.  -- Gary
+
+
+   =============END OF ORIGINAL MESSAGE==================================
+
+This "rumor" is a wonderful example of a kind of "denial of service"
+virus.  It infects the "wetware" of susceptible users.  Different
+forms of this rumor have been floating around for several days now;
+they've been passed around internally to DEC, for example.
+
+There is NO truth behind this rumor.  What it describes is impossible,
+for several reasons:
+
+   a)  The VMS MAIL program filters out escape and control sequences
+           when presenting mail to the user.  Even if there were a
+           sequence which could cause damage, it can never reach the
+           terminal as long as you use only READ to look at the message.
+
+           It is theoretically possible, I suppose, that some non-ANSI-
+           compatible terminals may be triggered by some sequence of
+           characters that MAIL considers to be "just text", and so might
+           be vulnerable.  But I doubt it.
+
+   b)  A message COULD suggest that you type EXTRACT TT:, which would
+           copy the message unfiltered to your terminal.  This trick
+           is often used to send, say, ReGIS pictures through the mail.
+           Obviously, this is a deliberate action - you have to be wil-
+           ling to do it.  Just on general principles, you should NOT do
+           this with a message from someone you don't know.
+
+           A message could also tell you:  Type EXTRACT FOO.COM, CTRL/Z,
+           and @FOO.  If you go ahead and do that,  you will create and
+           execute a command file which could do anything at all.
+
+           Then again, the message COULD tell you "Shoot yourself in the
+           head".
+
+   c)  No mainline DEC terminal allows you to set the answerback message
+           from the host; it can be changed only in SETUP.  (And, no, you
+           can't put the terminal into SETUP from the host.)  I know the
+           people who designed every DEC terminal since the VT100, and
+           worked on some of the designs, so I'm 100% certain of this.
+           I include the "mainline" qualifier only because there are so
+           many variations, mainly in international markets, which I know
+           nothing about that I can't make an absolute statement.  But I
+           would be very surprised if you could do this on ANY DEC ter-
+           minal.
+
+   d)  UDK's (User Defined Keys) are a slightly different story.  You can
+           load them from the host but:
+
+           1.  It is impossible for the host to force the terminal to
+                   send the contents of a UDK - you must deliberately
+                   type SHIFT with a function key to get the value sent.
+
+           2.  When you load UDK's, you may ask the terminal to "lock"
+                   them.  Once the UDK's are locked, any further attempts
+                   load them are ignored.  Nothing the host sends can
+                   unlock the UDK's - it can be done only from SETUP or
+                   by power-cycling the terminal.
+
+           If you don't use UDK's, (1) should protect you.  If you DO use
+           UDK's, (2) can protect you (though you have to make sure you
+           lock the definitions).
+
+           Again, I can speak only of "mainline" DEC terminals.  One com-
+           mon request is for the ability to have the UNSHIFTED function
+           keys send the UDK sequences.  This has never been done in a
+           mainline DEC terminal; one reason is that it could make a user
+           who doesn't normally use UDK's, but DOES use the function
+           keys, vulnerable.  Of course, if the choice of operational
+           mode could be made only in SETUP, you'd still be safe.
+
+   e)  Several DEC terminals support block mode.  I believe the VT131
+           and VT132 and the VT330 and VT340 are the only "mainline"
+           terminals that do so.  It MAY be possible to force such a
+           terminal to send back data from the screen, in which case an
+           attack of the nature being discussed here is possible.  I'm
+           not absolutely certain, and the situation may be different
+           on the different models.  What it comes down to is this:
+           There is no defined sequence which tells the terminal to
+           send data from the screen to the host; rather, such action is,
+           in the documented cases, always initiated by the user typing
+           something, usually ENTER.  However, it is possible to operate
+           these terminals in a mode in which ENTER sends a "data ready
+           for you" message, and the host then replies with "OK, send
+           it".  What isn't clear is what happens, in all circumstances,
+           if the host sends "OK, send it" when the terminal hasn't indi-
+           cated it has data.  Probably nothing, but I can't guarantee
+           that.
+
+           In any case, on the VT330 and VT340, there is a SETUP option
+           which disables block mode, so this becomes a non-issue.
+
+   f)  ReGIS supports ways for the host to do some pretty complex things
+           on the terminal, and get reports back.  It MAY be possible to
+           use ReGIS for this kind of attack.  I've never seen a defini-
+           tive analysis either way.
+
+   g)  The VT220 (and VT320) support neither block mode nor ReGIS, and
+           as far as I know are not vulnerable to this kind of attack.
+           (The same goes for most VT100-generation terminals.  Some of
+           them had firmware bugs which allowed "letter bombs" to disrupt
+           the terminal, but none of those do anything permanent, or harm
+           the connected system.)
+
+   h)  The above applies ONLY to DEC terminals.  If you have a "DEC-com-
+           patible", you have to read its documentation very, very care-
+           fully to determine if you are safe.  Some compatibles try to
+           "improve" on the original terminals by adding such "over-
+           looked" features as escape sequences that let you program the
+           answerback message from the host, or read arbitrary stuff from
+           the screen.  Such "improvements" could leave you wide open.
+
+           I have no particular compatibles in mind here - there may not
+           actually BE any which have made this kind of change.  But to
+           be safe, you have to be wary.  I'd be ESPECIALLY wary of ter-
+           minal emulation programs running on PC's - they often have the
+           opportunity to provide all sorts of nifty, but dangerous,
+           features which the hardware manufacturers find too expensive
+           to include.
+                                                        -- Jerry
+
+------------------------------
+
+Date:         Fri, 10 Feb 89 19:48:00 EST
+From:         "Hamid A. Wasti" <ST402288@BROWNVM.BITNET>
+Subject:      RE: Valentine's day trojan horse (VIRUS-L V2.n43) (VMS)
+
+> Is it possible to do this on a VT1xx or VT2xx terminal?  I know it is
+> possible to cause the answerback message to be echoed, but I don't
+> know of a command to load the answerback message from the host; ....
+
+If I recall correctly, there was a discussion about this on the RISKS
+FORUM a while back (most probably a year or 2 ago).  If my memory
+serves me correctly, I believe someone claimed that most dumb
+terminals (not just the VTxxx's) could be made to echo a given message
+back to the host through undocumented features/bugs.  Perhaps someone
+who recalls the discussion better or who has easy access to RISKS
+archives could give us more details.
+
+     -----Hamid A. Wasti
+          <ST402288@BROWNVM.BITNET>
+
+P.S.  How does one distinguish between an undocumented feature and a
+bug ?
+
+------------------------------
+
+Date:         Fri, 10 Feb 89 22:18:54 EST
+From:         Dan Bornstein <DANFUZZ@BROWNVM.BITNET>
+Subject:      Re: Vt100 fun
+
+Someone was wondering about the ability to have the VT100 series send
+info from the screen. Yes, it is indeed possible: In order to type a
+given character/ string, one positions the cursor on the (previously)
+printed whateverness, and uses either the send-character or send-line
+escape sequence. I know this back in my youth (high school), I played
+around with the school's Tandy 6000 (I take what I can get), a Xenix
+machine. I used the above trick to issue "cds" that would have lasting
+effects (after a Xenix script ends, the current directory is reverted)
+from scripts (to be executed as commands). Admittedly there are better
+ways, but I didn't know them.  So much for nostalgia.
+
+- -dan
+
+------------------------------
+
+Date:         Sat, 11 Feb 89 17:38:39 EST
+From:         Neil Goldman <NG44SPEL@MIAMIU.BITNET>
+Subject:      Media: a different aspect
+
+I was just paging through "Business Today", a magazine mailed to
+college students around the country, and stumbled upon the following
+ad:
+
+Under a picture of a 3M data cartridge it read: "Until There's a Cure
+For Computer Viruses, Take One Of These And Get Back To Work."  Under
+that, in smaller type, read: "Today, with the spread of computer
+viruses and data parasites threatening the health of American
+business, you have to protect yourself.  If you network, be sure to
+back up your work routinely on 3M data cartridge tape before a virus
+enters your systems."  Then it lists an '800' number to call for info.
+
+First, I hope noone thinks I am trying to use Bitnet for commercial
+use -- I'm not.  I have no affiliation with 3M.
+
+I am all for encouraging users to institute systematic, periodic
+backup procedures.  However, ads like this compound the user confusion
+we have (to some extent) been blaming on the media -- that if you
+perform regular backups you are safe.
+
+It is unfortunate that our counterparts in industry are not assisting
+in rectifying the (perhaps unsolvable, yet certainly *not*
+unimprovable) problem.
+
+- - Neil
+
+- ------------------------------------------------------------------------
+Neil A. Goldman                        NG44SPEL@MIAMIU.BITNET
+
+Replies, Concerns, Disagreements, and Flames expected.
+Mastercard, Visa, and American Express not accepted.
+Acknowledge-To: <NG44SPEL@MIAMIU>
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

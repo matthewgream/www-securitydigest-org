@@ -1,0 +1,580 @@
+precedence: bulk
+Subject: Risks Digest 19.90
+
+RISKS-LIST: Risks-Forum Digest  Friday 7 August 1998  Volume 19 : Issue 90
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at http://catless.ncl.ac.uk/Risks/19.90.html and at
+ftp.sri.com/risks/ .
+
+  Contents:
+Software flaw exposes e-mail programs ... (Edupage Editors)
+Long-filename security bug in e-mail readers and safe languages (Paul Haahr)
+ISSalert: ISS Security Advisory: cDc BackOrifice Backdoor (X-Force)
+Re: Yorktown/NT/Security threads (Mitch Stanek)
+50M Lines of Windows NT? (Fred Ballard)
+Wiretap and surveillance update (Declan McCullagh)
+Power surge hits telephones and data comms (John Colville)
+Interesting GPS interference (Martin Poole)
+Re: USS Yorktown: WinNT not the fault (A. Penguin)
+Re: Yorktown dead in water after divide by 0 (Jonathan Mayer)
+More on SOHO (Nancy Leveson)
+New Jersey Y2K car inspection stickers (Dan Wallach)
+Bug-free millennium for Railtrack (Mike Ellims)
+White House Calm, DoD Nervous About Y2K (Declan McCullagh)
+Re: html "referer" field (Doneel Edelson)
+Re: "Cracking DES" (Martin Minow)
+SEI 1998 Software Engineering Symposium (Carol Biesecker)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 30 Jul 1998 17:06:13 -0400
+From: Edupage Editors <educause@educause.unc.edu>
+Subject: Software flaw exposes e-mail programs ...
+
+A security flaw found in several of the most widely used e-mail programs
+(Microsoft Outlook Express, Microsoft Outlook 98, and Netscape Mail) could
+be used by malicious persons to send computers using those programs a virus
+that could destroy or steal data and could cause those computers to crash.
+The flaw, which is known as a buffer overflow error, occurs when a program
+fails to check the length of each character string.  This failure means that
+a string too large to fit into an allotted memory location will lock up the
+program and fool the operating system into running attacker code in its
+place.  Whereas new languages such as Java have built-in safeguards to
+prevent this kind of programmer error, older languages such as C and C++ do
+not.  Computer security specialist Steven Bellovin says, "C makes it too
+easy to slice your fingers off, and programmers all over the world are doing
+so with great regularity."  (*The New York Times*, 30 Jul 1998; Edupage, 30
+July 1998.  This is the Finnish find.)
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 08:20:52 -0700 (PDT)
+From: Paul Haahr <haahr@jivetech.com>
+Subject: Long-filename security bug in e-mail readers and safe languages
+
+There's been a lot of coverage of the potential security hole in Microsoft
+and Netscape's mail readers.  Most reports note that this is the same kind
+of bug exploited by Robert Morris's Internet worm: overflow a fixed-length
+buffer on the stack to predictably sabotage the control flow of the program.
+
+What all the reports I've read appear to be missing is that bugs like this
+are almost inevitable in C or C++, yet pose almost no security issues in
+safer programming languages, including as Java, Lisp, Ada, Smalltalk,
+Modula-3, Eiffel, ML, etc.
+
+That is, the consequence of overflowing an array in Java is that an
+ArrayIndexOutOfBoundsException is thrown.  No stack gets overwritten, no
+data gets corrupted.  The program fails, but it does so in a sensible,
+predictable manner.  Contrast this with C or C++, where the existence of a
+single, unchecked array access based on user-provided input is sufficient to
+expose gaping security holes.
+
+Just as the use of four digits for dates was considered wasteful or
+unnecessary in the past, the use of safe languages is often thought a luxury
+today.  It isn't.
+
+------------------------------
+
+Date: Thu, 6 Aug 1998 11:04:49 -0400 (EDT)
+From: X-Force <xforce@iss.net>
+Subject: ISSalert: ISS Security Advisory: cDc BackOrifice Backdoor
+
+ISS Security Alert Advisory
+August 6th, 1998
+
+Cult of the Dead Cow Back Orifice Backdoor
+
+Synopsis:
+
+A hacker group known as the Cult of the Dead Cow has released a Windows
+95/98 backdoor named 'Back Orifice' (BO).  Once installed this backdoor
+allows unauthorized users to execute privileged operations on the affected
+machine.
+
+Back Orifice leaves evidence of its existence and can be detected and
+removed.  The communications protocol and encryption used by this backdoor
+has been broken by ISS X-Force.
+
+Description:
+A backdoor is a program that is designed to hide itself inside a target 
+host in order to allow the installing user access to the system at a later 
+time without using normal authorization or vulnerability exploitation.
+
+Functionality:
+The BO program is a backdoor designed for Windows 95/98. Once installed it 
+allows anyone who knows the listening port number and BO password to 
+remotely control the host.  Intruders access the BO server using either a 
+text or graphics based client.  The server allows intruders to execute 
+commands, list files, start silent services, share directories, upload and 
+download files, manipulate the registry, kill processes, list processes, as 
+well as other options.
+
+Encrypted Communications:
+All communications between backdoor client and the server use the User 
+Datagram Protocol (UDP).  All data sent between the client and server is 
+encrypted, however it is trivial to decrypt the data sent. X-Force has been 
+able to decrypt BO client requests without knowing the password and use the 
+gathered data to generate a password that will work on the BO server.
+
+The way that BO encrypts its packets is to generate a 2 byte hash from the 
+password, and use the hash as the encryption key. The first 8 bytes of all 
+client request packets use the same string: "*!*QWTY?", thus it is very 
+easy to brute force the entire 64k key space of the password hash and 
+compare the result to the expected string. Once you know the correct hash 
+value that will decrypt packets, it is possible to start generating and 
+hashing random passwords to find a password that will work on the BO 
+server. In our tests in the X-Force lab, this entire process takes only a 
+few seconds, at most, on a Pentium-133 machine. With our tools we have been 
+able to capture a BO request packet, find a password that will work on the 
+BO server, and get the BO server to send a dialog message to warn the 
+administrator and kill its own process. 
+
+Determining if BO has been installed on your machine:
+The BO server will do several things as it installs itself on a target 
+host:
+
+* Install a copy of the BO server in the system directory 
+(c:\windows\system) either as " .exe" or a user specified file name.
+
+* Create a registry key under 
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices 
+with the file name of the server file name and a description field of 
+either "(Default)" or a user specified description.
+
+* The server will begin listening on UDP port 31337, or a UDP port 
+specified by the installer.  You can configure RealSecure to monitor for 
+network traffic on the default UDP 31337 port for possible warning signs.
+In order to determine if you are vulnerable:
+
+1. Start the regedit program (c:\windows\regedit.exe).
+2. Access the key 
+HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunServices. 
+Look for any services that may not have been intentionally installed on the 
+machine.  If the length of one of these file is close to 124,928 (give or 
+take 30 bytes) then it is probably BO.
+
+Recommended action:
+BO can be removed by deleting the server and removing its registry entry. 
+ If possible, you should back up all user data, format your hard drive, and 
+reinstall all operating systems and software on the infected machine.
+However, if someone has installed BO on your machine, then it is most likely 
+part of a larger security breach.  You should react according to your site 
+security policy.
+
+Determining the password and configuration of an installed BO:
+1. Using a text editor like notepad, view the server exe file.
+2. If the last line of the file is '8 8$8(8,8084888<8@8D8H8L8P8T8X8\8'8d8h8l8',
+then the server is using the default configuration.  Otherwise, the
+configuration will be the last several lines of this file, in this order:
+
+<filename>
+<service description>
+<port number>
+<password>
+<optional plugin information>
+
+Conclusion:
+Back Orifice provides an easy method for intruders to install a backdoor on 
+a compromised machine.  Back Orifice's authentication and encryption is 
+weak, therefore an administrator can determine what activities and 
+information is being sent via BO.  Back Orifice can be detected and 
+removed.  This backdoor only works on Windows 95 and Windows 98 for now 
+and not currently on Windows NT.
+
+  [Copyright (c) 1998 by Internet Security Systems, Inc.
+  Permission is hereby granted for the redistribution of this alert 
+  electronically.  It is not to be edited in any way without express consent 
+  of X-Force.  If you wish to reprint the whole or any part of this alert in 
+  any other medium excluding electronic medium, please e-mail xforce@iss.net 
+  for permission.]
+
+Disclaimer
+The information within this paper may change without notice. Use of this 
+information constitutes acceptance for use in an AS IS condition. There are 
+NO warranties with regard to this information. In no event shall the author 
+be liable for any damages whatsoever arising out of or in connection with 
+the use or spread of this information. Any use of this information is at 
+the user's own risk.
+
+X-Force Vulnerability and Threat Database: http://www.iss.net/xforce
+Please send suggestions, updates, and comments to:
+X-Force <xforce@iss.net> of Internet Security Systems, Inc.
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 08:21:09 -0700
+From: mitch <realtime@acm.org>
+Subject: Re: Yorktown/NT/Security threads
+
+"More kindling for the fire:
+
+http://www.news.com/News/Item/0,4,24643,00.html
+
+Yet another serious NT security bug announced and acknowledged by Microsoft.
+A flaw in the OS would allow any ordinary network user to impersonate an NT
+system administrator.  There is also the *possibility* that anyone with
+Internet access could do the same thing.
+
+How secure is national security?  Let's hope that NT has not found its way
+aboard any SSBNs...  Linux anyone?
+
+Mitch Stanek
+
+------------------------------
+
+Date: Fri, 31 Jul 1998 17:56:21 -0500
+From: Fred Ballard <fred.ballard@ln.ssw.abbott.com>
+Subject: 50M Lines of Windows NT?
+
+I heard part of National Public Radio's Science Friday on July 24 
+called "Beyond Windows" (you can see more -- a list of the guests, 
+for instance -- and hear the show at
+http://www.sciencefriday.com/pages/1998/Jul/hour1_072498.html).
+
+The part I heard was at the end of the show.  Someone said that it's rumored
+Windows NT 5.0 will contain 50M lines of C code.  Several comments followed:
+C was too primitive for the task, but C++ was too complex; 30M lines of the
+50M are probably IF statements figuring out what environment it's running in
+and acting accordingly; isn't 50M lines of code something like what the Star
+Wars missile defense system was going to take and nobody thought that would
+ever work.
+
+Fred Ballard
+
+------------------------------
+
+Date: Fri, 31 Jul 1998 11:16:41 -0700 (PDT)
+From: Declan McCullagh <declan@well.com>
+Subject: Wiretap and surveillance update
+
+The U.S. Department of Justice is now saying that it does not support the
+proposed amendments to the Communications Assistance for Law Enforcement Act
+(CALEA) that the FBI had provided to Senators a few weeks ago (See EPIC
+Alert 5.10).  Assistant Attorney General Steven Colgate characterizes the
+amendment as a "staff document" and describes the language on emergency
+access to cell phone location information without a warrant as "boneheaded."
+However, Senate staff reports receiving calls from a senior FBI lobbyist
+pushing for the amendment even after the New York Times reported on the
+Bureau proposal.
+
+From POLITECH -- the moderated mailing list of politics and technology
+To subscribe: send a message to majordomo@vorlon.mit.edu with this text:
+  subscribe politech
+More information is at http://www.well.com/~declan/politech/
+
+------------------------------
+
+Date: Wed, 5 Aug 1998 11:18:18 +1000 (EST)
+From: colville@socs.uts.edu.au (John Colville)
+Subject: Power surge hits telephones and data comms
+
+From *Sydney Morning Herald*, 5 Aug 1998, p2:
+
+Electronic chaos as exchange overloads
+by Andrew Cassell [with JC additions from ABC radio]
+
+Bank computers crashed and data and fax lines were cut across the State
+yesterday when a power surge hit Telstra's Haymarket exchange in the city.
+The breakdown created extra queues at banks as computers, automatic teller
+machines and EFTPOS outlets failed.  TAB [off course betting] agencies
+around the State were also affected and 3,500 Telstra customers in Mascot
+and 400 in Randwick lost phone services.
+
+The shutdown, between 12.20 pm and 1.20 pm, could have been much worse,
+Telstra's public affairs manager, Ms Kerrina Lawrence, said, but fast action
+by technicians had stopped the problem spreading through the whole of
+Sydney.  [The technicians noticed the surge and moved isolate things
+manually.  They then had to do 1000 manual resets.  Mascot and Randwick are
+a few km from the affected exchange. Presumably, they didn't move to manual
+before the surge hit those exchanges as well.]
+
+Telstra call connect and 013 [Directory Assistance] services had also been
+disrupted, and in some cases, disconnected because of the surge, with the
+situation made worse by customers clogging up lines trying to get through.
+Problems with those services were continuing last night.  [3 of the 5
+largest Australian banks reported problems. Commonwealth Bank was affected
+until 5 pm.]
+
+John Colville: Centre for Teaching and Learning, Computing Sciences,
++61-2-9514-2487 (1998)  colville@socs.uts.edu.au
+
+------------------------------
+
+Date: Thu, 6 Aug 1998 12:05:12 +0100
+From: Martin Poole <mpoole@quatermass.hea.ps.net>
+Subject: Interesting GPS interference
+
+The following URL documents an interesting case of GPS interference.
+  http://www.osl.com/ecdis/paper02.html
+
+Martin Poole, Perot Systems Europe  mpoole@quatermass.hea.ps.net
+
+  [The item is "Detrimental Effects of Installing Consumer Electronics on
+  Ships" by Ken Hamer of Offshore Systems Ltd., Vancouver, presented 
+  at RTCM, May 1997.  OSL makes ECDIS (Electronic Chart Display and 
+  Information System), based on a combination of GPS receiver and 
+  differential beacon receiver that enhances GPS accuracy -- in combination
+  referred to as Differential GPS (DGPS).  The article documents their
+  efforts to identify the cause of a persistent erratic failure mode that
+  occurred aboard the M.V. Manatoulin, a Great Lakes cargo ship.  The 
+  narrative reads a little like a mystery story, and eventually leads to 
+  the captain's quarters' television antenna -- which used a cheap and noisy 
+  RF amplifier.  PGN Stark Abstracting]
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 20:29:33 -0400
+From: "A. Penguin" <pengu03@ibm.net>
+Subject: Re: USS Yorktown: WinNT not the fault.
+
+We seem to be too quick to blame WinNT for putting USS Yorktown dead in the
+water.  The problem was described as someone entering a zero, after which a
+database overflowed and the propulsion system failed.  That sounds like a
+bug in an application program, not the esteemed operating system!  We're
+unlikely to learn more about the application itself.  Visual A(da), Visual
+B(asic), Visual C.  One could easily forget which language one is supposed
+to program with.
+
+This leads to the following thought - if a technophobe were intending to
+join the modern armed forces, which is the safest branch?  It would
+certainly be less comfortable to have the ship handicapped by a systems
+failure in the submarine and air force services, and best in the Army where
+one could always bring up the backup systems: your feet.
+
+Andy Fraser
+
+------------------------------
+
+Date: Mon, 27 Jul 1998 23:06:26 -0700 (PDT)
+From: Jonathan Mayer <jmayer@3dsp.com>
+Subject: Re: Yorktown dead in water after divide by 0
+
+A simple solution: kill two birds with one stone by forcing Microsoft to GPL
+the source code to Windows NT.
+
+1. we will finally be able to patch NT to make it secure
+   and reliable enough for mission critical applications.
+
+2. the software industry will be freed of an unfriendly tyrant,
+   and Microsoft will be forced to compete in the office software
+   arena on a freshly levelled playing field.
+
+"I am commandeering this source in the name of national security!"  :-)
+
+Jonathan <jmayer@3dsp.com>
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 13:39:37 +0500
+From: leveson@sunnyday.mit.edu
+Subject: More on SOHO (RISKS-19.87)
+
+*Aviation Week and Space Technology*, 20 Jul 1998
+
+Investigators believe two software errors and an improper command led to a
+loss of contact with the NASA/European Space Agency Solar and Heliospheric
+Observatory (SOHO) spacecraft on 24 Jun 1998.  Recovery efforts are
+underway.  An error in a preprogrammed command sequence resulted in an
+incorrect gyroscope reading, sending the spacecraft into an Emergency Sun
+Reacquisition (ESR) mode.  A separate command sequence lacked code to
+activate a gyro needed for control when the spacecraft entered the ESR mode.
+Finally, a decision to command SOHO to turn off a gyro in response to
+unexpected telemetry caused the spacecraft to enter a series of ESRs, and
+ultimately led to loss of control, the agencies said.
+
+Nancy Leveson
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 11:46:25 -0400
+From: Dan Wallach <dwallach@CS.Princeton.EDU>
+Subject: New Jersey Y2K car inspection stickers
+
+On the lighter side of the Y2K problem, I recently received the following
+letter from the New Jersey Division of Motor Vehicles:
+
+  Dear Motorist:
+
+  Due to law enforcement concerns over the similarity of the green, year 
+  2000 inspection stickers with the recently expired green stickers
+  issued in 1997, the Division has discontinued use of the green sticker
+  and is replacing it with a new orange, year 2000 sticker.
+
+  Our records indicate that a year 2000 sticker was issued for your
+  vehicle earlier this year ... We will replace your present sticker
+  with a new orange one.
+
+At least we have the New Jersey government sticking it to us on year 2000
+compliance.  Still, even with a new orange Y2K sticker, I wonder if my car
+will be truly Y2K compliant.
+
+Dan Wallach                  Princeton University, CS Department
+dwallach@cs.princeton.edu    http://www.cs.princeton.edu/~dwallach/
+
+  [Crockwork Orange?  PGN]
+
+------------------------------
+
+Date: Fri, 31 Jul 1998 12:27:20 +0100
+From: Mike Ellims <mike.ellims@pigroup.co.uk>
+Subject: Bug-free millennium for Railtrack
+
+According to *The Guardian* (30 Jul 1998), Railtrack which was formed out of
+the old British Rail has no safety critical computer systems that need to be
+debugged.  This is a legacy of underfunding over the past 20 years before it
+was privatized.  The article quotes Railtrack as having 750 manual level
+signal boxes, 250 power boxes introduced in the 1980's and 9 electronically
+controlled boxes.  It has therefore decided to downgrade it's preparation
+for the year 2000 as it rushes forward; out of the steam age.
+
+Mike Ellims, Pi Technology, mike@pires.co.uk www.pi-group.com +44(0)1223441256
+
+------------------------------
+
+Date: Wed, 29 Jul 1998 12:29:15 -0700 (PDT)
+From: Declan McCullagh <declan@well.com>
+Subject: White House Calm, DoD Nervous About Y2K
+
+http://cgi.pathfinder.com/netly/0,2326,201980729-14220,00.html
+TIME.com / The Netly News, 29 Jul 1998
+
+White House Calm, DoD Nervous About Y2K
+By Declan McCullagh (declan@well.com)
+
+Few were surprised when John Koskinen, the White House's Y2K czar, said
+yesterday that "it's too early to say that in fact there are going to be
+major disruptions" due to the Year 2000 problem.  Koskinen's
+work-hard-and-don't-be-scared advice is what the Clinton administration has
+been saying all along.
+
+But some of the Y2K experts Koskinen brought with him to a National Press
+Club briefing yesterday offered some dismaying details. Usually if, say, a
+4,000-megawatt power plant gives up the ghost, it's no big deal. The
+electric industry is pretty good at planning for these sorts of
+breakdowns. But if dozens crash within a few hours on 1-1-00? "It's a very
+complex system," admitted Michael Gent, president of the North American
+Electric Reliability Council. "It's probably the most complex system every
+invented by man, more complicated than a moon shot." Gent nevertheless
+predicted that even if today were December 31, 1999, "the lights would stay
+on in most places."
+
+If they go out, it'll be the fault of the private sector, not the feds,
+Koskinen said.  Contradicting the now-popular belief that the federal
+government's computers are in the worst shape, he predicted that "the
+threats to the economy and the public are not going to be federal systems."
+[...]
+
+Already prepared to accept his part is John Hamre, deputy secretary of
+defense. "I think we're probably going to be the poster child for failure,"
+he said last week during a speech to Fortune 500 executives.  "Nobody cares
+if the Park Services computers don't come on. OK? But what's going to happen
+if some do[n't] in the DoD?"
+
+------------------------------
+
+Date: Wed, 5 Aug 1998 11:05:04 -0500
+From: "Edelson, Doneel" <doneeledelson@aciins.com>
+Subject: Re: html "referer" field
+
+There is a good article on the html "referer" field in the magazine Web
+Techniques, Sept. 1998, page 10 - security risks by leaking information even
+from ssl pages or from behind firewalls, the right and wrong ways to use
+this field, and a problem that some sites had because of a change in
+implementing this field in Microsoft IE4 (illustrating the risk of using a
+field in a way it was not intended for).
+
+------------------------------
+
+Date: Sat, 1 Aug 1998 07:42:29 -0700
+From: Martin Minow <minow@apple.com>
+Subject: Re: "Cracking DES" (Gilmore, RISKS-19.87)
+
+Anyone looking for a book that puts many of the "software is speech" issues
+into sharp focus should get a copy of "Cracking DES: Secrets of Encryption
+Research, Wiretap Politics & Chip Design" (ISBN 1-56592-520-3).  This book
+describes the DES-cracking machine that was recently in the news when it
+broke a 56-bit DES key in less than three days.  The bulk of the book is
+also available from John Young's website, <http://jya.com/> -- and legally
+so, as the book, with a few small exceptions, is explicitly in the public
+domain.  It's also available from the usual web-based booksellers.
+
+You'll find a substantial discussion of the politics of encryption research,
+the history of DES cracking, as well as all the source code and hardware
+design documents.  This includes well-commented PERL and C source code
+(software source code intended to be read), the VHDL code that defines the
+custom chips used in the cracking engine, hardware board schematics and
+design notes.  The source code is published using checksum tools that
+greatly simplify the task of scanning the book to recover the original text.
+
+While non-technical readers would not be expected to understand the computer
+source code and/or hardware design, the architecture overview and the
+various "political" sections should be well worth reading and within the
+grasp of anyone who can get through a Scientific American article without
+falling asleep.
+
+Martin Minow, minow@pobox.com
+
+  [Note: John Young's archive of the (legal to read) scanned volume is at
+  <http://www.jya.com/cracking-des.htm>.  Also, chapters that would be
+  illegal to put on the Internet in the U.S. are available in abroad
+  <ftp://ftp.nic.surfnet.nl/surfnet/net-security/encryption/cracking_DES/> .]
+
+------------------------------
+
+Date: 5 Aug 1998 14:59:49 GMT
+From: cb@SEI.CMU.EDU (Carol Biesecker)
+Subject: SEI 1998 Software Engineering Symposium
+
+SEI Software Engineering Symposium
+14-17 September 1998
+David L. Lawrence Convention Center
+Pittsburgh, Pennsylvania
+Theme: Improving What You Build Means Improving How You Build
+
+Deadline for early bird registration discount: August 12, 1998.
+
+For complete details, visit our Web site at:
+	http://www.sei.cmu.edu/products/events/symp/
+
+For More Information about the Software Engineering Institute or for more
+details about the Software Engineering Symposium and other events, please
+contact SEI Customer Relations, 1-412-268-5800, customer-relations@sei.cmu.edu
+
+------------------------------
+
+Date: 31 Mar 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 18" for volume 18]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 19.90  
+************************

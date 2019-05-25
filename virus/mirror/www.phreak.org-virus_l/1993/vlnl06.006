@@ -1,0 +1,885 @@
+VIRUS-L Digest   Tuesday, 12 Jan 1993    Volume 6 : Issue 6
+
+Today's Topics:
+
+New security service
+A-V virus
+Re: Integrity Management
+Re: Good use of (possible bad) viruses
+Re: Good and bad viruses (was FC on virus creation)
+Re: How to measure polymorphism
+Re: Export restrictions of anti-virus software?
+Benign "viruses"
+Re: On the definition of viruses
+Viruses in OS/2 HPFS (OS/2)
+New Virus? (PC)
+FDISK/MBR - Listen to what I meant, not what I said. (PC)
+FDISK/MBR - Listen to what I meant, not what I said. (PC)
+Re: Jerusalem (Israeli) Virus (PC)
+Re: Vshield vs Virstop (PC)
+Re: Vshield vs Virstop (PC)
+Re: Clearing out old signatures (PC)
+Re: Joshi Question (PC)
+Re: Untouchable (PC)
+Re: Clash between FDISK/MBR and scanners (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 07 Jan 93 07:35:44 -0500
+From:    fc@turing.duq.edu (Fred Cohen)
+Subject: New security service
+
+	Protection Experts is starting an evaluation of efficacy of
+antivirus products.  This evaluation is designed to indicate to the end
+user, how effective each product would be in the real-world environment
+over different periods of time.
+
+	We have a lot of initial data already, and are planning to
+release an initial version of our report next week.  Any anti-virus
+product vendor who would like to participate should send computer mail
+to me, or FAX Protection Experts at 412-422-4135 or 907-344-3069.  We
+will need vendors to fill out a survey, and provide us with historical
+copies of their products and literature from the last several years.
+
+	Our surveys will include Mac, PC under DOS, PC under Windows,
+OS/2, PC under Unix, Netware, TCP/IP,  LANTastic, Workgroup, AppleTalk,
+System/7, AppleShare, and any other environments provided to us.  If
+you are interested in providing any other environments to us for this
+work, please contact us.
+
+__________________________________________________________________________
+	Protection Experts - Your Experts in Information Protection
+8:30AM-2PM Eastern					2PM-7:30PM Eastern
+412-422-4134						      907-344-5164
+	     24 Hour FAX Service 412-422-4135 OR 907-344-3069
+__________________________________________________________________________
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 10:36:10 -0500
+From:    Ron Whittle <CSCRDW%CURIE@vaxtm1.rtpnc.epa.gov>
+Subject: A-V virus
+
+On Tue, 22 Dec 92, Suzana wrote:
+
+S> Suppose that we have an A-V product which in regular intervals or
+S> randomly send a virus in system. Virus (fast infector) infects only
+S> programs which checksum doesn't correspond to previously calculated
+S> values. If no such program is found virus deletes itself or removes
+S> from memory. If changed program found virus activates scanner to check
+S> if there is any known virus.  If known virus is found message is sent
+S> to the user. If program is changed and no known virus is found the
+S> message is sent to the user to make decision.  If decision is to leave
+S> program as is, virus cuts itself from the program.  The whole process
+S> (except messages) takes place in background. There is no need for all
+S> A-V program (which is combination of I-checker and scanner) to be TSR,
+S> only virus is occasionally TSR.
+
+This looks interesting, but you might run into performance problems
+as the 'good virus' looks for non-infected programs.  Also, if you
+had a stealth virus that was already active in memory, when your
+virus infects a file, it might overwrite part of the program code (or
+the stealth virus, depending on infection method), causing you to
+lose the program.
+
+Wouldn't this program be easier as a TSR?  That way it wouldn't have
+to infect the files, and only needs to check programs that you
+actually execute.
+
+S> There is slight similarity in this
+S> idea with reaction of human immunity system. Anyone has ethical
+S> problem with her/his own immunity system ?
+
+Actually, yes.  Since my immunity system makes periodic attempts to
+kill me, in the name of protecting me, I do have a problem with it.
+You see, I am one of those unfortunate people who are allergic to
+bees.  Each time I am stung, my immune system makes a faster and
+harsher response, and one day this will kill me if I do not get
+medical help.  Is it possible that the A-V virus might (accidentally)
+act in the same way?
+
+- ---
+Ron Whittle
+cscrdw%curie@epavax.rtpnc.epa.gov
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 09:59:12 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Integrity Management
+
+  In reply to me, Vesselin Bontchev writes:
+>>          First, you write as if all algorithms have a seed.
+>
+> My initial thought was that the database of checksums is kept on-line.
+> If it isn't (i.e., if it is stored on a write-protected diskette),
+> then you don't need any cryptographic checksum, of course. But if it
+> is, you cannot just use plain MDx or any other known keyless
+> algorithm, because a virus could use the same algorithm to compute the
+> new checksum of the infected file and update the database of checksums,
+> so that everything will look OK... In these cases, you -must- have
+> some kind of key that is kept unknown to the virus.
+
+Since this is essentially the same as what I have written several times,
+I guess I can't very well object to it, can I?  :-)
+
+>>                 But what do you mean by "using a different seed for
+>> the checksum" in the case of CRC?
+>
+> Well, a CRC is usually computer like this:
+>
+> 	crc = INITIAL_VALUE;
+>   	while ((c = getc (file)) != EOF)
+>		crc = crc_table [(crc & 0x00FF) ^ c] ^ (crc >> 8);
+>
+> Usually INITIAL_VALUE is 0, but you could set it to anything you would
+> like...
+
+Well, I think that comes from using a particular (table-driven) *im-
+plementation* of CRC, and is not an essential feature of CRC as it
+is defined.  Also, while I agree that in this implementation
+INITIAL_VALUE could be considered as a seed, I doubt that varying this
+value adds any security, since CRC can be made key-dependent in a
+very natural way (by varying the generator) and since, in a certain
+sense, it is then provably secure (subject to certain reasonable
+assumptions).
+
+>>   More important, in the case of MDx and X9.9, how do you know that
+>> varying the seed is enough?
+>
+>You are right, I don't know whether it is secure enough. But you have
+>to do something with the keyless algorithms, if you want to achieve
+>different checksums for each user and not allow the virus to guess the
+>correct checksum of the modified object...
+
+But why is it necessary to do something with keyless algorithms at
+all?  There is an alternative to varying a seed (or artificially
+introducing a key) in a keyless algorithm, and that is to use an
+algorithm which is key-dependent by its very design (such as the MAA
+of ISO 8731-2 or ANSI X9.9, if one wants a cryptographic algorithm).
+  I'm not saying that the latter alternative is necessarily better
+than the former.  Regardless of which is used, the important criteria
+are security and speed, where "security" means mainly the requirement
+that, given a file (without knowledge of the key or seed), it be com-
+putationally infeasible to create another file with the same checksum
+as the given one.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 10:37:53 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Good use of (possible bad) viruses
+
+  Suzana S.-C. [sorry, I can't cope with such a long name] writes:
+
+> Just one of those days...Two examples of good use of (possible bad)
+> viruses come to my mind :
+>
+> 1. Viruses written to improve an A-V product
+>
+> The logic is simple. It is better that I write virus which can do this
+> or that and have prepared solution to implement in my A-V product than
+> wait that such virus arises in wild and then react. That means if I
+> know that today exist viruses which could be stealthy, tunneling or
+> polymorfic why shouldn't I write virus which is all that and design my
+> A-V product to recognize such virus before it really appears in wild.
+> (Well, maybe it is not commercial, I don't know). If such virus *by
+> accident* escape from my lab I already have a response and there is no
+> ethical problem at all.
+
+You definitely should try to anticipate new types of viruses.  But
+why do you have to *write a virus* to do this?  It's certainly
+pointless in the case of scanners, and in the case of other types of
+AV software, it's usually sufficient to *think* of what a new type of
+virus might do, and to modify your AV product accordingly, without
+actually writing such a virus.  (And if your virus does escape by
+accident, it would suggest irresponsibility on your part, so I think
+you *would* have an ethical problem.)
+
+  (Btw, although this evidently was not what you were referring to,
+it reminds me of a few cases I have heard of in which the authors of
+a known-virus scanner have written a new virus and inserted a corres-
+ponding pattern into their scanner, so that the virus is detectable
+by their scanner but not by their competitors' scanners.  They then
+adduce this as "proof" that their product is better than those of
+their competitors.  Needless to say, this would be highly unethical
+in the opinion of most people.)
+
+> 2. Viruses built in an A-V product (it's just an idea, don't blame me if it
+> is not applicable in reality)
+>
+> Suppose that we have an A-V product which in regular intervals or
+> randomly send a virus in system. Virus (fast infector) infects only
+> programs which checksum doesn't correspond to previously calculated
+> values. If no such program is found virus deletes itself or removes
+> from memory. If changed program found virus activates scanner to check
+> if there is any known virus.  If known virus is found message is sent
+> to the user. If program is changed and no known virus is found the
+> message is sent to the user to make decision.  If decision is to leave
+> program as is, virus cuts itself from the program.  The whole process
+> (except messages) takes place in background. There is no need for all
+> A-V program (which is combination of I-checker and scanner) to be TSR,
+> only virus is occasionally TSR. There is slight similarity in this
+> idea with reaction of human immunity system. Anyone has ethical
+> problem with her/his own immunity system ?
+
+I'm afraid I don't understand this one at all.  What's the advantage
+of infecting files?  Just so that the I-checker and scanner don't have
+to be resident?  There are lots of I-checkers and scanners which are
+*non-resident*.  Not only does that save memory, but it's also a more
+secure way of doing things.  The advantage of your proposal seems to
+me completely outweighed by the risks involved.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 10:57:22 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Good and bad viruses (was FC on virus creation)
+
+  Suzana writes:
+
+> With properly defined computer virus there shoudln't be doubts what is
+> a good and what is a bad virus. Or should be ? Let's suppose that bad
+> virus is intended to cause some unwanted function in system. Some
+> programs (even antiviral) can do the same thing, (what is unwanted
+> function anyway ?) but they cannot propagate. Good virus can
+> propagate, but it is supposed to not invoke anything unwanted. But, by
+> definition good virus can mutate, so can become bad virus.
+
+But it doesn't *have to* become a bad virus.  And if it does become
+one, then by most people's definitions it probably wasn't really a
+good virus to begin with.
+
+>                                                            Also, good
+> virus on one system can be bad virus on another system (causing some
+> unwanted function).
+
+Correct in principle, but not too likely to occur in practice.
+
+>                     Could all bad viruses be good viruses ? Yes,
+> because without them many A-V producers would loose their source of
+> money.
+
+I think a lot of readers will find that a rather amusing example of
+"goodness" of a virus.  Are you serious?
+
+>        Can all good viruses be bad viruses ? Yes, because they are
+> viruses (something very suspicious).
+
+Only because there are (at least) two different meanings of the word
+"virus".  If you play on that, you can prove almost anything.
+
+>                                      Confusing ? Not to anyone who
+> ever met chinese philosophy and principles of Yin and Yang. Shortly,
+> good and bad are inseparable and dependent one of the another (you
+> can't define good without defining bad and vice versa).
+
+Even if you can't define "good" without defining "bad", that doesn't
+imply that one *becomes* the other, or that there is no distinction
+between them.  In my opinion, this is a very confused philosophy.
+
+> So, what to do ? Let's throw (unnecessary) philosophy ....
+
+Excellent idea ....
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 14:26:09 -0500
+From:    Ron Whittle <CSCRDW%CURIE@vaxtm1.rtpnc.epa.gov>
+Subject: Re: How to measure polymorphism
+
+On 06 Jan 93, bontchev said:
+
+> There are already two polymorphic engines available (MtE and TPE) and
+> we are going to see more and more polymorphic viruses in the future.
+> An interesting question arises - how to determine how polymorphic a
+> virus is? How to determine which of two viruses is "more polymorphic"?
+> In other words - how to measure polymorphism in an objective way?
+
+I think that the first thing that needs to be done is to separate the
+'polymorphism' from the 'encryption'.  In your example code, that
+would not be a polymorphic virus (rating 0), but an encrypting virus
+(rating 1).
+
+> Unfortunately, this is not good enough. First, what to do with viruses
+> that use a limited set of decryptors, one of which is selected
+> randomly (Whale). Such viruses are obviously more polymorphic than
+> Cascade. But are they more or less polymorphic than Suomi? They can be
+> detected by a set of non-wildcard strings...
+
+By giving different ratings for encryption and polymorphism, this
+problem would not be as big.  Also, a lesson could be taken from
+fractal geometry.  Assign (whale) type viruses ratings between
+numbers (1.3 for example).
+
+> Second, what about Bad Boy? It consists of 9 segments of code, 8 of
+> which can appear in any order. This gives 8! = 40,320 variants. But
+> the virus is even not encrypted, so it can be detected with a simple
+> (non-wildcard) scan string...
+
+Bad Boy would have an encryption rating of 0, and a polymorphism
+rating of 1 (or whatever.  I don't think the number of variants is
+the only factor to be considered in the polymorphic rating.  As you
+have shown, even a small number of segments can lead to a large
+number of variants).
+
+- ---
+Ron Whittle
+cscrdw%curie@epavax.rtpnc.epa.gov
+
+------------------------------
+
+Date:    07 Jan 93 21:10:21 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Export restrictions of anti-virus software?
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>A check with Ottawa resulted in the statement that F-PROT was export
+>restricted (controlled) as shareware did not meet the criteria of this
+>general "software" note... Therefore SCAN by McAfee also would not
+>meet the requirements.
+
+Extremely silly, of course....not that it affects either us or McAfee, of
+course - we export our programs to Canada, not from there, but I find it
+extremely hard to believe that anybody takes this regulation seriously.
+
+Of course, there is not that much Canadian anti-virus software around, is
+there :-)
+
+- -frisk
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 16:28:09 -0500
+From:    "Tim Hare" <SS942TH@dot1.mail.ufl.edu>
+Subject: Benign "viruses"
+
+Perhaps I am a bit naive, not being a virus researcher, but could the
+problems related to benign virus-like (i.e. self-replicating) programs
+be solved by implementing a protocol to control the installation of
+self replicating programs? What I envision is something like the
+following:
+
+     1. Self replicator sends a message to the target machine, asking if
+        self replicators are allowed to be installed there. One of several
+        things happens:
+        A. The target has been set up to allow this to happen automatically,
+           go to step 2.
+        B. The target might allow it, but must ask for judgement from the
+           system administrator (mechanics of "asking" could include E-mail
+           to and from administrator, direct interaction, or whatever). If
+           the administrator OKs it, go to 2.
+           If the administrator doesn't okay it, go to 6.
+        C. The system has been set to always deny these requests. Go to 6.
+        D. The system doesn't support the protocol. It should not be at risk
+           unless it always executes things sent to it from other systems,
+           but I don't think this system could be considered completely safe.
+           In any event, it cannot participate further in the protocol.
+     2. Send an affirmative message to the source (of the replicator) machine,
+        inviting the transmission of the program.
+     3. Receive the program to a directory that no users except the system
+        administrators can access.
+     4. Execute whatever security scanning and checking mechanisms are desired
+        for this program. If malignancy is detected, notify the administrators
+        and stop the process. Do not send negative response messages to the
+        source, since this could allow someone to send many small bits of
+        malignancy over time and determine exactly what holes your scanning
+        and checking procedures allow, then write a self replicator which
+        passes all your tests but is still malignant.
+     5. If it looks OK, move the program the place where it should be executed.
+        I would propose that all such self-replicating programs from one area
+        under one user identification, and that that user have the lowest
+        possible rights on that system, and _no_ rights to create or modify
+        files. Reading files and sending messages should be allowed.
+     6. Error situations: Send a negative response and stop.
+
+The advantages I see to this are that self-replicating programs can be used
+where they will be benificial, but _cannot_ be used without the permission
+of the system administrators. Step 4 will help make sure that the program is
+not malignant (obviously dependent upon the quality of your checking), and
+following the caveats in step 5 should prevent it from modifying files or
+data (well at least it will be no more capable than a program installed by the
+system administratos). Once the program has been installed, in fact, the
+security problem is about the same as that for programs written at the site,
+and looks identical (to me) to the security problems for programs obtained
+from other sites by FTP, download, or purchase. Allowing it to send messages
+does mean that someone could send all your sensitive data back to themselves,
+but your sensitive data should already be protected from being read by any
+old program, anyways.
+
+Like I said earlier, I'm not a researcher, so my theoretical groundings are not
+very good. Any and all comments on this are welcomed. My thoughts on this are
+mainly due to a desire to someday see the fabled "knowbot" which can hunt
+around on "the net" for information on a particular topic, following leads to
+different sites as necessary.
+
+Regards
+Tim Hare
+Systems Programmer
+Florida Department of Transportation ("Potholes Built and Fuilt While-U-Wait")
+
+------------------------------
+
+Date:    07 Jan 93 15:00:08 -0800
+From:    a_rubin@dsg4.dse.beckman.com
+Subject: Re: On the definition of viruses
+
+fc@turing.duq.edu (Fred Cohen) writes:
+>	Computer viruses do not have to be malicious, they do not have
+>to be Trojan horses, and they do not have to enter without the
+>knowledge or consent of the user.  Any definition that depends on
+>these properties depends on peoples' opinions, skills, and knowledge,
+>and are thus not "testable" in the scientific sense of the word.  (See
+>Popper and others for more details).  For example:
+
+...
+
+>	The mathematical definition first published in 1985 is
+>testable, and appears to properly differentiate viruses from
+>non-viruses.  Perhaps someone else wishes to do a better job, but
+>let's not make definitions that are senseless.
+
+>	So what is a computer virus? In simple terms, it is a sequence
+>of instructions that, when interpreted in an appropriate environment,
+>"replicates" in that at least one relica also "replicates", etc., ad
+>infinitum.
+
+Actually, that definition isn't useful.  If the "environment" includes
+a user typing "copy", then any file is a virus.  (Word Perfect, on the
+other hand, qualifies as a Trojan Horse under almost any definitions,
+because it busily modifies files without being asked.  MOST of those
+files are in the WP directory, but....)
+- --
+Arthur L. Rubin: a_rubin@dsg4.dse.beckman.com (work) Beckman Instruments/Brea
+216-5888@mcimail.com 70707.453@compuserve.com arthur@pnet01.cts.com (personal)
+My opinions are my own, and do not represent those of my employer.
+My interaction with our news system is unstable; please mail anything important
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 08:48:15 +0000
+From:    robert.heuman@rose.com (robert heuman)
+Subject: Viruses in OS/2 HPFS (OS/2)
+
+Date Entered: 01-07-93 03:45
+Just to inject a further complication into the discussion of HPFS, I
+have just installed IBM OS/2 Advanced LAN Version 3.0.  If any
+reasonable security is required, HPFS must be used.  The install
+requires replaceing the version 2.0 286HPFS with a new 386HPFS.
+
+I DO NOT know what the differences are, but there must be some, as one
+needs to remove protection and copy, using supplied utilities, certain
+information re existing user set-up, etc., before installing the new
+LAPS and LAN software in the HPFS partition.
+
+Therefore, I suspect that IF someone writes a virus that impacts 286
+HPFS it MIGHT NOT work on a 386HPFS partition, but, of course, I do
+not know.
+
+If anyone has information on the differences between the two flavours,
+it might help in the discussion, and the issue of possible virus
+intrusion into the partition.
+
+This does not change, as far as I can see, the possible infection of
+DOS files saved on the partition, etc.
+
+R. S. (Bob) Heuman
+- ---
+   RoseReader 1.70 P001886: This Canadian has an Opinion...His Own!
+   RM 2.00 : RoseNet<=>Usenet Gateway : Rose Media 416-733-2285
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 02:53:02 -0500
+From:    glarwill@educ.ucalgary.ca (Glen Larwill)
+Subject: New Virus? (PC)
+
+I run a BBS in Calgary Alberta, Canada.  Today, one of my users
+claimed he had a virus on his system and was having some "trouble".
+He didn't specify what was going on with his system.  I asked him to
+send me a copy of one of the files he had that were infected.  He
+uploaded two files.  The smallest one appears to be a dropper program.
+It contains 80h bytes of a program (non-virus) that send a few escape
+sequences to PRN:.  F-Prot (2.06a) in Secure Scan mode shows the
+smaller file as a possible variant of SVC, and doesn't find anything
+in the larger file.  In Quick Scan mode, it says they are both Dark
+Avenger viruses.  MacAfee's VScan99 doesn't find anything wrong with
+either of these files.
+
+I haven't completly disasembled the smaller file yet, but I have found
+that it installs it's self in upper memory (using about 2100 bytes).
+It hooks interupt 21H and watches for Load and Exec, Create File,
+Close File, Open File, Get and Set File Attribs calls to Int 21.  It
+also contains the following text...
+
+"JERICHO.Eurystheus.Calgary AB".
+
+I have not disasembled the larger file yet, but it contains the following
+text
+"JERICHO by Eurystheus<FoG>.Calgary" in the same location.  It seems that
+these are two slightly different versions of the same virus.
+
+If this is a new virus, what is the safest way to send these files via the
+Internet, and who do I send them to.
+
+Glen Larwill, glarwill@educ.ucalgary.ca
+Sysop of The Interlink, Fidonet 1:134/93
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 08:24:31 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: FDISK/MBR - Listen to what I meant, not what I said. (PC)
+
+>you write:
+>>>Of course FDISK/MBR will not have *any* effect with any DOS before
+>>5.00 so this may be the cause.
+
+>Are you sure?  I was under the impression that MS-DOS 5.00 FDISK.EXE's
+>/MBR switch would work with any prior version of DOS.
+
+OY. What I meant was *FDISK* from a prior version of DOS would not recognise
+the /MBR switch. Certainly if you boot with DOS 5.0 and use its FDISK,
+the /MBR switch will work.
+
+					In a fog,
+
+						Padgett
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 08:28:08 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: FDISK/MBR - Listen to what I meant, not what I said. (PC)
+
+Received the following post:
+
+>In Virus-L you (that is I) wrote:
+>>>Of course FDISK/MBR will not have *any* effect with any DOS before
+>>5.00 so this may be the cause.
+
+>Are you sure?  I was under the impression that MS-DOS 5.00 FDISK.EXE's
+>/MBR switch would work with any prior version of DOS.
+
+OY. What I meant was *FDISK* from a prior version of DOS would not
+recognise the /MBR switch. Certainly if you boot with DOS 5.0 and use
+its FDISK, the /MBR switch will work reguardless of which version of
+DOS is on the hard disk (or OS/2 or most Unixes for that matter).
+
+					In a fog,
+
+						Padgett
+
+------------------------------
+
+Date:    07 Jan 93 13:22:52 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Jerusalem (Israeli) Virus (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+> Jerusalem B is a file infector. It runs as a TSR, and will infect every
+> executable file you run except for .COM files larger than 62K. I believe
+> the virus is around 1800 bytes long.
+
+First, there is not such thing as "Jerusalem B". Even SCAN does not
+call any virus like that anymore... The Jerusalem family of viruses
+contains many variants. You are probably speaking about the most
+widespread one, which is 1808+5 bytes long and infects EXE files
+multiple times (until they get too big to fit in memory).
+
+> McAfee's Clean can remove this virus fairly easy to remove. It would be a
+
+Due to the infection method that this virus employs, it destroys EXE
+files with internal overlay structure (e.g., WordPerfect). Such files
+will crash when executed. They will still crash after disinfection,
+although McAfee's Clean does not warn you about that. If you have an
+outbreak of this virus, the best solution is to delete all infected
+files and to replace them with clean copies.
+
+> very good idea to re-boot the computer from a known clean bootable
+> diskette. If you don't have a clean bootable diskette, go ahead and type
+> the following on the command line.
+>
+> CLEAN C: [JERU]
+>
+> after Clean gets finished, turn your computer off for a few seconds, then
+> back on. The reason for this is that since Jerusalem-B runs as TSR. After
+> the computer is clean, make a bootable diskette, then place a write
+> protect tab on the notch. Then the next time you have another virus, you
+> will be ready.
+
+If he follows your advise literally, the "next time" he will run a
+CLEAN.EXE infected with the virus and will spread the infection again.
+The correct advice is to emphasize that at least the program CLEAN
+must be run from a write-protected diskette, if you are unable to boot
+from a clean environment...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Jan 93 13:44:59 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Vshield vs Virstop (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+> There are several problems with the integrity checking by Scan, and
+> Vshield.
+>
+> 1. Some programs will not run after the CRC is added to the file. So it is
+>    necessary to remove the CRC. Scan filename /RV will remove the CRC.
+
+Yes, but there is another option, which puts the checksums in a
+separate file, instead of attached to the checksummed executables.
+Nevertheless, there are much more serious problems:
+
+> 2. These CRCs will not detect stealth infectors because stealth viruses
+>    disinfects infected files when an infected file is opened for any
+>    reason.
+
+> 3. These CRCs will not detect the presence of companion infectors because
+>    these companion infectors do not attach to files.
+
+  4. The particular CRCs used are trivial to forge.
+
+  5. The integrity checker is not aware of many of the existing
+attacks against integrity checking software (described in my paper).
+You mentioned two of them - stealth viruses and companion viruses, but
+there are many more and almost any of them can be used to bypass the
+integrity checking of VShield.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 16:07:13 +0000
+From:    ian@bvsd.Co.EDU (Ian S. Nelson)
+Subject: Re: Vshield vs Virstop (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+>1. Some programs will not run after the CRC is added to the file. So it is
+>   necessary to remove the CRC. Scan filename /RV will remove the CRC.
+
+I beleave there is an option that will store the checksum in a datafile of
+your choice.
+- --
+Ian S. Nelson			I speak for only myself.
+finger for a PGP public key.
+
+------------------------------
+
+Date:    07 Jan 93 19:46:14 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Clearing out old signatures (PC)
+
+riordan@tmxmelb.mhs.oz.au (Roger Riordan) writes:
+
+> To guard against possible unknown viruses like to Chinese Fish,
+> which install themselves in high memory, but do not set the top of
+> memory down, we recently added a feature to VET to fill unused
+> memory with a diagnostic procedure which gives a warning message,
+> and locks the PC, if anything attempts to execute unused memory.  So
+> if you run VET, and an unknown virus of this type is already in
+> memory, you get the warning as soon as VET calls an interrupt the
+> virus has trapped.
+
+Hmmm... How do you achieve that? One could fill the free memory with
+INT xx instructions and intercept interrupt number xx, but
+nevertheless chances are that the "something" that has been active in
+the unmarked memory will be called in the middle of the INT
+instrcution... The chances for this to happen are 50%... Ahh, I think
+I guessed it - you use interrupt number 0CDh? :-)
+
+> We investigated, & found that they were using Microsoft Lan Manager.
+> When PROTMAN was run from CONFIG.SYS a block of code was installed
+> at 7000:7800, but top of memory (as recorded at offset 2 in the PSP)
+> remained 9FFF:0000.  If this code was overwritten by running VET (or
+> anything else) before the user logged in, the system would crash
+> when the program NBP.EXE was run as part of the log in procedure.
+
+Hmmm, that's a serious bug in the Lan Manager, IMHO... If it indeed
+keeps active code at that segment, then it could be overwritten by
+ANYTHING! A large program, multiple copies of the command interpreter,
+anything...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Jan 93 20:10:19 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Joshi Question (PC)
+
+rind@enterprise.bih (David Rind) writes:
+
+> Does Joshi trap attempts at warm reboots?  There was an intermittent
+> problem with a new program on a computer that turned out
+> to be infected with Joshi.  The problem was sporadic enough that I
+> can't be certain that getting rid of Joshi eliminated it, but if
+> Joshi was trapping Alt-Ctrl-Del, then that would explain the "bug".
+
+Yes, Joshi intercepts INT 9 (the keyboard interrupt) and checks for
+Alt-Ctrl-Del. If it is detected, the virus tries to "survive the warm
+reboot". That is, it clears the screen, restores the interrupt vectors
+it has saved while it has been loaded in memory, and issues INT 19h.
+This will actually reboot the computer without cleaning the memory,
+thus the virus will not be destroyed.
+
+A careful user will not be fooled by that, because most machines
+display a lot of messages during the warm reboot. These messages come
+from the BIOS. Unfortunately, this is not reliable enough, because
+most people are not careful and will not make the difference between a
+real warm reboot and the virus just blanking the screen (i.e., no
+messages). On the top of that, some computers (mainly true IBM PC or
+PS/2s) do not display any messages during the warm reboot...
+
+This has created the myth that some viruses are able to survive a warm
+reboot. They cannot, or at least they cannot do this unnoticeably on
+most computers, but nevertheless you are always advised to cold-boot
+when you suspect a virus in memory...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Jan 93 20:27:19 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Untouchable (PC)
+
+bill.lambdin%acc1bbs@ssr.com (Bill Lambdin) writes:
+
+> UTScan
+> Detection is fair
+> removal leaves a lot to be desired.
+>
+> I would place F-Prot, VIRx, and Scan in front of it.
+
+> UTRes
+> Detection is fair.
+
+I has improved much since then. And I even don't have the latest
+version...
+
+> UTPeriodic
+> This is one of the best integrity checkers that I have seen. I would put
+> it in the same league with Victor Charlie's Bit Checking, or Integrity
+> Master.
+
+I have not seen a recent version of Victor Charlie, so I cannot
+comment on that. (I saw on a few years ago and it was very poor, but I
+have heard that the product has been completely redesigned.) Integrity
+Master is undoubtedly the best shareware integrity checker around, but
+it is still MUCH worse that the integrity checker in Untouchable...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 07 Jan 93 15:56:26 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Re: Clash between FDISK/MBR and scanners (PC)
+
+>From:    tck@bend.ucsd.edu (Kevin Marcus)
+
+>I recently installed Linux, a version of unix for the PC, in addition
+>to my regular dos partition.  This comes with a small program called
+>"wini" which is a program, which occupies the MBR to allow me to
+>choose which OS I would like to boot into.  It's my understanding
+>OS/half does somethign like this, also, or can do something like this.
+>If FDISK/MBR REWRITES the MBR with the basic, boring code that
+>normally is there with DOS, then if I use this method, I will destroy
+>the wini program, and restrict myself from booting into my Linux
+>partition.  This is another drawback to fdisk/mbr.
+
+COHERANT is another OS that uses this method. Actually there are any
+number of other a-v solutions that will do as well (such as my own
+FixMBR which can produce a small executable file that will restore the
+original MBR) but FDISK /MBR has three great advantages:
+a) It is a no-brainer.
+b) Everyone who has DOS 5.0 has it.
+c) It will *not* lose/change the partition table.
+
+Given that you know FDSIK /MBR uses "basic, boring code" you probably also
+know how to use DEBUG to repair most anything that FDISK /MBR can, but for
+those who need to ask - K.I.S.S.
+					Warmly,
+						Padgett
+
+ps It is my understanding (David ?) that OS/2 uses selection through a
+   replacement of the DBR (OBR ?) *not* the MBR and requires a more complex
+   approach e.g. You boot. If the wrong OS comes up, you instruct a program
+   to replace the DBR with the correct one then you boot again. Hopefully
+   this time the correct OS comes up. Only IBM...
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 6]
+****************************************

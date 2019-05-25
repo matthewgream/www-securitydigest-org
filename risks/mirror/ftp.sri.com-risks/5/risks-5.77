@@ -1,0 +1,302 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday, 17 December 1987  Volume 5 : Issue 77
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Lessons from a power failure (Jerome H. Saltzer)
+  Squirrels and other pesky animals (Frank Houston)
+  Security failures should have unlimited distributions (Andy Freeman)
+  2600 Magazine -- hackers, cracking systems, operating systems (Eric Corley)
+  Re: can you sue an expert system? (Roger Mann)
+  Re: Interchange of ATM cards (Douglas Jones)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+Volume summaries for each i in max j: (i,j) = (1,46),(2,57),(3,92),(4,97).
+
+----------------------------------------------------------------------
+
+Date: Thu, 17 Dec 87 11:54:11 EST
+To: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@kl.sri.com>
+Subject: Lessons from a power failure
+From: Jerome H. Saltzer <Saltzer@ATHENA.MIT.EDU>
+
+About three times each year, the Cambridge Electric Company provides M.I.T.
+Project Athena an opportunity, at no extra charge, to check out its campus-
+wide power failure resiliency and cold start capability.  The most recent
+opportunity came one week ago.  We assume that Celco chose this particular
+time because the last week of the Fall semester has everyone (both students
+and Athena operations staff) stretched out about as thin as they ever get;
+if you are going to do a stress test why not make it really stressful?
+
+At 11:02 a.m. on December 10 a power glitch of about a half-second duration
+took down 750 network workstations and 70 network servers of various types,
+all nominally connected in a client-server architecture, and up to that
+instant happily humming away doing last-minute homework assignments and
+final term papers.  In the ensuing couple of hours we discovered two
+interesting things.  (And of course we also learned--or I should say
+relearned--a half dozen less interesting things, in the same general class
+as remembering to keep your fire extinguishers charged.)  One of the
+interesting things was bad (but repairable) news, the other one was good
+news.  Both may be of interest to designers concerned with RISKS.
+
+First, the bad news.  Our most recently introduced service is a network name
+service that, among other things, provides automatic lookup to determine
+which of 33 independent network file servers is holding your files.
+Although it was intended to eventually run this network name service on a
+set of small machines dedicated to just that purpose, we initially deployed
+the name service as an extra process on three of our big file servers,
+choosing three that were known to be lightly loaded because they also
+provide file backup copying service.  We knew, but didn't think about, the
+fact that the file backup copying servers were each configured with two
+extra, large disk drives when compared with the other file servers.
+
+The problem became apparent as we watched the system struggle back to its
+feet after the power failure.  The network gateways were back on the air
+within a few seconds; the 15 library file servers (since they export
+read-only file systems) were mostly back on the air within five or ten
+minutes, and then the 33 file servers that hold user files began to pop to
+life.  Within 15 to 30 minutes most of them had checked out their file
+systems and were ready for customers.  But no customers showed up, even
+though almost all of the 750 workstations had dutifully rebooted themselves.
+The reason is that the large-configuration backup servers were still picking
+nits out of their three-disk file systems, and hadn't gotten to the point
+where they could restart the name service that everyone else depended on to
+figure out which file server to use.  About 45 minutes into the incident,
+the first name server woke up, and a majority of users were back on the air,
+after an unnecessary delay averaging perhaps 25 minutes.
+
+Needless to say, we are expediting the installation of the small-configuration
+name service hosts.  RISKS lesson: The independence of dedicated servers can
+be one of the major benefits of a distributed server/client architecture, but
+the benefit is only potential till you actually get around to doing it.
+
+The good news was the discovery that there is an extra payoff in our
+configuration of 33 independent, modest-sized (0.5 GB) file servers as
+compared with, say, 4 giant file servers.  When only 31 of the 33 came back up
+because a water cooling pump in one machine room didn't survive the power
+glitch, only about 7% of our 5000 student customers were affected.  And most
+important, we had enough spare capacity that we could consider reloading the
+files from the latest backup tapes of those 2 servers elsewhere.  Fortunately,
+the cooling pump got fixed before we had to do that, but the principle has
+stuck in our minds.  It is similar to the principle in the electric power
+industry that your system needs (at a minimum) spare or reserve generating
+capacity of about the same magnitude as the largest single generating plant in
+the system.  RISKS lesson: The smaller the largest server, the smaller the
+reserve capacity you need to absorb its failure.
+                 					Jerry Saltzer
+
+------------------------------
+
+Date: Thu, 17 Dec 87 10:46:22 est
+From: houston@nrl-csr.arpa (Frank Houston)
+To: risks@kl.sri.com
+Subject: Squirrels and other pesky animals
+
+It seems to me that the problem of pests infiltrating electrical and
+electronic equipment is not news anymore.  Recall Grace Hopper's moth.
+
+In my youth squirrels were a common cause of power interruptions when they 
+would climb the utility pole and try to nest in the transformer  outside
+of our house.   When I grew up and went to work in a development laboratory
+I saw photos of a mouse that put some test equipment out of commission by
+crawling inside and electrocuting itself on the power connections.  
+If it had happened to Eniac, we might we might be demousing, not debugging.
+
+Frank Houston [houston@nrl-csr.arpa]
+
+------------------------------
+
+Date: Thu 17 Dec 87 01:38:22-PST
+From: Andy Freeman <ANDY@Sushi.Stanford.EDU>
+Subject: Security failures should have unlimited distributions
+To: RISKS@KL.SRI.COM, pgarnet@NSWC-WO.ARPA
+
+Summary: Crackers already talk to each other - clearinghouses can't
+help them much.  The only people who can benefit from clearinghouses
+are responsible system adminstrators.  No matter how broadly
+clearinghouses distribute cracker techniques, it won't put systems run
+by irresponsible system adminstrators at any more risk than they
+already are.
+
+Paul Garnet (pgarnet@csl.sri.com) writes:
+    In Risks 5.71 Eugene Miya suggests 
+
+    < If we are ever going to progress out of the software muck, we are
+    < going to have to come up with mechanisms to replace all of our
+    < anecdotal information with better information.
+
+    I agree.  One part of the 'software muck' is illicit code, e.g.,
+    Trojan horses, viruses, etc.  It is EXTREMELY difficult to obtain any
+    examples of illicit code, as any organization which has been bitten by
+    one of these bugs does not want to be responsible for exacerbating the
+    situation by letting the illicit code out to possibly infect another
+    system.
+
+    The software security community needs to study the diseases which we
+    are trying to defend against, as potential defenses created in a
+    vacuum of information will only work in a vacuum.  A clearinghouse,
+    repository, library, or whatever name one wants to give to such a
+    function should be set up so that those of us who are trying to build
+    defenses can have subjects to study.
+
+    There are, however, a number of sticky issues revolving about setting
+    up such a clearinghouse.
+
+    1) How do you trust the repository?  How does one know that
+    information given to the repository will not be abused, nor will it be
+    used against the giver?
+
+If the information can be used again against the giver, it will be
+regardless of whether the breached site tells anyone.  ("Fool me once,
+shame on you, fool me twice, shame on me.")  The cracker still knows
+and crackers talk to each other.
+
+    2) How does the clearinghouse know who to disseminate which
+    information to in order not to violate issue number 1?  How does one
+    decide on who has a legitimate need to see 'dangerous' information,
+    e.g., details on viruses, trap doors, etc.
+
+See above.  The only defense comparable sites have is to find out as
+quickly as possible about their holes; clearinghouses should be
+available to everyone.  A few crackers will use the clearinghouse to
+find out sooner than they would have otherwise, but immediate
+unlimited distribution gives every responsible system administrator a
+chance they don't have now to fix holes before cracker can slip
+through.  Systems run by irresponsible sysadmins aren't in any more
+danger when everyone, not just the crackers, knows about their holes.
+
+    3) The clearinghouse must not be an information sink, sucking up
+    information from anyone willing to donate their examples but never
+    giving any information out.  It must be clear that the purpose of the
+    clearinghouse is to facilitate the sharing of information in a non-
+    threatening way.
+
+See above.
+
+    4) The clearinghouse must not be an organization that people are
+    inherently scared of, "If I tell them what happened, what are they
+    going to do to me?"
+
+The clearinghouse should accept anonymous "here's how to crack
+operating system x", so this isn't a problem.  Obviously, it shouldn't
+distribute anonymous solutions - the real problem is validating
+suggested fixes.  Nevertheless, clearinghouses that do nothing but
+distribute "here's how to crack unix" information are valuable.
+
+    5) There must be some mechanism to validate the information coming to
+    the clearinghouse to insure that it is correct.  We do not want a
+    repository of misleading, invalid data.
+
+This is "easy" - all the clearinghouse has to do is try to crack a
+similar system that has is secure against all previously disclosed
+attacks.  If it breaks, publish the new hole, otherwise let people
+know that if they aren't up to date, they're still vulnerable.
+Perhaps there should be two types of clearinghouses.  One stores all
+holes while the second keeps track of holes that have been rereported
+in the past six months.
+
+    6) Who's going to pay for this service?
+
+Responsible system administrators will pay for subscriptions;
+"evolution" will decrease the number who don't subscribe.  The real
+problem is who is liable.  Irresponsible system administrators will
+blame the clearinghouse even though it doesn't contribute to their
+insecurity.  OS suppliers will be unthrilled too.  Both will sue.
+
+I think there should be competing clearinghouses.  Some will
+specialize and may even sell fixes - they can be validated the same
+way any software vendor is.  (Some OS vendors will run
+clearinghouses.)  Independents will keep them honest - they'll let
+responsible system managers know there is a problem, and what it looks
+like, even if their vendor won't admit that there is one, let alone
+have a solution.
+
+Many security failures are people failures.  A clearinghouse will only
+highlight this.
+                                    -andy
+
+------------------------------
+
+From: cmcl2!phri!dasys1!ecorley@RUTGERS.EDU (Eric Corley)
+Date: 16 Dec 87 08:55:30 GMT
+To: comp-risks@RUTGERS.EDU
+Subject: 2600 Magazine -- hackers, cracking systems, operating systems
+
+There has been some talk of an article that we have published in 2600
+Magazine and I wanted to make clear the reasons for our publishing such an
+article and what the purpose of our magazine is. The article in question is
+a very well documented guide to VM/CMS, run on IBM machines. It explains how
+the systems can be cracked, what the vulnerabilities are, and how a hacker
+can find what he/she is looking for. We have printed the article in two
+parts, the conclusion appearing in our latest issue.
+
+2600 prints these articles because, quite frankly, people want to know these
+facts. Most computer hackers are not of the malicious caliber and simply
+explore systems to learn how they work. We find that a great many computer
+operators benefit greatly from the bugs and quirks that we point out.
+
+So, in short, we aren't printing these articles on computer operating
+systems (UNIX, VAX, VM/CMS, VMS, etc.) and telephone systems (Sprint, MCI,
+AT&T, etc.) to help people break into them, NOR are we printing them to help
+trap computer hackers--we simply want the information to be known. Thanks
+for the opportunity to respond.
+
+Eric Corley, Editor, 2600 Magazine, 2600@dasys1.UUCP, phri!dasys1!2600@nyu
+(NOTICE: For those interested, 2600 is published quarterly and costs
+$40 for a corporate sub, $15 for individual (delivered to your home)
+subs. Back issues are also available. Write: 2600, PO Box 752-A, 
+Middle Island, NY 11953. (516) 751-2600.)
+
+Eric Corley                      {allegra,philabs,cmcl2}!phri\
+Big Electric Cat Public Unix           {bellcore,cmcl2}!cucard!dasys1!ecorley
+New York, NY, USA                               {sun}!hoptoad/         
+
+------------------------------
+
+Date:  Wed, 16 Dec 87 13:09 MST
+From: Roger Mann <RMann@HIS-PHOENIX-MULTICS.ARPA>
+Subject:  Re: can you sue an expert system?
+To: risks@csl.sri.com
+
+No one has asked this question yet, so I will.  In the original question, the
+expert system was a model of a financial advisory service that gives buy,
+sell, and hold recommendations.  The question is:  can you sue a financial
+advisory service ?  If not, then how can you sue the expert system that
+represents that service.  If you can sue, what do advisory services do to
+prevent themselves from paying out gobs of money to irate customers ?  Then,
+from that, can expert system sellers protect themselves in the same fashion ?
+
+------------------------------
+
+Date: Wed, 16 Dec 87 09:02:52 CST
+From: Douglas Jones <jones%cs.uiowa.edu@RELAY.CS.NET>
+To: risks@csl.sri.com
+Subject: Re: Interchange of ATM cards
+
+The original law requiring that all off-premise ATMs in the state accept
+ATM cards issued by any bank in the state was enacted in Iowa.  It was
+immediately copied by North and South Dakota, and then by Wyoming.  As a
+result, very soon after the introduction of ATMs, we had a 4 state uniform
+network (named Shazam; symbol: an S with a lightning bolt through it,
+making an interesting variant on the dollar sign).
+
+Why other states have been slow to adopt this scheme is a puzzle, since the
+convenience to the public is so great, and the costs to the banks are so small.
+
+The one problem with the Iowa law is that on-premise ATMs are still allowed
+to accept only their own brand of card, and with the public so used to free
+interchange of cards, mistakes at these machines can be annoying.
+Fortunately, the one time I was caught, the bank mailed my card to my home
+bank unmutilated, unlike the problems that Wexelblat described.  The number
+of such machines that reject (or keep) foreign cards appears to be
+declining, probably because of the hassles they cause.
+                              				  Douglas Jones
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

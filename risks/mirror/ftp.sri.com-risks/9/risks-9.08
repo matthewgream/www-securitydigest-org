@@ -1,0 +1,462 @@
+RISKS-LIST: RISKS-FORUM Digest  Friday 28 July 1989   Volume 9 : Issue 8
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Returning before departing on airline reservation systems (Gary McClelland)
+  Sun security problem: restore (J. Paul Holbrook)
+  Computer condom? (Jeff Stout)
+  Robert Tappan Morris indicted (Steve Den Beste)
+  Re: UK Defence Software Standard (Mark Moraes, Douglas W. Jones)
+  Polling vs. interrupts (Douglas W. Jones)
+  Software Engineering Models (John (J.G.) Mainwaring)
+  Single Point of Failure for Internet Management (Kee Hinckley)
+  DARPA contract & AI for moving targets (Bob Estell)
+  Two-Word Last Names and Other Amusing Database Stories (Gary McClelland)
+  Credit card issuers invade cardholders' privacy (Andrew Klossner)
+  Re: windowless cockpits (Andrew Klossner)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j, ftp KL.sri.com[CR]login anonymous (ANY NONNULL PASSWORD)[CR]
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks>[CR]get risks-i.j 
+  Vol summaries (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99),(8.88).
+
+----------------------------------------------------------------------
+
+Date: 25 Jul 89 15:23:00 MDT
+From: "Gary McClelland" <gmcclella@clipr.colorado.edu>
+Subject: Returning before departing on airline reservation systems
+
+From the "Rumor Roundup" column in DIGITAL REVIEW (trade newspaper that tracks
+DEC doings) of 17 July 1989:
+
+    My DEC friends tell me that DEC employees now have a special way
+    of traveling back in time.  It seems that a memo on the internal
+    electronic bulletin board goes on at great length about how to
+    take advantage of a loophole in the rules governing domestic
+    discount airfares.  By booking the return flight as the departing
+    flight, and the departing flight as the return flight, the airline
+    computer system thinks the traveler is staying over the weekend. 
+    Apparently, the reservations program does not understand that
+    people have to leave before they can return.
+
+Gary McClelland, gmcclella@clipr.colorado.edu
+
+------------------------------
+
+From: cert@SEI.CMU.EDU
+Subject: Sun security problem: restore
+Date: Wed, 26 Jul 89 09:20:48 EDT
+Sender: ph@SEI.CMU.EDU
+
+A security hole has been found in SunOS restore.  This problem affects
+SunOS 4.0, 4.0.1, and 4.0.3 systems.  It does not appear in SunOS 3.5.
+The problem occurs because restore is setuid to root.  Without going
+into details, is sufficient to say that this is a serious hole.  All
+SunOS 4.0 installations should install this workaround.  Note that a
+user does need to have an existing account to exploit this hole.
+
+There are two workarounds that will fix the problem.  The first is
+slightly more secure but has some side-effects.  
+
+1) Make restore non-setuid by becoming root and doing a 
+chmod 750 /usr/etc/restore
+
+This makes restore non-setuid and unreadable and unexecutable by
+ordinary users.
+
+Making restore non-setuid affects the restore command using a remote
+tape drive.  You will no longer be able to run a restore from another
+machine as an ordinary user; instead, you'll have be root to do so.
+(The reason for this is that the remote tape drive daemon on the
+machine with the tape drive expects a request on a TCP privileged
+port.  Under SunOS, you can't get a privileged port unless you are
+root.  By making restore non-setuid, when you run restore and request
+a remote tape drive, restore won't be able to get a privileged port,
+so the remote tape drive daemon won't talk to it.)
+
+2) If you do need to have some users run restore from remote tape
+drives without being root, you can use the following workaround.
+
+cd /usr/etc
+chgrp operator restore
+chmod 4550 restore
+
+This allows the use of restore by some trusted group.  In this case,
+we used the group 'operator', but you may substitute any other group
+that you trust with access to the tape drive.  Thus, restore is still
+setuid and vulnerable, but only to the people in the trusted group.
+
+The 4550 makes restore readable and executable by the group you
+specified, and unreadable by everyone else.
+
+Sun knows about this problem (Sun Bug 1019265) and will put in a more
+permanent fix in a future release of SunOS. 
+
+J. Paul Holbrook, Computer Emergency Response Team, 
+Internet: <cert@SEI.CMU.EDU>      (412) 268-7090 (24 hour hotline)
+
+------------------------------
+
+Date: Mon, 24 Jul 89 10:59:30 PDT
+From: jstout@atc.boeing.com
+Subject: Computer condom?
+
+[From the Seattle Weekly, 5/3/89]
+
+PUT A CONDOM ON YOUR COMPUTER
+
+Every worry that your computer might be hanging out in a network where it
+will pick up some disgusting virus?  Empirical Research Systems of Tacoma
+suggests you supply it with one of their "computer condoms".  This high-tech
+prophylactic is a combination of hardware and software embodied in a
+controller card that simply replaces the one already in the machine.  Rick
+Cummings, the company's president, says the system "stops all viruses" by
+monitoring the user network, the keyboard, and the program in use.  He notes
+that the system is programmable to alter the parameters of its control on
+any given machine, but he guarantees that, "when programmed to your
+requirements, it will not allow viruses to enter."
+
+The technology was developed through successful efforts to protect a group of
+European banks from the massive virus that penetrated European computer
+networks last autumn.  "Naturally these became our first orders," Cummings
+says.  He has since picked up an additional 2500 firm orders in Europe, with
+5000 more contingent on inspection of the product.  In the United States, the
+product has been reviewed by Boeing Computer Services and computer technicians
+at the UW.  It will be on the domestic market "early next autumn at a cost of
+under $1000," Cummings says.
+
+[An untapped market for LaTex?  --JCS]
+
+Jeff Stout    Electrons: jstout@atc.boeing.com, uw-beaver!bcsaic!jstout    
+              Molecules: Advanced Technology Center, Boeing Computer Services,
+                         M/S 7L-64, P.O.Box 24346, Seattle, WA 98124-0346
+
+------------------------------
+
+From: denbeste@BBN.COM
+Subject: Robert Tappan Morris indicted
+Date: Thu, 27 Jul 89 10:44:56 -0400
+
+The 7/27/89 Boston Herald reports that Robert T. Morris has been indicted on
+a single felony count of accessing without authorization at least six (!!)
+university and military computers.  He therefore becomes the first person to
+be charged under the "Computer Fraud and Abuse act of 1986", a dubious honor
+at best. If convicted he faces a possible prison sentence of 5 years and a
+possible $250,000 fine.
+
+------------------------------
+
+Date: 	Thu, 20 Jul 89 10:18:58 EDT
+From: Mark Moraes <moraes@ai.toronto.edu>
+Subject: Re: UK Defence Software Standard
+
+You precisely underline the risk involved - that the software engineers
+working on life-critical might not be trained in "modern software
+engineering".
+
+One does not have to be an academic computer scientist to understand
+recursion, dynamic memory allocation, multi-tasking, and interrupts.
+One does not have to be an academic computer scientist to use them, or
+to decide not to use them.
+
+However, decisions to use or not use such techniques must be informed,
+and made from knowledge, not ignorance. Turning one's back on new
+techniques because they are risky in the hands of untrained people is
+not the answer - training them in the new techniques is.
+
+Yes, training people in software engineering is an expensive business
+- it also takes time, and is an ongoing process. But if someone
+involved in RISKy projects is not a top-flight software engineer,
+isn't that a serious risk to the project? And to the lives that may
+depend on it? 
+
+------------------------------
+
+Date: Fri, 21 Jul 89 10:03:16 CDT
+From: Douglas W. Jones <jones@pyrite.cs.uiowa.edu>
+Subject: Re: UK Defence Software Standard
+
+The terms software engineering and software engineer have clearly gotten
+completely out of control if people with AA degrees or less are calling
+themselves software engineers.  It is my understanding that the ABET takes
+a very strong stand on who should be allowed to call themselves an engineer.
+If I remember correctly, they say that the term should only be applied to
+those who have one of the following qualifications:
+
+  1) People who have passed a state professional engineering examination.
+
+  2) People who have graduated from an accredited 4-year engineering program.
+
+  3) People who have graduate degrees.
+
+In the past, I have had a fairly negative feeling towards this strict rule.
+As a professor of computer science in the liberal arts college of a large
+university, I've always had the feeling that it discriminated against graduates
+of my program in favor of graduates of similar programs that happen (usually
+for historical reasons) to be in engineering colleges.
+
+I feel strongly enough about the misapplication of the term software engineer
+that, if things continue to develop the way they are currently developing, I
+would even be willing to urge state regulation of the use of the designation.
+
+Consider an analogy:  The people who design the power distribution system for
+a power plant are electrical engineers.  They have college degrees in
+electrical engineering, they are usually fairly senior, and they usually have
+state professional engineering certificates.  The people who build the power
+distribution system are electricians working under the supervision of an
+electrical engineer.  They may have AA degrees in engineering technology, and
+they have passed a state or local electricians examination.
+
+I do not object to someone with an AA degree in software technology helping to
+write the software to control that power plant, but I do object to their
+billing themselves as a software engineer, and I do object if the power company
+puts them in charge of the design of such software.  This appears to be
+precisely what is happening today.
+
+Douglas W. Jones, University of Iowa, jones@herky.cs.uiowa.edu
+
+------------------------------
+
+Date: Fri, 21 Jul 89 11:16:23 CDT
+From: Douglas W. Jones <jones@pyrite.cs.uiowa.edu>
+Subject: polling vs. interrupts
+
+I have enjoyed the recent arguments about polling and interrupts that were
+kindled by the UK defense software standards debate, but I have found them to
+be incomplete.
+
+I have written real-time software, I have worked on the design of real-time
+multiprocessors, and this summer, I have even spent far too many hours counting
+cycles, but I also like interrupts.
+
+When I was involved with the Modcomp User's Group, and again, when I worked for
+Rockwell International, I met many strong advocates of the view taken by the UK
+software standards.  Most of them were older programmers who hadn't heard of
+Dijkstra but had years of experience making reasonably complex real-time
+systems work reasonably well.
+
+Their arguments usually boiled down to the following:  When a program is
+constructed as a single main polling loop and all action routines are called
+from within this loop, it is easy to assure that the program meets real-time
+constraints.  Each routine called from within the main loop can be given a
+strict time limit, and it is fairly simple to show that each routine lives
+within this limit.
+
+Within action routines called from the main polling loop, some fairly simple
+rules must, of course, be obeyed.  Straight-line code is easy to verify,
+branching code is easy to verify, and definite loops can be verified, but
+indefinite loops are forbidden.
+
+If you look at typical real-time programs of the 60's and 70's, these rules
+weren't much trouble.  User interfaces were crude at best, and most of the
+processing was fairly simple feedback control with little algorithmic
+complexity.  Unfortunately, many of the larger problems we face today are far
+more complex, with significant algorithmic components.
+
+The very coding constraints that allow straightforward verification that a
+a program meets simple real-time constraints serve to obscure the algorithmic
+structure of the program.  When one or more logical tasks within a real-time
+program involve complex algorithmic structures, they must usually be recoded
+using state machines that make a state transition each time they are called
+from the main polling loop.
+
+As a result, it remains easy to verify that the complex tasks do not consume
+more than their allotted time slots in the main polling cycle, but that is
+all.  All other aspects of the complex tasks are hidden in a mass of state
+machines so that even simple questions can take hours to answer.  In fact,
+this structure can even impede the verification that some real-time
+constraints are met.  Consider the problem of verifying the real time
+behavior of a logical task that, after detecting an event, must respond
+after a computation that requires multiple iterations of the main loop.
+
+Douglas Jones, University of Iowa, jones@herky.cs.uiowa.edu
+
+------------------------------
+
+Date: Fri, 21 Jul 89 10:53:53 EDT
+From: nazgul@apollo.com (Kee Hinckley)
+Subject: Single Point of Failure for Internet Management
+
+The Boston Globe today (Fri, July 21) reported that the GAA has recommended
+that an advisory committee be set up to run the Internet since there was "no
+one as the wheel" in the latest virus incident.  It seems to me that this
+potentially slows down the response time of the Internet to such problems
+and creates a single point of failure (cut out communication to the
+committee and now no one knows what to do).
+						-kee
+
+------------------------------
+
+Date: 20 Jul 89 08:19:00 PDT
+From: "FIDLER::ESTELL" <estell%fidler.decnet@nwc.navy.mil>
+Subject: DARPA contract & AI for moving targets
+
+Two points:
+
+1. Many years ago, the single integrated target list was for a war,
+ that included by implication nuclear war.  But even in nuclear war,
+ NOT EVERY weapon used will be nuclear.  There are some missions 
+ where conventional albeit "smart" weapons would really be better.
+ It follows that we - and they - really do need to target things
+ that move; e.g., large ships, and mobile missile launchers.
+
+2. A large ship is almost equivalent in population and technical
+ complexity to a small town; e.g., 5000 "residents" with enough
+ "restaurants" and "movie theaters" to serve them.
+ Recent news item: The USSR is developing for deployment its
+ first aircraft carrier.
+
+The technical points of "how to select" targets are a fertile question for
+RISKS.  If and when we want to debate the policy, maybe we should move that
+to ARMS-D@XX.LCS.MIT.EDU
+                                         Bob
+
+------------------------------
+
+Date: Thu, 20 Jul 89 09:51 MST
+From: MCCLELLAND_G@CUBLDR.Colorado.EDU
+Subject: Two-Word Last Names and Other Amusing Database Stories
+
+Two amusing computer-related security stories from the Univ. of Colorado:
+
+1.  Bank Card Numbers for Everyone:  Continuing Education offers community
+courses and unlike other units of the university is therefore compelled to
+accept bank cards for payment.  This necessity was overlooked when the new
+student information system was created so no protected field was allocated to
+hold bank card numbers and no otherwise unused field appeared to be big enough. 
+But someone cleverly decided to use an unused address field for this purpose
+until it was discovered that almost anyone with any access to the system could
+then read a student's name, address, and VISA number.
+
+2.  Another Two-Word Last Name Problem:  The Colorado Association of
+Research Libraries now offers an on-line database of citations for every
+article in every journal any of the libraries receive.  It isn't as good
+as services offered by DIALOG or ISI or other big commercial operations
+but it is a boon to local researchers.  They offer it free to university
+folks but want to sell the service to outside users.  Hence, all faculty
+now need user ids.  They cleverly use SSN and last name and both are
+displayed when you type them on a public terminal.  But mine wouldn't
+work!  I called the CARL office and once I identified myself as a
+confused faculty member the cheerful clerk gladly told me my proper user
+id over the phone.  [I thought about asking her how she knew I was who I
+said I was but the risks seem to be all theirs and not mine so I didn't
+bother.]  It turns out one must add the prefix "A9/" to the SSN [maybe
+they added that for security :-)].  But mine still wouldn't work.  Then
+she discovered that on the university payroll tape that had been used to
+create the user database my name had been entered as "Mc Clelland" so
+that forevermore my CARL name would be "Mc".  That worked fine.
+
+   Gary Mc [Clelland]
+   mcclella@colorado
+   gmcclella@clipr.colorado.edu
+
+------------------------------
+
+Date: Thu, 29 Jun 89 16:59:48 PDT
+From: Andrew Klossner <andrew@frip.wv.tek.com>
+Subject: Credit card issuers invade cardholders' privacy
+
+Excerpted from "The Facts About ... Credit Cards," in the April 1989
+issue of "Vis a Vis" magazine, "The Magazine of United Airlines, Inc.":
+
+     "Enhancement" is industry parlance for the tie-ins, upgrades,
+     rewards, automatic insurance and warranty protection for products
+     bought with the card.  Issuers continuously sweeten the
+     enticements ...
+
+     Shopping for clothes?  Traveling abroad?  Do you prefer bespoke
+     British tailoring?  Country inns -- in New England or France?
+     Your card company will soon know a thing or two about your tastes
+     in restaurants and may some day [sic] be a source of
+     recommendations for lodging, dining and a host of other services.
+
+     Card companies are investing huge sums of money to read and
+     analyze your charge receipts.  The "enhancement wars" create handy
+     perks, but the battle for the hearts and minds of cardholders also
+     rages in computer banks across the country ...
+
+     The payoff for issuers who successfully use technology to analyze
+     customer spending will be tremendous, asserts John Love of "Credit
+     Card News."  "This information is extremely personal to the
+     customer," he says.  "He might begin to feel that his card company
+     really understands him."
+
+     Chenault of American Express says his company is "betting the
+     ranch" on its $100 million Genesis Project.  The program's goal is
+     to make sure the company's nearly 300 mainframes and minicomputers
+     can create dossiers on the tastes of cardholders.  Says Chenault:
+     "If a cardmembers is traveling to Paris, we could develop a
+     personalized itinerary before he even gets there.  We'll know his
+     tastes in restaurants, special interests and shopping, and we
+     could work with establishments to arrange even big-ticket
+     purchases."
+
+Sigh.
+
+  -=- Andrew Klossner   (uunet!tektronix!frip.WV.TEK!andrew)    [UUCP]
+                        (andrew%frip.wv.tek.com@relay.cs.net)   [ARPA]
+
+------------------------------
+
+Date: Fri, 30 Jun 89 09:39:04 PDT
+From: Andrew Klossner <andrew@frip.wv.tek.com>
+Subject: Re: windowless cockpits
+
+	"Video and graphics processing is performed, and digitized
+	pictures are relayed to the helmet display."
+
+It's the graphics processing that offers the most promise.  Some
+projects (sorry, I have no references) are investigating the effect on
+military pilot performance when the visual display is *simplified*, to
+the point where important objects in the field of view are reduced to
+wireframe figures, and unimportant objects are eliminated altogether.
+Thus, an approaching mountain might look like an inverted cone sticking
+up ahead of you; a river underneath (or civilians about to be bombed)
+wouldn't be visible at all; and aircraft around you would show as stick
+figures, perhaps with color coding to convey relative velocity,
+friend-or-foe evaluation, etc.  An approaching missile might look like
+a line growing toward you, just like it does in the "missile attack"
+video games.
+
+The win is that humans are better at pattern recognition when the
+patterns are simple and the distractions are eliminated, especially in
+time-critical situations.  Look at how well we do at those video games.
+
+Another win is that, since the pilot no longer needs visual input
+besides the (relatively low-bandwidth) wireframe presentation, it
+becomes that much easier to move the pilot outside the plane, perhaps
+to a bunker on the ground, and run the plane by remote control.  The
+only important sensory input that would be missing is acceleration
+(including gravity, "which way is down"), and good pilots learn to
+distrust that anyway.
+
+But there are still occasions when you need a full-video picture, such
+as evaluating damage to an enemy aircraft (is it on fire?) or locating
+an emergency landing site.  And simplified video presents new
+opportunities for defensive counter-measures -- you'd like the enemy's
+system to classify your fighter as "unimportant," or to classify your
+chass as "important."
+
+	"... the possibility of crashing an airplane because of a
+	failure in the video system, coupled with the inability to look
+	out the window (because the plane doesn't have one) is
+	terrifying."
+
+This risk should be kept in perspective.  For example, on a high
+performance aircraft with forward-swept wings, if the computer handling
+flight stability goes down, it doesn't much matter whether the pilot
+can see or not; the plane is going to crash.
+
+  -=- Andrew Klossner   (uunet!tektronix!frip.WV.TEK!andrew)    [UUCP]
+                        (andrew%frip.wv.tek.com@relay.cs.net)   [ARPA]
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.8
+************************

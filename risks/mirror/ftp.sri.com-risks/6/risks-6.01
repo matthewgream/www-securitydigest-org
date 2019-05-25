@@ -1,0 +1,451 @@
+RISKS-LIST: RISKS-FORUM Digest  Saturday, 2 January 1987  Volume 6 : Issue 1
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:               [Partial cleanup on backlog, mostly security related]
+  The Christmas Virus (Martin Minow)  [end of the season?]
+  Password security in multi-user systems (J. Eric Townsend)
+  Re: Program trading (K. Richard Magill)
+  DES and NSA's new codes (Tom Athanasiou)
+  Electronic Interference (Al Watters)
+  American Express security ... (Henry Mensch)
+  SSN / Phone Number / etc. on credit purchases (Jordan Hayes, David Albert)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, *NONREPETITIOUS*.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+From: minow%thundr.DEC@decwrl.dec.com 
+      (Martin Minow THUNDR::MINOW ML3-5/U26 223-9922)
+Date: 29 Dec 87 09:57
+To: risks@csl.sri.com
+Subject: The Christmas Virus          [end of the season?]
+
+The same comments on the virus from a slightly different (vms) point of view.  
+The only new info is the description of the anti-viral software.  Martin
+          [Pardon a little initial redundancy.  I did not want to edit.  PGN]
+
+Newsgroups: comp.os.vms
+Path: decwrl!ucbvax!QUCDNSUR.BITNET!PYM
+Subject: HRISTMA comes but once a year, a virus may be forever.
+Posted: 27 Dec 87 22:39:00 GMT
+Organization: The ARPA Internet
+ 
+     By now,  many of you will have heard of the (infamous) CHRISTMA EXEC
+"virus" which infected BITNET/EARN/NETNORTH and virtually paralyzed IBM's
+internal  network  for a day  or two.   For those who  haven't  seen  the
+various postings on the BITNET LINKFAIL list, RISKS-FORUM Digest, etc., I
+will summarize  (no flames for the oversimplifications in the interest of
+brevity, please).  Originating as a "prank" on a German end-node on EARN,
+this EXEC (i.e.  similar to a .COM file - and written in REXX, a DCL-like
+language)  displayed,  when executed  on  an IBM  VM system,  a primitive
+christmas tree on the terminal and then mailed itself to everyone on that
+poor user's NAMES file (i.e.  personal mailing name list) before deleting
+itself.   Of  course,  some  users  had network distribution lists  (e.g.
+JNET-L,  MEDINF-L,  etc.)  defined  in  their  NAMES  file . . .       [I
+personally received six copies of this EXEC from different sources - this
+is probably not unusual.]
+ 
+     While this was a significant problem on  BITNET/EARN/NETNORTH with a
+fair number of VM/CMS nodes, the virus clearly could not infect VAXinated
+nodes,  of  which  there  are  a  larger  number.   Also,  many  (usually
+undergraduate) students on VM/CMS systems are denied network access, thus
+limiting  the rate of  spread  of  the virus  beyond an  infected system.
+However,  once the virus entered VNET,  IBM's internal  network of VM/CMS
+systems,  things really took  off (all VM/CMS systems;   users with large
+NAMES  files;   all  with  network access)  and  allegedly brought  their
+network to a standstill.
+ 
+     Initially,  the  problem  required  manual  intervention  by  system
+managers to purge CHRISTMA  EXECs  from users'  readers -  but this could
+only give a temporary remission in the disease.   Fortunately, a CHRISTMA
+eradicator was written (by Eric Thomas, author of the LISTSERV software),
+and  also  an ingenious  virus  was developed  (by  Hank ?,  sorry,  I've
+forgotten)  to follow and destroy the original  CHRISTMA  virus  and then
+self-destruct  in  mid-January.   So now  it's  eradicated like smallpox:
+hmmm .  .  .  I expect that there may be another minor epidemic when some
+users return from vacation.
+ 
+     So,  what should we do?  Laugh at IBM?  Say "It can't happen to me."
+Look  at  all  those experienced,  computer-wise  IBMers who ran CHRISTMA
+EXEC.  Oh yes, there will be flames . . .    platitudes about NEVER using
+any software which  you  haven't  written  yourself  -  or is  written by
+someone  you  TRUST  ABSOLUTELY  :-) . . .   flames  about  chain letters
+and viruses on the network . . .    their authors should be boiled in oil
+/ set in RA81 air filter glue / sentenced to do 10 years of RSX SYSGENs /
+locked  in  a room  with  only an IBM  PC  /  (substitute  your favourite
+nightmare here).  Let's just think a little before flaming.
+ 
+     Could a "harmless"  CHRISTMA-like virus attack a VAX/VMS system?   A
+recent network posting (RISKS?, LINKFAIL?) mentioned the possibility of a
+virus  hidden in SHAR files which are _executed_ as .COM  files to unpack
+them.   SHAR files  are,  after  all,  an excellent method for _reliable_
+software distribution over  gateways.   (This  is  not  meant  to reflect
+negatively  on  Michael  Bednarek  in  any  way  -   VMSHAR  is  a  great
+contribution and we all have used it or will use it.) But .  .  .  nobody
+unpacks one of these distributions with  PRIVs turned on,  do we?   Could
+such a virus, like CHRISTMA EXEC, replicate from a non-privileged account
+(apart from doing a SET PROC/PRIV=ALL quietly in the middle of the file)?
+Certainly,  VMS  Mail won't allow  wildcard SEND (and JNET won't allow  a
+wildcard  SEND/FILE),  but,  for example,  a .COM  file could  do  a SHOW
+LOGICAL/OUTPUT=CRACKER.TMP,   look  for  logicals  with  syntax  "jnet%",
+"BITNET%",  "IN%",  etc.  and try mailing itself to these addresses.  (No
+flames about  giving state secrets  to the enemy,  please.   Blind Freddy
+could have seen that one.)
+ 
+     We may not be able to read  a SHAR file in its entirety (looking for
+a virus  in  a few thousand blocks  of code),  but I for one am certainly
+going to "quarantine" it as far as possible, SEARCHing it for more than a
+few key words before unpacking it  from a non-privileged (either  default
+or authorized)  account.  Further suggestions from the more devious minds
+on the list would be welcome,  please.  Ignorance may be bliss, but it is
+definitely NOT SAFE.
+ 
+     Most if not all  of us have public  domain  software running on  our
+systems   -   or  programs  written  by   students   and  our  colleagues
+(trustworthy,  of course :-} ).  How many VAX/VMS systems do _not_ use at
+least  one piece of  DECUS  software?   This  PD  software,  even if  not
+essential,  makes  life easier  and/or  saves hours  of  work.   Software
+exchange isn't going to stop now,  nor should it.   We  must be vigilant,
+both for our  own  safety,  and as a responsibility to colleagues on  the
+network.   We must make  all reasonable efforts to check before executing
+software ourselves or posting it to the net -  or making it available for
+FTP or putting it  on a BITNET LISTSERV.   CHRISTMA EXEC comes but once a
+year, but a virus can be forever.
+ 
+     Comments from the Info-VAX gurus would be appreciated.  What are the
+guidelines for "safe  software exchange"?   What are  the best methods of
+checking software for viral  contamination,  granted that we are going to
+continue to exchange it?
+ 
+John Pym
+ 
+BITNET:  PYM@QUCDNSUR                    Real life:   Dr. John Pym
+        (POSTMASTER@QUCDNSUR)                         Department of Surgery
+Telephone (613)549-3898 - office                      Queen's University
+          (613)548-4879 - home                        Kingston. Ontario
+          (613)541-7792 - cellular                    CANADA. K7L 2V6
+Chairman, THISLUG (DECUS Thousand Islands LUG)
+
+------------------------------
+
+From: ucbcad!ames.UUCP!hoptoad!academ!uhnix1!nuchat!splut!flatline!erict@ucbvax.Berkeley.EDU
+Date: Thu, 31 Dec 87 23:13:52 CST
+To: splut!KL.SRI.COM!RISKS
+Subject: Password security in multi-user systems
+
+I am the systems administrator at a small software company here in Houston.
+(Actually, we're right next door to NASA-JSC and in the McDAC building. 
+Anyway...)
+McDAC is very, very, very security conscious.  Armed guards and the like.
+"Of course", you say, "it is because they deal in the highest of high
+technology and in matters of national security."
+
+I work for a small banking software company, Integrated BancSystems,
+housed in the same building.  We develop software that deals "only" 
+with things like loans, customer accounts, bank customer lists, etc.
+
+Part of our product line is geared towards the latest fad (buzzword?):
+LAN's.  PC clone LANS, to boot.
+
+Before we got our LAN for development, we developed on UNIX systems, which
+I felt were secure enough for our purposes.  Banks aren't a national security
+problem, so they shouldn't require the high standards of security that our
+upstairs neighbors have to take.  The LAN's based on IBM PC compatible
+computers (Novell SFT II v2.0a in particular) have just blown a huge,
+gaping hole in the side of banking security.
+I have no particular problem with Novell, and feel that they are
+representative of the state of technology in PC compatible based
+LAN's.
+
+Point by point:
+1.  Passwords are not stored in an encrypted form.  Any person that gains
+    the "supervisor" password, or has his "security equivalance" (sic)
+    raised to "supervisor"; can go into the "syscon" utility, pick
+    "User Information", pick a user's login name, and then pick
+    "Password".  Voila'!  The user's password, in ascii, for all to see.
+    (A friend claims he has broken the protection scheme that is used to
+    write them to the file server's hard-drive, but I have yet to see
+    him prove this on my system.)
+    [Again, other than this (rather glaring) problem, I think Novell has
+      done a rather fine job of making PC clones usable (to some limited
+      degree. :-) ) ]
+
+2.  Software products sold to banks are quite often very insecure.
+    I feel this is a very important issue that Data Processing managers
+    should look into. (Are they still called that in other businesses?)
+    An example:
+    The SMART software system -- an integrated package of "Spreadsheet",
+    "Communications manager", "Time manager", "Database manager", and
+    "Wordprocessor" -- advertises "personal file protection".  There
+    are several problems with their implementaion of this idea.
+    1.  Only wordprocessor files are actually encrypted with any
+        sort of encryption algorithim.
+        The spreadsheet files have their password stored within
+        the first 256 bytes of text. This pattern can easily be
+        discoverd by encrypting a file, then "dump"ing or "debug"ing
+        that file and examining what is actually written to the disk...
+    --> Or you can just look down a couple of blocks, where the
+        raw ascii spreadsheet is stored. <--
+    2.  Cursory examination shows that the password used as an
+        encryption key is stored in the same way:
+        within the first 256 bytes of data, in a simply permutated
+        form.
+    3.  [This problem is created by the user-unfriendly-ness of
+        the SMART system when implemented on a LAN.  (It seems to
+        have been originally written for standalone PC, and not
+        modified to any great deal for LAN use.)]
+        Many system administrators tend to lump all the users in
+        "group" instead of "individual" directories, and then
+        direct users to "password" their files.
+        Reason:
+        It is rather involved to set up seperate SMART working
+        directories.  Each user must have his own directory of
+        screen, printer, and keyboard drivers, along with 3 or 4
+        parameter files, a configuration file, and several other
+        miscellanious files.  This eats up i-nodes (and their
+        equivalent), and takes a while to set up for a new user
+        and to remove for an old user.
+
+I feel that these two reasons are more than enough to cause concern
+about bank security.
+I've only been into computing on a large scale (large = bigger than
+a Commodore 64) for only a year or so, and I have been able to easily
+defeat the security on programs sold to us.
+
+Disclaimer:  The problems listed above have been reported to the
+  management of my company.  They agree that security is a very serious
+  issue, one that should be paid a great amount of attention and time.
+  Our software uses DES-style encryption in an effort to make up for
+  the intrinsic weaknesses in MS-DOS / IBM-PC compatable computer
+  security.
+
+J. Eric Townsend ->{uunet!nuchat,academ!uhxnix1}!splut!flatline!erict
+713-486-7820, 10am-6pm
+
+------------------------------
+
+Date: Mon, 28 Dec 87 15:48:39 est
+From: umix!oxtrap!rich@uunet.UU.NET (K. Richard Magill)
+To: umix!kl.sri.com!risks@uunet.UU.NET
+Subject: Re: Program trading (RISKS-5.79)
+Organization: Oxford, Ann Arbor
+
+  [Hugh Miller writes about replacing human judgment with machine 
+  judgment with respect to computer trading programs]
+>And how will we insure that such enormously complex systems
+>will not synergetically go plooey when pushed to their volume or price limits?
+
+We don't.  They are self limiting much in the same way as icy roads
+limit speed.  Those who exceed, die.
+
+Even if the minute to minute trading is done using machine judgement,
+the day to day, or some long term, will be done by humans, even if it
+is just when to turn the machine on and off.  In the near future this
+will mean trading strategies change daily and on a per company or per
+trader basis.  There would be no incentive to share software as
+"winning" depends on doing better than the next guy.
+
+If a company has the resources to "plooey" the market before they suicide,
+well, what keeps that company in check now?
+                                                         rich.
+
+------------------------------
+
+Date: Tue, 29 Dec 87 18:13:01 PST
+From: toma@Sun.COM (Tom Athanasiou)
+To: risks@csl.sri.com
+Subject: DES and NSA's new codes
+
+The other day a posting included the phrase:
+	"...DES - has the analysis behind the design been made public yet?"
+
+This reminded me.  I looked into the whole DES controversy in some detail 
+about a year and a half ago.  It may be out of date.  Here's a summary:
+
+In 1973, when the NBS called for proposals for a national encryption
+system, IBM's LUCIFER system was already in the final stages of development.  
+It was good, by all reports so good that it upset the code-breaking side of 
+the NSA.  Rather than approving LUCIFER as is, NSA modified it in several 
+strange ways to create DES.
+
+LUCIFER's key size was 128 bits; DES had a key size of only 56 bits.  
+Thus, it is much more vulnerable to "brute force" attacks.  There are 
+2**56 possible DES keys, and as large as this number may seem, it is tens 
+of millions of times smaller than the number of possible keys in ciphers
+approved for military use.
+
+NSA's weakening of LUCIFER appears to have been deliberate.  According to
+David Kahn, author of The Codebreakers, LUCIFER set off a debate within
+NSA.  "The code-breaking side wanted to be sure that the code was weak
+enough for the NSA to solve it when used by foreign nations and companies,"
+he wrote in Foreign Affairs.  "On the other hand, the code-making side
+wanted any cipher it was certifying for use by Americans to be truly 
+good."  Kahn says that the resulting "bureaucratic compromise" made the key
+shorter.  Alan Konheim, former manager of IBM's LUCIFER research project,
+recollects, "If they [NSA] had had their way, they would have had 32
+bits...I was told at one time that they wanted 40 bits, and at IBM we
+agreed that 40 was not enough."
+
+At the same time that the NSA shortened LUCIFER's key, it used classified 
+criteria to redesign several numerical tables known as "substitution" or
+"S" boxes.  These S boxes control permutations that are key to the DES 
+algorithm, and NSA's critics have long suspected that the changes to them 
+might make the system vulnerable to a "cryptoanalytic" attack.  In other 
+words, the boxes might conceal a trap door.  
+
+Despite repeated rumors, such a trap door has never been found.  However,
+mathematicians have unearthed several peculiar properties in the S boxes,
+properties that were not present in IBM's original design.  They have also
+demonstrated the possibility of weakening the cipher by introducing hidden 
+regularities into the S-boxes.  Still, no one has managed to use these 
+discoveries to mount a successful cryptoanalytic attack on DES.  
+
+The controversy over DES eventually subsided, but in late 1985 NSA suddenly, 
+and gracelessly, abandoned the cipher.  Directly contradicting years of 
+reassurances, Walter Dealy, then NSA's deputy director for communications 
+security, told Science that he "wouldn't bet a plugged nickel on the Soviet 
+Union not breaking [DES]".  People in the industry felt betrayed.  According 
+to Herb Bright of Computation Planning Associates, quite an uproar ensued in 
+the normally quiet halls of the American National Standards Institute when 
+NSA announced new ciphers to replace DES.  
+
+These ciphers are designed to be distributed as pre-sealed and tamper-
+resistant integrated circuits.  The encryption algorithm hidden within the
+chips is classified.  It remains unknown even to engineers who work with 
+the chips.  Critics feel that such secrecy offers NSA the chance to build 
+a real trap door into the chips.  Herb Bright: "With a hardware black box
+you can describe several schemes that would be almost impossible to test 
+for from the outside and could, in effect, constitute a hardware Trojan 
+Horse".
+
+My conclusion?  That NSA probably hadn't put a trap door into DES, but felt
+that, what with all the heat it was taking anyways, that it might as well 
+replace DES with a cipher that really did contain a trap door.  The new
+cipher chips may indeed contain such a trap door, but so little is known 
+about their internals that speculation has been uninteresting.
+
+Further, it is impossible -- in principle -- for the agency to exonerate itself
+from charges such as these as long as it promotes ciphers based on secrecy
+rather than algorithmic inpenetrability.  Such ciphers do, I believe, exist
+(I'm no expert) but that's another story.
+                                                  -- Tom Athanasiou
+
+------------------------------
+
+Date: 29 Dec 1987 22:28-CST
+Subject: Electronic Interference
+From: SAC.96BMW-SE@E.ISI.EDU
+To: RISKS@KL.SRI.COM
+
+  The following is extracted from Aviation Week and Space Technology, 
+Dec 7, 1987, Vol 127, No. 23.
+
+    "Air Force Examines Effects of Microwaves on Electronic Systems" U.s. Air
+  Force Gypsy microwave device is being used to check the susceptibility of
+  electronic systems to currents induced by high-power microwaves, and to
+  investigate methods of increasing device efficiency.  The Air Force's
+  Forecast 2 report listed high-power microwaves as a promising weapon and
+  there has been interest in the subject dating back over 30 years.  Gypsy and
+  other microwave devices are being managed by the Air Force Weapons Laboratory
+  at Kirtland AFB, N.M., where more than 600 scientists and engineers held a
+  secret conference on high-power microwave technology last December (AW&ST,
+  3 Nov 1986, p. 151).  Soviet physics publications also have shown an interest
+  in such devices.  Gypsy can produce more than one gigawatt of power in short
+  pulses at several percent efficiency and can be tuned over 0.8 - 40 GHZ. 
+  Gypsy uses the virtual cathode oscilator (VIRCATOR) principle, under which an
+  electron beam penetrates an anode mesh with a current density greater than
+  the space charge limiting value.  The high negative charge beyond the anode
+  represents a virtual cathode, in which the electrons bunch in phase and
+  oscillate at stable frequencies.  "
+                                           Al Watters
+
+------------------------------
+
+Date: Sun, 27 Dec 87 21:44:26 EST
+From: Henry Mensch <henry@garp.mit.edu>
+To: risks@csl.sri.com
+Cc: frank@ZENGRANGE.CO.UK
+Subject: American Express security ...
+
+I am a bit skeptical of American Express' verification methods, also.
+Recently I decided that my AmEx plate was in sorry shape and I phoned
+their toll-free customer service number to arrange for a new one.
+After I made my request clear, I was transferred to another CSR who
+asked me two questions (what SS# I put on my application, and
+something else that I don't recall offhand now).  After I answered the
+questions, I  was told that my replacement (new) card would arrive in
+ten days (it arrived in three days).  
+
+Does this mean that anyone who knows a bit about me can get my AmEx
+plate, too?  Scary ...
+
+# Henry Mensch / <henry@garp.mit.edu> / E40-379 MIT, Cambridge, MA
+#      {ames,cca,rochester,harvard,mit-eddie}!garp!henry
+
+    [Coincidentally, Steve Anthony <Anthony@ALDERAAN.SCRC.Symbolics.COM>
+    asked Why are Mother's Maiden Names Required?  PGN]
+
+------------------------------
+
+Date: Tue, 29 Dec 87 18:16:37 PST
+From: Jordan Hayes <jordan@ads.arpa>
+To: risks@csl.sri.com
+Subject: SSN / Phone Number / etc. on credit purchases
+
+Almost everyone who has talked about the question of "Why do stores want my
+phone number on the charge slip?" have clearly never worked in retail sales
+before ... something *always* goes wrong, and a phone number is a quick way for
+the store to contact you.  Sure, MasterCard doesn't require it, but remember
+we're talking about (often) fast transactions by people who are paid very
+little to make sure details are correct.  I have been called at least a half a
+dozen times to correct mistakes on those little charge slips.  It has saved me
+lots of time later when I would have had to correct the mistake with the VISA
+or MasterCard company when my memory of the incident and my receipts were long
+gone.  I wish they didn't put my number on the same piece of paper as my
+account number, but i'm glad they were able to get a hold of me.  
+                                                                      /jordan
+    [Also commented on by James M. Boyle, and by Christopher Garrigues 
+    <7thSon@SPAR.SLB.COM> who quoted at length <!> from /Why Do Clocks 
+    Run Clockwise?/ by David Feldman, Harper & Row, 1987, and discussed 
+    the return of forgotten cards...  PLEASE BE BRIEF, GUYS...  PGN]
+
+------------------------------
+
+Date: Fri, 25 Dec 87 12:09:40 EST
+From: albert@harvard.harvard.edu (David Albert)
+To: RISKS@KL.SRI.COM
+Subject: SSN Required Disclosures
+Organization: Aiken Computation Lab Harvard, Cambridge, MA
+
+>Organizations try circuitous ways to get the SSN.  For example, when one
+>gets or renews a driver license in California, he finds a place for
+>inserting the SSN but without explanation....
+
+I just had my passport renewed.  On the renewal form, was a space for SSNs,
+with the word "optional" in parentheses under the slot -- but the word had
+been crossed out in pen.  I asked the (post office) clerk why, and he told
+me that giving my SSN was no longer optional.  I assume that most people stop
+asking questions after such a response, but I went on.  I asked if the SSN
+was essential to receiving my passport, and the clerk said no!  He said that
+if I did not put my SSN on the form, I would still get my passport, but that
+the IRS would charge me a $5 penalty on my income tax returns.
+
+Was the clerk making all of this up?  The whole thing sounds very strange.
+Or does any or all of his story have a basis in fact?  I decided not to put
+my SSN on the form, although if I was in a hurry to get the passport and
+worried about delays, I might have included it to be sure the passport arrived.
+The passport arrived about two-three weeks later, as expected, with no delays
+and no warning about any future penalties.  Does anyone have an explanation?
+
+David Albert                 UUCP: ...{ihnp4!think, seismo}!harvard!albert    
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

@@ -1,0 +1,516 @@
+Subject: RISKS DIGEST 10.28
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Friday 31 August 1990   Volume 10 : Issue 28
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Re: Lawsuit over specification error (Pete Mellor, Martyn Thomas, PM)
+  Computer Unreliability and Social Vulnerability: synopsis (Pete Mellor)
+  Computer Unreliability and Social Vulnerability: critique (Pete Mellor)
+  Copyright Policy (Daniel B Dobkin)
+  Re: Discover Card (Brian M. Clapper, Gordon Keegan)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory listing of back issues.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+ *** GENERAL RISKS POLICY: AT MOST TWO-LINE TRAILERS FOR IDENTIFICATION. ***
+
+----------------------------------------------------------------------
+
+Date: Fri, 31 Aug 90 10:14:37 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Re: Lawsuit over specification error
+
+Martyn Thomas in RISKS-10.27 writes:
+
+> ... on this evidence, a simulator used for
+> crew training in emergency procedures is *itself* a safety-critical system.
+
+Safety-*related*, I would say, but not safety-*critical*. The usual definition
+of safety-critical is that a system failure results in catastrophe. The argument
+would be over how directly the catastrophe results from the failure. In this
+case, the 'accident chain' is fairly tenuous.
+
+> (Presumably it should therefore require certification in the same way as an
+> in-flight system of equivalent criticality.
+
+I agree that it requires certification, even though it is not safety-critical
+in the strict sense. I do not think it should require to be certified to a
+10~-9 maximum probability of failure per hour, as airborne safety-critical 
+systems are, however. (This is unrealistic where software is concerned anyway.)
+Also 'failure' means different things in the two cases. The airborne system
+fails when it malfunctions and the aircraft crashes. On the simulator, one
+would often simulate such a 'failure' and the resulting crash, to see if the
+pilot could save the aircraft in those circumstances. The simulator fails
+when it does not faithfully mimic the behaviour of the real aircraft.
+
+> Does anyone know the certification requirements for simulators?)
+
+No, but I am certain they are not covered by RTCA/DO-178A, for example, which
+applies purely to software in airborne systems. Whether there is a section of
+the more general Federal Aviation Regulations which applies to ground-based
+ancillary systems I am not sure, but I suspect there is nothing to cover
+simulators, since they are not directly involved in controlling flight.
+
+If this is the case, then the user of a simulator is at the mercy of the
+developer's internal quality assurance procedures.
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton
+Sq.,London EC1V 0HB +44(0)71-253-4399 Ext. 4162/3/1 p.mellor@uk.ac.city (JANET)
+
+------------------------------
+
+Date: Fri, 31 Aug 90 11:47:24 BST
+From: Martyn Thomas <mct@praxis.co.uk>
+Subject: Re: Lawsuit over specification error
+
+Peter Mellor replies to my comment in RISKS (my original lines are ">" his
+are ":" ...
+
+: > ... on this evidence, a simulator used for
+: > crew training in emergency procedures is *itself* a safety-critical system.
+: 
+: Safety-*related*, I would say, but not safety-*critical*. The usual definition
+: of safety-critical is that a system failure results in catastrophe. The
+: argument would be over how directly the catastrophe results from the failure.
+: In this case, the 'accident chain' is fairly tenuous.
+
+I disagree (my comments are on the *principle*; I am not advising the
+lawyers in this particular case!)
+
+Firstly, if crew are trained to react in a way which is likely to be fatal
+in an emergency, then the training *causes* the fatality in that emergency.
+This is a direct link. You cannot expect crew to do better than their
+training under the stress of an emergency.
+
+Secondly, there is a class of in-flight systems which "increase crew
+workload", with defined failure-rate requirements. The training simulator
+would seem directly equivalent to these systems, in that crew might be
+expected to be able to overcome faulty training by cross-checking with other
+training and basic airmanship - but the workload could be significantly
+higher, and you would not expect crew to have time to react in this way in
+an emergency.
+: 
+: > (Presumably it should therefore require certification in the same way as an
+: > in-flight system of equivalent criticality.
+			^^^^^^^^^^^^^^^^^^^^^^
+Not 10^-9, but some lower figure, as defined in DO-178a.
+
+Martyn Thomas, Praxis plc, 20 Manvers Street, Bath BA1 1PX UK.
+Tel:	+44-225-444700.   Email:   mct@praxis.co.uk
+
+------------------------------
+
+Date: Fri, 31 Aug 90 14:52:19 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Re^3: Lawsuit over specification error
+
+I don't think that Martyn and I have a serious disagreement here. 
+
+In particular, I agree that: 
+
+> You cannot expect crew to do better than their
+> training under the stress of an emergency.
+
+and therefore I *basically* agree with Martyn when he says:
+
+>:> (Presumably it should therefore require certification in the same way as an
+>:> in-flight system of equivalent criticality.
+>			^^^^^^^^^^^^^^^^^^^^^^
+> Not 10^-9, but some lower figure, as defined in DO-178a.
+                                    ^^^^^^^^^^^^^^^^^^^^^^(see below)
+
+However:
+
+As I stated previously, we are certifying different functions. With a 
+safety-critical airborne system, we are certifying that it has a certain
+maximum probability of crashing the aircraft. With a simulator, we are
+certifying that it has a certain maximum probability of not behaving as
+the real aircraft behaves.
+
+It would be unrealistic and unreasonable to demand that a simulator be 
+certified to the same high reliability (1 - 10^-9) as a critical airborne 
+system.
+
+It is in any case impossible to certify any system containing software to a
+reliability of (1 - 10^-9), even if it *is* a critical airborne system.
+
+RTCA/DO-178A ('Software Considerations in Airborne Systems and Equipment
+Certification') does *not* define any reliability figures. It is merely a
+set of guidelines defining quality assurance practices for software.
+Regulatory approval depends upon the developer supplying certain documents 
+(e.g., software test plan, procedures and results) to show that the guidelines 
+have been followed.
+
+I will return to this last point at length in the near future. Watch this
+space.
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton
+Sq.,London EC1V 0HB +44(0)71-253-4399 Ext. 4162/3/1 p.mellor@uk.ac.city (JANET)
+
+------------------------------
+
+Date: Fri, 31 Aug 90 12:44:12 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Computer Unreliability and Social Vulnerability: synopsis
+
+Synopsis of: Forester, T., & Morrison, P. Computer Unreliability and
+Social Vulnerability, Futures, June 1990, pages 462-474.
+
+Abstract (quoted): 
+
+Many have argued that industrial societies are becoming more 
+technology-dependent and are thus more vulnerable to technology failures.
+Despite the pervasiveness of computer technology, little is known about computer
+failures, except perhaps that they are all too common. This article analyses
+the sources of computer unreliability and reviews the extent and cost of
+unreliable computers. Unlike previous writers, the authors argue that digital 
+computers are inherently unreliable for two reasons: first, they are prone to 
+total rather than partial failure; and second, their enormous complexity
+means that they can never be thoroughly tested before use. The authors then
+describe various institutional attempts to improve reliability and possible
+solutions proposed by computer scientists, but they conclude that as yet
+none is adequate. Accordingly, they recommend that computers should not be
+used in life-critical applications.
+
+Synopsis of paper:
+
+The paper is introduced by a series of examples of disasters, some to do with
+communications kit and some with computers, covering external causes and
+internal system failures, and accidental and malicious actions, e.g. sabotage
+of telephone cables in Sydney in Nov.'87, fire in Setagaya telephone office
+(Japan) in Nov.'84, overwriting of Exxon's files relating to the Alaskan oil
+spill in July '89.
+
+The vulnerability of society to such failures is further underlined by a
+discussion of 'The problem of computer unreliability: sources extent and cost'.
+System failures can be caused by external factors (flood, fire, etc.), and
+human error or misuse, but many more are due to computer malfunction, which
+can be classified as hardware or software failure. Hardware failures are
+usually due to failures of computer chips, e.g. the SAC false alert in June '80.
+However most computer malfunctions are due to software failure. Many examples
+are given of accidents, loss and disruption due to software failure in
+military, space, civilian air traffic control, medicine, and finance, and of
+cost overrun during software development. Famous examples cited are the loss
+of Mariner 18 and the Bank of New York disaster in Nov.'85. Reports from
+Price Waterhouse and Logica are mentioned as stating that software failure
+costs UK industry US$900 million a year. Finally the case of Julie Engle, who
+died after an overdose of painkiller was prescribed by an automated dispensing
+machine, is reported as an example of how a fairly simple AI system can fail
+with disastrous consequences, and the authors ask what could happen with the
+really complex systems now envisaged.
+
+In discussing 'Why computers are so unreliable', the authors complain that
+previous studies have failed to highlight hardware or software failure as a
+source of system malfunction. Their contention is that computers are inherently
+unreliable because they are prone to catastrophic failure, and they are too
+complex to be tested thoroughly. The Therac-25 and Blackhawk helicopter
+accidents are given as examples of catastrophic failure. Digital computers are
+discrete state devices, with billions of possible internal states, each of
+which is a potential error point. Each internal state depends on the previous
+one, and if any execution of an internal state results in an 'incorrect' state,
+sudden erratic behaviour or total failure will result. In contrast, although
+analogue devices have infinitely many states, most of their behaviour is
+*continuous*, so that there are few situations in which they will jump from
+working perfectly to failing totally. Furthermore, the enormous number of
+possible internal states in a discrete computer system means that it is
+impossible to know or predict, and hence impossible to test, them all.
+Attempts at repair of computer systems often introduce more errors.  Bug-free
+programs cannot be guaranteed, as illustrated by lack of software warranties,
+or explicit disclaimers.
+
+'What are computer scientists doing about it?': Computer system reliability
+has traditionally been assessed by estimating the probability that hardware or
+software will fail based on statistics of failures observed over operating time.
+This confirms that programming is still a 'black art', a creative but hit and
+miss activity undertaken in an unregulated fashion by people of whom no
+minimum standard of education is required. This is likely to change following
+the publication of the draft defence standard 00-55 by the MoD in the UK in
+May 1989. The DoD in the US are not doing anything similar, though the 
+International Civil Aviation Organisation is planning to go to formal methods.
+The improvement of software has until now depended upon 'software engineering'
+under four headings: 
+
+a) structured programming and associated HOLs,
+b) programming environments providing version and modification control,
+c) program verification and derivation (proof of correctness of code and
+   intermediate specifications respectively), and
+d) human management.
+
+a) and b) will not give the order of magnitude improvement required.
+c) can only be applied to small programs, and is better described as 'proof of
+relative consistency' rather than 'proof of correctness', since it takes no
+account of situations not foreseen in the specification.
+
+Conclusion (quoted):
+
+We are therefore forced to conclude that the construction of software is a
+complex and difficult process and that existing techniques of software
+engineering do not as yet provide software of assured quality and reliability.
+In the case of large, complex systems to which we entrust major social
+responsibilities and sometimes awesome energies, this is extremely worrying.
+Nor is the situation likely to improve in the short term: computer
+unreliability will remain a major source of social vulnerability for some time
+to come.  Accordingly, we recommend that computers should not be entrusted with
+life-critical applications now, and should be only if reliability improves
+dramatically in the future.
+
+Given the evidence presented here, several ethical issues also emerge for
+people in the computer industry. For example, when programmers and software
+engineers are asked to build systems which have life-critical applications,
+should they be more honest about the dangers and limitations? Are computer
+professionals under an obligation if a system fails: for example, if a patient
+dies on an operating table because of faulty software, is the programmer guilty
+of manslaughter, or malpractice, or neither? What is the ethical status of
+existing warranties and disclaimers? How is it that the computer industry
+almost alone is able to sell products which cannot be guaranteed against
+failure?
+
+These are the kinds of questions that should be raised with governments,
+computer purchasers and the wider public as a matter of urgency, because
+computer vendors and the software industry themselves are most unlikely to 
+publicize the serious shortcomings of their products.
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton
+Sq.,London EC1V 0HB +44(0)71-253-4399 Ext. 4162/3/1 p.mellor@uk.ac.city (JANET)
+
+------------------------------
+
+Date: Fri, 31 Aug 90 21:03:31 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Computer Unreliability and Social Vulnerability: critique
+
+Ref.: Forester, T., & Morrison, P.: "Computer Unreliability and
+      Social Vulnerability", Futures, June 1990, pages 462-474.
+
+The original item (RISKS-10.24), taken from the August 1990 _World_Press_Review,
+was a very short and over-simplified summary of this paper, and included one
+gross inaccuracy that the authors were not guilty of (22 fatal Blackhawk 
+helicopter crashes, instead of the true figure of 5 crashes resulting in 22
+deaths), as Perry Morrison himself pointed out in RISKS-10.26.
+
+In my previous mailing, I provided what I hope is a fair synopsis of this paper,
+accurately representing the views of the authors, and without allowing my own 
+opinions to intrude. (I quoted the abstract and conclusions in full.)
+
+The following is my own reaction to the paper:-
+
+The authors are basically on the side of the angels, and I agree with a lot of
+what they say. (They also cite one of my own articles, so appealing to my
+vanity and making it even more difficult for me to be critical! :-) However,
+bearing this in mind, I would like to raise some criticisms.
+
+An enormous number of CAD/CAM incidents (Computer Aided Disaster/Computer
+Assisted Mayhem :-) are retold. Some of these are not directly relevant to the
+authors' main point, which is that the activation of faults, unintentionally
+introduced into their design, is now one of the most important reasons for the
+failure of complex hardware/software systems (a point with which I entirely
+agree). They include deliberate sabotage of hardware, malicious alteration of
+data, accidents (e.g., fire) external to the system, and physical hardware
+component failure (e.g., broken wires). In considering the social impact of the
+failure of complex systems, such causes must not be ignored, but the authors
+confuse the issue by not distinguishing these events clearly from failures due
+purely to design faults.
+
+The incidents could have been more clearly described by classifying them 
+according to:
+
+ - application area (military, banking, etc.), 
+ - cause (code fault, bad specification, hardware failure, interference, etc.), 
+ - effect (system crash, data corruption, spurious signal, etc.), and
+ - cost ($5 million, 22 lives, etc.).
+
+The authors do not make it clear initially which of two different meanings of 
+'catastrophic' they intend:
+
+ a) sudden and unpredictable, 'anything can happen', and
+ b) having appalling consequences.
+
+The first is a classification of the effect (which I prefer to call a 'wild
+failure' to avoid confusion), and the second is a measure of the cost. For
+example, when arguing that computers are inherently unreliable because they are
+prone to 'catastrophic failure', they quote the Blackhawk example. The cause of
+this series of accidents was eventually traced to electromagnetic interference,
+as the authors state. While it is probably true that only a *digital*
+fly-by-wire system would exhibit a wild mode of failure in response to EMI, it
+is not until half-way down the next page, where the authors point out that
+digital systems have far more discontinuities than analogue systems, that it
+becomes clear that they are using 'catastrophic' in sense a), and not in sense
+b).
+
+The authors are right to claim that computer systems are too complex to be
+tested thoroughly, if by this they mean 'exhaustively'. It is apparent from
+their example of a system monitoring 100 binary signals that they do mean this.
+The argument, and the arithmetic supporting it, are unconvincing, however. It
+is not generally true that a different path through a program will be executed
+for every possible combination of inputs, therefore the derivation of 1.27 x
+10^34 internal states (2^100 or 1.27 x 10^30 input combinations, multiplied by
+an arbitrarily assumed 10^4 possible paths) is not valid. On the other hand,
+knowing that execution is along a given path is insufficient.  *Where* one is
+on the path would also affect the internal state. There may be *more* than 1.27
+x 10^34 internal states! The problem is that 'internal state' is not defined.
+
+Exhaustive testing in this sense is well known to be impossible. Even in
+modestly complex systems one can only test a representative sample of inputs.
+Provided the selected sample is realistic, one can, however obtain a reasonable
+degree of confidence that a reliability target has been reached, but *only if
+the target is not too high*.
+
+Later in this argument, there is further confusion between two types of
+'modification':
+
+  i) changes to a system to simulate exception conditions during testing, and
+ ii) changes to a system to correct faults found in test or operation.
+
+The authors slip from i) to ii) without, apparently, being aware of it. As a 
+result, there is a non-sequitur, although the final points, that attempts to
+remove faults have a high probability of introducing other faults, and that
+guaranteed bug-free programs are impossible, are quite correct.
+
+In the section on 'What are computer scientists doing about it?' there is
+another non-sequitur (quoted text prefixed by '>'):
+
+> Like many computer scientists, he [Peter Mellor] advocates the application
+> of statistical principles to software quality, so that, for example, it may
+> be more acceptable to have many infrequent bugs rather than a small number
+> of very frequent ones.
+
+This point was originally made by Bev Littlewood. I still advocate it, but it
+needs clarifying. We value a system for the function it performs, and 
+therefore we are interested in its reliability, defined as: the probability 
+that it will not fail (i.e. deviate from its required function) for a given
+period of operation under given conditions. (The authors quote this definition,
+but omit the 'not' - obviously a typo! :-) The program with many bugs, each of
+which causes failure infrequently, may be much less likely to fail than one with
+few bugs, each of which causes failure frequently. In that case it will be more 
+acceptable, since it is more reliable. The only 'principle' involved here is 
+that reliability is an important attribute of software quality, which the 
+authors also affirm. They continue:
+
+> This merely confirms the view that programming is a 'black art' rather than
+> a rigorous science - a highly creative endeavour which is also hit and miss.
+
+Does it? Why?? I see no logical connection here at all. "We cannot control what
+we cannot measure" [de Marco]. If we wish to control software development to
+achieve more reliable systems, we must begin by being able to measure
+reliability. To make such measurements using sound statistical techniques on
+well-defined data moves programming away from being a 'black art' and towards
+being an engineering discipline.
+
+If the authors are pointing out that this kind of 'black-box' statistical
+reliability assessment gives no guidance before development as to what effect
+particular design methods will have on reliability, I agree, but we must be
+able to measure first, in order to build up a body of experience regarding
+their effect.
+
+Anyway, end of whinge. I agree with much of what the authors say, particularly
+regarding the inability of current methods to deliver ultra-reliable software.
+Ultra-reliability, of the order 1 - 10^-9, is also impossible to assess. (If
+the failure rate is high enough to be measured, then it is too high!) For many
+applications, however, modest reliability is sufficient, and this can be both
+achieved and measured right now. The moot point is whether the authors' main
+conclusion is too strong: that computers should not be used where life is at
+stake.
+
+At which point, I throw the motion open for debate.
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton Sq.,
+London EC1V 0HB +44(0)71-253-4399 Ext. 4162/3/1 p.mellor@uk.ac.city (JANET)
+
+------------------------------
+
+Date: Fri, 31 Aug 90 14:28:19 EDT
+From: Daniel B Dobkin <dbd@marbury.gba.nyu.edu>
+Subject: Copyright Policy (reply to Gene Spafford)
+
+[I acknowledge this is not the best forum for this, but there is a
+ RISK, far more evident on other newsgroups, when people make sweeping
+ statements about the law based on popular misconceptions.  There is
+ another RISK inherent when judges have to make decisions on technical
+ matters without understanding the technology -- and when those
+ decisions are based on arguments made by lawyers who don't understand
+ the technology, either.]
+
+First, the disclaimer: I'm not a lawyer, either, but as a full-time
+programmer and part-time law student (sorry), I felt compelled to
+respond to Gene Spafford when he wrote,
+
+      The purpose of copyright is to protect the commercial interest of the
+      copyright holder (author or publisher).
+
+Don't take what I say as legal advice, either; it's an explanation of
+the policy underpinnings of copyright, as I understand them:
+
+The purpose of copyright is NOT to protect the commercial interest of
+the copyright holder, author, publisher, artist, or anything else.
+Its sole purpose is to promote innovation and creativity; granting the
+author/artist a limited monopoly interest (exclusive rights for some
+definite period), it is reasoned, will encourage people to be creative
+and society will reap the benefits.
+
+To a lot of people this sounds like the sort of semantic quibbling (1)
+which doesn't mean much; and (2) for which lawyers typically
+overcharge.  (It sounds that way to me at times.)  Please think about
+it for a moment: there is really a world of difference between the
+two.  The one can encourage lawsuits based on, say, "software look and
+feel", while the other has great potential to limit them.
+
+\dbd, Stern School of Business, New York University
+
+------------------------------
+
+Date: Fri, 31 Aug 90 09:19:26 -0400
+From: Brian M. Clapper <clapper@NADC.NADC.NAVY.MIL>
+Subject: Re: Discover Card
+
+Will Martin points out that the card does come with a PIN.  He is correct; I
+found that out after I sent my message.  I apologize for the error.  However,
+one does not need a PIN to access the on-line service I previously described.
+
+Also Mr. Martin mentions that his card has no 800 number on the back.  Quite
+possible.  My card is brand new.  The number I dialed was 1-800-347-2683.
+Discover's mnemonic for this same number is 1-800-DISCOVER.  That number (in
+both incarnations) is imprinted on the back of my card, along with the legend
+"24-HOUR SERVICE".
+
+Brian Clapper, clapper@nadc.navy.mil
+
+P.S. My apologies for any problems our mailers caused.  We're slowly switching
+to a new set-up, and we sometimes have trouble with sendmail's oh-so-friendly
+address rewriting rules.      
+                                                         [Join the Club.  PGN]
+
+------------------------------
+
+Date: Fri, 31 Aug 90 10:44 CDT
+From: Gordon Keegan <C145GMK@UTARLG.UTARL.EDU>
+Subject: Re: Discover card...
+
+        Some time ago I received notification from Discover that
+        there was now an 800 number available with automated
+        account information available.  It's 1-800-DISCOVER
+        (800-347-2683).  The computer on the other end has you
+        key in your account number followed by the # key.
+        No PIN is required for this.  You only need the PIN
+        if you are getting a cash advance at an ATM.
+
+        The 858-5588 number has been inactive for about a year now.
+
+Gordon Keegan, U.Texas, Arlington c145gmk@utarlg.BITNET THEnet UTARLG::C145GMK 
+UUCP: ...!{ames,sun,texbell,uunet}!utarlg.arl.utexas.edu!c145gmk
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.28
+************************

@@ -1,0 +1,343 @@
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 11 July 1989   Volume 9 : Issue 3
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Re: UK Defense Software Standard (Nancy Leveson)
+  Errors in weapon software (Jon Jacky)
+  Where does safety lie? (Jennifer S Turney)
+  SP Cajon crash (Mike Trout)
+  Re: Stalking the wary food shopper (Steven Den Beste, David Gursky, asente)
+  ORAIS'89 Conference Program (Klaus Brunnstein)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j, ftp KL.sri.com[CR]login anonymous (ANY NONNULL PASSWORD)[CR]
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks>[CR]get risks-i.j 
+  Vol summaries (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99),(8.88).
+
+----------------------------------------------------------------------
+
+Date: Mon, 10 Jul 89 22:39:04 -0700
+From: Nancy Leveson <nancy@ICS.UCI.EDU>
+Subject: Re: UK Defense Software Standard (by Joshua Levy, RISKS-9.2)
+
+Joshua Levy comments in Risks 9.2 on the UK MoD Std:
+
+   >>1. There should be no dynamic memory allocation (This rules out explicit
+   >>   recursion - though a bounded stack is allowed).
+   >>2. There should be no interupts except for a regular clock interupt.
+   >>3. There should not be any distributed processing 
+   >>4. There should not be any multiprocessing.
+
+ >As a practical matter, these requirements rule out most (all?) real systems.
+ >Also, I do not see why software which does none of these things is safer than
+ >software which does all of them.  These requirements seems to be designed to
+ >compensate for the (huge) limitations of current program verification
+ >techniques.
+
+Much safety-critical software is built this way already; it is simply untrue
+that these limitations rule out real systems.  Software with these
+characteristics is safer because it is deterministic rather than
+non-deterministic -- the number of states may often be reduced to a small
+enough number to perform extensive (and sometimes exhaustive) testing and
+analysis.  No dynamic storage allocation also ensures that the system will not
+run out of memory during a critical operation:  Again the goal is to make the
+software predictable and analyzable.  Norm Finn, in the same issue of Risks,
+explains the reasons for and practicality of eliminating interrupts.
+
+Safety-critical systems are built this way in order to perform effective
+verification (e.g., testing and analysis) in general -- it has nothing to do
+with the limitations of formal verification.  I refer you to the design of the
+software for a nuclear reactor shutdown system described in my Computing
+Surveys article (June 1986) as an example and an explanation of the purpose of
+such restrictions.
+
+ >Of course writing a compiler which does not use dynamic memory (see point 1)
+ >would be an interesting exercise!
+
+You misunderstood -- the limitation is on the object code, not on the
+compiler.  If the compiler runs out of memory and fails to produce object
+code, this is not a hazard.
+
+ >Overall, I found these standards funny, not useful.  My conclusion is that no
+ >safety critical software can not be written in the UK since points 1 and 2 
+ >will mean that none of it will be up to standard.
+
+I cannot understand how this conclusion follows.  There is already software
+performing safety-critical functions that satisfies these standards.  In my
+experience, the software that has killed people in the past has almost always
+used unnecessarily complex programming techniques.  For example, the Therac
+deaths were related to race conditions in the software created by the use of
+multitasking (which was not necessary to implement the required functionality).
+The nondeterminism involved makes it impossible to thoroughly test or analyze
+the Therac software to eliminate such critical errors.
+
+The most effective way to increase the reliability of software that we
+currently know about is simply to make it understandable and predictable.
+Although there may be many very good reasons for using sophisticated
+programming techniques, increased reliability and safety are usually not among
+them.  When human life is involved, most real systems make tradeoffs in the
+direction of simplicity and predictability.
+
+For the most part, the new UK standard just specifies current standard practice
+for safety-critical software used by those most experienced in building such
+software.
+                                           nancy
+
+------------------------------
+
+Date: 3 Jul 1989 17:19:30 EST
+From: JON.JACKY@GAFFER.RAD.WASHINGTON.EDU
+Subject: Errors in weapon software
+
+At the COMPASS '88 meeting last summer, John Cullyer described a quality study
+on modules selected from the NATO software inventory that was performed at the
+Royal Signals and Radar Establishment (RSRE), the central electronics research
+laboratory of the UK Ministry of Defence (MOD).  Here is mention of that study
+from a recent paper, "High Integrity Computing", by W.J. Culler, pages 1-35 in
+"Formal Techniques in Real-Time and Fault-Tolerant Systems (Lecture Notes in
+Computer Science No. 331)", edited by M. Joseph, Springer-Verlag 1988: 
+
+``One of the techniques which has been developed to provide objective evidence
+  of the correctness of software is called `static code analysis' ... (which
+  uses) algebraic methods which are totally independent of dynamic testing...''
+
+Application of static code analysis since 1985 has revealed some worrying
+results.  Taking a broad average over the software checked by MOD or by
+contractors on behalf of MOD, up to 10 percent of the individual software
+modules have been shown to deviate from the original specification.  Such
+discrepancies have been found even in software that has been subject to
+extensive testing on multi-million pound test rigs.  Many of the anomalies
+detected have been minor and did not threaten the integrity of the system
+being monitored.
+
+However, about 1 in 20 of the defective functions that static code analysis
+had shown to be faulty, i.e., about 1 in every 200 of all new modules, proved
+to have errors that would have resulted in direct and observable effects
+on the vehicle or plant concerned.  For example, potential overflows in
+integer arithmetic appears to be a common problem, involving a change in
+sign of the result of a calculation and hence the possibility of an actuator
+being driven in a dangerous direction.''
+
+At COMPASS, Cullyer said about the same proportion of faulty modules was
+discovered in the British, American and German contributions.  He also
+mentioned that the British MOD's interest in formal methods was motivated by
+several near-miss accidents involving computers that he said he was not
+permitted to discuss.
+                              - Jon Jacky, University of Washington
+
+------------------------------
+
+Date:  Fri, 7 Jul 89 08:22:31 EDT
+From: turney@cetus.crd.ge.com (jennifer s turney)
+Subject: Where does safety lie?
+
+In a TV news report last evening (7/6) on the computer shutdown at O'Hare
+Airport, the reporter commented that the skies were actually safer as a result,
+which he attributed to two causes: first, that there was less air traffic and
+second, that "pilots are relying on their knowledge and their skills rather
+than on a computer."
+                                         Jennifer Turney
+
+------------------------------
+
+Date: Fri, 7 Jul 89 11:22:25 EDT
+From: miket@brspyr1.brs.com (Mike Trout)
+Subject: SP Cajon crash
+
+The investigation continues into the Southern Pacific May 11 Cajon wreck.  This
+was the incident where an SP potash unit train lost its brakes while descending
+Cajon Pass, a grade in excess of 2%.  The train roared down the hill as the
+crew radioed they were out of control; it reached 90 mph before jumping the
+track and crashing into a neighborhood near San Bernadino.  Three persons were
+killed, eight injured, and 11 homes destroyed.
+
+New information indicates an inaccurate calculation of the train's tonnage.
+Press reports indicated the train contained 69 cars with a weight of 6150 tons,
+but an SP assistant chief dispatcher has since estimated the actual weight as
+8950 tons.  Had the crew known the train's additional weight, they might have
+set up the air brakes sooner.  Faulty dynamic brakes were found in one of the
+four lead engines and one of the two pushers.  As the train crested the hill,
+the lead engineer radioed the pusher engineer to ask if he was "giving all [the
+dynamic braking] he had;" the rear engineer answered "yes" even though he told
+investigators that he was aware the dynamic brakes were not working.
+	--From _Call_Board_, Mohawk & Hudson Chapter Nat'l Rwy Hist. Soc. 
+
+Michael Trout, BRS Information Technologies, 1200 Rt. 7, Latham, N.Y. 12110  
+
+------------------------------
+
+Date: Mon, 10 Jul 89 16:38:56 -0400
+From: denbeste@BBN.COM
+Subject: Re: Stalking the wary food shopper
+
+David Gursky's comments about grocery stores using computers to keep track 
+of their customers so as to target mailings isn't anything new.
+
+I can't be the only person who wasn't allowed out of a Radio Shack store
+until I gave my name and address...
+
+And I always say "I'm on the mailing list already" and they always say "Well,
+the computer will notice it and won't put you on again."
+
+Problem is, my name is just complicated enough so that there's always just a
+LITTLE bit of difference when it is keypunched, and the computer says "BING
+BING BING not the same; add it to the list."
+
+Steven C. Den Beste   (right. "Den Beste" complete with embedded space is my
+			last name.)
+Steven C. Denbeste, Steven Den Beste, Stephen Den Beste, Steven D. Beste,
+Steven Dan Beste, Steven Beste, Steve Den Beste, Steven Baste,
+and on and on and on. At one address I was on the damned list 5 times. And
+since the Radio Shack mailing list never dies (they always say "or current
+resident") some poor bastard is STILL getting those five catalogs every couple
+of weeks.
+
+[I think I won't sign this.]      
+                            [At least he did not want it to be anonymous!  PGN]
+
+------------------------------
+
+Date: Mon, 10 Jul 89 19:45:50 EDT
+From: dmg@lid.mitre.org (David Gursky)
+Subject: Re: Stalking the wary food shopper
+
+The best comment of all may be that I received Steve "Pick a last name"
+Den Beste's message *before* my copy of RISKS with my message arrived!
+
+And if it is any consolation to Steve, in all the times I have shopped at Radio
+Shack (albeit few times) I have yet to receive their catalogue in the mail.
+
+------------------------------
+
+Date: Mon, 10 Jul 89 14:37:57 PDT
+From: asente@wsl.dec.com
+Subject: Re: Stalking the wary food shopper
+
+A less-intrusive variant of this is already in place at my local Safeway.
+After your purchase is rung up, a little printer on top of the cash register
+spits out some coupons for you.  They always are for competing brands of things
+similar to what you just bought.
+
+------------------------------
+
+Date: 30 Jun 89 14:40 GMT+0100
+From: Klaus Brunnstein <brunnstein%rz.informatik.uni-hamburg.dbp.de@RELAY.CS.NET>
+Subject: ORAIS'89 Conference Program 
+
+    International IFIP-GI (IFORS-EFMI-AIME-GMDS) Conference: Program
+Opportunities and Risks of Artificial Intelligence Systems (ORAIS'89)
+
+           July 17-20, 1989; University of Hamburg, FR Germany
+
+Monday, July 17, 1989: AI History, Impact, Paradigms
+J.Weizenbaum(Boston): Historical Perspectives of AI+changing Paradigms 
+R.Lauffer(Jouy en Josas): The Social Acceptability of AI
+W.Bibel(Darmstadt):   AI + Change of Reality: Opportunities+Dangers
+Afternoon:            Working Groups: Position Papers
+
+Tuesday, July 18, 1989: Expert System: Opportunities and Risks:
+S.Savory(Paderborn):Expert System Vision: Reality vs. the Hype
+J.Berleur(Namur):   CoSpeakers Comments
+W.Coy(Bremen):      Machine Intelligence + Industrial Work 
+B.Radig(Munich):    CoSpeakers Comments
+Afternoon:          Working Groups: Position Papers
+
+Wednesday, July 19, 1989: Applications of AI
+M.Stefanelli(Pavia):AI in Medicine
+H.Fiedler(Bonn):    AI in Law 
+Sture Haegglund(Linkoeping):On the Impact of Intelligent Systems 
+           and Knowledge Management Support in the Office Environment
+H.Sackman(LA):Salient Internat.Socio-Economic Opportunities+Risks in AI
+Afternoon Socio-Cultural Event (Ship tour to Operation Sail'89)
+
+Thursday, July 20, 1989: Conference Results and Outlook:
+Working Group Result:  Report of WG Chairpersons
+K.Brunnstein(Hamburg): Human Intelligence and AI: an Outlook
+
+          Working Group 1: Building Knowledge Bases & Expert Systems
+A Kobsa(Saarbruecken):User Modeling in Dialog Systems:Potentials+Hazards
+T.Bub (Darmstadt):    Artificial Intelligence is an Information Technology
+B.Becker(St.Augustin):Elicitation+Modelling of Expertise:fundamental limits"
+
+          Working Group 2: Applications in Medicine:
+J.Mira Mira(Santiago de Compostela):Time Aspects of Therapy Advisors
+L.Gierl(Munich):         Experiences in Use of Expert Systems in Medicine
+H.Woltring(Eindhoven):   Software+AI:How free are Research+Development?
+R.O'Moore(Dublin):            Evaluation of Expert Systems in Medicine
+P.Nykanen(Tampere/Finland):   The SYDPOL Project
+J.John(Munich): Methological Aspects of TA on Expert Systems in Medicine
+R.Engelbrecht(Munich):Opportunities+Risks of ExpS: Results from 3 Studies
+
+          Working Group 3: Applications in Enterprise
+A.Leifeld(Duesseldorf):Using an ExpS to hedge Foreign Exchange Exposure
+M.Daniel(Karlsruhe): Impacts of Commercial Applications
+H.Damskis(Paderborn):The only Risk is not to take the Opportunity
+
+          Working Group 4: Office Applications
+H.Brinkmann,A.Hohmann(Kassel):Decision Support Systems in Complex 
+          Organisations (Job Placement at Employment Offices in FRG)
+P.Dambon,F.Glasen,R.Kuhlen,M.Thost(Konstanz):Risks+Opportunities of 
+    ExpS in Offices of Administrative Institutions(Creditworthness Tests)
+G.Unseld(Frankfurt):Elementary Logic of Risks+Chances in the AI Business
+
+          Working Group 5: Industrial and Engineering Applications
+P.Broedner(Karlsruhe):In Search of the Computer Aided Craftsman
+W.Beuschel,B.Groeger(Berlin/FRG):Chances+Risks of Using ExpSystems 
+          in the Engineering Design Process
+G.Stein(Leonberg/FRG):Why are Automatic Image Analysis Systems so limited?
+J.Heikkilae,P.Heino(Tampere):Risks of Industrial Systems with Knowledge 
+          Based Software
+S.Klaczko,M.Goeller(Hamburg):Automatic Reasoning for Decision Support 
+          Systems: the CIM Case
+
+          Working Group 6: Public and Legal Aspects
+B.Brauner(Koeln):  Some legal Aspects of ExpSystems according to German Law
+W.Kilian(Hannover):Liability for deficient Medical Expert Systems
+
+          Working Group 7: Education & Training:
+M.Angelides,G.Doukidis(London):The Effectiveness of AI in Tutoring Systems
+D.Millin(RamatHasharon):Are Educational and Training Systems threatened 
+        by new Technologies such as AI and ExpSystems? 
+
+          Working Group 8: Risks and Security of AI-Systems
+I.Georgescu(Bucharest/Romania):Risks Sources in AI Applications
+H.Goorhuis(Zuerich):NESSY: A System that combines Symbolic Reasoning 
+              and Neural Computing to avoid some Risks of ExpSystems 
+S.Fischer-Huebner,K.Brunnstein(Hamburg):Opportunities+Risks of Intrusion 
+               Detection Expert Systems
+A.Kieback,W.Vogel(Friedrichshafen):On Security of AI Systems(Experiences) 
+
+          Working Group 9: Risks and Accountability:
+K.Roediger(Berlin):The GI Document 'Computers and Responsibility'
+H.Sackman(LA): Towards an IFIP Code of Ethics based on Participative 
+               International Consensus
+
+          Working Group 10: Methodological Aspects:
+G.Knospe(Wismar/GDR):Cognitive Adequacy of Knowledge Representation
+K.Fuchs-Kittowski(Berlin/GDR):Philosophical+Methodologial Positions 
+       regarding the Relationship between Artificial+Natural Intelligence
+
+          Working Group 11: Software Technology Impacts
+H.Mueller-Merbach(Kaiserslautern): Intelligent Man-Machine Tandems
+C.Pyka(Hamburg):  Future Information Systems for Everybody
+R.Meyer,W.Rose(Hamburg): CASE for the Nineties
+G.Dimitriou(Thessaloniki): AI in Software Engineering
+
+Conference Location: Hamburg University, Rechtshaus  
+                     Schlueterstrasse 28, D 2000 Hamburg 13, FR Germany
+
+More information available from:
+Conference Secretariat: Dr. Klaus Brunnstein   (Program Committee)
+                        Simone Fischer-Huebner (Organisation Committee)
+University of Hamburg (ORAIS '89),Schlueterstr.70, D 2000 Hamburg, FRG
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.3
+************************

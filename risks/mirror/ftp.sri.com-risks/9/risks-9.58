@@ -1,0 +1,446 @@
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 9 January 1990   Volume 9 : Issue 58
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  New-Years' Lotto goes Blotto (Jim Anderson)
+  Railroad interlocking systems (Douglas W. Jones)
+  Sorry, the bank's already debited your mortgage (Dave Horsfall)
+  Positive fingerprint identification? (Dave Horsfall)
+  Re: Password Security: A Case History (Fernando J. Corbato)
+  The risks of not learning - and of ignoring realities (Jerry Leichter)
+  6th Chaos Communication Congress, Hamburg 27-29 Dec 1989 (Klaus Brunnstein)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Mon, 8 Jan 1990 11:40:31 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: New-Years' Lotto goes Blotto 
+
+The Pennsylvania Wild Card Lotto computer systems had to be reprogrammed to
+accommodate the end of the decade.  That had already supposedly been
+accomplished -- but apparently not carefully enough.  In the first Lotto of
+the new decade, the computer systems were unable to determine the winners and
+further software fixes were required.  [Philadephia Inquirer, 4 Jan 1990,
+contributed by James P. Anderson]
+
+------------------------------
+
+Date: Fri, 5 Jan 90 09:49:21 CST
+From: Douglas W. Jones <jones@pyrite.cs.uiowa.edu>
+Subject: Railroad interlocking systems
+
+Most of the arguments about safety critical hardware and software that I've
+seen assume that digital computers pose new problems.  In effect, the
+argument is that safety critical digital control systems are a radical
+novelty (to borrow from Dijkstra's essay on the Cruelty of Teaching Computer
+Programming), and thus that they cannot be discussed by analogy to older
+solutions to the same problem.
+
+One historical parallel which may prove interesting in this context is the
+railroad interlocking machine.  Interlocking machines were purely mechanical
+digital computing machines that served to enforce a set of operating rules on
+railroad signalmen operating the switch-tracks and signals at a railroad
+interchange.
+
+I suspect that there are useful parallels between the history of railroad
+interlocking machines and the more recent developments in safety critical
+digital control systems.  An error in the logical design of an interlocking
+machine could easily go undetected until it caused a train wreck, and I
+wonder if old cases involving railroad interlocking machines might provide
+useful precidents for many of the software liability questions that have been
+raised recently.
+
+Here's a short description of the problem solved by a relatively
+simple interlocking machine:
+
+   Consider the following track layout:
+
+                       3->     TOWER                  8->
+       ----------2-------------------------------7-----------
+           <-1    \                      <-5    /
+                   \   4->                     /
+                     ------------------------- 
+                                         <-6
+
+       1, 5 and 6 are signals controlling traffic from the left.
+       3, 4 and 8 are signals controlling traffic from the right.
+       2 and 7 are switch tracks.
+       All signals may be up (go) or down (stop).
+       All switch tracks may be set to direct traffic up to the
+         straight through track or down to the siding.
+
+       The control levers for all of the signals and the switch
+         tracks are located in the tower, where the signalman may
+         work them one at a time.  (One at a time because it takes
+         his full strength to overcome the friction of the system
+         of cranks and push-rods that connects each lever to the
+         corresponding switch-track or signal.)
+
+   The problem:  There are 8 levers in a row, each with 2 settings;
+     thus, there are 256 possible states of the system.  (I've seen
+     photos of old railroad control towers with banks of 20 or more
+     control levers.)  Of these 256 states, only a few are safe.
+
+       Example:  If switch 2 is set up, switch 7 is set down, and
+         signals 1, 4, 5, and 8 are up, a train entering the
+         diagram from either side will procede through the diagram
+         and derail as it passes through the incorrectly sew switch
+         at the opposite side of the diagram.
+
+   The classic solution:  A mechanical interlocking machine is added
+     to the tower.  A tower containing an interlocking machine was
+     a sufficient improvement over an un-interlocked control tower
+     that the term interlocking tower came to be applied to such a
+     tower.  An interlocking machine consists of a set of 8 transverse
+     rods crossing 8 rods linked to the control levers.  Each transverse
+     rod is linked to one of the control rods and at each point where
+     a transverse rod and a control rod cross, the transverse rod may
+     be notched to allow the control rod to move or un-notched to lock
+     the setting of the control rod.
+
+       In the above example, signals 1, 3 and 4 would be interlocked
+         with switch track 2 such that the setting of 2 could only be
+         changed if 1, 3 and 4 were in the down position, and so that
+         3 could only be raised to the up position if switch 2 was
+         set up, and 4 could only be raised to the up position if
+         switch 2 was set down.  A similar set of interlocking rules
+         would apply to 5, 6, 7 and 8.
+
+     The "program" for the interlocking machine can be viewed as the
+     pattern of notches in the transverse rods.
+
+Modern solutions to the interlocking problem use electrically operated
+switches and signals with relays and more recently computerized controls to
+interlock their operation.  Long before such modern solutions came into use,
+interlocking machines were built into the control towers along most mainline
+trackage in North America.  The interlocking machines for simple passing
+sidings such as I've described above could be standardized, but there were
+(and are) many places where the track layout controlled by an interlocking
+tower was unique and required what we would now call custom programming.
+
+Incidentally, in addition to the possible relevance of the history of
+interlocking towers to modern problems in safety-critical computing systems,
+lots of good assignments can be derived from this problem.  For example,
+given a set of interlocking rules, derive a finite-state machine describing
+the legal states transitions.  Alternately, write a program that, when given
+the current state and a (partial?) specification of a desired state, produces
+a plan for a series of legal transitions that will reach the desired state.
+
+Douglas Jones, Dept. of Computer Science, Univ. of Iowa, Iowa City, Iowa, 52242
+
+------------------------------
+
+Date: Sat, 6 Jan 90 22:49:18 est
+From: Dave Horsfall <dave@stcns3.stc.oz.au>
+Subject: Sorry, the bank's already debited your mortgage
+
+In the wake of sky-rocketing mortgage rates in Australia comes this
+story from the "Sydney Morning Herald", Friday January 5th, 1990:
+
+``Sorry, the bank's already debited your mortgage
+
+  As many as 100,000 Commonwealth Bank customers found their accounts
+  prematurely depleted yesterday when a computer debited home loan
+  payments due for any day in January rather than just Wednesday.
+
+  The Commonwealth's general manager, retail, Mr Peter Andrews, said
+  staff became aware of the mistake when some customers found cheque or
+  Keycard accounts debited ahead of time.
+
+  Mr Andrews said a computer sweep on Tuesday night would normally have
+  debited customers who had elected to pay their home loans automatically
+  on Wednesday.
+
+  The error affected up to 100,000 home loan holders throughout Australia,
+  but Mr Andrews said most customers would not have become aware of it.
+  They would have noticed "only if they were taking money out and found
+  their accounts were overdrawn," he said.  Emergency arrangements had
+  been set up to give them access to cash.''
+
+Dave Horsfall (VK2KFU),  Alcatel STC Australia,  dave@stcns3.stc.oz.AU
+dave%stcns3.stc.oz.AU@uunet.UU.NET,  ...munnari!stcns3.stc.oz.AU!dave
+
+------------------------------
+
+Date: Mon, 8 Jan 90 19:28:21 est
+From: Dave Horsfall <dave@stcns3.stc.oz.au>
+Subject: Positive fingerprint identification?
+
+The following is taken from "The Sydney Morning Herald" Mon 8th January:
+
+``Positive identification
+
+  It might not have caught the killer, but at least it has identified
+  the victim.  A fingerprint checking computer immediately revealed to
+  Seattle police the identity of a body found along a busy road in
+  Portland.  A manual fingerprint comparison, using the police
+  department's hundreds of thousands of fingerprint files, would have
+  taken months, according to police.  The computer's _positive
+  identification_ [ emphasis mine ] took just a few seconds.''
+
+Dave Horsfall (VK2KFU),  Alcatel STC Australia,  dave@stcns3.stc.oz.AU
+dave%stcns3.stc.oz.AU@uunet.UU.NET,  ...munnari!stcns3.stc.oz.AU!dave
+
+------------------------------
+
+Date: Mon, 8 Jan 1990 18:02:43 EST
+From: "Fernando J. Corbato" <corbato@LCS.MIT.EDU>
+Subject: Re: Password Security: A Case History 
+
+Peter's note recalling the colossal time-sharing mishap of the interchange of
+the message-of-the-day with the password file which occurred on CTSS in the
+early 1960's made me go look up the article and see what was said about the
+cause.  The article says "due to a software design error, the temporary editor
+files of the two users were interchanged..." but it was deeper than that.
+
+To simplify the organization of the initial CTSS system, a design decision had
+been made to have each user at a terminal associated with his own directory of
+files.  Moreover the system itself was organized as a kind of quasi user with
+its own directory which included a large number of supporting applications and
+files including the message-of-the day and the password file.  So far, so good.
+Normally a single system programmer could login to the system directory and
+make any necessary changes.  But the number of system programmers had grown to
+about a dozen in number, and, further, the system by then was being operated
+almost continuously so that the need to do live maintenance of the system files
+became essential.  Not surprisingly, the system programmers saw the
+one-user-to-a-directory restriction as a big bottleneck for them.  They
+thereupon proceeded to cajole me into letting the system directory be an
+exception "since system programmer's would be careful to not make mistakes."
+
+But of course a mistake was made.  Overlooked was that a software design
+decision had been made in the standard system text editor that it would only be
+used by one user at a time working in one directory so that a temporary file
+could have the same name for all instantiations of the editor.  And with two
+system programmers editing at the same time in the system directory, the
+disaster of the swapped temporary files finally occurred.
+
+The tale has at least two morals: First, design bugs are often subtle and occur
+by evolution with early assumptions being forgotten as new features or uses are
+added to systems; Second, even system programmers make mistakes so that prudent
+system management must be based on expecting errors and not on perfection.
+
+F. J. Corbato
+
+  [For our younger readers, Corby was the father of both CTSS and Multics. PGN]
+
+------------------------------
+
+Date: Fri, 5 Jan 90 12:45 EST
+From: Leichter-Jerry@CS.YALE.EDU
+Subject: The risks of not learning - and of ignoring realities
+
+In a recent RISKS, Al Arsenault records his distress at an answer he received
+on a test he gave in a course on computer security.  A student stated that one
+advantage of passwords over biometric authentication was that he could give his
+password to a friend so that the friend could use his account.  Mr. Arsenault
+comments, "So much for that one-week unit on 'Individual Accountability'".
+
+I'm afraid he is missing an important point.  The fact of the matter is, people
+lend things to friends.  They lend clothes, they lend cars, they lend money.
+They let people use their telephones.  They even lend things like ID cards when
+they can get away with it.  Those in charge of things like security cards don't
+like this, and they try hard to prevent it, resulting in a continuous battle
+with people who just want to continue to live their lives.
+
+At times, it's easy to forget that most people share neither the world view
+nor the interests of the "security community".  Yes, they are aware that they
+should not let "anyone" know their bank card password - but when, for example,
+they are sick in bed they consider it a useful thing that they can give the
+card and password to a friend and have him get some money and do a bit of
+shopping for them.  This, too, is a positive good.
+
+I'm sure Mr. Arsenault covered the standard set of distinctions among
+identification schemes - something you KNOW, something you HAVE, something you
+ARE.  Each has its own features, which in different contexts may be good or
+bad.  Something you KNOW can be replicated to others; something you HAVE can be
+lent; something you ARE can't be transfered.  These are neither advantages nor
+disadvantages; they are simply inherent features.
+
+Consider an analogy: Why is letting someone use your computer account
+inherently different from letting someone use your telephone?  Would you never
+be willing to tell a trusted friend your telephone access code?
+           							-- Jerry
+
+   [Yes, some people are concerned about computer security and others are not
+   -- at least not until they've been burned.  But Reality and Sensibility
+  are in this case two radically different things.  If you want individual
+  accountability, you do not share passwords.  The telephone system is
+  intrinsically vulnerable to illicit use of credit cards.  If you wish to
+  trust a friend, that may have low risk -- unless MANY people are involved;
+  then you might like to have records that show who is actually using your
+  resources.  However, suppose you are designing a computer system that
+  recognizes fingerprints as authenticators.  It would be rather silly to
+  design the system to recognize facsimile copies of a fingerprint so that
+  someone else could conveniently enter the system when provided with a
+  fingercopy (which can itself be repeatedly copied).  (Ignore the fact that 
+  the previous person's fingerprint may be liftable from the glass!)  Much more
+  sensible is to design the computer system so that it encourages individual
+  accountability, while also permitting flexible controlled sharing.  That is
+  what Multics was all about in 1965.  What's new?  PGN]
+
+------------------------------
+
+Date: 05 Jan 90 14:41 GMT+0100
+From: Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.dbp.de>
+Subject: 6th Chaos Communication Congress, Hamburg 27-29 Dec 1989
+
+             6th Chaos Communication Congress 1989 
+               'Open frontiers: CoComed together'
+
+The 6th annual congress of Hamburg's Chaos Computer Club (CCC) was held on
+27-29 December 1989 in Hamburg. The recent political development in Germany
+also influences the hacker scene; only after a controversial debate, the
+organisers denied a suggestion to move the congress to East Berlin. Among the
+about 300 visitors, about 50 people from East Germany were present.  A few
+foreign visitors came from France, Netherlands and USA. The congress was
+male-dominated, with a growing female participation (about 40). The other major
+German hacker groups (from Bavaria, Cologne) were not present.
+
+Following trends of the 5th CCC congress, themes relating to computer security
+were less dominant. As CCC members and congress organisers age and their
+professional background dominates (a significant part works in computing), the
+political impact of computerisation becomes dominant, not only under a revised
+West/East German scenario. Even the presentation of comp.security changes:
+invited speakers with solid scientific background lecture in traditional style,
+some even with overhead folios from international conferences; even a state
+attorney (responsible for the case FRG vs.S. Wernery re hacking!) participated
+in a surprisingly fair and open discussion on criminal law against hacking.
+
+Major themes were:
+      - information about computerisation and network infrastructure
+        in East Germany 
+      - cooperation with East German computer freaks
+      - cooperation with eco-groups
+      - 'female computer handling'
+      - KGB-hacker 'Hagbard'
+      - Security in open networks (2 invited speakers)
+      - Hacker Ethics and Harper's Hacker Conference (Capt.Crunch)
+      - Free Flow of Information, Copyright
+      - UNIX discussions: several workshops, UUCP
+      - Virus Forum II.
+
+Several sessions were devoted to the state and possible developments of
+computers + communication (c+c) in East Germany. With insufficient computers
+and an outmoded telephone net, CCC appealed to the German public to donate
+unused equipment (C64, Apple II, PCs) to eastern groups. As substitute of the
+insufficient telephone net, the recently installed 'packet radio' should be
+used for computer communication; pc-communication with packer-radio was
+demonstrated at the exhibition. As a start of computerisation, CCC plans to
+hold another congress (Kaos Kommunikation Kongress) in East Berlin early in
+1990.
+
+Representatives of the East German citizen movement, esp.from 'New Forum'
+discussed possible developments. Many participants (most oriented towards the
+left wing of the political spectrum) adviced the East Germans not willingly to
+follow West German c+c industry and public authorities (Telekom) to install
+traditional technology; as an example, ISDN is widely critized because it
+neglects data protection laws.
+
+Following discussions on CCC congress 88, several projects of ecological data
+processing and communication started (e.g. data collection in the environment
+of industry and nuclear power plants). CCC and some eco-groups plan to install
+an information center on a ship during the EEC's North Sea conference (March
+1990). A special session and workshop was also devoted to female
+computer-handling; a goup of male (30) and female (20) participants discussed
+the role and attitudes of women in education and profession; similar
+discussions in national and international conferences (e.g. IFIP TC-9) may
+point to revised design principles (e.g. reduced complexity, possble
+plausibility control).
+
+Only a minor part of the congress was devoted to traditional hacker themes.
+Surprisingly, CCC did not follow it's tradition to extensively discuss hacker
+experiences of the last year. The KGB hack (broadly published in March, 1989)
+was *no theme*; instead, a session was devoted to the memory of Karl Koch alias
+'Captain Hagbard', one of Cliff Stoll's 'Wily Hackers' (CACM 5/1988) who, after
+having informed the public authorities as one of 2 chief witnesses in the case,
+committed suicide. 3 personal friends (without any interest in computing) and
+PENGO (the other chief witness) described Hagbard's sad life story, full of
+family problems and addictions (drug, hacking). The role of the media as well
+as CCC's role (part of which had strongly denied any contact to the crackers)
+was controversially discussed.
+
+Btw: the trial against 3 KGB hackers will begin on January 11,1990. 
+
+A whole 4 hour session was devoted to 'Security in open networks', with Dr.
+Raubold (director in GMD, the national research institute for computers and
+communication) and Dr. Pfitzmann (Karlsruhe, Faculty for Informatics)
+introducing into technologies of encryption (DES, RSA) and of secure
+communication in open networks; the 20 participants which stayed until the end
+were mainly students of Informatics and programmers.
+
+'Captain Crunch' reported about the recent electronic conference which was
+sponsered by Harper's; the results will be published in this magazine early in
+1990 (survey document in English available on request). He moreover
+demonstrated, via AT+T operator swithced connection, PicturePhone.
+
+Virus Forum II (1989) was intended to show the developments since Forum I
+(1985) where CCC made viruses publicly known in FRG. Ralf Burger (author of a
+Virus Book, where he published also virus code including a MVS/370 virus), Wau
+Holland (CCC's founding father), Juergen Wieckmann (editor of Chaos Computer
+Book) and K.Brunnstein discussed trends of viruses.  Meanwhile, more than 80
+viruses are known on INTEL 80xxx-systems, and more than 70 on several
+68.000-systems as AMIGA, Atari and MacIntosh. Viruses are found to grow from
+'families', the descendants of which are ever more difficult to analyse and
+produce growing damages.
+
+While the participants agreed in the threat assessment, there was significant
+disagreement about the consequences. Burger argued that everybody can program a
+virus; publication of virus code does not contribute to the virus threat.
+Brunnstein argued strongly against, that many young programmers learn to
+program viruses mainly from published code which they change slightly to
+produce their own virus; even if they program a virus for learning purposes,
+they loose control when it spreads via the friends' diskettes. Virus
+publication as part of virus distribution presents severe threats to data
+processing in economy, public services and private life.  IFIP General Assembly
+therefore passed a motion that every member society should appeal to its
+national legislative bodies to classify virus publication and distribution as a
+crime (the author will send the text of the IFIP resolution on request:
+VIRUSBAN.DOC: 56 lines, 3 kBytes).
+
+Another controversy raised when Burger told the audience: 'My antivirus finds
+every virus'; unfortunately, he didnot accept a bet from the audience to prove
+his promise. Burger also said, that he needs only one hour to detect and
+eliminate any anomaly; this differed significantly from the 250 hours which
+according to Brunnstein are needed to analyse and classify a complex virus and
+to produce the proper antivirus.
+
+Some participants from the audience differentiated between good use of viruses
+and bad use. It could be Good Use of viruses against inacceptable activities,
+such as nuclear weapons or state activities such as census.  Following such
+ideas, Wau Holland said that the existence of viruses gives a chance to analyse
+whether they are 'socially acceptable'.
+ 
+The `electronic newspaper', which reports the major discussions of CCC'89, was
+significantly more professionally organised than last year; it was produced by
+the team of CHALISTI, CCC's newly (1989) founded electronic newspaper, as
+edition no.4. Due to the minor foreign participation, most documents are
+German, with only two documents are written in English (Capt.Crunch's report on
+the Harper Hacker Conference, and the IFIP General Assembly's resolution on
+legal activities against viruses). There may be an English translation of the
+CCC newspaper in some time (?early February); I will send a short notice to PGN
+when this is available.  People interested in the German version (1794 Lines,97
+kBytes) or the English documents (135Li nes,8 kBytes) can reqzuest it from the
+author.
+      
+Conclusion: CCC and its constituency is on the *way to professionalism*.  On
+this way, CCC may loose control and even contact to real hacker groups, which
+they previoulsy hold in cases such as Btx and NASA hack; in the KGB case, CCC
+evidently had neither information nor control of the crackers.  On the other
+hand, CCC's propagation of UNIX enlarges the threats inherent in UUCP and the
+UNIXes.
+
+Klaus Brunnstein       University of Hamburg, FRG    January 3, 1990
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.58
+************************

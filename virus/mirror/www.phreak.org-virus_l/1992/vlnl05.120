@@ -1,0 +1,702 @@
+VIRUS-L Digest   Wednesday, 24 Jun 1992    Volume 5 : Issue 120
+
+Today's Topics:
+
+Re: Zipped Viruses (PC)
+Re: Viruses, Anti-virals, & change (PC)
+Weak algorithms for checksumming (PC)
+1530 Virus (PC)
+Vshield 91 locks up windows 3.1 (PC)
+Protecting windows from Viruses (PC)
+Further Information on Fish Boot Infector in Commercial Software (PC)
+re: Viruses, Anti-virals, & change (PC)
+LPscan from Intel (PC)
+VSHELL not passing VALIDATE test (PC)
+Re: Virus or hard disk problems ? (PC)
+mutating - polymorphic (PC)
+Re: 1530 Virus (PC)
+Re: scan 91 et al - reported as trojan?? (PC)
+Re: MVS Virii (IBM MVS)
+Re: Scanning for encrypted viruses
+New files and IP info for eugene (PC,Mac,etc.)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    23 Jun 92 09:00:49 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Zipped Viruses (PC)
+
+magnus@thep.lu.se (Magnus Olsson) writes:
+
+> The original post stated a number of reasons why stealth viruses are
+> especially dangerous, ending with the point quoted above about
+> scanners. Now, with a scanner that first scans memory, there are two
+> cases:
+
+> a) The scanner recognizes the virus. In this case, it will be caught
+> already in RAM, *before* the scanner starts reading files (where
+> the virus won't be recognized). Therefore, no files are infected by
+> the scanner.
+
+There is a minor glitch: it depends on what the scanner does when it
+detects the virus in memory. I have seen the following:
+
+1) The scanner hangs the system, requesting a reboot. This is
+inconvenient to the user and if s/he does not boot from a clean
+floppy, the virus will still be in memory the next time. The result is
+that people stop using such scanners.
+
+2) The scanner outputs a warning, but either continues to scan the
+files, or offers an option to do so. The first obviously leads to the
+infection of all executables, and the latter is insecure, since an
+unknowledgeable user is likely not to understand the warning
+(especially if it is not worded correctly) and to select the
+"Continue" option.
+
+3) The scanner refuses to run and outputs an explanation for this.
+This is the correct action, although it is an overkill if taken each
+time a virus is found in memory. It must be taken only if a fast
+infector is found. Currently all stealth viruses are fast infectors
+(although it is not mandatory, strictly speaking), but not all fast
+infectors are stealth. Therefore, this action of the scanner has
+nothing to do with the stealth viruses in particular - it is related
+to the fast infectors.
+
+> b) The scanner doesn't recognize the virus. In this case, all the
+> files scanned will of course be infected. But this is not specific for
+> stealth viruses; *any* unrecognized virus of the file-infecting
+> variety does this.
+
+Only if it is a fast infector.
+
+> In short, my point is that *if* the scanner checks RAM before it
+> starts checking files, stealth viruses are *not* any worse than
+> "ordinary" viruses _in the context of what happens when you're running
+> the scanner_ (though they are from other aspects).
+
+The current stealth technology does not try to conceal the virus code
+in RAM. It is possible to do it, however, and some viruses (EDV, Fish
+6, Whale, StarShip) are trying to do it. I cannot provide more details
+for obvious reasons.
+
+> this one. IMHO, exaggerating the dangers of, say, stealth viruses is
+> potentially dangerous, as it may lead to exaggerated actions by people
+> who believe they're infected - such as people throwing away SCANV
+> because hey've heard somewhere that "scanners are dangerous".
+
+They are correct to throw it away - not because "scanner are
+dangerous", but because "scanners alone do not provide a sufficient
+level of protection". A multi-level defense must be used, with the
+accent made on the integrity checking.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    23 Jun 92 08:35:10 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Viruses, Anti-virals, & change (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> With the introduction of the mTe toolkit, the limitations of pure scanning
+> are beginning to manifest. With one jump we have gone from over 1,000 viruses
+> (I know) to over 10,000. "100%" detection is now expected. The only way (on
+> soapbox) to achieve this is through integrity management. 100% is achievable
+
+I disagree. First, I am not sure to understand your statement
+correctly. I see two possible interpretations, both of which are not
+true:
+
+1) "The only way to achieve 100 % detection of a polymorphic virus is
+through integrity management." Of course not, ANY -particular-
+polymorphic virus can be detected by a scanner. The main problem is
+that with LOTS of very polymorphic viruses appearing every now and
+then this becomes very time- and effort-expensive.
+
+2) "The only way to achieve 100 % detection of all possible viruses is
+through integrity management." Unfortunately, this is not true. There
+are several kinds of attacks against the integrity checking software.
+Most of them can be stopped, it the developer of the software knows
+about them. There is one, however, which I don't know how it can be
+stopped reliably. It is represented by the slow viruses - viruses
+which infect only executable objects that are being created or
+modified. Examples: Darth Vader, Compiler, StarShip... Such viruses
+make their first steps today, so they are relatively silly and poor
+infectors. The idea represented in them can be improved, though, and
+they can be made quite dangerous...
+
+> Meanwhile, the scanners are recognizing this. Frisk's heuristic analysis and
+> McAfee's /AF and /CERTIFY switches are good examples. More and more good
+
+Frisk's heuristic analyzer has nothing to do with integrity management
+- - it is just a scanner which scans for particular (not virus-specific)
+pieces of code. McAfee's implementation of /AF is insecure and can be
+bypassed by any attack against an integrity checking program I can
+think of.
+
+> systems first determine that *something* has happened before trying to
+> determine *what*.
+
+The main problem to the user is that the integrity checking programs
+report that something has -already- happened. That is: the virus
+(maybe?) has already infected your machine and is spreading. Most
+people want to be warned -before- this happens. That's why so many
+people continue to use scanners, which do not provide appropriate
+protection, I agree with you here.
+
+> The power of such a product is that when an attack occurs, it can notify the
+> user.
+
+The other main problem of the integrity checking software: it reports
+that -something- has happened. The decision whether it is a virus or
+not is generally left to the user, who is known to be unable to make
+such decisions... :-)
+
+> A scanner is then brought out to find out *what* has happened. Once
+
+Ah, but if it is a known virus, a scanner alone would have detected
+and prevented it. And if it isn't, a scanner won't help either...
+
+> Further, an execution audit trail may be examined to determine which program
+> caused the problem. Unless a specifically directed attack is made, (and there
+> are ways to guard against this as well) the above method works. 100%.
+
+Not true. A general attack is still possible (even several of them).
+See the mention of the slow viruses above.
+
+Remember: there ain't no such thing as 100% computer virus
+prevention.
+
+> Getting back to the original subject, scanners have been called "flawed" for
+> a 95+% detection rate. To me this is acceptable because there is another means
+> for achieving 100% every time. Once you know that "something" has happened,
+> all else falls out. The hard part is being able to say "This is enough".
+
+It isn't. Generally, the user is unable to decide whether the alert
+has been caused by a virus or not.
+
+Less than a year ago I also thought that an integrity checker, if
+implemented in a secure way (like Untouchable) is able to detect all
+possible viruses. Today I do not think so any more... The only thing
+it is able to do is to reduce the virus threat to a manageable and not
+very dangerous level. But even if we achieve this for all of our
+computers, it will be a great success. I fully agree with you that a
+multi-level line of defense is needed and that the accent must be made
+on the integrity management products.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 23 Jun 92 09:00:11 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Weak algorithms for checksumming (PC)
+
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+>Subject: Re: Teoretical questions
+
+>BAN@hdc.hha.dk (Homo homini lupus!) writes:
+
+>The second solution is to use a weak algorithm to compute the
+>checksums (e.g., CRC), but to implement it in a different way on the
+>different machines, so that the exact implementation is not stable and
+>the virus has no way to find out how exactly the checksum is computed.
+>In the case of CRC this means to use a different polynomial with each
+>new installation of the checksumming software. As has been shown by
+>Yisrael Radai, this is secure enough for practical applications.
+
+This is something that Ross Greenburg and I discussed on V-L about two
+years ago and bears a touch of repetition: consider a three by three
+matrix with ADD, SUB, and XOR on the top and ROL, ROR, and NOP to the
+side. This creates a fast (two instruction) mechanism for generating
+a sixteen bit checksum. By utilizing a random seed for the calculation
+on each machine this would make a "blind guess" of the algorithm difficult
+even if all nine values for particular programs are known.
+
+A significant increase in strength is added if two differing checksums are
+simultaneously created (e.g. McAfee's Validate). At this point a directed
+attack becomes easier than a blind attack (as used by nearly all viruses).
+
+While a good Scanner can easily handle such weak encryption mechanisms (as
+demonstrated by their ability to detect most mTe infections), the
+number of modules required to do this are neither trivial nor small. It
+is doubtful that a 100k virus would spread very far (I did see a 250k trojan
+written in Clipper once so could be rong).
+
+The point is that beyond a certain point, a directed attack (disable the
+anti-virus TSR in memory) becomes easier than a general (infect any file)
+one and the sheer number and diversity of anti-viral programs makes this
+difficult.
+
+A RISK is that companies/organizations are now starting to standardise on
+certain products so that a professional (?) directed attack on a specific
+group of systems all using the same product is quite feasible (why my BIOS
+anti-virus programs include means to verify their presence from the O/S
+level).
+
+Virtually all anti-virus programs today are "good enough" for the average user
+and will detect most viruses that are "in the wild": the differences are
+really minor for such primitive attacks.
+
+Some companies (but not many so far) have realized the need for self-
+validation to prevent directed attacks and hve run into the anchient
+question of  "who watches the watchers ?".
+
+This brings us back to a real problem of testing anti-viral programs and what
+needs to be tested for. We now have more viruses than we ever wanted
+(see Vesselin's disk space problem) or needed but little testing is done
+for the secondary (directed) attacks. For those programs that perform a self-
+check, how strong is it ? Does the program checksum the signature strings
+as well as the executables ? Individually or Collectively ? (Consider the
+effect of a virus that recognizes certain Scanners and "fixes" the signature
+strings so it is not found - not trivial but possible - will the Scanner
+detect the change ?) Who can tell ?
+
+And with that comforting thought...
+
+					Warmly,
+						Padgett
+
+------------------------------
+
+Date:    Mon, 22 Jun 92 21:32:31 +0000
+From:    hps@sdf.lonestar.org (Holt Sorenson)
+Subject: 1530 Virus (PC)
+
+One of my friends has conatracted what Scan thinks is the 1530 Virus.
+My VSUM is a couple months old, so I'm not sure what it does. We know
+that it is a .com infector only. I would appreciate all the info that
+you can give me.  We're zipping up a file, so if someone needs to get
+ahold of it for STUDY purposes they can send me private mail.
+
+Holt Sorenson
+
+------------------------------
+
+Date:    Mon, 22 Jun 92 19:25:14 +0000
+From:    asuvax!gtephx!fraserr@windom.UCAR.EDU (Ross Fraser)
+Subject: Vshield 91 locks up windows 3.1 (PC)
+
+I am experiencing a lockup of windows 3.1 when version 91 of McAfee
+VSHIELD is installed on my 386. VSHIELD is being installed in
+autoexec.bat with /windows option.
+
+The lockup occurs when attempting to return to windows after running
+any non-windows application from windows using the _default.pif or a
+unique .pif for the application. The monitor gets wavey lines as if it
+cannot synchronize.  A Cntl-alt-del brings up a window indicating no
+application is running, and a second cntl-del reboots the system.
+
+The lockup condition does not occur if I do not load VSHIELD during
+startup, or if I replace version 91 with version 89.
+
+My configuration is
+
+   386 SX
+   4 Meg memory
+   Norton Destop V1.0 running as windows program manager
+   win3.1 running in enhanced mode.
+
+Has anybody else seen this problem, or have any suggestions?
+
+
+- --
+   Disclaimer:   Nobody concurs with my opinions; especially my employer.
+   UUCP: ...!{ncar!noao!asuvax | att}!gtephx!fraserr (Ross Fraser @ AGCS)
+   Voice: (602) 582-7258            Fax: (602) 581-4884
+
+------------------------------
+
+Date:    Mon, 22 Jun 92 19:34:28 +0000
+From:    asuvax!gtephx!fraserr@windom.UCAR.EDU (Ross Fraser)
+Subject: Protecting windows from Viruses (PC)
+
+I have seen recommendations that SCANV *not* be run from the hard
+drive because a virus can trick the scan program, and then infect it,
+and other programs on the drive. Does this same restriction apply to
+WSCAN? The installation program by default installs WSCAN on the hard
+drive.
+
+Secondly, can a virus infect the windows .ini files? how can a user
+protect against it, since they are normally written by WINDOWS during
+normal operation?
+
+- --
+   Disclaimer:   Nobody concurs with my opinions; especially my employer.
+   UUCP: ...!{ncar!noao!asuvax | att}!gtephx!fraserr (Ross Fraser @ AGCS)
+   Voice: (602) 582-7258            Fax: (602) 581-4884
+
+
+------------------------------
+
+Date:    Tue, 23 Jun 92 08:03:34 -0600
+From:    Chris McDonald ASQNC-TWS-R-SO <cmcdonal@wsmr-emh03.army.mil>
+Subject: Further Information on Fish Boot Infector in Commercial Software (PC)
+
+An employee at my location experienced a Fish Boot infection.
+Subsequent analysis strongly suggested that the infection came from a
+commercial program called "Cactus OCR".  The software was acquired
+from a mail order firm on a trial evaluation.  The employee believes
+that the program authorship was Golden/Diamond Systems International,
+apparently a Taiwan-based firm/subsidiary.
+
+The software has been returned to the mail order firm with all the
+relevant information.
+
+------------------------------
+
+Date:    23 Jun 92 11:14:11 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Viruses, Anti-virals, & change (PC)
+
+>From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+
+>With the introduction of the mTe toolkit, the limitations of pure scanning
+>are beginning to manifest. With one jump we have gone from over 1,000 viruses
+>(I know) to over 10,000. "100%" detection is now expected. The only way (on
+>soapbox) to achieve this is through integrity management.
+
+While I agree that integrity management is a good thing, I think this
+statement is much too strong.  The appearance of the MtE did not
+suddenly give us thousands more viruses to detect, any more than the
+first self-garbling ("encrypting") virus did.  Nor did the "Virus
+Construction Set" suddenly give us billions of new viruses to detect
+(even though, since it lets the user insert a custom message into the
+viruses it generates, there are in some sense billions of different
+possible VCS-generated viruses).  It is by no means impossible to
+write a scanner that detects all possible MtE heads; depending on what
+you mean by "pure", the MtE is no more of a limitation of pure
+scanners than is any previous polymorphic virus.  So it is simply not
+the case that the only way to do 100% MtE detection is by using
+integrity management.
+
+In fact, the MtE actually did people using scanners a -favor- to some
+extent: once you've gotten an updated version of your scanner that
+detects MtE heads, any new virus writer who decides to use the MtE to
+garble a new virus will end up with a virus that your scanner
+*already* detects.  We should encourage new virus writers to use the
+MtE; it'll save the anti-virus world the trouble of updating their
+scanners again!  *8) In the long run, of course, the MtE is a bad
+thing, because it represents another tool to make the antisocial more
+efficient at their vandalism.  But it's not because it wildly
+increases the number of viruses in any real sense.
+
+In practice, I've found that integrity managment software at current
+tech levels is mostly useable only by people (like Padgett!) who know
+quite a bit about their machines.  I have yet to see a package that
+would really get along with a non-hacker user; typical users simply
+don't know whether or not "the file SYSEMM3.EXE has changed" is
+something to worry about.  I would love for this not to be true, and I
+anticipate that we will eventually have smarter systems that help the
+user decide between OK changes and suspicious ones, but I don't think
+we're there yet for the average person.  If anyone can tell a story
+about a large group of non-hacker users (e.g. a large non-computer
+business site) that's using integrity management software and liking
+it, I'd be very interested in hearing!  I imagine the rest of the list
+would as well...
+
+- - -- -
+David M. Chess                      |   * Undecidable Signature ?Virus *
+High Integrity Computing Lab        |  Copy me to your .sig iff you don't
+IBM Watson Research                 |     think I'm a signature virus
+
+------------------------------
+
+Date:    Tue, 23 Jun 92 12:54:55 -0400
+From:    Thomas DiBlasi <diblasi@mail-gw.ncsl.nist.gov>
+Subject: LPscan from Intel (PC)
+
+Hi scanners!
+
+Has anyone in the net ever heard of Intel's LPscan or even uses it??
+
+The product comes with a server protection software product that
+supposedly works well with Novell Netware.
+
+I's appreciate any response at all.
+
+Thanks,
+Tom
+
+------------------------------
+
+Date:    23 Jun 92 18:49:18 +0000
+From:    aquesada@mtecv2.mty.itesm.mx (Ing. Antonio Quesada-Duarte)
+Subject: VSHELL not passing VALIDATE test (PC)
+
+Hi there.
+I recently FTP'd vshl202.zip from 128.252.135.4 I unziped it in the
+VAX 6310 (Ultrix 3) and then FTP'it to my PC, and it didn't pass the
+VALIDATE test.  Both CRC's and the file lenght were different from
+what they were supposed to be. (File size was smaller by 3 bytes).
+The file size in the vax was the same as in the PC.  (I am shure I
+FTP'd in IMAGE mode from the VAX to the PC) Does anybody has found
+anything similar to this?
+
+Monterrey, MEXICO:
+Antonio Quesada-Duarte
+
+------------------------------
+
+Date:    Wed, 24 Jun 92 07:18:21 +0000
+From:    007 <sbonds@jarthur.Claremont.EDU>
+Subject: Re: Virus or hard disk problems ? (PC)
+
+Karel=Sprenger@disc.uva.nl writes:
+
+>reminded me of a friend who accidentally corrupted his CMOS and didn't
+>knew what the settings used to be. As this happened during the weekend
+>and his dealer wasn't open on monday, he couldn't use his PC longer
+>than he cared to. It taught him to write down the proper settings,
+>just in case bad luck strikes again. If only he could remember where
+>he put that note :-) BTW, aren't there virussen that destroy CMOS
+>settings?
+
+My roommate accidently garbled his CMOS while debugging a C program he
+was writing for one of his classes.  If such garbling can be done so
+easily, then it would be very prudent to keep <PrintScrn>'s of each
+page of the CMOS in a safe place, so all the vital info can be
+restored.
+
+  -- 007
+- --
+ 000   000  7777 | sbonds@jarthur.claremont.edu
+0   0 0   0   7  |-----------------------------------------------------------
+0   0 0   0  7   |             Just say NO to Quantum Mechanics
+ 000   000   7   |
+
+------------------------------
+
+Date:    Wed, 24 Jun 92 13:04:29 +0300
+From:    KARGRA@GBA930.ZAMG.AC.AT
+Subject: mutating - polymorphic (PC)
+
+Hi,
+
+Someone (I don't find it again) in the last 2 digests wrote about
+scanners. And if my memory serves right, he used to refer to the
+DAME-viruses as polymorphic ones. But:
+
+I always thought, that after a discussion about 30 digests ago, the
+difference between a mutating and a polymorphic virus is cleared and
+defined. So if I read correct, the DAME is an encryptor. So these
+viruses (dedicated et al.) are not necessarily polymorphic. A
+polymorphic virus should be a virus using different code, to do the
+same thing. So my conclusion: A polymorphic virus can be a mutating
+one, too, by using the DAME.
+
+This is one thing. Now a new one, where I know, that I will be flamed,
+but I'll survive:
+
+How about dropping scanstrings of old viruses, which are not likely to
+reappear again? Just like in medicine: if the is an illness which
+disappeared, why waste more serum than necessesary?
+
+Thanks, Alfred
+- -----------------------------------------------------------------------------
+Alfred Jilka             #
+Geologic Survey, Austria # Though I love them, there are NO KANGAROOS here !!
+KARGRA@GBA930.ZAMG.AC.AT #
+- -----------------------------------------------------------------------------
+
+------------------------------
+
+Date:    24 Jun 92 12:43:50 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: 1530 Virus (PC)
+
+satmech@ecst.csuchico.edu (satmech) writes:
+
+>Just recently, I found a few .COM files on my system infected with the
+>1530 Virus.  Norton AV and an old version of scan wouln't detect it,
+>only scan90 and scan91 found it.  Can someone tell me more about this
+>particular virus or where to find detailed info on it?
+
+I recognize no "1530" virus, but there is one variant of the Dark
+Avenger which is 1530 bytes long - and known as "CB 1530".  I assume
+this is the same program.
+
+F-PROT has been able to detect and remove this virus for a long time,
+but I have never bothered to analyse it in detail, as I was not aware
+it was out in the wild, so I cannot give you any information on the
+operation of the virus, sorry....
+
+- -frisk
+
+------------------------------
+
+Date:    Wed, 24 Jun 92 16:46:54 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: scan 91 et al - reported as trojan?? (PC)
+
+Hello,
+
+VIRUSCAN (et al) V90 and V91 are legitimate releases of the program
+from McAfee Associates.  I have no idea why the Melbourne PC/UG would
+think otherwise.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+/original message follows/
+tyers@rhea.trl.OZ.AU (P Tyers) writes:
+>A recent PC Update (published by the Melbourne PC User Group in Melbourne,
+>Australia) made comment that versions 90 and 91 of scan have been found as
+>trojans. Since I have distributed scan91 to a number of machines on this
+>site I would appreciate comment. The versions I distributed were sourced
+>from the mirror site archie.au and the validate results matched the message
+>on comp.virus (Message-ID: <0019.9205301711.AA42463@CS1.CC.Lehigh.EDU>
+>		Date: 28 May 92 23:21:22 GMT) from mcafee Associates.
+>All executables passed a scan by scan89b as well.
+>
+>Do I have a potential problem?
+>Has scan91 and/or the associated clean/vshield etc been identified as
+>trojans anywhere?
+>If so from what sites?
+- --
+- - - -
+McAfee Associates        | Voice (408) 988-3832 | mcafee@netcom.com  (business)
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | ObQuote: "Log... from Blammo"
+Santa Clara, California  |                      |
+95054-3107  USA          | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | USR Courier DS 14.4Kb| or GO VIRUSFORUM
+
+------------------------------
+
+Date:    23 Jun 92 20:08:01 +0000
+From:    ranck@vtvm1.cc.vt.edu (Wm. L. Ranck)
+Subject: Re: MVS Virii (IBM MVS)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>More exactly, the CHRISTMA EXEC was a chain letter, not a virus or a
+>worm. It depended on the user action to spread.
+
+I would have called it a trojan horse.  I was the proud recipient of at
+least 3 copies of that thing when it was rampant.  I had the sense to
+look at it and not run it when it first came in.
+
+>> While no data was at risk, CHRISTMA resulted in denial of service and
+>> extra time expended in its removal.
+
+>I think that a destructive variant has been detected in the USA.
+
+Well, sitting around after we had CHRISTMA pretty much beaten, I and
+some others quickly thought of many ways to 'improve' it.  This was all
+speculation.  But, it wouldn't be hard to make it destructive.
+   I was somewhat surprised that CHRISTMA never surfaced again.
+The scenario I had imagined was one where a person had gone on
+vacation or sabatical and left a GONE exec running to receive stuff
+while he was away.  The following year around Christmas he would find
+the exec on his disk and run it . . . and away we go.  As far as I know
+that didn't happen.  I wonder why?
+
+ *************************************************************************
+ * Bill Ranck    __ O          DoD #0496           RANCK@VTVM1.CC.VT.EDU *
+ *                // \                                                   *
+ *              //      Lean it like you mean it!                        *
+ *************************************************************************
+
+------------------------------
+Date:    23 Jun 92 08:15:24 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Scanning for encrypted viruses
+
+raphael@ms.uky.edu (Raphael Finkel) writes:
+
+> If a virus encrypts itself by a variable key that is a single byte, and
+> uses that byte to xor its code, then the xor of adjacent bytes of its
+> code is unaffected.
+
+Most viruses use a word XOR.
+
+> So a 'first-derivative' scan string could contain not the bytes of the
+> virus, but the xor of adjacent bytes of the virus.  This scan string
+
+True, but the scan string must be "updated" on-line by XORing it with
+the key used in the particular file. This is usually not much easier
+than to decrypt the whole virus body (usually small - 2-3 Kb).
+
+But most scanners don't bother to do that. They don't try to identify
+the virus exactly; they only try to identify that there is a virus.
+That's why they just use the decryptor routine as a scan signature.
+
+> would still be very virus-specific,
+
+This is not a problem, since the scanners are virus-specific by
+definition.
+
+> Is it viable?
+
+It's realizable, but I doubt that it's worth the effort.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Wed, 24 Jun 92 08:13:31 -0500
+From:    perry@eugene.utmb.edu (John Perry)
+Subject: New files and IP info for eugene (PC,Mac,etc.)
+
+Hello Everyone!
+
+	Two items:
+
+1) VSIG9206.ZIP is now available on eugene in the directory
+pub/virus-software/pc. This files replaces ASIG9206.ZIP and
+VSUM9205.ZIP.
+
+2) I have received numerous inquiries about the domain name change on
+eugene. Please note that the IP address has not changed. It is still
+129.109.9.21. The only change is in the name.
+
+If you have any questions, send mail to perry@eugene.utmb.edu. Thanks!
+
+- --
+
+John Perry - perry@eugene.utmb.edu
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 120]
+******************************************
+
+

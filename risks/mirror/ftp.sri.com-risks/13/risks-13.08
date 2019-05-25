@@ -1,0 +1,639 @@
+Subject: RISKS DIGEST 13.08
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 28 January 1992  Volume 13 : Issue 08
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+"Stolen Identity" (Chris Hibbert)
+Unsafe artificial neural networks (Bill Armstrong)
+Re: A320 crash (Marc Horowitz, Christopher Ritter, Joel Upchurch, 
+    Scott Traurig, Jerry Bakin)
+Re: Gulf war virus? (Paul Fellows, Ralph Moonen)
+Re: Military uses for viruses (Don Tyzuk, Flint Pellett, Gene Spafford)
+Re: A Tale of Risk Avoidance [so far ...] (Mark Thorson)
+Backup Systems and Marginal Conditions (Mike Bell)
+Risky Warranties (Jerry Hollombe)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP domain folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 13, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Mon, 27 Jan 92 17:46:14 PST
+From: hibbert@xanadu.com
+Subject: "Stolen Identity" (from San Jose Mercury News)
+
+There was an article in the San Jose Mercury News, 12 January 1992, titled
+"Stolen Identity", that should be of interest to RISKS readers.  It concerned a
+woman who had numerous driving infractions charged to her because an
+unscrupulous aquaintance was able to get away with supplying the woman's
+driver's license instead of her own.  Here's a summary:
+
+One woman (Donna) lets another, down on her luck, (Billy) live in her apartment
+for a few months till she gets back on her feet.  Billy finds out Donna's
+Drivers License number, and proceeds to give it any time she is stopped by the
+police, which happens quite a lot.  The police take Billy's word for her name,
+and Donna is unwittingly saddled with tickets from Police Departments in
+Oakland, San Mateo, Santa Clara, and San Jose as well as the CHP.  Early in the
+game, an officer may have allowed her to see the results of looking up the
+license number in the databases accessible from the squad car.  Donna has
+tickets for speeding, expired registration, open containers of alcohol, going
+through stoplights, failure to wear a seatbelt, and of course driving without a
+license.
+
+Donna has given up on fixing the problem, and has cancelled her license.  Her
+last hope is that some cop will arrest Billy for the more serious charge of
+driving with a suspended license.
+                                                  Chris
+
+------------------------------
+
+Date: 	Mon, 27 Jan 1992 18:43:45 -0700
+From: arms@cs.ualberta.ca (Bill Armstrong)
+Subject: Unsafe artificial neural networks
+
+Here is an example of a backpropagation neural network that has very
+wild behavior at some points not in the training or test sets.  It has
+just one input unit ( for variable x), two hidden units with a
+sigmoidal squashing function, and one output unit.
+
+This kind of subnetwork, a "neural net virus" if you like, may exist in many of
+the networks that have been trained to date.  It could be built into any large
+BP network, and might hardly change the latter's output behavior at all --
+except in one small region of the input space, where a totally unexpected
+output could occur that might lead to disaster.
+
+I hope this note will be taken as a warning by all persons whose ANS are used
+in safety critical applications in medicine, engineering, the military etc.  It
+is also an encouragement to design safety into their neural networks.
+
+In order to avoid details of the backpropagation algorithm, we shall just use
+the property that once a BP net has reached an absolute minimum of error on the
+training and test sets, its parameters are not changed.  So our net will have
+zero error by design and the BP algorithm, applied with infinite precision
+arithmetic, would not change its weights.  The issue of getting stuck at a
+local minimum of error does not apply in this case, since it is an absolute
+minimum.
+
+All the weights in the system remain bounded, and in this case, the
+bound on their absolute values is 40.  The output unit's function is
+40 * H1 + 40 * H2 - 40, where Hi is the output of the i-th hidden unit
+(i = 1, 2).  The output unit has no sigmoid, though one could be
+inserted with no loss of generality.  The two hidden units have
+outputs of the form 1/(1 + e ^ (w0 + w1*x)) with w0 = -10 and w0 = 30,
+while w1 = + 40 and -40, respectively.
+
+We assume the net has been trained on a subset of integers and also tested on a
+subset of integers.  This could be replaced by a finer grid, and safety assured
+(for bounded weights).  However, in a d-dimensional input space with a
+quantization to L levels of each variable, one would need L ^ d training and
+test points, which can easily be an astronomically large number (e.g. 1000^10).
+Hence it is not generally feasible to assure safety by testing.
+
+Below is the overall function f(x) produced by the net, which is also the
+specification of what it is *supposed* to do outside the interval (0,1).  In
+(0,1) the specification is to be less than 0.002 in absolute value.
+
+f(x) = 40 [ 1/( 1 + e^40*(x - 1/4))  +   1/( 1 + e^-40*(x - 3/4))  -1 ]
+
+The largest deviation of our trained network f(x) from 0 on all integers is
+
+f(0) = f(1) = 0.0018...
+
+So f is within 2/1000 of being 0 everywhere on our training and test sets.  Can
+we be satisfied with it?  No! If we happen to give an input of x = 1/2, we get
+
+f(1/2) = - 39.99...
+
+The magnitude of this is over 22000 times larger than anything
+appearing during training and testing, and is way out of spec.
+
+Such unexpected values are likely to be very rare if a lot of testing has been
+done on a trained net, but even then, the potential for disaster can still be
+lurking in the system.  Unless neural nets are *designed* to be safe, there may
+be a serious risk involved in using them.
+
+The objective of this note is *not* to say "neural nets are bad for safety
+critical applications".  On the contrary, I personally believe they can be made
+as safe as any digital circuit, and a lot safer than programs.  This might make
+ANS the method of choice for safety-critical electronic applications, for
+example in aircraft control systems.
+
+But to achieve that goal, a design methodology must be used which is
+*guaranteed* to lead to a safe network.  Such a methodology can be based on
+decomposition of the input space into parts where the function synthesized is
+forced to be monotonic in each variable.  For adaptive logic networks, this is
+easy to achieve.  The random walk technique for encoding real values used in
+the atree release 2.0 software available by ftp is not appropriate for
+enforcing monotonicity.  Instead, thresholds should be used, which are
+monotonic functions R -> {0,1}.  By forcing monotonicity, one can assure that
+no wild values can occur, since all values will be bounded by the values at
+points examined during testing.
+
+For BP networks, I am not sure a safe design methodology can be developed.
+This is not because of the BP algorithm, per se, but rather because of the
+architecture of multilayer networks with sigmoids: *all* weights are used in
+computing *every* output (the effect of zero weights having been eliminated).
+Every output is calculated using some negative and some positive weights,
+giving very little hope of control over the values beyond the set of points
+tested.
+
+Prof. William W. Armstrong, Computing Science Dept., University of Alberta;
+Edmonton, Alberta, Canada T6G 2H1    Tel(403)492 2374 FAX 492 1071
+
+------------------------------
+
+Date: Sun, 26 Jan 92 23:00:17 EST
+From: Marc Horowitz <marc@Athena.MIT.EDU>
+Subject: Re: News about A320 crash (Colbach, RISKS-13.07)
+
+>> Lufthansa (German Airlines) admits that AIRBUS has advised all the
+>> companies using the A320 to avoid THIS landing manoeuvre...
+
+Given the description of the local geography, it sounds like this either means
+you use this landing maneuver (guess which side of the pond I'm from :-), or
+you don't land A320's at Strasbourg.  Is this a RISK of bugs in flight software
+affecting seemingly unrelated things, such as airline equipment schedules?
+
+		Marc
+
+------------------------------
+
+Date: Sun, 26 Jan 92 23:33:58 -0800
+From: critter@garnet.berkeley.edu (Christopher Ritter)
+Subject: Re: A320 crash 
+
+The localization of "pilot error" in "the hiatus between the pilot and the
+computer" is a more solidly persuasive notion than the slick equivocation
+of the phrase might suggest.
+
+As I understand it, control of the A320 is mediated by flight control computers
+differently in one dimension (the vertical) than in the other two.  Why is this
+the case?  Is particularly different status given to altitude, in terms of
+attentional demands on pilots, compared to the aircraft's motion in the other
+two dimensions?  Or, must A320 pilots attend to and control altitude in a
+manner different from what is for them either customary or sensible?
+
+Re the overall FBW design, if pilots circumvent, push the limits of, tweak or
+otherwise attempt to assert as much direct control over the aircraft as
+possible, working against the "hard," "soft" or whatever degree of automated
+mediation imposed by the computers, the problem is one caused not by pilot or
+aircraft as such, but by the designers.
+
+Germane to this, in cognitive psychologist Don Norman's (1988) The Design of
+Everyday Things (aka The Psychology of Everyday Things), he writes:
+
+	Aircraft designers started using meters that looked like clockfaces
+	to represent altitude.  As airplanes were able to fly higher and
+	higher, the meters needed more hands.  Guess what?  Pilots made
+	errors- serious errors.  Multihanded analog altimeters have been
+	largely abandoned in favor of digital ones because of the prevalence
+	of reading errors.  Even so, many contemporary altimeters maintain
+	a mixed mode; information about rate and direction of altitude change
+	is determined from a single analog hand, while precise judgments of
+	height come from the digital display.
+
+Some relevant questions about the A320 flight deck should be obvious.  Norman
+continues:
+
+	Automation has its virtues, but automation is dangerous when it
+	takes too much control from the user.  "Overautomation"- too
+	great a degree of automation- has become a technical term in the
+	study of automated aircraft and factories.  One problem is that
+	overreliance on automated equipment can eliminate a person's 
+	ability to function without it, a prescription for disaster if,
+	for example, one of the highly automated mechanisms of an
+	aircraft suddenly fails.  A second problem is that a system may
+	not always do things exactly the way we would like, but we are
+	forced to accept what happens because it is too difficult (or
+	impossible) to change the operation.  A third problem is that
+	the person becomes a servant of the system, no longer able to
+	control or influence what is happening....
+
+	All systems have several layers of control.... Sometimes we
+	really want to maintain control at a lower level...  At other
+	times we want to concentrate on higher level things....
+
+So the question is, what is the level of control that is appropriately accorded
+aircraft pilots, based upon how humans think, on how pilots actually behave?  
+
+Relevant references from Norman's biliography list might also be: 
+
+Hurst, R. & Hurst, L.R. (Eds.) (1982).  Pilot Error: The human factors.
+	London:  Granada.
+
+Weiner, E.L. (1980).  Mid-air collisions:  The accidents, the systems and the
+	realpolitik.  Human Factors, 22, 521 - 533.  Reprinted in Hurst &
+	Hurst.
+
+Weiner, E.L. (1986)  Fallible humans and vulnerable systems:  Lessons learned
+	from aviation.  (To be published in Informations Systems:  Failure
+	analysis.  Proceedings of a NATO Advanced Research Workshop on
+	Failure Analysis of Information Systems.)
+
+Weiner, E.L., & Curry, R.E. (1980).  Flight-deck automation:  Promises and
+	problems.  Ergonomics, 23, 995 - 1011.  Reprinted in Hurst & Hurst.
+
+Christopher Ritter, Education in Math, Science and Technology Program
+School of Education, University of California at Berkeley, Berkeley, CA  94530
+
+------------------------------
+
+Date: Mon, 27 Jan 1992 07:56:05 GMT
+From: joel@peora.sdc.ccur.com (Joel Upchurch)
+Subject: Speculation on latest A-320 crash: why?
+
+I have a much simpler theory for why the A-320 has had so many crashes so far.
+My experience is that the fewer number of events that have to occur to cause a
+particular error the more likely that error is to occur. It seems to me that if
+the pilot makes an error that isn't immediately fatal, then most of the time
+the co-pilot is going to catch the mistake before it is fatal. Let us say that
+the co-pilot catches 90% of the pilot's mistakes. So one time out of ten the
+co-pilot misses the pilot's mistake and the plane crashs. Let us assume that in
+a plane with a three man crew that the flight engineer also will catch the
+pilot's mistake 90% percent of the time.  It seems to me that the chance that
+both of them would miss the error would only be 1%, that is the rest of the
+flight crew would catch the pilot's error 99 times out of 100.  Now I know this
+is a gross oversimplification and the actual ratios are wrong, but
+qualitatively the idea feels right.  There is just one less pair of eyes and
+ears in the cockpit to notice that something is wrong.
+
+One thing that might support this is to study the relative accident rates of
+large airlines that would generally have three crew members, commuter airlines
+that would probably have two and air taxis and general aviation, that would
+probably only have one pilot. The difference might not entirely be due to the
+difference in the experience of the pilots. It might be informative to compare
+the A-320 accident rates to other planes that have a two man crew, rather than
+comparing it to planes of similar size that use a three man crew.
+
+Also has anyone ever broken aircraft accident rates down to the rate per
+landing and takeoff? It seems to me that might be more informative than
+aircraft-hours or aircraft-miles.
+
+Joel Upchurch/Upchurch Computer Consulting/718 Galsworthy/Orlando, FL 32809
+joel@peora.ccur.com {uiucuxc,hoptoad,petsd,ucf-cs}!peora!joel (407) 859-0982
+
+------------------------------
+
+Date: Mon, 27 Jan 92 08:42:21 EST
+From: Scott Traurig <traurig@ncavax.decnet.lockheed.com>
+Subject: Situational Awareness and the A320 (Dorsett, RISKS-13.07)
+
+        I am a great admirer of the A320, and, while I am not a pilot, I enjoy 
+a similar level of automation when navigating the 35' sailboat I race on every 
+summer.  The equipment I use works extremely well, but if you punch in the 
+wrong numbers it will take you to the wrong place just as fast as it would to 
+the correct one.  Although double and triple checking your work and monitoring 
+the progress of your vessel should always be done, the technology for "getting 
+you there" has greatly outstripped the technology for "telling you where you 
+are, and where you are going", i.e., situational awareness.
+
+        Although you can easily read latitude, longitude, altitude and airspeed
+from your instruments, the method for relating this to possible hazards to
+navigation is still primarily a manual one.  Now that pilots are becoming
+"system managers", they need to have the tools to monitor the system as a
+whole, not just the hydraulic and mechanical subsystems.  Simple ways to
+improve upon this might include a vertical profile display on one of the
+cockpit CRTs that plots both the programmed flight path of the aircraft and the
+altitude of the ground from zero to five minutes into the future, and a moving
+map display that also shows the predicted flight path.  I know that on the boat
+I race on I would dearly love to have the Trimble moving map display that does
+this, it would significantly reduce my workload.
+
+Scott (traurig@ncavax.decnet.lockheed.com)        
+
+------------------------------
+
+Date: Sun, 26 Jan 1992 21:09 PST
+From: Jerry Bakin <JERRY@INNOSOFT.COM>
+Subject: Re: the Airbus crash
+
+Regarding the Airbus crash.  It has been noted that altitude is the one
+parameter the pilots cannot program in.
+
+Altitude maybe the most important parameter.  Perhaps it is better that the
+pilot-programmers program in altitude and let the computer derive the rest of
+the information.  The question may be which piece of data is crucial to the
+problem and which is an artifact of antique technologies and obsolete methods.
+
+If I were specifying a fly-by-computer system, I would certainly require a
+database of all relevant altitudes (elevation at 100 foot intervals, airports,
+minimum operating altitudes, etc).
+
+Certainly with today's INS and GPS Systems, there is no more reason for a
+computer controlled plane to fly into the ground then for a cruise missile to
+overfly its target.  Say how much software does the Airbus and the Exocet
+share?
+
+Jerry Bakin.  Jerry@Innosoft.COM
+
+------------------------------  
+
+Date: Fri, 24 Jan 92 03:26:11 GMT
+From: states@artemis.nlm.nih.gov (David States)
+Subject: DNA Dogtags - followup
+
+Some followup on the earlier posting I made regarding the U.S. Army's proposal
+to use "DNA dog tags" to build a database of soldiers genotype's as a universal
+identification resource.
+
+The New York Times (Jan. 12, pp. 15 "Genetic Records to Be Kept on Members of
+Military") reports that the Army will go forward with the idea incorporating a
+number of protections for the genetic privacy of soldiers.  First, they will
+only collect DNA samples (blood spots), but they will not genotype them unless
+there is an actual need.  Second, these samples will be destroyed when the
+individual leaves the military.  Finally, and perhaps most importantly, these
+samples will be treated as "medical specimen with confidentiality and respect,"
+so they would not be available for testing for other purposes unless subpoenaed
+by court order.
+
+The net effect of these protections is about as much as could be hoped for.
+The military will be able to use a valuable new technology in identifying the
+remains of soldiers, and they will be able to do this without creating a
+massive electronic database of genotype data.
+
+Meanwhile, the British journal Nature reports an anecdote which illustrates
+some of the pitfalls and prejudices of dealing with genetic data, "Challenge to
+British forensic database" Nature, vol. 355, p.191.  Since you can't change
+your genes, the data in a genotype database will never go out of date, right?
+Well it appears that is what the Metropolitan Police believed.  Scotland Yard
+has been building a database of genotypes from all the DNA samples they have
+analyzed in the course of various criminal investigations.  The problem is that
+when a man cleared of all charges on the basis of a DNA analysis asked to have
+his profile removed from the database, they found it necessary to "call in a
+computer specialist." It seems that in designing the database, no one had
+considered the possibility that you might want to delete an entry.
+
+David States, National Library of Medicine
+
+------------------------------
+
+Date: Mon, 27 Jan 92 16:27:26 GMT
+From: paulf@mcanix.inmos.co.uk (Paul Fellows)
+Subject: Re: Gulf war virus? (RISKS-13.05)
+
+If the printer was a SCSI Printer, it could do the following :-
+
+1) Change from Target mode to Initiator mode.
+
+   Most SCSI controllers support both initiator and target modes.
+
+2) Interrogate each device on the bus to find the boot disk.
+
+   It may choose not to select ID 7 as this is probably the host ID.
+
+3) Write the virus directly to the boot disk (or indeed any other disk).
+
+Some SCSI devices can even have their firmware downloaded across the SCSI
+Bus. A rogue program could download a virus that infects the disk as
+described above. Therefore the O/S ought to prevent direct low level
+access by user software to any SCSI device!
+
+The company I work for does not make printers.
+
+Paul Fellows, Inmos Limited, 1000 Aztec West, Almondsbury, Bristol, BS12 4SQ,
+   UK.     uunet!inmos.com!paulf EMail(UK)     ukc!inmos!paulf
+
+------------------------------
+
+Date: Mon, 27 Jan 92 08:40 MET
+From: rmoonen@hvlpa.att.com
+Subject: Enough of printers... (RISKS 13.0[67])
+
+So, could we please stop the discussion right here? I mean, we got two sides:
+
+"Well, assuming 1,2,3 and 4 it might very well be possible for a printer to
+ spread a virus throuh a network"
+
+"Nah, never. Printers are used to print stuff. The programs in printers would
+ never be able to do such a thing"
+
+Regardless of who is right, maybe the discussion should focus on a way to make
+sure that 1 2 3 and 4 do not occur anytime. To me it seems very unlikely that
+such a thing occured in the Gulf war. But maybe, just maybe, someone got the
+idea, and has just now finished his first compile.....
+
+So the real RISKS in my opinion is not "has it happened" but "what will be the
+consequences when it does happen". 
+
+I'm already giving my printer strange looks every time my job doesn't come
+out as I want it to be :-)
+
+--Ralph Moonen, rmoonen@hvlpa.att.com
+
+------------------------------
+
+Date: Sun, 26 Jan 1992 12:44:25 GMT
+From: 841613t@aucs.acadiau.ca (Don Tyzuk)
+Subject: Military uses for viruses
+
+About the military uses for viruses:
+
+To ensure defeat of the enemy, a military commander will use every weapon at
+his disposal, to exploit all weaknesses. The computer systems that are
+necessary to operate an air defence network are obviously a weak link.
+
+If the lives of Allied aircrew can be saved by a computer virus, then that
+option would appear very attractive to the Commander in Chief.
+
+Anyone reading this can believe that maximum effort was made to to exploit all
+weaknesses.
+                                                  Donald Tyzuk, P.O. Box 1406, 
+Wolfville, Nova Scotia, CANADA	B0P 1X0                       +1 902 542 7215
+
+------------------------------
+
+Date: 27 Jan 92 22:18:54 GMT
+From: flint@gistdev.gist.com (Flint Pellett)
+Subject: Re: "Desert Storm" viral myths
+
+If the NSA got ahold of a piece of hardware that was going to be used in an
+Iraqi computer network that was supposedly secure, I would expect that there
+are lots of things they could do with it that would be far more helpful to us
+or damaging to them than messing around with a virus, and a lot easier to do
+besides.  For example, a printer connected to a network could be set up to
+broadcast everything coming across the network in some fashion, or for that
+matter it might glean info merely by broadcasting any talking it picked up near
+the printer.
+
+Flint Pellett, Global Information Systems Technology, Inc., 100 Trade Centre
+Drive, Suite 301, Champaign, IL 61820 (217) 352-1165  uunet!gistdev!flint
+
+------------------------------
+
+Date: 28 Jan 92 18:10:37 GMT
+From: spaf@cs.purdue.edu (Gene Spafford)
+Subject: Re: Viruses & printers
+
+Well, as so many other people are indulging in speculation, I might as well
+join in. :-)
+
+First, we should consider some things about the likely target of such an
+attack, if it happened.  First, it is unlikely that the system involved was a
+general-purpose system with programs out on disk that could be run, one at a
+time.  It is also doubtful there was any such thing as a peer printer on a
+network link.
+
+Why do I say that?  Because the alleged system was for air defense.  This means
+it was a system with a strong real-time component.  In general, systems such as
+this are built on older, more stable hardware and involve an embedded system --
+not a disk full of utility programs like your favorite Unix or VMS time-share
+environment.
+
+The idea of a virus in such a system is ludicrous.  Viruses don't work in
+embedded systems.  That, coupled with the general press's inability to tell a
+virus from a spreadsheet, leads me to believe it certainly wasn't a virus, if
+it was anything.
+
+However, if we care to speculate a bit further, consider the possibiity of a
+small Trojan horse being built into the air defense software by the original
+contractor.  Now imagine that a printer is brought in to the system that has a
+small radio receiver involved, so that when a certain coded signal is received,
+the printer uses a timing channel to signal the trojan in the printer driver
+that it is time to disrupt operations.  This is particularly easy in an
+embedded, real-time system.  Suddenly add a 5-second delay loop, for instance.
+
+This is certainly within the realm of possibility.  Furthermore, it would be
+harder to detect under test (timing channels are notoriously difficult to find,
+but are well-suited for certain real-time systems) without actual source code,
+and it would not have the same hit-or-miss qualities of a virus. (Even source
+code might not help, if we keep Thompson's little cc/login escapade in mind.)
+
+April Fool's joke or not, don't believe the press when they say "virus" -- but
+don't automatically believe they don't have a story underneath the mistakes,
+either!
+
+Gene Spafford, NSF/Purdue/U of Florida Software Engineering Research Center,
+Dept. of Computer Sciences, Purdue University, W. Lafayette IN 47907-1398
+
+------------------------------
+
+Date: Fri, 24 Jan 92 00:38:30 PST
+From: mmm@cup.portal.com
+Subject: Re: A Tale of Risk Avoidance [so far ...]
+
+"Kai-Mikael J\d\d-Aro" <kai@nada.kth.se> says in RISKS DIGEST 13.05:
+
+> Perhaps the moral can be stated as: When Formal Methods Are Fun And Simplify
+> Your Work, Then You Will Also Want To Use Them.
+
+This might not be an unmitigated success, from the RISKS point-of-view.  For
+example, when the transition occurred from assembly language to compiled
+languages, people found they could solve their old problems more easily.  They
+could say a + b = c without even knowing the address of a, b, and c.
+
+The problem is that compiler technology (known in the old days as "automatic
+programming") gave the individual programmer more reach.  It allowed him to
+attack problems beyond his mental grasp in the pre-compiler era.
+
+Tools will always be pushed to their limit, because the limit is actually in
+the programmer and it is the fundamental nature of programmers -- like athletes
+-- to go as far as they are capable, and try to go a bit farther.  The tool
+simply provides an amplification, like giving a pole-vaulter a longer pole.
+The RISK is that the new tool allows the programmer to do more damage than
+before.
+
+Will Kai-Mikael J\d\d-Aro find himself next year creating state diagrams with
+the complexity of a street map of Stockholm with 100 pucks circulating around
+it?  This might open a whole new range of computer applications (like, say, an
+automatic vehicle control system for the streets of Stockholm), but there is no
+particular reason to believe these systems will be more reliable than the
+smaller systems built before the tool was developed.  The RISK is that these
+larger and more complex applications will cause more damage when they fail.
+
+Mark Thorson (mmm@cup.portal.com)
+
+------------------------------
+
+Date: 	Thu, 23 Jan 92 09:34:51 EST
+From: mb@sparrms.ists.ca (Mike Bell)
+Subject: Backup Systems and Marginal Conditions
+
+A snowstorm here in Toronto last week caused a "brownout" that revealed an
+interesting failing in our emergency lighting system.
+
+The emergency lighting is supplied by boxes containing batteries with a pair of
+spotlights mounted on top. These are plugged into sockets around the building.
+The idea is that if the mains supply fails, the lights will turn on.
+
+When the mains supply voltage dropped, most of the fluorescent lighting failed.
+However, the drop was insufficient to trigger the emergency lighting, which
+remained (mostly) off. Fortunately the units could be unplugged to trigger the
+lighting.
+
+Also of note was a PC, which failed to detect the power problems and continued
+operation when the rest of the computers shut down. I'm not sure if this was an
+advantage (doesn't lose your work in the event of a brownout) or a disadvantage
+(doesn't react to power problems which may damage the computer).
+
+------------------------------
+
+Date: Fri, 24 Jan 92 14:47:38 PST
+From: hollombe@soldev.tti.com (The Polymath)
+Subject: Risky Warranties
+
+Here's a risk from the software industry that seems to have bled into other
+areas with the help of no less than our own Federal Government.
+
+We've all heard, joked and complained about -- and suffered with -- software
+warranties that do far more to protect the vendor than the buyer.  Loosely,
+they can be summed up as saying 'We warranty that there are recoverable bits on
+this disk.  Beyond that, you're on your own.'
+
+I recently made some substantial (~$1300) purchases of a couple of non-computer
+products.  Imagine my feelings at finding the following familiar seeming words
+on the backs of the associated user's manuals (manufacturers and products have
+been concealed to protect the guilty):
+
+			   WHY NO WARRANTY CARD HAS BEEN
+		   PACKED WITH THIS NEW <manufacturer> <product>
+
+     The Magnuson-Moss Act (Public Law 93-637) does not require any seller
+     or manufacturer of a consumer product to give a written warranty.  It
+     does provide that if a written warranty is given, it must be
+     designated as "limited" or as "full" and sets minimum standards for a
+     "full" warranty.
+
+     <manufacturer> has elected not to provide any written warranty either
+     "limited" or "full", rather than to attempt to comply with the
+     provisions of the Magnuson-Moss Act and the regulations issued
+     thereunder.
+
+     There are certain implied warranties under state law with respect to
+     sales of consumer goods.  As the extent and interpretation of these
+     implied warranties varies from state to state, you should refer to
+     your state statutes.
+
+     <manufacturer> wishes to assure its customers of its continued
+     interest in providing service to owners of <manufacturer's product>.
+
+Sound familiar?  At least I don't have to worry about voiding the
+warranty, since there isn't one.  I fear this may indicate a trend ...
+
+     "Why this new <computer/aircraft/heart monitor/etc.> comes with no
+     warranty ..."
+
+It worked for the software industry.
+
+Jerry Hollombe, M.A., CDP, Citicorp, 3100 Ocean Park Blvd., Santa Monica, CA
+90405  {rutgers|pyramid|philabs|psivax}!ttidca!hollombe  310-450-9111, x2483
+
+------------------------------
+
+End of RISKS-FORUM Digest 13.08
+************************

@@ -1,0 +1,440 @@
+RISKS-LIST: RISKS-FORUM Digest  Monday 18 December 1989   Volume 9 : Issue 55
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risks of Mail (the "yellow peril"?) (Joe Dellinger)
+  PR RISKs of computer communications -- Prodigy (Mark Jackson)
+  Re: private eyes probing suitors -- Amazon Women on the Moon (Dwight McKay)
+  Faults in 29000 RISC chip (Jon Jacky)
+  The Trojan horse named "AIDS" (contributed by many who are not neigh-sayers)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date:  Thu, 14 Dec 89 03:01:06 PST
+From: joe@hanauma.stanford.edu (Joe Dellinger)
+Subject: Risks of Mail (the "yellow peril"?)
+
+	Several computers in the Earth Science department at Stanford were
+brought to their knees Dec 13 by an interesting combination of bugs.  I can
+only assume similar numbers of machines around campus in other departments also
+succumbed. I don't really know, because our network is dead as a result of it!
+
+	For some reason, the Stanford Chinese Student association mailing list
+started bouncing mail infinitely between two Stanford machines, "Macbeth" and
+"Portia". At each iteration the 30K of mail was rebroadcast anew to everyone on
+the list, including at least one Chinese student on each machine in our
+department. This was the first bug. I don't know why it happened. (Anyone know
+that story?) This bug alone would have been bad, but not catastrophic...
+
+	The problem was that after each successive bounce the return address
+got longer and longer, until monstrosities like the following became
+commonplace:
+
+<@Macbeth.Stanford.EDU,@Portia.stanford.edu,@Macbeth.Stanford.EDU,@Portia.stanfo
+rd.edu,@Macbeth.Stanford.EDU:xu@spanky.Stanford.EDU>
+
+	Once the reply addresses got up to about the length shown in this
+example, they started to overflow a fixed-length buffer in all Berkeley-derived
+mails (NO checking for overflow, OF COURSE). This caused the affected mail
+processes to go crazy. First of all they sent an error message back to the
+sending machine (causing it to send the viral mail _again_ 30 minutes later).
+Worse, the mangled mail processes continue to run forever until somebody kills
+them. (And it takes kill -9 as superuser to do it.) One such mail process on a
+lightly-used Earth Science machine accumulated _9500_ minutes of CPU before
+anyone figured out why the machine had been so slow for the preceding week!
+
+	Our first reaction was to scream at the people who run the list, and
+they said they fixed the problem, but their fix only resulted in a greater
+variety of mail loops being generated; various interesting orbits about portia,
+polya, hamlet, macbeth, ...
+
+	Needless to say as the traffic built up the CPUs and then finally the
+network itself in the Earth Science department ground to a halt. It became
+impossible to even log in to many machines to kill the offending mail
+processes. Killing the processes wasn't very effective, either, since that
+would not stop Macbeth from immediately starting the whole mess up again. We
+finally pulled the plug on sendmail.
+
+	Fortunately this evening Stanford had a power glitch that seems to have
+crashed most of the offending machines, so the network is OK again now. :-)
+
+------------------------------
+
+Date: 14 Dec 89 07:33:07 EST (Thursday)
+From: MJackson.Wbst@Xerox.COM
+Subject: PR RISKs of computer communications
+
+The following is extracted from a brief item, "Prodigy service creates
+controversy," on the business page in Wednesday's /Democrat and Chronicle/
+(Rochester, NY).  It appears that when you're "where America shops,"
+discussions about who America might be make you nervous. . .  Mark
+
+> There are better ways to get publicity, but a fight between homosexuals and
+> Christian fundamentalists nevertheless has called attention to the rapid 
+> growth of a home computer service owned by IBM and Sears.
+
+> The Prodigy service has expanded to a quarter-million subscribers in 
+> 160,000 homes from 30,000 homes a year ago.  It serves 21 of the nation's
+> largest markets, up from six a year ago.
+
+[business stuff deleted]
+
+> Prodigy's adverse publicity came this week after it cancelled a chat 
+> service named Health Spa, a "bulletin board" that allowed subscribers to 
+> post notices or communicate on health-related issues.
+
+> Prodigy said Health Spa was canceled because of low usage, but some 
+> subscribers said it was because one section of Health Spa turned into a 
+> forum for a heated debate on homosexuality between gays and fundamentalist 
+> Christians.
+
+> Dozens of subscribers have been demanding the return of Health Spa - an 
+> unintentional testament to the popularity of Prodigy's service.
+
+------------------------------
+
+Date: Thu, 14 Dec 89 15:45:11 EST
+From: mckay@harbor.ecn.purdue.edu
+Subject: Re: private eyes probing suitors -- Amazon Women on the Moon
+
+There's an amusing but scary skit in the movie, "Amazon Women on the Moon"
+regarding a women who checks out her boyfriend.
+
+On a blind date, he arrives at her place.  She asks for his driver's license
+and a valid credit card.  She walks over to her desk and runs the credit card
+through a magnetic strip reader (like at a store) and gets a printout of all
+the other dates he's had and how they turned out...
+
+Dwight D. McKay, Engineering Computer Network Workstation Software Support,
+Purdue University,
+
+------------------------------
+
+Date:    Thu, 14 Dec 1989 13:51:45 PST
+From: JON@GAFFER.RAD.WASHINGTON.EDU (Jon Jacky)
+Subject: Faults in 29000 RISC chip
+
+Here are excerpts from an article in the trade publication ESD: THE ELECTRONIC
+SYSTEM DESIGN MAGAZINE, Nov. 1989, p. 22:
+
+"Stepping on 29000 Bugs," by Michael Slater
+
+The current stepping of Advanced Micro Devices 32-bit RISC processor, the 29000
+revision D, still has three acknowledged bugs.  However, the bugs are all
+relatively minor.  They consist of an instruction burst mode problem, an
+exception handling priority error, and a data-access exception problem.
+
+Since hardware workarounds have been required for the instruction burst mode
+problem since the first silicon, existing designs either already incorporate
+the fixes or don't produce the offending set of conditions.  Modifications to
+the exception handlers can correct the other two bugs.  These same bugs were
+also present in revision CA. The most serious bug from revision C, the failure
+of the branch target cache to work reliably, has been fixed.
+
+(Here follow many column-inches describing the problems and workarounds in
+more detail.)
+
+AMD has distributed samples of the new revision, and current orders are
+expected to be filled with this revision.
+
+- Jon Jacky, University of Washington
+
+------------------------------
+
+Date: Sat, 16 Dec 89 02:14:52 PST
+From: eickmeye@girtab.usc.edu (Evan "Biff Henderson" Eickmeyer)
+Subject: The Trojan horse named "AIDS"
+
+The following article is from the Los Angeles Times, 15 December 1989, p.D3.
+
+AIDS Data Disk Has PC-Damaging Virus, by Michael Specter, The Washington Post
+
+     A mysterious computer diskette about AIDS that was mailed to major
+corporations, insurance companies and health professionals across the world
+contains a hidden program that has destroyed information in thousands of
+personal and corporate computers, police in London said Thursday.
+
+     Officials of Scotland Yard said at least 10,000 copies of an unusual "AIDS
+Information Diskette," which promised to help users deduce their risk of
+becoming infected with the AIDS virus, were sent to people in England,
+Scandinavia, Africa and the United States.
+
+     Hospital systems from London to Stockholm reported damage Thursday and
+AIDS researchers at major institutions in the United States, from the National
+Institutes of Health to the University of California at San Francisco, issued
+alerts to all their computer users.
+
+     "Extremely urgent message for all National Institute of Allergy and
+Infectious Disease PC Users," said a flyer sent Thursday to AIDS researchers at
+NIH.  "A diskette from PC Cyborg Corp. contains a highly destructive virus.
+All systems running these programs had ALL hard disk data DESTROYED."  Neither
+that corporation nor Ketema Associates, its parent company, has any known
+officers or location, according to people who tried Thursday to find them.
+
+     In Sweden, the State Bacteriological Laboratory sent letters to clinics
+and doctors warning them of the diskette.  Chase Manhattan Bank was one of the
+first companies to report problems with the diskette, which also was sent to
+the London Stock Exchange, British Telecommunications, Lloyds Bank, the Midland
+Bank, other major banks and manufacturing companies.
+
+     "We have never seen anything approaching the magnitude of this attack,"
+sand John McAfee, chairman of the Computer Virus Industry Assn., though he
+noted no damage had yet been reported in the United States.  "It took enormous
+preparation, coordination and a huge amount of money."
+
+     People familiar with computer "viruses" and other computer "diseases" were
+baffled by the maliciousness of the crime, the amount of money and
+sophistication it required and its lack of any immediately discernible motive.
+
+     Computer programs written as pranks or tools of minor sabotage have become
+ubiquitous over the past few years.  But this one was different, according to
+experts across the country.
+
+     The diskette came in a slick package mailed from offices on London's tony
+New Bond Street.  The bright blue cover sheet said the package contained AIDS
+information, and informed recipients that the information was easy to use and
+would help them calculate the risks of exposure to the disease.
+
+        [This topic seems to be the all-time RISKS record-holder in terms of
+        number of submissions.  Most of them were verbatim copies of John
+        McAfee's messages, although John himself did not submit them to RISKS.
+        I was tied up and could not be one of the early harbingers, so at this
+        point I assume almost everyone has heard the story.  But just for the
+        record is a summary of it.  Those who have been following the story can
+        skip the rest of this issue.  PGN]
+
+------------------------------
+
+Date:         Tue, 12 Dec 89 11:26:29 PST
+Sender:       Virus Alert List <VALERT-L@LEHIIBM1>
+From:         portal!cup.portal.com!Alan_J_Roberts@SUN.COM
+Comments: To: VALERT-L@ibm1.cc.lehigh.edu
+Subject:      Major Trojan Warning
+
+This is an urgent forward from John McAfee:
+
+     A distribution diskette from a corporation calling itself PC Cyborg has
+been widely distributed to major corporations and PC user groups around the
+world and the diskette contains a highly destructive trojan.  The Chase
+Manhattan Bank and ICL Computers were the first to report problems with the
+software.  All systems that ran the enclosed programs had all data on the hard
+disks destroyed.  Hundreds of systems were affected.  Other reports have come
+in from user groups, small businesses and individuals with similar problems.
+The professionally prepared documentation that comes with the diskette purports
+that the software provides a data base of AIDS information.  The flyer heading
+reads - "AIDS Information - An Introductory Diskette".  The license agreement
+on the back of the same flyer reads:
+
+"In case of breach of license, PC Cyborg Corporation reserves the right to use
+program mechanisms to ensure termination of the use of these programs.  These
+program mechanisms will adversely affect other program applications on
+microcomputers.  You are hereby advised of the most serious consequences of
+your failure to abide by the terms of this license agreement."
+
+Further in the license is the sentence: "Warning: Do not use these programs
+unless you are prepared to pay for them".
+
+If the software is installed using the included INSTALL program, the first
+thing that the program does is print out an invoice for the software.  Then,
+whenever the system is re-booted, or powered down and then re-booted from the
+hard disk, the system self destructs.
+
+Whoever has perpetrated this monstrosity has gone to a great deal of time, and
+more expense, and they have clearly perpetrated the largest single targeting of
+destructive code yet reported.  The mailings are professionally done, and the
+style of the mailing labels indicate the lists were purchased from professional
+mailing organizations.  The estimated costs for printing, diskette, label and
+mailing is over $3.00 per package.  The volume of reports imply that many
+thousands may have been mailed.  In addition, the British magazine "PC Business
+World" has included a copy of the diskette with its most recent publication -
+another expensive avenue of distribution.  The only indication of who the
+perpetrator(s) may be is the address on the invoice to which they ask that
+$378.00 be mailed:
+
+          PC Cyborg Corporation
+          P.O. Box 871744
+          Panama 7, Panama
+
+Needless to say, a check for a registered PC Cyborg Corporation in Panama
+turned up negative.
+
+An additional note of interest in the license section reads: "PC Cyborg
+Corporation does not authorize you to distribute or use these programs in the
+United States of America.  If you have any doubt about your willingness or
+ability to meet the terms of this license agreement or if you are not prepared
+to pay all amounts due to PC Cyborg Corporation, then do not use these
+programs".
+
+John McAfee
+
+------------------------------
+
+Date:         Wed, 13 Dec 89 18:02:50 EST
+Sender:       Virus Alert List <VALERT-L@LEHIIBM1>
+Comments:     Resent-From: Kenneth R. van Wyk <krvw@SEI.CMU.EDU>
+Comments:     Originally-From: Alan Jay <alanj@IBMPCUG.CO.UK>
+From:         "Kenneth R. van Wyk" <krvw@SEI.CMU.EDU>
+Subject:      Re: AIDS DISK UPDATE (I)
+
+              AIDS INFORMATION DISK
+              =====================
+
+The latest on this is as follows:
+
+If you have run this disk contact ROBERT WALCZY at PC Business World
+on 01-831 9252 they have a FREE disk that combats the effects of the
+disk and they will send a copy to users effected.
+
+Either call Robert of FAX him on 01-405 2347 with your name and address.
+
+The disk should be available in the next day or two.
+
+The program will be available on CONNECT (01-863 6646) for download as
+soon as it has been tested.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+The AIDS disk when installed creates a number of hidden files and directories.
+You can remove these files by running the program mentioned above or by using
+the Norton Utilities, PC Tools or equivalent program.
+
+The files that are hidden include a new AUTOEXEC.BAT and a number of other
+files and directories that contain characters that can not be accessed by
+standard DOS commands.  You will need to rename the files/directories before
+they can be deleted.
+
+This information will be updated as we learn more about the disk.
+
+Alan Jay -- The IBM PC User Group -- 01-863 1191.
+
+*** APPENDED 12/14/89 09:17:07 BY PU/MELINDA ***
+
+Append on 12/14/89 at 09:17 by Lew Shepherdson, Simware:
+
+I was at a seminar a couple of weeks ago and we had a session on viruses.
+Some interesting predictions...
+
+1. Benign (non-destructive) viruses will die out...just a passing fad
+
+2. Expect big increase in 'political' viruses...groups spreading vir
+   which promote a political/environmental/human rig
+   and are counting on intense coverage by eager media
+
+3. Expect an increase in 'extortion' viruses aimed at particular vendors...
+   'If we don't get _______, we will release a virus that only attacks
+   your product, etc...'
+
+4. There's a real danger that political
+   hysteria by passing some stupid laws.
+
+5. Expect diskless workstations to be a high-growth mark
+
+Lew Shepherdson
+Simware Inc.
+
+*** APPENDED 12/14/89 09:17:25 BY SIW/LEW ***
+
+Append on 12/14/89 at 09:59 by Melinda Varian <BITNET: MAINT@PUCC>:
+
+Received: by PUCC (Mailer R2.06X) id 9330; Thu, 14 Dec 89 07:45:07 EST
+Date:         Thu, 14 Dec 89 07:42:06 EST
+Sender:       Virus Alert List <VALERT-L@LEHIIBM1>
+Comments:     Resent-From: Kenneth R. van Wyk <krvw@SEI.CMU.EDU>
+Comments:     Originally-From: Alan Jay <alanj@IBMPCUG.CO.UK>
+From:         "Kenneth R. van Wyk" <krvw@SEI.CMU.EDU>
+Subject:      Re: AIDS -- UPDATE II -- What can you do.
+
+                   AIDS INFORMATION DISK
+                   =====================
+
+Update 2  13-Dec-1989 6pm
+
+IF you have not run this disk DO NOT INSTALL it appears to be a very
+cleverly written TROJAN program that can be activated by a number of
+methods.  Currently the activation method that has been detected uses
+a counter of the number of system reboots.  When the counter gets to
+90 the system goes into a second phase and encrypts files and
+directories on your hard disk.
+
+The program appears to have a number of embelisments that makes one
+think that the front door we have been shown MAY not be the only
+method that the system uses for deciding when to activate.  This
+is a very nasty program and the only 100% safe thing to do is to
+backup all DATA files and perform a full reformat of your hard disk.
+
+Followed by a reinstallation of all DATA, from your backup, and
+programs from original system disks (or backup prior to installing
+this software).
+
+This should only be attempeted once at least TWO copies of all
+valuable data have been extracted from the system.  Please remember to
+boot your system off an original DOS disk before starting this
+procedure.
+
+Full details of the suggested procedure will be posted tomorrow.
+
+Alan Jay
+
+Readers who do not wish to follow this route may be interested to
+in the folowing information about the primary activation system.
+
+1)  A hidden 'ACTOEXEC.BAT' file contains
+
+CD \<ALT255>
+REM<ALT255>
+
+    it then runs your AUTOEXEC.BAT which the program renamed AUTO.BAT
+
+2) A hidden subdirectory <ALT255> contains a file REM<ALT255>.EXE
+
+Each time the system is booted the program is run and the counter
+incremented/decremented.  After 90 activations the system enters phase
+TWO.
+
+Please note that the system uses the <ALT255> character 'hi space' in the
+file names to stop standard DOS procedures acting on these files.
+
+IT MAY be possible to delete these entries and thereby disable the
+program this is NOT certain and it will take several months to discover
+if this is a safe course of events to take.
+
+I hope that this information helps.  I also understand that this is in the
+hands of the Fraud Squad / Computer Crime Division of the Metropolitan
+Police.  If you have any further information I am sure that they would
+be interested to here from you.
+
+Alan Jay -- IBM PC User Group -  01-863 1191
+
+*** APPENDED 12/14/89 09:59:16 BY PU/MELINDA ***
+
+Append on 12/14/89 at 14:02 by Rich Greenberg, Locus Computer Corp., L.A.:
+
+The AIDS virus was mentioned on the local radio news broadcast as having hit
+The RAND Corp in Santa Monica, Ca.
+                                          Rich
+
+*** APPENDED 12/14/89 14:02:45 BY LCT/RICH.G ***
+
+Append on 12/15/89 at 00:50 by John Lynn - Mobil Technical Center:
+
+Sick sick sick! AIDS kills on a daily basis, so I guess that makes a 'clever'
+topic to exploit. And $300+ dollars, plus a 256K minimum memory requirement?!
+For an AIDS questionnaire? Very imaginative...
+
+Guess they got tired of pulling wings off of flies...
+
+-- John (Sorry, but enough is enough, wouldn't you say?) Lynn
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.55
+************************

@@ -1,0 +1,254 @@
+ 8-Mar-87 16:23:01-PST,14871;000000000000
+Mail-From: NEUMANN created at  8-Mar-87 16:21:49
+Date: Sun 8 Mar 87 16:21:49-PST
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.58 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Sunday, 8 March 1987  Volume 4 : Issue 58
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  The Sperry Plan, FAA Certification, and N-Version Programming (Nancy Leveson)
+    (LONG MESSAGE)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+Date: 07 Mar 87 10:34:16 PST (Sat)
+From: Nancy Leveson <nancy@ICSD.UCI.EDU>
+To: JCK.UVACS@relay.cs.net, neumann@csl.sri.com
+Subject: The Sperry Plan, FAA Certification, and N-Version Programming
+ReSent-To: RISKS@CSL.SRI.COM
+
+Since my original message to Risks about the Sperry plan, I have visited
+the FAA Certification Office in Seattle and, for other reasons, the Boeing
+Commercial Aircraft Co. in Seattle.  The Boeing employees I spoke to told
+me that they have rejected the Sperry plan for their software.  However,
+it is planned to be used for a Category III autopilot for the MD-11.  This
+autopilot is safety-critical for 30-45 seconds during autolanding.  There is
+also great dependence on n-version programming for the fly-by-wire Airbus
+320, but I have no details about the A320 software development such 
+as the testing procedures used (except for a blurb in Aviation Week that 
+states that n-version programming provides "optimum" protection against 
+software errors in that aircraft).
+
+To remind Risks readers, Sperry wants to use N-version software in place of
+"white box" (structural) testing.  Black box (system) testing will still 
+be performed.  System testing would be done "back-to-back."  Back-to-back
+testing means that multiple versions of the software are executed on the
+same test data.  If they all agree on the answer, it is assumed that they
+are all correct.  
+
+Kevin Driscoll writes in Risks 4.55 that this plan is not really so scary.
+In order to follow the discussion, it is necessary to have some background
+on aircraft software certification.
+
+There is a document used by the FAA (and written primarily by the
+manufacturers) called RTCA/DO-178A: Software Considerations in Airborne 
+Systems and Equipment Certification.  It lays out the requirements for 
+software development, testing, configuration control, and documentation.  
+The requirements are pretty basic -- about what I would recommend for a 
+good inventory program.  In general the requirements are: 
+
+  (1) developing software requirements and verifying them against system 
+      requirements [no requirement for any formality in the process];
+  (2) using a design discipline or method [not specified as to which 
+      one -- just says you need to use one] that makes software traceable, 
+      testable, maintainable, and understandable;
+  (3) doing a design review against requirements;
+  (4) using an implementation technique that is understandable, testable,
+      and traceable to the design;
+  (5) doing requirements-based and structure-based tests including module 
+      testing, module integration testing, and hardware/software integration 
+      testing including a requirements coverage analysis and a software 
+      structural coverage analysis [this is what Sperry wants to eliminate
+      except for system test]
+  (6) providing software configuration management;
+  (7) providing a quality assurance plan.
+
+The document specifies software function criticality categories of: 
+   Level 1 (flight-critical: failure prevents continued safe flight), 
+   level 2 (flight essential: functions reduce capability of aircraft 
+            or ability of crew to cope with adverse conditions), and 
+   level 3 (non-essential: failures could not significantly degrade 
+            aircraft capability or crew ability).  
+
+The difference in criticality level seems to determine what information
+is provided to the FAA for certification and, in some cases, which of the
+above requirements are enforced.  For level 1 software, for
+example, the manufacturer must provide detailed information about the
+verification that was done.  For level 2, in general only a summary
+description of the process along with a statement of compliance must
+be submitted.  For level 3, no assurance is required.  In terms of
+certification effectiveness, independent evaluation is possible only with
+information.  So providing just a statement of compliance seems to me
+to imply that no external, independent evaluation is possible.  There is
+no way to check that they actually did comply and that the verification
+that was done was adequate and correct.  I certainly do not want to
+imply that the manufacturers and subcontractors will not try to do the
+best job possible -- after all, they have the liability and they are
+decent human beings who care about human life.  The problem is that 
+without external review we are depending on the competence 
+of the people at these companies, and I am not as sanguine about the 
+general state of software engineering knowledge and practice in industry 
+as I am about the good intention of humans.  
+
+So far, though, things are not really TOO awful, but wait ...
+The problem seems to arise from one sentence (which was added between 
+version 178 and 178A and seems to be the major change) that states 
+"Using appropriate design and/or implementation techniques and
+considerations, it may be possible to use a software level lower than
+the functional categorization."  This is the kicker.  Sperry is arguing
+that although the software autopilot is Level 1, they are using n-version
+programming and therefore it can be treated as Level 2.  There is
+also a phrase "the software level implies effort that ... may vary
+within criticality level."  So they can modify any of the requirements
+also, it appears, within level (given that the FAA agrees).  
+BOTTOM LINE:  even those very basic requirements that are specified above
+can be eliminated fairly easily.  Personally, I would require MORE than is
+stated in DO-178A for both Level 1 *AND* Level 2 software development and 
+verification.
+
+As examples of what is possible, the DoD, besides requiring good software 
+engineering practice, requires a safety and hazard analysis of the software.  
+The Air Force and Navy also require an IV&V by a qualified company (Logicon 
+does a lot of this) for all nuclear systems [called Nuclear Safety Cross 
+Check Analysis by the Air Force and Software Nuclear Safety Analysis by 
+the Navy].   These IV&V efforts are MUCH more rigorous than anything 
+the FAA appears to be doing.  Note that the DoD requires proof of the 
+safety of the software itself and not just proof that the developers have 
+satisfied minimal development practices.
+
+The most amazing part of the RTCA document is the fact that using a particular
+method, such as n-version programming, can somehow magically change the
+criticality level of the software (from flight-critical to flight-essential
+or non-essential).  Since the function of the software does not change
+with the development method, this appears ridiculous.  I can only assume
+that they are arguing that the reliability will be so high that failures
+will never occur and therefore the criticality of the function is irrelevant;
+this is the only interpretation that makes sense to me.  But there is no
+current software engineering technique that can guarantee such ultra-high
+reliability! (including N-version programming). And since they dismiss in 
+the document the use of any measurement techniques (they state that currently 
+available methods do not yield results in which confidence can be placed to 
+the degree required) and don't even mention any formal verification methods, 
+there is NO demonstration required that they have reached perfection (or any 
+particular level of reliability) using the particular design or implementation 
+technique.  
+
+In the Sperry case, their argument for N-version programming appears to
+rest on a simplistic model presented by Larry Yount at an AIAA Conference
+in Long Beach.  This model assumes statistical independence between failures 
+of the n versions.  This assumption has been shown to not hold in
+controlled experiments and, in fact, is not believed by most researchers 
+in the field.  At a workshop this summer, Larry put up a chart that showed 
+his model predicted 20,000 times improvement in reliability based on the 
+use of n-version programming.  Since actual experiments have found at best 
+only 7-10 times improvement, his figures appear to be patently ridiculous. 
+
+Kevin Driscoll (Risks 4.55) states:
+
+   > In its letter to Sperry, the FAA says that this method "appears to be
+   > satisfactory" with the following constraints:
+   > a.  Level 1 must be used for paragraphs 6.2.2 (Requirements Development
+   > and Verification) and 6.2.3 (Design).
+   > b.  Formal configuration control must used and, if common errors are
+   > found, structural testing may be required for some or all of the
+   > modules.
+
+Common errors have been found in EVERY experiment done so far in n-version
+programming (at least, in all that have checked for them which is about 4
+or 5).  The problem is that with only three versions of the software and the
+use of back-to-back testing, the only common errors that can be detected are
+those within only two modules.  Any common errors found in all three of the
+modules cannot be detected (unless some outside method of correctness
+determination is used).  In my experiment with John Knight at the University
+of Virginia, we found common failures in up to eight independently developed
+programs.  Also, any errors that can be traced back to the specification 
+will, of course, have a tendency to manifest themselves in common between 
+the versions.
+
+   > c.  Formal review and comparison of source code must be used to verify
+   > dissimilarity.  Where this is not feasible, Level 1 structural test
+   > and analysis must be used.
+
+How does one verify dissimilarity?  In fact, how does one even define it?
+Obviously the programs must be similar in that they are computing the
+same function.  The only dissimilarity we really want is a dissimilarity in
+failure behavior.  Syntactic dissimilarity is irrelevant.  Again, John Knight
+and I found programs that used completely different algorithms to compute a
+function yet failed on all the same input data.  The problem is that certain
+input cases are inherently more difficult to handle.  For example, when
+computing the angle determined by three points, programs tended to fail on
+inputs where the points were colinear or coincident.  The errors were not
+the same nor were the algorithms, but they failed on the same input data.
+So looking to see that different algorithms are used is not adequate.  This
+is the problem in talking about a concept like "dissimilarity" or "diversity"
+without ever formally defining it;  there is no way to know whether you
+have it nor any way to measure it.  It is similar to the problem with using 
+the term "artificial intelligence" when the term "intelligence" remains
+undefined.  One can merely claim that their program is intelligent and it
+is difficult to dispute it (or to prove it either).  How does one prove or
+disprove that dissimilarity or diversity exists?
+
+   > It seems to me that c. is the same as doing structural analysis. 
+   > Therefore, this method is not any less rigorous than "full" DO-178A
+   > Level 1.
+
+I can see no relationship between verifying dissimilarity between two
+or three programs and structural analysis of the correctness of a single 
+program;  especially given that I know how to do the second but not the 
+first.  I am not quite sure what Kevin means by "less rigorous."  Certainly, 
+we have much more experience with structural testing than with n-version 
+programming.  There is no evidence anywhere that structural testing is 
+equivalent to n-version programming (e.g., that they detect the same errors)
+nor that one can replace the other.  Although somewhat beside the point, 
+I would argue that even the *FULL* DO-178A is not nearly rigorous enough for 
+safety-critical software.
+
+   > d. Functional tests of the system must be performed.  It must be shown
+   > that the system will not have false alarms.
+
+   > However, how one complies with c. and d. I do not know.
+
+THAT IS THE WHOLE POINT!  Sperry is suggesting replacing something we
+know how to do with something nobody knows how to do and has never been
+shown to work with the degree of effectiveness required.  I would certainly
+feel happier if the Sperry plan were tried first on real software 
+that was not Level 1 or Level 2 (by real software, I do not mean just
+university or industrial experiments where the software is never used in a
+real production environment).  I have few qualms about N-version programming
+being used in conjunction with normal software development techniques
+even on safety-critical software.  But I have grave reservations about 
+eliminating any testing or other standard procedures on the basis of
+using it.  The problem, of course, is that developing multiple versions
+is expensive.  So I assume Sperry is trying to cut down on testing in
+order to save money.  Unfortunately, I do not know how to develop
+safety-critical software cheaply.  For the most part, greater reliability
+and safety requires more money.  Just using some sleight of hand to relabel
+the software as Level 2 or Level 3 instead of Level 1 does not make it
+any less safety-critical.  And voting together relatively untested and
+unverified single versions has not been shown (in the experiments that
+have tried it) to guarantee high reliability or safety.  In fact, the
+little experimental evidence available has shown that as the number of
+errors in the individual versions increases, the amount of reliability 
+gain to be expected fron using n-version programming decreases.
+
+I am still worried despite Kevin's attempt at reassurance.
+
+    Nancy Leveson,          University of California, Irvine
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

@@ -1,0 +1,619 @@
+Subject: RISKS DIGEST 17.66
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 23 January 1996  Volume 17 : Issue 66
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, etc.       *****
+
+  Contents:
+Homebanking NonSecurity demo (Klaus Brunnstein)
+Security hole in SSH 1.2.0 (RISKs of being "too careful"?) (Barry Jaspan)
+Re: Floating Point Numbers (Wade Bowmer [2])
+Re: RISKS of stolen UN computers (Dave Scott)
+Cost to crack Netscape Security falls... (A. Padgett Peterson)
+Re: Single computer breaks 40-bit RC4 in under 8 days (Gary Weimer)
+Re: Japanese fighter plane shot down another plane (Mickey McInnis)
+Re: cryo-risks (Lindsay F. Marshall)
+Robots going crazy (Bertrand Meyer)
+Re: Hey, your mailing list is sending me viruses! (Alan K. Jackson, 
+    Joe A. Dellinger) 
+Re: AOL E-mail crashes (Doug Bostrom)
+E-mail spamming risk (Dan Zerkle)
+"Learning Machines" and "Learning People" (PGN)
+"Learning machine" spam (Martin Kealey)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Tue, 23 Jan 1996 17:32:56 +0100
+From: Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.d400.de>
+Subject: Homebanking NonSecurity demo
+
+A German private TV channel (SAT 1) displayed, Monday Jan.22 night (10 pm),
+a demonstration of how easily homebanking may be attacked in Germany. In
+this demo, a person used T-Online (a navigation tool similar to CompuServe)
+to send his ID, PIN, the amount to be transferred (500 DM) and the account
+to which to transfer, plus a transaction number (TAN) via telephone line.
+All these data were intercepted on a portable connected to the user's phone
+line in the basement of the building (indeed, most telephone boxes are
+rarely locked). Actions of the customer and the "hacker" were shown in
+parallel, so one could see all data (including PIN which was not displayed
+on the Customers' screen) on the hackers' display. Before the customer could
+start the booking process on the bank computer by sending the requestor, the
+hacker interrupted the telephone connection. As he now possessed all
+relevant "secret" information of the user, he now started an order to
+transmit 5,000 DM from his victim's account to another one, successfully (as
+the customers' vouchers proved. After the demo (about 10 minutes), a short
+interview (with the author of this report) discussed evident risks; it was
+made clear that software solutions are available since some time, to replace
+the old PIN/TAN structure with digital signatures and to encrypt sensitive
+data using asymmetric encryption.
+
+Risks? Presently, there are several risks in telephone-based homebanking. 
+First, ALL sensitive information is transmitted in cleartext. Secondly, 
+interception of line-based communications of German Telekom is easily 
+possible at several sites, from the basement of a customers' house where 
+lines from different customers are collected in a unit, to units 
+collecting lines from several blocks, streets etc. Thirdly, in contracts 
+between banks and customers, the latter will often have difficulties to 
+prove that an order carrying their personal ID, TAN etc was NOT issued 
+from them, esp. when there is evidence that the order came from the 
+customers' telephone line (though not from his telephone :-). Customer
+protection (both technically and legally) therefore requires immediate
+action, as Chaos Computer Club commented in press.
+
+Interestingly, German banks offer enterprises a secure solution based on
+RSA-licensed encryption software. So far, this is NOT offered to private
+customers as it canNOT interoperate with T-Online. Financial institutions
+are discussing presently a solution (either with a chipcard including sort
+of DES or a solution using an RSA-implementation with 784 bit key, which may
+be distributed via diskettes) but it is unclear when this solution will be
+available. As long as such solution is not available, "every day may become
+payment day even for the most lousy hackers" as one German newspaper (TAZ)
+wrote.
+
+Klaus Brunnstein (Jan.23,1996)
+
+------------------------------
+
+Date: Thu, 18 Jan 96 12:19:25 EST
+From: Barry Jaspan <bjaspan@bbnplanet.com>
+Subject: Security hole in SSH 1.2.0 (RISKs of being "too careful"?)
+
+I found a security hole in the ssh client of SSH 1.2.0 ("Secure Shell", a
+public-key based drop-in replacement for rlogin, rsh, and rcp).  Very
+briefly, the bug allows any user on a system to obtain that host's secret
+key (undetected) and thereafter masquerade as that host from anywhere on the
+net until the key is changed.  Anyone that is interested in details of the
+vulnerability can contact me or the ssh mailing list (ssh@cs.hut.fi).
+
+This bug is RISKS material because of what caused it.  The ssh client has a
+mode in which it reads and uses the host's secret key for authentication.
+The secret is installed in /etc and readable only by root, so ssh has to be
+setuid-root to access is.  Naturally, since this is a security system, the
+author went to considerable effort to make sure the program did not actual
+use its root privileges any more than absolutely necessary.  Generally,
+that's a good idea.
+
+The problem in this case is that ssh gives up its root privileges TOO
+SOON.  The flow of control looks like this:
+
+	acquire root privs
+	read secret key
+	release root privs
+	use secret key
+	erase secret key from memory
+
+The result is the host's secret key is still in memory when the program
+releases its root privileges, making it quite easy for a user obtain that
+information.  Presumably, it would be much harder to read the processes
+memory while it was owned by root.  So if the process held on to its root
+privileges until later in the flow of control (after the key memory was
+erased), this bug might not exist (for implementation-specific reasons this
+may be tricky for the author to do, but in principle there is no reason it
+can't be).
+
+If the author had done a data-flow analysis of the program (examining
+program state on entering and leaving the root section of code), this bug
+probably would have been discovered earlier.  But instead he was just "very
+careful", and released root privs as soon as they were no longer needed to
+access the critical data.  His behavior is perfectly understandable, and
+generally correct---but in this case, sadly, wrong.
+
+The lesson is not new.  Designing secure systems is HARD.  It takes a
+lot of thought, and a lot of examination by security experts before a
+system can be trusted.
+
+Barry Jaspan, bjaspan@bbnplanet.com
+
+------------------------------
+
+Date: Tue, 23 Jan 96 14:32:43 SYD
+From: wbowmer@sbnsw.com.au
+Subject: Re: Floating Point Numbers
+
+Hoo! I got a lot of private feedback about my posting regarding floating
+point number formats! Thank you all of you who did respond and what's more
+responded in a positive and encouraging way. I went off a little
+prematurely, so, drawing from the information thrown at me :-) from those
+replies, I now need to clarify a few things for the readers of RISKS.
+
+My original post was in response to concern of accuracy problems when
+floating point numbers expressed in decimal are stored in binary. Storage of
+numbers like 1/3 or 22/7 will continue to be a problem even in decimal
+(thank you Keith Thompson). But this is a problem we can understand deal
+with better in decimal than in binary because we humans have been trained to
+think in decimal numbers from a young age. A radix-10 or radix-100 system
+only gains you accuracy to exact powers of ten - but that appears to be what
+people are asking for! (...which was, incidentally, point.)
+
+Microsoft's proprietary format was, it turns out, quite appropriate for what
+it was designed for (thank you Matthew Healy). Quite simply, they
+bastardized the IEEE 754 format to make it faster on the CPU technology of
+the time - which was, remember, sans numeric co-processor. In other words, a
+classic engineering tradeoff. Since numeric co-processors are now much more
+common, and CPUs are generally much faster now anyway, Microsoft have gone
+back to the IEEE format for their software.
+
+But IEEE are very aware of the accuracy problems of IEEE 754 (thank you D.
+Jason Penney). In fact, they even have a floating point number standard
+using radix-10 - it is called IEEE 854. The problem is that far too many of
+the people using *binary* floating point should be using *base-ten* floating
+point! Part of the reason for this is perception. Binary floating point is
+presented as the pinnacle of computer number representations - when it is
+simply "horses for courses". When ray-tracing (for instance), binary
+floating point is just the ticket. On the other hand, on a financial
+spreadsheet, base-ten binary is much more suitable - if slower.
+
+It is a decidedly human Risk.
+
+Wade
+
+------------------------------
+
+Date: Wed, 17 Jan 96 16:52:36 SYD
+From: <wbowmer@sbnsw.com.au>
+Subject: Re: Floating Point Numbers
+
+January 96 PC Magazine (Australia) had, not one, but *two* letters in their
+Tech section relating to "inaccuracies" with floating point numbers. Guess
+what: *both* times the binary number format was to blame!
+
+Wade
+
+------------------------------
+
+Date: Tue, 23 Jan 1996 08:16:27 -0600
+From: Dave Scott <dscott@amp.com>
+Subject:  Re: RISKS of stolen UN computers (RISKS-17.65)
+
+RISKS-17.65 mentioned the theft from the UN of four computers which held
+data on human rights violations in Croatia.  The risk of not having backups
+was mentioned, but there are other issues to be considered:
+
+1.  There is definite risk in allowing people to identify the machines or
+directories on which sensitive data is kept.  You might as well hang a
+"target" sign on it.  On our network, for example, I would never establish a
+directory called 
+"G:\PERSONNEL\PAYROLL\SALARIES" or
+"G:\MEMOS\REPRIMAND\SEXUAL".  
+There are too many tools available for casual browsing of systems.  Hiding
+the directories may not help; Norton Utilities' File Find, for example,
+ignores the hidden flag.
+
+2.  I don't know if the UN thought about it or not, but the data files on
+these machines should have been encrypted, since they probably contain the
+names of people who informed on human rights violators.  These informants
+should be notified to watch their backs.
+
+I know of a couple of legal offices that have PCs with Syquest or Zip
+drives; every case has one cartridge devoted to it, and these are removed
+from the machine and locked in a safe when not needed.  Might be a good idea
+for the UN's rights violation investigators; I really believe that the PCs
+were stolen not for intrinsic value but for the data.
+
+David M. Scott, CPIM  Manager, Systems Services  
+AMP Packaging Systems, Inc.  Round Rock, Texas USA
+
+------------------------------
+
+Date: Mon, 22 Jan 96 21:47:05 -0500
+From: padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Cost to crack Netscape Security falls... (RISKS-17.65)
+
+Heck I've been saying for two years now that a special-purpose sieve could
+break RC4-40 in an average of little over 3 hours. Just a matter of knowing
+what to use, not CISCs or RISCs but DSPs. (Incidentally, I have seen quite a
+few people using the 3-hour figure for DES. Maybe with 65k sieves, but not
+with one.)
+
+Even at 40 Mhz (example above is based on 150 Mhz) you are talking less than
+12 hours so what is surprising about several days ?
+
+Add in the fact that RC4 (algorithm was published on sci.crypt last year) is
+much simpler than say DES, and that breakage via brute force comes
+reasonably quickly is not surprising to anyone who has studied it, just
+re-enforces the fact that 40 bit encryption is little better than no
+encryption at all.
+
+Given the fact that the next generation of game controllers will operate
+at over 100 Mhz, the real question should be "Who will be the first to
+break 40-bit Netscape encryption on a Playstation ?"
+
+Padgett
+
+P.S.  Don't blame Netscape, they are just abiding by ITAR.
+
+------------------------------
+
+Date: Tue, 23 Jan 1996 15:12:56 -0500
+From: weimer@ycc.Kodak.COM (Gary Weimer (64525))
+Subject: Re: Single computer breaks 40-bit RC4 in under 8 days
+
+I've been amazed from the beginning that people are justifying an encryption
+algorithm by saying it is "too expensive" to crack. I could crack keys at no
+cost to myself, and if I'm willing to steal someone's money, I'm certainly
+not going to be concerned about what it is costing someone else for me to
+crack keys. At my college I didn't have to pay for CPU time. At my current
+job, I have access to over 200 Sun Workstations (probably over 300...) on
+which I could run user processes.  I doubt any of them are monitored closely
+enough to catch an innocently named process that has been niced to avoid
+hogging the CPU and gets restarted periodically to hide cumulative CPU time.
+I also doubt that my free access to CPU cycles is all that unusual.
+ 
+Gary Weimer  weimer@pixel.kodak.com
+
+------------------------------
+
+Date: Tue, 23 Jan 1996 13:04:32 -0600 (CST)
+From: mcinnis@austin.ibm.com (Mickey McInnis)
+Subject: Re: Japanese fighter plane shot down another plane
+
+This seems like a low tech risk hidden mistaken for a high tech risk.
+
+Anyone with any knowledge of weapons knows you never point a loaded weapon
+at anything you don't intend to shoot even if the "safety" is on.  Imagine
+pointing a loaded handgun at someone an pulling the trigger and saying "It's
+OK, the safety is on." (As used here, "safety" means "a device that keeps a
+weapon from firing unintentionally when the trigger is pulled.")
+
+The fact that the F-15 is a multi-million dollar, highly complex system only
+makes it more necessary to follow basic safety precautions.  Whether or not
+the "safety" failed or the operator misused it, it's a basic mistake to bet
+a life on the safety.
+
+Actually, it's usually very bad form to point even an UNloaded weapon at
+someone.  Everyone knows there are "ammunition fairies" who put ammunition in
+unloaded guns when you aren't looking.  (OK, maybe there aren't ammunition
+fairies, but people who believe in them live longer than those who don't.  8-)
+
+Mickey McInnis - mcinnis@austin.ibm.com
+
+------------------------------
+
+Date: Tue, 23 Jan 1996 14:49:40 +0000
+From: "Lindsay F. Marshall" <Lindsay.Marshall@newcastle.ac.uk>
+Subject: Re: cryo-risks
+
+People seem to have some misconceptions about how the cryogenics people
+work.  Sure, they have monitoring systems and such like that use
+electricity, but basically they stick you (or at least your head if you have
+"gone neuro") inside a big Dewar Flask -- if the power fails no problem for
+quite some time.  Earthquakes are a much worse "risk".  For an interesting
+view of the cryogenics world, read Ed Regis's "Great Mambo Chicken" and the
+chapter on cryogenics in "Death: The trip of a Lifetime", which is the book
+of the US Public TV series of the same name. (Both also well worth reading
+for the other material they contain)
+
+------------------------------
+
+Date: Tue, 23 Jan 96 10:57:12 PST
+From: bertrand@eiffel.com (Bertrand Meyer)
+Subject: Robots going crazy
+
+This is probably not new, but the problems can only get worse as our tools
+get better.
+
+Last Sunday I posted a news message on comp.lang.eiffel. The next day I
+received an empty e-mail message "Re" my posting. I wrote back to the sender,
+asking what was wrong, and received the following reply:
+ 
+> Please accept our apologies.  Our new "beta" software for one of our mail 
+> robots/spiders went a little beserk [sic] today and dumped several thousand 
+> incorrect email messages.
+
+> The problem is at our end and we do apolgize. [sic]
+
+Apart from the enormous potential for disaster, what I find interesting is
+the continuous gradation that exists between, at one extreme, behavior that
+is considered perfectly normal (all kinds of strange beasts foraging
+everyone's information repositories, without any warning let alone requests
+for permission, at all hours of the day and night), and, at the other end,
+activities that can land people in prison (e.g. the Great Internet Worm,
+whose author has maintained was an innocent experiment gone awry). I don't
+think anyone can define a theoretical boundary between the acceptable and
+the reprehensible.
+
+-- Bertrand Meyer  ISE EiffelTech, Santa Barbara  <bertrand@eiffel.com>
+ 
+------------------------------
+
+Date: Tue, 23 Jan 96 07:47:26 -0600
+From: "Alan K. Jackson 544-4442" <ajackson@shellus.com>
+Subject: Re: Hey, your mailing list is sending me viruses!
+
+I have an AOL account, and I think I can explain what happened. AOL has had
+severe mail server problems lately. The way the AOL mail download works is
+this :
+
+1. AOL downloads a TOC for all the mail to come to a binary file
+2. The messages get downloaded into the file
+3. Attachments get downloaded
+
+Because of the mail server problems, the TOC for a message was getting
+downloaded, without the message itself. To the user, everything looks
+okay, but when you try to open an empty message, AOL hangs and it is
+ctl-alt-del time. Sometimes a power cycle is necessary.
+
+Alan K. Jackson, West Africa Team, Geophysical Interpreter, Pecten Internat'l
+Company, Box 205,Houston,Tx 77001  (713)544-4442  ajackson@shellus.com
+
+------------------------------
+
+Date: Mon, 22 Jan 96 19:59:14 CST 
+From: jdellinger@amoco.com (Joe A. Dellinger) 
+Subject: Re: Hey, your mailing list is sending me viruses!
+
+	It may not be AOL's software at all. It could be in a gateway
+transmitting packets from AOL to the user, or even in the user's own modem
+or terminal emulation software.
+
+	A few years ago I reported on comp.risks my experiences with a
+gateway that would hang and need to be rebooted if it saw more than a
+handful of lines like this one go by:
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+	Since it was the gateway itself causing the problem, ANY attempt to
+transmit the offending string uncompressed and unencrypted would cause the
+problem: ftp, e-mail, or merely scrolling the message by as text on your
+screen!
+
+	I'm told some brands of modem will promptly disconnect if they see
+the string "+++" go by at any point in the data stream.
+
+	And surely people remember back in the days before X how much fun it
+was to send "^[c", the ANSI terminal "reset" sequence, to another user's
+terminal? This could be done in many ways: you could put it in your ".plan",
+or e-mail it to them, or simply send it to their screen if you had
+permissions to do so. On many brands of terminal it would cause the
+victimized user to be instantly disconnected!
+
+------------------------------
+
+Date: 23 Jan 1996 11:46:59 -0500 
+From: bostrom@aol.com (Bostrom)
+Subject: AOL E-mail crashes (Re: RISKS-17.65)
+
+This has been a problem with AOL's e-mail client (the Windoze version, at
+least) for the last two releases. The problem is quite simple, really.  When
+a user requests to check for new mail using AOL's software, the machine
+first retrieves a list of mail headers, then (if requested) retrieves the
+actual body of each mail item.  If the client machine loses carrier or is
+otherwise disconnected during a "flashsession" (batch mail
+retrieval/delivery) or in the middle of retrieving an individual piece of
+mail after the list has been retrieved, the software is left with a bodyless
+header (kind of gruesome, really). Trying to read that piece of mail will
+then lockup the AOL client software. This is obviously not a virus (unless
+those jokers at the San Jose Mercury are including virii with their news
+feeds?).
+
+Deleting the dismembered headers in the locally stored client list of mail
+headers "fixes" the problem, although that bit of mail is then lost.
+
+Because of work, I've had to suffer with this bug for some time now. AOL's
+staffers just don't seem to understand the problem, in spite of many and
+varied attempts to explain. Sometimes I think they only receive and read
+headers themselves. But how about the spontaneously disappearing >hundreds<
+of pieces of locally stored mail? That's another story...
+
+Doug Bostrom  Atlanta, GA  AMNET, Inc.
+
+------------------------------
+
+Date: Mon, 22 Jan 96 17:42:49 PST
+From: zerkle@cs.ucdavis.edu (Dan Zerkle)
+Subject: E-mail spamming risk
+
+"Fred Sterling" is a pseudonym for a charlatan who has been advertising his
+trash via massive e-mail spams.  He has been thrown off of various sites for
+these activities, and fincon.com is his latest hideout.  He is the cause of
+the development of e-mail filters, as his junk mail was causing problems for
+high-cost international UUCP and FIDO connections.
+
+The risk?  Only the usual tragedy of the commons (unless you count the
+embarrassment of a certain moderator).  See news.admin.net-abuse.misc for
+further details.
+
+------------------------------
+
+Date: Tue, 23 Jan 96 8:12:05 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: "Learning Machines" and "Learning People" (Beware of "Fred Sterling")
+
+Thanks to an unprecedented number of you for your comments noting that RISKS
+got spammed.  I generally make a very serious effort to reject all overt
+advertisements, spams, and sneaky attempts to abuse the Internet.  In
+particular, the moderator of a group dedicated to risks in the use of
+computers must never let his attention span wander, not even for a moment.
+But, somehow, that item slipped into RISKS-17.65.  (The worst part is that I
+surprisingly forgot about Rob Slade's VERY EXPLICIT WARNING about "Fred
+Sterling" in RISKS-17.54 ["Pick a personality type, any personality type
+..."] and also that I did not even try the dratted website -- which I
+usually do before even considering posting anything like that.  That
+certainly would have jarred my memory and my sensibilities.)  [Yes, Dan, I
+am indeed embarrassed!]
+
+This is just one more reminder of the risks in the open Internet and is a
+harbinger of the problems we will increasingly be having.  Also, don't
+forget the risks of security problems (especially Trojan horses) in the
+network interfaces.  I'm waiting for the first really successful sucker
+punch, which will undoubtedly lead to draconian legislative restrictions,
+which will in turn lead to more discussions on this topic in RISKS.  
+
+At any rate, I appreciate the messages from all of you who objected to its
+inclusion.  In response, I have done something rather unusual -- removing
+the offending item from the archive copy of RISKS-17.65.  (Other archivists
+may feel free to pick up the new copy if they wish to follow suit.)
+Especially in the light of my having let through an obviously unworthy
+contribution, I also must apologize to those of you who have submitted truly
+worthy messages that have not (yet) made it into RISKS.  The volume of
+submissions has been enormous lately, and I have a particularly tricky task
+of selecting what I hope will be most interesting for you, from among a very
+large queueueueueueueue, while not incurring the wrath of others for
+including junk.  Always feel free to poke me if you feel I have ignored a
+particularly vital contribution of yours (even though that will further
+increase the volume I must deal with!).  Many thanks for your patience.  PGN
+
+------------------------------
+
+Date: Wed, 24 Jan 1996 07:51:35 +1200 (NZST)
+From: [address-deleted-as-requested] (Martin Kealey)
+Subject: "Learning machine" spam (RISKS-17.65)
+
+In the light of this subject matter, I'd ask for my electronic address not
+to appear in plaintext in this message, although to solicit genuine replies
+I am including enough information to construct it.
+
+I'm rather disappointed to see this blatant advertising spam reproduced
+here; despite the "If you wish to be removed" line, they've simply dredged
+the net for as many e-mail addresses as they can; I know dozens of people
+who've received this message, so it seems they have been mailing every
+address they can find - including some of my private addresses that have
+never been used to make newspostings.
+
+As far as I'm concerned, an offer to be removed is better than nothing, but
+the underlying "mail to everyone in the world" approach is still so
+obnoxious as to outweigh this token; after all, there are enough potential
+advertisers in the world to completely swamp our mailboxes with even one
+message each.
+
+The risks?
+
+  - Our esteemed moderator seeing what seems to be a honest
+    testimonial and publishing it as "an interesting item";
+  - The risk to society when people don't get educated about or
+    just ignore "social harmony" rules.  Just because it won't be a
+    terrible thing if one person does something doesn't mean that
+    everyone should be allowed to do it - the combined effect if
+    multiplied a million-fold (or more) could be less than desirable.
+  - For the ignorant (or the recidivist), the relatively low effort
+    required to annoy vast numbers of people means that this is
+    going to become all too common.
+
+I'm working on an idea that I hope will increase the cost of
+advertising by requiring manual intervention for each separate
+recipient, while not stopping messages from valid senders.
+
+The basic idea is to keep a list of authorised senders (patterns
+for generality) whose messages will go straight through as normal. 
+Other messages get "locked" in a holding queue, after they are
+auto-replied with instructions on how to unlock them.  This would
+entail sending a one-off key in a manner that will require some
+simple operation performed on it as described by accompanying
+text.  Any message not unlocked within say 2 days will be deleted.
+
+Before I put in a great deal of effort into implementing it, does anyone see
+any risks I have missed?  Would you be upset to get back a message like
+this:
+
+    Sender: AntiSpam@my.host (Advertisement Blocker)
+    From: martin@my.host (Martin Kealey)
+    To: you@your.host (Your Name)
+    Subject: Re: previous subject line
+
+    Your message <foo.bar.12345@your.host> has been locked in a
+    holding queue pending delivery to martin@my.host (Martin Kealey)
+    because you@your.host has not previously been encountered by
+    this system.  Instructions for unlocking it to allow delivery
+    follow.
+
+    IF YOUR MESSAGE IS AN UNSOLICITED ADVERTISEMENT OR IS RUDE, AND
+    YOU PERSIST BY UNLOCKING IT, YOU WILL BE PLACED ON A "BANNED"
+    LIST AND A COMPLAINT WILL BE LAID WITH YOUR SITE ADMINISTRATOR.
+
+    This is not to say that merely being disagreeable will lead to
+    these consequences, but it might not get you permanently
+    approved either.
+
+    If you wish to unlock your message, please send a message with
+    "unlock.87326482376" in the subject header to AntiSpam@my.host;
+    otherwise this message will be deleted in 48 hours.  If your
+    message is in good taste, and not trying to waste my time, then
+    you will be added to the list of approved senders.
+
+    This filter is freely available software; its purpose is to
+    reduce unsolicited advertising by reducing its cost-
+    effectiveness; please use it and encourage all your friends to
+    use it too.
+
+    - AdCheck v0.0, on behalf of Martin Kealey
+
+Some risks that I can see:
+
+  - failing to enable the bypass on a return message when sending a
+    new message could result in two instances of this program
+    talking to each other;
+  - attempting to overcome the above in any simple-minded manner
+    (eg, accept all mail from adcheck@*) could result in a loophole
+    that would enable spammers to discredit the system;
+  - Someone might have trade-marked AntiSpam somewhere.
+
+If anyone has any ideas, please send me mail at site risks.kurahaupo.gen.nz
+(any of the obvious usernames will work).  If I catch anyone putting that
+address into a commercial mailing list of any sort, I'll personally string
+you up by your ears!
+
+- Martin Kealey
+
+------------------------------
+
+Date: 23 January 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for further information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ By submitting an item that is accepted for publication in RISKS, the author
+ grants permission for unlimited noncommercial public distribution and 
+ redistribution in electronic and print form.  Relevant contributions may 
+ appear in the RISKS section of regular issues of ACM SIGSOFT Software 
+ Engineering Notes or SIGSAC Review.
+
+ RISKS can also be read on the web at URL http://catless.ncl.ac.uk/Risks 
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://unix.sri.com/risks  [if your browser accepts URLs.]
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.66 
+************************
+

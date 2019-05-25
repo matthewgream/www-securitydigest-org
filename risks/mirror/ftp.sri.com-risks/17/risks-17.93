@@ -1,0 +1,561 @@
+Subject: RISKS DIGEST 17.93
+
+RISKS-LIST: Risks-Forum Digest  Sunday 24 March 1996  Volume 17 : Issue 93
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Java/Netscape security flaw (Ed Felten)
+DTMF falsing by human speech & music (Tim Shepard)
+More on list-bombing (Phil Agre)
+CIAC Notes 96-01: Java/JavaScript; search security (John M. Fisher)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Fri, 22 Mar 1996 17:27:56 -0500
+From: Ed Felten <felten@CS.Princeton.EDU>
+Subject: Java/Netscape security flaw
+
+We have discovered another serious security flaw in the Java programming
+language, which allows a malicious Java applet running under Netscape
+Navigator (version 2.0 or 2.01) to execute arbitrary machine code.  We have
+implemented an applet that exploits the flaw to remove a file.  Until a fix
+is issued, Netscape users can protect themselves by disabling Java in the
+Security Preferences dialog.
+
+At present we are not releasing technical details about the flaw.  We will
+announce the full details later; some of the details will also appear in our
+upcoming paper in the proceedings of the IEEE Symposium on Security and
+Privacy, to be published in May.  Our paper also contains an overall
+analysis of Java's security.  For an advance copy of the paper, send mail to
+felten@cs.princeton.edu.  The paper will be available in about a week.
+
+[Note that the "security enhancements" announced by Netscape in version 2.01 
+of Netscape Navigator do not fix this flaw.  They fix two separate flaws found 
+last month, one found by us (RISKS-17.77) and independently by Steve Gibbons, 
+and the other found by David Hopwood (RISKS-17.83).]
+
+For more information, see http://www.cs.princeton.edu/~ddean/java, or contact 
+Ed Felten at (609) 258-5906 or felten@cs.princeton.edu.
+
+Drew Dean, Ed Felten, Dan Wallach, Dept of Computer Science, Princeton Univ.
+
+   [See the CIAC item at the end of this issue for some background
+   on the earlier problems.  PGN]
+
+------------------------------
+
+Date: Fri, 22 Mar 1996 23:46:34 -0500
+From: Tim Shepard <shep@lcs.mit.edu>
+Subject: DTMF falsing by human speech & music (Panero, RISKS-17.92) 
+
+In RISKS-17.92 Tony Panero (Hare Krsna chants ...) suggests that it is
+difficult to avoid false detection of DTMF signals in human speech, but that
+it was reasonable to do in-band signaling when tone dialing was originally
+designed because dialing is not a context that typically includes speech.
+Last year I stumbled across an interesting 1960 BSTJ article which appears
+to be the original design document for what is now DTMF [1].  Guarding
+against false detection of signalling tones in human speech and enabling use
+of the signalling tones for end-to-end applications were the primary design
+objectives. Here are a few passages from the introduction:
+
+  "In recent years, customer signaling from a telephone set by means of
+  pushbuttons has appeared increasingly promising. An early plan has been
+  reported in which the operation of a pushbutton produces four effects: (a)
+  the generation of a damped oscillatory wave at one of ten
+  digit-identifying frequencies with the voice range; (b) the generation of
+  a similar damped wave at one of eight party-identifying frequencies, also
+  in the voice range; (c) a stepwise reduction of direct current drawn by
+  the set and (d) the temporary disablement of the speech transmitter.
+  Actions (c) and (d) provide protection against talk-off, i.e., false
+  signaling due to speech or noise at the transmitter.
+
+  "This plan contemplated only the transmission of information to the
+  central office, but in the long run it would be advantageous to be able to
+  signal "end-to-end," over any established connection that will transmit
+  speech.  With this added objective several new considerations are
+  introduced.  Clearly the signals should not contain an out-of-band
+  component such as the dc step.  [...]
+
+  "Voice-frequency signaling is, of course, already an established practice
+  in the Bell System.  One example is multifrequency key pulsing (MFKP),
+  which is widely used for toll signaling.  However, minimization of
+  talk-off was not a factor in its development [...]
+
+  "This paper describes an all-voice-frequency signaling system that
+  provides substantial protection against talk-off.  [...]"
+
+After the introduction the article proceeds through a discussion of the
+design and describes the preferred way to build a detector (from filters,
+hard limiters, and power detectors) to make it robust against talk-off.  The
+essential part of the design is that to detect the presence of one of the
+component tones, you filter out the signals in the other band while
+carefully preserving as much energy as possible in other parts of the
+spectrum.  You then pass this signal into a hard limiter whose output is
+connected to a narrow selective filter for the tone of interest.  You then
+detect the power in the signal coming out of the narrow filter.  Quoting
+again:
+
+  "The selective circuitry that follows the limiter is designed to recognize
+  a signal as bona fide only when it not only falls within a rather narrow
+  passband, but also appears at an amplitude within about 2.5 db of the full
+  output that the limiter is capable of delivering.  Thus when a burst of
+  speech contains components at more than just the two signal frequencies,
+  this fact is used to inhibit recognition of the signal frequencies in the
+  burst. [...]"
+
+Further discussion includes the selection of signaling frequencies, tone
+power levels, and filter parameters to further reduce the likelihood of
+false detection due to music or harmonic distortion of vowels in human
+speech.  Each of these scenarios may lead to situations where a substantial
+fraction of the energy in the signal is at the signalling frequencies.  By
+providing just enough but not too much band-stop filtering, the detector can
+be made less likely to false by not accepting tones when the relative power
+levels aren't right, but still be able to cope with the amount of twist
+typically found in the end-to-end frequency response of phone lines.
+
+I do not doubt that many systems using DTMF signaling today are susceptible
+to falsing.  I fear that the careful design that went into the DTMF system
+specifically to enable the construction of DTMF detectors with good talk-off
+resistance may have been forgotten.  IMHO this 1960 BSTJ article is a
+must-read for anyone designing a DTMF detector, which over 30 years later is
+likely to be a programmer writing (or cutting-and-pasting) DSP code.
+
+[1] L. Schenker, "Pushbutton Calling with a Two-Group Voice-Frequency Code",
+   _Bell System Technical Journal_, Jan 1960, Volume XXXIX, pages 235-255.  
+
+-Tim Shepard  shep@lcs.mit.edu, shep@bbn.com
+
+------------------------------
+
+Date: Fri, 22 Mar 1996 19:27:46 -0800 (PST)
+From: Phil Agre <pagre@weber.ucsd.edu>
+Subject: More on list-bombing (Re: RISKS-17.83)
+
+I run a large mailing list, and every few weeks for the last several months
+someone has complained that they were getting messages from me without
+knowing why.  This was not just a matter of people getting forwarded
+messages with misleading headers, since most of these people were in fact on
+the mailing list.  Finally this week I sent a query on the subject to the
+whole list.  Here is a summary of what I learned.
+
+The Internet has indeed been suffering an epidemic of bogus mailing list
+subscriptions, particularly over the last few weeks.  I have had reports
+from numerous list maintainers of dozens of mysterious subscriptions suddenly
+showing up on their lists, followed by confusion or acrimony.  
+
+Some instances are clearly malicious.  Numerous people have been involuntarily
+subscribed to many mailing lists.  Celebrities who have been "list-bombed" 
+in this fashion include Rush Limbaugh (who reportedly discussed it on the 
+air) and Philip Elmer-Dewitt (who wrote about it for Time Magazine).  The
+White House has been list-bombed too (and sent out a message to the effect
+that list-bombing just hurts the interns who have to filter the stuff, not
+the officials who presumably are the targets).  Two main motives have been
+mentioned: political disagreement, often but not always with regard to
+Internet issues like censorship (apparently this technique is being practiced
+by dunderheads on both the left and the right); and spam (many spammers have
+apparently gotten the list-bombing treatment).
+
+List-bombing, however, does not seem to be the only phenomenon here.  Only
+a few of the people who complained to me mentioned other mailing lists, and
+I think that victims of list-bombing are much more likely to change to a new
+account than to try unwinding all of their bogus subscriptions.  On my list I
+speculated that a demon might be generating subscriptions on a random basis,
+but nobody has reported any actual evidence for this.  At the same time, it
+seems to be happening on too large a scale to have been done entirely by hand.
+
+One particularly depressing point, mentioned by a few people, is that some
+Web browsers make it very easy to forge mail by simply typing in the victim's
+e-mail address when the browser starts up.  For example, the Web browsers on
+the Macs in the undergraduate lab where I teach always start up by asking for
+a name and e-mail address, and it doesn't take a rocket scientist to think
+to type in someone else's information.    
+
+Several people explained ways, other than using Web browsers, to forge e-mail
+headers.  I won't describe them; they are not very interesting.  I would like
+to see pressure on authors of software that sends mail to remove features 
+that make it easy to forge headers.  We probably can't make it impossible,
+but at least we can get rid of the amateurs.  I won't recount the even more
+destructive (albeit more creative) possible uses of forged headers that some
+people suggested.
+
+That said, the real underlying problem is more basic: personal computers,
+unlike mainframes, usually don't authenticate their users.  It is not at all
+clear what to do about this.  As far as I can tell, the mail header standards
+presuppose that there exists some determinate truth about what mail address
+a message is "from", but this isn't the case (for example) on the publicly
+available Apple Macintosh in the UCSD library on which I am now typing, which
+can send e-mail but cannot receive it.  Another problem is that forgery of
+mail headers has constructive uses, for example when mailing list maintainers
+set the "From:" field to point at some alias other than their own personal
+account in order to avoid getting swamped with e-mail related to the list.
+
+Listserv has an option whereby the putative subscriber must reconfirm a
+subscription by replying to an automatically generated message.  I believe
+this feature originated to solve the more pervasive problem of e-mail messages
+(subscription requests, for example) that are badly formed, or that come from
+badly configured machines, or that otherwise cannot be replied to.  But it's
+also a way to screen out forgeries, and as far as I can tell, all maintainers
+of open mailing lists are going to have to shift to such a protocol soon.
+
+The involuntary list subscriptions do not all result from hostile actions.
+Some people attested cases in which a university or online service had
+recycled an old user's name, giving it to someone else, so that the new user
+got all of the old user's mailing list subscriptions.  One person speculated
+that some of the mystery subscriptions may have come from friends subscribing
+friends to the list without telling them.  Who knows.
+
+It might be possible to track down the perpetrators by logging subscription
+requests; if we were to save the complete header for each such request then
+we might notice discrepancies and identify where the bogus messages were 
+from.  My own list, though, has about 3600 subscribers and a lot of turnover,
+so the log file would grow quickly if it kept the complete headers.  Some of
+the X.400 headers from Europe are pretty darn long.
+
+It's worth pointing out, in case any list-bombers are reading this, that 
+even if your intended victim deserves it, list-bombing has nonetheless 
+been causing a lot of pain to innocent parties.  The most obvious are the
+list-owners who have to deal with complaints, remove addresses, etc.  But the
+other subscribers of the list must often wade through messages to the whole
+list from victims, followed by other messages in reply that are probably not
+relevant to the list's intended topic.
+
+Finally, just in case any of the mystery subscriptions to my own list were
+intended as revenge against me rather than against the involuntary subscriber,
+at least a third of the involuntary subscribers say that they actually like
+the list, and some of them have decided to stay.  My advice would be to grow
+up and learn how to engage in real politics instead of this childish sabotage.
+
+Phil Agre, UCSD
+
+------------------------------
+
+Date: Mon, 18 Mar 1996 18:49:51 -0800 (PST)
+From: fisher@bill.llnl.gov (John M. Fisher)
+Subject: CIAC Notes 96-01: Java/JavaScript; search security
+
+CIAC is sending this addition of CIAC Notes to the CIAC Bulletins list
+because of the high demand for information on Java and JavaScript
+vulnerabilities.  [...]
+
+CIAC Notes Number 96-01                                     March 18, 1996
+
+This edition of CIAC NOTES includes:
+
+    1) Java and JavaScript Vulnerabilities
+    2) FIRST Conference Announcement [summarized for RISKS]
+    3) Security and Web Search Engines
+    4) Microsoft Word Macro Virus Update [Omitted for RISKS]
+
+Please send your comments and feedback to ciac@llnl.gov.
+
+  $ Reference to any specific commercial product does not necessarily   $
+  $ constitute or imply its endorsement, recommendation or favoring by  $
+  $ CIAC, the University of California, or the United States Government.$
+
+=========================================================================
+1)  Java and JavaScript Vulnerabilities, By John Fisher
+=========================================================================
+
+Introduction
+
+Over the past several weeks, a variety of reports have surface regarding
+security problems with Java and JavaScript. Java was developed by Sun
+Microsystems Incorporated, and JavaScript was developed by Netscape
+Incorporated. Java is available directly from Sun through the Java
+Development Kit. Both Java and JavaScript are supported with Netscape
+Navigator 2.0. Although similar in name, and in some ways similar in syntax,
+these two languages are vastly different in their usage.  Accordingly, the
+security problems that have been reported are completely separate as well.
+This article maps out what problems have been reported and discusses the
+availability of solutions.
+
+Java applications communicate easily across a network environment,
+particularly the Internet. Although not initially intended for this
+environment, Java became a natural mechanism for enhancing the usability and
+functionality of the World-Wide Web. With Java "applets," a Web site can
+provide functionality for its visitors that is not available with HTML code.
+
+Java can be used in a variety of different capacities. A standard Java
+application can work stand-alone, providing functionality similar to other
+programming languages (i.e., file input/output, graphical interfaces, etc).
+When a Java application is made available on a Web site (via an HTML Web
+page), it is in the form of a Java applet. An applet is given definite
+restrictions on its capabilities. For example, a Java applet can not write
+files to a Web visitor's local disk drive, or contact an Internet site
+besides the server it was downloaded from. Java was supported with
+Netscape's Navigator 2.0, released in February.
+
+JavaScript is also supported in Navigator 2.0. Originally named LiveScript,
+JavaScript code is placed directly in the text of an HTML document (as
+opposed to being referenced in the HTML, similar to how an image would be
+included, like Java does). For browsers that don't understand JavaScript,
+JavaScript code simply seems to be a comment in the HTML code. For Navigator
+2.0, a JavaScript program can provide additional functionality for the Web
+page that can't be provided with just HTML. While JavaScript provides
+increased functionality, it is syntactically simpler and less powerful than
+Java.
+
+Both Java and JavaScript have been developed with security in mind. Both
+were developed with considerable emphasis on preventing a Web site from
+gaining unintended access to a Web user's system or from performing actions
+on behalf of the Web user without the user's knowledge.
+
+Unfortunately, as is common with new technologies, unanticipated security
+concerns have come to light. The next section addresses the latest security
+concerns for Java and the section following addresses security issues for
+JavaScript.
+
+Java Problems
+
+The security problems reported about Java exist both in Netscape's Navigator
+2.0 and in the Java Development Kit 1.0 from Sun Microsystems. Solutions to
+both problems are provided below.
+
+DNS Attack
+
+In January, three students at Princeton University (Drew Dean, Ed Felten,
+and Dan Wallach) discovered a way to use Java to exploit a well-known Domain
+Name Service (DNS) vulnerability.
+
+Note that this is not a vulnerability with Java, per se. It is really a
+vulnerability with DNS that Java does not check for.
+
+DNS servers provide a means for translating between host names and IP
+addresses. For example, if a computer on the Internet were to initiate a
+connection to the machine ciac.llnl.gov, the local DNS server for that
+machine with resolve the host name as representing the IP address
+128.115.19.53.
+
+Java applets running under Sun's appletviewer or Netscape's Navigator 2.0
+are only allowed to connect the host from which they originated. To allow an
+applet to connect to other hosts would be dangerous, as the applet would be
+acting on behalf of the user who downloaded the applet. Imagine downloading
+an applet from a Web site, only to find that the applet sent mail to another
+system, acting as you. What's worse, without this restriction, a Java applet
+would have all the access capabilities your machine does, including
+accessing hosts behind a firewall.
+
+The problem occurs because Java does not completely verify that the
+information provided by the DNS server is accurate. Thus, if one can corrupt
+the DNS server, it is possible to trick a Java applet into accessing an
+arbitrary host. The potential for corrupting the information in DNS servers
+is a known problem. See, for example, CIAC Bulletin G-14, Domain Name
+Services Vulnerabilities.
+
+CLASSPATH Attack
+
+In February, David Hopwood of Oxford University made public another
+security problem with Java related to the loading of local class
+libraries.
+
+Java provides a class loading capability which allows a Java applet to load
+a class either from the host it originated from or from the user's local
+system. Java applets residing on the user's local system are allowed special
+capabilities such as reading and writing files or executing processes.
+Either of these tasks can cause serious security problems if not used
+properly. But, for large Java applets connecting to recognized hosts, the
+additional functionality provided by placing class libraries on a local
+system may be warranted.
+
+Ordinarily, an applet is restricted to loading applets from the directories
+specified in the environment variable CLASSPATH. However, Hopwood discovered
+a way to load class libraries from any readable directory on a user's
+system. This means that by placing a malicious class file and a dynamic
+library on the user's system, an attacker can open that system to attack.
+
+JavaScript Problems
+
+Several different security problems have been identified with JavaScript as
+well. Some of these vulnerabilities existed only in the public beta
+distributions made available by Netscape Navigator 2.0. Others still were
+present in the final release. The various problems reported include the
+following:
+
+(1) Reading a user's URL history list and transmitting it to a remote site.
+(2) Reading a user's disk cache (containing URLs recently acquired by
+    the Web browser) and sending the information to the Web server.
+(3) Stealing the e-mail address of the Web user and forging an e-mail
+    message with it.
+(4) Obtaining a recursive listing of local disk directories.
+(5) Logging all URL accesses made by a Web browser and transmitting
+    the information to a remote system. 
+
+Problems (1) and (2) were fixed in the final release of Netscape Navigator
+2.0. The other problems were fixed in the latest release, described below.
+
+Solutions
+
+Netscape solution
+
+In late February, Netscape made a patch available to solve the DNS server
+problem.
+
+On March 14, Netscape released Navigator 2.01, which fixed all of the
+vulnerabilities described above. It can be found at:
+
+     http://home.netscape.com
+
+Sun Microsystems solution
+
+On March 15, Sun released Java Development Kit 1.0.1, which fixed all
+of the vulnerabilities described above. It can be found at:
+
+    http://java.sun.com
+
+  [Item 2 on the next FIRST conference deleted for space.  
+  See http://ciac.llnl.gov/firstconf for info.  PGN]
+
+=========================================================================
+3) Security and Web Search Engines, By John Fisher
+=========================================================================
+
+A variety of very powerful search engines are available on the
+Internet, including Netscape
+(http://home.netscape.com/home/internet-search.html), Yahoo
+(http://www.yahoo.com), Alta Vista (http://altavista.digital.com),
+Lycos (http://www.lycos.com), and others. These engines, known as "web
+crawlers," provide a means for users to find URLs matching
+keywords. Their databases are populated by gathering up all of the
+available information provided by any Web server that can be
+found. The Alta Vista database, for example, contains an index over 30
+gigabytes in size.
+
+But, perhaps, these search engines have become a little too powerful. Some
+Web sites have provided a few too many links, including information related
+to system configuration. For example, doing a search for keywords such as
+"root", "daemon:", "passwd", etc, will return back a few stray /etc/passwd
+or /etc/group files, located on systems that have very poor Web
+configurations. This is a way to quickly find those Web sites that are not
+maintained very well and are most vulnerable to attack.
+
+So, the lesson here, if you maintain a Web site, be very sure of what
+information you are making available. Make sure no URLs are available which
+give configuration information about your system. With today's advanced
+search engines, you may be opening yourself to unnecessary problems.
+
+=========================================================================
+4) Microsoft Word Macro Virus Update, By Bill Orvis
+   [See full issue for this item, omitted for RISKS.  PGN]
+=========================================================================
+
+CIAC, the Computer Incident Advisory Capability, is the computer security
+incident response team for the U.S. Department of Energy (DOE) and the
+National Institutes of Health (NIH). CIAC is located at the Lawrence
+Livermore National Laboratory in Livermore, California. CIAC is also a
+founding member of FIRST, the Forum of Incident Response and Security Teams,
+a global organization established to foster cooperation and coordination
+among computer security teams worldwide.
+
+CIAC services are available to DOE, DOE contractors, and the NIH. CIAC
+can be contacted at:
+    Voice:    +1 510-422-8193
+    FAX:      +1 510-423-8002
+    STU-III:  +1 510-423-2604
+    E-mail:   ciac@llnl.gov
+
+For emergencies and off-hour assistance, DOE, DOE contractor sites, and the
+NIH may contact CIAC 24-hours a day. During off hours (5PM - 8AM PST), call
+the CIAC voice number 510-422-8193 and leave a message, or call 800-759-7243
+(800-SKY-PAGE) to send a Sky Page. CIAC has two Sky Page PIN numbers, the
+primary PIN number, 8550070, is for the CIAC duty person, and the secondary
+PIN number, 8550074 is for the CIAC Project Leader.
+
+Previous CIAC notices, anti-virus software, and other information are
+available from the CIAC Computer Security Archive.
+
+   World Wide Web:      http://ciac.llnl.gov/
+   Anonymous FTP:       ciac.llnl.gov (128.115.19.53)
+   Modem access:        +1 (510) 423-4753 (28.8K baud)
+                        +1 (510) 423-3331 (28.8K baud)
+
+CIAC has several self-subscribing mailing lists for electronic publications:
+1. CIAC-BULLETIN for Advisories, highest priority - time critical
+   information and Bulletins, important computer security information;
+2. CIAC-NOTES for Notes, a collection of computer security articles;
+3. SPI-ANNOUNCE for official news about Security Profile Inspector
+   (SPI) software updates, new features, distribution and
+   availability;
+4. SPI-NOTES, for discussion of problems and solutions regarding the
+   use of SPI products.
+
+Our mailing lists are managed by a public domain software package
+called ListProcessor, which ignores E-mail header subject lines. To
+subscribe (add yourself) to one of our mailing lists, send the
+following request as the E-mail message body, substituting
+CIAC-BULLETIN, CIAC-NOTES, SPI-ANNOUNCE or SPI-NOTES for list-name and
+valid information for LastName FirstName and PhoneNumber when sending
+
+E-mail to ciac-listproc@llnl.gov:
+  subscribe list-name LastName, FirstName PhoneNumber
+  e.g., subscribe ciac-notes OHara, Scarlett W. 404-555-1212 x36
+
+You will receive an acknowledgment containing address, initial PIN, and
+information on how to change either of them, cancel your subscription, or
+get help.
+
+Frank R. Swift, Computer Security, Lawrence Livermore National Laboratory
+Voice (510) 422-1463  Fax (510) 423-0913  uncl@llnl.gov
+
+  [Extensive background information and PGP enveloping removed for RISKS.
+  See full issue. PGN]
+
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.93 
+************************

@@ -1,0 +1,673 @@
+VIRUS-L Digest   Thursday, 10 May 1990    Volume 3 : Issue 92
+
+Today's Topics:
+
+More comments on mainframe viruses
+device drivers/viruses/antiviruses (PC)
+Re: Morris Sentenced - Washington Post Article
+"Truth, Justice, and the American Way"
+The Army, Glass Houses, and $$$
+MAC Virus list (ascii)
+Re: disk killer virus? (PC)
+Re: Military Viruses
+Re: Military Viruses
+Re: MacWorld Citation
+Re: How easy would it be to contaminate a Unix Computer? (UNIX)
+Sic the Virii on the bad guys?!
+Viruses as military weapons
+More about Sharp's Viri in Japan
+Alleged GEM/3 with Virus (PC)
+Off the AP wire, hacker search
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Tue, 08 May 90 10:14:02 -0400
+From:    Arthur Gutowski <AGUTOWS@WAYNEST1.BITNET>
+Subject: More comments on mainframe viruses
+
+>From:    Peter Jones <MAINT@UQAM.BITNET>
+>You have overlooked the problem of getting the base registers set up
+>properly. If a program exceeds 4096 bytes in length, then the initial
+>base register can't be used to address the end of the program.
+>...
+
+Sorry for the omission.  Yes, I did need to set up addressability based
+on 4K blocks, and set up my registers appropriately (it's been a while
+since I've done bare-metal programming).
+
+>From:    kelly@uts.amdahl.com (Kelly Goen)
+>Disassemblers are readily available for the
+>MVS and VM environments in fact one has just gone commercial this year...
+
+That's news to me.  I didn't think vendors would particularly want you to be
+able to pick apart their code.  Hmmmm...I can imagine some protesting here.
+
+>there are also certain Bootstrap SVC's (boot strap authorization, i.e. sets
+>TCBJSCBAUTH That  the flag handled by APF... once that is set
+>MODESET may be issued)...As far as IEHONESTY... it used to be a Storage
+>Management verfication utility(FE Service Aid...) wasnt available to normal
+>customers... once APF has been bypassed and
+>Modeset issued... NO security package has much protection at this level...
+
+Very true, once you get around the protection mechanisms, the ability to
+wreak havoc will be there.  As long as these protection mechanisms exist,
+there will always be ways around them--fact of life (sigh :-( ).
+As far as IEHONESTY, I'll just have to concede I'm new in the field (only
+been at it for a year), and I'm still a bit damp behind the ears.
+
+>as far as is it hard to do.... you forget guys(they ones who say it is hard)
+>then I went to school these were the only processors and OS available...
+>Many Thousands of people basically have the skill... fortunately few
+>have the motivation...^...|
+>    cheers
+>    kelly
+>p.s. thanks for getting this thread going... NOW comp.virus is Truly
+>Interesting!!! :)
+
+Extremely fortunate for us that the motivation is not there.
+
+>From:    teda!RATVAX.DNET!ROBERTS@decwrl.dec.com (George Roberts)
+>Don't these problems exist on personal computers?  If the first instruction
+>jumps to the virus which is added at the end of the program, there *usually*
+>won't be a problem.  Most viruses aren't perfect anyway.
+
+Yes, these problems do exist on a PC.  My intuition is that because a
+mainframe environment is more complex, then more complex are the applications
+written for them, therefore the more problems a virus is going to have
+successfully infecting.
+
+>Writing viruses that will *always* function properly *is* complex -
+>both for personal computers, mini's, and mainframes.  Some programs utilize
+>bugs/features that weren't meant to be utilized.  This is more common for
+>some operating systems than others, and makes these programs more likely
+>to be incorrectly infected.  Mainframe operating systems tend to have more
+>strict standards of programming conduct (not unix).  This should make virus
+>writing a little easier.  Writing viruses that *usually* work should be
+>about equally difficult for pc's, mini's, and mainframes.
+
+True, it is always a complex task, and sometimes involves exploiting bugs/
+features of the system...certainly these are more prevalent in a mainframe
+OS.  That strict programming standards make it easier for viruses isn't
+necessarily true.  A homogenous environment makes it easier for them to
+spread once they've got a foothold, but it is hardware, OS, and security
+subsystem protection mechanisms that make it more difficult to infect a
+mainframe.  Not to say it's impossible to infect a mainframe, we've already
+seen that there are ways to do it, just that it's more difficult.  As Kelly
+said above, there are many people around who have the knowledge to do so,
+and there probably always will be (as long as there are system programmers,
+anyway).  But these people are, as a rule, your trusted staff (thankfully).
+
+>Why not also extend the file a little longer to accomodate those larger
+>viruses?
+
+This is another way, but because of the nature of files on MVS, may
+get a little sticky.  The pds library maintains directory pointers
+to where the individual members are within the dataset, these would
+have to be modified (correctly, otherwise you would trash the library,
+it would be unusable, and the virus causes its own extinction).  In
+addition, there is a VTOC (roughly equivalent to a FAT) for each
+disk pack on the system that keeps track of where the dataset resides.
+If adding code causes the dataset to go into another extent, this may
+have to be dealt with.
+
+>What are these security programs already on MVS that you imply can
+>detect viruses?  (I don't know much about MVS) I do know that many
+>computers do *not* have system managers (mini's).  If they do,
+>the managing is often a side duty which isn't supposed to
+>interfere with his/her main objective.  These people often don't feel
+>they have time to install and check security features.
+
+My mistake, I didn't mean to imply that there is such a security system,
+to my knowledge it doesn't exist (by all rights, there should be something
+in the works at least, it could be devastating to get caught offguard by
+a mainframe virus considering the amount of data one could stand to lose
+by formatting a 3380!)  What I meant was that the security system is
+can track write (or allocate, or whatever) access to files that aren't yours,
+and it falls on the security people to audit these and report anything
+suspicious to the systems people (unfortunately this isn't a real great
+solution--how do you define suspicious??).  The system managers *SHOULD*
+spend time installing and checking security features...I feel it's part
+of their job.  How do you maintain the integrity of a system that doesn't
+have any security?  Notwithstanding trust, what about innocent accidents?
+
+//*Art
+PS> thanks to everyone participating in this thread--it is interesting stuff!
+ -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+ ##################### Arthur J. Gutowski, System Programmer
+ #       \|||/       # MVS and Antiviral Group / Tech Support / WSU UCC
+ #       /   \       # 5925 Woodward; Detroit MI  48202; PH#: (313) 577-0718
+ #      / O O \      # Bitnet:  AGUTOWS@WAYNEST1
+ # =000====U====000= # Internet:  AGUTOWS@WAYNEST1 or AGUTOWS@cms.wayne.edu
+ #####K#I#L#R#O#Y#####
+ If everyone in the U.S. drove a pink car, we'd have a pink car-nation!
+    (rim shot)
+
+------------------------------
+
+Date:    Tue, 08 May 90 18:21:49 -0400
+From:    "Dennis Clouse" <ISCDEC@UCCVMA.BITNET>
+Subject: device drivers/viruses/antiviruses (PC)
+
+ -----First Observation-----
+
+   One of the commonalities of TSR virus-checking utilities seems to be
+ insertion as the first line of the AUTOEXEC.BAT, which of course means they
+ cannot prevent any attacks which occur from power-up through the CONFIG.SYS
+ load, and in fact are not active if the AUTOEXEC.bat does not load (for
+ whatever reason).
+
+ -----Second Observation-----
+
+   Given the proliferation of device drivers, from so-called-enhanced
+ replacements of MOUSE.SYS and ANSI.SYS, to the zillions of display and printer
+ drivers, some of which (essentially filters, granted) are designed for
+ placement into the CONFIG.SYS file. Whereas most everyone would agree that
+ COM, EXE, and BAT files are 'executable', somehow the notion of PIF and SYS
+ files as such seems less widespread.
+
+ -----Third Observation-----
+
+   I use (and like) the CONFIG.CTL routine from PC Magazine (c) 1988 by Ziff
+ Communications. It allows me the option to alter the composition of the
+ CONFIG.SYS for the current session _BEFORE_ it loads.
+
+ -----Hash Total of Observations-----
+
+   If CONFIG.CTL can hook the system prior to CONFIG.SYS installation, then so
+ can virus infections (including a tainted CONFIG.CTL), and it's much easier to
+ relocate and manipulate 200 bytes of CONFIG.SYS than an entire boot sector
+ (like BRAIN does) to disguise it's operation.
+
+   This would appear to be a nice way to load the anti-viral filters and such
+ also: it would at least put them into the system earlier (it seems) than
+ invoking them in the AUTOEXEC.BAT file, and stop a suspicious driver from
+ loading, rather than detecting it after-the-fact. Are there any anti-viral PC
+ products which load/activate via the CONFIG.SYS?
+
+   There are also empty EPROM sockets in my PC: would it be possible to produce
+ code for a viral filter on EPROM (which would activate prior to CONFIG.SYS)?
+
+   I would rather buy a chip which has been extensively tested to filter my
+ system, and activates earlier on in the boot cycle, than depend on code out
+ there where it is exposed to the viruses ... and EPROMS can't be altered
+ without several deliberate preliminary steps outside the control of the PC.
+
+   Could validation software be produced which checks ROM and/or custom EPROM
+ anti-viral code, or could the EPROMS be self-validating?
+
+   Comments appreciated.
+
+
+ cannot prevent any attacks which occur from power-up through the CONFIG.SYS
+ load, and in fact are not active if the AUTOEXEC.bat does not load (for
+ whatever reason).
+
+ -----Second Observation-----
+
+   Given the proliferation of device drivers, from so-called-enhanced
+ replacements of MOUSE.SYS and ANSI.SYS, to the zillions of display and printer
+ drivers, some of which (essentially filters, granted) are designed for
+ placement into the CONFIG.SYS file. Whereas most everyone would agree that
+ COM, EXE, and BAT files are 'executable', somehow the notion of PIF and SYS
+ files as such seems less widespread.
+
+ -----Third Observation-----
+
+   I use (and like) the CONFIG.CTL routine from PC Magazine (c) 1988 by Ziff
+ Communications. It allows me the option to alter the composition of the
+ CONFIG.SYS for the current session _BEFORE_ it loads.
+
+ -----Hash Total of Observations-----
+
+   If CONFIG.CTL can hook the system prior to CONFIG.SYS installation, then so
+ can virus infections (including a tainted CONFIG.CTL), and it's much easier to
+ relocate and manipulate 200 bytes of CONFIG.SYS than an entire boot sector
+ (like BRAIN does) to disguise it's operation.
+
+   This would appear to be a nice way to load the anti-viral filters and such
+ also: it would at least put them into the system earlier (it seems) than
+ invoking them in the AUTOEXEC.BAT file, and stop a suspicious driver from
+ loading, rather than detecting it after-the-fact. Are there any anti-viral PC
+ products which load/activate via the CONFIG.SYS?
+
+   There are also empty EPROM sockets in my PC: would it be possible to produce
+ code for a viral filter on EPROM (which would activate prior to CONFIG.SYS)?
+
+   I would rather buy a chip which has been extensively tested to filter my
+ system, and activates earlier on in the boot cycle, than depend on code out
+'MSG:FROM: ISCDEC  --UCCVMA   TO: VIRUS-L --LEHIIBM1          05/08/90 15:14:06
+ To: VIRUS-L --LEHIIBM1
+
+ FROM:    Dennis Clouse        ISCDEC @ UCCVMA
+ Subject: device drivers/viruses/antiviruses
+
+ -----First Observation-----
+
+   One of the commonalities of TSR virus-checking utilities seems to be
+ insertion as the first line of the AUTOEXEC.BAT, which of course means they
+ cannot prevent any attacks which occur from power-up through the CONFIG.SYS
+ load, and in fact are not active if the AUTOEXEC.bat does not load (for
+ whatever reason).
+
+ -----Second Observation-----
+
+   Given the proliferation of device drivers, from so-called-enhanced
+ replacements of MOUSE.SYS and ANSI.SYS, to the zillions of display and printer
+ drivers, some of which (essentially filters, granted) are designed for
+ placement into the CONFIG.SYS file. Whereas most everyone would agree that
+ COM, EXE, and BAT files are 'executable', somehow the notion of PIF and SYS
+ files as such seems less widespread.
+
+ -----Third Observation-----
+
+   I use (and like) the CONFIG.CTL routine from PC Magazine (c) 1988 by Ziff
+ Communications. It allows me the option to alter the composition of the
+ CONFIG.SYS for the current session _BEFORE_ it loads.
+
+ -----Hash Total of Observations-----
+
+   If CONFIG.CTL can hook the system prior to CONFIG.SYS installation, then so
+ can virus infections (including a tainted CONFIG.CTL), and it's much easier to
+ relocate and manipulate 200 bytes of CONFIG.SYS than an entire boot sector
+ (like BRAIN does) to disguise it's operation.
+
+   This would appear to be a nice way to load the anti-viral filters and such
+ also: it would at least put them into the system earlier (it seems) than
+ invoking them in the AUTOEXEC.BAT file, and stop a suspicious driver from
+ loading, rather than detecting it after-the-fact. Are there any anti-viral PC
+ products which load/activate via the CONFIG.SYS?
+
+   There are also empty EPROM sockets in my PC: would it be possible to produce
+ code for a viral filter on EPROM (which would activate prior to CONFIG.SYS)?
+
+   I would rather buy a chip which has been extensively tested to filter my
+ system, and activates earlier on in the boot cycle, than depend on code out
+ there where it is exposed to the viruses ... and EPROMS can't be altered
+ without several deliberate preliminary steps outside the control of the PC.
+
+   Could validation software be produced which checks ROM and/or custom EPROM
+ anti-viral code, or could the EPROMS be self-validating?
+
+   Comments appreciated.
+
+
+------------------------------
+
+Date:    Wed, 09 May 90 10:15:10 -0400
+From:    <DN5@PSUVM.PSU.EDU>
+Subject: Re: Morris Sentenced - Washington Post Article
+
+zmudzinskit@imo-uvax.dca.mil (zmudzinski, thomas) says:
+
+- ->Personal Note:  There will be many flamers on this, and I think that before
+- ->the hotter-headed among us start burning old UNIX workstations on the
+- ->Morris's lawn, we should remember that we are part of a nation of laws.
+- ->I do not agree with Judge Munson's sentence; I think it is little more than
+- ->a slap on the wrist (does anyone REALLY believe that RTM Jr. won't get
+- ->bigger advance from his publisher than the $10K fine?); *B*U*T* Mr. Morris
+- ->has been convicted and sentenced AND THAT'S THE END OF IT.
+- ->
+- ->Thank you.
+- ->
+- ->Tom Zmudzinski,
+- ->Former DDN Network Security Officer
+
+I hope that this ISNT the end of it.  I, too, was hoping for a more
+severe sentence.  I also was wondering: this worm caused a lot of
+computer systems to spend a lot of time and resources in order to get
+things back to normal.  Would it be possible for one or more of these
+places (or perhaps all in a class-action suit) to sue Mr. Morris?
+
+While this wouldn't be a criminal penalty, it would give a message
+that the computing profession takes a dim view of vandals...
+
+                        D. Jay Newman
+                        dn5@psuvm.psu.edu
+Disclaimer:
+  I am not a lawyer, nor have I ever sued or been sued, so I don't
+  know the specifics that are involved.  The above is a purely
+  personal opinion.
+
+------------------------------
+
+Date:    Wed, 09 May 90 10:30:00 -0400
+From:    WHMurray@DOCKMASTER.NCSC.MIL
+Subject: "Truth, Justice, and the American Way"
+
+>And to set things straight, Nick published the virus for the same
+>reason I will (if I finally do it) publish source code examples. To
+>educate people on how to DESTROY them. Now, this had a side-effect,
+>which I understand, is troublesome.  But education is power... To
+>leave people ignorant is I think, a crime!  Oh, also: Nick published
+>the source code of the vaccine (antivirus) in the next issue...
+
+Sorry.  Suppose that "troublesome" turns out to be an understatement?
+One crime of omission does not justify another of commission.  Being
+opposed to ignorance is no excuse for setting in motion an overtly
+destructive, but otherwise unpredictable, process which once started
+is immediatlely outside your control.  I think what you have is a
+rationale for what you intend to do anyway, rather than a valid
+justification.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+Date:    Wed, 09 May 90 10:59:00 -0400
+From:    WHMurray@DOCKMASTER.NCSC.MIL
+Subject: The Army, Glass Houses, and $$$
+
+I hope that the story about the Army spending a half a million dollars
+of our money to commission something that they  can  hardly avoid anyway
+turns out to be apochryphal.
+
+However, just in case they are serious, I am a small business man, and I
+will give them the answers pro bono.
+
+First, people who live in glass houses should not throw stones.  The US
+Army will be far more vulnerable to any virus that they create than will
+be any potential enemy.  A virus depends for its success on the size of
+the target population and the amount of sharing among members of the
+population.  Thus, the US Army will be more vulnerable than any
+potential, computer starved, enemy.
+
+Least the Army think that it can rely upon prior vaccination against its
+own virus, they need to look at the size of the population that they
+would have to deal with.  They are adding to that population at a rate
+that would exceed the most optimistic assessment of the rate at which
+they can hope to vaccinate.
+
+Second, like biological agents, computer viruses are neither tactical
+nor strategic weapons, they are doomsday weapons.  Unlike Trojan Horse
+attacks, viruses cannot be aimed or controlled.
+
+Third, if they want one, all they have to do is go the nearest computer
+lab or retail store.  They will be lucky if they can avoid one.  Failing
+that, most high school kids would be happy to write one for nothing.  It
+certainly does not cost $500000 to get someone to write one.  Look at
+all the ones that have been written for no motive stronger than
+amusement.
+
+Rather than commissioning new ones, they better spend the money stopping
+the spread of those that they  already have and haven't noticed yet.
+
+Dear God, the story is just stupid enough to be true.  Bureaucracy is
+just as mindless and uncontrollable as viruses.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+Date:    09 May 90 16:48:20 +0000
+From:    dweissman@amarna.gsfc.nasa.gov (WEISSMAN, DAVID)
+Subject: MAC Virus list (ascii)
+
+Until Dr. Brunnstein can get his MAC virus list out in mid-June is
+there any file in text format that would provide the same information
+(i.e. list of MAC viruses and associated descriptions).
+
+Any help will be appreciated,
+
+Dave Weissman
+GSFCMail/X.400
+Goddard Space Flight Center
+NASA
+
+------------------------------
+
+Date:    09 May 90 17:33:12 +0000
+From:    kevinc@cs.athabascau.ca (Kevin Crocker)
+Subject: Re: disk killer virus? (PC)
+
+mrmarx!cant@uunet.uu.net writes:
+>Does anyone know if the following is a known virus problem?  It happened to
+>a friend so I cannot relate every detail.  And then...
+>The screen suddenly displays a message like
+>"Disk killer, do not turn off power unitl
+> processing completed"
+>
+>jim cant   (uunet!mrmarx!cant is an address that also works (I think))
+
+Although I am not a virus watcher in the real sense, I did get a set
+of programs from Fridrik Skulason in Iceland called F-PROT that has a
+blurb that lists a number of virii and what they do.  This particular
+one was listed, at least most of the message seemds the same.
+
+He calls it the "Disk Killer" and claims that it encrypts all data by
+using a simple XOR method.
+
+Fridrik can be contacted through the net.
+
+[Ed. Fridrik's email address is <frisk@rhi.hi.is>.]
+
+Hope this helps, if more info is needed e-mail me.
+
+Kevin
+- --
+Kevin "auric" Crocker Athabasca University
+UUCP: ...!{alberta,ncc,attvcr}!atha!kevinc
+Inet: kevinc@cs.AthabascaU.CA
+
+------------------------------
+
+Date:    Wed, 09 May 90 09:05:17 -1000
+From:    jwright@cfht.cfht.hawaii.edu (Jim Wright)
+Subject: Re: Military Viruses
+
+> However, computer experts said creating a virus such as that sought
+> by the Army was possible with current technology -- although some
+> of the Army's requirements could make developing it more difficult
+> than creating an ordinary personal computer virus.
+
+Hmmm..  just how many viruses have been written in Ada?
+
+------------------------------
+
+Date:    09 May 90 21:55:20 +0000
+From:    kelly@uts.amdahl.com (Kelly Goen)
+Subject: Re: Military Viruses
+
+ Yippee!!!. I am going to echo this thread by email to the Moderator
+of Sci.Military... he thought viruses were not a proper military
+subject....
+   cheers
+   kelly
+
+------------------------------
+
+Date:    Wed, 09 May 90 13:52:00 +0000
+From:    peter@ficc.ferranti.com (Peter da Silva)
+Subject: Re: MacWorld Citation
+
+WHMurray@DOCKMASTER.NCSC.MIL writes:
+> Sorry.  Even if no one ever writes another one, the chances that the
+> world will ever again be free of them is small indeed.
+
+Nonsense. While it's not going away in the next few years, I really doubt that
+MS-DOS or Mac/OS in their present form will survive far into the next century.
+- --
+`-_-' Peter da Silva. +1 713 274 5180.  <peter@ficc.ferranti.com>
+ 'U`  Have you hugged your wolf today?  <peter@sugar.hackercorp.com>
+@FIN  Commercial solicitation *is* accepted by email to this address.
+
+------------------------------
+
+Date:    Wed, 09 May 90 20:03:59 +0000
+From:    peter@ficc.ferranti.com (Peter da Silva)
+Subject: Re: How easy would it be to contaminate a Unix Computer? (UNIX)
+
+agtoa!greyfox@uunet.uu.net writes:
+> Since Unix can run on just about any computer from my Dinky '386 to a
+> Cray Supercomputer, wouldn't it be nearly impossible to write a virus
+> to corrupt Unix Binaries?
+
+Yes, so what you do is corrupt UNIX source. Didn't you see my "Usenet
+Virus" article?
+- --
+`-_-' Peter da Silva. +1 713 274 5180.  <peter@ficc.ferranti.com>
+ 'U`  Have you hugged your wolf today?  <peter@sugar.hackercorp.com>
+@FIN  Commercial solicitation *is* accepted by email to this address.
+
+------------------------------
+
+Date:    Wed, 09 May 90 16:34:39 -0500
+From:    agtoa!greyfox@uunet.uu.net
+Subject: Sic the Virii on the bad guys?!
+
+Craig Bosworth writes:
+
+>I think it would be exceedingly difficult to develop a virus that
+>could be considered a reliable tactical weapon.  However, I do think
+>that computer sabotage of all types, including spreading viruses,
+>could be an effective strategic weapon in an extended conflict.  I
+>wonder how the US compares to the Soviets in their dependence on
+>computers and their computers' vulnerability to attack.
+
+I dunno... I've heard that the Soviets computer technology lags behind
+ours and that they don't depend on computers as much as we do. Anyway,
+are they really the "Bad Guys" anymore? Looks like Iran & Iraq are the
+guys to keep an eye on now.
+
+On the Newspaper article included:
+I wrote a rather large flame on this which I'm not including to save
+net.bandwidth, (If anyone wants it, E-Mail me), but I'll include a
+few general impressions: I noticed that a LOT of experts were quoted
+or paraphrased, but never do we hear who these "Experts" are. I expect
+most of them are some computer columnist who happened to be available
+at the time. I also noted that using a virus in a war effort would
+be extremely dangerous -- something along the lines of killing flies
+with a shotgun. The whole thing sounds like either media hype or
+something a "Desk" General came up with because he can think of nothing
+better to do with the Zilog 80's he just received. I expect we'll be
+hearing more on this news article from... Oh... everyone....
+
+                                         -Bruce Ide
+                                          Xenix Systems Administrator
+                                          Post Time Publications INC.
+
+------------------------------
+
+Date:    Wed, 09 May 90 17:07:00 -0500
+From:    "Charles Cafrelli IAQR100@INDYVAX" <IAQR100@INDYVAX.BITNET>
+Subject: Viruses as military weapons
+
+I'm curious as to how one would actually implant a virus over military
+radio frequencies, especially if one were using a closed system.  The only
+thing I could think of would be to intercept a program being downloaded to
+a sub-station, or under an espionage style sabotage  (I.E. Having an
+actual person sneak onto a base, and implant the virus onto the computer.)
+I don't think they could be used as a battlefield weapon (Quick Lieutenant,
+fire that Brain virus, that's the only thing that'll stop 'em now!)
+Course there's also the example from Star Trek II:The Wrath of Kahn, where
+Kirk and gang use the computer codes to turn off the shields on Kahn's ship,
+when he thought he was getting the data of the Genesis program.  But that
+depended on an open system.
+I guess I just want to know how somebody would get a virus onto a program that
+never asked for access on the outside world.  (Superimposing magnetic images
+maybe??  ;->)
+Charles Cafrelli
+IAQR100@INDYVAX
+
+------------------------------
+
+Date:    Thu, 10 May 90 19:27:31 +0900
+From:    Yoshio Oyanagi <oyanagi@is.tsukuba.ac.jp>
+Subject: More about Sharp's Viri in Japan
+
+          More about Sharp's X68000 Viri in Japan
+
+     Artdink Inc. is now distributing the vaccine against the virus
+which was contained in the simulation game software "FAR SIDE MOON".
+It says that the virus in question is attached to the battery
+backed-up area of the SRAM of X68000 and if the system is booted by a
+floppy without the protect seal, the floppy is contaminated.  It is
+named "NX68K IPL V1.02".  The effect of the virus is it will destroy
+the data on the floppy after July this year.  This virus started to
+prevail among X68000 users last December.
+
+     Artdink started to sell "FAR SIDE MOON" for X68000 on April 13
+(Friday !!!!).  3200 sets have been sold before calling back due to
+the virus.  Not all the articles are contaminated, only those in
+limited lots.  This software consists of three floppies, among which
+only game disk is contaminated while system and data disks are not.
+If a user boots the dirty floppy according to the manual, the virus is
+not transfered to the SRAM.
+
+    The vaccine, named "DOCTOR" was written by the editorial office of
+the journal "Oh! X" for X68000 users.  It initializes the SRAM and
+make it immune and it kills the virus on the floppy.  However, it is
+effective only to two viri V1.02 and V1.05.
+
+                                       Yoshio Oyanagi (Univ. of Tsukuba)
+
+------------------------------
+
+Date:    10 May 90 12:38:21 +0000
+From:    dweissman@amarna.gsfc.nasa.gov (WEISSMAN, DAVID)
+Subject: Alleged GEM/3 with Virus (PC)
+
+On April 20th, 1990 a message reporting that the STONED virus had shown up
+in shrink-wrapped copies of GEM/3 Desktop was posted.  I have seen the
+original message in comp.virus and VIRUS-L but have seen no followup.  Does
+anyone have any news or updates on this?
+
+Dave Weissman
+GSFCMail/X.400
+Goddard Space Flight Center
+
+------------------------------
+
+Date:    Thu, 10 May 90 03:18:29 -0500
+From:    agtoa!greyfox@uunet.uu.net
+Subject: Off the AP wire, hacker search
+
+>From the AP wire:
+- -------------------------------------------------------------------------
+05/09/90     HACK-LI         RP    PM 0509   PM-ComputerHackers
+
+Government Launches National Search For Computer Hackers[QL]
+[EP]
+[EP]
+[EP]
+    WASHINGTON (AP)  The Secret Service is conducting a coast-to-coast
+investigation into the unauthorized use of credit-card numbers and
+long-distance dialing codes as well as illegal entry into computer
+systems by hackers, according to sources.[EP]
+    Search warrants were obtained by the Secret Service to conduct
+searches tuesday in 13 cities, including Chicago, Cincinnati, Detroit,
+Los Angeles, Miami, Newark, N.J., New York City, and Pittsburgh, said
+the sources, who spoke on condition of anonymity.[EP]
+    The investigation is being supervised by Stephen McNamee, the U.S.
+attorney in Phoenix, Ariz., and Bob Corbin, the Arizona attorney
+general.[EP]
+    The two officials scheduled a news conference today in phoenix to
+discuss the searches, the Secret Service said.[EP]
+    Secret Service spokesman Richard Adams declined to discuss details
+of the case.[EP]
+    The investigation in Phoenix is also focusing on incidents in which
+computer hackers allegedly changed computerized records at hospitals
+and police 911-emergency lines, according to one source.[EP]
+    Up to 150 Secret Service agents participated in the searches
+Tuesday, according to one source.[EP]
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

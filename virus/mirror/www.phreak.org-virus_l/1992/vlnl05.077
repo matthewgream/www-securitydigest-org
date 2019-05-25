@@ -1,0 +1,799 @@
+VIRUS-L Digest   Friday, 27 Mar 1992    Volume 5 : Issue 77
+
+Today's Topics:
+
+Re: Drug Rehab - Stoned (PC)
+Re: FDISK /MBR and Stealth viruses. (PC)
+Re: FDISK /MBR (PC)
+Problems with f-prot rebooting the system (PC)
+Re: F-PROT warning: false positive? (PC)
+Re: Fprot & 2to1 (PC)
+Re: Increasing CBCS Security (PC)
+Re: INFO wanted: BBS methods of virus detection (PC)
+Re: Mardi Bros (PC)
+Re: Michelangelo bug ? (PC)
+Re: Network Viruses (PC)
+Re: Network Viruses (PC)
+Re: New Virus? (PC)
+Re: polymorph virus questions (PC)
+Re: Recovery from a New Zealand Strike? (PC)
+Re: Scan via email and shure FAQ (PC)
+Re: Stoned, No-Int, and SCANV86B (PC)
+OS/2 bug or virus? (OS/2)
+Re: Origins of viruses
+Re: CRCs- How do they work?
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    26 Mar 92 12:00:54 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Drug Rehab - Stoned (PC)
+
+wplace!mlewis@duke.cs.duke.edu (Mark Lewis) writes:
+
+> > Two possibilities. Either get a better disinfector, or (preferred) get
+> > a MS-DOS 5.0 system diskette (should be write protected). Go to every
+> > computer, boot from that diskette, and run FDISK /MBR. Should remove
+> > the virus without problems.
+
+> am i to understand that this will work on all previous DOS versions?
+
+Yes. You only need the FDISK from DOS 5.0 (and to boot from DOS 5.0
+itself, otherwise the program will complain about the DOS version). It
+doesn't matter what DOS version your hard disk is formatted with.
+
+> i'm going to assume that it is correct for 3.xx and up. i know that
+> 4.01 also had some structure differences but i don't know where they
+> were/are.
+
+No. FDISK /MBR rewrites only the program in the MBR, whithout trying
+to interpret the partition table data, so the structural differences
+are not important (unless they have completely changed the format of
+the PT which they haven't done). The only problem is if the 0AA55h
+marker at the end of the MBR is destroyed. In this case FDISK /MBR
+will rewrite the whole MBR, trying to rebuild the PT from scratch and
+it may destroy some partition information. But, if the marker is
+destroyed, the disk will not be accessible, if you boot from a
+diskette. That's why, you must first boot from the system diskette,
+then check whether you are able to access the hard disk, and then run
+FDISK /MBR.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 12:14:49 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FDISK /MBR and Stealth viruses. (PC)
+
+ether@10249.gedlab.allied.com (219) writes:
+
+> >> I don't know of any viruses that don't leave a partition table intact
+> >> in the master boot record.  (Not that ignorance means much :) If you
+> >
+> > There are one or two, but for obvious reasons they haven't spread too
+> > far... :-)
+
+> What are the obvious reasons? I a virus does all the following...
+
+[description deleted]
+
+> .. then I don't see why the virus has to leave the PT table area
+> of the MBR alone.
+
+It does not have to, indeed, but if it does what you describe, then
+the hard disk will suddenly become inaccessible to DOS if you boot
+from a floppy. Fortunately, it seems that enough users are doing this
+from time to time :-) and such viruses get discovered early enough.
+
+> > Doesn't FDISK /MBR just rewrite the MBR program? Does is try to
+> > interpret in some way the partition table data? Why?
+
+> Yes and no.  I tried the following two experiments:
+
+> 1) I filled the entire sector 0,0,1 of a Compaq 386 with the letter
+> 'E', booted from a DOS5 diskette, and ran FDISK /MBR.  This created
+> a nice MBR in sector 0,0,1 but the PT area of 0,0,1 was now filled
+> with nulls.  So in this case, FDISK /MBR changed the PT (from all
+> 'E's to all nulls ).
+
+> 2) Using a sector editor and a saved copy of the original sector
+> 0,0,1 I restored the PC to its original condition.  Then I garbaged
+> up the MBR part of 0,0,1 but left the PT area alone.  Then I ran
+> FDISK /MBR again as above.  This time I wound up with a bootable
+> disk.  FDISK /MBR left the PT area alone.  Seems like FDISK /MBR
+> is smart enough to leave a "good" PT alone? Go figure.
+
+Try a third experiment:
+
+3) Fill the entire sector 0,0,1 with the letter 'E', -EXCEPT- the last
+two bytes. Leave them to be 55h 0AAh. Then run FDISK /MBR. You'll see
+that it will replace the program in the MBR, but will leave the PT
+area filled with 'E's. Which will mean that the disk will not be
+bootable, of course. (Disclaimer: I haven't verified that.)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 12:23:26 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FDISK /MBR (PC)
+
+ether@10249.gedlab.allied.com writes:
+
+> Just because *Michelangelo* leaves the PT in the MBR alone,
+> doesn't mean *all* boot-sector viruses are so obliging.  As
+
+Of course. But I never claimed that it will work against -all- master
+boot sector viruses. In fact, it is possible to write a MBR infector,
+without changing the part that FDISK /MBR restores at all, so that
+"restoring" it will do no good... (Don't ask me about details about
+this, please).
+
+> with a boot-sector virus which overwrites the PT.  So the advice
+> being given on comp.virus about using FDISK/MBR should carry some
+> kind caveat to this effect.
+
+There might be a couple of other caveats... But my initiall suggestion
+was to use FDISK /MBR to remove Michelangelo (also Stoned and some
+others), not to use it as a cure-all against MBR infectors. And I
+still claim that it can be safely used for this purpose, regarless of
+the DOS version the hard disk is formatted with. It is certainly
+better than the free CPAV and NAV "special editions", which are pure
+crap and even cannot operate if the amount of free memory is 364 Kb or
+below... :-(
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Thu, 26 Mar 92 13:02:13 +0000
+From:    miss059@uxa.ecn.bgu.edu (Pug)
+Subject: Problems with f-prot rebooting the system (PC)
+
+Good morning. I'm trying to help a user. They are having the system
+reboot on them whenever they pick any option on the main menu of
+f-prot 2.02d. Their systems description is as follows:
+
+> I have an IBM P70 with 6 MB of memory and 60 MB of hard disk space.  It is
+> running DOS 4.0.  I have Windows 3.0 installed, but I didn't like it, so I
+> haven't used it.  I use the Expanded memory manager supplied with DOS.  I am
+> also using Automenu 5.0 for my frontend.  It is a stand alone pc, no
+> network.  The Share utility that is supplied by DOS is loaded when the
+> system starts.  That's all that I can think of that might apply
+
+Thanx to anyone who might have any ideas on this problem.
+
+- --
+Richard Bainter          Mundanely     |       "Teachers are supposed to
+Phelim Utred Gervas      Society       |        teach you *HOW* to learn
+Pug                      Generally     |        not *WHAT* to learn."
+  miss059@uxa.ecn.bgu.edu  |  pug@ccwf.cc.utexas.edu  |  pug@wixer.UUCP
+
+------------------------------
+
+Date:    26 Mar 92 13:14:20 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-PROT warning: false positive? (PC)
+
+vantent@eurcvx.eur.nl (Jan van 't Ent) writes:
+
+> Joshua Proschan <0004839378@mcimail.com> writes:
+>  >A related question: f-prot identifies nearly all the Norton Utilities
+>  >programs and several Microsoft Word programs as exhibiting virus-like
+>  >behavior, when the heuristic scan is used.  Is this also a false
+>  >positive?
+
+> Maybe ... I think it not unlikely that some 'standard' Norton tricks
+> for direct or fast access are by-passing DOS to use BIOS or RAM
+> directly, which F-PROT's heuristics could very well classify as
+> non-standard or virus-like behaviour (also: for some users these ARE
+> potentially harmful programs...)
+
+In this particular case, I think that the warning is cause by the
+unusual way the utilities are using to relocate themselves in memory.
+I think this is cased by the fact that they come self-compressed, and
+even unpacking them (an option during the installation process) still
+leaves a small weird routine in them.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 13:01:18 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Fprot & 2to1 (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> >I do not know if this has been reported before, fixed etc. but I just
+> >ran F-Prot to check a diskette that had 2to1.com and safembr.com on
+> >it.  Both programs were reported as "Possibly a dropper program for a
+> >new variant of Stoned."  The date of 2to1 is 9/28/91, of safembr
+> >10/12/91 and I am using F-Prot 2.02D.
+
+> This is the virtue of hueristic analysis and I would not really call
+> it a "false positive" since Frisk is picking up the fact that my
+> programs replace the Master Boot Record (MBR) - why the current
+
+Hmm, I'm sorry, but as far as I know, the above message is NOT caused
+by the heuristic analyser (Frisk?). Maybe the original poster can
+confirm that he used the scanning option, not the heuristic analysis.
+So, in this case it probably -is- a false positive.
+
+What I believe Frisk does is picking a scan signature of the dropper
+program (I think that the program SENDDISK creates these pesky
+droppers) and then another one from the part of the file that contains
+the boot sector to be dropped. In your program you are probably using
+the same instruction sequence to drop your own boot sector, and in the
+boot sector there might be some bytes that are present in Stoned
+too... It is a false positive, it is the fault of neither of you, and
+either of you can correct the problem by modifying his program a bit.
+But the main cause of such problems is the lack of exact virus
+identification in F-Prot.... Of course, if it begins to identify the
+viruses exactly, it won't be so good in catching new variants of the
+known viruses as it currently is... My suggestion is that Frisk
+implements exact identification for the known viruses and moves the
+code to detect new closely related variants in the heuristic analyser.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 13:20:24 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Increasing CBCS Security (PC)
+
+Toria@cup.portal.com writes:
+
+> You have easily done away with two of the most diffused (and relied
+> upon) anti-viral programs in the Ms-Dos environment. I don't like to
+
+I wish I have done away with them, but nope, they are still used by
+severay unsuspecting users... :-) Anyway, SCAN is very good in
+detecting wheter a file or a boot sector is infected or not. The
+quality of the report is poor (what exactly virus it is, what are its
+properties, whith which other viruses it is related, etc.), it's
+memory scan is also not implemented in the most clever way. CPAV is
+ -much- worse than SCAN, regardless of its bells and whistles.
+
+I suggest that you combine SCAN with at least F-Prot (a very cheap
+alternative). If you want to spend more money, get Dr. Solomon's
+Anti-Virus ToolKit. And, of course, F-Prot - the two combine very
+nicely (AVTK identifies viruses exactly and detects more viruses,
+while F-Prot is better in detecting new variants of the known
+viruses).
+
+But the programs above are only virus-specific scanners/removers. You
+really MUST NOT repy on known virus scanning only.
+
+> rely entirely on an anti-viral program in a real-life environment, but
+> it's what I had to do on MC-link, the computer-based conference system
+> I work for. We have a shareware library of some 300 Mb, about 100 of
+> which are Ms-Dos. And our paying subscribers expect us to keep it free
+> from viruses. So we have set up a regular routine by which every .ZIP
+
+Hmm.... it's a very difficult problem, especially if somebody
+deliberately decides to attack your system... He could use an unknown
+virus (so the scanners won't catch it, and if he's clever enough,
+he'll avoid the heuristic analyser of F-Prot too), a clever tunnelling
+virus (so that it will be able to bypass a monitoring program) and a
+slow virus with sparse infection strategy, so that even an integrity
+checker will have problems to detect it... I personally check the code
+of any new program that I get with a debugger, but I guess that it is
+not an acceptable approach for a shareware library... And even if you
+decide to try you, the virus code could be well concealed in a
+utility... No, I don't see a perfect solution for your case. Just use
+a multiple level defense (scanners, monitors, integrity checkers, goat
+machine for program testing) and pray that nobody who is knowledgeable
+enough will decide to shut down your system... And, of course, always
+verify the identity of your users.
+
+> consists in running SCAN against it. This procedure has not kept us
+> from stumbling in a sample of "September 18th", which was not
+> acknowledged by SCAN (but was found by one of the users who ran CPAV
+> against one of our newest additions).
+
+Have you actually kept the file? This is a very silly virus and I
+somehow doubt that it can spread in the wild... Maybe it was just yet
+another false positive caused by CPAV? Have you tried to disinfect the
+file? Did it work after being disinfected?
+
+> So I have determined to add some more anti-viral software to the check
+> routine, namely CPAV, NAV and VIRex. I know I'm still not 100% sure, but
+
+Hmm, if your have to list them in the order of decreasing quality, the
+order should be exactly the opposite... :-) Anyway, get F-Prot at
+least. It is -very- good and with the price of $1 per machine per
+year, it is -really- cheap.
+
+> Is there something more that I could do? I have been toying with the
+> idea of using an integrity checker on a separate machine, on which I
+> would run the new uploads and verify if the pre-existing software
+> remains intact after each run. But I'm not sure if this would add any
+> significant security to my system.
+
+Adding an integrity checker on the goat machine will improve the
+security A LOT. It just won't solve the problem entirely (e.g., if the
+virus does not try to spread at once). If you can afford a commercial
+program, get the Untouchable (marketed in the USA by Fifth Generation
+Systems) and use it's integrity checker only (the other parts of the
+package are not so good). If you need something cheaper, get Integrity
+Master (shareware).
+
+Hope the above helps.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 13:54:22 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: INFO wanted: BBS methods of virus detection (PC)
+
+rslade@sfu.ca (Robert Slade) writes:
+
+> I seem to recall, in the dim and distant recesses of my memory, either
+> a trojan or a virus which did test for the presence of BBS software.
+> However, even if I do recall correctly, these types of programs are
+> extremely rare.
+
+Oh, they are not so rare... There are several trojans which target BBS
+software (like making the list of the passwords downloadable). There
+are also a few anti-BBS viruses. A clever one is Cheeba. Also, the
+latest thing I just received is Creeper - a silly little virus which
+has a clever triggering mechanism. It gets triggered when a particular
+message is present in the video memory. Got the idea? First you wait
+until the person you target is infected, then send him an e-mail
+message. When s/he reads it (displaying it on the screen), the virus
+triggers...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:02:01 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Mardi Bros (PC)
+
+PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+
+> McAfee's SCAN calls this DenZuk; I don't know why F-Prot calls it
+> Mardi Bros (virus names are the 8th wonder of the world). What it does
+
+Because it is a variant of Den Zuk. McAfee uses an "optimised"
+signature, while Frisk tries to distinguish between the variants.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:07:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Michelangelo bug ? (PC)
+
+kermits@akkali.iesl.forth.gr writes:
+
+> I have a PC XT running under MSDOS 5.0 and recently discovered that
+> the boot disk along with some others was infected by Michelangelo
+> virus.  Funny thing is that all the contaminated diskettes had been
+> unused for at least 2 months.  So,is Michelangelo more older than
+> already assumed ?
+
+The virus is more than 1 year old.
+
+> But the strange in this occasion is elsewhere : after i cleaned ALL
+> the other diskettes (using Viruscan 85 by McAfee) i thought i could
+> test the boot disk to see how the virus works.  Well, no matter how
+> many times i tried, Michelangelo never activated, although i used no
+> other program to monitor it.  This, along with what i wrote on the
+> first paragraph, makes me wonder if there is a serious bug in
+> Michelangelo's code or whether there are two versions of it ( or even
+> more).
+
+There are lots of bugs in it. First of all, it will not activate on a
+computer the BIOS if which doesn't support INT 1Ah (date & time
+functions). This means most XTs. Second, if you have tried to boot
+from an already disinfected diskette, it obviously won't be there to
+activate... :-) But in general such experiments are dangerous. I hope
+that you have made a full backup of your system first. If not, you can
+consider yourself damn lucky... :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:16:58 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Network Viruses (PC)
+
+suresh@iss.nus.sg (Suresh Thennarangam - Research Scholar) writes:
+
+> 1> Is it possible to bypass the read-only file-locking mechanism
+>    provided by Novell Netware and Banyan Vines ?
+
+> 2> Is it possible to bypass the read-only file server option in 3COM ?
+
+I can tell you only about Novell. It provides two levels of
+protection: file attributes and file access rights. The file
+attributes are essentially the same as in MS-DOS and provide the same
+level of security (i.e. - none at all). The file access rights however
+ -are- secure and cannot be bypassed from a workstation. That's why the
+server must be physically secured, otherwise anyone who is
+knowledgeable enough and has access to the server is able to do
+whatever he wishes with the security.
+
+> 3> Technically, there ought to be a low-level hack way to achieve
+> both, but has anyone come across a virus that does this ?
+
+Nope, no way to do this from a workstation. But this has nothing to do
+with virus spread prevention - a virus can infect the workstation and
+just wait until a privileged user executes one of the infected
+programs. Then the virus has supervisor rights and can do anything.
+
+That's why it is a good idea for the person who supervises the LAN to
+have -two- accounts - one privileged and one not. In his/her everyday
+use, s/he must use the normal account. The privileged one must be used
+ONLY when the job -really- requires supervisor rights, s/he must log
+out as soon as the job is done, and never execute any of the other
+users' programs. Also, all shared executable programs must be
+with read-only rights.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:24:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Network Viruses (PC)
+
+raymond@aramis.cs.ua.edu (Raymond Erdey) writes:
+
+> > 1> Is it possible to bypass the read-only file-locking mechanism
+> >    provided by Novell Netware and Banyan Vines ?
+
+>   In one of the Novell Netware manuals it tells you not allow access
+> to the debugger; Because any good hacker can overcome system security
+> with it. So I would think that if a hacker can do this with a
+> debugger, then why not with some assembly code?
+
+Because, if there is ONE debugger on the server (for the convenience
+of SOME users), and if it is accessible to everybody, Mr. Joe User can
+use it to low-level format the hard disk of his workstation. The same
+goes for Norton Utilities. However, there is NO WAY to break the
+server's security from a workstation, even with a debugger.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:28:10 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: New Virus? (PC)
+
+ROY@mvax1.me.liverpool.ac.uk (Roy Coates) writes:
+
+> Once the machine has been on for a while (typically 5-6 hours) it
+> while either start playing some unknown tune, or produce a *firework*
+> type display using the asterisk character.
+
+If it is caused by a virus, it is really a new one. However, it might
+be caused by a joke or trojan. I don't know them as well as I know the
+viruses, but I seem to recall that there was something, called Fire.
+Check the contents of your CONFIG.SYS and AUTOEXEC.BAT files and make
+sure that you perfectly understand what each of the program executed
+from there does. Tell me if you get any results.
+
+Regards,
+Vesselin
+
+P.S. I recalled. The thing is reported as Fire trojan by F-Prot. Get a
+copy of F-Prot and run it the /trojan option.
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:41:09 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: polymorph virus questions (PC)
+
+sander@engin.umich.edu (Scott D Anderson) writes:
+
+> I am looking for information on the ibm PC 'polymorph' virus, which is
+> self-encrypting, self mutating, and overwrites random sectors on the
+> hard drive. Supposedly, the only way to find an infection of this
+> virus is to notice an unexplained growth in COM files.
+
+First, it is "polymorphic", not "polymorph". Second, it doesn't need
+to be self-encrypting (although all of the current ones are). Third,
+it doesn't need to overwrite anything, in order to be polymorphic.
+Fourth, if the virus is also stealth, you won't notice the growth of
+the files. Fifth, it need not to be restricted to COM files only.
+Sixth, it's very easy to detect ("notice") it, if your are using an
+integrity checker. The hard thing is to -recognize- it, but it is also
+possible. Seventh, it's explained in the FAQ... :-)
+
+> Has anyone heard of this virus?
+
+It's not A virus. It's a name for a class of viruses. They exist since
+more than three years.
+
+> Is it true that there are currently no
+> means of detecting it other than mentioned above?
+
+Of course not. Any integrity checker (which is not buggy, of course),
+will be able to detect the infection.
+
+> If this isn't true,
+> how would I go about detecting such a virus?
+
+A known polymorphic virus can be detected by a virus-specific scanner,
+which knows the virus. It is -very- hard to write the recognition
+routine for such viruses and it usually takes a lot of time to the
+virus researcher to do so, but it is possible (except in the general
+case, but who cares about the general case). Of course, a
+virus-specific scanner will not be able to detect a polimorphic virus
+it does not know about, but this is true for every virus it does not
+know about, not just for the polymorphic ones. And, of course, and
+integrity checker will have no problems detecting it.
+
+The polymorphic viruses are to the scanners what the stealth viruses
+are to the integrity checkers. They "attack" the particular kind of
+anti-virus software by making it more difficult to be maintained or
+used.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 14:53:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Recovery from a New Zealand Strike? (PC)
+
+CCTR132@csc.canterbury.ac.nz (Nick FitzGerald) writes:
+
+> The New Zealand virus can't be much more like Stoned than it is, being a
+> (somewhat common?) psuedonym for Stoned.  New Zealand is not "nasty" -
+
+Well, I thought that it's the alias for Stoned-2, that is, the variant
+which puts the original MBR at 0,0,2. It is my understanding, that
+this was the "original" virus, as programmed by that New Zealand boy.
+
+> Normally (if there is such a thing), as part of infecting a HD Stoned
+> moves the original Master Boot Record from absolute sector 0,0,1 to abs
+> sector 0,0,7 (James Bond has a lot to answer for).  It then writes the
+
+Ahhh, of course! I was always wondering why the hell it uses sector 7,
+while sector 2 is much more "obvious"... Now I understand...
+
+> Assuming your user has not done something remarkably silly (like "format
+> c:") then you may be able to recover by simply moving the original MBR
+> back to 0,0,1.  Norton's Utilities and several other disk/sector editors
+
+Ooops, error. FORMAT C: will rewrite the boot sector of the DOS
+partition, not the MBR. It will also wipe out the FATs, so "restoring"
+the MBR won't help a lot...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    26 Mar 92 15:00:09 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Scan via email and shure FAQ (PC)
+
+KARGRA@GBA930.ZAMG.AC.AT writes:
+
+> 1) Is there a possibility to get the latest version of scan via email?
+>    If there is one, where can I get it?
+
+It is available on Simtel20, which also provides a mail server.
+
+> 2) Now the FAQ: (I make some statements and ask for a short yes or no)
+>   a)Michelangelo is NOT a *.COM or *.EXE or *.SYS infector.
+
+Yes, it is not.
+
+>   b)Therefore you can't be infected from downloaded programs.
+
+Weeell, yes, in general, you cannot. Of course, there is always the
+possibility that someone could write a trojan program which drops the
+virus on your disk (the so-called droppers).
+
+> 3) Is there really a FAQ-list?? If yes, when will it be sent ?
+
+Yep, and it has been sent. Ken?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Thu, 26 Mar 92 07:41:00 -0500
+From:    greg@agora.rain.com (Greg Broiles)
+Subject: Re: Stoned, No-Int, and SCANV86B (PC)
+
+WALKER@aedc-vax.af.mil (William Walker C60223 x4570) writes:
+>I have not observed the identification problem Mr. Hama reports, that
+>SCAN 86B mislabels "Michelangelo" as "No-Int."  SCAN 86B identified
+>"Michelangelo" as "Michelangelo Virus [Mich]" for me, and CLEAN 86B
+>successfully cleaned it.  Perhaps there is another strain of
+>"Michelangelo," or Mr. Hama's copy of "Michelangelo" was damaged in such
+>a way to cause the misidentification.
+
+Scan will mis-identify Michaelangelo during its initial scan of RAM if
+it is run on an infected machine.  Scan correctly identifies
+Michaelangelo when Michaelangelo is not present in memory.
+- --
+".. when laws are outlawed, only outlaws will obey the law." - Tom Robbins
+Greg Broiles          |   greg@tomten.pdx.com  |          greg@agora.rain.com
+PO Box 8988, Portland, OR  97207-8988          |            MCIMail: gbroiles
+
+------------------------------
+
+Date:    Thu, 26 Mar 92 08:31:40 -0500
+From:    csvcjld@nnomed.bitnet
+Subject: OS/2 bug or virus? (OS/2)
+
+     I'm running OS/2 1.3.  Under OS/2, XCOPY does not change the
+dates of the files it copies.  In the DOS box, the files created by
+XCOPY have their dates set to the current date.  The resulting files
+are the same size as the originals and COMP says they are the same.
+Is this a known OS/2 1.3 bug?  Or, do I have a virus?
+
+     (This message has been sent to LEHIIBM.VIRUS-L and BLEKUL11.OS2.)
+
+------------------------------
+
+Date:    26 Mar 92 14:33:43 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Origins of viruses
+
+markf@syma.sussex.ac.uk (Mark Foster) writes:
+
+> The very first virus that I ever saw or heard of was the SCA
+> (Scandinavian Cracking Association) virus for the Commodore Amiga.
+
+Wasn't it the Swiss Cracking Association? And wasn't it after the
+summer of 1987 (when the first PC virus appeared)?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Thu, 26 Mar 92 17:04:00 +0200
+From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: CRCs- How do they work?
+
+  Ryan Grant writes:
+
+>I have a question regarding the popular use of CRCs to guarantee file
+>integrity and even help restore damaged files.
+>
+>In my understanding CRCs add up the bytes of a file with certain
+>significance added to each byte (very fuzzy here).  The question is,
+>if a CRC can guarantee unique files with one whatever-byte number, why
+>cant the file just be stored as its CRC?  If not, I suspect that it
+>WOULD be possible to get two files with the same CRC...and if this is
+>the case, how can anyone be sure when they restore a damaged file
+>through the use of a CRC?  I'm sure that if PART of the file were
+>damaged, the CRC could fill in the blanks, because the other proposed
+>file with the same CRC would probably be radically different.  Where
+>am I right and where am I completely lost in this post?
+
+Unfortunately, you're lost in all aspects.  First of all, the CRC
+algorithm does not add up bytes; it is computed by dividing the file
+(expressed as a binary number) by a fixed number (approx. 32 bits)
+and taking the remainder, except that polynomial arithmetic modulo 2
+is used instead of ordinary arithmetic.
+  Secondly, with a 32-bit divisor, the chance of two files having the
+same CRC is only 1 in 4,300,000,000, hardly a significant probability.
+  Finally, files cannot be *restored* by using a CRC; that would be
+like being able, simply by knowing only the divisor and remainder of a
+division, to determine what the original dividend was.  However, a CRC
+can be used to tell you (with extremely high probability), after a
+file has been restored by *other* means, whether the restoration was
+accurate.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 77]
+*****************************************

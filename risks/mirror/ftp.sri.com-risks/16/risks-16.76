@@ -1,0 +1,598 @@
+Subject: RISKS DIGEST 16.76
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 24 January 1995  Volume 16 : Issue 76
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+**** See previous issue for further RISKS information, disclaimers, etc. ****
+
+  Contents:
+CERT Advisory CA-95:01.IP.spoofing.attacks.and.hijacked.terminal.connections
+More on the new CERT advisory (Steve Bellovin)
+Bouncemail (Phil Agre)
+Another post office stamp machine story (they *almost* got it right!)
+  (Jonathan I. Kamens)
+
+----------------------------------------------------------------------
+
+Date: Mon, 23 Jan 1995 13:49:47 -0500
+Subject: CERT Advisory CA-95:01.IP.spoofing.attacks.and.hijacked.terminal.connections
+From: cert-advisory@cert.org (CERT Advisory)
+
+
+CA-95:01                         CERT Advisory
+                                January 23, 1995
+                IP Spoofing Attacks and Hijacked Terminal Connections
+
+The CERT Coordination Center has received reports of attacks in which
+intruders create packets with spoofed source IP addresses. These attacks
+exploit applications that use authentication based on IP addresses. This
+exploitation leads to user and possibly root access on the targeted system.
+Note that this attack does not involve source routing. Recommended solutions
+are described in Section III below.
+
+In the current attack pattern, intruders may dynamically modify the kernel of
+a Sun 4.1.X system once root access is attained.  In this attack, which is
+separate from the IP spoofing attack, intruders use a tool to take control of
+any open terminal or login session from users on the system. Note that
+although the tool is currently being used primarily on SunOS 4.1.x systems,
+the system features that make this attack possible are not unique to SunOS.
+
+As we receive additional information relating to this advisory, we will place
+it, along with any clarifications, in a CA-95:01.README file. CERT advisories
+and their associated README files are available by anonymous FTP from
+info.cert.org. We encourage you to check the README files regularly for
+updates on advisories that relate to your site.
+
+I.   Description 
+
+     This description summarizes both the IP spoofing technique that can
+     lead to root access on a system and the tool that intruders are using to
+     take over open terminal and login connections after they get root access.
+     We are currently seeing attacks in which intruders combine IP spoofing
+     with use of the tool. However, these are two separate actions. Intruders
+     can use IP spoofing to gain root access for any purpose; similarly, they
+     can highjack terminal connections regardless of their method of gaining
+     root access. 
+
+     IP spoofing
+        To gain access, intruders create packets with spoofed source IP
+        addresses. This exploits applications that use authentication based on
+        IP addresses and leads to unauthorized user and possibly root access
+        on the targeted system. It is possible to route packets through
+        filtering-router firewalls if they are not configured to filter
+        incoming packets whose source address is in the local domain. It
+        is important to note that the described attack is possible even if 
+        no reply packets can reach the attacker.
+
+        Examples of configurations that are potentially vulnerable include
+        - routers to external networks that support multiple internal
+          interfaces
+        - routers with two interfaces that support subnetting on the 
+          internal network
+        - proxy firewalls where the proxy applications use the source
+          IP address for authentication
+
+        The IP spoofing attacks we are currently seeing are similar to those
+        described in two papers: 1) "Security Problems in the TCP/IP Protocol
+        Suite" by Steve Bellovin, published in _Computer Communication Review_
+        vol. 19, no. 2 (April 1989) pages 32-48; 2) "A Weakness in the 4.2BSD
+        Unix TCP/IP Software" by Robert T. Morris. Both papers are available
+        by anonymous FTP from 
+
+           ftp.research.att.com:/dist/internet_security
+
+           Bellovin paper: ipext.ps.Z
+           Morris paper:   117.ps.Z
+
+        Services that are vulnerable to the IP spoofing attack include
+           SunRPC & NFS 
+           BSD UNIX "r" commands
+           anything wrapped by the tcp daemon wrappers - site dependent; check
+               your configuration
+           X windows 
+           other applications that use source IP addresses for authentication
+
+     Hijacking tool
+        Once the intruders have root access on a system, they can use a tool
+        to dynamically modify the UNIX kernel. This modification allows them
+        to hijack existing terminal and login connections from any user on the
+        system. 
+ 
+        In taking over the existing connections, intruders can bypass one-time
+        passwords and other strong authentication schemes by tapping the
+        connection after the authentication is complete. For example, a
+        legitimate user connects to a remote site through a login or terminal
+        session; the intruder hijacks the connection after the user has
+        completed the authentication to the remote location; the remote site
+        is now compromised. (See Section I for examples of vulnerable
+        configurations.)
+
+        Currently, the tool is used primarily on SunOS 4.1.x systems. However,
+        the system features that make this attack possible are not unique to
+        SunOS.
+
+
+II. Impact
+
+     Current intruder activity in spoofing source IP addresses can lead to
+     unauthorized remote root access to systems behind a filtering-router
+     firewall. 
+
+     After gaining root access and taking over existing terminal and login
+     connections, intruders can gain access to remote hosts.
+
+
+III. Solutions
+     
+     A. Detection
+
+        IP spoofing
+	   If you monitor packets using network-monitoring software such as
+           netlog, look for a packet on your external interface that has 
+           both its source and destination IP addresses in your local domain.
+           If you find one, you are currently under attack. Netlog is
+           available by anonymous FTP from 
+              net.tamu.edu:/pub/security/TAMU/netlog-1.2.tar.gz
+              MD5 checksum: 1dd62e7e96192456e8c75047c38e994b
+
+           Another way to detect IP spoofing is to compare the process
+           accounting logs between systems on your internal network. If
+           the IP spoofing attack has succeeded on one of your systems,
+           you may get a log entry on the victim machine showing a remote
+           access; on the apparent source machine, there will be no
+           corresponding entry for initiating that remote access.
+
+        Hijacking tool
+           When the intruder attaches to an existing terminal or login
+           connection, users may detect unusual activity, such as commands
+           appearing on their terminal that they did not type or a blank window
+           that will no longer respond to their commands. Encourage your users
+           to inform you of any such activity. In addition, pay particular
+           attention to connections that have been idle for a long time.
+
+           Once the attack is completed, it is difficult to detect. However,
+           the intruders may leave remnants of their tools. For example, you
+           may find a kernel streams module designed to tap into existing TCP
+           connections. 
+
+     B. Prevention
+
+        IP spoofing
+           The best method of preventing the IP spoofing problem is to install
+           a filtering router that restricts the input to your external
+           interface (known as an input filter) by not allowing a packet
+           through if it has a source address from your internal network. In
+           addition, you should filter outgoing packets that have a source
+           address different from your internal network in order to prevent
+           a source IP spoofing attack originating from your site.
+
+           The following vendors have reported support for this feature:
+             Bay Networks/Wellfleet routers, version 5 and later
+             Cabletron - LAN Secure
+             Cisco - RIS software all releases of version 9.21 and later 
+             Livingston - all versions
+
+           If you need more information about your router or about firewalls,
+           please contact your vendor directly.
+
+           If your vendor's router does not support filtering on the inbound
+           side of the interface or if there will be a delay in incorporating
+           the feature into your system, you may filter the spoofed IP packets
+           by using a second router between your external interface and your
+           outside connection. Configure this router to block, on the outgoing
+           interface connected to your original router, all packets that have a
+           source address in your internal network. For this purpose, you can
+           use a filtering router or a UNIX system with two interfaces that
+           supports packet filtering. 
+        
+           NOTE: Disabling source routing at the router does not protect you
+                 from this attack, but it is still good security practice to
+                 do so. 
+        
+        Hijacking tool
+           There is no specific way to prevent use of the tool other than
+           preventing intruders from gaining root access in the first place.
+           If you have experienced a root compromise, see Section C for general
+           instructions on how to recover.
+
+     C. Recovery from a UNIX root compromise
+
+        1. Disconnect from the network or operate the system in
+           single-user mode during the recovery.  This will keep users
+           and intruders from accessing the system.
+
+        2. Verify system binaries and configuration files against the
+           vendor's media (do not rely on timestamp information to
+           provide an indication of modification).  Do not trust any
+           verification tool such as cmp(1) located on the compromised
+           system as it, too, may have been modified by the intruder.
+           In addition, do not trust the results of the standard UNIX
+           sum(1) program as we have seen intruders modify system
+           files in such a way that the checksums remain the same.
+           Replace any modified files from the vendor's media, not
+           from backups.
+                                -- or --
+
+           Reload your system from the vendor's media.
+
+        3. Search the system for new or modified setuid root files.
+
+                find / -user root -perm -4000 -print
+
+           If you are using NFS or AFS file systems, use ncheck to
+           search the local file systems.
+
+                ncheck -s /dev/sd0a
+
+        4. Change the password on all accounts.
+
+        5. Don't trust your backups for reloading any file used by
+           root.  You do not want to re-introduce files altered by an
+           intruder.
+
+
+  The CERT Coordination Center thanks Eric Allman, Steve Bellovin, Keith
+  Bostic, Bill Cheswick, Mike Karels, and Tsutomu Shimomura for contributing
+  to our understanding of these problems and their solutions.
+
+If you believe that your system has been compromised, contact the CERT
+Coordination Center or your representative in Forum of Incident Response and
+Security Teams (FIRST).
+
+If you wish to send sensitive incident or vulnerability information to CERT
+staff by electronic mail, we strongly advise that the e-mail be encrypted.
+The CERT Coordination Center can support a shared DES key, PGP (public key
+available via anonymous FTP on info.cert.org), or PEM (contact CERT staff
+for details).
+
+Internet E-mail: cert@cert.org
+Telephone: +1 412-268-7090 (24-hour hotline)
+           CERT personnel answer 8:30 a.m.-5:00 p.m. EST(GMT-5)/EDT(GMT-4),
+           and are on call for emergencies during other hours.
+Fax: +1 412-268-6989
+
+CERT Coordination Center
+Software Engineering Institute
+Carnegie Mellon University
+Pittsburgh, PA 15213-3890
+USA
+
+Past advisories, CERT bulletins, information about FIRST representatives, 
+and other information related to computer security are available for anonymous
+FTP from info.cert.org.
+
+CERT is a service mark of Carnegie Mellon University.
+
+------------------------------
+
+Date: Tue, 24 Jan 1995 07:09:12 -0500
+From: Steve Bellovin <smb@research.att.com>
+Subject: More on the new CERT advisory 
+
+   [The CERT advisory is the previous item in this issue.  
+   Also, see John Markoff's front-page story in yesterday's 
+   editions of The New York Times, 23 Jan 1995.  PGN]
+
+There's a great deal of confusion about what kind of attack the recent CERT
+advisory is referring to.  Let me try to clear things up.
+
+The specific attack is a sequence number guessing attack, originally
+described by R.T. Morris in Bell Labs Computer Science Technical Report
+#117, February 25, 1985.  I generalized (and publicized) the attack in my
+1989 paper ``Security Problems in the TCP/IP Protocol Suite'', Computer
+Communications Review 19:2, April 1989, pp. 32-48 (URLs below).  Both his
+attack and my generalizations are special cases of a more general attack, IP
+source address spoofing, in which the attacker illegitimately uses a trusted
+machine's IP address in conjunction with some protocol (such as rsh) that
+does address-based authentication.
+
+In order to understand the particular case of sequence number guessing, you
+have to look at the 3-way handshake used in the TCP open sequence.  Suppose
+client machine A wants to talk to rsh server B.  It sends the following
+message:
+
+	A->B: SYN, ISSa
+
+That is, it sends a packet with the SYN (``synchronize sequence
+number'') bit set and an initial sequence number ISSa.
+
+B replies with
+
+	B->A: SYN, ISSb, ACK(ISSa)
+
+In addition to sending its own initial sequence number, it acknowledges A's.
+Note that the actual numeric value ISSa must appear in the message.
+
+A concludes the handshake by sending
+
+	A->B: ACK(ISSb)
+
+The initial sequence numbers are intended to be more or less random.  More
+precisely, RFC 793 specifies that the 32-bit counter be incremented by 1 in
+the low-order position about every 4 microseconds.  Instead,
+Berkeley-derived kernels increment it by 128 every second, and 64 for each
+new connection.  Thus, if you open a connection to a machine, you know to a
+very high degree of confidence what sequence number it will use for its next
+connection.  And therein lies the attack.
+
+The attacker X first opens a real connection to its target B -- say, to the
+mail port or the TCP echo port.  This gives ISSb.  It then impersonates A
+and sends
+
+	A->B: SYN, ISSx
+
+B's response to X's original SYN (so to speak)
+
+	B->A: SYN, ISSb', ACK(ISSx)
+
+goes to the legitimate A, about which more anon.  X never sees that message
+but can still send
+
+	A->B: ACK(ISSb')
+
+using the predicted value for ISSb'.  If the guess is right -- and usually
+it will be -- B's rsh server thinks it has a legitimate connection with A,
+when in fact X is sending the packets.  X can't see the output from this
+session, but it can execute commands as more or less any user -- and in that
+case, the game is over and X has won.
+
+There is a minor difficulty here.  If A sees B's message, it will realize
+that B is acknowledging something it never sent, and will send a RST packet
+in response to tear down the connection.  There are a variety of ways to
+prevent this; the easiest is to wait until the real A is down (possibly as a
+result of enemy action, of course).
+
+There are several possible defenses.  Most obvious is to take advantage of
+topological knowledge: don't let packets purporting to be from a local
+machine arrive on an outside interface.  That works very well if you only
+trust local machines.  If trust is granted to outside machines (say, via
+.rhosts files) and if the attacker can identify the patterns of trust (which
+isn't that difficult), the topological solution won't work.  In that case,
+you have to block all protocols that use TCP and address-based
+authentication.  (UDP is a separate can of worms.)
+
+Best of all, don't use address-based authentication; it's a disaster
+waiting to happen.  The only real solution is cryptographic
+authentication.
+
+Firewalls based on tcpd have a special problem: address-based authentication
+is their business.  If you have a set of rules that grants special
+permission to inside addresses, and you don't use a screening router as
+well, you may be vulnerable.  The question is this: can an attacker do
+damage by just sending commands and not seeing any output? If the answer is
+yes, you are vulnerable.
+
+		--Steve Bellovin
+
+For further information, see the two papers cited above:
+
+ftp://ftp.research.att.com/dist/internet_security/117.ps.Z
+ftp://ftp.research.att.com/dist/internet_security/ipext.ps.Z
+
+------------------------------
+
+Date: Mon, 16 Jan 1995 19:05:36 -0800
+From: Phil Agre <pagre@weber.ucsd.edu>
+Subject: Bouncemail
+
+     [Excerpted with permission from Phil's The Network Observer]
+
+  Bouncemail top ten.
+
+  In running a large mailing list for the past year or so, I
+  have become acquainted with a depressing variety of dysfunctional
+  mail handling software.  I've gathered here my top ten least
+  favorite phenomena in hopes that a Universal Union of Large List
+  Maintainers might spring up to force them to get fixed:
+
+    10.  Mailers that give intermittent "user unknown" messages
+         for users who perfectly well exist, perhaps because they
+         cannot detect transient local network problems well enough
+         to postpone delivering mail.
+
+     9.  The confusion over the Errors-To: field, which sure
+         seems like a good idea to me but which apparently is not
+         part of the standard.  It is supported by most but not
+         all mailers.  If it didn't exist then I'd have to run my
+         mailing list from a separate account.
+
+     8.  Mailers that generate messages lacking well-formed
+         headers, most commonly addresses like "someone@local"
+         without proper domain information.
+
+     7.  Mailers that tell me "Press F1 for help with VNM error
+         codes" even though my function keys are unlikely to be
+         programmed the same way as they are for users at the
+         site that generates the bouncemail message.  In general,
+         mailers designed on the assumption that all senders and
+         recipients of messages would use that same mailer --
+         particularly when the mailer in question does not think in
+         terms of standard IP domain formats.
+
+     6.  Mailers that complain that a certain message could not be
+         delivered but do not specify who in particular the message
+         could not be delivered to.  Also, mailers that complain
+         that a forwarded message could not be delivered without
+         providing any indication of what address(es) the message
+         was forwarded from.
+
+     5.  Vacation programs that respond to bulk or mailing-list
+         mail or that do not keep track of who they've replied to,
+         with the result that I get batches of spurious vacation
+         messages (sometimes in German) as each holiday approaches.
+
+     4.  Mailers that generate mail that cannot be replied to.
+         Sometimes a message says "From: Fred_Q_Smith@foobar.com",
+         even though the user's account is actually called "fqs".
+         Sometimes I have no idea why I cannot reply to a message,
+         and the mailer offers me no help in figuring it out.
+         This is particularly annoying when the sender in question
+         starts sending further messages to the effect of, "you
+         should reply to my messages, you rude person!"  It is
+         even more annoying when the machine that generated the
+         bogus message does not have a "postmaster" alias defined.
+
+     3.  Mailers that take a month before giving up on the delivery
+         of messages to a missing user, whereupon they initiate
+         a monthlong stream of error messages, individually, for
+         every one of the messages I've sent in the last month.
+
+     2.  Mail-reading programs that automatically generate a little
+         message to the effect of "so-and-so read your message
+         about "routine administrative notes" on December 3rd at
+         08:41" -- even when the message was sent to a mailing list
+         and not directly to the person reading it.  The people
+         whose mail readers generate these messages are usually not
+         aware of them, and their site maintainers usually do not
+         know how to shut them off.
+         
+     1.  The astoundingly baroque and uninformative error messages
+         that I have gotten from the Novell mailer.
+
+  Of course errors happen.  The basic point here is that the error
+  messages are so incomprehensible, so incomplete, so inconsistent,
+  and so difficult to adjust or control.  The right way to do this,
+  in my view, would be for mailers to be talking to one another and
+  maintaining updated status tables for the process of delivering
+  (or not delivering) each message.  A reasonable amount of useful
+  information could travel over these lines of communication, and
+  my mailer could consequently provide me with some significantly
+  more useful functionalities.  Imagine a GUI interface with a
+  window showing the messages that got bounced, deferred, and so
+  forth.  And imagine that I could just click on each one to say,
+  in one nice clean operation, "okay, let's just take this person
+  off the mailing list, send them a nice explanatory note in case
+  they're magically back on-line, and expunge from the system all
+  remaining traces of existing messages from me to them or error
+  messages from these mailers about them".
+
+------------------------------
+
+Date: Thu, 19 Jan 1995 09:46:39 -0500
+From: "Jonathan I. Kamens" <jik@cam.ov.com>
+Subject: Another post office stamp machine story (they *almost* got it right!)
+
+Some readers of RISKS will recall numerous previous articles about
+suboptimal behavior of the electronic postal stamp vending machines which
+have been appearing in United States Post Offices over the past few years.
+I am one of the many people who at one point or another has lost money in
+one of the machines.  However, this message isn't about that; it's about a
+case I witnessed recently in which the vending machine *almost* got it
+right, but still has a few kinks that need to be worked out.
+
+On the first business day after the recent US postal rate increase, I went
+to the Post Office to buy some new stamps.  Of course, it was a madhouse,
+because everyone else had the same idea I did.  However, although the line
+in front of the service windows was many people long, there were only one
+person using the vending machine, with no line behind him.  I therefore
+decided to get in line behind him, since I had enough crisp bills (or so I
+thought) to buy stamps from the machine.
+
+The man was standing in front of the machine, whose LED display claimed that
+he had a $5.00 credit (presumably because of a five-dollar bill he'd
+inserted), trying to get the machine to take a one-dollar bill (he wanted to
+buy a book of twenty 32-cent stamps for $6.40).  The bill slot in the
+machine wasn't pulling in his bill part way and then rejecting it, as you
+might expect it to do if it could not verify the bill.  The slot wasn't
+engaging at all, i.e., the man was pushing the bill into the slot over and
+over, and nothing was happening.
+
+He did this five or ten times, then stopped, turned around to look at the
+service windows as if trying to attract someone's attention, wavered
+momentarily as if contemplating actually going over to the windows to ask
+for assistance, and then turned around and started shoving the bill at the
+bill slot again.  He repeated this cycle three or four times, with me
+standing there thinking, "Look, idiot, if the slot wouldn't take the bill
+the first time, it isn't going take it the hundredth time either," and
+wondering why he didn't just buy a booklet of ten stamps and come back for
+more later.  Finally, he got up the courage to go over to the windows and
+ask for help.
+
+A few seconds after he walked away from the machine, it started beeping,
+with the LED display asking if he needed more time, and saying that if he
+didn't press the "YES" button he'd lose his money.  Since I'm a nice guy, I
+pressed the "YES" button for him.
+
+Meanwhile, the woman he was talking to at a service window was telling him
+something to the effect of, "Well, I don't know anything about the vending
+machine.  You'll have to talk to <so-and-so>.  She's in charge of it.  She's
+in back right now.  Hold on, I'll send her out.  Go back to the machine and
+wait for her."
+
+So, the man went back to the machine and stood there waiting.  I said to
+him, "Why don't you just buy a booklet of ten stamps and come back later for
+more?"  He said, gesturing at the sign on the machine which says that change
+over a dollar is given in dollars, "Because then I'll lose money."  I'm not
+sure what gave him that impression, but I explained to him that what the
+sign meant was that the machine issues Susan B. Anthony dollars when it has
+to issue change of more than a dollar.
+
+Once he understood that, he went ahead and pushed the button sequence for
+the booklet of ten stamps.  The machine then spit his five-dollar bill out
+of the bill slot and informed him on the LED display that it was currently
+unable to issue change of over a dollar.  At this point, the woman "in
+charge of" the vending machine showed up and asked what the story was.  The
+man told her what had happened, and she basically repeated everything he'd
+done (putting in his five-dollar bill, trying repeatedly to get the machine
+to take the additional one-dollar bill, giving up and trying to buy ten
+stamps, getting back the five-dollar bill), at which point she said, "Well,
+I don't know what's wrong.  I guess you'll just have to get in line with
+everybody else."
+
+At this point, I decided that trying to use the vending machine myself would
+not be a productive endeavor, so I picked up a copy of the USPS
+stamps-by-mail pamphlet and walked out.  It was only when I'd made it out of
+the Post Office a few steps that I realized what astute RISKS readers have
+realized already -- the vending machine's behavior made perfect sense, and
+was in reality protecting the user from losing money, although its user
+interface needs some improvement.  As I see it, the explanation for the
+machine's behavior is as follows....
+
+Most bill readers, in vending machines, change machines, etc., can only
+return to the user the last bill inserted into the machine.  I.e., if I
+insert a five-dollar bill into a reader and then a one-dollar bill, the
+reader can return the one-dollar bill to me if necessary, but the
+five-dollar bill is lost in the innards of the machine.
+
+The stamp machine in this case was programmed to know that it couldn't give
+back more than a dollar in change (presumably because its supply of dollar
+coins was exhausted), and also to know that if it allowed the user to insert
+more than one bill, it might not be able to give back adequate change after
+the user completed his purchase.  For example, if the user inserted two
+five-dollar bills and then purchased $6.40 worth of stamps, the machine
+would have to issue $3.60 in change, which it couldn't do.  It therefore
+refused to accept the second bill.
+
+So, what are the problems?  I see several:
+
+1) The machine should have told him on its display that it couldn't
+   accept any more bills, after he inserted the first bill.
+
+2) Instructions should have been displayed on the machine or on a
+   placard within sight of the machine, explaining the machine's
+   behavior when it runs out of dollar coins.
+
+3) Better yet, there should be a light on the machine, with the words,
+   "When lit, only one bill per purchase will be accepted, and money
+   deposited into machine must be less than one dollar above purchase
+   price of desired item," and it should be lit at the right time.
+
+4) The woman "in charge of" the machine should have a clue about how
+   it works.  I suspect that the USPS just wheels the machines into
+   Post Offices, sets them down, says, "Here you go, a new vending
+   machine!" and then periodically comes back to empty the money and
+   restock them.  Perhaps they should invest a little in training at
+   least one person at each Post Office to know how the machines work.
+
+5) The USA really needs a dollar coin in common circulation :-).
+
+Jonathan Kamens  |  OpenVision Technologies, Inc.  |   jik@cam.ov.com
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.76 
+************************
+

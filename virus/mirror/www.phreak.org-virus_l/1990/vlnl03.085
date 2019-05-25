@@ -1,0 +1,549 @@
+VIRUS-L Digest   Wednesday,  2 May 1990    Volume 3 : Issue 85
+
+Today's Topics:
+
+Erase-and-Create /= Zap-in-place
+Re: Mainframe viruses
+Dark Avenger strikes (PC)
+Mainframe viruses
+Re: Public Domain/Shareware Anti-Virus Tools for IBM PC
+MacWorld article on Macintosh viruses
+Re: *really* fail-safe virus protection
+FSHIELD (PC)
+RE: Mainframe Viruses
+Virus found in Japanese game software (Sharp)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Tue, 01 May 90 18:09:24 -0000
+From:    "Pete Lucas" <PJML@ibma.nerc-wallingford.ac.uk>
+Subject: Erase-and-Create /= Zap-in-place
+
+Dave Chess says:
+>Isn't the power to erase-and-recreate functionally the same as the
+>power to alter?  If something has munged an executable by reading it
+>in, erasing it, and re-creating it, the relevant consequences will
+>be just the same as if it had directly patched it on disk, yesno?
+>Are there operating systems that allow you to mark files as subject
+>to erase-and-recreate, but not subject to zap-in-place?  (That's
+>just a curiousity question; a virus can happily use either method.)
+
+Well as far as i am concerned, it wont necessarily be!  Most operating
+systems i would call half-decent have 'file created','last accessed' and
+'last written' indicators somewhere (although these may not be visible
+directly to the user/owner). Hence if a virus does the 'erase and recreate',
+the *contents* of the file may be functionally and syntactically
+the same as a 'zap in place' but the *attributes* associated with the
+file will be different. A half-competent programmer can pick up the
+attribute changes and see when the changes to the contents were made
+(and possibly even who made the changes).
+I may have `erase` access to a file system, but not `create` or `write`.
+(some OS even allow `append` but not `erase` or `create` - a good
+example of this is in the old Honeywell GCOS3, and that is YEARS old)
+Most people do not exploit the power of their operating system to
+control access properly - they lack change-control procedures and
+audit traces on their filestores. What is the point of spending
+money on ACF2 or RACF and then turning most of it off?
+
+   Pete Lucas         PJML@UK.AC.NERC-WALLINGFORD.IBMA       0793-411613
+
+------------------------------
+
+Date:    01 May 90 18:13:26 +0000
+From:    kelly@uts.amdahl.com (Kelly Goen)
+Subject: Re: Mainframe viruses
+
+Well not to take issue with you... but A user who has managed to
+Bypass APF(authorized Program Facility) and who is operating excp=vr
+may alter ANY part of the MVS File area whether it be page, spool or
+normal(vsam etc) files... as for altering executables ever hear of
+BNDL and STOW macros???...  (Altering the contents of page tables
+consists of altering executable images...) as for learning how to
+violate storage management is as simple as disassembling an FE utility
+such as IEHONESTY or equivalent(yes its still around)... the Share and
+Guide tapes have many more examples.... Also note the ability to use
+SMP/E appears to be still another way to spread infections..
+   cheers
+   kelly
+
+------------------------------
+
+Date:    Tue, 01 May 90 15:29:46 -0500
+From:    James Ford <JFORD1@UA1VM.BITNET>
+Subject: Dark Avenger strikes (PC)
+
+For virus-trackers - The Dark Avenger Virus has been found at the Univ.
+of Alabama (in Tuscaloosa).  Apparently it was first introduced to the
+university at a resident hall.....it has since made its way to the
+Engineering Department.
+
+We are taking steps to limit/eradicate it.
+- ----------
+Work is the curse of the drinking man.
+- ----------
+James Ford -  JFORD1@UA1VM.BITNET, JFORD@MIBSRV.MIB.ENG.UA.EDU
+              THE University of Alabama (in Tuscaloosa, Alabama  USA)
+
+------------------------------
+
+Date:    Tue, 01 May 90 16:17:47 -0400
+From:    Arthur Gutowski <AGUTOWS@WAYNEST1.BITNET>
+Subject: Mainframe viruses
+
+Thanks to Ken Bell for correcting me about VM class A users.  But, to my
+knowledge this sort of thing does not exist on MVS.  At least not in the
+same way.  Even as a non-cancellable or security user (the equivalent to
+a superuser), I cannot modify real storage.  The only way I can do this
+is to know how to place myself into supervisor state using a password-
+protected and/or specially authorized SVC (SerVice Call) and then zap
+storage.  Or I could use a system monitor that interfaces directly with
+the system, and then I need access/authorization to use those commands which
+modify storage.  In either case, there are avenues to infect the operating
+system code itself, just in different ways.
+
+Perhaps more importantly, though, is my ability/responsibility to maintain
+system libraries.  This means if I really wanted to place a virus into the
+system, I could patch my code into the libraries on disk, and wait for the
+next IPL (system re-boot) for my virus to unleash itself.
+
+This, I think, is the only way for system utilities (such as Editors or
+Copiers) to become infected.  Because *noone* else has write access to
+these libraries but the system maintenance people.  Write access in our
+(and other MVS or VM) installation would be difficult, if not impossible,
+to modify on the fly as you can on a PC.  Now, there is the possibility
+that I (or any other sysprog) gets ahold of an "awsome game" and runs it
+without regard, and spreads a virus to system code via my userid.
+
+Now, hopefully, none of the above happens, and at least your system code
+is reliable.  Even so, if your copy program or editor is infected, it
+is either going to have to distinguish between binaries (executables) and
+text in order to successfully infect programs that it copies, or else it
+is going to have to modify every single file it copies to be sure.  On MVS,
+there is no way for a copy program to know the difference.  There are no
+filenames to clue it in (*.exe, * MODULE, * EXEC, on PCs and VM dont exist;
+and I could call my program APPLE and my document file PROGRAM1 if I wanted),
+and as far as the copy or editor program is concerned, all I'm looking at are
+bytes.  Whether those bytes translate into characters or instuctions, what
+editor or copy program is going to care?
+
+I agree with both David and George Roberts in that access controls here
+don't mean squat, and keeping infected utilities from running while letting
+clean ones run is an impossible task.  But that wasn't really my point.  My
+point was that viruses are going to have trouble spreading on mainframes
+(or at least MVS, if not VM) merely by attempting to infect on a file open.
+Maybe it could be done, but it would have to be a helluva smart virus,
+and by the time it did all the work it needed to do, it should be noticed
+by the tuners (then again, there are many factors affecting system response
+- --virus probably wouldn't be my first guess).
+
+Infecting on execute is a horse of a different gender.  David is right, a
+virus doesn't have to get control of system functions or address outside
+its own space to spread, some (or most) PC viruses seem to rely on staying
+within "normal" activity, using the OS as any other application program might.
+So, if I had a virus in an object library of mine, and someone else executed
+the bad code, they could easily become infected too, just by executing one
+of their programs *while the infected one was still active*.  I stress this
+for two reasons:  1) as I mentioned above, viruses would probably have
+a difficult time infecting on open of a data file, or even more complex,
+search through all of my datasets looking for executable files and infect
+one (again, the distinctions between executable and text just isn't here);
+and 2) when a program is running, the system keeps track of where it is.
+When it is done, the system frees *all* of the space used by that program.
+For a virus to remain resident in an address space, it would somehow have
+to intercept the call to free the memory, and I don't know how easy of a
+task this is, but my guess is it can't be done without getting control
+of the system function.
+
+I have to admit, there does seem to be some social factors in virus writing
+on mainframes versus PCs.  Obviously, the casual hacker isn't going to be
+interested in unleashing a virus on a big machine, because it just takes
+too much work.  But even for the knowledgeable, it's no small task.  Viruses
+can spread on a mainframe, but I don't think they have the same avenues open
+that they do on a PC...seems to me the only way is through a system backdoor
+(which an experienced system programmer can easily find) or through executing
+and infected program alongside a clean one.  Infecting by open or search
+method just doesn't seem feasible to me; too much wasted time infecting
+text files (and that wouldn't go unnoticed for too long, *hopefully*).
+
+I apologize for the length.  This is a complicated subject, though, as
+anyone who works on mainframes can agree.
+
+Disclaimer:  What, did *I* say *that*??
+
+Arthur J. Gutowski, System Programmer
+MVS and Antiviral Group / Tech Support / WSU Univ. Computing Center
+5925 Woodward; Detroit MI  48202; PH#: (313) 577-0718
+Bitnet: AGUTOWS@WAYNEST1   Internet: AGUTOWS@WAYNEST1.BITNET
+- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+"You can choose a ready guide in some celestial voice
+ If you choose not to decide, you still have made a choice"
+
+------------------------------
+
+Date:    Tue, 01 May 90 13:42:05 -0400
+From:    Paul Massue-Monat <MONAT@UOTTAWA.BITNET>
+Subject: Re: Public Domain/Shareware Anti-Virus Tools for IBM PC
+
+>I have a couple of questions about Public Domain or Shareware anti-
+>virus software.
+>...
+>Any information at all on any of the above would be greatly
+>appreciated. If there is enough interest, I'd be only too happy
+>to summarise for the net.
+
+Yes! Please do summarize! Thanks in advance.
+
+Paul M. Monat     Lab Administrator             Phone: 613-564-6895/6500
+     ^v^          Faculty of Administration       Fax: 613-564-6518
+                  Canada    K1N 6N5            Bitnet: Monat @ Uottawa
+
+------------------------------
+
+Date:    Tue, 01 May 90 16:18:15 -0700
+From:    dplatt@coherent.com (Dave Platt)
+Subject: MacWorld article on Macintosh viruses
+
+The latest (June '90) issue of MacWorld contains a 6-page article on
+Mac viruses in its "How to" column.  Impressions:
+
+- -  Level-headed and non-hysterical.  Points out that most system
+   errors are due to problems other than viruses.
+
+- -  Recommends prophylactic measures such as backups, keeping floppies
+   locked, and being careful about importing disks from outside your
+   shop.
+
+- -  Doesn't mince words about viruses being "tools of vandalism --- bricks
+   hurled through your Mac's windows by people with apparently nothing
+   better to do with their time and programming skill...  [c]omputer
+   viruses could be stopped dead if their creators turned their energies
+   toward being productive, not destructive."  Hear, hear!!
+
+- -  Reasonably up to date.. it mentions the Mosaic/FontFinder
+   trojan-horse code, and makes clear the distinction between a trojan
+   horse and a virus.
+
+- -  Gives freeware/shareware antivirals a fair mention... not as much
+   column-space as the commercial products, but better than a poke in
+   the eye (or a complete non-mention, as has happened in the past).
+
+- -  Has a significant oversight in the tabular summary of "virus
+   fighters"... Disinfectant is not listed (although it heads up the
+   alphabetically-ordered list of free-or-shareware antivirals in the
+   text of the article).
+
+I'd give it a "B+" as an intro/tutorial... it seems to be more accurate
+and more informative than any intro-to-viruses I've seen in the glossy
+Mac press before now.  I'd give it an "A-" except for the fact that the
+person who put the table together didn't include Disinfectant.
+
+The author quoted a 1988 survey which indicated that only 8% of the
+magazine's readers had ever had their machines infected.  He himself has
+never had a virus infection on his Mac, and admits that he doesn't take
+his backup precautions as seriously as he might.  I hope he's not being
+overly optimistic... things have changed a bit in the last 18 months,
+alas.
+
+[Disclaimer: I'm the co-author of one of the freeware antivirals
+ mentioned in the article.]
+
+- --
+Dave Platt                                             VOICE: (415) 493-8805
+  UUCP: ...!{ames,apple,uunet}!coherent!dplatt   DOMAIN: dplatt@coherent.com
+  INTERNET:       coherent!dplatt@ames.arpa,  ...@uunet.uu.net
+  USNAIL: Coherent Thought Inc.  3350 West Bayshore #205  Palo Alto CA 94303
+
+------------------------------
+
+Date:    02 May 90 09:50:21 +0000
+From:    berg@cip-s01.informatik.rwth-aachen.de (Solitair)
+Subject: Re: *really* fail-safe virus protection
+
+George Roberts writes:
+>WARNING!  Although TTL logic floats high when open, it can (and often
+>will) go low for a few microseconds (due to cross talk on the chip?).
+>I've been burned a few times when I thought some signal would float
+>high. I highly recommend that you use a pullup resistor to +5V (if you
+>don't already have one).
+
+In fact, everybody has got a pull-up resistor to +5V on the Write Gate
+signal on a ST506 cable.  All the drivers on the ST506 cable are
+open collector!  This means, they have to have pull-up resistors.
+These resistors reside on the opposite side of the cable from where the
+drivers are.
+
+Since the driver for the Write Gate signal is on the HDC, the pull-up
+resistor is on the harddisk side.  Therefore, if you disconnect the
+Write Gate line from the harddrives, the signal will float high
+(unconditionally!).
+- --
+Sincerely,                         | berg@cip-s01.informatik.rwth-aachen.de
+           Stephen R. van den Berg | ...!uunet!mcsun!unido!rwthinf!cip-s01!berg
+
+------------------------------
+
+Date:    Wed, 02 May 90 12:14:37 +0300
+From:    Yuval Tal <NYYUVAL@WEIZMANN.BITNET>
+Subject: FSHIELD (PC)
+
+I've read a few messages about FSHIELD and I would like to respond. First
+of all, I suggest that you all take version 1.3 because of the bugs. Second,
+I will check the bug with DOS 4.01 although I cannot figure what's going on
+there. Third, I would like to respond to a message written by Mark Parr:
+
+>                                              wouldn't it seem possible
+> that "someone" could modify McAfee's FSHIELD program so that when ran
+> to protect a program it infects it with "some virus" and give the user
+> a false sense of security?
+
+Theoretically - yes, some can change the code inside FSHIELD.EXE so it will
+put another thing on the protected files but this is a very compilacted
+thing. By this, you can not trust anyone. I haven't seen the shareware version
+but I beleive that John has added the validation prorgram so I suggest you
+validate the program. You cannot trust that other programs that you download
+from BBSs are not infected with a new virus that programs cannot detect!
+What I'm saying is, you will have to be sure that you have a validated copy.
+
+>                                                            But isn't this
+> just making it easier for wormers to distribute a virus?
+
+Not at all! The easiest way for wormers to distribute a virus is to distribute
+a program which is already infected and not to change an EXE code that was
+made by as pascal compiler.
+
+- -Yuval Tal
+
++--------------------------------------------------------------------------+
+| BitNet:   NYYUVL@WEIZMANN        Domain: NYYUVAL@WEIZMANN.WEIZMANN.AC.IL |
+| InterNet: NYYUVAL%WEIZMANN.BITNET@CUNYVM.CUNY.EDU                        |
++----------------------+---------------------------------------------------+
+| Yuval Tal            | Voice:   +972-8-474592  (In Israel: 08-474592)    |
+| P.O Box 1462         | BBS:     +972-8-471026 * 20:00-7:00 * 1200 * N81  |
+| Rehovot, Israel      | FidoNet: 2:403/143                                |
++----------------------+---------------------------------------------------+
+|  "Always look on the bright side of life" *whistle*  -  Monty Python     |
++--------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Tue, 01 May 90 21:37:00 -0700
+From:    jmolini@nasamail.nasa.gov (JAMES E. MOLINI)
+Subject: RE: Mainframe Viruses
+
+OK.  Let me jump into the fray for a minute.
+
+Dave Ihnat writes:
+>                    ... I can think of no case whatsoever that
+> *requires* any program to write to another *program* as a matter of
+> course in the day-to-day execution of that program.  In all cases,
+> alternative methods may be employed which permit the executables
+> themselves to remain inviolate.
+
+To which David Chess gave several examples of how programs will create
+(write) other programs.  I'll go you one better Dave**2.  In VAX VMS
+for at least versions 3.X and 4.X DEC stored date information in
+SYSTEM.EXE.  I know this because a friend wrote up a great integrity
+validation utility, only to find that it got blown out of the water by
+the most important executable on the system.
+
+I know of a similar problem with partitioned datasets on IBM
+mainframes. In fact, I would not be surprised if you found a similar
+case on most high performance mainframe files occurring periodically
+when you performed a disk compression (something most good shops do
+weekly).  Each of these problems causes a simple file integrity check
+to fail.  But it doesn't mean that the checks can't be done, it just
+makes them more difficult.  It does mean, however, that the
+presumption that executable files on large systems are constant, is
+incorrect.
+
+But there are also some people who may be missing the boat where mainframe
+viruses are concerned.  For example, Ken Bell writes:
+
+> Huh?  Under VM, at least, a CLASS A user (the VM-equivalent of a
+> "superuser") can modify REAL storage very easily.
+
+Very true Ken, but he will still get a protection error if he tries to
+modify a file that he is not permitted to.  In fact, under RACF, he
+must get the violation and then permit himself to the file before he
+can perform the update.  If he modifies a specific utility in a
+malicious fashion, it is anyone's guess, but then we get into the
+problem of trusting and following up on your systems people.  In that
+case the virus was started by someone who could do anything they
+wanted to anyway.  It is not the kind of thing that will go completely
+unnoticed.
+
+Then David Chess wrote:
+
+> Arthur Gutowski <AGUTOWS@WAYNEST1.BITNET>:
+>
+>>                                       if they cannot write to another
+>> persons (or the systems) object libraries, he cannot spread the virus
+>> to someone else, can he?
+>
+>Sure he can!   He can write to an object library of his own that
+>someone else uses (via either read-write or read-only access).
+>I think that's a rather typical sharing pattern on mainframes;
+>I have read/write access to my programs and utilities and such,
+>and other people who want to use them have read-only access.
+>That's how it tends to be in program-development environments,
+>anyway, and in at least many others.  So I run an infected
+>program, it infects a number of the other programs I own,
+>someone else runs one of those and infects a number of her
+>programs, two other people run one of her infected programs...
+>
+...
+>Unless it's the case that virtually every program executes
+>virtually always in a state where it can write to virtually
+>no other programs, viruses can probably spread with ease.
+
+I doubt that it would work that way under MVS.  Although I am not an
+MVS guru, let me outline my impression of what happens.  Specifically,
+under MVS, most people keep executable files in a partitioned dataset.
+When one of those datasets is updated, it is not really changed as it
+sits on disk.  The module is rewritten at the end of the dataset space
+and the directory pointer to that module is changed to reflect the new
+location of the module on disk.  This also updates the time and date
+information in the directory and, if your security system is set up
+correctly, will add a log record of the event.  Simply "adding a few
+hundred bytes here and there" would wreak havoc on the pointers.
+Therefore, part of the dataset would have to be overlayed, thus losing
+some functionality in the dataset.  Not to mention that many
+executable files are usually linked together, possibly requiring you
+to re-link all of the dependent files.  Additionally, as I recall, any
+update made to an authorized executable by an unauthorized
+program/user automatically turns off authorization for that
+executable.  Therefore, it must then be relinked etc, etc.  When all
+is said and done, it is not a pretty sight.
+
+George Roberts then adds:
+
+>Well then how can viruses spread between pc's?  pc's are isolated in the
+>most extreme: they have absolutely no connection between them.  Much
+>better than accounts on a common mainframe.
+
+Not so.  Most PC users share diskettes more frequently.  And, for the
+reasons stated above, PC programs are more easily modified.
+>...
+>Viruses can spread from account to account on a mainframe the same way
+>they spread from pc to pc on micro's, but faster and easier because
+>there is greater connectivity.
+
+Wrong again.  In a mainframe, there is a central "authority" that
+determines and controls access to all resources on the system, if it
+is set up right.  In a PC environment, PC programs are "peers" that
+have the same master privilege in the system as any other program.
+You will find that in any case where a PC uses access control like a
+mainframe, virus propagation is more difficult (not impossible).
+
+>But how does the copy program work?  It reads records from one file
+and writes them to another.  What if you wrote a copy-like program
+>which reads records from one file, writes them to another, but
+>modifies some of the records.  One example is a program called an
+>editor.  Another is a program called a virus.  The 'editor' can edit
+>text or binary (executables).  So can any copy program.  How can
+>you stop the virus copy programs from working without stopping
+>the legitimate copy and editor programs?
+
+You can stop them by tightly managing your VENDOR PROVIDED copy and
+editor programs.  Most copy programs are located in a special system area
+that is tightly controlled.  If you let users update your system programs
+you are in for more trouble than viruses.  This type of process is
+usually controlled much better than you see in your satndard UNIX
+environment.
+
+But let's look at it a little more carefully.  If a copy program were to
+update every file it copied, How would it know that the file was
+executable as opposed to a binary (graph) file.  There are few standard
+executable names outside of source files.  Then source would normally be
+flagged if the virus were inserted.  After that, it would have to find a
+way to determine what the infected file was going to do.  If the central
+copy utility is infected (it is often a privileged program), what need is
+there in infecting anything else?
+
+Ok, let's say that you want to keep infecting anyway.  What to you do?
+If the file is executable, you can't very easily call the linker to re-
+link the file you have just zapped, (the user would wonder why it took 2
+minutes to copy one silly file) so 1 time in 10 the program bombs.  That
+should alert some system person to the problem.  But if you infect a
+source file, how do you get it to do your dirty work.  The only way to
+find out if you are permitted to another program, once executing, will
+generate a security violation if you are unauthorized.
+
+Finally if you want to use something that will always succeed, you have
+to infect a program that can bypass system integrity.  THAT IS EXTREMELY
+DIFFICULT.  If you can compromise a program that can bypass integrity and
+it is not quickly noticed by someone, then you have real problems.
+
+In other words, if you have invested millions in a mainframe system and
+haven't invested a few thousand in a GOOD system security review
+(preferably from outside the organization) you are playing with fire.  In
+fact, viruses should be the least of your worries.
+
+Jim Molini
+
+PS.  I have nothing to sell, so don't misinterpret this as a sales pitch
+
+------------------------------
+
+Date:    Wed, 02 May 90 22:34:34 +0900
+From:    Yoshio Oyanagi <oyanagi@is.tsukuba.ac.jp>
+Subject: Virus found in Japanese game software (Sharp)
+
+    VIRUS FOUND IN A JAPANESE GAME SOFTWARE ON THE MARKET
+
+                                          Yoshio Oyanagi
+                                          University of Tsukuba, Japan
+
+     Newspapers reported on April 24 that a virus was found in a
+simulation game software "FAR SIDE MOON" (9500 yen) for Sharp personal
+computer X68000.  It has been sold by Artdink Inc. since April 13 in
+Japan.  The virus was detected by Computer Virus Institute (Takao
+Yamamoto, director) of Federation of Japanese Computer Clubs.
+
+     According to Yamamoto, this virus is programmed so that it keeps
+inactive until July and after that data on floppy or in the computer
+will automatically be erased whenever one switches on the computer.
+
+     So far 3000 sets have been sold, among which half are contaminated.
+It is conjectured that the computers in Artdink Inc. are invaded by the
+virus while developping the game software.
+
+     Today (May 2) Asahi Shinbun (one of the major daily newspaper in
+Japan) disclosed that it succeeded in making contact with one of the
+virus makers.  According to the report, the maker is a high school boy
+of age 17, who lives in Kagawa prefecture.  Forty people collaborated
+in making the virus and got several tens of thousand yen (several
+hundred dollars) for each from the client, who ordered through PC
+network for hackers.  The virus program was completed in three months
+and distributed secretly since last September.
+
+     Federation of Japanese Computer Clubs told that there have been
+two viruses (viri?) for X68000, named "Namba I" and "Namba II".
+"Namba I" becomes active on July 4 this year and it deletes data on
+the computer or foppy disks.  If the computer is contaminated with
+both "Namba I" and "Namba II", some X68000 do not accept any floppy
+after 0:00 May 2.  The federation has developped a vaccine and
+distributing it among PC shops and users. If, however, a computer is
+contaminated with both viruses, it does not even accept the floppy
+disk of the vaccine.  In this case, user should bring the computer to
+the maker and ask to change the parts.
+
+    (crossposted to comp.risks and comp.virus)
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

@@ -1,0 +1,316 @@
+VIRUS-L Digest   Friday,  8 Dec 1989    Volume 2 : Issue 256
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Virus Buster v2.00 (beta) (PC)
+Re: Signature programs
+WDEF Virus Alert (MAC)
+Video problem (PC)
+Network Virus Protection (Mac)
+WDEF Virus (Mac)
+
+---------------------------------------------------------------------------
+
+Date:    Thu, 07 Dec 89 16:07:16 +0200
+From:    "Yuval Tal (972)-8-474592" <NYYUVAL@WEIZMANN.BITNET>
+Subject: Virus Buster v2.00 (beta) (PC)
+
+Hello!
+
+I am looking for a few beta-testers for the new version of Virus
+Buster.  The current version of VB is 1.10 and a new 2.00 will be
+released soon. I need people who have special hardware (large HD,
+special graphics adapter etc).  People who like to volunteer for this
+task should send e-mail to Yuval Tal (NYYUVAL@WEIZMANN.BITNET) or to
+one of the addresses written at the end of this letter.
+
+Ok, here is some info about Virus Buster 1.10:
+
+Virus Buster is an anti-viral software that was written in Israel by
+Uzi Apple (NYAPEL@WEIZMANN.BITNET) and by me. It can identify and
+remove about 15 viruses (version 2.00 will remove about 23) including:
+Data-crime, Jerusalem, 1st of april, Saratoga, FuManchu, Icelandic and
+more! Most important thing: It is PUBLIC DOMAIN! No fee charged! It
+has windows, statistics and much more. It will be soon available on
+the SIMTEL20 directories.
+
+- -Yuval
+
++--------------------------------------------------------------------------+
+| BitNet:   NYYUVL@WEIZMANN        Domain: NYYUVAL@WEIZMANN.WEIZMANN.AC.IL |
+| InterNet: NYYUVAL%WEIZMANN.BITNET@CUNYVM.CUNY.EDU                        |
++-----------------------------------+--------------------------------------+
+| Yuval Tal                         | Voice:   +972-8-474592               |
+| The Weizmann Institute Of Science | BBS:     +972-8-421842 * 20:00-7:00  |
+| Rehovot, Israel                   | FidoNet: 2:403/136         (CoSysop) |
++-----------------------------------+--------------------------------------+
+|   "Always look on the bright side of life" *whistle*  -  Monty Phyton    |
++--------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Thu, 07 Dec 89 14:33:11 +0200
+From:    Y. Radai <RADAI1@HBUNOS.BITNET>
+Subject: Re: Signature programs
+
+  Bob Bosen has posted a couple of articles on "signature" programs
+(I prefer to call them "checksum" programs).  I agree with some of
+what he has written, but disagree with other portions.  In V2 #249 he
+asks Steve Woronick:
+>                                              Are you saying you could
+>write or describe a virus that could infect a program but avoid
+>detection by an off-line ANSI X9.9-based message authentication code?
+
+  I don't know what Steve's answer is, but mine is definitely YES, and
+I say that even though I know very little about the ANSI X9.9 algo-
+rithm.  Bob and many others, particularly those with backgrounds in
+cryptology, tend to emphasize the *algorithm*: X9.9 or DES or RSA
+is considered by the experts to be more secure than CRC, and that's
+all there is to it.  What they miss is the fact that what has to
+ensure security on a computer is not simply an algorithm, but rather a
+*program* which implements it in a given *operating system*.  And even
+a program based on the most sophisticated checksum algorithm in the
+world is circumventable if it is not written *very carefully*.
+  Take, for example, the PC checksum programs in the directory <MSDOS
+TROJAN-PRO> or <MSDOS.FILUTL> of the Simtel20 archives.  They all use
+a CRC (or in a few cases a more primitive) algorithm.  Suppose we
+choose one of them and replace the CRC algorithm by the ANSI X9.9
+algorithm.  Will that ensure security?  Far from it!  For one thing,
+most of these programs have no provision for checksumming the boot
+sector.  That means that despite the use of a sophisticated algorithm,
+these programs would be totally ineffective against boot-sector virus-
+es, and that includes a sizable percentage of existing viruses.
+  Boot-sector checksumming is available in a few of these programs,
+e.g. it was finally added to the FluShot+ program a few months ago.
+But to the best of my knowledge this program still does not have
+partition-record checksumming.  And that goes for almost all the other
+programs in those directories also (Sentry is a welcome exception).
+  But is checksumming the BS and PR all we need to worry about?  Defi-
+nitely not.  If we perform the checksumming when memory is infected by
+a Brain-type virus, even X9.9 won't detect any modification.
+  So now all we have to do is ensure that memory is uninfected when we
+perform the checksumming (by booting from a clean diskette, etc.).
+Right?  Wrong!  There are at least five other loopholes in PC-DOS/
+MS-DOS which a virus writer could exploit if the program is not care-
+fully written, all of which are independent of the checksum algorithm
+and do not depend on memory being infected.  (These have apparently
+never been used in any actual virus so far.)  Exploitation of such
+loopholes is much more practical (from the point of view of the virus
+writer) than the checksum-forging methods alluded to by several people
+in this forum, since they are independent of the checksum program and
+do not require any calculations (of checksums, polynomials, keys,
+etc.).  True, all of these loopholes can be blocked if the author of
+the checksum program thinks of them.  The trouble is not only that
+most authors do not, but also that there may be other loopholes which
+none of us has thought of yet.
+  The conclusion is that even a program based on the most sophistica-
+ted checksum algorithm in the world cannot be depended on to detect
+all infections.  Whether a given algorithm is secure depends heavily
+on how it's implemented as a *program* in a particular *system*.
+  If it's relevant, Bob, I would suggest that you raise this issue
+with the rest of the ANSI working group.  There's a small problem,
+however:  I have not publicly specified what these additional, more
+subtle loopholes are, since I feel it would be quite irresponsible of
+me to do so.  But somewhere around No. 89 on my list of 927 things to
+do is writing virus simulators to implement all, or at least most, of
+these loopholes.  If Bob or anyone else is willing to send me a PC
+program which implements X9.9 or any other signature algorithm which
+he thinks is secure, that would raise the priority of my writing at
+least one of these simulators, which I could then throw at the program
+in order to test whether it really is secure.
+
+  Bob also asks:
+>                                                   Who can say whether
+>the more sophisticated viruses of the future will attempt to analyze
+>CRC signatures or target specific products that rely on CRC methods?
+
+  Since he specifically mentions CRC methods, he is obviously not re-
+ferring to the types of loopholes to which I alluded above.  In V2
+#238 I gave arguments against the claim that CRC programs are circum-
+ventable in practice by checksum-forging methods, provided certain ob-
+vious precautions are taken.  Bob has given no reply to these argu-
+ments and I don't see how emphasis on *future* viruses affects them
+(except possibly as concerns the time required for the virus to do its
+work).  While I obviously can't prove it, my personal feeling is that
+*in practice* a CRC algorithm based on a randomly or personally chosen
+generator is, and will remain, just as secure as any more sophistica-
+ted algorithm (if the CRC base and program are kept offline) and pro-
+bably a lot faster.  In any case, the most important thing is the pro-
+gram, not the algorithm.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI1@HBUNOS.BITNET
+
+------------------------------
+
+Date:    Thu, 07 Dec 89 10:55:38 -0700
+From:    Pete Troxell <troxell@INLOTTO.DEN.MMC.COM>
+Subject: WDEF Virus Alert (MAC)
+
+This is being cross-posted from comp.sys.mac. The original article is
+by John Norstad of Northwestern University:
+
+A new Macintosh virus named "WDEF" has been discovered in Belgium,
+at Northwestern University, and at the University of Texas.
+
+The WDEF virus infects the invisible "Desktop" files used by the
+Finder.  Every Macintosh disk has one of these files (hard drives
+and floppies).  The virus spreads from Desktop file to Desktop
+file, but it does not infect applications, data files, or system
+files.
+
+The virus does not intentionally try to do any damage.  In fact,
+it doesn't do anything except spread from disk to disk.
+
+Due to a bug, the virus causes Mac IIcis to crash.  We have also
+noticed unusually frequent crashes on infected Mac IIcxs, and
+severe performance problems with infected AppleShare servers.
+There are also other bugs in the virus which could cause problems.
+
+You do not have to run a program for the virus to spread.
+
+Unlike most of the other Mac viruses, the WDEF virus is not spread
+via the sharing and distribution of programs, but rather via the
+sharing and distribution of disks, usually floppy disks.
+
+You can eliminate the virus from a disk by rebuilding the desktop
+file (hold down the Command and Option keys while booting or while
+inserting a floppy).
+
+Jeff Shulman, the author of Virus Detective 3.1, recommends adding
+the following search string to detect the virus:
+
+    Creator=ERIK & Resource WDEF & Any
+
+Virus Detective can also be used to remove the virus - click on
+the "Remove" button whenever the search string is matched.  This
+only works if you are not using MultiFinder, and if you are
+running some program other than the Finder.  Don't try this with
+the other viruses - Virus Detective can only repair WDEF
+infections, not infections by the other known Macintosh viruses.
+
+As far as we know, Virus Detective is the only virus-fighting tool
+which can detect the new WDEF virus.
+
+Unfortunately, the virus manages to avoid detection by all of the
+popular protection INITs, including Vaccine 1.0.1, GateKeeper
+1.1.1, SAM Intercept 1.10, and Virex INIT 1.12.
+
+Disinfectant 1.3, Virus Rx 1.5, SAM Virus Clinic 1.10, and Virex
+2.12 also all fail to detect the virus.
+
+We expect that many of the virus-fighting programs mentioned above
+will be updated soon to deal properly with the new WDEF virus.
+
+John Norstad
+Academic Computing and Network Services
+Northwestern University
+2129 Sheridan Road
+Evanston, IL 60208
+
+jln@acns.nwu.edu
+
+- --
+Peter Troxell
+NET:     ncar!dinl!troxell
+ARPA:    Troxell@Dockmaster.ARPA
+US-MAIL: Martin Marietta I&CS, MS XL8058, P.O. Box 1260,
+         Denver, CO 80201-1260
+Phone:   (303) 971-7928
+
+------------------------------
+
+Date:    07 Dec 89 20:55:51 +0000
+From:    tte@metaware.metaware.com (Thuan-Tit Ewe)
+Subject: Video problem (PC)
+
+Regarding your posting, I know of a virus which will do just such a thing.
+After disassemblying Jerusalem B virus, I saw code in there triggered by
+the clock interrupt that will scroll a region of the screen some two lines
+up.
+
+Your best bet is to use any anti-viral program to check your system and
+make sure it's not affected. Also, to see if it a virus attact:
+
+1. Get a good copy of any small program from a floppy. (Maybe debug.com from
+   your DOS distribution)
+2. Note its size
+3. Run the program that will cause the screen scroll. (Or any wierd problem)
+4. Exit program on step 3, and execute the small program.
+5. Exit the small program and check to see if the size increased.
+
+If it does, chances are very, very, very good that you have a virus problem!
+
+Of course, if the small program has already been infected, you won't see
+any size increase.
+
+Thuan-Tit Ewe                   MetaWare Inc
+tte@metaware.com                (408) 476-8936
+{uunet|ucscc|acad}!metaware!tte
+
+------------------------------
+
+Date:    Thu, 07 Dec 89 15:47:27 -0500
+From:    "Gregory E. Gilbert" <C0195@UNIVSCVM.BITNET>
+Subject: Network Virus Protection (Mac)
+
+Is there any freeware that will provide virus protection when using a
+network such as AppleShare or TOPS?  I know SAM will work fine.  Will
+Gatekeeper or Vaccine provide adequate protection?  Will Disinfectant
+provide adequate diagnosing capabilities?
+
+Greg
+
+Postal address:   Gregory E. Gilbert
+                  Computer Services Division
+                  University of South Carolina
+                  Columbia, South Carolina   USA   29208
+                  (803) 777-6015
+Acknowledge-To: <C0195@UNIVSCVM>
+
+------------------------------
+
+Date:    Fri, 08 Dec 89 11:42:58 -0500
+From:    "Gregory E. Gilbert" <C0195@UNIVSCVM.BITNET>
+Subject: WDEF Virus (Mac)
+
+Recently there was a posting on VALERT-L about a new virues, WDEF.  In the
+alert it is mentioned that:
+
+(stuff deleted)
+
+"Jeff Shulman, the author of Virus Detective 3.1, recommends adding the
+following search string to detect the virus:
+
+CREATOR=ERIK & Resource WDEF & Any
+
+Virus Detective can also be used to remove the virus ......"
+
+Where or to what do we add the "following search string".  Please
+pardon my ignorance.
+
+Greg
+
+Postal address:   Gregory E. Gilbert
+                  Computer Services Division
+                  University of South Carolina
+                  Columbia, South Carolina   USA   29208
+                  (803) 777-6015
+Acknowledge-To: <C0195@UNIVSCVM>
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

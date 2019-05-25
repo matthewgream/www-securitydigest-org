@@ -1,0 +1,178 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+#######################################################################
+
+my(%month2num) = ( jan=>'01',feb=>'02',mar=>'03',apr=>'04',may=>'05',jun=>'06',jul=>'07',aug=>'08',sep=>'09',oct=>'10',nov=>'11',dec=>'12' ); 
+my(%numbers) = ();
+my(%messages) = ();
+my(%contents) = ();
+my(@terms_search_other) = (
+	"smtp",
+	"ftp"
+);
+my(@terms_search_security) = (
+	"secur",
+	"password", 
+	"authenticat", 
+	"crypt", 
+	"worm", 
+	"virus"
+);
+my(%terms_found) = ();
+my(%terms_found_yy) = ();
+my(%terms_found_all) = ();
+
+#######################################################################
+
+for(my $y = 1982; $y <= 1991; ++$y) 
+{
+	for (my $m = 1; $m <= 12; ++$m) 
+	{
+		my($s) = sprintf("%04s-%02s", $y, $m);
+		$numbers{$s} = 0;
+		$messages{$s} = 0;
+		foreach my $o (@terms_search_other) 
+		{
+			$terms_found{$s}{$o} = 0;
+			$terms_found_yy{"$y"}{$o} = 0;
+		}
+		foreach my $t (@terms_search_security) 
+		{
+			$terms_found{$s}{$t} = 0;
+			$terms_found_yy{"$y"}{$t} = 0;
+		}
+	}
+}
+foreach my $o (@terms_search_other) 
+{
+	$terms_found_all{$o} = 0;
+}
+foreach my $t (@terms_search_security) 
+{
+	$terms_found_all{$t} = 0;
+}
+
+#######################################################################
+
+foreach my $f (@ARGV) 
+{
+	print STDERR "reading: $f\n";
+
+	my($current_year) = "";
+	my($current_month) = "";
+	my($current_message) = 0;
+	my($current_cache) = "";
+
+	open(FILE, "<$f") || die("can't open $f : $!");
+	while (<FILE>) 
+	{
+		s/[\r\n]*$//;
+		my($current_line) = $_;
+		foreach my $o (@terms_search_other) 
+		{
+			if ($current_line =~ m/$o/i)
+			{
+				$terms_found_yy{"19$current_year"}{$o}++;
+				$terms_found_all{$o}++;
+			}
+		}
+		foreach my $t (@terms_search_security) 
+		{
+			if ($current_line =~ m/$t/i)
+			{
+				($current_year ne "" && $current_month ne "") || 
+					die("year/month not yet set");
+				$terms_found{"19$current_year-$current_month"}{$t}++;
+				$terms_found_yy{"19$current_year"}{$t}++;
+				$terms_found_all{$t}++;
+				$current_message = 1;
+			}
+		}
+		if ($current_line =~ m/^[\d ]{2}-([A-Za-z]{3})-([\d]{2}) \d\d:\d\d:\d\d-P.T,[0-9]*;[0-9]*/i) 
+		{
+			if ($current_year ne "" && $current_month ne "" && $current_message == 1)
+			{
+				$contents{"19$current_year-$current_month"} .= "----MESSAGE-BBB----\n";
+				$contents{"19$current_year-$current_month"} .= $current_cache;	
+				$contents{"19$current_year-$current_month"} .= "----MESSAGE-EEE----\n";
+				$messages{"19$current_year-$current_month"} += $current_message;
+			}
+			$current_month = $month2num{lc($1)};
+			$current_year = $2;
+			$current_message = 0;
+			$current_cache = "";
+			$numbers{"19$current_year-$current_month"}++;
+		}
+		else 
+		{
+			$current_cache .= $current_line . "\n";
+		}
+	}
+	if ($current_year ne "" && $current_month ne "" && $current_message == 1)
+	{
+		$contents{"19$current_year-$current_month"} .= "----MESSAGE-BBB----\n";
+		$contents{"19$current_year-$current_month"} .= $current_cache;	
+		$contents{"19$current_year-$current_month"} .= "----MESSAGE-EEE----\n";
+		$messages{"19$current_year-$current_month"} += $current_message;
+	}
+	close(FILE);
+}
+
+#######################################################################
+
+foreach my $c (sort keys %contents) 
+{
+	print STDERR "writing: messages.$c\n";
+	open (FILE_OUT, ">look_security.messages.$c") || die ("failed: $!");
+	print FILE_OUT $contents{$c};
+	close (FILE_OUT);
+}
+
+print STDERR "writing: stats.messages\n";
+open (FILE_OUT, ">look_security.stats.messages") || die ("failed: $!");
+foreach my $w (sort keys %numbers) 
+{
+	my($m) = $messages{$w};
+	my($n) = $numbers{$w};
+	my($p) = ($n == 0 || $m == 0) ? 0 : ($m / $n) * 100;
+	print FILE_OUT "$w,$m,$n,$p\n";
+}
+close (FILE_OUT);
+
+print STDERR "writing: stats.words.byyear\n";
+open (FILE_OUT, ">look_security.stats.words.byyear") || die ("failed: $!");
+foreach my $x (sort keys %terms_found_yy)
+{
+	foreach my $y (sort keys %{$terms_found_yy{$x}})
+	{
+		my($z) = $terms_found_yy{$x}{$y};
+		print FILE_OUT "$x,$y,$z\n";
+	}
+}
+close (FILE_OUT);
+
+print STDERR "writing: stats.words.bymonth\n";
+open (FILE_OUT, ">look_security.stats.words.bymonth") || die ("failed: $!");
+foreach my $x (sort keys %terms_found)
+{
+	foreach my $y (sort keys %{$terms_found{$x}})
+	{
+		my($z) = $terms_found{$x}{$y};
+		print FILE_OUT "$x,$y,$z\n";
+	}
+}
+close (FILE_OUT);
+
+print STDERR "writing: stats.words.total\n";
+open (FILE_OUT, ">look_security.stats.words.total") || die ("failed: $!");
+foreach my $i (sort keys %terms_found_all)
+{
+	my($j) = $terms_found_all{$i};
+	print FILE_OUT "$i,$j\n";
+}
+close (FILE_OUT);
+
+#######################################################################
+

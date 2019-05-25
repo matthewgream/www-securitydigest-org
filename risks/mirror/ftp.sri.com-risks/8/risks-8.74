@@ -1,0 +1,367 @@
+RISKS-LIST: RISKS-FORUM Digest  Friday 26 May 1989   Volume 8 : Issue 74
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Aegis, Vincennes, and the Iranian Airbus (PGN interpreting Matt Jaffe)
+  Anti-lock brake system failure - fail-safe? (Jay Elinsky)
+  Pleasure boat database helps thieves (Howard Gayle)
+  SAGE-BOMARC risks (Les Earnest)
+  SABRE disaster caused by "core corruption" (Andrew Birner)
+  Computer Intrusion Network in Detroit (Dave Curry)
+  Robert T. Morris suspended from Cornell (Dave Curry)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp KL.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99).
+
+----------------------------------------------------------------------
+
+Date: Fri, 26 May 1989 13:44:01 PDT
+From: Peter Neumann <neumann@csl.sri.com>
+Subject: Aegis, Vincennes, and the Iranian Airbus (report on a Matt Jaffe talk)
+
+In a keynote talk for the 5th International Workshop on Software
+Specification and Design in Pittsburgh, 20-21 May 1989, I cited the case of
+the Aegis' role in the Vincennes' shootdown of an Iranian Airbus as an
+example of a system in which the design of the user interface was critical.
+
+Matt Jaffe (Jaffe@ics.uci.edu) responded with some comments on the Aegis user
+interface -- in whose design he had played a part while at RCA -- after which
+he was invited to gave an impromptu talk on his experience to the workshop.
+
+As you may recall, the Iranian Airbus was shot down by the Vincennes, although
+it was on schedule, on course, and apparently flying completely normally.
+There was confusion between the commercial plane being tracked and an observed
+IFF (Identification, Friend or Foe) squawk from a fighter plane.  The altitude
+information (Z) was not displayed on the main screens, but only in one of
+various subtables that had to be called up on a smaller screen.  There was no
+indication of rate of change of altitude (Z', or "Z-dot"), not even a ternary
+choice among ascending, cruising, or descending.  Matt took the view that the
+user interface could not have done much differently, because of intrinsic
+limitations on
+
+  1. the reliability and/or accuracy of the underlying data, 
+  2. the physical and logical characteristics of the display devices
+     (alphanumeric raster-scan screens with limited space)
+  3. and the ability of human operators to interpret marginal
+     data in the high volume and high stress environment.
+
+This is an attempt to summarize Matt's main points:
+
+  Mode II codes (military use only) cannot be conclusive in determining friend
+  or foe because they can be spoofed by a non-friendly aircraft, as can the
+  civilian use Modes I and III.  In this particular case, the military
+  aircraft supplied by the US to Iran almost certainly included Mode II
+  transponders.  Note some subtle points here.  IFF is to determine the
+  identity of friendly aircraft, not the military capability of a non-friend.
+  In this tragedy, the problem was not in discriminating between friends and
+  all others but between an Iranian F-14 and an Iranian airliner.  The
+  identification as Iranian was correct (and presumably not based on IFF but on
+  point of origin).  A classification of a Mode II code as belonging to an
+  Iranian military aircraft would seem reasonable given that the airfield from
+  which the aircraft departed was a joint use airport (both civilian and
+  military).  What may have happened was that the airliner taxied near enough
+  to an F-14 on the ground as to preclude the system from recognizing that
+  there were in fact TWO aircraft.  (ANY sensor has some resolution limits.)
+  Once the airliner was airborne, its lack of further mode II activity would
+  not preclude the display of the old Mode II code.  Aircraft may fail to
+  respond to an IFF interrogation (of any code) for a variety of reasons and
+  yet operators (both civil and military) want to have the last recieved code
+  remain displayed.
+
+  Thus the entire mechanism contains potential ambiguities.  Providing a
+  recency field for Mode II squawks would probably have been a good idea,
+  display space and operator cognitive limits permitting.  (At that time and
+  to date, Matt indicated that he knew of no system that provided the age of
+  last squawk; nor did the Navy mention the possibility.  Scary?)
+
+  The altitude readings are generally unreliable.  Thus, the Z' calculations --
+  irrespective of how they were done -- would be suspect, and subject to
+  possible misinterpretation.  Nevertheless, some crude up-down-same field
+  might have been useful.
+
+  Uncertain or unreliable information will always be a major problem in any
+  safety-critical system.
+
+  From the Navy's point of view, the Captain of the Vincennes did the right
+  thing -- based on what he knew.
+
+  No standard Navy shipborad systems could have done the discrimination
+  automatically.  No equipment necessary for the Vincennes mission could have
+  prevented a manual decision from being difficult, nerve-wracking, and
+  error-prone.
+
+  The situation was basically untenable in the first place, with hostile
+  aircraft and commercial airliners closely interwoven within an area of great
+  unrest. 
+
+  [The Stark Captain had said earlier that they had not realized the
+  limitations of the combat system in that kind of an environment.  PGN]
+
+Matt made the appropriate disclaimers -- that his knowledge is not current,
+that his opinions were his own, etc.  And his audience was generally impressed
+with the care with which he had thought out the issues.  All in all, this case
+is of great importance, and bears close consideration.  There are many lessons
+to be learned, some technological and some nontechnological -- many of the
+latter relating to the intrinsic limitations of trusting the technology,
+especially under adverse circumstances.  PGN
+
+------------------------------
+
+Date: Thu, 25 May 89 07:40:57 EDT 
+From: "Jay Elinsky" <ELINSKY@YKTVMT.BITNET>
+Subject: Anti-lock brake system failure - fail-safe?
+
+The June 1989 issue of Consumer Reports includes a test of the Chevrolet S-10,
+as well as three other sport/utility vehicles.  The Chevrolet has rear-wheel
+anti-lock brakes.  This is from the "Reliability" section of the report on the
+Chevrolet:
+
+  "The most disquieting [sample defect] was a defective antilock brake
+  controller.  At just over 200 miles, the brake warning light came on and the
+  pedal sank almost to the floor.  The pedal felt spongy and sank slowly during
+  each brake application.  The controller was replaced under the warranty."
+
+I would have expected that a controller failure would leave you with normal
+brakes, and perhaps a warning light glaring at you to warn that the brakes are
+now manually controlled.  Instead the failure mode sounds like a plain old
+brake system leak, except that Consumer Reports didn't say that braking power
+was actually lost.  Was there braking power left only because the front brakes,
+which I understand do most of the braking, weren't controlled by the defective
+controller?  In any event, finding the brake pedal much lower than you expect
+it to be, is a risk in itself.
+
+It's also interesting that Consumer Reports didn't make a big deal out of
+this problem, so perhaps they don't consider it to be a major risk.
+
+Jay Elinsky, IBM T.J. Watson Research Center, Yorktown Heights, NY
+
+------------------------------
+
+Date: Wed, 24 May 89 14:02:07 +0200
+From: howard@dahlbeck.ericsson.se (Howard Gayle)
+Subject: Pleasure boat database helps thieves
+
+This is based on an article in the Stockholm newspaper Dagens Nyheter, 24 May
+1989, p.6.  Last year, a law went into effect in Sweden requiring the
+registration of most pleasure boats.  The database is financed by a small "user
+fee," i.e., a tax.  The data are public information.  A thief who steals a boat
+can phone the registration office, tell them the boat's registration number,
+and obtain the legal owner's name, address, and national ID number.  This makes
+it easy for the thief to impersonate the legal owner when selling the stolen
+boat.
+
+------------------------------
+
+Date: 23 May 89  0131 PDT
+From: Les Earnest <LES@SAIL.Stanford.EDU>
+Subject: SAGE-BOMARC risks   
+
+This is an account of two ancient (30-year old) computer risks that were
+not publicly disclosed for the usual reasons.  It involves an air defense
+system called SAGE and a ground-to-air missile called BOMARC.
+
+SAGE was developed by MIT in the late '50s with Air Force sponsorship to
+counter the threat of a manned bomber attack by you-know-who.  It was also
+designed to counter the political threat of a competing system called Nike
+that was being developed by the Army.
+
+SAGE was the first large real time computer system.  "Large" was certainly
+the operative term -- it had a duplexed vacuum tube computer that covered
+an area about the size of a football field and a comparably sized air
+conditioning system to take away the enormous heat load.  It used an
+advanced memory technology that had just been invented, namely magnetic
+core, and had a larger main memory than any earlier computers, though it
+is not impessive by current standards -- it would now be called 256k
+bytes, though no one had heard of a byte then.
+
+The system collected digitized radar information from multiple sites and
+used it to automatically track aircraft and guide interceptors.  SAGE was
+designed to work initially with manned interceptors such as the F-102,
+F-104, and F-106 and used a radio datalink to transmit guidance commands
+to these aircraft.  It was later modified to work with the BOMARC missile.
+
+Each computer site had about 50 display consoles that allowed the
+operators to assign weapons to targets and monitor progress.  As I recall,
+there were eventually between one and two dozen SAGE systems built in
+various parts of the U.S.
+
+BOMARC missiles used a rocket booster to get airborne and a ramjet to
+cruise at high altitude to the vicinity of its target.  It was then used
+its doppler radar to locate the target more accurately so that it could
+dive at it and detonate.  It could carry either a high explosive or a
+nuclear warhead.
+
+BOMARCs were housed in hardened structures.  When a given missile received a
+launch command from SAGE, sent via land lines, the roof would roll back, the
+missile would erect, and if it had received a complete set of initial guidance
+commands in the meantime it would launch in the specified direction.
+
+			Testing the fire-up decoder
+
+It was clearly important to ensure that the electronic guidance system in the
+missile was working properly, so the Boeing engineers who designed the launch
+control system included a test feature that would generate a set of synthetic
+launch commands so that the missile electronics could be monitored for correct
+operation.  When in test mode, of course, the normal sequence of erecting and
+launching the missile was suppressed.
+
+I worked on SAGE during 1956-60 and one of our responsibilities was to
+integrate BOMARC into that system.  This led us to review the handling of
+launch commands in various parts of the system.  In the course of this
+review, one of our engineers noticed a rather serious defect -- if the
+launch command system was tested, the missile would be in a state of
+readiness for launch.  If the "test" switch was then returned to "operate"
+without individually resetting the control systems in each missile that had
+been tested, they would all immediately erect and launch!
+
+Needless to say, that "feature" was modified rather soon after we mentioned it
+to Boeing.
+
+			Duplexed for reliability
+
+For some reason, I got assigned the responsibility for securing approval to put
+nuclear warheads on the second-generation BOMARCs, which involved "proving" to
+a government board that the probability of accidentally launching a missile on
+any given day as a result of equipment malfunctions was less than a certain
+very small number and that one berserk person couldn't do it by himself.  We
+did eventually convince them that it was adequately safe, but in the course of
+our studies we uncovered a scary problem.
+
+The SAGE system used land lines to transmit launch commands to the missile site
+and these lines were duplexed for reliability.  Each of the two lines followed
+a different geographic route so that they would be less likely to be taken out
+by a single blast or malfunction.  There was a black box at the missile site
+that could detect when the primary line went bad and automatically switched to
+the alternate.  On examination, we discovered that if both lines were bad at
+the same time, the system would remain connected to the alternate line and the
+amplifiers would then pick up and amplify whatever noise was there and
+interpret it as a stream of random bits.
+
+We then did a Markov analysis to determine the expected time that it would take
+for a random bit stream to generate something that looked like a "fire" command
+for one of the missiles.  We found that expected value was a little over 2
+minutes.  When such a command was received, of course, the missile would erect
+and prepare to launch.  However, unless the missile also received a number of
+other commands during the launch window, it would automatically abort.
+Fortunately, we were able to show that getting a complete set of acceptable
+guidance commands within this time was extremely improbable, so this failure
+mode did not present a nuclear safety threat.
+
+The official name of the first BOMARC model was IM-99A, so I wrote a report
+about this problem titled "Inadvertent erection of the IM-99A."  While that
+title raised a few eyebrows, the report was destined to get even more attention
+than I expected.  Its prediction came true a couple of weeks after it was
+released -- both phone lines went bad on a BOMARC site in Maryland, near
+Washington D.C., causing a missi<le to suddenly erect and start the launch
+sequence, then abort.  Needless to say, this scared hell out of the site staff
+and a few other people.
+
+The Air Force was suitably impressed with our prediction and I was
+immediately called upon to chair an MIT-AT&T committee that had the honor
+of fixing the problem.  The fix was rather easy: just disconnect when both
+lines are bad.  With good engineering practice, of course, this kind of
+problem wouldn't occur.  However, the world is an imperfect place.
+
+	Les Earnest
+
+------------------------------
+
+Date: Wed, 24 May 89 18:08 PDT
+From: Andrew Birner <Andrew-Birner%ZENITH.CP6%LADC@BCO-MULTICS.HBI.HONEYWELL.COM>
+Subject: SABRE disaster caused by "core corruption"
+
+ According to an article by Margie Semilof, entitled "SABRE Recovers from
+Network Crash", in Communications Week, May 22, 1989, the recent SABRE outage
+occurred when the "Online DASD formatter was changed erroneously by another
+software program operating at the same time.  This 'core corruption' resulted
+in the destruction of critical system data on SABRE's 1,800 DASDs."
+ The article later quotes Jim Juracek, vice president of systems engineering
+for SABRE Computer Services:
+
+     "All the predictable things are covered," Juracek said.  "The unpredict-
+     able things, such as when a software program gets clobbered by another
+     program . . . [ellipsis hers] there is no way to work with this."
+
+ The article further notes that "SABRE is developing software that will
+provide memory protection of applications, and thereby help prevent against
+core corruption.  That software will not be ready[,] however, until the early
+to mid 1990s".
+
+ Using software for memory protection?  In the 1990s?  How, I wonder, will
+they protect their protection software ("quis custodiet ipsos custodes", as
+always)?  Is SABRE is too tightly coupled to its hardware to be moved to a
+platform that provides hardware memory protection?  Or is it just plain too
+big to be ported?
+
+Andrew E. Birner -- Zenith Electronics Corp -- Zenith/A_Birner@ladc.bull.com
+
+------------------------------
+
+Date: Thu, 25 May 89 19:01:31 -0700
+From: davy@riacs.edu
+Subject: Computer Intrusion Network in Detroit
+
+Taken from the San Jose Mercury News, 5/25/89 (Knight-Ridder News Service).
+
+  DETROIT - Secret Serviceagents smashed what they described as a costly,
+sophisticated computer intrusion network Wednesday and were surprised to
+discover it made up largely of teen-agers.
+  The computer systems of more than 20 companies including the Michigan
+Department of Treasury and Home Box Office cable television services, were
+infiltrated, according to agents serving search warrants across the country.
+  Federal officials said the infiltrations by the network represented fraud
+of $200,000 to $1.5 million in appropriated goods, telephone and computer time.
+  Agents expected to arrest some adults when they swept down on eight people
+who allegedly ran the network in several states.  Instead, they found only
+one adult, in Chicago.  The rest were teen-agers as young as 14: two in
+Columbus, Ohio; two in Boston; two in Sterling Heights, Mich.; and one in
+Atlanta.  Agents expected to make another arrest in Los Angeles.
+  Officials said at least 55 other people nationwide made use of the
+network's information.
+  In Sterling Heights, Secret Service agents pulled two eighth-grader boys,
+both 14, out of school and questioned them in the presence of their parents,
+who apparently were unaware of their activities.  James Huse, special agent in
+charge of the U.S. Secret Service office in Detroit, said the youths admitted
+involvement in the scheme.
+  He said the eight-graders [sic], because they are juveniles, cannot be
+charged under federal law and will be dealt with by local juvenile
+authorities.
+  Authorities believe the mastermind is Lynn Doucett, 35, of Chicago.  She
+was arrested Wednesday and is cooperating with authorities, Huse said.
+  Doucett, who was convicted in Canada of telecommunications fraud, supports
+herself and two children through her computer intrusion activities, which
+include using stolen or couterfeit credit cards for cash advances or money
+orders, according to an affidavit filed in U.S. District Court.
+  If convicted, she faces up to 10 years in prison and a $250,000 fine.
+
+------------------------------
+
+Date: Thu, 25 May 89 18:49:38 -0700
+From: davy@riacs.edu
+Subject: Robert T. Morris suspended from Cornell
+
+Taken from San Jose Mercury News, 5/25/89 (From the New York Times)
+
+  Cornell University has suspended the graduate student identified by school
+officials as the author of [the Internet worm].
+  In a May 16 letter to Robert Tappan Moris, 23, the dean of the Cornell Uni-
+versity Graduate School said a university panel had found him guilty of vio-
+lating the school's Code of Academic Integrity.
+  He will be suspended until the beginning of the fall semester of 1990, and
+then could reapply.
+  No criminal charges have been filed against Morris.  A federal grand jury
+this year forwarded its recommendations to the Justice Department, which has
+not taken any action.    [....]
+
+------------------------------
+
+End of RISKS-FORUM Digest 8.74
+************************

@@ -1,0 +1,868 @@
+VIRUS-L Digest   Wednesday,  9 Sep 1992    Volume 5 : Issue 149
+
+Today's Topics:
+
+Re: Anyone for a Feist ??? (PC)
+Re: Auto-detecting virus (PC)
+Re: Bug in F-PROT? (PC)
+Re: F-PROT reports Bugsres 3 Jokes program? (PC)
+Re: NetWare and viruses - some new results (PC)
+Re: new virus found (PC)
+Re: VACSINA Information Wanted (PC)
+Re: Any info on Gobbler-II a-v sw or Comrac (its publisher) ? (PC)
+Tan An Door virus?!?! (PC)
+Re: F-Prot & SuperStor (PC)
+New files on eugene and beach (PC)
+Re: F-PROT reports Bugsres 3 Jokes program? (PC)
+Re: Auto-detecting virus (PC)
+F-prot false alarm? (PC)
+Self-checking programs (PC et al)
+Re: Bugs on my Atari (Atari)
+Looking for references (UNIX)
+Is FTP/Kermit of sources safe?
+Re: I'm off [to Scotland]... Comp Virus Conferences
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    07 Sep 92 19:15:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Anyone for a Feist ??? (PC)
+
+ISB202REID@redgum.qut.edu.au (Did somebody say Coffee ??????) writes:
+
+> The virus I found wasn't the feist virus.  I viewed the file using a
+> simple file viewer and found the string "No Frills 2.0" towards the
+> end.
+
+Ah, so it's the No_Frills virus.
+
+> F-prot 2.05 does NOT have this virus in its database however the
+> heuristic scan does say that is almost certainly a virus.
+
+Indeed, F-Prot doesn't know about it. However, now Frisk has a copy of
+it, so let's hope that it will be included in the next version. The
+virus seems to be in the wild, but is still local to Australia.
+
+> Clean 95 incorrectly identifies it as Feist.
+
+Since version 91 the words "Clean" and "identifies" should not be used
+together... :-)
+
+> No Frills is not in Scan 95 virlist.txt either.
+
+The contents of VIRLIST.TXT has nothing to do with what SCAN 95
+actually outputs as virus names. The virus properties listed in that
+file also are not entirely correct...
+
+> Question: What does No Frills do and can it be removed.
+
+It doesn't do anything remarkable. A memory resident COM & EXE fast
+file infector. Avoids infecting files like SC*.E* and CO*.C*.
+Infective length is 843 bytes. No payload (at least I didn't notice
+one). The easiest way to remove it is to delete the infected files.
+
+If there is a need for a more detailed description, I'll post one.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 19:37:02 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Auto-detecting virus (PC)
+
+beaurega@ireq.hydro.qc.ca (Denis Beauregard) writes:
+
+> Compile the program.
+> Compute the checksum of the program.
+> Put the checksum in the program.
+> When starting the program : Stop the program if the checksum has been altered.
+
+> Advantages :
+> 1- User can not modify the program to remove the copyright notice
+>    (whic I can code anyway)
+
+He still can - if he bothers to find out where your checksum is and to
+patch it or to patch the piece of code that is performing the check.
+
+> 2- Virus modifying hte program would be catched immediately so that
+>    my programs will be reputed for being virus-safe
+
+Not true. First, a virus which knows where your checksum is, could
+simply re-compute it on the already infected file and patch it. Or
+just remove it. Or patch the checking code. Or modify the file without
+modifying the checksum (I understand that you intend to use CRC-32 and
+in this case it is trivial, if the generator is known).
+
+Second, the virus could be a stealth one. When you start the infected
+program, the virus will receive control first. It will then go stealth
+and intercept all read requests to the file and modify their results
+in such a way that the fill will look as if it is not infected.
+Therefore, the checking code (which will receive control after the
+virus) will not detect the change.
+
+The method that you are describing will work only against the simple
+(non-stealth) viruses and against viruses which do not know about
+your program.
+
+> Inconvenients :
+> 1- This won't work on older DOS versions (since the file name is not availabl
+e
+
+True, but relatively few people are still using DOS version below 3.0.
+
+> 2- This will slow down the program loading, but by a small amount
+
+It will be almost unnoticeable. The slowdown will be more significant
+when the program is run from a floppy.
+
+> I would like to get feedback (I will keep subscription for that group
+> for one month as I usually subscribe only to a group when I have a
+> specific interest).
+
+Had you been subscribed to this group for longer, you would without
+any doubt have heard about the stealth viruses.
+
+> Also, I never saw a self-protected program.  Even an anti-virus program
+
+Most anti-virus programs nowadays are using this method. Not that it
+works in all cases, but a protection against the simple viruses only
+is better than no protection at all, right?
+
+> Would it be safer to use a 32 bit checksum (I understand a 16 bit
+> checksum would mean if something if wrong, odd are 1 to 65536 not to
+> find it).  A 32 bit machine will just count faster a 32 bit sum.
+
+As far as I understand, you intend to use CRC-32 for your checksum. In
+this case, please have in mind that it relatively trivial to break it,
+if the generator is known. CRC checksums have been designed for
+detection of random errors (caused by line noise), not for detection
+of malicious attack. If you want to be more secure, use CRC-32 with a
+randomly generated polynomial or even better, use MD4 or MD5. However,
+even this will not help you to detect an infection by a stealth virus.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 19:57:41 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Bug in F-PROT? (PC)
+
+Kevin_Haney@nihcr31.bitnet writes:
+
+> I was using F-PROT 2.04c from a bootable DOS 5.0 diskette.  After
+> booting from the A: drive, I wanted to scan another diskette in the A:
+> drive.  F-PROT produced unintelligible messages, such as "cotaaly
+> tanmcyng, ico staro%Nnurta...".  Another user here reported the same
+> phenomenon.  Does anyone have an explanation and/or fix for this
+> problem?
+
+Quoted from one of the documentation files (PROBLEM.DOC):
+
+"F-PROT cannot be used on a single-floppy machine without a hard disk
+or network connections. This is because if the F-PROT is run from a
+diskette, the diskette may not be removed while the program is
+running, so other diskettes cannot be inserted for scanning."
+
+If your machine has a hard disk, then scan it first (to ensure that it
+is virus-free). Afterwards, copy the F-Prot files there and start
+F-Prot from there. You'll be able to scan diskettes without problems.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 20:29:15 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-PROT reports Bugsres 3 Jokes program? (PC)
+
+dana%are.Berkeley.EDU@ucbvax.Berkeley.EDU (Dana E. Keil) writes:
+
+> I just obtained F-PROT. Running a scan with it reports that a file
+> named bugres.com is infected with a virus named "bugsres 3 jokes
+> program". I can find no mention of this virus anywhere in F-PROT
+> documentation (nor elsewhere). Can anyone enlighten me about it?
+
+It's not a virus; it's a joke program. If you run it, it goes TSR and
+each time you press Alt-B, a bunch of crudely drawn (using text
+characters) bugs begin to eat your text screen. When you press a key,
+the bugs disappear and the previous contents of the screen is
+restored.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 20:56:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: NetWare and viruses - some new results (PC)
+
+kev@inel.gov (Kevin Hemsley) writes:
+
+> I'm not sure what you mean by exhaustive test, but I think that if you
+
+By "exhaustive test" he means exhaustive test. He has generated 256
+directories will all possible combinations of access rights and has
+tried to infect the files in them.
+
+> 1. There is a clear distinction between NetWare RIGHTS and ATTRIBUTES.
+
+Problem is, the distinction does not seem to be very clearly described
+(or at least emphasized) in the docs, since lots of people are
+confusing those two terms.
+
+> can access and what the user is allowed to do with them.  Rights
+> Security supersedes attribute security, in that a user must first be
+> given access to a directory, subdirectory or file before attributes
+> can be defined for each.
+
+Correct. It is indeed so. Unfortunately, the manual says exactly the
+opposite.
+
+> 4. A virus which has Read, Write and File Scan rights, can infect
+> target files.  Therfore careful consideration should be given to use
+> of the Write right.
+
+And, if the user is given the right to modify the rights, the virus
+could do so as well and to set the Write right, even if it is not
+initially set. A more exact configuration that prevents virus
+infection can be found in Dr. Cohen's paper.
+
+> infection.  The only other attribute which stops viral infection, out
+> of the _18_ NetWare attributes is the Execute Only attribute.
+
+The only thing that the ExecuteOnly attribute stops is that it stops
+the supervisor from performing proper backups and integrity checks and
+therefore detecting the infection. EXE files with ExecuteOnly
+attribute set can be trivially infected by a companion virus - if the
+rights permit file creation and/or renaming in that directory.
+
+Furthermore, it is possible to use a PATH-companion virus attack,
+which will make even the best protected files (i.e., those in
+directories with only Read, Open, and FileScan rights set) look like
+infected for a particular user. The presence of just one writable
+directory (e.g., the user's home directory) is enough for this attack
+to succeed.
+
+> However, IMHO, careful assignment of rights will provide a better
+> protection against virus propagation than no protection at all.
+
+Correct. What Dr. Cohen has actually observed is that the "default"
+configurations and even those configurations that are usually
+considered "secure" do not actually prevent a virus attack. It -IS-
+possible to set the right in a way that will stop viruses, it is just
+not easy to figure out how exactly.
+
+> I encourage Mr. Cohen to redesign his tests with a better
+> understanding of Rights and Attributes.
+
+I encourage you to read Dr. Cohen's paper. Unfortunately, he refused
+to make it available in electronical form, so you should refer to the
+proceedings of the 2nd Virus Bulletin Conference.
+
+> If your basic theory is to
+> prove that NetWare Attributes are not effective against viruses, you
+> will essentially be correct, however if your basic theory is that
+> NetWare Rights are not effective against viruses, then you will, in
+> general, be incorrect.
+
+His basic theory is that it is very difficult to figure out how to
+manage the NetWare rights in a way that will stop virus attacks.
+
+> I believe that if you reread the red books, you will find that they
+> are correct their description of inheritance.
+
+As already mentioned, the manual says exactly the opposite of what is
+the truth. During his speech at the conference, Dr. Cohen presented a
+photocopy of the manual page that claims that "attributes take
+precedence over rights". The exact page numbers of the manual are
+quoted in his paper.
+
+Regards,
+Vesselin
+
+P.S. I don't have the paper handy right now. We (the VTC-Hamburg) are
+planning to repeat the tests, in order to verify the results.
+Unfortunately, we can repeat only the Novell Netware tests (since we
+don't have a Unix-based DOS server) and only for version 2.15. :-(
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 21:24:30 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: new virus found (PC)
+
+RZOTTO@NYX.UNI-KONSTANZ.DE (Otto Stolz) writes:
+
+> >                    INDONESIAN VIRUS
+> >
+> > * FREDDY
+> >   Freddy was made by one of a student in a academy of
+> >   computer in Indonesia.  It infected the program, not a boot
+> >   sector virus.  The program infected is IBMBIO.COM
+> >   The characteristic of this virus is the appearance of
+> >   FREDDY in a box.
+
+> I fear, this name has already been given to another virus (cf. the
+> above quote from an old VIRUS-L posting). If I'm right, you'd better
+> choose another name for the new beast, otherwise please tell us which
+> name the Indonesioan virus has acquired, meanwhile.
+
+The virus that was rumored to have a name Freddy and to be able to
+infect IBMBIO.COM turned out to be a rumor - or at least we have not
+seen it yet. By "we" I mean CARO. The virus from Brazil we have,
+therefore it has the priority. We don't give names to the viruses we
+have not seen.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 21:41:26 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: VACSINA Information Wanted (PC)
+
+AMN@vms.brighton.ac.uk (Anthony Naggs) writes:
+
+> > Is it important that one utility recognised CHKDSK while the other did not?
+
+> Yes, 'EXE' files modified in this way may be corrupted and either fail to
+> work or work incorrectly.  This includes a number of programs that
+> use overlays or include configuration information in the executable file.
+
+True in general, but this particular virus (Vacsina.05) does not
+infect files with internal overlays or trailing configuration info.
+So, in this particular case there is no danger.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 Sep 92 18:53:06 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Any info on Gobbler-II a-v sw or Comrac (its publisher) ? (PC)
+
+CCTR132@csc.canterbury.ac.nz (Nick FitzGerald) writes:
+
+> This morning I received a "beta evaluation copy" of Gobbler-II version
+> 2.99B in the mail from Comrac - a Dutch software producer.  From the
+
+> Can anyone give me some more background on Comrac?  Have other regular
+
+I can only confirm that they are indeed a Dutch-based company and
+produce anti-virus software. One of their anti-virus programmers is
+Victor Smith. In fact, Gobbler seems to be mostly his work.
+
+With an earlier version of the product, there was a complain from S &
+S International that the manual used significant parts of the texts
+(mainly the virus descriptions) from Dr. Solomon's Anti-Virus ToolKit.
+I understand that this is no longer true with the current version of
+the product.
+
+> (?) posters to Virus-L/comp.virus also been sent one of these
+> diskettes (I haven't had time to look at it yet - looks like something
+
+If you have received the same version as me, be prepared that this IS
+a beta version. It's full of bugs and the context-sensitive help is
+far from complete. If your copy just hangs your machine when you
+execute it, try again with 256 bytes environment (NOT 256 bytes of
+FREE environment - the TOTAL environment must not exceed 256 bytes).
+
+The product is using the standard CARO naming scheme for the viruses
+it detects. I was told that it performs exact virus identification,
+but I was unable to test that, since the program breaks with "Abnormal
+program termination" message without producing any report file at all.
+Maybe the reason is my monstrous directory structure - my virus
+collection consists of about 4,100 infected executable files in more
+than 2,300 directories.
+
+The product is promising and probably will be a pretty good scanner -
+when it gets ready, which now it definitively isn't.
+
+> for tomorrow now).  Interestingly, whilst they got their original
+> contact with me via Email, the letter didn't mention an email address
+> to contact them.
+
+Victor Smith has an e-mail address. Probably this is his private
+e-mail address, not the official address of the company.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 11:08:48 -0400
+From:    Paul Bradshaw <ACDPAUL@vm.uoguelph.ca>
+Subject: Tan An Door virus?!?! (PC)
+
+The following recently appeared on our local virus conference here at
+the University of Guelph.
+- --------------------------
+I've never heard of the tan an door virus, or the 64 virus as the gentleman
+refers to it and would like to hear from any of you who have.
+
+- ---- please snip here -----
+
+Title: Tan An Door Virus
+
+Recently in China I cought the
+64 VIRUS
+which apparently was related to the incident of June 4 atthe Square of
+Tan An Door in Peijiang (Bejing ?).
+I found there a "Kill" progr, and apparentlyI have cleaned my stuff off.
+However bere transferring material form my travelling kit to my computer
+in Guelph I would like to know if any of you know anything about this
+virus and if it could be lingering still somewhere:
+a. I was using a palmtop (Sharp 3100) with built in software: could the
+virus have entered such software ?
+...
+- ----- snip again ------
+
+I would like to help the poor guy out, but I haven't the faintest idea
+what this virus's commonly accepted name would be.
+
+Thanks all,
+
+Paul Bradshaw
+acdpaul@vm.uoguelph.ca
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 11:45:55 -0400
+From:    Otto Stolz <RZOTTO@NYX.UNI-KONSTANZ.DE>
+Subject: Re: F-Prot & SuperStor (PC)
+
+On Thu, 03 Sep 92 03:34:38 -0400 Andrew Clark
+ <Andrew_Clark.sdb-e@rx.xerox.com> said:
+> [...]
+> Can anyone advise me whether there is a virus that modifies the
+> seconds field in a files time value to 62. I seem to recall that there
+> is a virus which does this.
+
+Andy,
+
+the Vienna virus, and its descendants, do so, including the Zerobug
+virus.
+
+I have tried to send you the pertinent info, but it bounced back (cf.
+below) -- hence I have to bother the whole Virus-l to reach you.
+If you want more details, send a valid E-mail address to me.
+
+Best wishes,
+                    Otto Stolz <RZOTTO@DKNKURZ1.Bitnet>
+                               <RZOTTO@nyx.uni-konstanz.de>
+
+- --------
+
+On Tue, 8 Sep 1992 08:22:48 PDT Clayvin.Parc@xerox.com said:
+> Subject: Undeliverable mail
+> Message-Id: <92Sep8.082302pdt.11813@alpha.xerox.com>
+>
+> The enclosed message could not be delivered to the following recipient:
+>
+>     ANDREW_CLARK.SDB-E@Rx.Xerox.com -- no such user
+
+On Tue, 8 Sep 1992 08:22:56 PDT Mercury.PARC@xerox.com said:
+> Subject: Undeliverable mail
+> Message-Id: <92Sep8.082322pdt.11812@alpha.xerox.com>
+>
+> The enclosed message could not be delivered to the following recipient:
+>
+>     ANDREW_CLARK.SDB-E@Rx.Xerox.com -- no such user
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 10:49:17 -0500
+From:    John Perry <perry@andre.utmb.edu>
+Subject: New files on eugene and beach (PC)
+
+Hello Everyone!
+
+Better late than never I always say! I've finally had a chance to sit
+down and update the anti-viral archives on eugene and beach. Please
+make note of the following additions. If there is a problem or
+question, please feel free to contact me at perry@eugene.utmb.edu.
+
+eugene.utmb.edu
+fp-205.zip
+cvc792am.zip
+cvc792ma.zip
+cvc792ms.zip
+cvcindex.zip
+htscan18.zip
+tbscan41.zip
+vsig9207.zip
+
+beach.utmb.edu
+fp-205.zip
+
+John Perry - perry@andre.utmb.edu
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 11:57:11 -0400
+From:    Otto Stolz <RZOTTO@NYX.UNI-KONSTANZ.DE>
+Subject: Re: F-PROT reports Bugsres 3 Jokes program? (PC)
+
+On 03 Sep 92 02:34:40 +0000 Dana E. Keil
+ <dana%are.Berkeley.EDU@ucbvax.Berkeley.EDU> said:
+> F-PROT [...] reports that a file
+> named bugres.com is infected with a virus named "bugsres 3 jokes
+> program". I can find no mention of this virus anywhere in F-PROT
+> documentation (nor elsewhere).
+
+This is not a virus, but a jokes program (trojan). Sub-menu "Targets:"
+in Menu "Scan" clearly says so; if you do not want to scan for trojans
+and joke programs, move the cursor under the pertinent entry in the
+submenu, and press the space bar. Cf. file SCAN.DOC which comes with
+F-PROT.
+
+Best wishes,
+                    Otto Stolz <RZOTTO@DKNKURZ1.Bitnet>
+                               <RZOTTO@nyx.uni-konstanz.de>
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 14:12:44 -0400
+From:    Otto Stolz <RZOTTO@NYX.UNI-KONSTANZ.DE>
+Subject: Re: Auto-detecting virus (PC)
+
+On Wed, 02 Sep 92 17:52:27 +0000 Denis Beauregard
+ <beaurega@ireq.hydro.qc.ca> said:
+> I would like to write a program that will check if it is per se
+> holder of a virus.
+
+Fine! Everybody should do so.
+
+> The method I have in view :
+> [1] Compile the program.
+> [2] Compute the checksum of the program.
+> [3] Put the checksum in the program.
+> [4] When starting the program : Stop the program if the checksum has
+>     been altered.
+
+Problem:  Step 3, above, will change the program, hence invalidate the
+          checksum.
+Solution: You will have to anticipate this in step 2, above.
+
+Pitfall:  Almost any virus will have restored the core image of the
+          program before the latter gains control.
+Solution: As you have implicitely assumed (quote suppressed for
+          conciseness), the program will have to check its disk file
+          rather than its core image.
+
+Problem:  When a stealth virus is active in memory, it will hide its
+          presence from any other program (including your self-checking
+          routine): the program file will appear unaltered, hence the
+          checksum will compute correct.
+Solution: You could try to tunnel under the virus (i.e. find the ROM
+          address where your system invocation eventually is executed),
+          then jump directly there to get hold of an unaltered disk
+          file. However, this is not feasable in all circumstances.
+
+> Also, I never saw a self-protected program.
+
+So you never saw Word Perfect Vers 4.2, nor Dr. Solomon's Anti-Virus
+Toolkit, F-Prot, or any other professionally designed anti-virus
+program? :-)
+
+> Even an anti-virus program
+> has as instructions : use the included diskette if infection is known.
+
+.. write-protected, of course! This will preclude infection of the
+anti-virus program (which would refuse to work after an infection, on
+account of the very scheme you proposed).
+
+An anti-virus program should be used only after a clean boot, to avoid
+the following problems with particular types of (possibly unknown)
+viruses:
+- - when a Fast File Infector is active in memory, it will infect every
+  program scanned for viruses (raising the cost for the eventual
+  cleaning);
+- - when a Stealth Virus is active in memory, its infections are
+  effectively invisible (hence scanning the disk is futile).
+
+> Would it be safer to use a 32 bit checksum? [...]
+
+>From the technical details I suppressed in the quote I infer that you are
+planning to use a simple XOR type checksum. Imho, this would be too
+obvious, too easy to guess and forge for a virus. You should invent a
+more sophisticated scheme, involving a particular key for each program
+(e.g. a XOR-ROL loop with the amount of rotating varying in the loop).
+
+Even a self-checking program is not immune from specific attacks. Yet,
+carefully designed self-checking will help to catch most viruses; and
+those evading your self-checking routine will eventually be catched by
+some other self-checking program.
+
+Best wishes,
+                    Otto Stolz <RZOTTO@DKNKURZ1.Bitnet>
+                               <RZOTTO@nyx.uni-konstanz.de>
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 14:19:00 -0400
+From:    andy@exp.uvs.edu.sr
+Subject: F-prot false alarm? (PC)
+
+Hi,
+
+Just obtained F-prot 2.05 from simtel. Unpacked it and did a secure
+scan.  To my surprise backup.exe (from dos 5.0) was reported as being
+infected with the Stanco virus. The file was packed with pklite. I
+Looked the virus up in the info table of f-prot and it says the virus
+replicates only in compressed form??! Also Virstop didn't stop
+backup.exe from running.  I think this is a false alarm (or I hope it
+is).
+
+Does anyone has more information regarding the Stanco virus?
+
+Thanx,
+Andy
+
+  /\  |\ | |~\ |_|   Internet : andy@exp.uvs.edu.sr
+ /~~\ | \| |_/  |        UUCP : ...!upr2.clu.net!uvs!exp!andy
+ Andy R. Lo A Foe    Faxmodem : +1-597-491-117
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 14:53:44 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Self-checking programs (PC et al)
+
+<beaurega@ireq.hydro.qc.ca>, writes:
+
+> I would like to write a program that will check if it is per se
+> holder of a virus.  The method I have in view :
+>
+> Compile the program.
+> Compute the checksum of the program.
+> Put the checksum in the program.
+> When starting the program : Stop the program if the checksum has been altered.
+
+While this is one good layer for checking, as a stand-alone it leaves
+much to be desired since it relies on being able to trust itself. The
+problem is that if yours is the only program doing sel-checking then a
+virus could spread quite far before your program picks it up.
+
+Another problem is that certain classes of viruses will either not
+bother you program or will use different methods that will have your
+algorithm work when you compute it. Spawning, Companion, & Path
+viruses are all examples that will defeat a self-checking program that
+does nothing else.
+
+Also you have the situation of every copy of your program using the
+same mechanism - all a virus has to do is to know what to change your
+checksum to.
+
+For this reason and for efficiency, I prefer a single TSR for this
+purpose with a unique seedfor each machine (so that each PC has a
+unique checksum for any particular application).
+
+Of course, to protect against a directed attack, the TSR needs
+extensive protection but IMHO this is more efficient approach. I am
+glad to see that a significant number of AV vendors are using it.
+
+					Warmly,
+						Padgett
+
+BTW, some years ago I found that it was possible to generate/validate
+an algorithmic checksum at about 50k bytes/second on a 4.77 Mhz PCXT.
+This includes disk access time since I did not trust what was in
+memory.  A very powerful and fast mechanism would checksum 100% with
+two different methods and validate the length of the file as well.
+
+------------------------------
+
+Date:    07 Sep 92 20:03:26 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Bugs on my Atari (Atari)
+
+cmontoya%carina.unm.edu@lynx.unm.edu (Red Dragon) writes:
+
+> I know I'm the not the only person with an old Atari.  I just had a
+> bunch of bugs appear on my screen and eat up the screen and trash my
+
+I understand that you have an Atari ST. I am not aware of an Atari
+virus which has such a payload, but I am by no means an Atari virus
+expert. Nevertheless, you could try checking for the presence of a
+joke program loaded during the startup.
+
+> virus and this happens!  BTW, can PC viruses infect my Atari?  I was
+> using a DOS disk when this happened.
+
+The Atari ST and the IBM PC use different CPUs, so the programs
+designed to run on one of them cannot execute on the other. It is
+perfectly possible to write a "dual-platform" virus (especially a boot
+sector infector), but nobody has done this yet.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+** PGP public key available on demand. **    Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Sep 92 08:02:59 +0000
+From:    rgasch@nl.oracle.com (Robert Gasch)
+Subject: Looking for references (UNIX)
+
+Hi,
+
+could anybody please direct me to public (FTP) sources of any of the
+following:
+
+	1) Discussion/analysis of the workings (strategies employed)
+		by the 1989 internet virus.
+	2) Same as #1 for other similar incidents (were there any?).
+
+I remember seeing a document analyzing the internet virus on some FTP
+server about 2 years ago, but I have no recollection where that was. I
+would prefer documents in either plain ASCII or postscript. Please
+mail any responses to me as of lately our site seems to be
+experiencing some problems receiving this group.
+
+If there is interest I will summarize any responses and post them
+to this group.
+
+[Moderator's note: I believe that the May 1989 issue of the
+Communications of the ACM was almost entirely on the Internet worm (of
+November 1988, not 1989).]
+
+Thank you
+- ---> Robert
+
+------------------------------
+
+Date:    Tue, 08 Sep 92 07:27:47 +0000
+From:    hamill@csn.org (James R. Hamill)
+Subject: Is FTP/Kermit of sources safe?
+
+I recently had a discussion with someone I am contracting my services
+to...  I uploaded a piece of code to our HP-UX workstation that I
+retrieved from a generous Usenet/Netnews writer.  It was all ascii
+source code that I had to build into my program.  This _seems_ safe to
+me.  (BTW I used kermit to upload the files to my system via a modem).
+
+The person I talked to has heard horror stories of PC viruses damaging
+file systems and one that was shipped to customers accidentally as
+part of a product.  This person is NOT a programmer (he's a
+salesman/manager).
+
+I have also downloaded software from the MIT export system for
+X-Windows sources using FTP and kermit to bring those files to my
+otherwise isolated workstation.
+
+Are there any words of comfort that I can give this person that is
+worried that the workstation might contain software that is corrupt?
+
+While looking into virus protection software I noticed that there are
+some sites where I can FTP software from...which seems rather ironic
+in light of the question I am asking :-)
+
+Post a response or send e-mail, it doesn't matter to me.
+
+P.S. If there is a FAQ that answers my question, please point me in
+the right direction....
+
+[Moderator's note: While the FAQ does not directly answer this
+question, it is available either by e-mail or by anonymous FTP.  You
+can FTP it from cert.org:pub/virus-l/FAQ.virus-l or you can request it
+by e-mail - simply send mail to Listserv@Lehigh.edu containing the
+text "info virus-l".  Yes, a new version of the FAQ is in the works...]
+
+Randy Hamill
+Standout Consulting, Inc.
+
+------------------------------
+
+Date:    07 Sep 92 15:17:31 +0100
+From:    Marco Simionato <simion@iveuncc.unive.it>
+Subject: Re: I'm off [to Scotland]... Comp Virus Conferences
+
+ Fridrik Skulason, writes:
+
+        >[..] now I'm off for
+        >the virus conference in Scotland.
+
+Yes, maybe I'm too lazy or I do not remember very well, but there is a
+list of the most important Computer Virus Scientific Conferences for
+the next year [1993, off course] ?
+
+Thanks
+
+                Francesco Dalla Libera
+
+- -- franz@iveuncc.unive.it    University of Venice (Italy)
+   [ City Limit. Produce Speed. ]
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 149]
+******************************************

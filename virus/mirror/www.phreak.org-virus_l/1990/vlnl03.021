@@ -1,0 +1,541 @@
+VIRUS-L Digest   Thursday, 25 Jan 1990    Volume 3 : Issue 21
+
+Today's Topics:
+
+Re: universal virus scanners.
+The near-universal virus scanner
+Re: WDEF at University of Oregon (Mac)
+Virus vs. worm
+The Yankee Virus (PC)
+Re: the Internet Worm trial
+Morris found guilty (one more time!)
+There is more than one virus called AIDS !!!
+Internet Worm Trial
+Re: Shrink Wrap...still safe?
+Disinfectant 1.4 (Mac)
+Question on CLEAN55 and Jerusalem B (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Wed, 24 Jan 90 02:11:26 -0400
+From:    GEORGE SVETLICHNY <USERGSVE@LNCC.BITNET>
+Subject: Re: universal virus scanners.
+
+ In Virus-L v3 issue 19, APPLEYARD@UK.AC.UMIST writes
+
+> On 17 Jan 90 15:07:00 +0700, T762102@DM0LRZ01.BITNET wrote:
+>  "Construct the program Q thus:
+>    program Q; begin
+>    if is_a_virus(Q) then (* do nothing *) else infect_other_programs;
+>    end.
+>
+><<deleted>>
+>
+> What will probably happen will be that program Q or R will # examine
+> itself by going through all its code, including the instruction to
+> examine itself - repeat from # forever. ...<<deleted>>....
+
+  There is no infinite regress here since roughly speaking program Q (R is
+  similar) calls upon an *external* algorithm to scan itself and does not
+  call upon *itself* to scan itself. By *assumption*, is_a_virus is a
+  *decision algorithm* and so its call with *any* argument (including Q)
+  terminates. The whole point is to show that no such guaranteed-to-
+  terminate procedure exists. Thus there can be no reentrant call to Q
+  within the is_a_virus call and so no problem. These programs *are*
+  self-referential but the self-reference is not of the paradoxical type as
+  in "I'm a liar." One can convince oneself that there is no problem by
+  actually *writing* self-referential programs in the style of Q and seeing
+  that they work. Let print_whoopie be a boolean function that opens a
+  binary file and determines if the ascii string "Whoopie!" is present
+  there or not as a sequence of bytes. Write the program W as sketched:
+
+   program W;begin
+    if print_whoopie("W.COM") exit else print("Whoopie!);
+   end.
+
+   function boolean print_whoopie(string file_name);
+    begin
+     {Put the print_whoopie code here.}
+    end
+
+
+  Implement this in C, Pascal, LISP, BASIC, whatever. It can be done, it
+  works, there's no infinite regress and W foils the alleged (and admitedly
+  very naive) "Whoopie!"-printing decision algorithm (which also doesn't
+  exist). (print_whoopie will say W.COM will print it but W.COM actually
+  does not.) The scan of W.COM by W.COM does not enter a loop just as the
+  existent self-scanning virus scanners do not.
+
+  It's probably true that there is a universal virus scaner is_a_virus with
+  the property the if P *is* a virus then is_a_virus(P) will stop and
+  identify it as a virus but if P is *not* a virus, is_a_virus(P) will
+  either say so or never stop. Presumably is_a_virus would do this by
+  running a copy of P in a remote part of the infinite Turing tape with
+  copies of other programs for P to infect, a series of exhaustive and
+  systematic "test drives" of P. Of what use this result would be, even if
+  true, I don't know. For the halting problem one can write an immediate,
+  trivial and useless "stop scanner" of this sort:
+
+         program will_stop (P);
+         begin
+          run(P);
+          print("This program stops.");
+         end.
+
+  The vulgar analog of this for the virus case is: "If it got you it's a
+  virus, if it hasn't yet it may not be." but one should be able to do
+  better than this.
+
+ ----------------------------------------------------------------------
+ George Svetlichny                 |
+ Department of Mathematics         |
+ Pontificia Universidade Catolica  |           Whoopie!
+ Rio de Janeiro, Brasil            |
+                                   |
+ usergsve@lncc.bitnet              |
+ ----------------------------------------------------------------------
+
+P.S. I post-scribe therefore I am.
+
+------------------------------
+
+Date:    24 Jan 90 03:19:19 +0000
+From:    kddlab!csl.sony.co.jp!riks@uunet.UU.NET (Rik Smoody)
+Subject: The near-universal virus scanner
+
+XPUM01@prime-a.central-services.umist.ac.uk (Dr. A. Wood) writes:
+> "Construct the program Q thus:
+>   program Q; begin
+>   if is_a_virus(Q) then (* do nothing *) else infect_other_programs;
+>   end.
+> . . .
+>A very simple argument and very powerful.".
+>
+>These are versions of the ancient paradox which comes in various forms:-
+>(1) Statement (1) is untrue.
+>(2) Jack said "Everything I say is a lie.".
+>(3) The set of all (sets which are not members of themselves): is it a member
+>    of itself?
+>
+>What will probably happen will be that program Q or R will # examine
+>itself by going through all its code, including the instruction to
+>examine itself - repeat from # forever. Probably both Q and R will get
+>into infinite recursion when used to examine themselves, but may well
+The examples remind me a lot of a card with the following printed
+on each side:
+    "Do you know how to keep a moron busy for hours?  Answer on reverse"
+
+I suppose if I have agreed, irrevocably, to play the logic game with
+the virus (or signed the pact with the devil), I am stuck in an infinite
+loop with a single processor and no reset button.
+But much more realistically, I use the following heuristic:
+If I suspect that some program contains a virus, I do not install it
+without carefully checking the suspicions.
+Now I can write the near-universal virus scanner as follows:
+        If you see anything suspicious, tell me about it.
+In refining "suspicious", I would put "infect_other_programs" as a
+very suspicious activity.  Even asking about "infect_other_programs"
+can be considered suspicious, so yes, my virus checker would report
+that it engages in some suspicious behaviour.
+
+        This person walks into a bar near CIA headquarters and asks the
+        people around if they know any spies.  The CIA collapses in
+        swirls of confusion as everyone tries to deduce if the first
+        person happens to be a spy???
+
+Maybe the trap is assuming that we have to be fair with computer programs.
+But they do not have "rights".  So what if I refuse to install a program
+which really would not harm me?  All I lose is the use of that program.
+- --
+Rik Fischer Smoody
+Sony Computer Science Lab, Inc.,  3-14-13 Higashigotanda
+Shinagawa-ku, Tokyo 141 Japan
+(03)448-4380
+
+------------------------------
+
+Date:    22 Jan 90 19:37:36 +0000
+From:    tatem@smu!ti-csl!m2.ti.com (Joe Tatem)
+Subject: Re: WDEF at University of Oregon (Mac)
+
+
+Could someone please send me a description of DEF and its symptoms? We
+are experiencing 'interesting' behavior and so far I only know about
+NVIR and Scores.
+
+                                        Joe Tatem
+                                        tatem@ngstl1.ti.com
+
+ ---- This .signature intentionally left blank ----
+
+------------------------------
+
+Date:    24 Jan 90 01:53:34 +0000
+From:    hp-sdd!hplred.HP.COM!perry@ucsd.edu (Jeff Perry)
+Subject: Virus vs. worm
+
+
+   This is probably a simple question, but I haven't heard it asked (or
+answered). What is the difference between a virus and a worm?
+
+Inquiring minds want to know,
+Jeff Perry
+
+------------------------------
+
+Date:    24 Jan 90 11:14:00 +0700
+From:    T762102@DM0LRZ01.BITNET
+Subject: The Yankee Virus (PC)
+
+        Due to the several requests for information about the
+Bulgarian viruses, I shall give their description here.  However I
+shall post the descriptions one by one because (1) I need time to
+write the message in English and (2) I would like to keep the message
+relatively short.  If I overlook something in the descriptions, feel
+free to send me your questions.  When they accumulate I shall send
+additional info.
+
+        I have already sent these descriptions to Prof.  Harold Joseph
+Highland --- the editor in chief of the journal "Computers &
+Security".  However I have sent them trough the regular mail (I had no
+access to the e-mail system at that time), so maybe he still does not
+have them.  By the way, does anybody know the e-mail address of H.J.
+Highland?
+
+                           The Yankee Virus
+                           ----------------
+
+        In fact, I'm a bit guilty for the creation of this virus.  At
+that good old time (about 18 months ago), there was only one virus in
+Bulgaria.  This was the VHP-648 (Vienna) virus.  Since it infects only
+.COM-files, I thought that infecting an .EXE-file is much more
+difficult.  And I was fool enough to express my thought publicly.
+The challenge was taken immediately and the virus was created in less
+than a month.
+
+        It infects .EXE-files only since the infection method for the
+.COM- ones was very well known and therefore was not interesting to
+bother with.  Files of any length can be infected.  However, if the
+program CodeView (a debugger which comes with the Microsoft
+programming languages) gets infected, it does not work any more.  I
+cannot figure out the reason for this.
+
+        The virus is not memory-resident.  It activates only when an
+infected program is run.  When activated, it searches the whole
+directory tree on the current drive for a still non-infected .EXE-file
+and infects it.  (The directory tree is searched in a depth-first
+method.  This means that first all the subdirectories are searched and
+then the current directory is searched.) On each run of an infected
+program one more .EXE-file of the file system gets infected.  Then the
+virus plays the "Yankee Doodle" melody and starts the original
+program.  It has no other effect.
+
+        Please note, that this virus is not the one, known in the
+Western countries as the "Yankee Doodle virus".  The later infects
+both .COM- and .EXE-files, is memory-resident, and plays the melody
+*only* at 5 pm.  The Yankee virus is not memory-resident, infects only
+.EXE-files and plays the melody *every time* when an infected file is
+run.
+
+        The infected files are recognized by the virus by the string
+"motherfucker" (excuse me) which appears at the very end of the file.
+Note that the string is in lower case only.
+
+        The author of the virus did not spread the virus itself.  In
+fact he did even worse --- he spread its source code.  Now there is at
+least one mutation of the virus.  It does not play the melody and is a
+little bit shorter.  There were rumors about another mutation which is
+able to format the hard disk, but they are still not confirmed.
+
+        This virus is not very widely spread in our country.  The main
+reason should be that it infects only the files on the current drive
+- --- i.e.  is not very "virulent".
+
+        I wrote a program which can recognize the two known versions
+of the virus and is able to cure the infected files.
+
+                                        Vesselin
+
+
+
+------------------------------
+
+Date:    24 Jan 90 14:16:08 +0000
+From:    Irving Chidsey <chidsey@smoke.brl.mil>
+Subject: Re: the Internet Worm trial
+
+EASTRA@morekypr writes:
+<interesting how all the computer experts on this list are legal
+<experts as well since the posters to the list have already convicted
+<the defendent, they would clearly be ideal jurors after all, guilty
+<until proven innocent is clearly the attitude here
+<
+<- -- ray easton
+
+        Don't confuse factualy guilty with legaly guilty.  If a criminal could
+convince every potential juror that he was in fact guilty before the jury was
+chosen then the prosecution would be stymied because there would be no unbiasse
+d
+people available to serve.  There have been several cases recently where this
+was a possibility because of pretrial publicity.
+        It is even possible for a jury to believe that the accused is guilty
+but still declare them innocent because the guilt was not proven "beyond a
+reasonable doubt".  I recently served on a jury which decided two counts
+that way.
+
+                                                Irv
+
+I do not have signature authority.  I am not authorized to sign anything.
+I am not authorized to commit the BRL, the DOA, the DOD, or the US Government
+to anything, not even by implication.
+                        Irving L. Chidsey  <chidsey@brl.mil>
+
+------------------------------
+
+Date:    24 Jan 90 08:25:00 -0700
+From:    "AMSP9::CHRISTEVT" <christevt%amsp9.decnet@wpafb-ams1.af.mil>
+Subject: Morris found guilty (one more time!)
+
+      The 23 Jan 90 Dayton Daily News printed an AP article about the Internet
+Worm case...to go along with all the others out there...Here are some
+excerpts...
+
+      SYRACUSE, NY -
+
+      "Robert T. Morris, 24, faces up to five years in prison and a $250,000
+fine. He is the first person brought to trial under a 1986 federal computer
+fraud and abuse law that makes it a felony to break into a federal computer
+network and prevent authorized use of the system.
+
+      "[Monday night] The jury returned its verdict about 9:30 p.m. after
+nearly six hours of deliberation.
+
+      "`Morris may not have intended his worm program to paralyze a nationwide
+computer network in 1988, but it was no accident that the worm attacked the
+network,' U.S. Justice Department trial lawyer Mark Rasch said in closing
+statements earlier in the day.
+
+      "`The worm didn't break in by accident or mistake. Robert Morris
+intended for the worm to break in,' he said.
+
+      "Defense attorney Thomas Guidoboni argued that [Morris] made a
+programming error that caused the worm to go berserk and disable the Internet
+system.
+
+      "`It's not the side effects, it's not the mistakes, but what he actually
+intended to do,' Guidoboni said. `He never intended to prevent authorized
+access.'
+
+      "Prosecutor Ellen Meltzer reminded the jury in her summation that
+testimony showed Morris deliberately stole computer passwords from hundreds of
+people so the worm could break into as many computers as possible.
+
+      "She added that Morris took deliberate and conscious steps to make the
+rogue program difficult to detect and eradicate...
+
+      "Ms. Meltzer said at least six earlier versions of the worm were found
+on Morris' Cornell computer accounts and that his own comments on the worm
+program used the words `break-in' and `steal.'
+
+      "Guidoboni insisted that Morris didn't intend to cause permanent damage
+to computer files.
+
+      "`Morris took steps to limit the worm's growth,' Guidoboni said.
+
+      "`If he intended to bring the systems down, he didn't need to control
+the growth. He could have just let this thing go,' he said."
+
+
+                                   ET B ME
+                                     VIC
+                                      !
+
+Disclaimer: The preceding bits of randomness are the product of a mindwarp and
+            do not necessarily represent the views of anyone other than me...
+            SO THERE!!!
+
+Victor ET Christensen                    "The Club is the Sign of Vengeance;
+christevt@wpafb-ams1.arpa                It holds no man as friend.
+christevt@p2.ams.wpafb.af.mil            The Spade is the Sword of Justice;
+christevt%amsp2.decnet@wpafb-ams1.arpa   It's rapier marks the end."
+                                               ~ Sword of Justice
+
+------------------------------
+
+Date:    Wed, 24 Jan 90 12:27:12 +0000
+From:    "Dr. A. Wood" <XPUM01@prime-a.central-services.umist.ac.uk>
+Subject: There is more than one virus called AIDS !!!
+
+To clear up possible confusion, I feel that I should remind readers
+that there is more than one sort of computer virus (and similar)
+called AIDS:-
+
+(1) The AIDS computer virus. I read somewhere that it was written in C.
+(2) The notorious AIDS trojan diskette which was distributed from Panama.
+
+The connection between (2) and other definitions of AIDS is that (2),
+when run, pretends to be a survey questionnaire about the biological
+AIDS virus.  {A.Appleyard} (email: APPLEYARD@UK.AC.UMIST), Wed, 24 Jan
+90 12:17:36 GMT
+
+------------------------------
+
+Date:    Wed, 24 Jan 90 23:43:00 -0500
+From:    WHMurray@DOCKMASTER.ARPA
+Subject: Internet Worm Trial
+
+>As of the time of your posting, what judicial process has
+>concluded with a finding of fact that he released the worm?
+
+I wondered whether or not anyone would challenge that
+assertion.
+
+As of the time of my posting, The New York Times had already reported
+Morris had so testified.
+
+As of the time of the original assertion to which I responded, there
+had been such a finding by formal proceedings at Cornell University.
+
+At the time of the original assertion, Morris had already testified,
+but it had not yet been reported in the times.  The assertion was
+posted in Australia where the poster would be expected to have limited
+access to the US media.
+
+However, the question of whether or not Morris had released the worm
+or not had never been in dispute.  The only questions in dispute were
+intent and criminality.
+
+While prudently silent since his initial panic, Morris never denied
+releasing the worm nor was it denied on his behalf.  Intent to do harm
+was denied on his behalf by friends and attorneys.  In the trial he
+denied intent to do harm, but never intent to intrude.  The code
+itself was prima facia evidence of intent to intrude.  I read no
+reports of any attempts to refute that evidence.  From the reports and
+the verdict, I conclude that that was sufficient for a finding of
+guilty.
+
+William Hugh Murray, Fellow, Information System Security, Ernst & Young
+2000 National City Center Cleveland, Ohio 44114
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+
+------------------------------
+
+Date:    Thu, 25 Jan 90 05:45:33 +0000
+From:    craig@apple!tolerant.com (Craig Harmer)
+Subject: Re: Shrink Wrap...still safe?
+
+bnr-vpa!bnr-fos!bmers58!mlord@watmath.waterloo.edu (Mark Lord) writes:
+
+>Hmm.. the simple solution to most of these problems is to distribute
+>software on diskettes without write-enable slots (ie. built-in write
+>protection tabs).  There is simply NO way, short of modifying hardware,
+>for such diskettes to become virus infected on the customers premises.
+
+it's trivial to tweak a 5.25 inch floppy disk drive so that it thinks
+the diskette is writable.  in the case of a drive i did this on (by accident!),
+it required only a simple mechanical adjustment (that was an old
+Shugart SA400 as modified by Apple for an Apple II).  i suspect that
+drives of more recent manufacture would require (trivial) electrical
+modification.
+
+now if they shipped the disk in a tin can (like tylenol) ...
+
+>I'm actually quite suprised that 99% of the software I purchase comes
+>*without* write protection tabs installed on the diskettes (5.25" floppies).
+>I really have to force myself to install that critical tab *before* inserting
+>the disk in *any* drive.  This guarantees that I don't infect the masters.
+
+good point.  it also helps prevent accidents.
+
+>| Mark S. Lord                           | Hey, It's only MY opinion. |
+>| ..!utgpu!bnr-vpa!bnr-fos!mlord%bmers58 | Feel free to have your own.|
+
+{apple,amdahl}!tolsoft!craig                            craig@tolerant.com
+(415) 626-6827 (h)                                      (408) 433-5588 x220 (w)
+        [views expressed above shouldn't be taken as Tolerants' views,
+                or your views or my views.  they exist a priori.]
+
+------------------------------
+
+Date:    Thu, 25 Jan 90 09:45:28 +0000
+From:    "Dr. A. Wood" <XPUM01@prime-a.central-services.umist.ac.uk>
+Subject: Disinfectant 1.4 (Mac)
+
+In the VIRUS-L newsletter was this:-
+........................................
+Date:    Sun, 10 Dec 89 00:10:16 -0500
+From:    jln@acns.nwu.edu
+Subject: Disinfectant 1.4 (Mac)
+
+"Disinfectant  1.4  is a new   release of  our   free  Macintosh virus
+detection and   repair  utility. Version  1.4  detects    and  repairs
+infections by the new  WDEF virus (see below). In  version 1.4  we  no
+longer refer to  the various  clones of the nVIR B  virus by name.  We
+refer to them simply as generic "clones of nVIR  B." All references to
+the  individual clone names have been   removed from both the document
+and the reports generated by the program. We feel that the creators of
+these clones do  not deserve the  publicity they receive when they see
+the names they  have  chosen  in print,  especially since some  of the
+names are offensive."
+
+I appreciate what the author of Disinfectant feels about the notoriety
+and the offensiveness; but I appeal to him to put Disinfectant back to
+printing  the clone names. Knowing what  clone is  in each outbreak of
+nVIR  B,   is very  helpful in   tracing   origins   and  channels  of
+transmission of nVIR B infections. For example, if establishment X had
+an attack  of  nVIR  B  clone  "Plague" and   no  others,   and later,
+establishment Y had an attack of nVIR B clone "Smallpox" and no others
+(if there were  clones with these  names), then Y probably  didn't get
+infected from X. This very helpful clue  wouldn't be available, if the
+sufferers  couldn't find which strains of  nVIR B are involved in each
+infection.
+
+{A.Appleyard} (email:  APPLEYARD@UK.AC.UMIST), Thu, 25 Jan 90 09:41:28 GMT
+
+------------------------------
+
+Date:    Thu, 25 Jan 90 09:22:00 -0500
+From:    "Paul D. Shan (814) 863-4356" <PDS2@PSUVM.PSU.EDU>
+Subject: Question on CLEAN55 and Jerusalem B (PC)
+
+I recently obtained a copy of CLEAN55, and VALIDATE.  My first contact
+with any virus in the IBM world happens to be the Jerusalem B virus.
+The documents with CLEAN55 say that the Jerusalem viruses may not be
+successfully removed from all EXE files.  I ran CLEAN against an
+infected copy of a program, and then did a VALIDATE on it and on a
+known good copy of the same program.  The file sizes matched, but the
+Checksums did not match.
+
+Could someone explain to me exactly what the Jerusalem virus does to
+replicate, and what it does to damage files?  Also, could someone
+explain to me why the Jerusalem virus may not be successfully removed
+from some EXE files?
+
+While I'm on the subject, is there a library somewhere that contains
+technical information on these viruses, such as how EVERY known virus
+replicates, what it infects, and EXACTLY what gets damaged?  I have
+the VIRUS CHARACTERISTICS list which is a GREAT quick reference, but
+it says that, for example, the virus "affects system run-time
+operation."  EXACTLY how does it affect operation?
+
+
+Thank you for your help!
+
+
+Paul Shan
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

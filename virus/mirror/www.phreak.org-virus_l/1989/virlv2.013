@@ -1,0 +1,175 @@
+VIRUS-L Digest              Friday, 13 Jan 1989         Volume 2 : Issue 13
+
+Today's Topics:
+Re: cbug (PC)
+encrypting code.
+nVIR in European beta of MS Word 4 (confirmation) (Mac)
+How a worm/virus can trap ctl-alt-del (PC)
+
+---------------------------------------------------------------------------
+
+Date:         Thu, 12 Jan 89 09:21:57 EST
+From:         "Homer W. Smith" <CTM@CORNELLC.BITNET>
+Subject:      Re: cbug (PC)
+
+The 1.1.80 date on the cbug is the default date on a pc without its
+time/date stamp set.  If you never set them that is what they come up
+as.
+
+------------------------------
+
+Date:         Thu, 12 Jan 89 09:23:45 EST
+From:         "Homer W. Smith" <CTM@CORNELLC.BITNET>
+Subject:      encrypting code.
+
+     I have read an interesting article in a magazine called Reality
+Hackers.  It is very drug and counter culture oriented, trying to give
+these things respectability, but it had a good article on viruses.
+(What the hell does CYBER mean anyhow!)
+
+     One of the things it said that might be done to protect programs
+from viruses is to make the operating system store all programs in a
+scrambled state (encryption).  Then just before running them, decrypt
+them.
+
+     When and if a virus attaches to an encrypted program, it will get
+scrambled when the program is decrypted and cause a crash.
+
+     Seems like a very very good idea.  How say you all?
+
+------------------------------
+
+Date:     Thu, 12 Jan 89 11:35 EST
+From:     JEFF WASILKO--MEMBER OF PRINTER'S DEVILS-LOCAL #47
+          <JJW7384@RITVAX.BITNET>
+Subject:  nVIR in European beta of MS Word 4 (confirmation) (Mac)
+
+The following is being forwarded from the Mac-User distribution list
+in Europe.  It is a confirmation (although by the same person who
+reported it initially).
+
+- ----------------------cut here--------------------------------
+Date: Thu, 12 Jan 89 11:04:49 GMT
+From: UDUS010@OAK.CC.KCL.AC.UK
+Subject: Confirmation of nVIR infection
+Sender: EARN Macintosh Users List <MAC-USER@IRLEARN.BITNET>
+
+I received confirmation from Text 100 (Microsoft's publicity people in
+the UK) that Microsoft's own machine has been infected by nVIR!  Would
+anyone who has received a beta copy of WORD 4 (Version 4b10) please
+check that they have not infected their systems? it appears that not
+all copies were infected for some reason... so don't panic until you
+know for sure!  Meanwhile if anyone has Vaccine ine their System
+folder and a program either hangs up on loading, or causes the machine
+to do a full 'BOMB' with dialog box then suspect nVIR immediately!
+Vaccine does not give it's standard report for an attempted infection
+by nVIR, but don't ignore what it is doing its best to report!  David
+Riddle Editor "Wheels for the Mind (UK)" King's College London
+
+- --------------------------------end of forwarded message---------------------
+-
+
+forwarded by:
+
+Jeff Wasilko
+BITNET:     jjw7384@ritvax
+INTERNET:   jjw7384%ritvax.bitnet@cunyvm.cuny.edu
+UUCP:       {psuvax1, mcvax}!ritvax.bitnet!JJW7384
+Disclaimer: Nobody ever cares what I say...
+
+------------------------------
+
+Date:     Thu, 12 Jan 89 23:56 EST
+From:     Dimitri Vulis <DLV@CUNYVMS1.BITNET>
+Subject:  How a worm/virus can trap ctl-alt-del (PC)
+
+>Date:        11 January 89, 20:00:17 +0100 (MEZ)
+>From:        Otto Stolz         +49 7531 88 2645     RZOTTO   at DKNKURZ1
+>> When a user presses ctl-alt-del, the keyboard code in BIOS [...]
+>> redirects interrupt vectors to their default values, then boots. A
+>> worm sitting in memory (not a _virus_) would have to duplicate all the
+>> machine-specific stuff for various possible machines
+>
+>What if ... the worm... simply hooks Int 9?
+
+Intercepting ctl-alt-del without intercepting INT 9 would be rather hard :)
+
+Here's another technical explanation:
+
+When a key is hit or released (on an IBM PC or compatible), the
+hardware sends an INT 9 to the CPU (I will skip the IRQs, since it's
+not relevant). The CPU saves its current instruction pointer on stack
+and loads the new one from [4*9]. (Normally, this points to a routine
+in ROM BIOS; in some version of DOS intercept this for `stack
+management', also many TSRs intercept this interrupt to look for hot
+keys; eventually, the control passes to ROM BIOS, or its equivalent
+from KEYBxx). The BIOS routine INs a certain port to obtain a 'scan
+code' of the key that triggered the interrupt (the scan code has
+nothing to do with the ASCII code). If the high bit is set, it's a
+break, else it's a make; thus, no more than 128 distinct scan codes
+are possible.
+
+The code then analyses what `kind' of key this was. Lots of logic is
+involved here. For example, shift-like keys, like shift, ctrl, alt
+don't put anything into the keyboard buffer, but set/reset certain
+bits; caps/num/scroll lock toggle other bits; for other keys, like 'A'
+or '8', these bits are examined to see if one should queue, e.g. upper
+or lower case 'a', or '8' or '*'.  Everything is done in the software,
+and this approach is highly felxible. One can redefine all the keys,
+or replace the entire keyboard code with ease. The location of these
+bits (set and reset by the software, I should emphasise) is pretty
+standard in all BIOSes. When Ins, Del, or a function key scan code is
+encountered, the BIOS queues a special code which the application
+program interprets as it wishes. However, there's a special check on
+Del key: if the 2 bits for Ctrl and Alt are on (indicating those keys
+are pressed), the control is passed (via a jump, so this cannot be
+hooked) to the reset code. Now, it's trivial to write code to trap
+ctl-alt-del and e.g. to inhibit warm boot. I was tempted to write it
+and post it, but it's not worth the trouble, I guess.
+
+>Then it could fake the warm boot by resetting the interrupt vectors
+>in a non-standard way that allowed itself to survive in memory and then
+>jumping to the booting code.  The machine-specific stuff would only be
+>the default values of the interrupt vectors (may be, even they are rather
+>standard, or can be derived from the memory contents -- I don't know).
+
+Here's where Otto is dead wrong.  The default interrupt vector values
+are, surprisingly, pretty standard across most BIOSes; what you see is
+some code, a jump around a 'standard' entry point, and a jump from
+there to the relevant routine kilobytes away.
+
+However, I encourage Otto to get hold of (any) Technical Reference
+Manual with a BIOS listing and to see what `machine-specific code in
+reset' is, or to re-read my previous posting about the boot sequence.
+
+Certainly, if you are planning to affect a very specific
+model/manufacturer (and this makes sense in a college micro lab, with
+tens of identical machines), you can copy the machine-specific stuff
+from the BIOS and reset the interrupt vectors (modulo the ones you
+want, like 13 and 9 then) to their default BIOS values. I guess the
+only way around it is to 1) avoid machines without a reset button, 2)
+cold boot if you use a machine after someone (what I do, if I have
+to).
+
+>Or it could infect the disk/diskette to be booted from, and then rely
+>on BIOS to be installed again;  the machine specific stuff would be nil,
+>and if it was a boot-sector virus, all required subroutines would already
+>be part of it.
+
+This is certainly very feasible, except that a disk access immediately
+after ctl-alt-del is pressed would look very suspicious. In fact,
+Brain should have had this feature. Of course, write-protecting the
+disk you boot from would prevent the infection, as usual.
+
+(I hope I am not too hard on Otto---I do not wish to offend him, but I
+do wish to express my strong disapproval of people who represent their
+fantasies, conjectures and assumptions as facts. This is not a flame.)
+
+- -Dimitri
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************
+
+

@@ -1,0 +1,874 @@
+VIRUS-L Digest   Friday, 30 Oct 1992    Volume 5 : Issue 171
+
+Today's Topics:
+
+Comment on the MtE wars (PC)
+Re: MBR Viruses and FDISK /MBR (PC)
+Re: Checking high memory with VSCAN (PC)
+Re: Damage from Stoned and FORM (PC); Comment on Recent Postings
+Re: Flip (PC)
+Re: VCL? (PC)
+Re: MtE ?? (PC)
+Re: VCL? (PC)
+Re: Virus Demo? (PC)
+Re: Infection density (was: SCAN 95b doesn't...) (PC)
+Stoned Infection (PC)
+Re: KEY Press virus & McAfee v97 (PC)
+Re: V-Sign virus struck again!!!!!!!!!! (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: Checking high memory with VSCAN (PC)
+Newest and best scanner? (PC)
+Re: cascade virus info wanted. (PC)
+Re: MBR Viruses and FDISK /MBR (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: Landmark legal ruling on software copyright
+virus anecdotes ?
+Correction to previous post.
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 29 Oct 92 13:56:13 -0500
+From:    hobbit@ftp.com (*Hobbit*)
+Subject: Comment on the MtE wars (PC)
+
+Obviously none of you are willing to publicly discuss the exact hows
+and whys of anyone's MtE-detection algorithm, for the usual reasons.
+So the entire discussion is so far based on percentage hit rate, which
+for me has significantly less meaning in terms of explaining WHY
+product A sucks and product B is so much better.  Is this just me, or
+does it smell like so much handwaving to anyone else, too?
+Unfortunately I feel like I still have to slog through it all to find
+the occasional hard useful facts.
+
+_H*
+
+------------------------------
+
+Date:    Thu, 29 Oct 92 13:56:53 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Re: MBR Viruses and FDISK /MBR (PC)
+
+From:    mcafee@netcom.com (McAfee Associates)
+>My general rule of thumb is, if you can cold boot the infected PC from
+>a clean copy of DOS and then change over to the hard disk and perform
+>a DIR or look at files, then the partition table on the hard disk is
+>okay and it is safe to use FDISK /MBR.  Of course, one has to boot
+>from a floppy diskette with the same (or higher) version of DOS as the
+>one on the hard disk, otherwise it may not be possible to access the
+>hard disk at all.
+
+This is OK for someone who *only* has MD-DOS on the disk but does
+nothing to give a "warm & fuzzy feeling" to those who also have OS/2,
+Unix, or Novell partitions (just cleaned up a Novell server that had
+been infected with Michelangelo. After disinfection the entire 1+ Gig
+Novell volume was unreachable. With the aid of my trusty TI-Programmer
+and DEBUG was able to rebuild the tables - and they said it couldn't
+be done 8*).
+
+The "UNFORMAT/PARTN/L/TEST" command will show *all* of the partitions
+including the Non-DOS ones as will my FixMBR. If saved or printed, the
+info can be used to restore a disk even if the entire MBR is lost (not
+trivial but *can* be done). FixMBR just permits saving the whole
+sector as a restorable .COM.
+
+						Warmly,
+
+							Padgett
+
+     re Weather:  Winter is over and Spring is here at last.
+
+------------------------------
+
+Date:    29 Oct 92 21:32:48 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Checking high memory with VSCAN (PC)
+
+rcoenen@phonon.uwaterloo.ca (Rob Coenen) writes:
+
+> When I use VSACN and specify the /CKHIGH (I think) option
+> to check high memory I notice it only checks the first 1 Meg
+> of memory. (I have 4 Megs)  Is it unnessesary to check the rest
+> or is something wrong?
+
+Yes, there is no need (almost) to check the rest. Besides in
+conventional memory (up to the 640 Kb limit), a virus could also
+reside in the following places:
+
+1) The video RAM.
+
+2) The high memory (or in the upper memory blocks).
+
+3) The exTended RAM.
+
+4) The exPanded RAM.
+
+Till now, there are no known viruses that use the last two methods.
+Since the known-virus scanner can detect only known viruses, it is
+obviously useless to check places in memory where no known virus can
+reside.
+
+Furthermore, the extended and expanded RAM cannot be addressed
+directly, like the conventional RAM. Therefore, even if somebody
+writes a virus that hides there, the virus will still have to uses a
+small part that resides in the conventional RAM and swaps back and
+forth the rest of the virus that resides in the "unconventional" RAM.
+Thus, even in this case it will be possible to detect the virus,
+without scanning the unconventional memory.
+
+Additionally, there are no viruses yet, that load themselves in the
+high memory. Such viruses are perfectly possible, but, as I noted
+above, it is useless for a scanner to scan for something that does not
+exist yet. However, there -is- a need to scan the high memory for the
+- -existing- viruses.
+
+The reason is, that the virus could infect one of the user's TSR
+utilities, that are loaded high from AUTOEXEC.BAT (or even from
+CONFIG.SYS). If this is a resident virus, if it is small enough, and
+if there is enough free high memory, chances are that the virus will
+be loaded into the high memory without problems and will work from
+there. Therefore, this part of the computer's memory -must- be checked
+for infection.
+
+But this is not just "1 Mb", as you mentioned. It is slightly more. On
+a '286 it is 1 Mb + 64 Kb - 16 bytes. On a '386 and above it is more -
+it can be up to 1384 Kb, I think. (Note: I am not certain about the
+exact figures. I somebody who reads this knows better, please post the
+correct information.)
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    29 Oct 92 21:46:43 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Damage from Stoned and FORM (PC); Comment on Recent Postings
+
+WALKER@aedc-vax.af.mil (William Walker C60223 x4570) writes:
+
+> On the other hand, I agree with Mr. Goretsky that Mr. Bontchev (or
+> anyone for that matter) should complete any testing before posting
+> results.  Also, Mr. Bontchev's posting seemed to me (as well as Mr.
+
+You are right, of course. But my initial message ("SCAN 95b does not
+detect the MtE-based viruses in EXE files") was caused by the fact
+that -during- the tests (i.e., when the final results were not
+available yet), we observed a -bug- in SCAN's MtE detection algorithm.
+Having in mind how popular this product is (according to McAfee
+Associates, they have more than 7 million installations), and how many
+people depend on it, I was precipitated to inform everybody about what
+I considered to be a serious bug.
+
+That it was a bug is without doubt - while SCAN still misses some
+infections in COM files, it detects -most- of them, therefore there
+was no reason (due to faulty recognition) to miss ALL infections in
+EXE files. It seemed as if it didn't check the EXE files for MtE
+infections at all. Having in mind that one of the viruses used during
+the test (Groove) infects both EXE and COM files, that we received
+this virus from the USA, and how popular McAfee Associates is in the
+anti-virus field, I found hard to believe that they didn't have a copy
+of the virus... Anyway, I'm probably wrong...
+
+My point is: I posted not incomplete test results; I posted a warning
+about a bug. I consider it my duty to do so, and will continue to do
+so in the future - I'll report any serious bugs that I discover in the
+popular anti-virus products, in order to warn their users.
+
+> Goretsky) to specifically slam ViruScan.  An independent review should
+> test all products equally, then objectively report the results against
+> each other or against some fixed rating.  It should also include the
+
+You will have the full independent review. The tests are ready; I'll
+write the report tomorrow. And I am not "slamming specifically
+VirusScan". Just the opposite - I find it good enough to be
+criticized, so I am criticizing its drawbacks - because I believe that
+this is the way to get the drawbacks corrected.
+
+There are LOTS of anti-virus products on the market, which are not
+even worth criticizing! In my MtE detection tests I made BIG efforts
+to test all the scanners that we have, that claimed to detect the
+MtE-based viruses. Some of these programs have so many bugs, that I
+would never bother to use any of them in the real life! One of them
+crashes the system, if your total (not just the free!) environment
+size is above 256 bytes. Another one can scan only whole drives, not
+directories, and the virus test set was on a network server, with
+other directories present... Yet another of the programs forced me to
+type in the name of the report file entirely 8 times (not just
+correcting it). Another one stops scanning after a few hundred
+infections are found, because it tries to keep the whole report file
+in memory! Yet another one does not create any report file at all,
+regardless that it is instructed to do so! Most of the report files do
+not contain any information -which- files are missed (and I guess,
+after I publish our results, all the producers of these programs will
+contact me, asking for the missed samples). One of the scanners just
+aborts with the message "No memory!", regardless that I have 505 Kb
+conventional RAM and megabytes of free XMS and EMS...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    29 Oct 92 22:14:22 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Flip (PC)
+
+chess@watson.ibm.com (David M. Chess) writes:
+
+> > Systems infected FLIP may experience file allocation errors resulting
+> > in file linkage error.
+
+> Really?  Does anyone know of any evidence for this, or is it just a
+> quote from some commercial virus info list?  I don't recall ever
+> seeing this in a FLIP infection, or seeing any code in the virus that
+> would cause this.  A few publicly-available virus lists make this
+> claim for every third or fourth virus, and I've always wondered why.
+> Does anyone know any technical reason this should occur?
+
+As far as I recall, Flip is a stealth virus, or at least it is stealth
+enough to "hide" the increase in the file size. When a virus like this
+is active in memory and the user runs CHKDSK, the latter sees the
+discrepancy between the file size (as clusters allocated for the file
+in the FAT) and the reported file size (as reported by the DOS
+functions that are subverted by the virus), and reports file
+allocation errors. If it is run with the /F option, CHKDSK tries to
+"repair" the allocation errors, actually screwing up everything.
+
+An inexperienced observer may report this as the paragraph that you
+quoted. BTW, some viruses (Diamond, SVC) are smart enough and do not
+cause such problems.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 29 Oct 92 19:22:22 +0000
+From:    hps@sdf.lonestar.org (Holt Sorenson)
+Subject: Re: VCL? (PC)
+
+bsw5148@zeus.tamu.edu (WADSWORTH, BRANDON SCOTT) writes:
+> Could someone out there explain what VCL is.  I keep seeing it listed
+>in several places.  Thanks from the newcomers around this place.
+
+VCL is a Borland IDE based "Virus Creation Laboratory" that creates
+poorly optimized, inefficient overwriting .COM and .EXE infectors.
+You can get ahold of it on most virus bbs's or from a virus writer or
+an anti-virus buff who would trust you with it. If you understand
+Assembly it is possible to patch the code and create virii and some of
+the code is sound enough to create a virus with.  Compared to the
+current technology available in the virus world it is outdated.
+Unfortunately, the author has promised to release a second version
+which is supposed to have several improvements that will make it more
+fun for researchers to play with. I doubt it will create any serious
+problems though. The release will probably be in January or Feruary of
+1993.
+
+hps@sdf.lonestar.org
+
+------------------------------
+
+Date:    Thu, 29 Oct 92 19:26:12 +0000
+From:    hps@sdf.lonestar.org (Holt Sorenson)
+Subject: Re: MtE ?? (PC)
+
+amjad@ecst.csuchico.edu (A.J.) writes:
+>Can anyone tell me What in the world MtE stand for and give more
+>info...  -aj.
+
+MtE is the Mutation Encryption Engine developed by Dark Avenger. It
+changes filesizes, checksum, and other info that would make it
+possible to detect a virus in a file at runtime so that the virus can
+continue to hide on your computer. The latest version is .91b, unless
+DA has released a newer one.  You can get it from your favorite AV
+researcher that trusts you or off a virus bbs. I won't give you any
+such info (bbs's or copies of the software.) If you don't know
+assembly, it wouldn't help you much anyway.
+
+hps@sdf.lonestar.org
+
+------------------------------
+
+Date:    29 Oct 92 22:37:45 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: VCL? (PC)
+
+bsw5148@zeus.tamu.edu (WADSWORTH, BRANDON SCOTT) writes:
+
+>  Could someone out there explain what VCL is.  I keep seeing it listed
+
+VCL stands for Virus Creation Laboratory. This is a program with a
+glamorous flashy user interface (pop-up windows, pull-down menus,
+context-sensitive help, and all that jazz) that generates viruses. The
+viruses generated by it are buggy, usually do not assemble, when they
+assemble, they usually hang the machine, and when they don't - they
+refuse to replicate. So, VCL and the virus generated by it are not
+dangerous per se. What -is- dangerous, however, is the raising trend
+to produce virus creation packages, that allow even the person who
+knows literally -nothing- about viruses or even about assembly
+language, to create new viruses.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    29 Oct 92 22:43:30 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus Demo? (PC)
+
+j.laidman@cowan.edu.au writes:
+
+> A while ago I saw a program that showed the behaviour of a number of
+> viruses.  I'd like to get a copy if this, if possible.  Can anyone
+> point me in the right direction?
+
+oak.oakland.edu:pub/msdos/trojan-pro/virsimul.arc
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    30 Oct 92 00:11:55 +0000
+From:    figge@bcstec.ca.boeing.com (David Figge)
+Subject: Re: Infection density (was: SCAN 95b doesn't...) (PC)
+
+chess@watson.ibm.com (David M. Chess) writes:
+> I'd like to start a brief tangent on the question of how many files
+> are generally infected in a file-infector incident.  Does anyone have
+> any interesting experience of insights to share?
+
+I don't necessarily have any revelations to add, as I've never had my
+working machine heavily infected (I don't think information on my test
+machine would be relevant :-). However, I can add the following (label
+me as an "average user" for this):
+
+I have a 200 MB hard disk, which is about 90% full (178 MB). This is
+probably pretty average for many users.
+
+On the disk, I have 866 executables (according to Virscan).
+
+Of those 866 files, I would expect the 80-20 rule would apply: I
+probably spend 80% of my time in 20% of my programs (even including
+the fact that I run Windows on this machine). I would hesitate to say
+that I even spend 20% of my time on the other 80% (there are some
+files I haven't used in a year, I'm sure).
+
+All this would imply that about 175 executable files are used
+regularly, and would be running a risk of being infected (unless the
+virus ran amuck for a long period of time).
+
+I would suspect that seeing somewhere between 75 and 150 infected
+files (depending on the virus) would seem a reasonable guess.
+
+Just my two cents worth.
+
+David Figge                      ___  /  __  /  ____/   /   |    /   ____/     
+                                /    /  /   /  /       /    |   /   /          
+Boeing Computer Services       ___  /  /   /  ___/    /   / |  /   /           
+Bellevue, Washington          /    /  /   /  /       /   /    /   /   _/       
+figge@bcstec.ca.boeing.com  ______/ _____/ _____/ __/ __/  __/  _____/         
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 01:14:46 +0000
+From:    rahul@hfglobe.intel.com (Rahul Ravel)
+Subject: Stoned Infection (PC)
+
+Hi all,
+
+An associate has a home computer that is infected by the Stoned virus.
+I'd appreciate and and all information on how to disenfect the system.
+My friend says the system cannot boot, ie possible boot sector damage.
+I have SCAN97 and CLEAN97 as well as Norton Utlities (for sector
+editing).
+
+Please send any replies directly to my e-mail address.
+
+Thnx in advance.
+
+- -Rahul
+
+Internet:  rahul@hfglobe.intel.com
+
+"Only my own opinions here."
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 05:24:38 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: KEY Press virus & McAfee v97 (PC)
+
+Hello Vesselin,
+
+you write:
+[...message from 739chan1@gw.wmich.edu (LEMMING) about SCAN V97 
+reporting the KeyPress virus multiple times in files deleted for 
+brevity...]
+
+>I can confirm this. The scanning engine of SCAN has a minor bug - it
+>does not always stop scanning after a virus is found, so it can report
+>more than one virus in the file, if more than one scan signature is
+>found.
+
+We've reproduced the problem of SCAN reporting a variant of the
+KeyPress virus multiple times in a file and will be fixing this in a
+subsequent version of SCAN.
+
+>This would be correct, if it used to scan the entire file - because
+>then it would be able to detect ALL viruses that are eventually
+>present in it. However, SCAN uses a method, known as top-and-tail
+>scanning - it scans part of the beginning of the file, part of the end
+>of the file, and part of the file after the entry point. The general
+>idea is that normally a virus wants to get control as soon as the file
+>is executed, so it should intercept the control at one of these three
+>places... Unfortunately, this is not always the case, which explains
+>why SCAN does not detect Commander Bomber infections reliably - the
+>virus can reside just anywhere in the file and control is transferred
+>to it in a non-trivial way...
+[...rest of message detailing problem with KeyPress variants being 
+reported multiple times by SCAN V97 deleted...]
+
+Are you sure of this?  The reason I ask is that does not always use
+the "top-and-tail" (or "beginning-and-end," etc.) method of searching
+for file-infecting viruses, especially if a "fragmentation attack" is
+performed.
+
+Regards,
+
+Aryeh Goretsky
+Technical Support
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 05:31:08 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: V-Sign virus struck again!!!!!!!!!! (PC)
+
+*I* write:
+[...message and description of Cansu virus deleted...]
+>table--intact.  Alternatively, CLEAN-UP V97 will remove it with the
+>[Cansu] I.D. code.
+ ^^^^^^^
+Oops, the CLEAN-UP I.D. code is [Can], not [Cansu].  My apologies for
+any confusion.
+
+Regards,
+
+Aryeh Goretsky
+Technical Support
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    30 Oct 92 07:15:33 +0000
+From:    medici@dorm.rutgers.edu (Mark Medici)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+I am a satisfied owner and user of McAfee software, to the tune of
+several thousands of dollars.  And I have no major gripes about the
+products.  There are a number of nit-picking things I'd like to see
+changed, but that's not why I'm writing.
+
+I've noticed, over the course of more than a year, that there have
+been a great many shots fired between the various representatives of
+anti-virus software authors/vendors and "experts".  While it is
+important, even crucial, that there is a good amount of competition
+for technical excellence, I am dismayed by the type of bickering, and
+even flaming, that goes on in this newsgroup.  It does seem to me that
+certain authors take extra effort to knock McAfee software, but I have
+seen McAfee dish it out just as well.  Hopefully this will come to an
+end in the near future, as it diminishes the effectiveness of this
+forum and blemishes the reputations of all involved parties.
+
+At the present, I agree with some of Vesselin's comments, though I
+have some questions as to his motivation for prereleasing, and more
+importantly, singling-out McAfee's software results separately from
+all others he's tested.  It appears to me, the casual reader of this
+newgroup, that Vesselin is grinding an ax with McAfee here, though I
+don't know why this should be.
+
+If there is a shortcoming to McAfee's or anyone elses' software, I
+much prefer to read about it here than discover the flaw after a
+couple hundred workstations are affected.  The fact that public
+disclosure in this newsgroup inevitably leads to a hieghtened level of
+attention from the developer is also, in my view, a benefit.  Further,
+I cannot fault Vesselin for reporting on the results of what was the
+currently available versions of software at the time he started the
+evaluation (and, of course, that the evaluation hasn't been going for
+too long without checking for an update).  After all, such processes
+require a clear beginning and end, and to restart the entire process
+each time any one of the involved products were revised would lead to
+a never-ending cycle of evaluations without results.
+
+However, since new viruses and new revisions to the anti-viruses
+continue to arrive, it is important to realize that any evaluation of
+the products is likely to change without notice, and as much should be
+included as a disclaimer on any results that are published.  There-
+fore, the evaluation process must be continuously repeated, with
+results presented on a regular, scheduled basis, and a warning that
+the results may and often do change frequently.  I believe this would
+be fairest to all, especially to the users of these products, who
+could then track which author/vendor is quickest to respond to new
+viruses and provides the most consistently good protection.
+
+Finally, as to the issue concerning alleged misleading advertisement,
+I feel that the implied denial of responsibility by McAfee is irres-
+ponsible.  Regardless of whether McAfee polices its agents or not,
+their agent's claims and actions reflect upon McAfee.  I would have
+rather seen McAfee say it would investigate the matter and take action
+to prevent reoccurence, instead of making it sound that it has no
+control over or desire to correct the mistatements of its selected and
+authorized agents.
+
+These are my opinions, provided here in the hopes of a movement
+towards more reasonable and productive discourse.  My goal is not so
+much to admonish, though I've done some of that.  Instead, I'm hoping
+that the signal-to-noise level here can be improved through less
+bickering and market positioning.  If all that fails, at least you
+have some idea how these outbursts seem to one who looks to this group
+for facts, but too often finds gossip, so much as to give comp.virus
+only the most cursory glances as I try to keep up with the wealth of
+useful information on UseNet.
+- -- 
+_________________________________________________________________________
+RUCS     | Mark A. Medici, Systems Programmer III, User Services Division
+User     | Rutgers University Computing Services, New Brunswick, NJ 08903
+Services | [medici@gandalf.rutgers.edu]                    [908-932-2412]
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 07:41:54 +0000
+From:    ianst@qdpii.comp.qdpi.oz.au (Ian Staples)
+Subject: Re: Checking high memory with VSCAN (PC)
+
+mcafee@netcom.com (McAfee Associates) writes:
+>When SCAN is run with the /CHKHI switch, it actually checks base
+>(system) memory from 0-640Kb, upper memory from 640-1,024Kb, and the
+>high memory area from 1,024-1,088Kb (actually less 16 bytes which are
+>used to control access to that region).
+>
+>These are all areas that can be accessed by DOS (with appropriate
+>drivers, such as HIMEM.SYS and EMM386.EXE, or third-party memory
+>managing products such as QEMM, 386^MAX, and so forth).
+>
+>While some programs do take advantage of memory above this region,
+>they do not so much actually execute stored above that 1,088Kb region
+>then bankswitch it in and out of the lower regions.  Because of this,
+>there are no reasons to check above the 1,088Kb region for viruses--of
+>course, if someone writes a virus that does work in extended or
+>expanded memory, we will add detection of it.
+
+Hmmm... does this imply that once we all have OS/2 or whatever on 386s
+or better, and 32-bit applications addressing oceans of flat memory
+space then we will have to wait forever for SCAN or some other to scan
+the whole bloody lot when we boot up each morning?
+
+- -- 
+
+Ian Staples                       | Internet : ianst@qdpii.comp.qdpi.oz.au
+c/- P.O. Box 1054,                | Fax      : +61 70 92 3593
+MAREEBA  Queensland  4880         | Voice    : +61 70 92 1555
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 03:46:37 -0500
+From:    dluckma3@mach1.wlu.ca (david luckman 9209 U)
+Subject: Newest and best scanner? (PC)
+
+What is the latest and most extensive virus scanner for the IBM PC
+(clone) and where can I get my hands on it?
+
+Dave
+
+------------------------------
+
+Date:    30 Oct 92 12:27:40 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: cascade virus info wanted. (PC)
+
+Jim.Moore@ericom.ericsson.se writes:
+
+> There are 3 variants of Cascade and they all infect .COM files only.
+
+[deleted]
+
+> .exe extension.  The 3rd version of cascade has been modified to
+> format the hard-disk using the routine from the DataCrime virus.
+
+> Length of versions:  1 = 1701, 2 & 3 = 1704.
+
+There are more versions known. The versions that you have mentioned
+correspond to the standard CARO names Cascade.1701.A, Cascade.1704.A,
+and Cascade.1704.Format. The full list of all Cascade variants we know
+about is:
+
+Cascade.1621
+Cascade.1661
+Cascade.1701.A
+Cascade.1701.B
+Cascade.1701.C
+Cascade.1701.D
+Cascade.1701.F
+Cascade.1701.S
+Cascade.1701.Yap
+Cascade.1704.A
+Cascade.1704.B
+Cascade.1704.C
+Cascade.1704.D
+Cascade.1704.E
+Cascade.1704.Format
+Cascade.1704.Multi
+Cascade.1704.Y
+Cascade.1706
+Cascade.Formiche
+Cascade.Jojo.1701.A
+Cascade.Jojo.1701.B
+Cascade.Jojo.1703
+
+This makes 22 known variants. In fact, the only two that are spread in
+the wild are Cascade.1701.A and Cascade.1704.A.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    30 Oct 92 12:40:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: MBR Viruses and FDISK /MBR (PC)
+
+mcafee@netcom.com (McAfee Associates) writes:
+
+> okay and it is safe to use FDISK /MBR.  Of course, one has to boot
+> from a floppy diskette with the same (or higher) version of DOS as the
+> one on the hard disk, otherwise it may not be possible to access the
+> hard disk at all.
+
+Is this -really- necessary? As far as I understand, the command FDISK
+/MBR (not that no hard disk is specified as an argument) uses INT 13h
+to rewrite the MBR of the first hard disk. In order to do that, it is
+not necessary that the logical drive is visible to DOS. Therefore, you
+can use FDISK/MBR, regardless of the DOS version the hard disk is
+formatted with - you will need only a DOS 5.0 system diskette...
+
+Or do you mean that in order to verify whether the disk is accessible
+(i.e., to ensure that FDISK /MBR will be effective), you'll need to
+boot from the same or higher DOS version? Well, even in this case it
+does not matter, since you need to boot from DOS 5.0, in order to have
+the /MBR option of FDISK, and 5.0 -is- currently the highest version
+of DOS available...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    30 Oct 92 13:56:43 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+mcafee@netcom.com (McAfee Associates) writes:
+
+> >version of SCAN actually available to users at the time of testing did
+> >not detect the MtE viruses perfectly, whereas other products did.
+
+> Given the nature of virus-scanning software, it is often difficult to
+> determine if one has the latest version.  At the time Vesselin's
+> message did appear in comp.virus, a new release of VIRUSCAN (SCAN) had
+> been made.  If one is going to write a review or evaulation or report
+> on anti-viral software, it would be a good idea to check with the
+> developer before going to press to see what the current version is.
+
+At the time the tests were performed, version 95b -was- the latest
+version of SCAN that was released officially (i.e., on the ftp sites).
+It's not my fault that you have released a new version during the time
+period between the posting of my message and its appearance on
+comp.virus.
+
+Furthermore, as I have stated several times, my message reported a BUG
+in SCAN. Therefore, even if I were aware of the existence of the new
+version, I would still post the warning and suggest the users urgently
+to upgrade to it and not to use the old version. So, in any case, my
+message -was- necessary.
+
+Meanwhile, Fridrik's point still holds - the current version (most
+latest, etc.) of SCAN (97) was NOT able to detect all replicants used
+in the tests, while other (out-of-date) variants of other scanner
+- -were- able to do so.
+
+> Then the review can either be held to a new version is tested, or a
+
+To be held? Till when? I've tested 17 scanners - maybe I should have
+waited until all the 17 producers have fixed all the bugs in their
+products? And until meanwhile some of them release new versions? With
+new bugs? This could take forever...
+
+> We neither approve or pay for advertising done by our agents--this is
+> done by them individually.
+
+I would tolerate it if it did happen only once, but three times! Why
+it's always the agents of McAfee Associates that are doing unethical
+advertising? Are you really so bad in selecting your agents?
+
+> Based on the subject and volume of messages appearing lately, it would
+> appear that a vendetta is being persued against McAfee Associates,
+> solely on the basis of an advertisement made by an outside agent.
+
+I would apply Occam's razor here... The simplest reason seems to be
+that SCAN is indeed buggy and that your agents are indeed doing
+unethical things...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    29 Oct 92 22:30:24 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Landmark legal ruling on software copyright
+
+DEL2@phx.cam.ac.uk writes:
+
+>I"m not a lawyer, but surely the report forwarded by Dennis Clouse
+>about Accolade disassembling Sega's code has big implications for
+>copyright generally?  If you can copy code for such purposes ("as long
+>as those games did not copy Sega games" surely you can copy text too,
+>as long as the final product is not identical to the original?
+
+A more virus-related implication is of course that the virus authors
+cannot sue people like myself who tear viruses apart to find out how
+they operate and how to get rid of them.  
+
+Actually, a few virus authors have actually specifically forbidden any
+disassembly or reverse engineering of their code.  We have of course not
+taken them seriously, but it still nice to know that we probably have
+the law on our side :-)
+
+- -frisk
+
+------------------------------
+
+Date:    30 Oct 92 16:30:26 +0800
+From:    ibacon@uniwa.uwa.edu.au (Ian Bacon)
+Subject: virus anecdotes ?
+
+I plan to write a paper in the near future on computer mishaps. I
+would like to include examples of the damage / trouble caused by
+viruses. Can anyone point me in the direction of a source of this
+information? Be it a book, article or a net file.
+
+thanks for your help.
+
+------------------------------
+
+Date:    Fri, 30 Oct 92 06:00:32 -0500
+From:    Jon Freivald <jaflrn!jaf@uunet.UU.NET>
+Subject: Correction to previous post.
+
+In a previous post, I announced that the 97 series of McAfee software
+was available on my mail-server.  The files were listed as follows:
+
+/public/dos/virus/scan97.zip
+/public/dos/virus/clean97.zip
+etc...
+
+I should have listed them as:
+
+dos/virus/scan97.zip
+dos/virus/clean97.zip
+etc...
+
+To retrieve the files, send mail to "mail-server@jaflrn.uucp" containing
+a line(s) patterned after the following for each file requested:
+
+get dos/virus/scan97.zip
+
+The files will be sent via return mail in uuencoded format.  A list of
+all available files may be retrieved with the command "get index".
+
+Sorry for the confusion!
+
+Jon
+
+=============================================================================
+		   Jon Freivald ( jaflrn!jaf@uunet.UU.NET )
+	 Nothing is impossible for the man who doesn't have to do it.
+=============================================================================
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 171]
+******************************************
+
+

@@ -1,0 +1,562 @@
+precedence: bulk
+Subject: RISKS DIGEST 19.56
+
+RISKS-LIST: Risks-Forum Digest  Thursday 22 January 1998  Volume 19 : Issue 56
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+CyberSitter to the rescue (Ross Johnson via Glen McCready)
+More on the Navy/AOL case (Declan McCullagh)
+Student expelled for writing hacking article (Declan McCullagh)
+Risks of Enhanced Ground Proximity Warning System (Jim Wolper)
+Risk of renaming a Windows 95 computer on a network (Mike Gore)
+Priority Inversion and early Unix (Jerry Leichter)
+PDP-11 Y2K leap-year-day bug (T Bruce Tober)
+Bad advice on Y2K (Bob Frankston)
+German bank offers reward for hacker info (Matt Welsh)
+"Technology and Privacy: The New Landscape" (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Tue, 20 Jan 1998 16:08:19 -0500
+From: glen mccready <glen@qnx.com>
+Subject: CyberSitter to the rescue, from Ross Johnson 
+
+  [Received from Jered J Floyd via Declan McCullagh, and from at least
+  8 other contributors as well.  TNX.  PGN]
+
+  [This is from the PerForce mailing list, PerForce is a source-code control
+  system that doesn't use mounted drives, but instead uses TCP/IP socket
+  communications to check code in and out.]
+
+Well, I just spent several hours tracking something down that I think is SO
+brain-dead that it must be called evil.  I hope this will save someone else
+some hassle.
+
+There's an NT box on my desk that someone else uses every now and then.
+This machine is otherwise used as my programming box and backup server.
+
+All of a sudden, my programming files were being corrupted in odd places.  I
+thought "hmm, my copy must be corrupt".  So I refreshed the files.  No
+change.  "hmm, the code depot copy must be corrupt"..  Checked from other
+machines.  No problem there.  Viewed the file from a web based change
+browser in Internet Explorer.  Same corruption in the file.  Telnet-ed to
+the server machine and just cat-ed the file to the terminal.  Same problem.
+What's going on?
+
+The lines that were corrupted were of the form
+#define one 1 /* foo menu */
+#define two 2 /* bar baz */
+What I always saw ON THIS MACHINE ONLY was:
+#define one 1 /* foo     */
+#  fine two 2 /* bar baz */
+
+Can you guess what was happening?  Turns out, someone had inadvertently
+installed this piece of garbage called CyberSitter, which purports to
+protect you from nasty internet content.  Turns out that it does this by
+patching the TCP drivers and watching the data flow over EVERY TCP STREAM.
+Can you spot the offense word in my example?  It's "NUDE".  Seems that
+cybersitter doesn't care if there are other characters in between.  So it
+blanks out "nu */ #de" without blanking out the punctuation and line breaks.
+Very strange and stupid.
+
+It also didn't like the method name "RefreshItems" in another file, since
+there is obviously a swear word embedded in there.  Sheesh.
+
+It's so bad it's almost funny.  Hope this brightens your day as much as it
+brighted mine :-).
+
+Ross Johnson, Info Sci/Eng, Univ. of Canberra, PO Box 1, Belconnen ACT 2616 
+AUSTRALIA  rpj@ise.canberra.edu.au WWW: http://willow.canberra.edu.au/~rpj/
+
+  [Your subscription has been ReNude!  PGN]
+
+------------------------------
+
+Date: Wed, 21 Jan 1998 12:42:33 -0800 (PST)
+From: Declan McCullagh <declan@well.com>
+Subject: More on the Navy/AOL case (RISKS-19.55)
+
+http://cgi.pathfinder.com/netly/afternoon/0,1012,1703,00.html
+
+Answers Aweigh (The Netly News / Afternoon Line <http://netlynews.com/>)
+
+Accused gay sailor Timothy ("the other one") McVeigh and the U.S. Navy
+certainly have their differences, but both sides can agree on one thing:
+America Online screwed up.  For once, AOL agrees.  This morning the online
+giant finally admitted that it handed over McVeigh's personal information to
+the Navy without a court order, saying in a statement "This clearly should
+not have happened and we regret it."
+
+AOL's almost-apology came just before McVeigh's lawyers clashed with
+government attorneys defending the Navy's decision to kick him out.  McVeigh
+claims that the Navy's prudish "is-he-or-isn't-he" sex snooping was overly
+nosy and intrusive -- so much so that it violated the law.  At a hearing in
+Washington, D.C., federal court, attorney Christopher Wolf argued that Navy
+investigators "did the electronic equivalent" of "breaking into a file
+cabinet." Not so, responded David Glass, a Justice Department lawyer
+representing the Navy.  "There is nothing in that statute that precludes the
+government from calling and asking," he said.  Of course, that phrasing
+neatly begs the multiple procedural violations that the Navy apparently
+committed in the course of that phone call.
+
+Next step is for Judge Stanley Sporkin to decide whether to issue a
+preliminary injunction that would keep McVeigh in uniform past this Friday,
+when he's scheduled to get the boot.  Sporkin didn't say when he'd rule, but
+he did note that McVeigh could have a tidy little case against AOL, should
+he decide to sue them too: "That's why they're cutting and running here."
+Will he? Said McVeigh's attorney afterward: "We're keeping our options
+open." Smart lad.
+
+   --Declan McCullagh/Washington
+
+[From POLITECH -- a wonderful moderated mailing list of politics and
+technology (see http://www.well.com/~declan/politech/).  To subscribe, send
+a message to majordomo@vorlon.mit.edu with a single text line:
+  subscribe politech
+PGN]
+
+------------------------------
+
+Date: Wed, 21 Jan 1998 10:49:17 -0800 (PST)
+From: Declan McCullagh <declan@well.com>
+Subject: Student expelled for writing hacking article (from Netly News)
+
+  [The "So You Want To Be A Hacker" article in question:
+  http://cgi.pathfinder.com/netly/editorial/019821.html  -Declan]
+
+http://cgi.pathfinder.com/netly/opinion/0,1042,1699,00.html
+
+Hacking 101, by Declan McCullagh (declan@well.com)
+The Netly News (http://netlynews.com/), 21 Jan 1998
+
+The end of senior year for most high school students is a time for college
+decisions, vacation planning and beer-tinged teenage revelry.  Not so for
+Justin Boucher.  Today the Milwaukee, Wisconsin-area native will be expelled
+from Greenfield High School because of an article he wrote entitled "So You
+Want To Be A Hacker."  Published under a pseudonym in an unofficial student
+newspaper, it described in colorful (and sometimes profane) language how
+enterprising snoops could break into the high school's computer network.
+
+The advice ranged from the glaringly obvious ("Some commonly used passwords
+at very stupid schools are...") to the Hacker Code of Ethics ("Never harm,
+alter or damage any computers").  The finer points of hacker morality and
+teenage tomfoolery, however, were lost on irate school officials, who
+expelled Boucher for one year.  [...]
+
+------------------------------
+
+Date: Mon, 19 Jan 98 14:46:24 -0700
+From: Jim Wolper <wolperj@pequod.isu.edu>
+Subject: Risks of Enhanced Ground Proximity Warning System
+
+[This is an abridged version of an essay on Risks of the EGPWS.  The full
+text is available at the URL <http://math.isu.edu/~wolperj/egpws.html>.]
+
+The Air Transport Association recently announced [1] that US airlines would
+install the Enhanced Ground Proximity Warning System (EGPWS).  This presents
+a RISK because it is possible to misuse the system.  Similar misuse of the
+Traffic Collision Avoidance System (TCAS) presents less of a RISK and has
+been a factor in increasing efficiency of commercial air operations.  (Other
+risks from TCAS are described in previous RISKS; [2].)
+
+The EGPWS manufactured by Allied Signal is described in [3].  The essence of
+its operation is a terrain database.  In the air, the EGPWS compares the
+aircraft's position and velocity with the terrain database to predict
+potential terrain impact, and a cockpit display is provided.  The aircraft's
+position may be determined by Global Position System inputs (GPS) or, what
+is more likely for now, Flight Management System (FMS) inputs.  See [6] for
+a rather technical description of the FMS on the B-737.  To quote from that
+source: "If radio updating is not available, the error can be very
+significant."
+ 
+Two authors ([4],[5]) have already mentioned EGPWS in relation to assessing
+other aviation risks; but the risk identified here is, I believe, new.
+
+It is axiomatic that when people are given a new tool they will manage to
+use it in unanticipated ways.  This has been the case with TCAS, and one has
+to assume that it will be the case with EGPWS.  TCAS allows pilots to "see"
+other aircraft and arrange proper spacing without controller intervention.
+Some of this use is unauthorized and based on rules-of-thumb developed by
+pilots.
+
+Pilots will inevitably develop rules-of-thumb on how to get the most out of
+EGPWS.  Most of this information will be appropriate and useful.  This is
+not the case, however, if these rules-of-thumb include how to use EGPWS
+alone to stay away from high terrain, because there is an important
+difference between using EGPWS for separation from terrain and using TCAS
+for separation from other aircraft.  In the TCAS case, the "database", as it
+were, is subject to continual real time updating: with each sweep of the
+radar antenna, each aircraft's transponder sends out an update.
+Furthermore, the information derived from the transponder replies is
+relative: aircraft A is 5 miles east of aircraft B.  If there is any
+statistical bias in this calculation, the bias applies equally to all
+participants.
+
+EGPWS does not update the database: the terrain sits there and the airplane
+flies towards it.  The cockpit display is based on the unit's estimate of the
+aircraft position, and any statistical bias in calculating that position
+estimate is translated directly into error in the cockpit display.  The
+display may show the aircraft to be 5 miles from high terrain, but if there
+is a 5 mile error in the unit's position, the consequences could be dire.
+
+Such behavior is unlikely with the present GPWS, because its operation
+cannot be sensed unless a warning situation develops; in this case, there is
+an audible warning "Pull Up!  Terrain!"  EGPWS gives the pilot a map-like
+display of the terrain surrounding the calculated position of the aircraft,
+so is available even when not issuing a warning.
+
+It is very unlikely that a crew from a major airline would misuse EGPWS in
+this way.  Let me paint a more realistic scenario.  Imagine the crew of a
+regional airliner or charter aircraft making a night approach to a mountain
+airport, such as Hailey, ID, which serves the Sun Valley ski resort.  There
+is no valid public instrument approach into Hailey at night, but if the
+prevailing visibility at the airport is 3 miles or more pilots may legally
+make an approach under Visual Flight Rules (VFR).  The airport is surrounded
+by mountains, and, as a ski resort, is subject to frequent snow showers.  In
+this situation, a pilot with inadequate training might be tempted to use
+EGPWS in order to complete a VFR approach, rather than abandoning the
+approach and flying to a different airport.  In the dark, even with
+unlimited visibility, the mountains may be unseen.  An error in the EGPWS
+equipment's position estimate could lead to a disaster.
+
+The crew may be misled by the perceived "accuracy" of the computer display
+into believing that maneuvering the aircraft away from the mountains
+depicted on the EGPWS display will ensure terrain separation.  It looks like
+a map; it feels like a map; it must be a map!  After all, pilots are no more
+computer literate than the population at large.  I teach Computer Science at
+the university and flying at the airport, and there is no overlap between
+these student populations.
+
+Pilots flying with EGPWS equipment must be made aware of its limitations, as
+they are made aware of the limitations of all on-board equipment.
+Instructors may want to consider a two-step scenario (presented in the full
+length version of this essay) which illustrates the dangers of this failure
+mode.
+
+There are many proposals for advanced avionics systems which would give
+pilots an "out the window" picture of the world, even in instrument or night
+conditions, with a "highway in the sky" depiction of the aircraft's intended
+route of flight.  The current EGPWS is the first deployed system of this
+type.  Designers of future enhancements must pay careful attention to
+possible failure modes (e.g., map shift), and those who train pilots to use
+such systems must ensure that pilots understand the system's limitations.
+
+[1] http://www.pathfinder.com/news/latest/RB/1997Dec15/876.html
+[2] RISKS Forum 13:78, 14:44, 15:51, etc.
+[3] http://www.alliedsignal.com/aerospace/product/flight_safety/egpws.html
+[4] Ladkin, Peter, "Risks of Technological Remedy", Communications
+of the ACM, November, 1997.
+URL http://www.rvs.uni-bielefeld.de/~ladkin/Reports/inside-risks.html
+[5] http://www.terps.com/free-flight/freeflt.pdf
+[6] http://194.78.76.133/linepilot/FMCPosition.html#FMC position.
+
+Jim Wolper PhD/ATP, Associate Professor of Mathematics, 
+Computer Science Faculty, Idaho State University, Pocatello, ID  83209-8085
+
+------------------------------
+
+Date: Tue, 20 Jan 1998 17:30:36 -0500
+From: Mike Gore <magore@icr2.uwaterloo.ca>
+Subject: Risk of renaming a Windows 95 computer on a network
+
+There is a potential security problem with the way Windows 95 resolves
+shortcuts that may be of interest to comp.risks readers.  If you have
+Windows 95, are networked, have ever renamed your computer, and have sharing
+enabled you may be at risk.  The risk happens if you are sharing your C
+drive itself and another machine on your network decides to use your prior
+name, then shares their C drive.  The problem happens due to the way Windows
+95 resolves shortcuts (links).  In the above situation both the UNC and
+local path are stored in the shortcuts when they are created.  That is, when
+you rename your computer none of the UNC names in your shortcuts are
+renamed! If at a future time someone else uses your old hostname and share
+then something interesting happens to your shortcuts.  1) They will either
+FAIL to run at all if a password to the remote UNC can not be supplied!, or
+2) will SILENTLY connect to the remote UNC if no password was set! Keep in
+mind windows will suggest a default share name, so when sharing your C drive
+it will be called C unless changed.  A given UNC would look like
+  c:\\hostname\c filename .
+More detail outlining what you can NOT do about this can be found by
+reading Microsoft knowledge base article q150215
+(http://support.microsoft.com/support/kb/articles/q150/2/15.asp). This
+article reports that ``This behavior is by design.''!!!
+You can run the shortcuts command they suggest but it will not REMOVE the
+old UNC information, rather it will just ignore it.  Note: you have to do
+this for every link on your system on at at time.  The command does not
+allow full paths so it must be done within each directory on the
+system. Furthermore the command has no way of dumping all of the UNC paths
+in the link however if you have a binary viewer you can see them.
+
+Mike Gore, Inst. for Computer Research, DC3549C, University of Waterloo, 
+200 University Ave, Waterloo Ontario, Canada, N2L 3G1  1-519-885-1211, x6205
+
+------------------------------
+
+Date: Sun, 18 Jan 98 08:49:01 EST
+From: Jerry Leichter <leichter@lrw.com>
+Subject: Priority Inversion and early Unix (Rose, RISKS-19.54)
+
+Greg Rose mentions the implementation of critical sections using process
+priority on a PDP-11 in early Unix.  Actually, no.  Priority inversion was
+not an issue here; correctness of the code is.
+
+In multilevel interrupt priority systems, one standard programming
+technique is to associate a priority level with any particular piece of data
+that may potentially be shared between interrupt and non-interrupt code.  In
+order to access that piece of data, code must ensure that the process is at
+that interrupt level.  (The processor will only accept interrupts whose
+priority is at least as high as the current processor level, and will raise
+the processor's level to match the interrupt's level before executing the
+appropriate handler.)
+
+This protocol is safe, but requires a bit of reasoning, and an additional
+assumption.
+
+Let's start by assuming processes may not change the processors priority;
+only the interrupt mechanism does so.  Consider code accessing an object
+whose minimum access priority is Pa.  The processor is thus currently
+running at priority Pa as well.  It can only lose the process to a process
+with priority Pn > Pa, which can't access objects at priority Pa; so this
+code's actions can't be interrupted.  Further, when this code began
+execution, it did so by hypotheses as the result of an interrupt at priority
+Pa.  Thus, the processor must previously have been running at priority 
+Po < Pa.  The code at priority Po couldn't have been accessing the object
+either.  So access to the object is safe.
+
+Not allowing processes to change their priority is safe, but too
+restrictive, as it makes it impossible to communicate between priority
+levels!  Note that it's always safe to *raise* the processor priority level:
+This can't affect what other processes the code might have interrupted, and
+can only exclude more possible interrupts.  Further, after raising the
+priority, it's certainly safe to lower it back to where it was, since that
+was known to be safe.
+
+On the other hand, lowering the priority level *below the entry level* is
+deadly.  Consider the following: P3 is running a priority 3, accessing an
+object designated as level 3.  P4 gains control at priority level 4, and
+drops the priority level to 2.  A new priority 3 interrupt comes in,
+starting a new process at priority level 3 -- which accesses the same object
+as P3.  P3's critical section has been violated.  (Dropping the priority
+level by exactly 1 below your entry level avoids this, but doesn't buy you
+anything, since you must not touch any object "owned" by that level: *You*
+might have interrupted someone running at that level who was accessing the
+object.)
+
+Finally, it's clear that if you raise your priority level from Po to Pn, you
+can't possibly be interrupting any code of priority Po+1 ... Pn, and you are
+already in a logical critical section for objects of priority Po; so you may
+safely access any object with a level between Po and Pn inclusive.
+
+Putting this all together, a safe set of rules is: Every object has an
+associated priority level.  Every process has an associated "entry priority
+level" Pe, set by the interrupt that started it.  (User-level code has
+Pe=0).  A process at my raise its priority level Pc, and may lower it, but
+not below Pe.  While at Pc, it may access any object with associated level
+Po as long as Pe <= Po <= Pc.
+
+Priority inversion is impossible here: There is no waiting, except for the
+processor priority level to drop low enough for an interrupt to be
+delivered.  (Alternatively, you can think of Po as the priority of a monitor
+associated with the object.  "Priority inheritance" is enforced implicitly,
+since you have to "inherit" the priority before you are even allowed into
+the monitor.  Curious, in all the years I taught about this algorithm in OS
+classes, I never thought of this analogy before.)
+
+The degenerate case has only two levels, "user" and interrupt.  You get
+exactly the usual rules and behavior for simple critical sections.
+
+DEC operating systems PDP-11's (at least RSX; probably others) used this
+style of locking before Unix was developed.  (The hardware was designed the
+way it was exactly to allow this style of synchronization.)  Unix, for the
+most part, deliberately used a degenerate form, in which "raise to priority
+level" was almost always taken to mean "raise it to the maximum".  Most Unix
+device drivers raise the level on entry.  In effect, this gives you one big
+mutex around the entire kernel, rather than monitors around various objects.
+This approach is simpler, works fine for time-sharing systems (the advantage
+of doing things at a finer grain is decreased interrupt latency, which is
+more on a issue for real-time kinds of systems) -- and, most important, is
+the only approach that was portable to the wide variety of hardware
+available in the late '70's and '80's that didn't necessarily support
+multilevel interrupts.
+
+VMS also uses the same synchronization scheme, though it was long ago
+extended to support multiprocessors.  (Since priority levels don't work for
+synchronization across processors, in-memory mutexes have to be used.
+However, a priority level is associated with each such mutex.  To attempt to
+lock a mutex, you must first be sure your own processor is at the mutex's
+priority level, or higher.  This limits the contention on the locks to the
+highest priority thread from each processor.)
+
+BTW, you may wonder: Since a process may never lower its priority below its
+entry level, how can it communicate "downward" -- e.g., how can a driver's
+interrupt code write into a status variable accessible from user level?
+That's what the software interrupt mechanism is for: If code at priority Pc
+needs to do something at priority Pn < Pc, it requests a software interrupt
+at Pn.  That interrupt will be queued until the code at Pc, and any other
+higher-level interrupts, complete.  Then an interrupt at Pn takes place,
+and the interrupt routine -- known as a "fork routine" in DEC parlance" --
+will be able to access the appropriate objects.
+
+Jerry
+
+------------------------------
+
+Date: Wed, 21 Jan 1998 17:00:11 +0000
+From: T Bruce Tober <octobersdad@reporters.net>
+Subject: PDP-11 Y2K leap-year-day bug
+
+[FORWARDED, with ellipsis:] Probably of very minority interest, but there's
+still a few of them out there (estimated about 6000 with the affected
+equipment in the UK, I'm told): PDP-11s (I think -83s or similar) fitted
+with a particular clock board (made in Germany; I don't know the
+manufacturer) are exhibiting a nasty Y2K bug. To quote my contact:
+
+We supplied a pdp11 to [...]  recently and when they tried it out they said
+it had a year 2000 compliance problem.  Turns out it's a bit more (or less)
+than that.  Put the system date to 2000: no problem.  Put the date to 29 Feb
+2000 and bang!  It gets really confused and jumps back to 1900 [...]  This
+bug is only manifest on -11s fitted with that clock card.
+
+Bruce Tober, octobersdad@reporters.net, Birmingham, England +44-121-242-3832
+Website - http://www.homeusers.prestel.co.uk/crecon/
+
+  [Yet another manifestation of the Y2K leap-year confusion discussed
+  on various occasions in RISKS.  PGN]
+
+------------------------------
+
+Date: Mon, 19 Jan 1998 21:59:28 -0500
+From: "Bob Frankston" <BobF@csl.sri.com>
+Subject: Bad advice on Y2K
+
+I just got a flyer for a program that will help companies with PC's that
+have old BIOSes that won't deal with Y2K. But the advice it gives is to
+experiment by setting the clock to 12/31/1999 23:59 (or 2/28/2000 23:59 for
+a leap-year bug).  I presume long-time risks readers are aware of the
+problems with setting the clock forward and triggering many programs to
+expire old data or worse.
+
+------------------------------
+
+Date: 20 Jan 1998 19:57:59 GMT
+From: mdw@midnight.CS.Berkeley.EDU (Matt Welsh)
+Subject: German bank offers reward for hacker info
+
+>From http://customnews.cnn.com/cnews/pna.show_story?p_art_id=2247701
+
+Summary:
+
+Noris Verbraucherbank has offered a DM 10,000 (US$ 5300) reward for
+information leading to the arrest of a hacker who is blackmailing
+the bank. The hacker claims to have broken into 2 of the bank's 70
+branch computer systems and is blackmailing the bank for DM 1,000,000.
+The hacker claims that if the bank does not pay up, he will release
+customer information and bank access codes on the Internet.
+
+M. Welsh, UC Berkeley, mdw@cs.berkeley.edu
+
+  [Ver-brauch-er = Consumer; Verb-rauch-er: someone who smokes verbs?  PGN]
+
+------------------------------
+
+Date: Wed, 21 Jan 1998 08:46:33 -0800
+From: Rob Slade <Rob.Slade@sprint.ca>
+Subject: "Technology and Privacy: The New Landscape" (RISKS-19.45)
+
+BKTCHPRV.RVW   971012
+
+"Technology and Privacy: The New Landscape", Philip E. Agre/Marc
+Rotenberg, 1997, 0-262-01162-X,U$25.00
+%E   Philip E. Agre pagre@ucsd.edu
+%E   Marc Rotenberg rotenberg@epic.org
+%C   55 Hayward Street, Cambridge, MA   02142-1399
+%D   1997
+%G   0-262-01162-X
+%I   MIT Press
+%O   U$25.00 800-356-0343 fax: 617-625-6660 curtin@mit.edu
+%O   www-mitpress.mit.edu
+%P   325
+%T   "Technology and Privacy: The New Landscape"
+
+Agre, perhaps most widely known for the Red Rock Eater news service, and
+Rotenberg, Director of the Electronic Privacy Information Center, go to some
+lengths to define what this book is not.  It is not a fundamental analysis
+of privacy.  It is not an investigative work.  It does not address specific
+areas of concern.  It is not a systematic comparison.  It does not cover the
+broadest interpretation of technology.  It does not provide a general theory
+of privacy, nor detailed policy proposals.  It is an overview of policy and
+thought regarding the impact of information and communications technologies
+on privacy over the last two decades.
+
+Working in the field of data security I am quite used to dealing with
+subjects that have barely brushed the public consciousness.  Privacy is one
+such area, as evidenced by the lack of agreement even on such a basic issue
+as a definition of privacy.  I must admit, however, that the essays in this
+volume surprised me with the extent of the work in privacy policy and
+regulations that have gone on in ... well, private, without making much
+impact in either the media or public discussion as a whole.  Although
+academic in tone, the content of the papers is compelling enough to hold the
+interest of almost any audience.  The text is informed, and while the
+quality of writing may vary it is always clear and matter of fact.  Topics
+covered include the representational nature of data-oriented computing (and
+the trend towards "virtual worlds"), privacy design considerations in
+multimedia computing, privacy policy harmonization on an international
+scale, privacy enhancing technologies, social pressures on privacy, privacy
+law and developing policy, cryptography, and design considerations for large
+scale projects.
+
+(In any anthology the tone and value of individual pieces varies.  In this
+current work the level of consistency and quality is high.  The one
+startling and disappointing exception is the essay by David Flaherty,
+Information and Privacy Commissioner for British Columbia.  It might
+possibly be intended as an examination of a "real life" example of such an
+office.  In its current state, however, it reads more like a long and
+unconvincing advertisement for a book by one David Flaherty, and the working
+tribulations of one David Flaherty.  The whining tone and constant criticism
+of everyone else involved in his work makes it particularly unattractive.
+This paper is also least focussed on the topic, dealing with technology only
+in a minor way.)
+
+For all the general discussion about technology and privacy, it is obvious
+that few people are informed as to the realities of the topic.  This book is
+recommended as a readable, informative, and important contribution to the
+literature.
+
+copyright Robert M. Slade, 1997   BKTCHPRV.RVW   971012
+
+------------------------------
+
+Date: 1 Apr 1997 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 18" for volume 18]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 19.56 
+************************

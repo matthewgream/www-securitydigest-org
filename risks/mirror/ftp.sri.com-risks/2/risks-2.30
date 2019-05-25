@@ -1,0 +1,221 @@
+18-Mar-86 22:03:39-PST,10944;000000000000
+Mail-From: NEUMANN created at 18-Mar-86 22:01:31
+Date: Tue 18 Mar 86 22:01:31-PST
+From: RISKS FORUM    (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+Subject: RISKS-2.30
+Sender: NEUMANN@SRI-CSL.ARPA
+To: RISKS-LIST@SRI-CSL.ARPA
+
+RISKS-LIST: RISKS-FORUM Digest,  Tuesday, 18 Mar 1986  Volume 2 : Issue 30
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Classes of Errors (Scott Rose)
+  Range Safety System (David desJardins)
+  Commission vs omission (Geoffrey A. Landis)
+  Stupid Clock Software (Dave Curry)
+  Control characters in headers from eglin-vax (Martin J. Moore)
+  Money Talks (Prasanna G. Mulgaonkar)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@SRI-CSL.ARPA, Requests to RISKS-Request@SRI-CSL.ARPA.)
+(Back issues Vol i Issue j stored in SRI-CSL:<RISKS>RISKS-i.j.  Vol 1: MAXj=45)
+
+----------------------------------------------------------------------
+
+To: risks@sri-csl.arpa
+Subject: Re: Classes of Errors
+Date: 17 Mar 86 20:28:30 PST (Mon)
+From: Scott Rose  {206} 543-4226 <rose@uw-bluechip.arpa>
+
+The dichotomy between errors of commission and of omission is reminiscent of
+the tension between negative and positive control in launch-on-warning
+systems.  Clearly, negative control is a snap if one is willing to
+compromise positive control: there is perfectly reliable negative control
+whenever the system is shut off.  That is, errors of omission are not
+possible if one is willing to accept errors of commission in this case.
+Obviously, there is a continuum of possibilities between this extreme and
+the extreme of just launching without any reliable detection whatsoever;
+this is the only region of interest.  The point illustrated is that the two
+classes of error are not likely to be independently controllable; there is a
+built-in tension between them.
+
+------------------------------
+
+Date: Mon, 17 Mar 86 21:52:11 pst
+From: desj@brahms.berkeley.edu (David desJardins)
+To: sri-csl.arpa!RISKS@ucbvax.berkeley.edu
+Subject: Range Safety System
+Organization: University of California, Berkeley
+
+   I haven't seen anybody mention that there does seem to have been an
+"error of commission" in the operation of the range safety system after
+the Challenger explosion (specifically, the destruction of the SRBs).
+Of course this is a human rather than a computer error, but the result
+is the same; the system as a whole functioned less than optimally.
+
+   I understand that even NASA now admits that the SRBs were not in fact
+endangering anything at the time that they were destroyed.  But I do
+understand how there must be an almost irresistible temptation for the
+range safety officer to do the "safe" thing (in this case, destroy the
+boosters).  Perhaps this is the inevitable result of having humans making
+these decisions (error on the side of safety).
+
+   I'm not sure that anything can really be done about this, except to
+provide extensive training and an adequate supply of information on which
+to base the actual decisions.  Do the range safety officers have access
+to real-time flight-path projections and similar information that would
+allow them to make intelligent decisions?
+
+   -- David desJardins
+
+------------------------------
+
+Date:         Tue, 18 Mar 86 11:06:01 EST
+From:  ST401385%BROWNVM.BITNET@WISCVM.WISC.EDU
+To:  RISKS@SRI-CSL.ARPA
+Subject:      commission vs omission
+
+     Martin J Moore queries why the shuttle destruct system should be
+tested more extensively against errors of commission (error causes
+destruct system to activate) than against errors of omission (error
+causes destruct system to be unable to activate).  The reason is that
+for the errors of omission, the rest of the system serves as an
+additional link, ie., for an error of commission to cause disaster,
+ONLY the destruct system has to fail.  For an error of omission to cause
+disaster, the destruct system has to fail SIMULTANEOUSLY with the vehicle
+failing.   Thus, the most probable event is for an error of omission to
+gail "safe": the vehicle wouldn't have blown up if somebody wanted it to,
+but nobody wanted it to, so it didn't matter.
+                   --Geoffrey A. Landis, Brown University
+                     Reply to: ST401385%BROWNVM.BITNET@WISCVM.ARPA
+
+------------------------------
+
+Date: Tue, 18 Mar 86 08:39:44 EST
+From: davy@ee.purdue.edu (Dave Curry)
+To: risks@sri-csl.arpa
+Subject: Stupid Clock Software
+
+Here at Purdue's Engineeering Computer Network, we've had "synchronized"
+time on all our machines for some time.  For a long time, all the machines
+ran "datesync", a program which checked a central machine every N minutes
+(usually 15 or 30) and set the local machine's date and time according to
+what it got from the central host.  There were some minor sanity checks, but
+nothing fancy.  We never had too much trouble, since if the central machine
+came up with the wrong date you could get it reset before the other machines
+came and got their time information.
+
+A couple of years ago, we plugged a Heathkit (Al)Most Accurate Clock (WWV)
+into the central machine.  It used to be set off "George's Watch".  This
+made stuff somewhat better -- when the central machine came up, it got the
+time from WWV instead of "datesync"ing to another machine.  The WWV software
+was used periodically (every 15 minutes, I think) to adjust the central
+machine clock.  Except for the time when the someone unplugged the WWV clock
+and then a few days later it's battery backup freaked out, we have NEVER had
+a serious problem with the "datesync" scheme (20 machines or so).
+
+Well, with 4.3BSD UNIX you get this neat toy called the "time daemon".  It
+handles network clock synchronization off a master machine by doing various
+clock adjustments (rather than hard-setting the clock, it actually diddles
+the clock speed).  It has all these neato sanity checks and SUPPOSEDLY it
+won't let a preposterous time come in.  In fact, you even see this stuff on
+the console once in awhile that says "PREPOSTEROUS TIME ....".  Sounds neat,
+right?
+
+Well, last month all the machines on the network decided that it was 4:00pm,
+January 4, 1985.  Somehow this slipped right by all the sanity checks, and
+the master time daemon stuffed it into one machine.  Then it PROPAGATED it
+to all the other machines.  Having horribly wrong time can be fairly
+catastrophic on a UNIX system -- the "cron" utility starts up all sorts of
+programs based on the time of day and day of the week.  Including things
+like "find all files older than X and delete them".  We were less than
+amused...  Another brain-damaged feature of the time daemon -- if you set
+the date on ONE machine, it BROADCASTS that information through the time
+daemons to ALL the machines.  You better PRAY you never mistype the date!
+
+The thing that really bugs me about this stuff is that it's so simple to make
+it more bullet-proof (not fool-proof, necessarily).  For example, just plain
+IGNORE any date which changes your date by more than X unless you are
+explicitly told TAKE THIS DATE REGARDLESS.
+
+Well, this letter is already twice as long as I intended, so I'll shut up
+now...  things like this are an interesting subject though -- I wonder how
+much other software in computerdom just blindly assumes that some
+"authority" is correct.
+
+--Dave Curry
+Purdue University
+
+------------------------------
+
+Received: from eglin-vax.ARPA [...] Tue 18 Mar 86 05:11:51-PST
+Date: 0  0 00:00:00 CDT
+From: "MARTIN J. MOORE" <mooremj@eglin-vax>
+Subject: Control characters in headers from eglin-vax
+To: "risks-request" <risks-request@sri-csl>
+
+In addition to its other bugs (e.g., null timestamps), our mailer puts a
+control character at the beginning of each user's personal name.  This arises
+from keeping the personal name as a counted string but displaying it as
+ordinary text; the control character is the count byte.  Recently I have
+received messages (ranging from polite to nasty) from several RISKS readers
+telling me that my control character causes their terminals to reset, go into
+graphics mode, or do other unpleasant things.  I can't do anything about it;
+we're waiting for a fix from the vendor, and we're stuck until we get it.
+Since you edit my headers to get the date right, would you mind flushing the
+control character also?
+                                     mjm
+
+      [I took it out of the FROM field.  But this problem reminds me that
+       many of our readers may not have never heard of the old problem of
+       squirreling away control characters and escape sequences in messages
+       which when read can wreak havoc with an unsuspecting mail reader,
+       especially one with an intelligent terminal having redefinable keys.
+       If that problem has not been fixed on YOUR system, dear reader, YOU
+       may be running at great risk.  PGN]
+
+------------------------------
+
+Date: Tue 18 Mar 86 09:05:17-PST
+From: Prasanna G. Mulgaonkar <PRASANNA@SRI-AI.ARPA>
+Subject: Money Talks
+To: risks@SRI-CSL.ARPA
+
+One of the origin of risks in any system is exemplified by the discussion of
+the Canadian effort at "vocalizing" the value of a currency note. I do not
+have any information in addition to what has been posted in the RISKS digest
+(so feel free to correct me if I am wrong), but there seems to be nothing in
+the original posting [RISKS 2-28] to indicate that the aim of the device is
+to dectect/reduce forgeries. Yet, the first argument offered against it is
+the ability to fool it.
+
+My interpretation of the device is one to help a blind person "read" the
+currency note SOMETHING THAT HE CANNOT NOW DO--- not to tell him if the
+currency note is valid or a forgery! Risks of such a system come from the
+public putting more faith or expecting more from a system than its stated
+goal.
+
+As a side issue, there is no reason to think that fooling such a device
+would be any different than fooling change machines that are commonly found
+around here, which detect at least the difference between 1$ and 5$ bills.
+There is no reason why such a machine could not be connected to a voice
+synthesizer to speak out the amount. Addition of speech capability in itself
+does not increase the risks/unreliability/foolability(?)  of any system.
+
+	      --Prasanna
+
+           [Just don't trust it with anything larger than what you are
+            willing to be cheated out of.  You may have noticed that you
+            don't see change machines for $100 bills.  There are good
+            reasons.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+
+-------

@@ -1,0 +1,624 @@
+Subject: RISKS DIGEST 18.18
+
+RISKS-LIST: Risks-Forum Digest  Thursday 6 June 1996  Volume 18 : Issue 18
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+L-vis Lives in Virtual TV (PGN)
+Another Java attack (David Hopwood, Marianne Mueller)
+FORTRAN and heat exchangers (Thomas Koenig)
+Ariane 5 failure (Ralphe Neill, John Rushby, David Wood)
+Ariane Explosion - Positive Aspects (Richard Butlin)
+RAL loses satellite cluster to Ariane Five (Philip Overy)
+Accidental shooting down of F-15 revisited (Chiaki Ishikawa)
+College Paper Sued Over Quote (Paul W. Wisneskey)
+Pornography and throughput? (Andrew Koenig)
+Re: Cyber-terrorists blackmail banks and financial institutions 
+    [Identity withheld by request]
+Fourth ACM Conference on Computer and Communications Security (M.K. Reiter)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 6 Jun 96 8:06:25 PDT 
+From: "Peter G. Neumann" <neumann@chiron.csl.sri.com>
+Subject: L-vis Lives in Virtual TV
+
+L-Vis (Live Video Insertion System) allows arbitrary images to be
+superimposed on television pictures (for example, for advertising purposes)
+but without those images appearing to live audiences or on instant replays.
+The Princeton Video Image system "uses missile guidance technology and a
+customized computer" to insert electronic billboards in the viewer-perceived
+program.  The computer system recognizes familiar patterns (such as the wall
+behind home plate in a baseball stadium) and automagically inserts the
+desired logo or other graphic in the specified location.  The image is
+logically removed whenever it would in the real world be physically obscured
+from camera view (e.g., by a batter or umpire).  [Source: *San Francisco
+Chronicle*, 6 Jun 1996, p. A1 and A13.]
+
+Subliminal advertising was tried in movies back in the 1950s.  This is
+perhaps more insidious, because you can no longer tell what is real and what
+is virtual.  Added icons of virtual victuals depicting the sponsor's
+products all over the ball park -- perhaps even on the pitched balls, with
+adjustments for spin?  The label on the Cincinnati Reds' owner's favorite
+beverage transformed into the sponsor's label, or Schottzie overlayed as a
+pit bull?  Think how the TV producers could alter Chicago Bulls' Dennis
+Rodman's appearance (pet bull?), dynamically color coordinating to adapt to
+the arena surroundings.  Signs visible to the live audience (such as "Smoke
+El Hempos") could be transformed appropriately (e.g., "DON'T Smoke El
+Hempos") for the TV audience, to satisfy an emerging FCC broadcast
+regulation against tobacco.  L-vis has absolutely glorious RISKS-related
+possibilities, such as when the pattern recognizer indentifies something
+that unexpectedly happens to match the given rules.  A contradictory message
+might get added to the sponsor's message, or an obscenity might emerge as an
+inadvertent juxtaposition of symbols.  Stay tuned for more excitement
+appearing in RISKS on this one!  PGN
+
+------------------------------
+
+Date: Sun, 2 Jun 1996 07:46:20 +0000 (BST)
+From: David Hopwood <david.hopwood@lady-margaret-hall.oxford.ac.uk>
+Subject: Another Java attack
+
+There is another serious security bug in the class loading code for all
+currently available Java browsers:
+
+    Netscape up to versions 2.02 and 3.0beta4 (except Windows 3.x)
+    Oracle PowerBrowser for Win32
+    HotJava 1.0beta
+    'appletviewer' from the Java Development Kit up to version 1.0.2
+
+Sun, Netscape, and Oracle have been sent details of the problem (which is
+partly related to the ClassLoader attack found by Drew Dean, et al. in
+March).  The attack works by exploiting a design flaw in the mechanism that
+separates JVM classes into different namespaces.
+
+Using this bug, an attacker can bypass all of Java's security restrictions.
+This includes reading and writing files, and executing native code on the
+client with the same permissions as the user of the browser.
+
+The only way to avoid this problem at the moment is to disable Java. For
+more details see
+    http://ferret.lmh.ox.ac.uk/~david/java/bugs/
+
+Technical details will be posted when Sun, Netscape, and Oracle release 
+patches.
+
+David Hopwood  david.hopwood@lmh.ox.ac.uk  http://ferret.lmh.ox.ac.uk/~david/
+
+------------------------------
+
+Date: Thu, 6 Jun 1996 14:15:46 -0700
+From: mrm@doppio.Eng.Sun.COM (Marianne Mueller)
+Subject: Another Java attack
+
+David Hopwood, a Java researcher in the UK, has uncovered a new security bug
+in Java [RISKS-18.18].  In simple terms, he has been able to manipulate the
+way objects are assigned and the way they collaborate, in order to undermine
+the applet security manager.
+  
+Hopwood contacted JavaSoft directly re: the bug, and we have had a team
+working on a fix for the past 72 hours.  In addition, we are applying
+Hopwood's model to conduct a security review, to determine if there are
+other bugs that may apply.
+
+We are currently thoroughly testing the fix, and plan to release a patch as
+soon as possible.  As we complete more testing of the fix, a more detailed
+description of the bug and the fix will be added to the JavaSoft security
+FAQ at http://java.sun.com/sfaq/.
+
+JavaSoft is grateful for the internet security community's active interest
+in reviewing our code and we welcome feedback that makes Java better
+technology.
+
+------------------------------
+
+Date: 5 Jun 1996 10:55:06 +0200
+From: ig25@fg70.rz.uni-karlsruhe.de (Thomas Koenig)
+Subject: FORTRAN and heat exchangers
+
+This is an old hat, but it still keeps coming up.
+
+A co - worker of mine was doing experiments on a heat exchanger; he was also
+modelling it with a FORTRAN (77) program that ran on a PC.
+
+One dimensionless quantity used in heat-exchanger theory is the Nusselt
+number, defined as
+
+   Nu = alpha * l / lambda
+
+(alpha is the heat transfer coefficient, l a characteristic length, and
+lambda the thermal conductivity).
+
+The name of the variable he chose was NU; he did not declare this variable,
+so the FORTRAN compiler implicitly typed it as an integer.  Since the range
+of NU was between 10 and 200, this introduced a maximum error of 10% to 0.5%
+in his calculations - small enough not to be noticed immediately.  I don't
+want to make a bet on how many commercial heat-exchanger design codes make
+the same error.
+
+Related is the "5/9" problem (this expression silently evaluates to
+0 in FORTRAN and C), which often bugs translations of formulas by
+hand into FORTRAN, which makes a**(5/9) equal to 1.
+
+Some tools (notably ftnchek for FORTRAN 77) recognize this, and issue
+a warning.  Unfortunately, these tools are not in wide use in the
+scientific community.
+
+   [NUsseltov!  PGN]
+
+------------------------------
+
+Date: Thu, 6 Jun 1996 20:28:52 +0000
+From: ran@rdt.monash.edu.au (Ralphe Neill)
+Subject: Ariane 5 failure
+
+>From the "Electronic Telegraph" (UK Daily Telegraph) - June 6, 1996
+
+	  "A COMPUTER error swivelled the nozzles of Ariane 5's two
+	  giant boosters, sending Europe's most powerful rocket off
+	  course to its destruction, the European Space Agency said
+	  yesterday.  [...]
+	  "Investigators do not have to collect debris or hunt for a
+	  black box. Final analysis of what confused the guidance
+	  system will come from a study of the tapes that contain the
+	  telemetry messages that constantly reported the status of
+	  the launcher's computer and on-board systems. The data will
+	  be fed into computer simulators, run by Aerospatiale and
+	  CNES, the French space agency."
+
+Given Aerospatiale's record with the Airbus, it'll be interesting to
+see if they come up with "pilot error" as the cause! :-))
+
+  [Also commented on by "Otto J. Makela" <otto@cc.jyu.fi> and
+  Paul Ferguson <pferguso@cisco.com>.  PGN.]
+
+------------------------------
+
+Date: Wed 5 Jun 96 14:54:47-PDT
+From: John Rushby <RUSHBY@csl.sri.com>
+Subject: Ariane 5 failure
+
+>From cnn's web page www.cnn.com:
+
+  Faulty computer blamed in Ariane rocket failure
+  
+     Experts studying the moments before the Ariane-5 rocket explosion
+     say faulty computer software may be to blame for the rocket veering
+     off course. Apparently, the rocket was misfed information that made
+     it think it was not following the right path. The rocket then
+     changed direction, causing the upper part to began to break apart.
+
+------------------------------
+
+Date: Thu, 6 Jun 1996 08:46:31 +0100
+From: David Wood <david@thermoteknix.co.uk>
+Subject: The European Space Agency's little problem
+
+After the European Space Agency's little problem this week and the reports
+now filtering out that is was 'a computer error', it sounds more like a
+sensor fault or a wiring fault.  (Apparently, the computer tried to correct
+for what it thought was a disturbance to its trajectory and then set the
+thrusters full over - one big disturbance or was it positive feedback).
+
+Anyway, the ground controls hit the 'explode' button.
+
+Why O why didn't the payload have a chute. After all it must have had
+separator blasts. The 'abort and blow up' sequence could have consisted of a
+'separate and chute' the payload stage followed by blow up the rest.
+
+Didn't the early Apollo missions do this, or some other satellite launchers.
+
+Is this complacency at work here.
+
+What a risk - millions of (pounds, dollars, whatever - big in anyone's
+currency) and all that work.
+
+David Wood d.wood@thermoteknix.co.uk postmaster@thermoteknix.co.uk
+
+------------------------------
+
+Date: Wed, 05 Jun 96 15:04:00 PDT
+From: Butlin Richard <RMBUTLIN@farnboro01.datasci.co.uk>
+Subject: Ariane Explosion - Positive Aspects
+
+On 4 June 1996 the Ariane 5 prototype European space launcher veered off
+course and was destroyed by its controllers 40 seconds after blast-off
+(details from *The Guardian*, UK 5th June 1996). The launcher development
+had cost UKP5bn (pounds sterling) and the explosion destroyed a UKP500M
+four-satellite experiment to monitor the sun, and as the headline
+says..."And It Wasn't Insured".
+
+Leaving consideration of what went wrong until details emerge, it is worth
+noting aspects that were successful or at least were not as poorly managed
+as may appear. Firstly, there was no loss of life - the safety precautions
+for destruction by ground control worked as planned (the TV pictures showed
+the destruction happened within seconds of the off-course problems becoming
+visible, suggesting that either data had already indicated problems or that
+the controllers were remarkably responsive at pressing a pretty expensive
+button). Secondly, the European Space Agency is in a risk taking business,
+and the price of risk taking is occasional failure - Ariane 5 is the follow
+on to existing Ariane rockets that bring the agency's commercial arm UKP666M
+per year, with a waiting list valued at nearly UKP3.3bn. Thirdly, regarding
+the financial losses, it is nigh on impossible to obtain insurance for test
+flights, and the cargo was being flown for free (the scientists responsible
+for the experiments didn't have the budget for a paying flight, so took the
+risk of a prototype launch).
+
+It is certain that there will be lessons from the investigation, but it is 
+worth noting that, but for some risk management at the high level, it could 
+have been much worse and that risks were recognised by the participants, 
+even if not adequately protected against.
+
+Richard Butlin  Data Sciences UK  (rmbutlin@farnboro01.datasci.co.uk)
+
+------------------------------
+
+Date: Wed, 05 Jun 1996 15:18:43 +0100
+From: Philip Overy <pjo33@mailbox.rl.ac.uk>
+Subject: RAL loses satellite cluster to Ariane Five
+
+Although the uninsured satellite was carried on a free flight with known
+risks that it wouldn't work right first time, I think we now know that
+there's no such thing as a free launch.
+
+Personally I think they should bring back Blue Streak.
+
+Actually, as readers of the Airbus thread will know, I have a bias in favour
+of the European aircraft industry - whether I would travel in a capsule on
+Ariane Five is another matter, but I remember the quote about what either
+John Glenn or Alan Shepherd thought about when waiting to launch ("the
+rocket contains 5 million parts, all made by the lowest bidder" ,
+approximately) so I suppose launch vehicles will inevitably be either
+unreliable, or Bad Value For Money - so make sure your satellites are all
+reproducible by CAD/CAM. And perhaps there should be a few more CASE and
+automatic testing systems around?.
+
+So for a change the risk is, there might not be enough computerisation?
+
+Although I sign this stating where I work, this is very definitely my
+personal opinion, not RAL's!!!, however the destruction of the rocket when
+it went off course and tried to attack French Guiana made the national news
+here: I don't think my bad publicity will equal what Ariane has had from the
+press. The satellite design computer was attacked by organised hackers via
+Sweden a month or so ago - perhaps this was an indication of how the Eastern
+Bloc intends to prop up its launcher industry?. In any case, it's worth
+bearing in mind that this sort of"navigation error" could easily creep in if
+a virus or a hacker gets onto the development computers. Computer security
+that's worth money isn't only confined to banks.
+
+Phil Overy  Rutherford-Appleton Laboratory, UK
+
+------------------------------
+
+Date: Wed, 5 Jun 1996 21:35:29 +0900 (JST)
+From: Chiaki Ishikawa <ishikawa@personal-media.co.jp>
+Subject: Accidental shooting down of F-15 revisited (Re: RISKS-17.56)
+
+Some of the readers of RISKS will recall that I reported an accidental
+shooting down of an F-15 fighter plane by another F-15 during interception
+training of the Japanese air force last December.
+
+To refresh your memory, what happened was that 
+ - Two F-15 airplanes took place in an interception training.
+ - One of the planes carried live missiles.
+   The reason given was that the airplanes were routinely engaged in
+   REAL interception missions and taking missiles off takes time.
+   (BAD decision: They ought to have unload the live missiles in
+    the first place.)
+ - The main fire unit was supposed to be off (by turning off main switch).
+ - However, somehow, it got turned on. (static electricity problem?)
+ - Despite the visual cue on the main firing display console,
+   which showed that the main firing system was ON and live,
+   the pilot triggered the firing button, and launched a sidewinder
+   missile against another F-15.
+ - The F-15 was hit and destroyed. The pilot escaped by parachute. 
+
+The defense agency released its investigation report on the the
+accident.  (I think it was released last week.)  Some newspapers had
+articles following the release of the report, but they are all
+sketchy. My conclusion after reading articles is this.
+
+  - Yes, indeed, the main firing system was turned on. But, they could 
+    not determine the cause of the malfunction(!).
+
+  - The report seemed to imply that the visual cue on the firing
+    console ought to have alerted the pilot that the system was live
+    and that the pilot should have taken notice and refrained from
+    triggering the missile.
+   (I think Japanese pilots have less live missile traing than, say,
+    U.S., or Israel pilots, and so pilots may have tough time figuring 
+    out what the real operating modes are from complex computer
+    display alone. Well, this is the reason they need training in the
+    first place anyway, though.)
+
+  - (To my disbelief) It was suggested some type of plastic cap be
+    placed on the main trigger during future training missions to
+    prevent pilots from triggering(!?).
+  
+Frankly speaking, I was pretty much dismayed at the depth of of the
+investigation.  It didn't really go to the bottom of the malfunction.
+
+The same hardware/software problem might persist in other F-15s in Japan.
+(It was not clear whether same type of problems are ever reported before in
+the U.S.A.. My understanding is that F-15s used in Japan are licensed and
+manufactured in Japanese factories. But computer firing systems are often
+brought in as is from U.S.A. as black boxes.)
+
+The last low-tech solution to the prevention of triggering the missile 
+was almost comical. 
+
+Some conspiracy theorists could argue that the air force might want to hide
+some mistakes during the manufacturing of Japanese version of F-15 by
+shifting blame on the pilot. But I digress..
+
+Now that the Japanese naval boat shot down a U.S. airplane off Hawaii,
+I am interested how far the investigation of *THIS* accident goes and
+what way. I hope they nail down the cause this time around.
+
+Chiaki Ishikawa  Personal Media Corp.  Shinagawa, Tokyo, Japan 142
+ishikawa@personal-media.co.jp             
+
+------------------------------
+
+Date: Wed, 5 Jun 1996 08:01:02 -0400 (EDT)
+From: "Paul W. Wisneskey" <pwwisnes@magenta.com>
+Subject: College Paper Sued Over Quote
+
+>From the Roanoke Times (May 15th, 1996 edition):
+
+> A Virginia Tech official failed to see any humor when a student 
+> newspaper erroneously listed her job title last month as "Director of 
+> Butt Licking.  Sharon Yeagle was so unamused she filed an $850,000
+> defamation lawsuit...
+
+> ...[The paper's] editors say the phrase was part of a computer system 
+> template never meant to be published.
+
+The newspaper involved is the Collegiate Times, the student run paper of
+Virginia Polytechnic Institute and State University.  In an article on page
+A6 of the April 30th edition, the paper ran an article about seven students
+who were accepted into the Governor's Fellows Program.  In the center of the
+article was a featured quote from Sharon Yeagle, an assistant to the vice
+president of student affairs.
+
+Unfortunately for the newspaper, the template used for the layout 
+contained a "humorous" title meant to be replaced.  Somehow the quote and 
+quotee were filled in but her title was never entered and the 
+placeholder, "Director of Butt Licking" was published instead.
+
+And this is not the first time this has happened.  According to the 
+article in the Roanoke Times, in the Oct. 27th issue the phrase also 
+appeared.  However, that time an accurate quote was attributed to a false 
+name and a false title.
+
+The risks?  If you're going to have a generic template, make it generic.  
+And if something bad happens once, it's going to happen again so fix it 
+after the first occurrence.  Personally, when I'm writing and need to 
+leave something to be completed later I always enter in a string of at 
+least five question marks.   It has become second nature for me to search 
+for that string before "committing" my writing.  And when I've forgotten, 
+it has resulted in some confusion but fortunately no lawsuits.  
+
+Paul Wisneskey  pwwisnes@magenta.com  http://magenta.com/~pwwisnes/  
+
+------------------------------
+
+Date: Thu, 6 Jun 1996 09:36:09 +0400
+From: Andrew Koenig <ark@research.att.com>
+Subject: Pornography and throughput?
+
+In RISKS-18.15, Bob Morrell takes an assertion (cited from RISKS-18.13) that
+a particular ISP would triple its throughput if it accepted alt.binaries and
+parlays that into a claim that the Internet is mainly about pornography.
+Occam's Razor suggests a more general explanation: Images contain much more
+information than text, regardless of content.
+
+Here is an example.  I am writing a book.  A picture will fill the front
+cover; a smaller picture will appear on the back cover.  The publisher sent
+me a JPEG file representing the front cover; that file is 252,368 bytes.
+The file with the back-cover picture is 54,070 bytes.  Total: slightly more
+than 306,000 bytes.
+
+The entire text of the book (400 pages) is just under 695,000 bytes
+[that is, excluding the covers].
+
+In this case, a picture is worth much more than a thousand words.
+
+------------------------------
+
+Date: Wed, 05 Jun 1996
+From: [Identity withheld by request]
+Subject: Re: Cyber-terrorists blackmail banks and financial institutions
+
+>>    Personally, I view this story with marked scepticism. I have no
+>>    doubt that it is true to a certain extent, but the idea of banks
+>>    forking out ten million pounds (circa $14m [sic]) to a
+>>    blackmailer is one I find slightly unrealistic.
+
+I have in the past done computer security work for several large banking
+institutions which everyone has heard of.  In my opinion, with respect to
+the business case of choosing to pay blackmail or fix the problem, it is
+cheaper to make a few blackmail payments than to protect an entire
+multinational (or even single-nation) banking organization with strong
+information security (cryptography, of course).  This is probably true even
+with five "cyber terrorist" organizations operating, but this obviously does
+not scale well.
+
+This is, of course, disappointing (especially speaking as someone who might
+attempt to make all that money legitimately designing security systems).
+However, I don't find it surprising at all.  One blackmail payment of this
+level approximates the daily operating expenses of one of these
+organizations.  Consider this loss alone, ignoring the lost profits and
+public relations nightmare, and you might pay the blackmail, too.
+
+What these banks are surely not considering is that there are many other
+advantages to strong information security.  Some bans are considering this,
+but not quickly enough, IMHO.
+
+I've believed for a long time that the people who need security most won't
+do anything until they personally feel some intense pain.  (This is
+analogous to the multitude of people who didn't believe in regular backups
+until one of their disks crashed.)  If there was another Barings which
+folded due to inadequate security instead of financial mismanagement, maybe
+then the banking industry would do something real, and stop complaining at
+how painful security was.  An ounce of prevention, and all that.
+
+   [I have some private reports suggesting that the story in RISKS-18.17
+   is largely overhyped, but no complete denials at this time.  I hope
+   someone will eventually set the record straight.  PGN]
+
+------------------------------
+
+Date: Wed, 5 Jun 1996 12:05:43 +0100
+From: "M.K. Reiter" <mkr23@newton.cam.ac.uk>
+Subject: Fourth ACM Conference on Computer and Communications Security
+
+                       Call for Papers
+    Fourth ACM Conference on Computer and Communications Security
+                     Zurich, Switzerland
+                      April 2-4, 1997
+
+                   Sponsored by ACM SIGSAC
+
+Papers pertaining to all aspect of computer security are solicited for
+submission to the Fourth ACM Conference on Computer and Communications
+Security.  Papers may present theory, technique, applications, and practical
+experience on a variety of topics including access control, accounting and
+audit, applied cryptography and cryptographic protocols, authentication and
+authorization, data/system integrity, electronic commerce, intrusion
+detection, key management, privacy, protection of software and intellectual
+property, run-time system security, secure networking, secure operating
+systems, security architectures and models, security management, security of
+distributed systems and databases, security protocols, and smart-cards and
+secure PDAs.
+
+Instruction for authors: Papers should be of high quality, original,
+unpublished, and not submitted elsewhere.  Submit six (6) copies of your
+paper (not exceeding 7500 words or 25 pages) to Clifford Neuman at the
+address below in a form suitable for anonymous review (no author names,
+affiliations, obvious references), with a cover letter indicating that your
+paper is a submission for the ACM Conference on Computer and Communications
+Security, and listing the authors names, email and postal addresses, phone
+and fax numbers, and identifying the contact author.  Electronic, faxed, or
+late submissions will be rejected without review.  Send also via email
+bcn@isi.edu an online plain ASCII text version of your paper title,
+abstract, and authors and contact information.  Where possible all further
+communications to authors will be via email.
+
+Paper submission: September 2, 1996
+Acceptance decision: October 21, 1996
+Final papers due: December 9, 1996
+
+Steering Committee Chair:
+Ravi Sandhu, George Mason University, USA
+
+General Chairs:
+Richard Graveman, Bellcore, USA
+Phil Janson, IBM Zurich Research Laboratory, Switzerland
+
+Program chairs:
+
+Clifford Neuman (4th ACM CCS)
+University of Southern California
+Information Sciences Institute
+4676 Admiralty Way
+Marina del Rey, California 90292-6695
+U.S.A.
+Tel: +1 (310) 822-1511
+Fax: +1 (310) 823-6714
+Email: bcn@isi.edu
+
+Li Gong
+SRI International
+Computer Science Laboratory
+333 Ravenswood Avenue
+Menlo Park, California 94025, U.S.A.
+Email: gong@csl.sri.com
+
+Awards chair: Jacques Stern, ENS/DMI, France
+Publication chair: Tsutomu Matsumoto, Yokohama National University, Japan
+Publicity chair: Michael Reiter, AT&T Research, USA
+
+Program committee members:
+
+Martin Abadi, DEC Systems Research Center
+Carlisle Adams, Bell Northern Research
+Hugo Krawczyk, IBM T.J. Watson Research Center
+Arjen Lenstra, Bellcore
+Mark Lomas, University of Cambridge
+Wenbo Mao, HP Labs, Bristol, U.K.
+Tsutomu Matsumoto, Yokohama National University, Japan
+Xiaolei Qian, SRI International
+Michael Reiter, AT&T Research
+Avi Rubin, Bellcore
+Karen Sollins, MIT
+Stuart Stubblebine, AT&T Research
+Jacques Stern, ENS/DMI, France
+Gene Tsudik, USC Information Sciences Institute
+Vijay Varadharajan, University of Western Sydney
+Michael Waidner, IBM Zurich Research Laboratory
+Raphael Yahalom, Hebrew University, Israel
+Moti Yung, IBM T.J. Watson Research Center
+
+For more information, access http://www.csl.sri.com/acm-ccs/ccs.html.
+
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.18 
+************************

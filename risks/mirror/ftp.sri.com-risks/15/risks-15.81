@@ -1,0 +1,590 @@
+Subject: RISKS DIGEST 15.81
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Friday 29 April 1994  Volume 15 : Issue 81
+
+         FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for information on RISKS (comp.risks) *****
+
+  Contents:
+Boot Prom commits Denial of Service Attack (Dave Wortman)
+Cyrix 486 CPU Bug (Dave Methvin)
+Call Identifier (tm) forgets list of received calls (Robert Chesler)
+Re: Unwanted FAX received via voicemail (Declan A. Rieb)
+Re: Stress Analysis of a Software Project  (Tom Davis via Joan Eslinger,
+    A. Padgett Peterson)
+Inspecting Critical Software (David Parnas via Jan Arsenault)
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+----------------------------------------------------------------------
+
+Date: 	Fri, 29 Apr 1994 12:52:08 -0400
+From: Dave Wortman <dw@pdp1.sys.toronto.edu>
+Subject: Boot Prom commits Denial of Service Attack
+
+A major power outage here on Tuesday demonstrated the risks of 
+excessive automation and administrative convenience.
+
+Our computing environment consists of a heterogeneous network of
+Sun, Dec and IBM workstations and related fileservers.
+When a Sun workstation boots up, a hardware prom issues a rarp request 
+to establish the workstations network address and to identify a server 
+that can provide it with a bootprogram and then the Unix kernel.
+The boot prom uses the trivial file transfer protocol (tftp)
+to request the boot program.  It initially issues a tftp request
+to the server it has identified, but if that tftp request times 
+out then it broadcasts a tftp request on its local network
+looking for any server that can provide it with a bootprogram.
+It keeps repeating this process until it receives a boot program.
+One the Suns the prom has no builtin knowledge of its network address 
+or the network address of the server.  
+There are some good reasons for keeping the boot prom ignorant of
+its network environment and using a broadcast protocol, including 
+the administrative convenience of not having to do anything to 
+workstations when the server changes and providing a degree of robustness 
+in a multi-server environment.
+
+In recent years there have been security problems related to the
+tftp protocol so in our environment the Dec workstations run security 
+monitoring software that keeps a log of failed tftp attempts to help 
+detect potential intruders.  The security software writes a log file
+of failed tftp requests and also puts a message on the affected
+machines console.
+
+What got us into trouble after the power outage was that the Sun workstations
+came back online but the corresponding Sun servers came up in a wedged 
+state in which they responded to the initial rarp request but then failed
+to respond to any workstations tftp request for a boot program.
+After the initial tftp request to the Sun server timed out, our network 
+was flooded with tftp requests from many Sun workstations all trying to
+find any server that could boot them.
+
+In the meantime the Dec workstations on the network had rebooted
+successfully and were being used by a number of professors and students.
+However, these machines soon became unusable due to the effort required
+to deal with the flood of tftp requests.  The security monitoring
+software contributed to this problem by writing messages to each 
+machines console window (ignorable but consumptive of resources) and
+by almost filling up a critical file system with its log files.
+If this filesystem had filled up, the machines would have been totally
+unusable.  Even if we hadn't been running the security monitoring
+software, usability of these workstations would have been impaired
+by the handling of the tftp requests.
+
+There are several things that could have been done better:
+- the question of whether falling back to a broadcast protocol for  
+  booting is the right approach should be reexamined.  On most systems  
+  the set of servers that could successfully respond to a boot request is
+  a) small, b) well-known, and c) changes very slowly over time.
+- the boot proms should use some form of backoff strategy when
+  the tftp  requests consistently fail to avoid overloading the 
+  network.
+- our security logging software needs to be more robust in dealing
+  with its log files.  Waiting until a log file write fails due
+  to a full filesystem is too late if the full file system will
+  cause other processes to crash.  This is tricky since we
+  don't want a introduce a mechanism that would allow an intruder 
+  to overwhelm the security software with failed attempts and then 
+  proceed to do dirty work once logging has been suspended due to log
+  file overflow.
+
+A curious legal question comes to mind:  could the manufacturer
+or the proprietor of the workstation containing boot prom be held 
+guilty of a "denial of service attack" on our Dec workstations?  
+If an individual had issued all of those tftp requests we certainly 
+would be considering the question.
+
+------------------------------
+
+Date: Fri, 29 Apr 94 07:40 EST
+From: Dave Methvin <0003122224@mcimail.com>
+Subject: Cyrix 486 CPU Bug
+
+I'm an editor at Windows Magazine.  In our May issue I wrote a news
+story reporting a bug in the Cyrix Cx486DX CPU.  The Cyrix Cx486DX was
+designed to be completely software-compatible with Intel's i486DX
+processor.  However, Ed Curry of Lone Star Evaluation Labs (LSEL) found
+a bug relating to floating-point operations while doing some in-depth
+compatibility testing.  Cyrix shipped thousands of chips with this bug
+before April 1994, but has now fixed the problem.
+
+The bug occurs when a register load instruction (such as MOV reg,mem)
+is followed by an instruction that clears the floating-point status
+register (FCLEX).  If the memory location being referenced is in the
+CPU's internal cache, the MOV instruction works fine.  If, however, the
+MOV requires an external bus cycle, executing the FCLEX instruction
+aborts the cycle.  As a result, the register is not loaded properly.
+
+The risk here is that someone may run software on the Cx486DX
+that generates incorrect results where an i486DX would work fine.
+The Cyrix position is that this is a minor bug and that we (Windows
+Magazine and LSEL) are making too much of it.  However, LSEL has seen
+the bug in their test code compiled under OS/2 and Windows NT.  The
+test code performs typical engineering and scientific calculations, so
+it's not contrived or artificial.  We have not found the problem in
+any shrink-wrapped application.  Most MS-DOS and Microsoft Windows
+insert a FWAIT instruction before any floating-point instruction, so
+they generally won't exhibit the problem. 
+
+What does the Risks readership think? Are we making too much of this?
+Is anyone out there using PC with a Cx486DX?
+
+------------------------------
+
+Date: Fri, 29 Apr 94 13:28:10 -0400
+From: rob@chesler.absol.com (Robert Chesler)
+Subject: Call Identifier (tm) forgets list of received calls
+
+I accepted a no-installation-cost trial of Caller ID and found
+it somewhat useful for correlating call times with answering machine
+messages, but found 90% of my received calls were out of my area
+and thus had no number actually displayed, only the date and time.
+
+Last night I noticed that the box had cleared out its memory.
+No call had been received on that line between the time I had last
+checked it and the time I noticed it with an empty list.
+
+The risk here is that if some message was sent to the box through
+the phone line to clear its list, then the box would be less useful
+for someone using the box to catch a crank caller or even log
+when important calls or messages were received.  If the caller
+ID protocol includes such a message, then such a message could
+undoubtedly be faked if someone got physical access to a residence's
+network interface or telephone company signalling.
+
+I'm sure that boxes more advanced than the promotional box that
+was given to me might have precautions or a printed log, but I would
+imagine that the promotional boxes are widely used.
+
+--Robert
+
+------------------------------
+
+Date: Tue, 26 Apr 1994 15:09:57 -0600 (MDT)
+From: "Declan A. Rieb" <darieb@sandia.gov>
+Subject: Unwanted FAX received via voicemail
+
+The voicemail system I use allows incoming FAXs to be saved and handled as 
+messages. Upon receipt, the system notifies the user that there is an 
+incoming fax message, and you can even query for the number of pages. 
+When a message exists in the "voice mailbox", one can have the system 
+forward it to a real FAX machine (either a preselected "primary" FAX or 
+any other phone number.) Requesting such a forward places the FAX message 
+into a queue, meaning it may actually be sent at some future time.
+
+Last week I received a 5-page FAX message. It did not come from a local 
+caller (one on the same telephone switch.) All I knew was that it was 
+five pages. I sent it off to my primary printer, and an hour or so later 
+went to pick it up. No FAX for me there. I tried again. No FAX for me. 
+FAX machine broken? After a day of this, I sent the FAX to a machine and 
+promptly went to watch. Out came a list of imported tequila prices, and 
+several blank pages! I recalled seeing several such lists at the other 
+FAX machines...But none were addressed to me! Surely they weren't 
+mine...but a closer inspection showed that the FAX phone number listed 
+was indeed mine (perhaps a missing area code?)
+
+Whoa! that kind of business is illegal here! And I've been spreading the 
+things around the area. At least I didn't have my name on them, but the 
+phone number was mine!
+
+Welcome to the wonderful world of hi-tech. It used to be that FAX 
+machines were relatively rare, and "dialing" a wrong number would mean 
+the FAX doesn't get sent. Now, EVERY phone here can receive a FAX, and we 
+can send multiple copies out without knowing what it is we sent! Yes, 
+I'll be a bit more careful in the future.
+
+   [A surprising number of readers chided me for NOT having
+   appended a "You mean a FAX PAS?  PGN" appendum.  THANKS!  PGN]
+
+------------------------------
+
+Date: Fri, 29 Apr 1994 19:35:15 GMT
+From: wombat@kilimanjaro.engr.sgi.com (Joan Eslinger)
+Subject: Re: Stress Analysis of a Software Project (Davis/Leichter R-15.80)
+
+The memo Jerry Leichter posted was an actual Silicon Graphics memo.
+However, life for Silicon Graphics and Tom Davis is not quite so bleak
+as some might think. Tom Davis wrote the original memo to point out
+problems and ask everyone to help fix them.
+
+It was very effective. I installed a beta version of the new 5.2 release on my
+Indy in January, and only rebooted the machine a couple of weeks ago because I
+was moving to another building. Sure, I had to add another swap file
+on-the-fly about once a month because my emacs processes grew so large :-),
+but the system did not crash. And performance is quite snappy. "Watch the
+skies."
+
+Since the memo has been popping up all over the net, Tom has written a reply
+to it, included below. There isn't really a RISKS tie-in, unless you count the
+risk of having only the "bad" half of a story get wide distribution.
+
+Joan Eslinger / Silicon Graphics / wombat@sgi.com
+
+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+
+I am the author of the original memo below, which was intended for
+internal Silicon Graphics use only, and was not for anyone outside the
+company.  But since it has been leaked to the net, and is beginning to
+be used by competitor's sales people, I feel a response is required.
+
+I don't believe that these problems are unique to Silicon Graphics.
+>From discussions with friends who are insiders in many different
+companies, I am certain that similar memos could be written about the
+software of each of our competitors.
+
+What I like about working for Silicon Graphics is that at least here,
+something is being done about it -- I worked for companies in the past
+where the response would have been to stick our heads in the sand in
+hopes that the problems would just fix themselves.  If I hadn't thought
+that the memo would catalyze some change here, I wouldn't have written
+it.
+
+The details appear as comments to my original article below.  Luckily,
+the article is 6 months old, and we have had a chance to make some
+significant progress.
+
+Typically, what happens is that each faster generation of hardware is
+followed by software that more than compensates for the increased
+speed, but as a result of this memo, Silicon Graphics has been able to
+skip one of the slowing software cycles, making, instead, a performance
+and quality based release.  The next release is going to be similar,
+and in the meantime, we get an extra hardware boost from the faster
+R4600 processors.
+
+  -- Tom Davis
+     Silicon Graphics
+
+
+General comments:
+
+As a fairly direct result of this memo, SGI decided not to continue
+"business as usual" in software development.  The approach we took to
+the problem was the following:
+
+With the 4.0.5abcdefghi... fiasco, and the fact that the 5.* releases
+were still for specific machines, our developers were desperate for an
+all-platforms release.  We decided to make such a release relatively
+soon -- and 5.2 actually MRed in February.  The 5.2 release had two
+goals -- primarily, all-platform, and given that it went out in
+February, do as much performance-tuning and bug-fixing as time allowed.
+
+In that period, the performance on 16MB systems was essentially doubled,
+which improved performance on larger systems as well, but to a lesser
+degree.  Significant numbers of bugs were fixed as well.
+
+Some people hoped that a few quick fixes would bring back all the
+performance in 5.2, but a little investigation indicated that was a
+list of things to be done, and that another quality release would be
+required.
+
+The 5.3 release, not officially scheduled, but which should be MRed
+around October or November is that quality (performance and bug-fix)
+release.  We'll add a few new features, but they will be the exception
+rather than the rule.  The longer time before the 5.3 release should
+give us time to do a thorough job of solving our problems.
+
+For 5.3, there's also time to set up solid performance and bug-fixing
+goals, and these are already being discussed.
+
+And most important -- the worst problems were with 16 MB systems that
+paged their brains out.  They are better now, but not great.  But we
+don't sell them.  One of the 5.3 goals is to improve performance (or
+reduce sizes enough) that it will be acceptable on a 16 MB machine.
+
+The kernel memory leaks are all fixed, and many of the important
+programs have been reduced in size.  For 5.2, 5 or 6 of our most
+heavily-used programs were subjected to close scrutiny to find out where
+the performance went, and many were significantly improved.
+
+A lot more work is planned for 5.3 to reduce the sizes of the
+executables.
+
+Work is continuing on the DSOs to split them up properly so that they
+don't all have to be loaded, and to improve their performance and
+start-up time.  We're working to make "quick-starting" happen more
+automatically.
+
+>     PERFORMANCE UPDATE
+
+I don't think it's unusual to do benchmarks with non-standard compiler
+settings.  Both we and our competition have done so for a long time.  We
+do ship all the libraries, et cetera, necessary to duplicate these
+results so customers for whom speed is the only objective can pay the
+cost of larger executables in exchange for the added speed.
+
+Unfortunately, I can't re-run some of these tests, but 5.2 is definitely
+better than 5.1.
+
+
+I think the 5.1 fiasco has caused a lot of our management to see the
+light, and in conversations with people at all levels, it's clear that
+nobody wants to see anything like it happen again.  The 5.2 and future
+5.3 releases seem to be steps in the right direction.
+
+But there's still a lot of work to do, and we in engineering can use
+every minute between now and the 5.3 release to improve things.
+
+The 5.3 release is being planned with reasonable beta-cycles, and with
+enough time between now and "code freeze" to make significant
+improvements.
+
+> Management Issues:
+
+I think this sort of disconnect is not too unusual -- there is always
+enormous pressure to announce a very low entry price-point, and the
+16MB system provided that.  Everybody does this with the full knowledge
+that on a minimum system, you won't be able to run many interesting
+applications, and almost everyone will have to purchase a bit more
+memory.  It's just that in the case of Indy, there were so many new
+features that the proposed minimal system was embarrassingly slow.
+
+The "fix" is simply not to ship the 16MB systems which will insure that
+everyone will get a very usable machine.  All we really lose is our low
+entry price point, and the gain is that we won't have to deal with the
+few irate customers who bought a minimal system.
+
+Although some of our performance loss is due to more complicated
+features, the vast majority is due to the fact that more memory is
+required, and without it, the systems page with a consequent dramatic
+reduction in performance.  The 4.0.X -> 5.X change on our large machines
+was measurable, but not nearly so noticeable as on the smaller ones.
+
+
+We're still not completely there (as far as I can tell) with respect to
+better software management.  The good thing is that many of our
+higher-level managers are acutely aware of the problem now -- Forest
+Baskett and Tom Jermoluk are extremely concerned, for example.
+
+It's too bad it took a shock like 5.1 to make everybody take notice, but
+at least they did, and we're doing the right sorts of things to correct it.
+
+   [Moderator deleted the entire interstiated message from RISKS-15.80.  PGN]
+
+------------------------------
+
+Date: Fri, 29 Apr 94 08:22:09 -0400
+From: padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Re: Stress Analysis of a Software Project (Davis/Leichter R-15.80)
+
+For years, people have been postulating projects that are too complicated to
+comprehend and we have seen several examples of what happens when this occurs.
+IMHO the only solution is to separate functions into stand-alones that utilize
+a common and understandable foundation and which are understandable.
+
+Where many have felt that a single integrated system is best, I have often
+been called in to "put out fires" and the first thing I do is to separate the
+problem into "atoms", the least divisible pieces. It is astounding how often
+problems that cannot be seen when tightly wrapped in a package becomes obvious
+when viewed by itself. Sometimes you just can't see the tree for the forest.
+
+> Some people claim that we need new software debugging tools to look at
+> the problem, and that may be true, but it's not a short-term solution,
+> and it runs the risk of causing us to spend all our time designing
+> performance measurement tools, rather than fixing performance.
+
+This is disturbing. Unless you have the tools to properly examine a system you
+cannot tell what is really going on and the reccuring theme of the memo seems
+to be that no-one knows. Without the proper tools, the job will never be
+completed.
+
+Again I can only speak from personal experience but cannot count the times 
+when called in to fix a problem that supervisors have gotten very antsy 
+waiting for something to happen while the envelope is being defined. Have
+found that unless the system is understood, it *can't* be fixed (see "little
+silver hammer" syndrome).
+
+The problem with the engineers also appears symptomatic. Engineers are
+supremely good at taking a concept and making it work. They are not generally
+good at determining that a concept is flawed in the first place, instead often
+they will continue to work as if the concept were correct and they were just
+lacking in skill. This leads to precisely the morale problems described.
+
+The major problem with engineers is that they accomplish the impossible
+so often that the marketeers come to expect it from them.
+
+The real problem seems to be simply "no-one in charge" and is all too common
+in large organizations. History is rife with examples of companies, states,
+countries that became too concentrated at the top and fell victim to the
+huns/vandals/Standard Oil as they rose to power. "Think of it as Evolution in
+Action" - Jerry Pournelle
+
+Padgett 
+
+------------------------------
+
+Date: Tue, 26 Apr 94 20:43:34 EDT
+From: arsenau@mcmail.cis.mcmaster.ca
+Subject: Inspecting Critical Software, a course by David Parnas
+
+  Inspecting Critical Software: An Intensive 3-day Course offered by
+  The Faculty of Engineering, McMaster University, Hamilton, Ontario, Canada 
+     
+  Taught by Prof. David Lorge Parnas, with the support of TRIO
+     
+  June 7, 8, 9, 1994
+     
+1.  Background
+
+    Software is critical to the operation of modern companies and is
+frequently a key component of modern products.  Some pieces of software
+are particularly critical; if they are not correct, the system will have
+serious failures.  Standard methods of software inspection are not
+systematic. This course teaches a procedure for software inspection that
+is based on a sound mathematical model and can be carried out
+systematically by large groups.
+    The software inspection procedure combines methods used at IBM, work
+originally done at the U.S. Naval Reserve Laboratory for the A-7E
+aircraft, and procedures applied to the inspection of software at the
+Darlington Nuclear Power Generating Station.  The method has been refined
+and enhanced by the Software Engineering Research Group at McMaster
+University's Communication Research Laboratory.  It can be applied to
+software written in any imperative programming language.
+
+2.  What Will Participants Learn?
+
+    Participants in the course should return to their workplace with an
+understanding of the way that mathematics can be used to document and
+analyze programs.  They will also return with documentation of a piece of
+their employer's code that can be used to explain the work to others.
+
+3.  Programme
+
+Day 1  Predicate Logic and Program-Functions/Relations
+
+1)  Overview and Case Study
+    A discussion of previous applications of the method.
+2)  Predicate Logic
+    The inspection method is based on predicate logic, which will be
+    reviewed in this section.
+3)  Tabular Expressions
+    This session will be devoted to the writing of readable
+    predicates using two-dimensional notations rather than classical
+    one-dimensional expressions.  There will be numerous examples. 
+    Participants will be taught to read and write tabular expressions.
+4)  Describing Program Function
+    This session will be devoted to writing program descriptions
+    using predicates and tables.
+
+Day 2  Inspection of Dijkstra's Dutch National Flag Program
+
+    Participants will be given a copy of E.W. Dijkstra's explanation of a
+program along with several sample programs.  They will be asked to apply
+the inspection method and approve or reject each program.  The instructor
+and some assistants will be available as consultants during this process.
+
+Day 3  Morning:  Inspection of a "Real" Program
+
+    Working in small groups, the participants will take a section of a
+program from their company and inspect it using the method learned so
+far, producing documentation as they go.  Day 3 Afternoon: Report on the
+Inspection Results, Discussion of Testing
+    The first part of the afternoon will be devoted to a series of
+reports by the participants on the results of their efforts in the
+morning.  The remainder of the afternoon will be devoted to a discussion
+of the interaction between testing and inspection.  We treat testing, not
+as an alternative to inspection, but as complementary to inspection.  We
+discuss the way that the documentation produced in the inspection process
+can be used in the testing process.
+
+4.  Learning By Doing
+
+    The course is language-independent.  In fact, on the third day,
+participants will inspect code written in any language that they use in
+the workplace.  This course presents an approach to active design reviews
+that has the reviewers writing precise documentation about the program
+and explaining their documentation to an audience of other reviewers.  A
+significant part of each day will be spent using the ideas that have been
+presented to determine whether or not programs do what they are supposed
+to do.  On the last day, participants will inspect a small program that
+they brought with them from their company.  Participants should leave the
+course with improved ability to inspect software.
+
+5.  Who Should Attend?
+
+    Participants should be experienced programmers and not afraid of
+learning a little mathematics.  The mathematical basis for the method is
+classical and takes up only a few hours in the course.  However, it is
+fundamental to understanding the method.  It is expected that the
+participants will be used to reading code written by others and it will
+be helpful if they can read Pascal.
+
+6.  What Should You Bring With You?
+
+    For the exercise on the third day, each participant should bring a
+small program, perhaps 50 lines that are critical to some project.  It
+need not be "mature" code, but it should compile and have survived some
+testing or use.  If there are several participants from the same company,
+they may work in small groups on slightly larger programs.  You may want
+to bring a reference manual and some conventional documentation about the
+program with you.  It will help if one of the participants is familiar
+with the program.
+
+7.  The Instructor
+
+    The course will be taught by Prof. David L. Parnas, an
+internationally recognized expert on Software Engineering.  Dr.  Parnas
+initiated and led the U.S. Navy's Software Cost Reduction Project, where
+the tabular notation was first used, advised the AECB on the use of these
+methods at Darlington, worked with IBM's Federal Systems Division, leads
+the Software Engineering Research Group at McMaster University and is a
+Project Leader for the Telecommunications Research Institute of Ontario.
+
+Information about costs, registration, etc. can be obtained from:  
+Jan Arsenault, Faculty of Engineering, 
+JHE-201A, McMaster University, 
+1280 Main Street West,
+Hamilton, ON, Canada, L8S 4L7. 
+
+Telephone: 905 525 9140 x 24910
+email: arsenau@mcmail.cis.mcmaster.ca
+
+------------------------------
+
+Date: 15 April 1994 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup on your system, if possible
+ and convenient for you.  BITNET folks may use a LISTSERV (e.g., LISTSERV@UGA)
+ with SUBSCRIBE RISKS or UNSUBSCRIBE RISKS as needed.  Users on US Military 
+ and Government machines should contact <risks-request@pica.army.mil> (Dennis 
+ Rears).  UK subscribers please contact <Lindsay.Marshall@newcastle.ac.uk>.
+ Local redistribution services are provided at many other sites as well.  
+ Check FIRST with your local system or netnews wizards.  If that does not
+ work, send requests to <risks-request@csl.sri.com> (not automated).  
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+ ARCHIVES: "ftp crvax.sri.com<CR>login anonymous<CR>YourName<CR> cd risks:<CR>
+ Issue j of volume 15 is in that directory: "get risks-15.j<CR>".  For issues
+ of earlier volumes, "get [.i]risks-i.j<CR>" (where i=1 to 14, j always TWO 
+ digits) for Vol i Issue j.  Vol i summaries in j=00.  "dir" (or "dir [.i]") 
+ lists (sub)directory; "bye<CR>" logs out.  CRVAX.SRI.COM = [128.18.30.65];
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ WAIS and bitftp@pucc.Princeton.EDU are alternative repositories.
+ risks-15.75 gives WAIS info.  
+
+ FAX: ONLY IF YOU CANNOT GET RISKS ON-LINE, you may be interested in receiving 
+ it via fax; phone +1 (818) 225-2800, or fax +1 (818) 225-7203 for info
+ regarding fax delivery.  PLEASE DO NOT USE THOSE NUMBERS FOR GENERAL 
+ RISKS COMMUNICATIONS; as a last resort you may try phone PGN at 
+ +1 (415) 859-2375 if you cannot E-mail risks-request@CSL.SRI.COM .
+
+------------------------------
+
+End of RISKS-FORUM Digest 15.81
+************************

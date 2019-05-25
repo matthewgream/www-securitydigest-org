@@ -1,0 +1,243 @@
+VIRUS-L Digest             Tuesday, 16 May 1989        Volume 2 : Issue 117
+ 
+Today's Topics:
+re: PC Virus List
+Re: Macintosh virus query
+blown floppy disk (PC)
+Re: Virus-proof PC
+re: The only good virus is a dead one
+Virus in data files (MAC)
+ 
+---------------------------------------------------------------------------
+ 
+Date:    16 May 1989, 13:05:24 EDT
+From:    David M. Chess  <CHESS@YKTVMV.BITNET>
+Subject: re: PC Virus List
+ 
+Nice list!   A couple of notes:
+ 
+- - I suspect that the "Vienna" (number 5, characteristic size 648)
+  is exectly the same virus as the "DOS-62" (number 10).  It sounds
+  that way from Jim Goodwin's list, anyway; the sample that I have
+  grows COM files by 648 bytes (like the "Vienna") and overlays
+  victims with reboot code one time in eight (like the "DOS-62").
+  So I'd suggest that they're the same code, unless there's
+  evidence otherwise.
+ 
+- - There are in fact two variants of the "DataCrime"; one makes
+  files bigger by 1280 bytes, and one makes them bigger by 1168.
+  They seem to be functionally identical; the differences are
+  just slightly tighter coding, and not saving some uninitialized
+  scratch areas.
+ 
+I'd be interested in more info on the "Nichols"; I've seen the
+name here and there, but never a real description.
+ 
+I'd also be interested in a complete set of descriptions of
+all these, of course!   *8)
+ 
+DC
+ 
+------------------------------
+ 
+Date: Tue, 16 May 89 10:42:04 PDT
+From: dplatt@coherent.com (Dave Platt)
+Subject: Re: Macintosh virus query
+ 
+> Has there ever been a macintosh virus than is part of a document? The
+> macintosh has both data and resource forks. It would be interesting to
+> create a macwrite or MS-word document with the document in the data
+> fork and the virus as a code resource that is preloaded to override an
+> application code resource (the printing code comes to mind). This
+> would allow documents as well as applications to transfer the virus.
+ 
+I've never heard of a virus that could successfully insert itself into
+a Mac document, and have the resulting document be infectious.
+ 
+There's a reason for this.  Many Mac applications don't use the
+resource fork of their document files at all... all of the significant
+information is stored in the data fork.  Apple recommends against
+attempting to treat the Resource Manager as a database package (it
+bogs down, badly, if you try to load too many resources into a single
+file).
+ 
+Some applications do store a limited amount of information in the
+resource fork of their documents.  Many text editors, for example,
+store font/point-size/tab-width information in the resource fork;
+there are some resource-types that have acquired "conventional uses"
+of this sort.
+ 
+Opening the data fork of an file does _not_ automatically open the
+resource fork and make the resources available... this must be done
+separately.  In my experience, applications that store information in
+the resource forks of their documents usually don't keep this fork
+open for a long period of time... the resource forks are usually
+opened only for the amount of time that's needed to load the desired
+resources into memory, and are then closed.  When the resource fork is
+closed, any and all resources that had been loaded from the resource
+file will be purged, unless someone has issued a DetachResource() call
+to unlink them from the file.
+ 
+Therefore, there's only a very narrow window in which a virus-resource
+in a document-file's resource fork could be loaded "by mistake".  The
+virus would have to masquerade as a portion of code that the
+application would execute _before_ the document file's resource fork
+was closed...  otherwise, the viral resource would be purged before it
+could ever be executed.
+ 
+This is certainly possible... but I believe that the "window of
+vulnerability" is so small, and so application-specific, that a
+general-attack virus could not propagate itself effectively in this
+manner.
+ 
+Also, most of the free and commercial virus-blocking INITs
+(GateKeeper, Vaccine, et al) would detect the attempt of a virus to
+write a CODE resource into a document, and would raise the alarm.
+ 
+I do know of one Mac virus (ANTI) which can infest nonexecutable
+resource files (such as the Desktop file, the Scrapbook, and so
+forth), and into documents whose resource-forks are used by the
+applications that create them.  ANTI patches itself into the Resource
+Manager and injects a copy of its INIT into any resource-file that's
+opened by any application.  However, nonexecutable files containing
+this INIT are not themselves infectious... the INIT is never executed.
+ 
+Dave Platt    FIDONET:  Dave Platt on 1:204/444    VOICE: (415) 493-8805
+UUCP: ...!{ames,sun,uunet}!coherent!dplatt  DOMAIN: dplatt@coherent.com
+INTERNET:   coherent!dplatt@ames.arpa,  ...@uunet.uu.net
+USNAIL: Coherent Thought Inc. 3350 West Bayshore #205 Palo Alto CA 94303
+ 
+------------------------------
+ 
+Date:    Tue, 16 May 89 13:40:55 EDT
+From:    "W. K. (Bill) Gorman" <34AEJ7D@CMUVM.BITNET>
+Subject: blown floppy disk (PC)
+ 
+     I have a 5-1/4" floppy disk under examination for possible virus
+damage, and have run into an interesting problem. The disk acts like
+it is totally unformatted; neither CHKDSK, RECOVER, the Norton stuff,
+or anything else seems to be able to access it. The result of this is
+that I cannot see anything about what has happened to the disk. What I
+need is a good pd or shareware sector editor that can get at the
+absolute sectors w/o trying to read the directory (or else a
+reasonably cheap commercial one), although I am not sure that will do
+any good, since I cannot write to the disk (no, it is not write
+protected) either.
+     Perhaps a little history is in order. The disk was obtained from
+a student employee in one of our administrative offices. My initial
+response was to suspect that the disk had been mistreated in some way,
+resulting in a total erasure of all data and format information. Both
+the student and his boss, however, insist that the failure occurred
+spontaneously while using the disk, and that it has happened more than
+once. Suspicious, IMHO. I could format the disk and probably make it
+useful again, but that would defeat the purpose of my investigations.
+I repeat, I am *not* certain that this is a virus case, but I
+definitely would like to find out what happened to this disk (and
+recover the student's files, just to be a nice guy (!) in the
+process). Since we are currently awash in nVIR, SCORES, and
+gawd-knows-what-else, I think an investigation of this problem is a
+reasonable approach.
+     Suggestions? Comments? Flames? Nasty notes?  :-)
+ 
+.........................................................................
+|W. K. "Bill" Gorman                              Foust Hall # 5        |
+|PROFS System Administrator   E-Mail & Message    Computer Services     |
+|Central Michigan University Encryption/Security  Mt. Pleasant, MI 48859|
+|34AEJ7D@CMUVM.BITNET       Virus Countermeasures (517) 774-3183        |
+|_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_|
+These comments reflect personal opinions held at the time this was written.
+Copyright (C) 1989 W. K. Gorman. All rights reserved.
+ 
+------------------------------
+ 
+Date:    16 May 89 14:20:00 EST
+From:    "BARRY NEWTON" <newton@enh.nist.gov>
+Subject: Re: Virus-proof PC
+ 
+The only ways I can imagine to implement a "virus-proof" PC involve
+marking executables with some sort of authorization signature or
+placing them on a list of authorized programs.  Either activity is
+probably too much overhead for most organizations.
+ 
+If the authorization process is centrally controlled, users will
+revolt and defeat it.  If it is not centrally controlled, it would be
+totally useless.
+ 
+Barry Newton
+National Institute of Standards and
+Technology (Which is neither aware of nor interested
+in my opinions expressed here)
+ 
+------------------------------
+ 
+Date:    Tue, 16 May 89 20:05:02 BST
+From:    Neil Youngman <nyo@CS.EXETER.AC.UK>
+Subject: re: The only good virus is a dead one
+ 
+>From:    well!odawa@lll-winken.llnl.gov (Michael Odawa)
+>In VIRUS-L 2-112, Allan Pratt mentioned the possibility of back door
+>neutralizers and other methods of disarming a potentially "beneficial"
+>virus which might unintentionally run amuck, contending,
+>
+>> you can deliberately code in an easy way to kill the thing, such as the
+>> presence of a file with a certain name, or a certain magic number in a
+>> cookie someplace in RAM.
+ 
+To add my few pence worth:
+ 
+1: How many of these things are there going to be? I could need
+hundreds of "antibody" files or magic numbers in RAM locations that
+might have other uses.
+ 
+2. What if there's a bug in the self-destruct test?
+ 
+3. What about people who don't know how to kill it?
+ 
+4. What about mistakes like the INTERNET worm? If you are going to
+test it there might be problems with it spreading in an unexpected
+fashion. (God forbid the release of an untested version).
+ 
+>The only good virus is a dead one.
+ 
+Very true.
+ 
+>Michael Odawa
+ 
+Neil Youngman, Computer Science Dept, Exeter University,
+Prince of Wales Road, Exeter, Devon, EX4 4PT, UK.
+        UUCP:   nyo@expya.uucp          JANET:  nyo@uk.ac.exeter.cs
+"The lights are on but Mr Brain is not at home!"
+ 
+------------------------------
+ 
+Date:    Tue, 16 May 89 14:37:43 EDT
+From:    dmg@mwunix.mitre.org
+Subject: Virus in data files (MAC)
+ 
+In a recent Virus-L (May 15), Emil Rainero
+(rocksanne!rainero@cs.rochester.edu) raises the possibility of a virus
+hiding in the resource fork of a data file.
+ 
+Generally, such a virus would not be very successful at propogating,
+if this were the lone method of propogation (using the resource fork
+of data files).  Information in resource forks are generally not
+executed.  There is (however) a notable exception to this.
+ 
+INITs, cdevs, and the like are "data" files; they contain no CODE
+resources that make an application an application.  Conceivably, they
+could be used to spread a virus as the information in the
+INIT/cdev/... is executed at system startup if the file is in the
+system folder.  The INIT 29 virus makes use of this.  It will infect
+the resource fork of data files, and should such a data file reside in
+the system folder, the virus will be executed from the data file when
+the system is next started.
+ 
+David Gursky
+Member of the Technical Staff, W-143
+Special Projects Department
+The MITRE Corporation
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

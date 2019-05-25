@@ -1,0 +1,663 @@
+precedence: bulk
+Subject: Risks Digest 20.44
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 15 June 1999  Volume 20 : Issue 44
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.44.html>
+and at ftp.sri.com/risks/ .
+
+***** OUR ANNUAL SEASONAL SLOWDOWN STARTS NEXT WEEK.  *****
+***** HOWEVER, RISKS CASES NEVER GO ON HOLIDAY.  *****
+
+  Contents:
+GPS kills 8 in air (Lloyd Wood)
+W32/ExploreZip.worm "virus" and user interfaces (Steven M. Bellovin)
+CERT Advisory CA-99.06 - New information regarding ExploreZip (CERT)
+Downloading Y2K fixes to Internet Explorer leads to clock problem (Paul Karger)
+ActiveX Security Revisited (Steve Loughran)
+Unwanted wildcard match (Nick Brown)
+Bank sued over client data sale (Monty Solomon)
+UAL -- the UnFriendly Cybersky? (David Lesher)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 7 Jun 1999 15:46:47 +0100 (BST)
+From: Lloyd Wood <L.Wood@surrey.ac.uk>
+Subject: GPS kills 8 in air
+
+ [...] The probability of a collision between aircraft using GPS on
+ established air routes is significantly higher than between aircraft
+ using conventional navigation aids because of the greater accuracy of
+ navigation using a GPS.
+
+<L.Wood@surrey.ac.uk>PGP<http://www.ee.surrey.ac.uk/Personal/L.Wood/>
+
+  [Quite old, but not previously covered.  PGN]
+
+------------------------------
+
+Date: Fri, 11 Jun 1999 13:26:33 -0400
+From: "Steven M. Bellovin" <smb@research.att.com>
+Subject: W32/ExploreZip.worm "virus" and user interfaces
+
+Subtitle: "I got it from Agnes, she got it from Jim"...  (Tom Lehrer)
+
+Another month, another killer "virus".  By now, everyone has heard about
+this latest piece of malware.  But what's interesting is that part of the
+way it spread appears to be dependent on the user interface.
+
+The actual damage was done by an executable, a .EXE file.  However,
+according to some reports the file itself contained the icon of a .ZIP
+file.  Thus, even moderately cautious users could be tricked into opening
+the file -- which in this case meant executing it.
+
+The underlying problem is that there are two different mechanisms used to
+determine file type, and hence how it should be "opened".  One is what
+is displayed to the user; the other is what is actually used.  That way
+lies danger.
+
+  [But it can also spread worm-like without your help.  Some folks still
+  need to learn some of the lessons from the 1965 efforts on Multics!  See
+    http://www.multicians.org/     
+  PGN]
+
+------------------------------
+
+Date: Mon, 14 Jun 1999 07:16:05 -0400
+From: CERT Advisory <cert-advisory@cert.org>
+Subject: CERT Advisory CA-99.06 - New information regarding ExploreZip
+
+CERT Advisory CA-99-06-explorezip
+
+   Original issue date: Thursday June 10, 1999
+   Last Revised Date: June 14, 1999
+   Added information about the program's self-propagation via networked
+   shares; also updated anti-virus vendor URLs.
+   
+   Source: CERT/CC
+   
+Note: The CERT Coordination Center has discovered new information
+regarding the ExploreZip worm. This re-issue of CERT Advisory CA-99-06
+contains new information regarding an additional means by which the
+Worm can spread, and a caution about disinfecting your systems. We
+will continue to update this advisory as new information is
+discovered. We encourage you to check our web site frequently for any
+new information.
+
+Systems Affected
+
+     * Machines running Windows 95, Windows 98, or Windows NT.
+     * Machines with filesystems and/or shares that are writable by a
+       user of an infected system.
+     * Any mail handling system could experience performance problems or
+       a denial of service as a result of the propagation of this Trojan
+       horse program.
+       
+Overview
+
+   The CERT Coordination Center continues to receive reports and
+   inquiries regarding various forms of malicious executable files that
+   are propagated as file attachments in electronic mail.
+   
+   During the second week of June 1999, the CERT/CC began receiving
+   reports of sites affected by ExploreZip, a Trojan horse/worm program
+   that affects Windows systems and has propagated in e-mail attachments.
+   The number and variety of reports we have received indicate that this
+   has the potential to be a widespread attack affecting a variety of
+   sites.
+   
+I. Description
+
+   Our original analysis indicated that the ExploreZip program is a
+   Trojan horse, since it initially requires a victim to open or run an
+   e-mail attachment in order for the program to install a copy of itself
+   and enable further propagation. Further analysis has shown that, once
+   installed, the program may also behave as a worm, and it may be able
+   to propagate itself, without any human interaction, to other networked
+   machines that have certain writable shares.
+   
+   The ExploreZip Trojan horse has been propagated between users in the
+   form of e-mail messages containing an attached file named
+   zipped_files.exe. Some e-mail programs may display this attachment
+   with a "WinZip" icon. The body of the e-mail message usually appears to
+   come from a known e-mail correspondent, and typically contains the
+   following text:
+   
+   I received your email and I shall send you a reply ASAP.
+          Till then, take a look at the attached zipped docs.
+          
+   The subject line of the message may not be predictable and may appear
+   to be sent in reply to previous e-mail.
+   
+   Opening the zipped_files.exe file causes the program to execute. It is
+   possible under some mailer configurations that a user might
+   automatically open a malicious file received in the form of an e-mail
+   attachment. When the program is run, an error message is displayed:
+   
+   Cannot open file: it does not appear to be a valid archive. If this
+   file is part of a ZIP format backup set, insert the last disk
+   of the backup set and try again. Please press F1 for help.
+          
+Destruction of files
+
+     * The program searches local and networked drives (drive letters C
+       through Z) for specific file types and attempts to erase the
+       contents of the files, leaving a zero byte file. The targets may
+       include Microsoft Office files, such as .doc, .xls, and .ppt, and
+       various source code files, such as .c, .cpp, .h, and .asm.
+     * The program may also be able to delete files that are writable to
+       it via SMB/CIFS file sharing. The program appears to look through
+       the network neighborhood and delete any files that are shared and
+       writable, even if those shares are not mapped to networked drives
+       on the infected computer.
+     * The program appears to continually delete the contents of targeted
+       files on any mapped networked drives.
+       The program does not appear to delete files with the "hidden" or
+       "system" attribute, regardless of their extension.
+       
+System modifications
+
+     * The zipped_files.exe program creates a copy of itself in a file
+       called explore.exe in the following location(s):
+       
+        On Windows 98 - C:\WINDOWS\SYSTEM\Explore.exe
+                On Windows NT - C:\WINNT\System32\Explore.exe
+                
+       This explore.exe file is an identical copy of the zipped_files.exe
+       Trojan horse, and the file size is 210432 bytes.
+       MD5 (Explore.exe) = 0e10993050e5ed199e90f7372259e44b
+     * On Windows 98 systems, the zipped_files.exe program creates an
+       entry in the WIN.INI file:
+       
+        run=C:\WINDOWS\SYSTEM\Explore.exe
+                
+       On Windows NT systems, an entry is made in the system registry:
+       
+        [HKEY_CURRENT_USER\Software\Microsoft\Windows
+                NT\CurrentVersion\Windows]
+                run = "C:\WINNT\System32\Explore.exe"
+                
+Propagation via file sharing
+
+   Once explore.exe is running, it takes the following steps to propagate
+   to other systems via file sharing:
+   
+     * Each time the program is executed, the program will search the
+       network for all shares that contain a WIN.INI file with a valid
+       "[windows]" section in the file.
+     * For each such share that it finds, the program will attempt to
+          + copy itself to a file named _setup.exe on that share
+          + modify the WIN.INI file on that share by adding the entry
+            "run=_setup.exe"
+       The account running the program on the original infected machine
+       needs to have permission to write to the second victim's shared
+       directory. (That is, no vulnerabilities are being exploited in
+       order for the program to spread in this manner.)
+       The _setup.exe file is identical to the zipped_files.exe and
+       explore.exe files on the original infected machine.
+     * The original infected system will continue to scan shares that
+       have been mapped to a local drive letter containing a valid
+       WIN.INI file. For each such share that is found, the program will
+       "re-infect" the victim system as described above.
+       
+   On Windows 98 systems that have a "run=_setup.exe" entry in the
+   WIN.INI file (as described previously), the C:\WINDOWS\_setup.exe
+   program is executed automatically whenever a user logs in. On Windows
+   NT systems, a "run=_setup.exe" entry in the WIN.INI file does not
+   appear to cause the program to be executed automatically.
+   
+   When run as _setup.exe, the program will attempt to
+   
+     * make another copy of itself in C:\WINDOWS\SYSTEM\Explore.exe
+     * modify the WIN.INI file again by replacing the "run=_setup.exe"
+       entry with "run=C:\WINDOWS\SYSTEM\Explore.exe"
+       
+   Note that when the program is run as _setup.exe, it configures the
+   system to later run as explore.exe. But when run as explore.exe, it
+   attempts to infect shares with valid WIN.INI files by configuring
+   those files to run _setup.exe. Since this infection process includes
+   local shares, affected systems may exhibit a "ping pong" behavior in
+   which the infected host alternates between the two states.
+   
+Propagation via e-mail
+
+   The program propagates by replying to any new e-mail that is received
+   by the infected computer. The reply messages are similar to the
+   original e-mail described above, each containing another copy of the
+   zipped_files.exe attachment.
+   
+   We will continue to update this advisory with more specific
+   information as we are able to confirm details. Please check the
+   CERT/CC web site for the current version containing a complete
+   revision history.
+   
+II. Impact
+
+     * Users who execute the zipped_files.exe Trojan horse will infect
+       the host system, potentially causing targeted files to be
+       destroyed.
+     * Users who execute the Trojan horse may also infect other networked
+       systems that have writable shares.
+     * Because of the large amount of network traffic generated by
+       infected machines, network performance may suffer.
+     * Indirectly, this Trojan horse could cause a denial of service on
+       mail servers. Several large sites have reported performance
+       problems with their mail servers as a result of the propagation of
+       this Trojan horse.
+       
+III. Solution
+
+Use virus scanners
+
+   While many anti-virus products are able to detect and remove the
+   executables locally, because of the continuous re-infection process,
+   simply removing all copies of the program from an infected system may
+   leave your system open to re-infection at a later time, perhaps
+   immediately. To prevent re-infection, you must not serve any shares
+   containing a WIN.INI file to any potentially infected machines. If you
+   share files with everyone in your domain, then you must disable shares
+   with WIN.INI files until every machine on your network has been
+   disinfected.
+   
+   In order to detect and clean current viruses, you must keep your
+   scanning tools up to date with the latest definition files. Please see
+   the following anti-virus vendor resources for more information about
+   the characteristics and removal techniques for the malicious file
+   known as ExploreZip.
+   
+   Aladdin Knowledge Systems, Inc.
+          http://www.esafe.com/vcenter/explore.html
+          
+          Central Command
+          http://www.avp.com/zippedfiles/zippedfiles.html
+          
+          Command Software Systems, Inc
+          http://www.commandcom.com/html/virus/explorezip.html
+          
+          Computer Associates
+          http://www.cai.com/virusinfo/virusalert.htm
+          
+          Data Fellows
+          http://www.datafellows.com/news/pr/eng/19990610.htm
+          
+          McAfee, Inc. (a Network Associates company)
+          http://www.mcafee.com/viruses/explorezip/default.asp
+          
+          Network Associates Incorporated
+          http://www.avertlabs.com/public/datafiles/valerts/vinfo/va10185
+          .asp
+          
+          Sophos, Incorporated
+          http://www.sophos.com/downloads/ide/index.html#explorez
+          
+          Symantec
+          http://www.symantec.com/avcenter/venc/data/worm.explore.zip.htm
+          l
+          
+          Trend Micro Incorporated
+          http://www.antivirus.com/vinfo/alerts.htm
+          
+   Additional sources of virus information are listed at
+   
+   http://www.cert.org/other_sources/viruses.html
+          
+Additional suggestions
+
+     * Blocking Netbios traffic at your network border may help prevent
+       propagation via shares from outside your network perimeter.
+     * Disable file serving on workstations. You will not be able to
+       share your files with other computers, but you will be able to
+       browse and get files from servers. This will prevent your
+       workstation from being infected via file sharing propagation.
+     * Maintain a regular, off-line, backup cycle.
+       
+General protection from e-mail Trojan horses and viruses
+
+   Some previous examples of malicious files known to have propagated
+   through electronic mail include
+     * False upgrade to Internet Explorer - discussed in CA-99-02
+       http://www.cert.org/advisories/CA-99-02-Trojan-Horses.html
+     * Melissa macro virus - discussed in CA-99-04
+       http://www.cert.org/advisories/CA-99-04-Melissa-Macro-Virus.html
+     * Happy99.exe Trojan Horse - discussed in IN-99-02
+       http://www.cert.org/incident_notes/IN-99-02.html
+     * CIH/Chernobyl virus - discussed in IN-99-03
+       http://www.cert.org/incident_notes/IN-99-03.html
+       
+   In each of the above cases, the effects of the malicious file are
+   activated only when the file in question is executed. Social
+   engineering is typically employed to trick a recipient into executing
+   the malicious file. Some of the social engineering techniques we have
+   seen used include
+     * Making false claims that a file attachment contains a software
+       patch or update
+     * Implying or using entertaining content to entice a user into
+       executing a malicious file
+     * Using e-mail delivery techniques which cause the message to appear
+       to have come from a familiar or trusted source
+     * Packaging malicious files in deceptively familiar ways (e.g., use
+       of familiar but deceptive program icons or file names)
+       
+   The best advice with regard to malicious files is to avoid executing
+   them in the first place. CERT advisory CA-99-02 discusses Trojan
+   horses and offers suggestions to avoid them (please see Section V).
+   
+   http://www.cert.org/advisories/CA-99-02-Trojan-Horses.html
+   ______________________________________________________________________
+   
+   This document is available from:
+   http://www.cert.org/advisories/CA-99-06-explorezip.html.
+   ______________________________________________________________________
+   
+CERT/CC Contact Information
+
+  E-mail: cert@cert.org
+  Phone: +1 412-268-7090 (24-hour hotline)
+  Fax: +1 412-268-6989
+  Postal address:
+    CERT Coordination Center
+    Software Engineering Institute
+    Carnegie Mellon University
+    Pittsburgh PA 15213-3890  U.S.A.
+          
+  CERT personnel answer the hotline 08:00-20:00 EST(GMT-5) / EDT(GMT-4)
+  Monday through Friday; they are on call for emergencies during other
+  hours, on U.S. holidays, and on weekends.
+   
+Using encryption
+
+   We strongly urge you to encrypt sensitive information sent by e-mail.
+   Our public PGP key is available from http://www.cert.org/CERT_PGP.key.
+   If you prefer to use DES, please call the CERT hotline for more
+   information.
+   
+Getting security information
+
+   CERT publications and other security information are available from
+   our web site http://www.cert.org/.
+   
+   To be added to our mailing list for advisories and bulletins, send
+   e-mail to cert-advisory-request@cert.org and include SUBSCRIBE
+   your-e-mail-address in the subject of your message.
+   
+   Copyright 1999 Carnegie Mellon University.
+   Conditions for use, disclaimers, and sponsorship information can be
+   found in http://www.cert.org/legal_stuff.html.
+   
+   * "CERT" and "CERT Coordination Center" are registered in the U.S.
+   Patent and Trademark Office
+   ______________________________________________________________________
+   
+   NO WARRANTY
+   Any material furnished by Carnegie Mellon University and the Software
+   Engineering Institute is furnished on an "as is" basis. Carnegie
+   Mellon University makes no warranties of any kind, either expressed or
+   implied as to any matter including, but not limited to, warranty of
+   fitness for a particular purpose or merchantability, exclusivity or
+   results obtained from use of the material. Carnegie Mellon University
+   does not make any warranty of any kind with respect to freedom from
+   patent, trademark, or copyright infringement.
+
+Revision History
+
+June 10, 1999:  Initial release
+June 11, 1999:  Added information about the appearance of the attached file
+                Added information from Aladdin Knowledge Systems, Inc.
+June 14, 1999:  Added information about the program's self-propagation via
+                networked shares; also updated anti-virus vendor URLs
+
+  [(S)lightly edited for RISKS.  PGN]
+
+------------------------------
+
+Date: Wed, 09 Jun 1999 15:54:47 -0400
+From: Paul Karger <karger@watson.ibm.com>
+Subject: Downloading Y2K fixes to Internet Explorer leads to clock problem
+
+I was attempting to install service pack 2 of Internet Explorer 4.01 in
+order to meet corporate Y2K requirements and ran into the following
+interesting problem.
+
+To install service pack 2, you first download a small program from
+Microsoft.  You run that program, and after asking you some questions, it
+then downloads the full service pack 2.  One of the questions was whether
+you wanted to install the service pack or just download the files.  I
+replied that I just wanted to download the files.  My intention was to virus
+check them, before actually performing the install.
+
+However, when it attempted to download the full service pack, the small
+downloader complained that my system clock was not set correctly, and that
+therefore it could not perform the download.  I checked, and my system clock
+was set correctly.  Pushing the help button on the error screen gave
+information about setting the clock, followed by a somewhat cryptic comment
+about security settings in Internet Explorer.
+
+My already installed version Internet Explorer was set to high security for
+all zones, as the dangers of ActiveX, Java, and Javascript are well known.
+As an experiment, I lowered the security setting for the Internet zone to
+medium, and the download proceeded without error.  Note that ostensibly, I
+was only downloading files, not running anything, yet the security
+protection level had to be lowered, not to mention the bogus error message.
+
+I then raised the setting back to high, performed the virus check, and then
+tried to install the downloaded files.  Again it complained about the clock
+setting, and again I had to lower the security setting to medium to permit
+the install to proceed.  (This time, I was actually executing code, so I
+suppose the lowered setting was appropriate, but it still complained about
+the clock, rather than the security setting.)
+
+I suppose that downloading any code (even if not executing it) from the
+Microsoft web site could be considered a security risk and therefore not
+compatible with "high security".  However, I don't think that was
+Microsoft's intention, and surely it should not have been reported as a
+clock setting problem.
+
+(Footnote for technical accuracy: In the above description, I said that I
+used the high security setting in Internet Explorer.  This was artistic
+license on my part.  Actually, I used the custom setting to get an even more
+conservative setting than what Microsoft calls "high security".  "High
+security" still allows certain kinds of "safe" scripts to run, and I prefer
+to disable even "safe" scripts.  However, the bogus error occurred not just
+on the custom very high setting, but also on Microsoft's own high security
+setting.)
+
+(To be fair to Microsoft, a full viral scan of both the downloaded service
+pack and of the system after the service pack was installed revealed no
+problems, nor did I seriously expect any.  However, I routinely virus scan
+any and all downloaded files, regardless of their source.)
+
+ Paul
+
+------------------------------
+
+Date: Wed, 9 Jun 1999 12:22:00 +0100
+From: "Steve Loughran" <slo99@iseran.com>
+Subject: ActiveX Security Revisited
+
+The latest Microsoft security bulletin
+ http://www.microsoft.com/security/bulletins/ms99-018.asp ) includes two
+Internet Explorer patches. The first is a classic stack overrun -a web page
+can supply an icon for use when adding to the favourite links list, and a
+malformed icon could overrun the stack and so execute arbitrary code.
+
+The second fault is a security hole in ActiveX control, and is a simple
+instantiation of the problem covered in  RISKS-18.85 and  RISKS-18.86,
+namely than code signing is a far less safe method of software distribution
+than a 'sandbox' for untrusted code.
+
+It so happens that one of the ActiveX controls dating from IE3 can be used
+to test for the presence or absence of files on a hard disk, and while no
+access to the contents is granted, it can be used to build up a picture of
+what applications are installed. My demonstration page
+ http://www.iseran.com/ActiveX/filesearch.html ) shows a naive script
+looking for common windows files in well known places -it could just as
+easily look for well known applications as a preamble to an application
+specific attack.
+
+The insecure 'Preloader' control has some interesting properties. Firstly,
+it is signed by Microsoft, showing that even the inventors of ActiveX and
+the entire Win32 API did not test their controls rigorously enough.
+Secondly, some distributions of Internet Explorer may have automatically
+installed the control, in which case the control download or signature
+verification process is bypassed.
+
+It so happens that the default security settings of the Outlook and Outlook
+Express e-mail messages, which means anyone could send a web page
+referencing the control to any known recipient and stand a moderate chance
+of being able to enumerate some disk files, possibly with no visible
+notification to the recipient. This strikes me as a more serious problem
+than the risk incurred by looking at random web pages, as it enables attacks
+targeted at individual recipients.
+
+Within four weeks of notifying Microsoft via their security e-mail alias the
+company announced the problem, and withdrew the control from their own web
+site, which seems a reasonable response time. Of course, if ActiveX had
+included a mechanism whereby the signer of a control could retroactively
+revoke that control then it would have been trivial to disable the control
+remotely. Instead the company had to patch IE to permanently disable the
+control. Few other companies would have this luxury.
+
+While enabling or disabling ActiveX use for web site access is entirely a
+matter of preference, I would personally recommend that all users of
+Microsoft e-mail applications alter their e-mail client security settings so
+that neither ActiveX or scripting language is supported in incoming messages
+. This can be done by setting the e-mail security zone to 'restricted'.
+
+     -Steve
+
+------------------------------
+
+Date: Mon, 14 Jun 1999 09:46:41 +0200
+From: BROWN Nick <Nick.BROWN@coe.int>
+Subject: Unwanted wildcard match
+
+I don't normally like to present individual bugs as RISKs, but this one just
+bit me and is so counter-intuitive that I felt I had to report it.
+
+It appears that when Windows NT (and, I imagine, other long-filename-enabled
+Windows variants) matches a user-specified wildcard in a DOS prompt, it
+matches the wildcard against both the full filename, and the pseudo-8.3
+format filename.
+
+For example, in a directory I have two files:
+   Shortcut to V1.LNK
+   Shortcut to V2.LNK
+
+However, these were created in reverse order, which means that their
+8.3-emulated names were also created in reverse order.  So DIR/X shows:
+   Shortcut to V1.LNK   SHORTC~2.LNK
+   Shortcut to V2.LNK   SHORTC~1.LNK
+
+Now, I wanted to get rid of "Shortcut to V1.LNK", and a number of related
+files, so I typed
+   DEL *1.LNK
+and "Shortcut to V2.LNK" disappeared as well.
+
+The RISK ?  With Microsoft, a wildcard can match a filename character that
+you didn't even know was in the filename - indeed, which is part of a
+compatibility system which I don't need to use.  (There is no way to predict
+a file's 8.3-emulated name from its full name - another magnificent piece of
+non-design.)
+
+Nick Brown, Strasbourg, France.
+
+e-mail address updates : @coe.int replaces  @coe.fr
+for more information, http://dct.coe.int/info/emfci001.htm
+
+------------------------------
+
+Date: Tue, 15 Jun 1999 12:46:58 -0400
+From: Monty Solomon <monty@roscom.com>
+Subject: Bank sued over client data sale
+
+The state of Minnesota last week sued U.S. Bank for allegedly selling Social
+Security numbers, account balances and other sensitive customer data to a
+telemarketing company in exchange for commissions.  Apparently several other
+banks are also hawking customer information, which raises serious privacy
+concerns.  [Source: *ComputerWorld*, article by Kim S. Nash, 14 Jun 1999,
+http://www.computerworld.com/home/print.nsf/CWFlash/990614AE82   PGN]
+
+-------------------------------
+
+Date: Mon, 14 Jun 1999 20:13:31 -0400 (EDT)
+From: David Lesher <wb8foz@nrk.com>
+Subject: UAL -- the UnFriendly Cybersky?
+
+Recently, I went to check the status of an incoming UAL flight.
+The results were not encouraging.  Their www page informed me:
+
+
+   Here is the latest information about the flight you selected. Note, the
+   times listed are local airport times.
+
+                              [United]Flight #1020
+                      Departure Date: Dec 31, 1969
+
+                               Status: Arrived
+DEPARTS: San Jose, Costa Rica (SJO)   ARRIVES: Mexico City, Mexico (MEX)
+Left the Gate 6:10 am (Prev. day) (2 min Early) 
+Flight Arrived at Gate 9:45 am (Prev. day) (3 min Early)
+Gate: N/A                             Gate: E
+
+                               Status: Arrived
+DEPARTS: Mexico City, Mexico (MEX)    ARRIVES: Washington, DC (IAD)
+Left the Gate 10:54 am (Prev. day) (2 min Early)
+Estimated Arrival 3:51 pm (Prev. day)
+Gate: 26                              Gate: C9
+Flight is on time.
+
+=============
+Besides the obvious Dec 31 1969, the page kept mentioning 
+"Prev. Day" even though the flight was in the air at the time!
+
+So I called the automated telephone status number. IT told the
+first leg of the flight was from not San Jose [SJO] but rather 
+San Francisco [SFO].
+
+So I ended up talking to a human. She took a surprisingly long time to
+check but said yes, it had originated from SJO and yes it was on
+time out of MEX. (It then arrived early...)
+
+The RISK? The real rationale for the www page is the very low cost
+to service the query. But the ambiguity it created and the telco
+robot reinforced, drove me to the highest transaction cost method.
+
+  [See John Rushby's item in RISKS-20.15.  PGN]
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.44 
+************************

@@ -1,0 +1,765 @@
+VIRUS-L Digest   Tuesday, 10 Nov 1992    Volume 5 : Issue 175
+
+Today's Topics:
+
+FDISK /MBR and Boot Sector Viruses (PC)
+re: Scores functions (CVP)
+Re: Autoexec deletion virus?? (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: HELP! (RE: IBM password) (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: Info on Commander Bomber and Starship? (PC)
+Re: Newest and best scanner? (PC)
+Re: Checking high memory with VSCAN (PC)
+Re: Filler virus - Need Help! (PC)
+Re: Infection density (PC)
+Re: Info on Commander Bomber and Starship? (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Info Grain of Sand Virus (PC)
+MtE detection tests (PC)
+Goblin Virus (PC)
+Re: OS/2 Viruses (OS/2)
+Tripwire release (UNIX)
+Re: Independent Virus Experts
+Greeting from Roger Riordan
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Tue, 03 Nov 92 12:29:31 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: FDISK /MBR and Boot Sector Viruses (PC)
+
+>From: (decided that this is unnecessary)
+
+>The FDISK/MBF will NOT work right on drives that are partitioned by
+>DiskManager program. If you have a DOS/DM drive and you boot from a
+>clean floppy to use FDISK/MBR, your DM partition is lost.  The DM
+>partition, for that matter, is any NON-DOS partition.
+
+NO ! (excuse the shout) FDISK /MBR does NOT lose DM partitions.
+PERIOD.  (there are ignorant minds out there seeking elucidation and
+mis-information can be worse than none at all)
+
+(nor STACKER, nor SUPERSTOR, nor NOVELL partitions, nor
+Bernoulli/Syquest drives) What happens is that when you boot from a
+floppy without the proper driver in the CONFIG.SYS file *on the
+floppy* they will not be accessable by DOS. Those partitions will not
+be "lost", you just have not loaded the necessary driver to access
+them.
+
+Admittedly, the DMDRIVER.BIN is the most dangerous since it is
+essentially unique to each system and if it is damaged could fail to
+find the partition (I could but if you have to ask, you can't), but
+FDISK/MBR has no effect on DMDRIVER.BIN (or anything other than the
+code portion of the MBR which knows nothing about partitions other
+than how to find the ACTIVE one).
+
+You must realize that DMDRIVER.BIN is a "kludge" from back in the
+antidiluvian days of DOS 2.x that permitted access of over-32 MB hard
+disks with a special driver that replaced the DOS access mechanism.
+After DOS 3.31/DOS 3.3+ which could access big disks (DOS 5.0 does it
+better), such drivers became unnecessary though DOS still permits such
+drivers today. ONTRACK never removed the capability (at least my Disk
+Manager 4.0 has it) since it costs nothing to leave it in, but it has
+been superceeded by the LARGE capability built into FDISK and FORMAT
+today.
+
+					Warmly,
+
+						Padgett
+
+------------------------------
+
+Date:    Tue, 03 Nov 92 13:37:20 -0500
+From:    xrjdm@calvin.gsfc.nasa.gov (Joseph D. McMahon)
+Subject: re: Scores functions (CVP)
+
+> It starts simply enough.  When an infected application is run on a
+> new system, the system folder is infected.  Two invisible folders
+> are created, one named Desktop and the other Scores (hence the
+> name).  Thus the Scores infection gets to start early and go
+> "resident".  (INITs of 6, 10 and 17 are created.  This led to later
+> problems with other INITs numbered the same way that were mistakenly
+> thought to be infected.)
+
+The "Desktop" and "Scores" items are files, not folders. It has been
+proposed that semi-sophisticated users with a means of looking at
+invisible files would be tricked into thinking that the "Desktop" file
+was the Finder's "Desktop" file (the Finder's Desktop file is at the
+root level, not in the System folder), and that the "Scores" file
+would be dismissed as belonging to some undefined game or another. All
+of these files contained enough information to perpetuate the virus,
+even if one or more of them was removed.
+
+Scores took advantage of a hole which allowed INIT resources to reside
+in invisible files. This hole was closed in System 6.0.3, I believe.
+Invisible files are no longer eligible to be executed as control panel
+(cdev) or system extension (INIT) files. It is definitely closed in
+System 6.0.7 and up.
+
+> The Note Pad and Scrapbook files, if not already present, are
+> created.  The file types for these files are changed, as are the
+> normal icons.
+
+As well as their contents.
+
+> The virus waits two days before it starts to infect applications. 
+> Thus the Scores might almost seem to be an early form of the
+> multipartite virus, since it "toggles" between system and
+> application files.  However, it is only after the infection has
+> entered the system folder that the other activities take place.
+
+The actual infection mechanism of Scores is nearly identical to that
+of the nVIR virus: A modified CODE resource installs an INIT; the INIT
+modifies further CODE resources in a _Launch trap. One of the INITs is
+the vector; the others are the payload. Blocking access to the System
+file and disallowing creation of INIT/cdev files without user
+permission disables this mechanism.
+
+ --- Joe M.
+
+------------------------------
+
+Date:    Tue, 03 Nov 92 15:30:45 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re: Autoexec deletion virus?? (PC)
+
+ed street writes:
+>My mom recently purchased a IBM machine (PS/1) and is complaining
+>about her virus checker deleting her autoexec.bat file,(she has the
+>standard virus checking program that came with the computer) this only
+>occurs when she gets an error message that says something similar to
+>"can't read autoexec.bat and procedes to delete it.  This sounds to
+>me not like a virus problem, but a file problem.
+
+>So my question is does anyone know anything about this problem and if
+>i told her right? (the program also deletes a text file from where the
+>search program is located on her hard drive, so I am at a loss on
+>this.  I know some programs delets file upon use (like workperfect and
+>others) but never have I heard of this happening.)
+
+We have encountered a direct action infector of C:\COMMAND.COM and
+C:\DOS\COMMAND.COM which renames C:\AUTOEXEC.BAT to C:\AUTOEXEC.BAK on
+Thursdays.  Presently, we have dubbed this "Thursday Autoexec".  We
+had only one single sighting of this in the wild.
+
+This is a COM appender virus which makes COMMAND.COM files grow by
+452 bytes and spreads ONLY through COMMAND.COM!  It's a minor miracle
+that this virus could spread (unless, "it gets lucky" [Dave Chess]).
+Question: Has your mother recently purchased software or otherwise
+obtained software that included its own copy of COMMAND.COM?
+
+You can verify an infected command.com by debugging and noting that
+it starts with: JMP [0104]
+
+If all the above is true, NAV 2.1 can detect and repair this virus.
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    Tue, 03 Nov 92 15:31:09 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Stefano Turci writes:
+[after converting MtE infected COM files to EXEs and then LZEXE'd them]
+>The results were a bit strange, in fact:
+>    F-prot 2.05
+>    Scan 97
+>    VirX 2.4
+>missed *ALL* the converted files, while
+>    Gobbler 2.99 beta 5
+>    TbScan 4.3
+>got each infected file.
+
+>The viruses in the files missed by F-prot, Scan and VirX in the .EXE
+>form were all found out by the same programs in the original .COM
+>version.
+
+>I have personally tried to infect a COM file starting from a .EXE
+>converted file and the infection was made correctly, that is the
+>converted files are still able to propagate the virus, so I think the
+>authors of the "missing-in- action" programs should improve their a-v
+>packages. 8-)
+
+These results are not surprising nor should they be alarming.  There's
+a ever going argument in the anti-virus field relating to the premise
+that anti-virus software must be able to detect every absolute
+infected file.  The opposing side argues that it is not necessary to
+detect such files as those above (or specific files found in some
+reviewers' collections) which do not create children of the same form.
+
+The argument for the second opinion says that if you detect the
+infected form of the children, you will know if something is going on
+in the computer.  Once something is known to be affecting the
+computer, theories related to integrity checking can take over.  Files
+such as those created above and certain files in reviewers'
+collections cannot spread in that convoluted form and need not worry
+endusers.  (A version of this argument applies to whether it is
+necessary to detect absolutely 100% of MtE mutations, i.e.  integrity
+checking takes over.)
+
+It should be the form that propagates that we worry about.  And though
+you didn't note it, I'm sure all the files infected by your creations
+were detected by all the packages above.  Thus end-users need not
+worry about your peculiar forms of MtE files because you're not going
+to put those files on anyone else's computer.  :-)
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    Tue, 03 Nov 92 17:33:00 -0500
+From:    hombas!rudy.hehn@hombas.uucp
+Subject: Re: HELP! (RE: IBM password) (PC)
+
+- -> That "I always warn people not to use" covers a lot of territory! In
+- -> the business world, that password feature is very desirable. It keeps
+
+I was, perhaps, a little imprecise in my phrasing. I should have said
+'warn people not to use unless they don't mind the inconvenience of
+losing the password and not having system access until they recover it'.
+In a business setting, that feature is desirable, as you pointed out.
+
+- -> circumstances. I suspect that there is a market for this - picure
+- -> walking into a better grade of computer store. A PC in the order area
+- -> presents a menu driven system. You select your present (or just
+- -> ordered) motherboard, then choose from a list of BIOS options like:
+
+<Text deleted>
+
+- -> Seclect what you need, then the system programs a set of chips (a
+- -> matter of minutes from direct observation.) Given the amount of
+
+An intriguing and desirable concept. It would be easy enough for the
+software to keep track of the number of times each BIOS was chosen so
+that the BIOS companies could get their share of the profit. Which
+brings to my mind another concept: would it even be possible to have a
+virus scanner/cleaner/integrity checker as part of a new BIOS, available
+to the operating system as needed?
+                    
+
+------------------------------
+
+Date:    04 Nov 92 09:24:15 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Stefano_Turci@f0.n462.z9.virnet.bad.se (Stefano Turci) writes:
+
+>Well, I converted the files from COM to EXE, and made some scanning
+>tests with the mentioned programs.
+
+>The results were a bit strange, in fact:
+
+>    F-prot 2.05
+>    Scan 97
+>    VirX 2.4
+
+>missed *ALL* the converted files, while
+
+Not surprising - what you did was simply to add a new layer of
+encryption to the files.  Of course, the virus could be distributed in
+this form, and would probably replicate, but all the second (and
+later) generation copies would be detected normally.
+
+I am not at all surprised that my scanner, as well as the others
+missed the virus - actually, no matter how you had encrypted it, it
+probably would be missed.
+
+>converted files are still able to propagate the virus, so I think the
+>authors of the "missing-in- action" programs should improve their a-v
+>packages. 8-)
+
+In my case the reson I miss this particular sample is simple.  I scan
+inside LZEXE-compressed files, but only for signatures - that is, I
+uncompress the virus in memory, and run my scanning engine over it.
+If I uncompressed to disk, and stripped off the COM/EXE conversion, I
+would detect it, but it would slow the scanner down considerably.
+
+I don't consider it a serious problem - basically it is equivalent to
+distributing an old virus, with a new encryption wrapper...the
+original sample will not be found, but all the second generation
+copies will.
+
+- -frisk
+
+------------------------------
+
+Date:    04 Nov 92 09:27:52 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Info on Commander Bomber and Starship? (PC)
+
+pehmo@parker.ositech.fi (Petteri Jarvinen) writes:
+
+>Has anybody dissected and analyzed these new advanced viruses like
+>Commander Bomber and Starship? Virus Bulletin, perhaps?
+
+Starship is not exactly a new virus - and there have been published
+some reports on it (by Dmitry Gryaznov, for example).  There is also a
+report in the last Virus Bulletin.
+
+- -frisk
+
+------------------------------
+
+Date:    04 Nov 92 10:12:39 +0000
+From:    bartjan@blade.stack.urc.tue.nl (Bartjan Wattel)
+Subject: Re: Newest and best scanner? (PC)
+
+One of *the* best scanners I know of, is:
+
+TBScan, developped by: ESaSS B.V.
+                       P.O. Box 1380
+                       6501 BJ  Nijmegen
+                       The Netherlands
+                       Phone: +31 (0)80-787881
+                       Fax:   +31 (0)80-789186
+                       Data:  +31 (0)85-212395
+
+TBScan is shareware, and can be uploaded from several BBS's. For the
+most recent version, call the 'data'-phone number (all baudrates).
+
+TBScan uses identity scanning, but als heuristic scanning. The
+heuristic scanning algorithm is rather new and seems to be (one of)
+the best there is.
+
+If you have more questions, you can always contact me, as I work on
+some (mostly hardware) projects of ESaSS. ESaSS also sells a hardware
+PC immunizer (PC ISA/MCA only).
+
+I hope this is enough information.
+
+Bartjan Wattel at Eindhoven University of Technology, the Netherlands
+(Email: bartjan@blade.stack.urc.tue.nl)
+- ---------------------------------------------------------------------
+                      All the good ones are already taken.
+
+------------------------------
+
+Date:    04 Nov 92 10:47:09 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Checking high memory with VSCAN (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> >Till now, there are no known viruses that use the last two methods.
+> >Since the known-virus scanner can detect only known viruses, it is
+> >obviously useless to check places in memory where no known virus can
+> >reside.
+
+> Sorry to niggle but must point out that the above refers to MS-DOS
+> (and its close family) only.
+
+Well, yes, that's why there is a "(PC)" in the subject line... :-)
+
+> More specifically to an Intel based
+> system (PC) in REAL mode. Once operating in PROTECTED mode or with
+> virtual DOS boxes, all bets are off. I point this out only so that
+> people running Windows do not do a memory-only SCAN from a DOS box and
+> possibly miss an infection in another. If you are going to run from
+> Windows, it is best to check the programs on disk as well.
+
+Correct, I have several times posted messages about the difficulties
+to scan "the whole memory" under Windows in protected more... In fact,
+it is still possible to do it there - by switching back and forth
+between protected and real mode, but under OS/2 all bets are off...
+
+> Vesselin is correct that no known virus (though I'm not sure about that
+> new Windows specific one - haven't seen it) exploits this though I
+> am sure that it is just a matter of time.
+
+The only Windows-specific virus that we know is not memory resident...
+:-) As you can see, the virus writers have solved the problem in the
+easiest way... :-)
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Nov 92 10:58:12 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Filler virus - Need Help! (PC)
+
+teasdale@ere.umontreal.ca (Teasdale Gilles) writes:
+
+> I just find out that Filler virus has invaded my computer system. The
+> Scan Test (SCAN 8.9V97 - McAfee) sometime detect it and other time it
+> can't. Is there any other thing I can do to get rid of this damned
+> virus...
+
+This is a Hungarian boot sector virus that is not spread at all, so I
+sincerely doubt that it has made it to Canada... It is much more
+probable that you are using some other anti-virus software, like CPAV
+or TNTVIRUS, that does not encrypt its scan strings and is causing a
+false positive. If you are using CPAV, read the manual - it clearly
+says that it is not compatible with any other anti-virus software. So,
+throw away either CPAV or SCAN. If I were you, I would throw away
+CPAV...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Nov 92 11:12:13 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Infection density (PC)
+
+cjkuo@ccmail.norton.com (Jimmy Kuo) writes:
+
+> This is probably as good a place as any to advance my own "infection
+> rate" theory.  I would propose that a virus will spread only until it
+> meets an anti-virus system.  Thus, it would be one exponential
+> function chasing another, which would reduce to a linear effect.
+
+Hmm, if I recall my calculus class correctly, two chasing exponential
+functions result in a sinusoid with consecutive peaks in (in this
+particular case) in virus spread and in usage of anti-virus software.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Nov 92 11:15:52 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Info on Commander Bomber and Starship? (PC)
+
+pehmo@parker.ositech.fi (Petteri Jarvinen) writes:
+
+> Has anybody dissected and analyzed these new advanced viruses like
+> Commander Bomber and Starship? Virus Bulletin, perhaps?
+
+I have seen several analyses of StarShip. Two excellent ones are by
+Dmitry Gryaznov and Igor Muttik. Dmitry's analyse is published in
+Virus News International (I think). Maybe Ken has Igor's description
+on-line?
+
+Commander Bomber is a damn hard thing... Something like the MtE, but
+the MtE is about 2.5 Kb and this one is 4 Kb... :-( The virus itself
+is relatively easy (I'll post a short description, if you are
+interested) - just like the Dedicated virus is relatively trivial. The
+hard thing is the code generation engine generates the small pieces of
+code that transfer control to the main body... I have not "cracked" it
+completely yet... :-(
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Nov 92 11:27:52 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Stefano_Turci@f0.n462.z9.virnet.bad.se (Stefano Turci) writes:
+
+> I hope you'll be able to read this message, I never wrote in this area
+> before.
+
+You did fine; I was able to read your message. A very interesting one,
+BTW!
+
+> Do you know LZEXE ?
+
+[stuff deleted]
+
+> Well, I converted the files from COM to EXE, and made some scanning
+> tests with the mentioned programs.
+
+Ha, yes, indeed, that's interesting. It's similar to using PKLite or
+LZEXE, or one of the dozen other compressors to hide the initial
+infected file. Of course, all replicants will be detected correctly,
+but if the dropper (because what you did is to create droppers) will
+remain undetected and continue to spread the infection...
+
+>     Gobbler 2.99 beta 5
+>     TbScan 4.3
+
+> got each infected file.
+
+I find this hard to believe... Did you try Gobbler with unencrypted
+replicants of CryptLab? Did you try TbScan with unencrypted replicants
+of Fear? Those scanners are usually missing these viruses...
+
+> I have personally tried to infect a COM file starting from a .EXE
+> converted file and the infection was made correctly, that is the
+> converted files are still able to propagate the virus, so I think the
+> authors of the "missing-in- action" programs should improve their a-v
+> packages. 8-)
+
+I agree with you. There is no reason why scanners that claim to be
+able to scan inside PKLited and LZEXEd files (and SCAN, F-Prot, and
+VirX do claim to be able to do so; F-Prot even scans inside files
+compressed with other compressors) should be unable to scan inside COM
+files converted to EXE format...
+
+> Well, I'm trying to write my own Mte detector.
+
+If you do, we'll be glad to test it here.
+
+> I run it on a high number of files infected with two Mte-based viruses
+> ( Dedicated and Pogue) and it is able to detect all of the infected
+> files, but how could I say if it will work for *EVERY* mutation and
+> for *EVERY* Mte-based virus ?
+
+> I think it's impossible.
+
+You are right, it's impossible. That's why, our tests can only prove
+that a scanner is NOT able to detect the MtE-based viruses reliably.
+Otherwise we can only say that we have been unable to find an MtE
+replicant that the scanner does not detect.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Wed, 04 Nov 92 13:23:02 +0000
+From:    dboer@let.rug.nl (Ale de Boer)
+Subject: Info Grain of Sand Virus (PC)
+
+Can anyone give information about the Grain of Sand virus. TBSCANX
+noticed this virus while copying a file allegedly containing it. Scans
+with McAfee turned up nothing, nor did TBSCAN. I could not find any
+information about the GoS virus in VSUMX.
+
+Best, Ale.
+- -- 
+________________________________________________________________
+Ale de Boer, Department of English, University of Groningen
+Oude Kijk in 't Jatstraat 26            E-mail: dboer@let.rug.nl
+9712 EK  Groningen                      The Netherlands
+
+------------------------------
+
+Date:    02 Nov 92 18:12:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: MtE detection tests (PC)
+
+Hello, everybody!
+
+Here is the long awaited report about the MtE detection tests that we
+performed at VTC-Hamburg.  It is rather longish, so maybe Ken should
+consider splitting it into parts.  Normally, I should have put it for
+anonymous ftp, instead of publishing it here, but the preliminary
+results of the tests raised enough interest and discussions, so I
+decided to publish it in a whole in this newsgroup.  Nevertheless, it
+- -is- available for anonymous ftp as
+
+ftp.informatik.uni-hamburg.de:pub/virus/texts/tests/mtetests.zip
+
+[Moderator's note: Vesselin's MtE tests are also available from:
+      cert.org:pub/virus-l/docs/mtetests.zip
+I have broken Vesselin's tests down into multiple chunks and will be
+posting each separately.  Thanks Vesselin!]
+
+Enjoy.  Comments, questions, and suggestions are welcome.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Wed, 04 Nov 92 14:04:49 +0000
+From:    P.E.Beaman@lut.ac.uk (Peter Beaman)
+Subject: Goblin Virus (PC)
+
+This question is about the Goblin virus that was found by a Mexician
+researcher on her diskette which was only one of a colection of discs
+she brought o the Uk with her.
+
+We erased the virus but I would like to hear from anyone else who may
+have stopped this virus on their network/hard disc/disc.
+
+I use Dr.Solomon's version 6. Toolkit to clean the boot sector which I
+was told was the area affected.
+
+Any views on Goblin much appreciated the Computer Centre here at LUT are 
+also interested on any extra information
+
+Peter Beaman
+Social Psychology Technician
+
+------------------------------
+
+Date:    Wed, 04 Nov 92 07:45:14 -0500
+From:    William Webber <webbew@aron01.gs.com>
+Subject: Re: OS/2 Viruses (OS/2)
+
+I hope this message is not a FAQ. I currently support approx 150 OS/2
+high performance PC's & I am trying to establish the effective threat
+from OS/2 viruses, if any. Does anybody have any information about
+OS/2 viruses.
+
+Many Thanks.
+
+------------------------------
+
+Date:    Tue, 03 Nov 92 22:14:09 +0000
+From:    spaf@cs.purdue.EDU (Gene Spafford)
+Subject: Tripwire release (UNIX)
+
+This is to announce the first public release of "Tripwire."
+
+Tripwire is an integrity-monitor for Unix systems.  It uses several
+checksum/signature routines to detect changes to files, as well as
+monitoring selected items of system-maintained information.  The
+system also monitors for changes in permissions, links, and sizes of
+files and directories.  It can be made to detect additions or
+deletions of files from watched directories.
+
+The configuration of Tripwire is such that the system/security
+administrator can easily specify files and directories to be monitored
+or to be excluded from monitoring, and to specify files which are
+allowed limited changes without generating a warning.  Tripwire can
+also be configured with customized signature routines for
+site-specific checks.
+
+Tripwire, once installed on a clean system, can detect changes from
+intruder activity, unauthorized modification of files to introduce
+backdoor or logic-bomb code, (if any were to exist) virus activity in
+the Unix environment.
+
+Tripwire is provided as source code with documentation.  The system,
+as delivered, performs no changes to system files and does not require
+root privilege to run (in the general case).  The code has been
+beta-tested in a form close to that of this release at over 100 sites
+world-wide.  Tripwire should work on almost any version of Unix, from
+Xenix on 80386-based machines to Cray and ETA-10 supercomputers.
+
+Tripwire may be used without charge, but it may not be sold or
+modified for sale.   Tripwire was written as a project under the
+auspices of the COAST Project at Purdue University.  The primary
+author was Gene Kim, with the aid and under the direction of Gene
+Spafford (COAST director).
+
+Copies of the Tripwire distribution may be ftp'd from
+ftp.cs.purdue.edu from the directory pub/spaf/COAST/Tripwire.  The
+distribution is available as a compressed tar file, and as
+uncompressed shar kits.  The shar kit form of Tripwire version 1.0
+will also be posted to comp.sources.unix on the Usenet.  No mailserver
+access currently exists for distribution, although we expect some
+archive sites with such mechanisms will eventually provide access.
+
+Questions, comments, complaints, bugfixes, etc may be directed to:
+genek@mentor.cc.purdue.edu (Gene Kim)
+spaf@cs.purdue.edu (Gene Spafford)
+
+3 November 1992
+
+[Moderator's note: Did you choose that date on purpose, Spaf?  Some
+VIRUS-L readers may remember the historical significance of November
+3rd...]
+
+- -- 
+Gene Spafford
+Software Engineering Research Center & Dept. of Computer Sciences
+Purdue University, W. Lafayette IN 47907-1398
+Internet:  spaf@cs.purdue.edu	phone:  (317) 494-7825
+
+------------------------------
+
+Date:    04 Nov 92 11:07:21 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Independent Virus Experts
+
+amesml@monu1.cc.monash.edu.au (Mark L. Ames) writes:
+
+> A Melbourne based organisation is looking for vendor-independant virus
+> experts to advise on strategies to control and deal with the virus
+> threat. If you are such a person, or know of one, please email me
+> amesml@monu1.cc.monash.edu.au.
+
+A group in Australia, called CVIG (Computer Virus Interest Group)
+often publishes very competent tests of anti-virus products. Try to
+contact Wayne Boxall.
+
+Also, at the Queensland University of Technology, they have a very
+strong virus research center. Prof. William Caelli is the head of the
+center.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    04 Nov 92 08:21:29 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: Greeting from Roger Riordan
+
+Greetings to ALL!!
+
+If all has gone according to plan I have an official mail
+box at last.  My address is
+
+      riordan.cybec@tmx.mhs.oz.au
+
+I hope this will enable me to take a more active part in
+proceedings from now on.
+
+Roger Riordan.  CYBEC Pty Ltd              Ph: +61 3 521 0655
+PO Box 205, Hampton. Vic 3188  AUSTRALIA   Fax +61 3 521 0727
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 175]
+******************************************
+
+

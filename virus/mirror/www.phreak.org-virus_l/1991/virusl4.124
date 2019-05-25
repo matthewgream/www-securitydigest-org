@@ -1,0 +1,591 @@
+From:	   Kenneth R. van Wyk (The Moderator) <krvw@CERT.SEI.CMU.EDU>
+Errors-To: krvw@CERT.SEI.CMU.EDU
+To:	   VIRUS-L@IBM1.CC.LEHIGH.EDU
+Path:      cert.sei.cmu.edu!krvw
+Subject:   VIRUS-L Digest V4 #124
+Reply-To:  VIRUS-L@IBM1.CC.LEHIGH.EDU
+--------
+VIRUS-L Digest   Friday, 12 Jul 1991    Volume 4 : Issue 124
+
+Today's Topics:
+
+Re: DOS 5.0 & FPROT116 (PC)
+long and technical (PC)
+Non-registered soviet virus (PC)
+Exchanging floppies
+Re: General definition part 1 (general)
+T.S.R's ( Which is the best )
+Norton anti-virus modification (PC)
+Re: T.S.R's ( Which is the best ) (PC)
+Detecting viruses in packed programs. (PC)
+Wanted: info on nVIR and WDEF (Mac)
+Flushot Plus - Which Version? (PC)
+Re: Stoned and DIR command (PC)
+Possible new stoned variant (PC)
+FINAL CALL, COMPUTING & VALUES CONFERENCE, AUG 12-16
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 11 Jul 91 17:04:57 +0000
+From:    comb@sol.acs.unt.edu (Lipscomb Eric Neil)
+Subject: Re: DOS 5.0 & FPROT116 (PC)
+
+SLCLANCY@UCI.BITNET (Steve Clancy) writes:
+
+>"I was wondering if any one has experienced a problem with FPROT116.
+>Since I installed it with msdos ver 5.00 it hangs my system with the
+>message Virus Alert!! Int 13 has been changed. I have tested and no
+>virus is found. If I disable f-driver in my config.sys file everything
+>is ok. All other programs associated with this program works fine. Any
+>thoughts or suggestions?"
+
+I had this problem as well.  If you place F-DRIVER.SYS as the FIRST
+item in CONFIG.SYS, it won't hand on boot.  I think specifically, in
+my case, I had loaded F-DRIVER.SYS *after* my ANSI.SYS clone, and when
+I reversed that order, it worked.
+
+I've asked Fridrik about this.  he's looking into it, I think.
+
+}lips
+
+.sig pending. . .
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 11:03:50 -0600
+From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: long and technical (PC)
+
+I've been thinking about an interesting Virus Protection programming
+problem.  The following discussion is a bit long, and horribly technical. 
+I hope it is clearly stated, though.  It should be interesting to some.
+
+Consider the following typical (?) large University problem:
+
+The Setting:
+A dozen or more computer "labs", each with as many as several dozen DOS
+computers.  Each computer is connected to a (write-protected) file server. 
+Each computer has a hard drive as well.  The computers are booted from
+their C: drives, then (via device drivers and autoexec.bat) they log onto
+the file server.
+
+The Goal:
+To provide an automated way of removing main boot record (MBR) viruses from
+computers, on boot-up.  This is to avoid the need for on-site, manual
+clean-up by a technician.  "Boot ROMS" are too expensive, for underfunded
+education institutions.  The solution must be a software one.  The idea is
+to AUTOMATICALLY (via software) 1. identify that an infection has occurred,
+2. clean the MBR and 3. re-boot clean.  Even if the infection is by a
+stealth virus.
+
+The Problem:
+MBR-infecting viruses trap the INT 13 vector from the vector table in RAM,
+and re-route it through themselves, before anything else is executed.  They
+may include Stealth techniques to stop all subsequent efforts to access
+"absolute sector one".  After an infected boot-up, then, one cannot simply
+write a clean MBR copy back into place and re-boot.
+
+The Current Technology:
+Good methods are available to identify that the system has been infected.
+Several memory scanners are available to recognize known viruses, while
+site specific memory checkers can be written to recognize any "change" to
+the system after boot-up.  DiskSecure can recognize that an unexpected
+change has occurred, and make the hard drive unusable until the MBR is
+manually cleaned, from a clean floppy boot.  None of these, to my
+knowledge, can do the cleaning automatically from a stealth-infected
+environment.
+  
+Four Solution Ideas: 
+1  (Requires knowing what the correct BIOS INT 13 call address is.)  On
+each boot-up, re-write the "correct" INT 13 call into the vector table,
+thereby "cutting off" the virus, then copy the clean MBR back into absolute
+sector one.  This will not work on most systems, because DOS, device
+drivers, and the network software may trap INT 13 as well, between the
+execution of the virus and the cleanup program.  To re-install the BIOS INT
+13 vector would also cut off these essential parts of the system.
+
+2. (Requires knowing what the correct BIOS INT 13 call address is.) Modify
+the MBR code so that it uses the correct INT 13 call to see whether it has
+been dislodged from absolute sector one, and if so to rewrite itself to
+sector 1, and re-boot.  It should include an integrity check of itself,
+before it re-writes itself.  This should work against MBR viruses which
+move the "proper" MBR to another hidden sector, on infection, and run it
+after they are done running.  It will not work against MBR viruses that
+completely replace the MBR code.
+
+3. (Requires knowing what the correct BIOS INT 13 call address is.)  Run a
+program from the server, which uses the correct INT 13 call to read whether
+the correct MBR has been dislodged from absolute sector one, and if so use
+the correct BIOS call to put it back.  Then automatically reboot the
+computer.
+
+4. Generic Scanner approach.  For a virus to re-route the INT 13 call, it
+must store the correct call address somewhere within itself.  For all known
+viruses, then, the location of the "true INT 13 vector" within the virus is
+also known.  In theory a memory scanner might be designed not only to
+recognize a given infection, but also to 1. check the expected location for
+the correct INT 13 pointer, 2. use some logic to decide whether it is in
+fact the correct pointer, 3. use that pointer (in the same way the virus
+uses it every time the computer does a disk access) to re-install the
+correct MBR into absolute sector one, and 4. reboot the computer.
+
+Discussion:
+For solutions 1, 2, and 3 the implimentation is dependent on the specific
+BIOS chip set.  A more general "setup" program might be designed, if one
+had the needed data for each known BIOS set. (This could be an expandable
+data table, assumably).  Padgett: might such a feature be incorporated into
+the DiskSecure package?
+
+Solution 4 suffers the limitations of all scanner approaches: it only works
+for known viruses.  It is succeptible to errors caused by modifications of
+those viruses.  As well, it requires a full, up-to-date database of virus
+information. (Frisk, McAfee, what do you think?)  I've experimented with
+the principle behind solution 4 to remove the Empire virus from a computer,
+and it worked well.  But I did no error checking.  With only three
+distinct boot sector viruses in my collection, I don't think I can
+implement #4, except at an experimental level.
+
+Thoughts, comments anyone?
+
+   Tim Martin
+   Soil Science
+   University of Alberta
+** Disclaimer: these opinions are my own: my employer has none. **
+
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 01:50:24 +0300
+From:    eldar@lomi.spb.su (Eldar A. Musaev)
+Subject: Non-registered soviet virus (PC)
+
+Name of Virus
+	C-544
+Alias
+	Paniker
+Virus family
+	ideologically - Vienna
+First occurrence
+	middle 1990
+Site of first occurrence
+	Leningrad, USSR
+Type of virus
+	COM infector, non-resident
+Length of virus
+	544
+Operating system
+	MS-DOS
+Version of OS
+	3.* and above
+Computers
+	IBM and compatibles
+Direct detection
+	Infected files contain the readable strings:
+	'*.COM', 'PATH=' and 'That could be a crash, crash, crash !'
+        Marked files in the seconds field in directory.
+Infection mechanism
+        Searching path and current directory, use standard
+	int 21 file functions
+Infection targets
+	Any COM-file
+Interrupts
+	No
+Payload
+	Prints the message every Friday 13
+Special clues
+	No
+Detection
+	Use the message as a identification string,
+Prevention
+	Any active monitor
+Removal
+	Remove infected files, no fugs this time
+Analysis
+	Dr.Eldar Musaev
+	USSR 191 011 Leningrad
+	Fontanka 27 LOMI AN USSR
+	eldar@lomi.spb.su
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 11:24:58 -0400
+From:    Helena M Vonville <hvonvill@magnus.acs.ohio-state.edu>
+Subject: Exchanging floppies
+
+I work in a library in which we have been accepting disks from patrons
+in exchange for a formatted disk.  They then use those in our CD-ROM
+workstations to download.  We re-format the disks we receive to use in
+the exchange process.  To date, we have not had any infections
+(acording to virscan and f-prot).  My question is this: would we be
+better off zapping the disks in the demagnitizer, then formatting?  Or
+is it safe to just re-format the disks?  My concern is not only for
+our systems, but the potential for speading virii to our patrons.  We
+prefer our users don't bring disks from their homes or offices to use
+in our workstations for obvious reasons, but I want to make certain we
+are being as careful as possible.  I will be working with a task force
+on downloading from workstations, report due in September, and I would
+like to get a definitive answer (as definitive as you all get!) ASAP
+to report to my group.
+Helena VonVille
+Education/Psychology Library
+Ohio State University
+hvonvill@magnus.acs.ohio-state.edu
+
+------------------------------
+
+Date:    11 Jul 91 20:58:15 +0000
+From:    spaf@cs.purdue.edu
+Subject: Re: General definition part 1 (general)
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+>I must make mention, before I continue, of the work of Fred Cohen.
+>Dr. Cohen is generally held to have coined the term "computer virus"
+>in his thesis, published in 1984.  
+
+I certainly don't wish to detract from any of the fine work done by
+Fred Cohen, but the above is one of two technical fallacies about his
+work that people keep retelling.
+
+The two myths and the corresponding truths:
+
+Myth #1) Fred Cohen coined the term "computer virus" in his PhD
+dissertation.
+
+Fact: In his dissertation, Fred credits his advisor, Len Adelman, with
+suggesting the term "computer virus" for what Fred was studying.
+However, Dr. Adelman was not the first person to use that term.  In
+the 1970-1972 time frame, the science fiction author David Gerrold
+coined the term for something similar to what we know as a computer
+virus.  This was as part of his short stories about the "G.O.D.
+machine" collected into the novel "When H.A.R.L.I.E. Was One"
+(original version, published in 1972).
+
+
+Myth #2) Fred Cohen invented the computer virus in 1983.
+
+Fact: A number of independently-developed computer viruses appeared
+"in the wild" on Apple II machines in 1981.  Some of these were
+harmless experiments that were contained, but a few were malicious and
+circulated on bulletin boards.  The "Festering Hate" and "ElkCloner"
+viruses were known about that time, but weren't called viruses.
+
+Furthermore, if you believe Ken Thompson about his self-reproducing
+compiler patch, described in his Turing Award presentation in 1983,
+then he had developed something meeting Cohen's definition of "virus"
+prior to Fred...and possibly prior to the other examples.
+
+
+Basic Fact: Fred Cohen was the first person to formally define and
+study the properties of computer viruses.  He did this as his PhD
+thesis at USC in 1983.  This was (and is) important, pioneering work.
+However, Fred neither invented the computer virus, nor did he coin
+that term.
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 14:42:13 -0700
+From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: T.S.R's ( Which is the best )
+
+Alan@aj.ds.mcc.ac.uk (Alan Jones) writes:
+
+> The products that I have looked at so far are :-
+> Dr Solomons                Virus  Guard
+> Norton Anti-Virus          Virus  Intercept
+> McAfee Associates          Vshield
+> Vet                        Vet-Res
+
+Two very good products you have missed are FPROT and Virex-PC.
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 23:00:40 +0000
+From:    bucacs@ux1.cts.eiu.edu (Carlos Dragonslayer Butler)
+Subject: Norton anti-virus modification (PC)
+
+	In order to get updates to Norton's Anti-Virus software (to
+detect new viruses), you must register the software and use their
+bulletin board to download the new definitions. Now, I would do this
+but, it's not my software , it's the university's. I seem to be the
+only one concerned with virus attacks on our computers because they
+[the admin.]  refuses to register our NAV. I've asked several times to
+no avail (I think they lost the registration stuff). Even if I did get
+it registered, I think they would 'pitch a bitch' about me making long
+distance calls to a BBS.
+	Now I'm turning to you, the virus experts. How can I define
+viruses for NAV using the info commonly given in this forum (you all
+get define new viruses before NAV anyway).
+
+- -- 
+ Carlos Dragonslayer Butler|       "People often condescend          
+   bucacs@ux1.cts.eiu.edu  |     what they fail to comprehend.       
+       Lord of House       |      Ignorance makes life easier.       
+                           |  Peace, knowledge, love and happiness." 
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 23:12:55 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: T.S.R's ( Which is the best ) (PC)
+
+PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+[message deleted...]
+>By the way, has anyone ever tried to make anti-virus software aimed at
+>lab PC's, etc, where the user of the computer might be *trying* to
+>infect the machine? Obviously scanning utilities are poor choices in
+>any case, if the user isn't likely to be motivated to run them, but
+>even automatic, resident scanners are useless with some users unless
+>they make a lot of noise, or send secret messages to a supervisor,
+>etc.
+
+The VSHIELD program has an option to disallow loads of programs that
+have not certified by VIRUSCAN with the /CV option.  This is not a
+"serious" attempt at access control, but will stop people from running
+software who are unfamiliar with the software (and of course, VSHIELD
+has to be loaded).
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - - -
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com
+4423 Cheeney Street	 | FAX   (408) 970-9727	| (Aryeh Goretsky)
+Santa Clara, California	 | BBS   (408) 988-4004	| 
+95054-0253  USA		 | v.32  (408) 988-5190	| mrs@netcom.com
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | (Morgan Schweers)
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 16:54:46 -0700
+From:    msb-ce@cup.portal.com
+Subject: Detecting viruses in packed programs. (PC)
+
+In a recent VIRUS-L posting Otto Stolz <RZOTTO@DKNKURZ1.BITNET> wrote:
+
+ > However, it is not enough to scan in this dual way! Recently,
+ > it has occurred to me that a program may be packed several
+ > times with various utilities, resulting in several layers
+ > of packing and possible virus infection.
+
+My experience with program packers is that once a program has been
+packed, further attempts to pack it will not result in enough of a
+saving to make it worthwhile, and the packing program (such as PKLITE
+or LZEXE) will refuse to generate a new, longer EXE file. For this
+reason, the dual level scanning should be sufficient unless multiple
+encrypting has been done maliciously in order to create a trojan horse
+that will drop a virus.
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 20:50:12 -0400
+From:    DYCUJA@morekypr.BITNET
+Subject: Wanted: info on nVIR and WDEF (Mac)
+
+Can someone (anyone) please send be some info on:
+
+1)  The nVIR virus family, and;
+2)  The WDEF virus
+
+These are Macintosh viruses....
+
+The information on viruses in the user's guide of Vires 3.2 is
+pathetically little, so if anyone can tell me a little of the history
+of these viruses and the types of damage they do.  Any help would be
+greatly appreciated.
+
+Thank You,
+Jeff Dycus
+Dycuja@Morekypr.bitnet
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 09:26:13 -0400
+From:    QSD@NIHCU.BITNET
+Subject: Flushot Plus - Which Version? (PC)
+
+Could someone please tell me what the current version of Flushot Plus
+is.  I have seen versions 1.81 and 1.82.  1.81 was found on a server
+that maintains copies of the Simtel 20 archives and version 1.82 was
+found at the Computer Security Association's bulletin board.  I would
+appreciate any info that anyone could give.  If there is a more
+current version, than either of these I would be interested as well as
+where it could be found.  Any other info about the program woudl be
+helpful too.
+
+Thanks,
+Mike
+
+Bitnet: QSD@NIHCU.bitnet
+
+You may respond by email if that would be easier.
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 14:33:23 +0000
+From:    bsrdp@warwick.ac.uk (Hylton Boothroyd)
+Subject: Re: Stoned and DIR command (PC)
+
+vasya@stack.fian.msk.su (Vasili Bykov) writes:
+> By the way, I had Stoned crawled to my disks once, and  it  made havoc
+> then (because it cannot spread itself to the diskettes of some formats
+> correctly and spoils directory  record  when  doing so). Beware Stoned
+> if you use diskettes formatted to 720 K !
+
+I recently had a nasty time with Stoned. In trying to rebuild my
+hard-disk by selectively recovering files from a PCTOOLS 5.1
+(non-standard format) set of backup disks, I found that each
+interruption of the recovery process caused the current floppy to
+become unacceptable to PCBACKUP. I effectively destroyed half that
+backup set before discovering what was going on.
+- -- 
+Hylton Boothroyd        h.boothroyd@cu.warwick.uk.ac
+Warwick Business School Janet: h.boothroyd@uk.ac.warwick.cu
+University of Warwick   Darpa: h.boothroyd%cu.warwick.ac.uk@relay-nsfnet.ac.uk
+COVENTRY, CV4 7AL       Uucp:  h.boothroyd@warwick.uucp
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 12:35:00 -0500
+From:    John Perry KG5RG <PERRY@UTMBEACH.BITNET>
+Subject: Possible new stoned variant (PC)
+
+I have recently run across a possible new variant of the Stoned virus
+here on the University of Texas Medical Branch campus. The history
+behind this statement is the fact the FPROT116 detected the
+possibility that the variant existed in the boot sector of a user's
+hard disk and was unable to remove it.  Various attempts to infect a
+5.25 360K diskette were un-successful. The diskette would have been
+sent to Fridrik Skulason for examination. The best I could achieve was
+a PBR dump using F-PBR. The dump was sent to Fridrik for disposition.
+
+ John Perry KG5RG                    | perry@beach.gal.utexas.edu - Internet
+ University of Texas Medical Branch  | PERRY@UTMBEACH             - BITnet
+ Galveston, Texas  77550-2772
+
+------------------------------
+
+Date:    12 Jul 91 03:02:46 +0000
+From:    bgsuvax!maner@cis.ohio-state.edu (Walter Maner)
+Subject: FINAL CALL, COMPUTING & VALUES CONFERENCE, AUG 12-16
+
+                    FINAL CALL FOR PARTICIPATION
+
+
+                             N C C V / 91
+           THE NATIONAL CONFERENCE ON COMPUTING AND VALUES
+              August 12-16 in New Haven, Connecticut USA
+
+   o  CURRENT STATUS
+
+      The workshop structure of N C C V / 91 limits participation to
+      approximately 500 registrants, but space is still available at this
+      time (mid-July).  Registration is $225 for the full conference, $100
+      for any of the special one-day workshops.  Limited scholarships are
+      available for persons with disabilites.  Deeply discounted motel rates
+      (Quality Inn, 203/387-6651) and air fares (USAir Gold File #36470000)
+      remain available.
+
+   o  MORE THAN 50 DISTINGUISHED SPEAKERS
+
+      Ronald E. Anderson, Daniel Appleman, John Perry Barlow,
+      Tzipporah Ben Avraham, Tora Bikson, Timothy Binkley, Della T.
+      Bonnette, Leslie Burkholder, Terrell Ward Bynum, David Carey,
+      Jacques N. Catudal, Gary Chapman, David Chaum, Frank Connolly,
+      Marvin Croy, Peter Danielson, Dorothy Denning, Peter Denning,
+      Charles E. M. Dunlop, Batya Friedman, Ken W. Gatzke, Richard
+      Gordon, Donald Gotterbarn, Michael S. Hart, Barbara Heinisch,
+      Deborah Johnson, Mitch Kapor, Isaac Victor Kerlow, John Ladd,
+      Marianne LaFrance, Ann-Marie Lancaster, Paul Lansky, Doris
+      Lidtke, Walter Maner, David H.  Martin, Dianne Martin, Keith
+      Miller, James H.  Moor, William Hugh Murray, Barbara Nessim,
+      Peter Neumann, George Nicholson, Helen Nissenbaum, Daniel Ort,
+      Judith Perrolle, Amy Rubin, Lillian F. Schwartz, Sanford
+      Sherizen, John Snapper, Kenneth Snelson, Eugene Spafford,
+      Richard Stallman, T.C. Ting, Willis H.  Ware, Sally Webster,
+      Vivian Weil, Joseph Weizenbaum, Terry Winograd, Richard A.
+      Wright, and Bob Zenhausern
+
+   o  18 FOUR-DAY WORKSHOPS ON SIX MAJOR THEMES (MAIN TRACKS)
+
+      -  Computer Privacy & Confidentiality
+      -  Computer Security & Crime
+      -  Ownership of Software & Intellectual Property
+      -  Equity & Access to Computing Resources
+      -  Teaching Computing & Values
+      -  Policy Issues in the Campus Computing Environment
+
+   o  7 ADDITIONAL ONE-DAY WORKSHOPS (SHORT TRACKS)
+
+      On August 13th
+      -  Short track on philosophical and ethical issues
+      -  Short track on campus computing issues
+
+      On August 14th 
+      - Short track on legal and governmental issues 
+      - Short track on business and computer ethics issues 
+      - Short track on ehical issues in city government computing
+
+      On August 15th
+
+      - Short track on issues of accessibility for persons with
+        disabilities
+      - Short track on software ownership issues
+
+   o  COMPUTER ART BY WORLD-FAMOUS ARTISTS
+
+   o  COMPUTER MUSIC BY A NATIONALLY KNOWN COMPOSER
+
+   o  FILM FESTIVAL ON COMPUTING AND HUMAN VALUES
+
+   o  EXTENSIVE EXHIBITS
+
+      -  Books and articles
+      -  Organizations and resources
+      -  Hardware and software
+      -  Adaptive technology
+
+N C C V / 91 is funded in part by the National Science Foundation
+and hosted by the Research Center on Computing and Society and
+Southern Connecticut State University.
+
+TO REGISTER IMMEDIATELY and assure yourself of a place at N C C V,
+please send a check payable to "B G S U" for $225 (full conference) or
+$100 (one-day) to 
+
+     Professor Walter Maner
+     Dept. of Computer Science
+     Bowling Green State University
+     Bowling Green, OH 43403 USA
+
+FOR ADDITIONAL INFORMATION and literature, contact Professor Maner as
+follows
+
+   BITNet      MANER@BGSUOPIE.BITNET
+   InterNet    maner@andy.bgsu.edu (129.1.1.2)
+   Fax         (419) 372-8061
+   Phone       (419) 372-8719  (answering machine)
+   Phone       (419) 372-2337  (secretary)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 124]
+******************************************

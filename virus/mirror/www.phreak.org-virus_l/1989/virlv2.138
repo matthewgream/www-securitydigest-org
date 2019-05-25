@@ -1,0 +1,129 @@
+VIRUS-L Digest             Thursday, 15 Jun 1989       Volume 2 : Issue 138
+
+Today's Topics:
+WP virus (PC)
+Request for info on viruses (PC)
+The strange story of the WordPerfect virus (PC)
+
+---------------------------------------------------------------------------
+
+Date:     Wed, 14 Jun 89 21:02 N
+From:     ROB_NAUTA <RCSTRN@HEITUE5.BITNET>
+Subject:  WP virus (PC)
+
+I read the messages about the so-called WP virus. The message states
+that the virus attacks WP.EXE and any other EXE file. WP complains
+with 'Can't find correct copy of WP.EXE' and something more. This is
+not a WP virus ! We have to thank Wordperfect Corporation for building
+in a virus-checker in WP.EXE.  WP checks its own EXE file and prints
+this message when it has been modified.  This traps EXE infectors. It
+seems to me that this virus doesn't infect WP.EXE specifically, just
+any EXE file that is started, with WP.EXE as the only one giving a
+proper warning.
+
+Rob J. Nauta
+rcstrn@heitue51.bitnet
+- --- Fidelio Software ---
+
+------------------------------
+
+Date:    Thu, 15 Jun 89 16:39:37 SST
+From:    Y T Yeo <CCEYEOYT@NUSVM.BITNET>
+Subject: Request for info on viruses (PC)
+
+Hello! I'm new to this list. I wonder if any of you could send me info
+on (c)Brain, Ping-pong virus and a virus which adds 1701 bytes to .com
+files (call 1701 virus?). Info such as how diskettes/harddisk get
+infected, what these viruses do and the procedures/vaccines to remove
+the viruses would be of great help to me. You can send the info direct
+to me at CCEYEOYT@NUSVM.  BITNET.Thanks in advance for all your help.
+
+Y T Yeo
+
+------------------------------
+
+Date:    Thu,  15 Jun 89 14:46:58 +0300
+From:    Y. Radai <RADAI1@HBUNOS.BITNET>
+Subject: The strange story of the WordPerfect virus (PC)
+
+  A virus which specifically infects WordPerfect was described recen-
+tly by people from Pace and Stanford.  Despite a few discrepancies in
+some of their descriptions, I suspect that they have the same virus
+which was described in VIRUS-L last January by Eldad Salzmann and Dirk
+Bode.  In any case, since I have just now discovered the explanation
+for that virus, I am giving it here.
+
+  Last January, Eldad Salzmann described in VIRUS-L how his Word-
+Perfect program suddenly started looking in drive A: for the file
+WP.EXE when it had previously been working well from his hard disk.
+Soon Dirk Bode reported that this behavior sounded like the problem
+they had, which was caused by a memory-resident virus that attaches
+itself to every executed COM or EXE file except WP 4.2; however it
+prevents WP from using the hard disk.
+  This sounded a lot like the behavior of the Israeli virus, although
+as far as I knew, that virus never alters normal execution of a pro-
+gram it infects.  Also, while one could see from the disassembly that
+the virus was deliberately coded not to infect COMMAND.COM, there was
+absolutely nothing to indicate that WP was also singled out for special
+treatment.  So my guess was that either someone had hacked the Israeli
+virus to make it attack WP, or that the WP problems were caused by
+something other than a virus.
+  Later Otto Stolz kindly sent me a copy of Dirk's virus, mentioning
+that he could find no difference between it and the Israeli virus.
+But it was only a few days ago, when Eldad sent me his copy of WP.EXE,
+that I finally got around to researching this virus.  I have now found
+the solution to the enigma.
+  First of all, I verified that the WP virus is indeed identical with
+the Israeli virus.  There now remained two main questions: (1) How
+can a virus which is programmed to add code to files without affecting
+their behavior, not do this in *all* cases?  (2) What is so special
+about WP.EXE?  I discovered that when the virus is in RAM and WP is
+executed, instead of adding 1808 bytes to the end of WP.EXE, as it
+does with almost every other EXE file, the virus *overwrites* part of
+WP.EXE (at least in the case of WP 4.2) with the 1808-byte viral code!
+Now when a WP.EXE file is executed, WP apparently checks itself for
+validity before doing anything else.  If the virus has overwritten
+code instead of appending it, WP will discover that it is invalid.
+This causes it for some reason to look for the file WP.EXE on drive
+A:.  If it doesn't find it, it issues the message "Can't find correct
+copy of WP.EXE".  In any case, one can no longer use the copy of
+WP.EXE on the h.d.
+  This was where I had gotten to at the beginning of the week.  I
+dropped the subject for a while to work on other things, until yester-
+day, when (without consciously thinking about the matter) it suddenly
+hit me *why* the Israeli virus treats WP.EXE differently from other
+EXE files.  In order to determine the length of an EXE file it is
+infecting, a virus can use the the length-of-file field (bytes 2
+through 5) in the header at the beginning of the EXE file, and this is
+indeed what the Israeli virus does when infecting EXE files.  But what
+if the value of this field is incorrect??  I looked at these bytes in
+the uninfected WP.EXE, and found that they were 80 01 29 01 (hex).
+Translating, we get (01*256 + 29h - 1)*512 + 01*256 + 80h = 151936,
+which is much smaller than the actual length of the file (269963
+bytes).  Checking the infected WP.EXE I found that the starting
+address of the viral code was precisely 151936.  Also, by changing
+these bytes in the uninfected WP.EXE to 8B 00 10 02, I was able to get
+WP to execute normally even after infection.  Thus my hunch was con-
+firmed.  (As to why the value of this field was incorrect in the
+header of WP.EXE, I leave this to the WordPerfect Corp. to explain.)
+  I have also heard of another file, PK36.EXE, which is overwritten
+by the Israeli virus.  Presumably this too is due to an incorrect byte
+count in its header.
+
+  The description by "IA96000" of the virus discovered at Pace differs
+from that of the Israeli virus in a few respects.  However, experience
+has taught me that descriptions of viruses at a time of panic are
+often inaccurate, so that my guess is that it's the same virus.  In
+any case, anyone who needs a program for eradicating the Israeli virus
+(plus a few others) can obtain one (UnVirus by Yuval Rakavy) by writ-
+ing to me.  (Please indicate if you want it in uuencoded or xxencoded
+form.)
+
+                                          Y. Radai
+                                          Hebrew Univ. of Jerusalem
+                                          RADAI1@HBUNOS.BITNET
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

@@ -1,0 +1,616 @@
+Subject: RISKS DIGEST 17.60
+
+RISKS-LIST: Risks-Forum Digest  Friday 5 January 1996  Volume 17 : Issue 60
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, etc.       *****
+
+  Contents:
+Spy Viruses (Edupage)
+German Telecom Software forgets holiday (Debora Weber-Wulff)
+Re: Timing cryptanalysis of RSA, DH, DSS (Paul C. Kocher
+    with an interspersed note from Jonathan Epstein)
+Risks of installed bases (was: Timing Cryptanalysis) (Barry Jaspan)
+IP mistakes and stealing network traffic (John F. Whitehead)
+Re: X-31 crash follow up (Pete Mellor)
+Computer Security Gathering (Hank Wolfe)
+"Physical Attack On Hard Disk Drives" [Anonymized contributor]
+Re: Floating-Point Numbers (Wade Bowmer)
+Giving CMU the finger... (Peter da Silva)
+Re: Nearest-match alphabetic metrics (Kerry Buckley)
+Gasoline Pump Receipt Risks (Charles P. Schultz)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 1 Jan 1996 19:48:38 -0500 (EST)
+From: Educom <educom@elanor.oit.unc.edu>
+Subject: Spy Viruses (Edupage, 31 December 1995)
+
+Syndicated columnist Gina Smith predicts a proliferation of computer "spy"
+viruses similar to Microsoft Windows 95's registration wizard that can zip
+around your CPU and determine whether you've legally registered all the
+software you've got loaded on there: "It's already possible to do this sort
+of scanning without alerting the user, so it doesn't take much of a futurist
+to imagine the same sort of stealth technology being used on unknowing
+bulletin board and Internet users.  In fact, I think a trend away from
+juvenile-prank computer viruses to information-seeking `spy' viruses isn't
+merely likely, it's inevitable."  (Popular Science Dec 95 p12)
+
+------------------------------
+
+Date: 5 Jan 1996 13:57:50 GMT
+From: weberwu@tfh-berlin.de (Debora Weber-Wulff)
+Subject: German Telecom Software forgets holiday
+
+The German Telecom, a private telecommunication system with a monopoly in
+Germany for 2 more years, has upped considerably the prices for telephone
+usage, some say to fill the coffers before the competition wars. Local calls
+now cost 12pf for 90 seconds [and you can't say anything interesting in
+German under 90 seconds...], calls to Mom and Dad and Aunt Sally are more
+expensive except when called between 9pm and 5am, etc. The only time one can
+really afford to call is on weekends and holidays.
+
+The tariffs went into effect on 1 Jan 1996, a holiday [used to sleep off all
+that alcohol from the night before]. Lucikly, some suspicious people used
+stopwatches at phone boots to clock the units -- and they were being used up
+at the rate of 1 unit per 90 seconds, just like a normal Monday. Enraged
+customers flooded the Telecom hotlines; one man tried to have the police
+take down a report of thievery (they refused); politicians and news
+commentators tsk-tsk-ed. The next day the Telecom somewhat red-faced
+admitted that they had "forgotten" to program the first of January as a
+holiday. They assured that all persons damaged would be compensated - how
+they are going to do that when we don't have itemized bills in Germany will
+probably be the basis for one of my next RISKS reports from Germany.
+
+Debora Weber-Wulff, Technische Fachhochschule Berlin, Luxemburger Str. 10, 
+13353 Berlin, Germany http://www.tfh-berlin.de/usr1/name/weberwu/public_html/
+
+  [Also reported by Thomas Fuckner <fuckner@informatik.uni-muenchen.de>. PGN]
+
+------------------------------
+
+Date: Wed, 3 Jan 1996 01:09:49 -0800
+From: pck@netcom.com (Paul C. Kocher)
+Subject: Re: Timing cryptanalysis of RSA, DH, DSS (Tomazic, RISKS-17.59)
+
+> 1) Security of practical cryptosystems do not rest solely on security of
+> crypt algorithm. [...]
+
+Using this logic, the fact that there are often be other weaknesses should
+make people panic even more.  While there are usually additional ways to
+attack a cryptosystem, a weakness in the cryptography will often completely
+destroy the system's security.
+
+The primary reason the attack isn't a cause for panic is that (1) it can be
+fixed and (2) there aren't many sophisticated cryptosystems online yet that
+use high-value certificates.
+
+> 2.) It is not so difficult to rewrite algorithms to be resistant to timing
+> attacks, i.e., to have execution time independent of secret key.  For
+> example, the algorithm to compute R = y^x mod n given in the Kocher paper
+> can be simply rewritten as: [program deleted; see RISKS-17.59.  PGN]
+> to be resistant to timing attacks.
+
+This does not work.  As I explain in the abstract, this will not eliminate
+the RISK and actually tends to make the problem worse.
+
+The problem is that doing the multiply regardless of whether the exponent
+bit is set does not eliminate the timing variations.  It just pushes the
+variation forward until the next iteration of the exponentiation loop.  The
+amount of time required for iteration i now depends on exponent bit from
+iteration i-1.  This will often help the attacker since zero bits can now be
+identified from positive correlations instead of the lack of a correlation.
+
+There has been a disturbing amount of technically inaccurate talk about the
+timing attack.  A quick rule of thumb when trying to figure out how many
+samples are required is to assume that the number of measurements is
+proportional to:
+
+     (timing_signal_size / measurement_error)^2
+
+where timing_signal_size is the size of the signal being detected (in the
+example above, this would be the standard deviation of the modular
+multiplication function) and measurement_error is the standard deviation of
+the error being detected (including both measurement errors and errors
+induced by the not-yet-attacked portions of the modexp function).  Good
+local network connections seem to have a S.D. of about 1ms, while
+well-connected Internet sites typically have a S.D. of a few milliseconds.
+
+As explained in the abstract (http://www.cryptography.com)
+there are four good solutions to the timing attack RISK:
+
+   (1) Don't reuse keys (impractical with certificates)
+   (2) Prevent attackers from making timing measurements (i.e.
+           have a standard deviation of at least several seconds)
+   (3) Make modular exponentiation take exactly constant time.
+   (4) Blind before the modexp and unblind afterward.
+
+Note that (3) is extremely difficult to do on most computers since factors
+like system load, system response time, etc. can leak timing information.
+Even on cryptographic tokens, details like power consumption can still leak
+timing information.  Option (4) is thus the simplest solution.
+
+Paul Kocher, Crypto consultant  pck@netcom.com 415-354-8004, FAX: 415-321-1483
+
+  [Jonathan Epstein <epstein@ncbi.nlm.nih.gov> also commented on Tomazik's
+  program, warning about using an optimizing compiler that outsmarts
+  you (in this case, realizing that the "B" computation need not be 
+  performed).  ``This is one of the reasons why it is hard to build a
+  portable, secure solution; a solution that works securely in *your*
+  environment may be unsecure in other environments.''  PGN]
+
+------------------------------
+
+Date: Tue, 2 Jan 96 14:34:52 EST
+From: Barry Jaspan <bjaspan@bbnplanet.com>
+Subject: Risks of installed bases (was: Timing Cryptanalysis)
+
+I am dismayed by the large number of competent people say that the timing
+cryptanalysis attack is not really a problem because "it is easy to rework
+the implementation to avoid the attack."
+
+The fact that implementations CAN be fixed is not the point.  There are many
+systems ALREADY DEPLOYED that have this problem.  Those systems are already
+at risk.  The fact that it takes an engineer a few hours to develop a
+technical solution is irrelevant.  History shows that it takes a long time
+to update systems in the field.
+
+There are good reasons not to get too worried about this kind of attack.  My
+point is that "it is easy to fix" is NOT among them.
+
+Barry Jaspan, bjaspan@bbnplanet.com
+
+------------------------------
+
+Date: Wed, 3 Jan 1996 10:51:33 -0500
+From: "John F. Whitehead" <jfw@wral-tv.com>
+Subject: IP mistakes and stealing network traffic (Bereza, RISKS-17.59)
+
+As I was about to send my message, Bill Bereza <berezaw@river.it.gvsu.edu>
+wrote about "Dynamic IP mistakes" to RISKS 17.59:
+
+>I think the biggest risk from this is that I was receiving dozens of possibly 
+>private messages intended for someone else. Mistakes in configuring name
+>servers or assigning IP addresses could cause anyone's mail to be
+>misdirected.
+
+A similar situation happened to my service provider, not to an individual
+address, but an entire C-class network.
+
+Last night, an Internet service provider in New York added a block of
+addresses for themselves to use.  They chose addresses already in use by
+my North Carolina-based ISP, announced them to their provider, who in turn
+announced them to MAE-East, the major east coast routing information
+center.  The new addresses were established, even though they were already
+assigned to us.  Until they fixed the problem, all traffic for our network
+got sent to New York.  The problem in double-assigning our addresses was
+compounded by the fact that neither of the N.Y. ISPs had contact people
+available for 24-hour support.
+
+The risks could be enormous.  Not only is there a potential for accidents,
+but also for sabotage.  What if instead of our block of addresses, the ISP
+had chosen that of the FBI, or the White House?  What if someone rerouted
+a block of addresses to which people were sending credit card order
+information, for 10 minutes?  We have a way to go before we can trust the
+Internet to our most important messages.
+
+John F. Whitehead  OnLine Technical Director  jfw@wral-tv.com  919-821-8605
+
+------------------------------
+
+Date: Thu, 28 Dec 95 18:23:24 GMT
+From: Pete Mellor <pm@csr.city.ac.uk>
+Subject: Re: X-31 crash follow up (Gomez and Fuller, RISKS-17.46) 
+
+I am a bit behind with my e-mail, so have only just seen the forwarded mail
+between Martin Gomez <martin@hiflight.com> and Andy Fuller
+<acfa@eci-esyst.com> in RISKS-17.46. I would like to take issue with
+Martin's view.
+
+Martin disagrees with the statement in the original posting that:- 
+  "It is apparent to me that this crash is the result of
+   a bug in the flight control software and sensor hardware of the 
+   X-31 aircraft.  The computer was unable to compensate for a loss 
+   of the airspeed indicator."
+
+and writes:- 
+
+> That is a non-sequitur.  A "bug" is not the same as a missing feature.
+> Microsoft Word 6.0 can't do my taxes for me, but that's not a bug. 
+> To me, a bug is when the computer does something other than what 
+> the designer intended. If the designer intended the computer to detect 
+> and compensate for the loss of a sensor, then you're right, it was a bug. 
+> My understanding, from talking to engineers on the X-31 project at Dryden, 
+> is that the flight computer was NOT meant to detect such failures. 
+> It therefore acted correctly, in the sense that it did what it was 
+> designed to do.  Obviously, it would have been nice if it could detect 
+> that the airspeed sensor had failed, but it's inability to do that is 
+> not a "bug" as you suggest.
+
+and later:- 
+
+> I assume your article ... is a warning to software designers to be 
+> careful what they assume, etc.  You must realize, though, that 
+> "it was a software problem" is the perennial cry of the hardware 
+> engineer who asked for the wrong software, and got what he asked for.
+
+and still later:- 
+
+> If a pilot crashes the remaining X-31 because he tried to land it
+> vertically, or to fly coast-to-coast, that's not a software problem, 
+> so neither is failure to detect a sensor error.
+
+Andy offers an (unnecessary, IMHO) apology in response:- 
+
+> [Guilty as charged.  I agree with you, the X-31 crashed because of a
+> SYSTEM DESIGN error, not a software bug.  It would have taken more than 
+> a software change to prevent the loss of control.
+
+Having extracted what I think are the key statements, where do I start? 
+
+Martin's attitude sounds horribly like the perennial cry of the airframe 
+manufacturer after an accident: "All systems were behaving as specified!", 
+with the (implicit or explicit) conclusion: "Therefore it must have been 
+pilot error!", except that in this case Martin concludes: 
+"Therefore it was a system requirements specification defect." 
+and furthermore (*TOTALLY* incorrectly, IMHO):
+"Therefore the programmer is absolved of all blame." 
+
+Both Martin and Andy seem to believe that there is a world of difference 
+between a "system design error" and a "software bug". 
+
+In fact, a "software bug" is simply a "system design fault" which happens 
+to be located in software rather than in hardware. (I prefer the term 
+"fault" rather than "error" to denote "something wrong with the way the 
+system has been designed".) 
+
+In many cases, the argument as to whether it was a hardware or software 
+design fault that caused an accident is about as futile as arguing about 
+the number of angels that can dance on the head of a pin (except perhaps 
+during an internal post-mortem to decide whose head is going to roll!). 
+The system design includes both hardware and software, and the required 
+functions of the system are shared between them. Different designs may 
+provide the same overall function by partitioning the sub-functions 
+differently between hardware and software. A given design fault might 
+be corrected *either* by a software modification *or* by a hardware 
+modification. 
+
+For example, the Warsaw A320 crash would probably not have occurred if 
+the "on ground" condition had been recognised by the "compressed" signal 
+being received from *either* of the main landing gear struts instead 
+of from *both* of them. It might also not have occurred if the "Weight 
+on Wheels" (WOW) switches had been more sensitive. The logic whereby the 
+"on ground" condition is recognised could have been altered by a software 
+modification. In fact, a hardware modification to the struts to enable 
+the WOW switches to send a signal at a pressure of 2.5 tonne instead of 
+6.5 tonne has now been retrofitted to all of Lufthansa's A320 fleet. 
+This will also reduce the probability of a similar accident, and has 
+been available to airlines operating the A320 since before that 
+particular crash, although at the airlines' own expense. (Airbus, of 
+course, state that the retrofit is in no way connected with the 
+conclusions of the crash investigation, and that the modification 
+was originally devised for reasons of comfort rather than safety.) 
+
+I am very strongly of the following opinions:- 
+
+1. If the function of a system has been so specified that it behaves 
+   in an obviously undesirable way in some circumstances, then THAT 
+   CONSTITUTES A FAULT IN ITS DESIGN. The fact that the fault originated 
+   from the requirements specification phase merely indicates when and 
+   at what level a mistake was made, not that there is no fault. 
+
+   When I was active in supporting operating systems, a proportion of 
+   the incident reports we received were closed with a classification 
+   which meant "The system was behaving as specified but the customer 
+   still has justifiable grounds for complaint." It was realised that 
+   customers would not be fobbed off with the excuse "But that's what 
+   the spec. says it should do!", and such reports were treated in 
+   exactly the same way as those which were diagnosed as being due to 
+   "software bugs" as more narrowly defined, i.e., "The system departed 
+   from specified behaviour because the programmer made a mistake while 
+   coding." In many cases, design modifications were made at a later 
+   release to remove such faults. 
+
+2. The omission of an obviously desirable feature IS A DESIGN FAULT. 
+   It is just one example of the type of fault that originates in the 
+   requirements specification phase. 
+
+   In the X-31 case, it is preposterous to argue that the inability of 
+   the system to respond in a safe way to a sensor failure of a type 
+   which occurs quite frequently is anything other than a FAULT. 
+
+3. What constitutes "required behaviour" is not merely "what is in the 
+   specification", but "WHAT A REASONABLE USER WOULD EXPECT". 
+
+   Systems operate in the real world, not in some abstract model of it. 
+   If they are defined according to an inaccurate model of reality, they 
+   must be modified to take account of a more accurate model. 
+
+   A reasonable pilot would expect a flight control system to react in 
+   a safe way to an air-speed sensor failure. Only an unreasonable idiot 
+   would expect it to convert a horizontally landing aircraft into a 
+   vertically landing aircraft. 
+
+4. THE SOFTWARE ENGINEER CANNOT AFFORD TO IGNORE THE WHOLE SYSTEM AND ITS 
+   DOMAIN OF APPLICATION. 
+
+   This is one of the main characteristics (IMHO) which distinguishes a 
+   "software engineer" from a "monkey see - monkey do" programmer, and 
+   is one of the things I try to drum into the heads of my students on 
+   the software engineering modules. One of the first things they are 
+   taught is that it is essential to find out what the *real* requirements 
+   are (as opposed to what the customer initially *thinks* they are), 
+   and to use common sense and engineering judgement to elicit a COMPLETE, 
+   consistent and unambiguous specification. 
+
+   If it did not occur to the people who wrote that code to ask the 
+   hardware team what action the system should take in the event of a 
+   sensor failure, then they should be drummed into the manager's office, 
+   where, in front of a parade of their colleagues, their software 
+   engineer's badges are ceremonially torn from their designer T-shirts 
+   and their flow-chart templates broken across the manager's knee, 
+   before they are marched off to spend the rest of their careers 
+   maintaining COBOL programs in the Commercial Division. 
+
+5. BOTH HARDWARE AND SOFTWARE DESIGNERS MUST THINK IN SYSTEM TERMS. 
+
+   Q: "How many software engineers does it take to change a light-bulb? 
+   A: "It can't be done; it's a hardware problem!" 
+
+   Sorry! That attitude won't do where real-time safety-critical 
+   embedded software is concerned! 
+
+
+I assume that Martin, being a pilot, would not have perpetrated a 
+similar cock-up if he had been handed a duff spec. from which to code? 
+
+Cheers! (and a Happy New Year everyone!) 
+
+Pete Mellor, Centre for Software Reliability, City University, Northampton Sq.
+London EC1V 0HB, UK. Tel: +44 (171) 477-8422, Fax: +44 (171) 477-8585 
+
+------------------------------
+
+Date: Fri, 22 Dec 95 12:19:50 1300
+From: Hank Wolfe <hwolfe@commerce.otago.ac.nz>
+Subject: Computer Security Gathering
+
+   [Courtesy of John Rushby <RUSHBY@csl.sri.com>.]
+
+We are holding a computer security conference, called The Gathering, in
+Queenstown, New Zealand on the 13-15 February 1996 at the Millennium Resort
+Hotel. Your readers might be interested in visiting our WEB site which is
+located at:
+
+          http://divcom.otago.ac.nz:800/gathering/
+
+Hank  (Dr. H.B. Wolfe - Chairman: The Gathering)
+
+------------------------------
+
+Date: Thu, 21 Dec 1995 18:01:22 -0800
+From: [Anonymized contributor]
+Subject: "Physical Attack On Hard Disk Drives"
+
+In the September/October 1995 issue of _IDEMA_Insight_ (a magazine for
+people in the hard disk drive business), there's an article "Adhesive
+Dispensing Components: A Hidden Source of Silicone Contamination" by Larry
+Sutton which I find deeply disturbing.  The article can be summarized as
+decrying the fact that you can't buy certified silicone-free dispensing
+syringes.
+
+This is important because even tiny levels of silicone contamination are
+fatal to hard disk drives.  They screw up the interface between the disk and
+the head, causing errors and crashes.  This article is a complaint that the
+use of silicone oils as mold release agents in the plastic injection molding
+of adhesive-dispensing syringes is a cause of reduced manufacturing yield
+and product lifetime for hard disk drives.  Even when the vendor asserts
+that silicone mold release agents were not used for the syringes, there can
+be cross-contamination from other presses in the same facility in which
+silicone oils are used.  Just that tiny amount of contamination, on the
+inside surface of a syringe used to dispense, for example, an adhesive used
+to attach a disk head to a positioning mechanism, can result in premature
+failure of the disk drive.
+
+Add to this the fact that the air inside a hard disk drive is at equilibrium
+with the atmosphere.  Every hard disk drive has a vent or "breather hole"
+through which air can pass.  The vent is filtered, so no particles can pass
+through, but the pores in the filter are much larger than even the largest
+molecules.
+
+When the drive starts up, it gets warm, which causes the air inside the disk
+drive to expand.  Excess air goes out the breather hole.  When the disk is
+shut down, it cools off, and the air contracts drawing in more air through
+the breather hole.  Even on days when the disk drive is not used, there is
+passage of air through the breather hole caused by the daily fluctuation in
+barometric pressure.
+
+So, a water balloon filled with low molecular weight silicones, such as a
+silicone mold release agent, thrown against an air-conditioning system
+intake, seems to me to be a potential hard disk drive killer.  Even better
+might be a pure silicone oligomer.  E.g., octamethylcyclotetrasiloxane is
+widely used as a precursor for making silicones such as adhesives and
+sealants so it's fairly cheap, about $20 a pound for industrial grade.  It's
+both volatile and reactive, undergoing a ring-opening polymerization.
+
+What would it be like to be attacked?  If a slow releasing system like an
+oil were used, the target might not even notice that instead of serving for
+5 or 10 years, the hard drives were crashing after 2 or 3 years.  If a pure
+volatile silicone oligomer were used, who knows?  All the drives might crash
+on the same day.
+
+------------------------------
+
+Date: Wed, 03 Jan 1996 18:03:46 +1000
+From: Wade Bowmer <wade@zeta.org.au>
+Subject: Re: Floating-Point Numbers
+
+Peter Denning mentioned the problems of binary representation of decimal
+numbers.  Bleah!  But since it *is* an IEEE standard, the very group who
+created it would (should?) have known the Risks of that!  (Or am I assuming
+too much?)  Of course, I'm sure the real reason that that IEEE standard is
+so popular is because Intel's co-processors use it.  Hmm...
+
+The first computer I owned, a TI-99/4a, used a base-100 encoding scheme 
+for floating point - so it had a *guaranteed accuracy* for 13-digits. 
+True, it was not an efficient use of memory, like the IEEE format, 
+but the IEEE format cannot guarantee accuracy.
+
+Microsoft had their own floating point format for a while.  What was it?
+Was it binary, too?  Or did it have a BCD-type storage?  Perhaps they should
+have stuck with it.
+
+Wade
+
+------------------------------
+
+Date: Fri,  5 Jan 1996 16:28:44 -0500 (EST)
+From: "Andrew C. Plotkin" <erkyrath+@CMU.EDU>
+Subject: Re: Nearest-match alphabetic metrics  (Baker, RISKS-17.59)
+Subject: Giving CMU the finger...
+
+In fact, this *is* a phonetic match, as I understand the technology.
+In the world of phonetics...
+  J and Y are regarded as the same
+  W and GH are pretty close
+  B is B
+and vowels are ignored. So the CMU white pages system really was doing
+its best. You would have been much more appreciative if you'd been
+trying to find H. Yaghoobi, and tried "finger jahuby".
+
+Of course, unless you've had a lesson in the CMU finger system, there's no
+way to know that it uses such generous phonetic matching, when no exact
+user-id matches. There is a formulation which does what you want: "finger
+j.webb"; but there is no way for outsiders to learn this fact.
+
+I guess the moral is that it's risky to extend standard protocols like
+finger, even if the extension adds functionality.
+
+  [Also noted by Leslie M. Barstow III <phoenix@faerealm.roc.servtech.com>,
+  who added that `ghoti' does match `fish' on their system, to use a
+  standard example.  (MODERATOR'S NOTE added for nonAnglophones: that is
+  "gh" as in "enough", "o" as in the second "o" in "colonel" (perhaps),
+  and "ti" as in Andrew's "formulation" rather than in "phonetic".)  PGN]
+
+------------------------------
+
+Date: Wed, 3 Jan 1996 09:53:36 -0600
+From: peter@nmti.com (Peter da Silva)
+Subject: Re: Nearest-match alphabetic metrics  (Baker, RISKS-17.59)
+
+[Retitled from Peter da Silva's  "Giving CMU the finger"]
+
+>   finger: No names match "jwebb" , 1 nearest match is:
+>   Hooman Yaghoobi (hooman)
+
+It's possible that the string "jwebb" matched some other part of the user's
+password file entry.  Possibly, the encrypted password...  (I ran into this
+problem with a quick shell-script finger clone on Xenix).
+
+   [Interesting potential source of inference channels!  PGN]
+
+------------------------------
+
+Date: Wed, 03 Jan 96 16:54:40 0000
+From: Kerry Buckley <bucklekj@svhdev.bt.co.uk>
+Subject: Re: Nearest-match alphabetic metrics (Baker, RISKS-17.59)
+
+This reminds me of a bizarre piece of behaviour exhibited by the Microsoft
+Word grammar checker (this was in version 5 -- I don't know if it's still
+there):
+
+  I ran the grammar checker over a project proposal containing the phrase
+  "Regular QA reviews will take place" (or something similar). The grammar
+  checker highlighted "QA reviews", suggested that this might be a foreign
+  phrase, and asked "Is the expression 'rigor mortis'?".
+
+No particular RISK here, other than that associated with blindly accepting
+default decisions from grammar or spelling checkers -- I wonder what the
+customer would have made of a proposal stating that "regular rigor mortis will
+take place"?
+
+Kerry
+
+------------------------------
+
+Date: 3 Jan 96 06:56:36 -0600
+From: CharlesP_Schultz-ECS013@email.mot.com
+Subject: Gasoline Pump Receipt Risks
+
+Over the last few months, I have pulled up to self-serve gasoline pumps that
+accept credit card payment, and noticed that a previous customer has left
+behind the receipt that gets printed at the end of the transaction. Some
+pumps make you explicitly hit a button to get a receipt, but others do it
+automatically.
+
+So what's the risk? The risk lies in the information that you leave behind
+if you drive away without taking the receipt, or if you simply toss it in
+the trash nearby. The receipts from different gas companies have different
+information, but the worst risk I have seen so far is on the Amoco receipt
+where the account number and CUSTOMER NAME appear on the receipt. I also
+found a Chevron receipt that has someone's account number on it, and the gas
+station's name and station number. Since this particular gas station is
+"Juan's Chevron" I suppose a spoofer could call up Chevron posing as Juan
+and give their station number to legitimize their spoof, so here there is
+also a risk to the station owner. Mobil receipts have less information than
+the Amoco or Chevron ones. But as long as someone gets a legitimate account
+number, this is probably enough information to perpetrate some damaging
+fraud (for example, setting up a bogus gas station, then turning in credit
+card receipts and getting paid for them by the gas provider - this actually
+happened down here a number of years ago).
+
+Here's a list of the information provided on the receipts (besides the 
+amount of gas and price per gallon) from the three providers I mentioned 
+above. I don't know if the gas companies use different models of pumps in 
+different parts of the country (I'm in South Florida), so your receipts may 
+differ. Perhaps we could collect information from other gas providers, and 
+urge them to be more sensitive to their customers' privacy.
+
+AMOCO: Station name and address, date, time, CUSTOMER NAME, CARD ACCOUNT 
+NUMBER, reference number
+
+CHEVRON: Date, station name and address, station number, CARD ACCOUNT NUMBER,
+ invoice number, authorization number
+
+MOBIL: CARD ACCOUNT NUMBER, invoice number, date, station name and city
+
+Charles P. Schultz
+
+------------------------------
+
+Date: 6 September 1995 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for further information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+ RISKS can also be read on the web at URL http://catless.ncl.ac.uk/Risks 
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://unix.sri.com/risks  [if your browser accepts URLs.]
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.60 
+************************

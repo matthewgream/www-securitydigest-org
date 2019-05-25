@@ -1,0 +1,879 @@
+VIRUS-L Digest   Monday, 30 Sep 1991    Volume 4 : Issue 177
+
+Today's Topics:
+
+More on Virus Simulator... (PC)
+Heuristic analysis?
+Re: Azusa Virus & CLEAN question (PC)
+Re: Belch_Virus? (Mac)
+Hardware Damage?
+"Safe" MBR (PC)
+DIR II (Cluster) Virus (PC)
+Montreal Virus (PC)
+re: Students and viruses
+Again, F-prot, Clean, Joshi and DOS 2.0. (PC)
+Unencrypted scan strings
+Typical incidents
+Hardware vs. software
+!!Icelandic Virus (PC)
+New virus info, Screen Trasher (PC)
+Re: Heuristic analysis
+Re: When will FPROT 2.00 work with Zenith Dos 3.30.1 (PC)
+Re: Theory and practice
+Re: Problems running F-PROT 2.0 on 386's (PC)
+Re: F-prot 2.00 with 386s (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 27 Sep 91 20:30:03 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: More on Virus Simulator... (PC)
+
+Writes as194@cleveland.Freenet.Edu (Doren Rosenthal) about the
+ Virus Simulator:
+
+ > -------...I wrote an  information-extracting engine.
+ > -----------  -------  --------- ....
+ > My  engine runs an anti-virus program against real viruses and
+ > then  reports not only how well the anti-virus program works....
+ > but how it works and what it's looking for. Producers of anti-
+ > virus programs often go to great lengths to  guard  this
+ > information, but I found no encryption technique  they  used
+ > that could stand up to my engine.... none.
+
+ This is extremely interesting. It means the Virus Simulator doesn't
+ simply stuff "stolen" search strings into a file, as implied by
+ some, but actual information extracted from the scanners in real time
+ (including string-positioning information?), while they are scanning
+ for viruses.  This throws an entirely new light on the claims of
+ validation and testing that Rosenthal has made here.
+
+ Continues Rosenthal:
+
+ > Most suppliers are anxious to give prospective buyers a chance to
+ > try  their products,  and my Virus Simulator 2.0 makes some measure
+ > of  that  possible.
+
+ and adds later:
+
+ > Out  of the respect I have for efforts Frisk has made in this
+ > industry,  and the  strong  desire he announced privately and on
+ > this public forum  to  not participate  in my experiment, I removed
+ > his programs from the test...... Understand  that the  reason
+ > Frisk's  program does not report a much  higher  percentage  of
+ > discrepancies when used with my Virus Simulator 2.0, is that at his
+ > request, his program was not included.  Any false alarms (as he
+ > calls them) are due to the common search strings his programs
+ > shares with other programs. For Virus Simulator 2.0, I did not run
+ > my engine with Frisk's program and any viruses.
+
+ This explains then why the F-PROT program doesn't produce a higher
+ percentage of "hits" with the Virus Simulator. Nothing to do with
+ the number of strings per virus used by F-PROT, or anything like
+ that.  Rosenthal removed the F-PROT program in view of its author's
+ negative response to participation in the test.  Again, this throws
+ an entirely different light on the matter.
+
+ In view of these news, it would seem that Rosenthal's Virus Simulator
+ does indeed have the capability to test virus scanners in a manner
+ that is compatible with the way they were designed to work. It would
+ be very interesting if the idea could be carried further, to a still
+ higher level of simulation.
+
+------------------------------
+
+Date:    Fri, 27 Sep 91 20:28:21 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Heuristic analysis?
+
+On the subject of "Heuristic Virus Analyzers", I would like to
+ describe my experience with an interesting program.
+
+ "Heuristic analyzers" try to determine whether a program (other
+ than the analyzer) is a "good" program or a "bad" program (i.e.,
+ a virus), by looking at patterns of behavior and deciding whether
+ the program is acting "normally" or "abnormally".
+
+ Naturally, someone must make a series of _a priori_ decisions and
+ tabulate what is "normal" and what is "abnormal". (Of course, the
+ analyzer starts by defining itself as a "good" program !).  The
+ task is difficult (some say impossible) because PC viruses may
+ use the same system functions that innocent programs may use. In
+ addition, every "ethical" judgement (=good/bad) must perforce
+ involve the personal bias of the judge.  This is bound to produce
+ arguments, as has been amply demonstrated here.  Such are some of
+ the conceptual problems.
+
+ As an example of this difficulty, I will describe the action of T.
+ Matsumoto's data compressor called DIET v1.10a, (c) 1991. Previous
+ versions of Matsumoto's DIET were compressors somewhat similar to
+ Bellard's original LZEXE and its clones;  it was able to compress
+ .EXE files with good efficiency.  But v1.10a of DIET brought
+ with it some unusual features:
+
+      1. ability to compress both .COM and .EXE formats;
+      2. added ability to compress text files;
+      3. ability to compress overlay, .HLP and data files.
+
+ these capabilities were complemented by DIET's new ability to remain
+ TSR, monitoring files being called up, to see whether they had been
+ compressed by itself. (No, it's not a stealth virus).
+
+ Like LZEXE and the rest of the executable compressors, DIET v1.10a
+ adds a special header to its compressed executables. (Virus? Nah.)
+ In by now standard fashion, this added code produces what I will
+ term "active decompression": it decompresses the rest of its own
+ file to memory on execution, like LZEXE. (You may even compress
+ COMMAND.COM - your system will boot normally).
+
+ Compressed data and text files, however, do not acquire such ability
+ to decompress themselves, and must suffer what I'll call "passive
+ decompression", i.e., they must be decompressed by DIET before
+ becoming useable.
+
+ DIET marks all `its' files with a coded marker, which it later
+ uses to recognize them. (Like a virus); as soon as a file has been
+ processed by DIET, it acquires this unique marker.  You could use
+ a virus scanner to find every one of them (!).
+
+ When TSR, DIET v1.10a has the ability to:
+
+       1. Monitor whether an executable being called up needs to be
+          decompressed or is self-extracting; whether it needs a
+          .HLP, data or overlay file. (`Are we opening an
+           executable...?')
+
+       2. Check file markers to see whether these data file have
+           been compressed by DIET. (`Is this one of *my* files?')
+
+       3. If yes, decompress the compressed overlay, etc. file and
+          "feed it" to the executable that's being run. (Write to
+          disk during a file open..).
+
+       4. Even when the data file does not "belong" to the executable,
+          if the running program is, say, a word processor and calls
+          up a compressed .LTR file for editing, the TSR DIET will
+          decompress the .LTR file, allow its editing, printing, etc.
+
+        5. If the proper command-line options were set, DIET will
+           re-compress data files after use - automatically.
+
+        6. Even if you use the DOS TYPE command to view a compressed
+           text file, if DIET is resident it will de-compress it
+           to allow onscreen viewing, then immediately re-compress.
+           Automatically.
+
+        7. On COPYing a compressed file while DIET is a TSR, the file
+           gets copied into de-compressed form. (not identical, but
+           reminiscent of the action of some furtive viruses...).
+
+ The active decompression is performed in memory, but the passive
+ decompression is done on disk: the executable has to be fed an
+ already-decompressed file. So DIET has to decompress the .HLP,
+ overlay, data file, etc. on disk. (Encrypt/decrypt to disk,
+ like a virus?).
+
+ Once the calling program has finished running, any file that was
+ decompressed may be re-compressed. In this way, overall disk-space
+ utilization remains low. DIET is a fairly fast compressor and the
+ passive compression/decompression times are tolerable, though not
+ unnoticeable. Active decompression is faster.
+
+ The overall effect is quite extraordinary: all files on disk, both
+ executable and data files, stay compressed most of the time. Overall
+ disk-space savings can be near 40%.  When called up for execution,
+ program files self-decompress to memory, while data files are
+ passively decompressed by the TSR.  Automatically.
+
+ DIET's compression efficiency is quite good, often better than PKLITE
+ and comparable to that of conventional compressors.  But to achieve
+ its good effect, the program must break "good" rules that a heuristic
+ virus analyzer author might consider sacred:
+
+  -Like many viruses, DIET v1.10a becomes TSR and monitors Interrupts
+    (it can also function as a transient program).
+  -Like a virus, DIET v1.10a monitors file opens.
+  -Like a virus, it checks to see whether the file is or is not
+    an executable, and reacts accordingly.
+  -Like most viruses, it then test files to see whether they
+    contain its `marker'.
+  -Like a virus, it writes to disk at seemingly odd times, when
+    no write to disk is expected (i.e., during file opens).
+  -Like some viruses, it `encrypts/decrypts' = compresses disk data.
+  -Like a virus, it reads a file, then automatically rewrites it
+    to disk - with a changed size and CRC!
+  -Like a virus, it adds an `attachment' (the self-extracting header)
+    to every executable it processes.
+  -And, like a virus, this attached piece of `strange' code takes
+    over control, and executes itself first.
+
+ But DIET v1.10a is not a virus.  Instead, it's a brilliantly-
+ conceived public-domain program that does things no utility has
+ ever been able to do before. In fact, DIET v1.10a uses stealth-virus
+ technology for a good, useful purpose in a competent and original
+ way.
+
+ --------------------
+ P.S. Should DIET v1.10a be a subject for that new science, "computer
+      virology"?  Or for "computer filecompressology"?  :-)
+
+------------------------------
+
+Date:    Sat, 28 Sep 91 08:00:49 +0000
+>From:    twong@civil.ubc.ca (Thomas Wong)
+Subject: Re: Azusa Virus & CLEAN question (PC)
+
+morgan@ms.uky.edu (Wes Morgan) writes:
+>For those who track such things, the Azusa virus was discovered at the
+>University of Kentucky today (9.24.91).  The Azusa virus infects the
+>boot sector of floppy disks, the partition table of hard disks, and stays
+>resident in memory.  It causes corruption of data files, general system
+>slowdown, and generally wreaks havoc.
+
+We found it on our grad student's floppies too, here in University of
+British Columbia (Vanoucver, B.C., Canada). We found them before they
+corrupted any files. It was still dormant in the boot sector.
+
+>McAfee SCAN found it, and McAfee CLEAN removed it.  However, on several
+>occasions,  the data on the floppies was unrecoverable.
+
+Unfortunately, CLEAN stated that it wasn't save enough to remove it
+from the boot sector and aborted. Since we found this virus on non
+bootable floppies, we don't care what CLEAN does to the boot sector.
+Is there a way to force CLEAN to erase it regardless? I can't find
+this feature in the doc files. Thanks.
+
+Thomas.
+
+------------------------------
+
+Date:    Sat, 28 Sep 91 14:15:52 -0400
+>From:    Al Boulley <32DD3BN%CMUVM.BITNET@VM1.gatech.edu>
+Subject: Re: Belch_Virus? (Mac)
+
+I don't believe that MacPuke.init could be causing this because the
+sound occurs only upon ejection of a disk.  Also, this would show up
+in a system folder, hidden or not.  Anything else is beyond me.  Al
+Boulley
+
+------------------------------
+
+Date:    Sat, 28 Sep 91 04:42:39 +0000
+>From:    axtlp@acad2.alaska.edu (PIKEY TAM L)
+Subject: Hardware Damage?
+
+Hi,
+
+I was wondering if anyone in this group could help me out.  I need
+confirmation or denial of the following.  I read somewhere that a few
+REALLY RARE virus's can do hardware damage basically by stressing out
+the system.  In particuliar burning in monitors or burning out cpu
+chips on brand specific motherboards.
+
+If you know where I can find any information on this I would
+appreciate email.
+					Tam Pikey
+					axtlp@alaska.bitnet
+					axtlp@acad2.alaska.edu
+
+------------------------------
+
+Date:    Sat, 28 Sep 91 21:09:20 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: "Safe" MBR (PC)
+
+	While putting together the second iteration of DiskSecure, the
+thought struck me that everybody probably does not need or want full
+password and floppy boot protection for their personal systems, but
+rather need a simple means of basic protection.
+
+	NoFBoot was the first result of this thought, a simple
+resident TSR (uses a whopping 500 bytes, mostly for TSR overhead and
+ASCII - comes from growing up with machines having 1 or 2k of main
+memory - my Sinclair ZX-81 got one of the first 6116 RAM chips back
+when 90 ns access was *fast*).  All it does is to prevent accidental
+three finger salute (ctrl-alt-del) reboots with a floppy in drive A.
+
+	Been out over a month now with no reported complaints so either
+it is working or no-one else is using it.
+
+	The second piece is now ready for wider testing: SafeMBR. This
+is a partition table code replacement. Unlike DiskSecure, it does not
+use "stealth" nor does it go resident so the RAM cost is zero (better
+yet), but this means it is limited to exception detection only, it
+cannot prevent anything. However, immediate knowlege of a viral attack
+is not a bad thing.
+
+	The difference between SafeMBR and "normal" MBR code is that
+while all a "normal" MBR does is to check for one and only one
+"active" partition, load its boot record, and check for the MicroSoft
+signature before transferring control, SafeMBR also verifies the BIOS
+vector for Interrupt 13 and its own integrity before loading the DOS
+boot record. If "something" is wrong e.g. a MBR virus such as STONED
+or JOSHI has bitten, it hollers for help.
+
+	Surprisingly, it does not use any more code than many
+production MBRs and works with hard disks using everything from DOS
+2.0 to 6.0 (in fact it should not be DOS sensitive at all). The major
+expansion is in the ASCII and even this ends far short of the Western
+Digital "SuperBios" danger area. The partition table area is not
+changed at all and my TANDON validating BIOS (plug again - their kind
+of work deserves support) likes it just fine.
+
+	In any event, it is available for uuencoded E-Mail for anyone
+who would like to try it. Like NoFBoot, it is FREEWARE. All that I ask
+is that you let me know if there are any problems.
+
+						Padgett
+
+   Disclaimer: Any & all liability is limited to price charged.
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 07:17:00 +0000
+>From:    Joe Wells <0004886415@mcimail.com>
+Subject: DIR II (Cluster) Virus (PC)
+
+After checking out some copies of the DIR II virus (all of which have
+identical code, but are from different sources) I found no indication
+that the virus is worth getting extremely worked up about.
+
+It does use a new system of infection. It does not infect files per se
+and does not infect the boot sector/partition table. Instead, the
+virus (once in memory) writes its code to the last cluster of the disk
+and modifies the directory accessed (including sub-dirs) by changing
+all of the COM and EXE entries in the following manner:
+
+Note: DOS directories have the following structure:
+
+   Filename   = 8 bytes
+   Extention  = 3 bytes
+   Attribute  = 1 byte
+   Unused     = 10 bytes
+   Time       = 2 bytes
+   Date       = 2 bytes
+   Cluster    = 2 bytes
+   File Size  = 4 bytes
+
+and DOS uses the cluster entry to load the program.
+
+The virus changes the cluster entry to point to the virus cluster and
+stores the original cluster in the last two bytes of the unused area
+listed in the structure above. The original is scrambled by using a
+straight forward rotating xor encryption. Once an altered entry is
+executed the virus first enters memory and "stealths" the directory
+and its own cluster. Viewing the directory with a utility like Norton,
+you'd see the original clusters in their original locations and the
+last two bytes of the unused area is zeroed out.  Viewing the last
+cluster is also redirected.
+
+The virus code begins with the hex string: BC00 06FF 06EB 0431 C98E
+D9C5 06C1 0005 2100.
+
+The virus sets up its own INT 21 redirector (the only detectable INT
+call is an INT 20), accesses the undocumented DOS list of lists, and
+does not infect the system (DOS & BIOS) files even if they have COM
+extentions.
+
+The virus doesn't really "crosslink" anything in the FAT. But if you
+run CHKDSK with the /f option (and the virus isn't in memory) all your
+executables will become 1k files (all pointing to the virus code).
+
+My disassembly has not been completed yet. If I get more info I'll let
+you know.  (Thanks to Glenn, Igor, and Dave in expiditing this.)
+
+Joe Wells
+Virus Specialist (deprogrammer)
+Certus International
+216-752-8181
+
+Ciao
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 07:26:00 +0000
+>From:    Joe Wells <0004886415@mcimail.com>
+Subject: Montreal Virus (PC)
+
+This is a pre-analysis announcement (the sample is "in the mail").
+
+An evidently new virus has been reported in Montreal. The caller/victem
+believes he may have gotten the vermin from a BBS (he's checking it out).
+
+The virus evidently infects COM files (appending) only, including Command.com
+and contains messages:
+
+Copyright 1991 [NUKE]
+Software development.
+Sicilian mob, I.A.
+Virus by [NUKE] mp.completed.
+Montreal.
+
+As soon as there's more (once I get a hold of it) I give more info.
+
+Joe Wells
+Virus Specialist (deprogrammer)
+Certus International
+216-752-8181
+
+Adieu
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 12:15:37 -0300
+>From:    00073040%unb.ca@UNBMVS1.csd.unb.ca
+Subject: re: Students and viruses
+
+> VIRUS-L Digest   Friday, 20 Sep 1991    Volume 4 : Issue 168
+>
+> Today's Topics:
+>
+> From:    "Jon Womack (Ext. 2-2141)" <HRSPRDJWW@CITADEL.BITNET>
+> Subject: re: Students and viruses
+>
+> LISSA@WHEATNMA.BITNET writes:
+
+etc. etc. etc.
+
+I am involved in teaching a microcomputer applications course at our
+university.  Since starting, I have (usually) always included an
+introductory section on computer viruses.  Nothing elaborate, however
+we do discuss the various types of 'viruses', boot sectors in general
+as well as the STONED virus.  I have generally found a great deal of
+interest from the students w.r.t. this material.  Such an approach
+has, I feel, two immediate advantages, 1) Increasing the level of
+knowledge and awareness of students and 2) Increasing the awareness of
+responsibility and ethic idealogoy of computer user's and
+programmers/designers.  While (realistically), students may not cope
+unassisted with virus encounters, they can be provided the knowledge
+and awareness to be helpful in the *fight* against viruses.
+
+Brian J. d'Auriol
+k3mi@unb.ca
+k3mi@jupiter.sun.csd.unb.ca
+
+Standard Disclaimers apply:  These are my own opinions which may (or
+may not) coincide with my employer and/or colligues.
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 15:14:58 -0400
+>From:    George Svetlichny <USERGSVE@LNCC.BITNET>
+Subject: Again, F-prot, Clean, Joshi and DOS 2.0. (PC)
+
+In relation to my question concerning the problem that I had in
+removing a Joshi infection from a Print Shop disk (Virus-l 4/166:
+"F-prot, Clean, Joshi and DOS 2.0") Gryaznov Dmitry
+(grdo@botik.yaroslavl.su) writes (Virus-l 4/171):
+
+>It could be just a multiple infection with two slightly different
+>versions of JOSHI virus..........................................
+>................................................So, original non-virus
+>BOOT will be lost and where both of JOSHIs (and anti-virus programs as
+>well!) expect it to be in fact resides JOSHI-A. Such a disk becomes
+>not bootable - an infinite loop will take place. When JOSHI-B is
+>removed by this or that anti-virus JOSHI-A is restored to BOOT sector.
+>This is a deadlock - removing JOSHI-A from the BOOT an anti-virus will
+>restore it back from where an original BOOT is supposed to be.
+>...
+>So I think this problem has nothing to do with a version of DOS.
+
+Well, this sounded like such a logical explanation of everything that
+had happened in my attempts to remove the virus that I decided to
+check it out. Much to my surprise I found that I posessed a utility
+that can read the 41st track of a floppy (a shareware program called
+DISKED) and upon examininig this track of the floppy that I
+disinfected I found, besides the 'Type "Happy Birthday Joshi"' message
+that the Joshi virus carries, also the message "Your PC is now
+Stoned!, LEGALISE MARIJUANA" which is the message of the Stoned virus.
+So my conclusion is that before being infected with Joshi, the disk
+was already infected with Stoned. It was probably this that led to the
+behaviour described (Both F-prot and Clean reporting successful
+removal, yet subsequent scans continuing reporting presence - of the
+same virus, Joshi, which is a point I still don't understand). Both of
+these viruses have been very prevalent in Rio de Janeiro; Stoned was
+already endemic when Joshi arrived.
+
+George Svetlichy                  |
+                                  |
+Departamento de Matematica        |
+Pontificia Universidade Catolica  |
+Rio de Janeiro, Brasil            |
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 20:49:00 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Unencrypted scan strings
+
+Writes CHESS@YKTVMV.BITNET (David.M.Chess) on the subject of
+ intentional changes to scanning strings to avoid detection:
+
+ > On IBM's scanner having strings in clear:  I have seen at least
+ > one sample in which two tiny changes were made, one of which was
+ > in the middle of one of our signatures.   The sample came to us
+ > very indirectly, though, and it wasn't clear whether it had been
+ > found in the wild, or prepared specially by someone out to prove
+ > a point.   We've never seen that particular variant again, so it
+ >  was probably a "lab specimen".
+
+ Precisely as expected. That one specimen, even had it not been
+ doctored to prove a point, would represent a 1:500 or 1:1000
+ occurrence  [depending on how one counts his viruses :-)].
+ This reinforces earlier statements that encrypting search strings
+ does not work mainly to prevent virus authors from changing their
+ viruses to avoid detection, but rather is an anti-competitive and
+ anti-evaluation technique,
+
+ It seems obvious: if a virus author wants to change his virus to
+ avoid detection by some scanner, all he needs to do is rewrite it
+ very slightly, then reassemble.  Or use a different assembler to
+ reassemble his old code. The new version so produced will have
+ enough differences that the old strings will probably no longer
+ catch it.  They don't need to even guess what the scanning string
+ was.
+
+ But the one thing that encrypting search strings *did* accomplish
+ very well (until now) was preventing third parties from testing the
+ scanners.
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 20:50:15 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Typical incidents
+
+Further writes Dr. Chess (CHESS@YKTVMV.BITNET):
+
+ > The need for verifiers:  If the typical incident involved
+ > detecting an infected object (program, diskette) before it
+ > was used (run, booted from), I would tend to agree that
+ > verifying the exact identity of the virus would be of
+ > secondary interest (possibly interesting to trace spread,
+ > but not of vital interest to the user).
+
+ I would say that typical incident involves cure rather than
+ prevention because we allow it to be so.  The public is being
+ trained to rely on virus scanning as the main prophylactic measure.
+ They don't realize that while this method will catch infection
+ after the fact (wins the battle), it hasn't been able to check the
+ increasing spread of the infectors (looses the war), and demonstrably
+ encourages the creation of new ones (gives aid, publicity and comfort
+ to the enemy?).
+
+ > Of course, if that were the case  [Detecting a virus before it
+ > had a chance to run],  viruses would cease to be a problem shortly
+ > thereafter!
+
+ Yes, they most likely would. But no software approach can achieve
+ such goal because all software uses the same tools for defense that
+ the enemy uses for attack.  Hardware defenses are needed to put a
+ stop to viruses.  Software defenses can never do that.  Hardware
+ defenses cannot be subverted by software.
+
+ > As it is, the typical incident involves finding that a system
+ > is infected, and has been for at least a little while.
+
+ I believe this happens because we allow it to be so. We set out to
+ detect infection after it happens, not to prevent it, so naturally
+ all incidents we detect are already-occurring infections.
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 20:51:26 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Hardware vs. software
+
+Writes Dr. Chess:
+
+ > Hardware and Software:  Even the ideal combination of hardware
+ > and software doesn't make viruses completely impossible.  As
+ > Cohen and others have shown....
+
+ We don't have to make viruses `impossible', we only have too
+ prevent them from infecting our machines. After that, we could
+ have a worldwide contest of virus writing, and televise the
+ ceremony! Give prizes, or something. Publish anthologies.
+
+ But hardware alone is enough. To illustrate: there's no virus in
+ the world that can bypass a simple hardware device called a write-
+ protect tab.  This humble little piece of black paper doesn't care
+ one bit about Cohen's theories.  Disobeys them every time.  :-)
+
+ > Now this may be of only theoretical interest, in
+ > that such a virus might never actually become a problem
+ > (spreading too slowly to become pervasive in any real
+ > environment), but it's worth remembering that *any* search
+ > for _perfect_ protection is almost certainly doomed, and we
+ > have to look for "good enough".
+
+ This is entirely reasonable and I couln't possibly argue the point.
+ No scheme can truly be _perfect_ since perfection, as defined by
+ implication above, may never be achieved.   But I repeat: a humble
+ paper write-protect tab comes as close to perfection, in this sense,
+ as anything can. Certainly close enough, and infinitely closer than
+ any software ever could.  Can we not learn something from this?
+
+------------------------------
+
+Date:    Sun, 29 Sep 91 23:51:00 -0600
+>From:    SLGB3@cc.usu.edu
+Subject: !!Icelandic Virus (PC)
+
+I have a machine that is infected with !!Icelandic-2*1* Virus.  Has
+any one dealt with this before, if so what does the virus do and are
+there any software fixes out there.  I would really appreciate it if
+those who know more would enlighten me via E-Mail.
+
+Thanks,
+G.Searle
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 10:29:00 -0500
+>From:    ry15@rz.uni-karlsruhe.de
+Subject: New virus info, Screen Trasher (PC)
+
+name                Screen Trasher
+
+other names         (none I hope)
+
+family              (under investigation)
+
+first sighting      Sept. 1991
+
+site                Germany
+
+type                file virus, resident
+
+size                appends 1000 bytes
+
+
+operating system    MS-DOS
+
+version             all versions above 1
+
+computer            PC and all compatibles
+
+
+direct detection    every hour the screen is overwritten by trash
+                    infected files will contain the string
+                    '  S E M T E X  by Dusan Toman, CZECHOSLOVAKIA'
+                    ' (7)213-040 or (804)212-23  '
+
+type of infection   all *.COM that are executed or opened will be infected
+                    provided they are not greater than 61000 bytes
+                    COMMAND.COM will also be infected, there is explicit code
+                    in the virus that exploits the comspec
+
+trigger of infection load and execute or open of a *.COM file
+
+infection targets   all *.COM file below or equal 61000 bytes
+
+interrupts          INT 08 (hooked)
+                    INT 10 (used)
+                    INT 21 (used)
+                    INT 61 (occupied)
+
+payload             at an hourly intervall the virus will trash the screen
+                    contents by writing garbage over it.
+
+trigger of payload  counter that counts the timer tics
+
+peculiarities       this virus does not intercept INT 24, so a write error
+                    will occur upon each infection attempt.
+
+                    Windows 3.0 will not like what it does to the memory
+                    allocation.
+
+                    INT 61 usage will reder the following products inoperative
+                    Atari Portfolio (system management)
+                    HP 95LX System (system management)
+                    JPI topspeed modula (procedure exit trap)
+                    FTP PC/TCP (function calls)
+                    Adaptec and Omti controller
+                    Banyan Vines (network)
+                    Sangoma CCIP (CCPOP3270)
+
+detection           see above
+
+removal             will be possible
+
+analysis            Christoph Fischer
+                    Micro-BIT Virus Center
+                    University of Karlsruhe
+                    Zirkel 2
+                    7500 Karlsruhe 1
+                    +49 (0)721 37 64 22 phone
+                    +49 (0)721 32 55 0  FAX
+                    Germany
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 12:46:31 +0000
+>From:    Fridrik Skulason <frisk@rhi.hi.is>
+Subject: Re: Heuristic analysis
+
+In Message 17 Sep 91 23:01:00 GMT, PEPRBV@CFAAMP.BITNET (Bob Babcock) writes:
+
+>>>  Frisk's "heuristic virus analyzer"
+>>>  is *extremely* prone to false alarms, much more so than his string
+>>>  scanner.
+
+I know - this is just why it is released as an *experimental* program -
+use it if you want, but don't take it too seriously yet.
+
+>I've written some code which does none of these things, yet it still
+>triggers a false alarm.
+
+What does it say ?  There are around 20 different messages you may get.
+Also, If you can send me a program which produces a false alarm, I will
+do my best to fix my set of rules.
+
+- -frisk (back from vacation)
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 12:51:50 +0000
+>From:    Fridrik Skulason <frisk@rhi.hi.is>
+Subject: Re: When will FPROT 2.00 work with Zenith Dos 3.30.1 (PC)
+
+>When will the fix be out?
+
+In a few days - I just came back from vacation today.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 13:17:30 +0000
+>From:    Fridrik Skulason <frisk@rhi.hi.is>
+Subject: Re: Theory and practice
+
+> If it did just that I wouldn't have objected.  The "heuristic virus
+> analyzer" boldly proclaims: "A BADLY WRITTEN PROGRAM" when it finds
+> something that, in its opinion, is not the way it should be.
+
+Well, I assume you mean one of the messages which say "This is .... or
+just bad programming".  Maybe I should change the wording a bit, but
+keep in mind that this is only an experimental feature of the program.
+This particular message may for example be produced if my program
+finds code like the following.
+
+       MOV AX,0FFFFH
+       MOV CX,1234H
+       INT 21H
+       CMP CX,2345H
+       JE RESIDENT_IN_MEMORY
+
+This is a clear example of "bad programming".  Why ?  It uses an undefined
+subfunction of INT 21H to check if it is resident in memory, but INT 21H
+is reserved for DOS....although a few other programs, such as Novell Netware
+use it as well.
+
+In all other cases when I give the "bad programming" warning it is because
+some (formal or informal) rule has been broken.
+
+> > Well, when I tried Mark Washburn's program, it just hung my
+
+Please remember that Mark Washburn is the author of several viruses, and
+a virus author who writes anti-virus software is not something I find
+ethically acceptable.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 10:09:00 -0600
+>From:    Steven Klepzig <SKLEPZI@SSB1.SAFF.UTAH.EDU>
+Subject: Re: Problems running F-PROT 2.0 on 386's (PC)
+
+>26 Sep 91 10:27:57 Fran Holtsberry
+>Subject: Problems running F-PROT 2.0 on 386 systems (PC)
+
+>Seems we are having trouble running F-Prot 2.0 on ANY 386 machines.
+>Getting a "Cannot read drive C" error.  Anybody else getting this?
+
+Fran,
+
+I haven't seen any problems running F-Prot 2.0 on any of my 386
+machines.  I've got VIRSTOP running right now, I've even been able to
+load VIRSTOP into high memory using BlueMAX.  Haven't seen any drive
+error messages.
+
+Hope this helps.
+
+- -- Steven
+========================================
+Steven R. Klepzig                      =
+University of Utah                     =
+135 Student Services Building          = Murphy's Law, v.1.7 "The time it
+Salt Lake City, Utah 84112             = takes to pinpoint a LAN problem is
+                                       = directly proportional to its
+Phone    -- 801-581-3437               = gravity."
+FAX      -- 801-585-3034               =
+InterNet -- sklepzi@ssb1.saff.utah.edu =
+========================================
+
+------------------------------
+
+Date:    Mon, 30 Sep 91 13:14:00 -0400
+>From:    "Ignorance HATES Knowledge..........!!" <ACSMARTIN@EKU.BITNET>
+Subject: Re: F-prot 2.00 with 386s (PC)
+
+>Date:    26 Sep 91 10:27:57 +0800
+>From:    "Fran Holtsberry" <Fran_Holtsberry@msmailgw.csuchico.edu>
+>Subject: Problems running F-PROT 2.0 on 386 systems (PC)
+>
+>Seems we are having trouble running F-Prot 2.0 on ANY 386 machines.
+>Getting a "Cannot read drive C" error.  Anybody else getting this?
+>
+>Fridrik...How about a response?
+>
+>Fran Holtsberry
+>Cal State Chico
+>fran_holtsberry@msmailgw.csuchico.edu
+
+Fran -- et.al. ,
+
+I am currently using F-Prot 2.0 on a Dyna Workmaster 386DX computer. I
+have used it with DOS 4.01 (yech) and am now successfully using it
+with DOS 5.0. I have had ZERO reports of any problems with this
+program from people on campus and the many (about 40) home users in my
+area. It even seems to work on various Tandy Computer Models.
+
+I guess that I should also mention that I have experienced no problems
+with F-Prot even with StarLan version 3.4 software loaded and/or
+running. I have also successfully 'run' the program while still using
+the Kermit Program.
+
+I'll be happy to provide assistance if you can provide a bit more
+info.  about your environment. I'm sure that Frisk wouldn't mind...
+:-)
+
+ -Bob-
+ ****************************************************************
+ Robert C. Martin Jr.
+ Computer Consultant, Academic Computing Services
+ Eastern Kentucky University
+ Richmond, KY 40475-3111
+ Telephone:  606-622-1995
+    BITNET:  ACSMARTIN@EKU or Graphics@EKU
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 177]
+******************************************

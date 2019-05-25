@@ -1,0 +1,946 @@
+VIRUS-L Digest   Thursday, 28 Jan 1993    Volume 6 : Issue 12
+
+Today's Topics:
+
+re: Math Models of Polymorphic Viruses
+Re: How to measure polymorphism
+Re: How to measure polymorphism?
+MegaVirus as Re: On the definition of viruses
+LAT details
+Re: How to measure polymorphism
+Re: on the definition of virus
+re: DOS Viruses under HPFS (OS/2)
+False positive in the new PKZIP (PC)
+New way of opeing files??? (PC)
+New way of opeing files??? (PC)
+How do MtE utilizing viruses detect themselves? (PC)
+Re: How do MtE viruses detect themselves? (PC)
+TEKILLA virus (PC)
+Request for info: "ANSI bombs" in text files (PC)
+FAR-TRIEVE w/ Stoned Virus (PC)
+Here virus (PC)
+NOINT Virus (PC)
+msd - bug ? virus ? coincidence ? (PC)
+McAfee VIRUSCAN V100 uploaded to SIMTEL20 (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 18 Jan 93 15:54:41 -0500
+From:    "David M. Chess (863-6665)" <chess@watson.ibm.com>
+Subject: re: Math Models of Polymorphic Viruses
+
+>From:    ygoland@edison.SEAS.UCLA.EDU (The Jester)
+
+>The question is:Given functions VX() and VY(), can I determine if
+>they are both members of the same tree?
+
+Yes, you can: they are!  *8) Consider V0, where V0(V0,K) produces a
+completely random string of bytes, using K (derived from the current
+machine state, or whatever) as a key.  Any other VX and VY are in the
+tree leading from V0 (in fact, they're both on the very first level of
+the tree).  That's a limiting case, of course, and rather silly, in
+that most of the offspring of V0 aren't V's at all in any useful
+sense.  But clearly for any VX and VY you could write a V<X,Y> which
+produced either VX or VY depending on the parity of K.  So again any
+pair VX VY are in the same tree.
+
+A related problem which doesn't have a trivial answer is something
+like: given VX and VY, is VY anywhere in the tree leading down from
+VX?  That is, is VY a descendant of VX?  For the VXs that are existing
+viruses, answering this question is trivial.  It's interesting to
+think about how hard the question can be (I mention this in passing in
+the beginning of my "Virus Verification and Removal..." paper, which I
+think is available on VIRUS-L).
+
+In Hoffman's "Rogue Programs", there's a paper by Len Adleman called
+"An Abstract Theory of Computer Viruses".  It contains what seems to
+be a proof that it's possible to design a virus so that given one
+instance of an infected object, it's not decidable whether or not
+another object might be a descendant of it.  However, I don't
+understand the proof; I'd love to hear from someone that does!  The
+next proof in the paper softens the blow: it seems to be a proof that
+you can come close enough, by deciding whether or not another object
+is EITHER a descendant of the captured virus OR an element of the
+"germ set" for the virus, where the "germs" of a virus are the set
+(roughly) of droppers of the vius.
+
+- - -- -
+David M. Chess                    \      Nothing moves;
+High Integrity Computing Lab      \         where would it go?
+IBM Watson Research               \
+
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 16:03:05 -0500
+From:    "David M. Chess" <chess@watson.ibm.com>
+Subject: Re: How to measure polymorphism
+
+>From:    Declan Malone <maloned@ul.ie>
+
+>                            Now how do you measure randomness in an
+>objective way?  You can't really, and the irony of it is that the more
+>you try, and the more objective/detailed your description becomes...
+
+Grep Chaitin has done some excellent work on this (he had a general-
+audience paper in a reasonably recent Scientific American, I think),
+and has perfectly objective measures of randomness that also seem to
+jibe very nicely with intuition.  The basic idea is that you can
+measure the randomness of a string of bits by finding the smallest
+program for some standard Turing Machine that produces those bits.
+For a very random bitstring, of course, the smallest program simply
+contains the string itself as data, and prints it out.  For very
+non-random strings (0000000...), the corresponding program is
+obviously simpler.  (This is a very rough description; if it seems
+wrong to you, it probably is, and you're best off finding the original
+papers rather than arguing with me about it!)
+
+This agrees rather nicely with Bill Arnold's suggestion that we
+measure polymorphism by how many lines of code we have to add to make
+a detector...  *8)
+
+DC
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 20:46:29 +0200
+From:    eugene@kamis.msk.su (Eugene V. Kaspersky)
+Subject: Re: How to measure polymorphism?
+
+Hi all,
+
+Vesselin Vladimirov Bontchev writes:
+
+> There are already two polymorphic engines available (MtE and TPE) and
+> we are going to see more and more polymorphic viruses in the future.
+> An interesting question arises - how to determine how polymorphic a
+> virus is? How to determine which of two viruses is "more polymorphic"?
+> In other words - how to measure polymorphism in an objective way?
+
+[skipped]
+
+> This article is not meant to provide a solution of the problem. I am
+> trying just to explain the problem and am asking for solutions. Any
+> ideas are welcome - we really need an objective way to measure the
+> level of polymorphism...
+
+I see three ways to detect polymorphic and encrypted viruses. The
+first way consist of analysis of decryption routine. If opcodes of
+this routine is satisfied to the specific conditions the object is
+detected as infected. On the second way the analyzer try to decrypt
+the virus body and detects the virus by *decrypted* mask. The third
+way is to use reduced masks for virus detection.
+
+The polymorphic level for the same virus on the difference ways can be
+difference also. For example, the Phoenix virus is polymorphic, but
+the decryption routine has the constant length and the body of the
+virus is XORed with a key, so it's easy to decrypt this virus and it's
+difficult to analyze the decryptor opcodes.
+
+You can use not only the virus mask, but the reduced mask also for
+this and other viruses. The file infected by Phoenix virus contains
+the encrypted code (s[0], s[1], s[2], s[3], ... , s[l]). The mask
+reduced by XOR instruction contains the bytes that are *constant* for
+all the infections: ( s[0] XOR s[1] , s[1] XOR s[2] , ... , s[l-1] XOR
+s[l] ).  On this way Phoenix virus is *not* polymorphic, because it
+has the constant reduced mask. You can use several reduced masks : XOR
+word, ADD word, ADD byte, ROL, etc.
+
+> 2) The second idea is to divide the polymorphism is classes. Class 0
+> means no polymorphism, class 1 means variable encryption with constant
+
+It's a good idea, but we can set the virus to several classes by
+several criterion also. It will be a vector of classes: ( class on
+condition_1, class on condition_2, ... ).
+
+I see several conditions:
+
+1) number of possible encryption algorithms: 0 - if the virus not
+encrypted (Commander Bomber), 1 - for Cascade and Phoenix, 4 - for
+Girafe (XOR word, XOR byte, ADD word, ADD byte), ? - for MtE.
+
+2) the diapason of length of decryption routine;
+
+3) the number of different decryption routines;
+
+4) the number of different opcodes used by decryption routine, it
+doesn't matter if the number of different decryption routines is small
+(Whale);
+
+5) the diapason of number of control transferring except decryption
+loop opcode (for Girafe and Bomber).
+
+So, the polymorphic vector for
+Cascade is (1,0,1,1,-,0),
+for MtE is (?,512,?,*,0),  * means that I don't know, but it's easy to analyze.
+
+The polymorphism of virus can be defined as the vector length:
+1) + 2) + 3) +4) +5).
+
+That's all.
+
+
+Note:
+
+> criterium, the MtE-based viruses have polymorphism 1 - because all
+> decryptors contain only a single constant byte (the JNZ instruction),
+> which does not appear at a constant place.
+
+MtE generator can produce decryption routine *without* decryption
+loop, i.e. the body of virus *not* encrypted and JNZ instruction not
+present.
+
+Best regards,
+
+Eugene
+
+- --
+- --  Eugene Kaspersky, KAMI Group, Moscow, Russia
+- --  eugene@kamis.msk.su, +7 (095) 499-1500
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 20:45:30 +0200
+From:    eugene@kamis.msk.su (Eugene V. Kaspersky)
+Subject: MegaVirus as Re: On the definition of viruses
+
+Hello!
+
+Fred Cohen writes:
+
+> Computer viruses do not have to be malicious, they do not have
+> to be Trojan horses, and they do not have to enter without the
+> knowledge or consent of the user. Any definition that depends on
+> these properties depends on peoples' opinions, skills, and knowledge,
+> and are thus not "testable" in the scientific sense of the word.
+
+Yes, to set the virus definition it's a very difficult task. I think that
+it is impossible to define the virus. A small example for beginning:
+
+One my friend wrote a virus. It's a extremely primitive program that
+contains several MS-DOS commands which are united into one BAT-file named
+VIRUS.BAT.
+
+echo  ---
+echo  Hello! I'm the virus!
+echo  Look at your watch. Waiting ...
+pause
+echo  Is today Friday, 13th ?
+echo  If 'yes' please type FORMAT C: and say YES for all the questions.
+echo         If it's not enough please drop your monitor and
+echo         [...skiped...]
+echo  If 'no' please copy this program to all your friends because
+echo  this is a very useful program!
+echo  ---
+
+Several color effects were added to this BAT file also.
+Is this a virus? No? One week after first execution of this program
+about 100 computers were 'infected' by this ... program? ... virus? Those
+are about a half of all the computers of the company where this gay works
+now. The users like this program-joke and copy it. So this program
+replicates very well, its name is VIRUS.BAT and it's a dangerous because it
+say "FORMAT C:"  and 'good user' can do this. Is this not a virus?
+
+Another one example: virus-packer.
+This imaginary program stays resident and on running any not packed COM or
+EXE files asks: "Do you wish to PACK your program? <Y/N>" and then packs
+and appends itself to the packed file at 'Y' pressing. On execution
+'infected' program types "I'm infected by VIRUS-PACK, do you wish to
+remove me? <Y/N>" and then unpacks the file and removes its body on 'Y' or
+stays memory resident on 'N'. Is this the virus-like utility only and not a
+virus?
+
+
+> So what is a computer virus? In simple terms, it is a sequence
+> of instructions that, when interpreted in an appropriate environment,
+> "replicates" in that at least one relica also "replicates", etc., ad
+> infinitum.
+
+The last condition is incorrect because there are the viruses which
+replicates a limited times. I forgot the name of example but this virus
+contains the 'generation counter' and it not replicates on N generation. So
+the condition must be as: "it 'replicates' at least several (more than 1)
+times, on other cases this is a Trojan horse installator".
+
+
+> Want an example? A backup program replicates by making an
+> exact copy of itself (if it does a good job) on the backup media.  In
+
+It's a bad example. MS-DOS, PC-DOS (I operate the IBM-PC terms only, sorry)
+are the viruses also:
+
+- - they replicate:
+ SYS A:
+ COPY *.* A:
+
+- - they are very dangerous (I found one MS-DOS security option only, this is
+two FAT copies);
+
+- - they load itself silently and without user consent.
+
+MS-DOS is a virus! That is a shock for antiviral researchers and vendors!
+It's need to update all the antiviral databases.
+
+
+So I'll try to set several virus definitions.
+
+DEF_1: The virus
+> is a sequence
+> of instructions that, when interpreted in an appropriate environment,
+> "replicates" in that at least one relica also
+The virus is useless program *and* it can't restore the infected object and
+remove itself by 'DOS prompt' way.
+
+But this definition is bad also.
+There are several question: that is 'useless program' ?
+The virus packer is useful virus. That is 'remove itself by ... ' ?
+Could somebody extend this way of virus definition?
+
+
+And who say that the virus is 'a sequence of instructions'? The real
+virus can consists of several parts of code, a *sequences* of instructions
+i.e. several different files, sectors, RAM areas. Well, let this virus
+named as 'multipartite virus'.
+
+So, the MS-DOS is useful programs, but the MS-DOS floppy with specific
+AUTOEXEC.BAT is a multipartite-virus:
+
+AUTOEXEC.BAT:
+
+   sys a:
+   copy *.* a:\
+   sys b:
+   copy *.* b:\
+   ...
+   sys z:
+   copy *.* z:\
+
+This MP-virus (multipartite virus) infects all the accessible logical disks
+very well.
+
+Well, lets examine all the sequences of instructions of all the computers.
+This multitude of files, sectors, RAMs is one great MP-virus (it's very
+dangerous and it can replicate). So,
+
+DEF_2: All the programs of all the computers are the parts of the World
+MegaVirus.
+
+
+DEF_3: It's impossible to set the virus definition.
+
+It's because the viruses are manufactured by men and the virus definitions
+are produced by men also. So if we say new virus definition there are
+someone who can write the counter-example virus. As the result the true
+virus definition is DEF_2 only.
+
+:-)
+
+
+Last note:
+
+> I'm really glad that I no longer sell virus defenses, because I think it's
+> a pretty shady business (except for a few good companies that tell the
+> truth about viruses and their products).
+
+It's a good statement but it's limited. It's better to say
+
+To sell [anything]
+> it's a pretty shady business (except for a few good companies that tell the
+> truth about
+[skipped]
+> their products).
+
+
+Best regards,
+
+Eugene
+- --
+- --  Eugene Kaspersky, KAMI Group, Moscow, Russia
+- --  eugene@kamis.msk.su, +7 (095) 499-1500
+
+------------------------------
+
+Date:    17 Jan 93 21:32:00 +0000
+From:    bill.lambdin%acc1bbs@ssr.com (Bill Lambdin)
+Subject: LAT details
+
+Some have asked me about certain aspects of LAT, and I have decided to
+send one public message insead of multiple messages via Email.
+
+1. I started LAT because of the hype in advertizing. I bought two less
+than adequate anti-virus programs, and I thought other users might like to
+see some fair and unbiased reports on anti-viral software before they buy.
+I have no vested interest in any of these companies, and I am not paid to
+compile this report.
+
+2. LAT is an acronym it means "Lambdin's Accuracy Tests"
+
+3. The chart is scanner certification pure an simple. I have the scanners
+passively  scan for viruses on the hard drive.
+
+4. VCheck from Victor Charlie only detects the 60 or 70 most common
+viruses, and the authors of Victor Charlie "Alan Dawson, and John DeHaven"
+request that VCheck not be included in scanner certifications such as the
+chart in LAT.
+
+5. The testing of scanners and the recommendations of generic virus
+detection software is two different tests.
+
+First I extract a subset of my viruses to diskette. This subset contains
+specimens from all types of viruses.
+
+Direct infectors, viruses that run as TSR, companion infectors, stealth
+viruses, polymorphic, boot sector infectors, etc.
+
+Then I install this generic virus detection software to another diskette,
+then go into my CMOS and deactivate my hard drive temporarily,
+
+I run the generic detection software, then run a virus, run a few small
+files so these files will be infected, then run this generic virus
+detection software If it detects the virus. I go through the same steps
+with another virus. It usually takes a few hours to fully evaluate one of
+these products. After the software has prooven that it can really detect
+new or unkmown viruses without relying on signature scanning, I put it in
+the list of generic virus detection software that I recommend.
+
+Since there are several different ways to detect viruses with generic
+methods, It isn't easy to use a % scale like I use for the scanner
+certifications.
+
+1. Integrity checking as used in Integrity Master, Untouchable, and Victor
+Charlie.
+
+2. TSRs like PC-Rx and PC-cillin that looks for virus like activities.
+
+Hooked interrupts
+Access to the boot sector
+access to the partition table
+programs loading as TSR
+tampering with executable files
+and more.
+
+3. trying to get infected on purpose like Victor Charlie
+
+Bill
+
+- ---
+ * WinQwk 2.0 a#383 * Hacked version of Telegard TG29EALP.*
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 14:35:17 -0500
+From:    Ron Whittle <CSCRDW%CURIE@vaxtm1.rtpnc.epa.gov>
+Subject: Re: How to measure polymorphism
+
+> ncase You Have Not Tried It TPE 1.1 Is Very Very Good..I have not
+> Found a Pattern That Can be scanned with a simply Wild Card Scanner
+> Yet..I think it is better than MTE..And I believe it is totaly
+> Polymorphic..
+
+For it to be totaly Polymorphic (by my definition), it must not alter
+the actual instructions, just rearrange the order.  I suppose that we
+could include the substitution of like instructions as polymorphism,
+also.  Is this what TPE does?
+
+Ron Whittle
+cscrdw%curie@epavax.rtpnc.epa.gov
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 16:27:06 -0500
+From:    ygoland@SEAS.UCLA.EDU (The Jester)
+Subject: Re: on the definition of virus
+
+So I said:
+> > So, in summary, I have yet to see anyone on this group who understood
+> > exactly what Dr. Cohen was refering to disagree with his assertions.
+> > What is being argued here is definitions and personally I think its a
+> > bit ungentlemanly for Dr. Cohen to make his various statements without
+> > cleary explaining that he is using the term virus in a form which the
+> > average individual of some computer knowledge would not be familiar
+> > with.
+>
+So Dr. Cohen Said:
+> I have clearly explained my definition hundreds of times - literally.
+> I have published the definition in journals - and books - and on radio
+> - - and on television - and in popular magazines - and over the networks
+> of the world - over the last 9 years.  Perhaps the problem is that so
+> many others don't bother to do the background work and then make
+> statements as if they were experts.  They then propogate the incorrect
+> memes and corrupt the `average' individual's perception.  Perhaps it
+> is those people who are being `ungentlemanly', and not me.  A real
+> expert bothers to get the facts before making assertions.
+>
+Many people are familiar with your work and writings, myself
+included.
+
+However, the very fact that there has been continual conflict on this
+group from people who did NOT know your definition shows that
+there are a lot of people out there who are not familiar with it.
+The average user simply doesn't (nor should he) read virus papers
+and such. So when you made your various assertions regarding the use
+of viruses many people became confused and argued with you, not on
+the merit of your concepts, but on what they perceived as a
+definition problem. As such, it would only seem apropriate that
+before you start a major thread on a subject which includes a
+non-standard definition, that you perhaps explain it first.
+
+					Yaron (The Jester) Goland
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 16:16:43 -0500
+From:    "David M. Chess" <chess@watson.ibm.com>
+Subject: re: DOS Viruses under HPFS (OS/2)
+
+>From:    antkow@sis.uucp (Chris Antkow)
+>
+> If you are testing a virus in a DOS window and it "goes off" so to
+>speak (If it has a destructive nature...), will it trash the entire
+>system, or just mess up the DOS window (Theory states that it should
+>only mess up the DOS window... But can someone vouch for this?)
+
+I'm not sure what theory you're referring to here!  *8)
+
+If the virus does its damage by doing something that works in the DOS
+box (like erasing all your 8.3-named files, say, or otherwise munging
+with the data in them), it will work in the DOS box.  If it tries to
+do something that doesn't work in the DOS box (writing to the hard
+disk by direct BIOS calls is generally off, I think, for instance), it
+won't work.  But remember that OS/2 is still designed as a single-user
+system, and if you run a program that tries to do X, the system will
+generally assume that X is what you want done, and do its best to do
+it.  I wouldn't run viruses on my production system if I were you...
+
+DC
+
+
+------------------------------
+
+Date:    Sun, 17 Jan 93 13:12:00 +0000
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: False positive in the new PKZIP (PC)
+
+Vesselin Bontchev writes:
+
+ > What is interesting is that somebody used an out-of-
+ > date version of Symantec's Norton Anti-Virus to scan the new archiver.
+ > It seems that this version causes a false positive - the program is
+ > flagged as infected by Maltese Amoeba.
+
+and
+
+ > all executables in the package are self- compressed with PKLite
+ > 1.20. This caused the heuristic scanner of F-Prot to report that those
+ > files are suspicious, because they contain a program that modifies
+
+It is obviouse that anyone that uses any old version of any Anti-Virus
+product is subject to false alarms, and even more obviouse that if you
+use a "Generic" scanner that looks for special kinds of codes whithin
+a file (that could imply that a virus is lurking there), you will jump
+from your seat many times for nothing !
+
+So, if you are using such products, great, but don't spread panic for
+nothing.  Ican easilly supply you with a handfull of "viruses" that do
+not exist, to write about.
+
+ > I obtained a copy of the new version of PKZIP,
+ > examined it manually with a debugger, and scanned it with about a dozen
+ > scanners. The result is that NONE OF THE EXECUTABLE FILES IS INFECTED.
+
+ > So, please done's pay attention to the rumors, if they reach you.
+
+We thank you for your effort.
+
+* Amir Netiv. V-CARE Anti-Virus, Head team.*
+
+- --- FastEcho 1.21
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Sun, 17 Jan 93 13:34:00 +0000
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: New way of opeing files??? (PC)
+
+Hi Chris.
+
+you wrote:
+
+ > I've heard that the NuKE group is starting to use function
+ > AX,6C00h/INT 21h to open files...
+
+Why go so far? Did you here of writing to the disk via a port - instead of
+using standard interrupt method to write?
+I don't know of any A-V product that can monitor writing to ports, (unless it
+was a debugger that monitors every command that an application performs, and
+believe me: you don't want to use that!).
+
+Regards
+
+* Amir Netiv, V-CARE Anti-Virus, Head team.*
+
+- --- FastEcho 1.21
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Sun, 17 Jan 93 15:34:00 +0000
+From:    Nemrod_Kedem@f101.n9721.z9.virnet.bad.se (Nemrod Kedem)
+Subject: New way of opeing files??? (PC)
+
+ >> I've heard that the NuKE group is starting to use function
+ >> AX,6C00h/INT 21h to open files...
+
+ > Why go so far? Did you here of writing to the disk via a port - instead
+ > of using standard interrupt method to write?
+ > I don't know of any A-V product that can monitor writing to ports,
+ > (unless it was a debugger that monitors every command that an
+ > application performs, and believe me: you don't want to use that!).
+
+More then that: A product like the one you described will only work on 386,
+or higher, in protected mode....
+
+     Regards,
+     Rudy.
+
+Nemrod.Kedem@f101.n9721.z9.virnet.bad.se    (Nemrod Kedem)
+FidoNet: 2:403/138   VirNet: 9:972/0, 9:9721/0, 9:9721/101
+(972)3-966-7562 (14.4K)            (972)3-967-0348 (Voice)
+P.O.Box 8394,     Rishon Le-Zion,   Zip 75253,     Israel.
+
+- --- FastEcho 1.21a/Real!
+ * Origin: <Rudy's Place - VirNet, Israel> Make Safe Hex! (9:9721/101)
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 16:07:19 -0500
+From:    "David M. Chess" <chess@watson.ibm.com>
+Subject: How do MtE utilizing viruses detect themselves? (PC)
+
+>From:    Malte_Eppert@f535.n240.z2.fidonet.bad.se (Malte Eppert)
+>
+>Can anybody tell me how MtE utilizing viruses detect themselves in an
+>infected file? Or do they reinfect the file each time they attack it,
+>like old Jerusalem?  Can't an algorithmic scanner use the method used
+>by MtE itself to detect it?
+
+The MtE itself is just a garbler-generator, and so doesn't contain any
+self-id code of any kind.  Viruses that use the MtE just use some sort
+of simple test that will have lots of false positives ("Is there an M
+in the first four bytes of this file" or "Is the seconds field on this
+file 14?" or whatever).  This is fine for the virus (since it's OK if
+it fails to infect 1% of files), but unusable for anti-virus programs
+(since a 1% false positive rate would be unacceptable).  DC
+
+
+------------------------------
+
+Date:    Mon, 18 Jan 93 20:47:00 +0200
+From:    eugene@kamis.msk.su (Eugene V. Kaspersky)
+Subject: Re: How do MtE viruses detect themselves? (PC)
+
+Hello all,
+
+Malte Eppert (2:240/535) writes:
+
+> Can anybody tell me how MtE utilizing viruses detect themselves in an
+> infected file?
+
+The polymorphic viruses (including MtE based viruses) detects the
+infected files at the same way as old not-polymorphic viruses. Several
+of them set the specific date/time stamp of infected files and checks
+it upon infection (for example, Vienna set 13th month or 62 seconds
+and polymorphic Todor sets it to 22 seconds).
+
+Other viruses set the fixed byte or word of infected file to the
+specific value and check it (Pogue, Groove).
+
+Several MtE viruses set the length of infected files to the value
+which is divided by 10h. Uruguay viruses (not MtE but polymorphic)
+infect the files so that the length of infected file is divided by 13h
+(or 17h). Those viruses infects the files if the file length is not
+divided by 10h (13h,17h).
+
+Commander Bomber (not MtE but polymorphic) infects the COM-file twice,
+but on executing infected program saves the memory image of the file
+on disk and as result the one-time infection is present only.
+
+Mutant viruses (not MtE but polymorphic) infect the files several
+times, but these viruses pack the file upon infection and the length
+of the infected file doesn't grow.
+
+> Or do they reinfect the file each time they attack it, like old
+> Jerusalem?
+
+Those are 'good' viruses, but MtE (and polymorphic too) virus can be
+very primitive and it can infect the files several times.
+
+> Can't an algorithmic scanner use the method used by MtE itself to detect
+> it?
+
+Those methods are not enough to detect the virus, see above.
+
+Best regards,
+
+Eugene.
+
+- --
+- --  Eugene Kaspersky, KAMI Group, Moscow, Russia
+- --  eugene@kamis.msk.su, +7 (095) 499-1500
+
+------------------------------
+
+Date:    Tue, 19 Jan 93 09:40:15
+From:    elias@sun.uakom.cs (Lubos Elias)
+Subject: TEKILLA virus (PC)
+
+Hi,
+
+do you know any symptoms of Tekilla virus ?
+Thanks in advance,
+
+Lubos.Elias@uakom.cs
+
+
+------------------------------
+
+Date:    19 Jan 93 18:16:38 +0000
+From:    at974@cleveland.Freenet.Edu (Larry Bennett)
+Subject: Request for info: "ANSI bombs" in text files (PC)
+
+
+The documentation for PKZIP v2.04c contains the following item.
+
+It sounds awful strange to me.  If I type out a text file that contains
+one of these "bombs" do I face the risk of introducing a virus into
+my system?
+
+If anyone can give me some insight into this, I would appreciate it if you
+could respond via email.  Thanks.
+
+==============================================================================
+
+PKSFANSI.COM
+
+PKSFANSI (PK Safe ANSI) is a Terminate and Stay Resident program that disables
+ANSI Keyboard Key Reassignments, thereby preventing "ANSI bombs" embedded in
+any text file (such as README files) or output by any program.
+
+Normally, ANSI sequences that redefine the keyboard could be hidden inside ANY
+text file or program, and could be executed completely unnoticed until it is
+too late.  PKSFANSI intercepts calls to the ANSI.SYS or other ANSI device
+drivers, and filters out any keyboard reassignments, while allowing other ANSI
+sequences through unaltered.
+
+If a keyboard key reassignment is attempted, PKSFANSI will intercept the
+sequence and discard it.  PKSFANSI also will BEEP to alert you that a
+reassignment was attempted.
+
+PKSFANSI requires less than 1k bytes resident RAM, and should work with any
+ANSI driver, such as the standard ANSI.SYS driver, NANSI, ZANSI, DVANSI, etc.
+Note that if you use a memory resident ANSI driver, such as the DESQview
+DVANSI.COM driver, PKSFANSI should be loaded after the ANSI driver is loaded.
+
+
+==============================================================================
+
+- --
+[~~~~~~~~~~~~~~~~~~~~~~~~~_   /| ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~]
+|   Larry Bennett         \'o.O'     usr2059a@cbos.uc.edu          |
+|   Madeira, Ohio  USA    =(___)=    at974@cleveland.freenet.edu   |
+[___________________________ U ____________________________________]
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 01:25:55 -0500
+From:    "Ludwig (Lu) Schumacher ->" <lschumac@mainz-emh2.army.mil>
+Subject: FAR-TRIEVE w/ Stoned Virus (PC)
+
+Version 4.1b (Upgrade) of FAR-TRIEVE was recently received directly
+from CACI, INC-Federal, P.O. Box 3950, Merrifield, VA 22116-3950, on a
+1.2M diskette infected with the Stoned virus.
+
+The virus was reported by F-Prot 2.06a.
+
+It should be noted that this is the second product from CACI with an
+infection.  An update was received late last year with Micheangelo.
+
+POC.  Lu Schumacher (lschumac@mainz-emh2.army.mil)
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 10:00:41 +0000
+From:    ingar@cee.heriot-watt.ac.uk (Ingar F Pedersen)
+Subject: Here virus (PC)
+
+Hi,
+
+I've just scanned my HD with scan 99, and it reported that some of my
+files are infected with the Here virus. Have anybody got any
+information on this virus? The only thing I know is that it infects
+com files.  What I would like to know is what it can do, how do I get
+rid of it, is there a way to find out where it came from etc etc
+
+Ingar
+
+ingar@cee.hw.ac.uk
+
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 09:21:09 -0500
+From:    "UNION::MCKNIGHM" <MCKNIGHM%UNION.decnet@gar.union.edu>
+Subject: NOINT Virus (PC)
+
+Several of our lab machines have become infected with a virus that has
+been identified as:
+	NOINT (STONED)			F-PROT 2.05
+	A new variant of STONED		F-PROT 2.06
+	NOINT				CPAV (version that came with
+					      PCTOOLS 8.0)
+
+F-PROT, which is the college's primary virus protection program, does
+not disinfect the virus; however, CPAV will.
+
+Why is F-PROT able to detect but not disinfect NOINT and are there plans
+for F-PROT to eventually handle the virus?
+
+Thanks for any help.
+
+Mary McKnight				Union College
+
+
+
+------------------------------
+
+Date:    Wed, 20 Jan 93 12:26:11 -0500
+From:    Scott Mitchell <smitch@geog.utoronto.ca>
+Subject: msd - bug ? virus ? coincidence ? (PC)
+
+Someone suggested that I use the msd.exe program that comes with
+Windows 3.1 to diagnose some memory problems I've been having (or so
+they predicted).  So I started up the program, and started looking at
+the first info dialog it gave,l which was motherboard info, as I
+recall.  Shortly after opening the dialog box, my hard disk started
+whirring away at an alarming rate, for about 8-10 seconds.  Then it
+stopped, and the speaker beeped a number of times, and my system
+locked up.  Now whenever I try to reboot from the HD, it goes into an
+endless cycle of resetting itself.  I can boot from floppy, but most
+of the DOS commands are corrupted.  This floppy happens to be my PC
+Tools recovery disk; when I run diskfix, there is a VERY long delay
+while it tries to figure out my partition tables ( my secondary HD has
+some linux partitions), and then it eventually locks up while trying
+to figure out lost sectors, etc (at least, I got tired of waiting
+after 10 minutes).  I borrowed Notron Disk doctor, but it didn't get
+any further.
+
+SO - are there any known bugs in the windows diagnostic program.  Has
+anyone heard of a virus that fits this description ?  ( None of my
+checking programs detect any viruses).  Or does it sound like an
+unrelated problem that happened to crop up when running msd ?
+
+Thanks in advance,   Scott
+
+- --
+Scott Mitchell
+
+smitch@geog.utoronto.ca
+
+------------------------------
+
+Date:    Thu, 28 Jan 93 02:39:10 -0500
+From:    aryeh@mcafee.com (McAfee Associates)
+Subject: McAfee VIRUSCAN V100 uploaded to SIMTEL20 (PC)
+
+I have uploaded to WSMR-SIMTEL20.Army.Mil:
+
+pd1:<msdos.trojan-pro>
+CLEAN100.ZIP    CLEAN-UP 9.12V100 cleans viruses from PC & LAN
+MSG_912.ZIP     Foreign language support files for McAfee 9.12
+NETSC100.ZIP    NETSCAN 9.12V100 scans LAN's for viruses
+SCANV100.ZIP    VIRUSCAN 9.12V100 scans PC's for viruses
+VSHLD100.ZIP    VSHIELD5.21V100 virus infection prevention TSR
+WSCAN100.ZIP    WSCAN V100 Windows 3.X version of VIRUSCAN
+
+WHAT'S NEW
+
+     Version 100 of the VIRUSCAN series adds detection of 195 new
+viruses, bringing the total number of known viruses to 1,060, or
+counting variants, 1,756.
+
+     Beginning with this release, we are using a new method for
+providing foreign language support.  The VIRUSCAN, NETSCAN, and
+CLEAN-UP programs now check for a foreign language file named
+MCAFEE.MSG in the same directory as the program and then display
+messages in that language instead of English.  Since foreign
+language support is now be handled outside of the programs, the
+/FR (French) and /SP (Spanish) language switches have been removed.
+
+     Foreign language files are currently available in Bulgarian,
+Dutch, Finnish, French (European), German (Swiss), and Spanish
+(Latin America).  Other languages will be added as time and demand
+permits.
+
+     Please note that there have been two earlier releases of Version
+100, Version 9.1V100 and Version 9.11V100 for the VIRUSCAN, NETSCAN
+and CLEAN-UP programs, and 5.2V100 for VSHIELD.  These versions were
+not released on the Internet.
+
+     The OS/2 versions of VIRUSCAN, NETSCAN, and CLEAN-UP Version 100
+are still under testing and should be ready in a week or two.
+
+     Congratulations to William S. McKiernan, president and COO of
+McAfee Associates, and his wife on the birth of, heh, twins.  Bill
+will no doubt be getting a lot less sleep in forthcoming months...
+
+VALIDATE VALUES
+
+CLEAN-UP 9.12V100 (CLEAN.EXE)       S:134,337  D:01-21-93   M1: BA6E  M2: 1513
+LANGUAGE 9.12 (BULGARIA.MSG)        S:12,204   D:01-23-93   M1: 4E79  M2: 0625
+LANGUAGE 9.12 (FINNISH.MSG)         S:15,750   D:01-23-93   M1: 41F2  M2: 0515
+LANGUAGE 9.12 (FRENCH.MSG)          S:15,682   D:01-18-93   M1: BEFF  M2: 15DF
+LANGUAGE 9.12 (FRENCH.MSG)          S:16,060   D:01-23-93   M1: C0EE  M2: 0194
+LANGUAGE 9.12 (NETHERLD.MSG)        S:16,759   D:01-23-93   M1: 3EC2  M2: 176A
+LANGUAGE 9.12 (SPANISH.MSG)         S:15,734   D:01-18-93   M1: F0CE  M2: 06D3
+LANGUAGE 9.12 (SPANISH.MSG)         S:16,270   D:01-23-93   M1: 8543  M2: 09B2
+LANGUAGE 9.12 (SWGER.MSG)           S:17,738   D:01-23-93   M1: FD56  M2: 0BB1
+NETSCAN 9.12V100 (NETSCAN.EXE)      S:106,421  D:01-21-93   M1: 9AB8  M2: 0129
+SCAN FOR WINDOWS 100 (WSCAN100.EXE) S:76,202   D:01-18-93   M1: 92DB  M2: 1A1E
+SCAN FOR WINDOWS 100 (WINSTALL.EXE) S:17,378   D:01-18-93   M1: EEC5  M2: 12DE
+SCAN FOR WINDOWS 100 (WSCAN100.EXE) S:76,202   D:01-18-93   M1: 92DB  M2: 1A1E
+VIRUSCAN SCAN 9.12V100 (SCAN.EXE)   S:108,634  D:01-21-93   M1: AA15  M2: 1CD8
+VSHIELD 5.21V100 (VSHIELD.EXE)      S:45,592   D:01-19-93   M1: 000C  M2: 1112
+
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET: aryeh@mcafee.COM
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | IP# 192.187.128.1
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 12]
+*****************************************

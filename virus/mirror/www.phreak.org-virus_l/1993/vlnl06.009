@@ -1,0 +1,1114 @@
+VIRUS-L Digest   Wednesday, 20 Jan 1993    Volume 6 : Issue 9
+
+Today's Topics:
+
+What is a virus ?
+Re: Measuring polymorphism
+Assymetric Cryptographic Checksums
+Engage brain before using mouth (prior posting)
+Re: How to measure polymorphism
+What do you want?
+Contents of conference proceedings, Ides of March
+Re: Internet Worm Functions - part 2 (CVP)
+Re: Export restrictions of anti-virus software?
+Re: On the definition of viruses
+Illumination
+Re: Heuristic Scanners
+Viruses in OS/2's HPFS? (OS/2)
+Re: How do MtE utilizing viruses detect themselves? (PC)
+Re: Monkey [Mon] and Multi-2 [M12] viruses (PC)
+Re: Possible new PC viruses ? (PC)
+Trojan Horse announcement (not a virus, tho) (PC)
+Cansu virus plague! (PC)
+Norton Anti-Virus Update (PC)
+Re: How do MtE utilizing viruses detect themselves? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 13 Jan 93 12:13:43 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: What is a virus ?
+
+There have been a number of learned comments on "beneficial" viruses
+and the horrors thereof. I have not read Dr. Cohen's papers (if they
+are available on the net, I would appreciate either FTP instructions
+or their E-Mail - not being at a University has its limitations),
+however I do have some opinions.
+
+First, a virus appears to be executable code that propagates by
+attaching itself to other programs. If it were a stand alone (not
+requiring a host) it would be a Worm. If it did not propagate, it
+might be a logic bomb, a trojan horse, or simply a program, but it
+would not be a virus. Propagation is part of the definition.
+
+Obviously companion & path viruses do not meet this test since they
+do not attach themselves to other programs, rather they spoof the
+OS into executing them instead of the requested program.
+
+MBR and BSI infections are questionable. AZUSA in particular replaces
+the entire MBR code and is probably more properly termed a logic bomb
+than a virus (of course the popular definition calls *all* malicious
+software viruses, but we are talking laboratory definitions now).
+
+Therefore, to be strictly a virus, a program (xA) must affect a change
+to another program (B) that adds the functionality of A to (B) such that
+the function of a third program (C) can also have the functionality of
+(A) added to it by the new program (BA).
+
+In other words when xA executes in the presence of B, B becomes BA.
+When BA executes in the presence of C, C becomes CA (*not* CBA).
+
+Further, to be a *beneficial* virus, BA must retain all of the functionality
+of B unless some function(s) is to be specifically (and documentedly)
+modified.
+
+Here the Turing Halting Rule has a new effect: A has no way of
+determining prior to the change of a random program B to BA whether
+this change will be detrimental to the functionality of B. Period.
+
+Now many people including myself have pointed to COPY as an example
+of a virus. On reflection this is not true since while it is possible
+to say COPY B.COM+COPY.COM B.COM, this will not add the functionality
+of COPY.COM to B.COM. COPY cannot propagate itself. It can cause
+programs to fail if used this way but that in itself does not make
+COPY a virus.
+
+Further, we have discussed the use of a program on a LAN to update
+Client programs, but these do not meet the test since (C) cannot be
+affected, only (B). Further since (B) has just been updated or
+replaced and cannot update anything else once "fixed" this does not
+meet the propagation test of a virus.
+
+Consider the recent CHKDSK furor. I posted a simple detection mechanism and
+"fix" that could easily be put into a program that might be executed as
+part of the login script for a LAN. When a client logs in, his C: drive is
+searched for CHKDSK.EXE. If found, it is checked. If the old one, the
+fix is applied.
+
+THIS IS NOT A VIRUS. The original program's function is not propagated.
+(B) did not become (BA), it became (B'). Certainly, if poorly written,
+the update could cause damage and the public might call it a virus but
+incorrectly.
+
+Therefore, if we accept that to be a virus, the test of A + B = BA
+and BA + C = CA must be met, then the Turing Halting Rule makes the
+general case of a beneficial virus (cannot cause any harm in any
+environment) impossible.
+
+				Enough,
+					Padgett
+
+------------------------------
+
+Date:    13 Jan 93 19:46:56 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Measuring polymorphism
+
+barnold@watson.ibm.com writes:
+
+>much new code will have to be written to reliably detect instances of
+>the virus?
+
+Nice idea... :-)   Well, I checked my own scanner..
+
+>  For example, for many detectors, any virus detectable by a
+>small set of search strings (with multiple length wildcard characters
+>allowed), such as the Maltese Amoeba (AKA Grain of Sand, Irish)
+>requires no new code.
+
+   Well, I don't allow variable-length wildcards...
+
+   Maltese Amoeba: 37 lines
+
+> The MtE might require 200 lines of code as one
+>ordinarily counts lines of C code,
+
+   MtE: 174 lines
+
+> the V2P6 might require 40 lines of code
+
+   V2Px: 40 lines
+
+Other "special" cases:
+
+   Whale: 32 lines
+   Haifa: 28 lines
+   Slovakia: 51 lines
+   VCL: 40 lines
+   PS-MPC: 30 lines
+
+I am still polishing my TPE detector, but it will be quite long, it seems.
+
+A final note - yet another metric would be "the average time it takes
+the anti-virus cummunity to update their products to detect the virus"...nah,
+on second thought that would not do...the number would be infinite in some
+cases...  ;-)
+
+- -frisk
+
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Wed, 13 Jan 93 16:26:36 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Assymetric Cryptographic Checksums
+
+>  In reply to me, Vesselin Bontchev writes:
+
+>> Well, a CRC is usually computer like this:
+>>
+>> 	crc = INITIAL_VALUE;
+>>   	while ((c = getc (file)) != EOF)
+>>		crc = crc_table [(crc & 0x00FF) ^ c] ^ (crc >> 8);
+>>
+>> Usually INITIAL_VALUE is 0, but you could set it to anything you would
+>> like...
+
+>Well, I think that comes from using a particular (table-driven) *im-
+>plementation* of CRC, and is not an essential feature of CRC as it
+>is defined.  Also, while I agree that in this implementation
+>INITIAL_VALUE could be considered as a seed, I doubt that varying this
+>value adds any security, since CRC can be made key-dependent in a
+>very natural way (by varying the generator) and since, in a certain
+>sense, it is then provably secure (subject to certain reasonable
+>assumptions).
+
+I believe this was presented for simplification rather than specifics.
+For instance an alternate mechanism is something like this:
+(Pardon the assembly language but HLLs just are too slow for me 8*)
+
+MOV BX, <CRC_VALUE>
+<SELECTED_COMMAND> BX,<SEED>
+XX:
+LODSB
+<ALGORITHM_1> BL,AL
+<ALGORITHM_2> BX
+LOOP XX
+OR BX,BX
+JZ <FILE_OK>
+
+The effectiveness of this is through the fact that <SELECTED_COMMAND>,
+<ALGORITHM_1>, and <ALGORITHM_2> consitute a unique set for the particular
+machine chosen during installation from a matrix of possibilities. Making this
+more complex adds no strength since the weak point is the instruction
+JZ <FILE_OK>. Obviously changing JZ to JMP is much easier than calculating
+the CRC_VALUE and requires secondary protection.
+
+More important, if the intruder is able to determine the exact agorithm
+and seed in use, added complexity buys nothing directly.
+
+However a direct advantage to this mechanism is that simply plugging a file
+into the same code will rarely result in a valid CRC, rather the algorithm
+must be run backwards from a zero point - something that is somewhat slower
+and non-trivial. (Acceptable to the user since the hit is one time only on
+installation but not acceptable to a virus which must try to stay hidden).
+A major strength to this approach is the assymetric nature.
+
+Further this mechanism will provide several different algorithms that will
+produce the same result for a single file - but will fail if the improper
+one is applied to a different file. This makes cracking much harder manually
+and nearly impossible for a machine.
+
+You see, unlike a public key which must be very strong since the algorithm
+is known, this can be considerably simpler since it is unknown and the
+intruder must derive iteratively from a number of choices.
+
+>Regardless of which is used, the important criteria
+>are security and speed, where "security" means mainly the requirement
+>that, given a file (without knowledge of the key or seed), it be com-
+>putationally infeasible to create another file with the same checksum
+>as the given one.
+
+I would modify this statement slightly. In the field of confidentiality
+from which such cypto approaches derived the protection of each and
+every file is necessary. In a PC, virus protection is different and what
+we are looking for is immediate detection, the use of a checksum implies
+that we expect the file to be changed/infected/damaged. Access control
+is something else entirely. As a result IMHO the following is adequate:
+
+Given a group of files (without knowledge of the key or seed), it be com-
+putationally difficult to create a single file with the same checksum
+as the given one and infeasible that two or more files could be affected
+in the same way without detection.
+
+Further, CRC "uniqueness" may be a clue that an intruder could use as
+a test for success of a given attack. Better to alow for a (small) number
+of duplications possible.
+
+As can be seen from the above, calculation is very fast since the loop is
+tight and done entirely in registers. True, there are only 2^16 possible
+values (though in another posting I presented a means for generating 2^32),
+but this is "sufficient" for any practical need. Again the rigor required
+for integrity is less than that required for confidentiality.
+
+						Warmly,
+							Padgett
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 11:56:08 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Engage brain before using mouth (prior posting)
+
+In a posting sent earlier today, I used the example "COPY COPY.COM FRED.COM"
+that should have read "COPY COMMAND.COM FRED.COM" since COPY is an internal
+DOS command and the above sequence would appear to satisfy Fred's
+definition of a virus. This also answers Lee Van Dyke's question (and is
+probably what prompted it:
+
+>I have just been informed of a virus in COMMAND.COM ... of DOS 5.0...
+
+Lee there is no virus in COMMAND.COM however according to the definition
+used by Dr. Fred Cohen, COMMAND.COM may *be* a virus 8*).
+
+				Entering senility ?
+
+						Padgett
+
+
+------------------------------
+
+Date:    Wed, 13 Jan 93 18:32:00 -0500
+From:    ncoast!arnold@usenet.INS.CWRU.Edu
+Subject: Re: How to measure polymorphism
+
+CSCRDW%CURIE@vaxtm1.rtpnc.epa.gov (Ron Whittle) writes:
+>On 06 Jan 93, bontchev said:
+>
+>> There are already two polymorphic engines available (MtE and TPE) and
+>> we are going to see more and more polymorphic viruses in the future.
+>> An interesting question arises - how to determine how polymorphic a
+>> virus is? How to determine which of two viruses is "more polymorphic"?
+>> In other words - how to measure polymorphism in an objective way?
+>
+>I think that the first thing that needs to be done is to separate the
+>'polymorphism' from the 'encryption'.  In your example code, that
+>would not be a polymorphic virus (rating 0), but an encrypting virus
+>(rating 1).
+>
+>> Unfortunately, this is not good enough. First, what to do with viruses
+>> that use a limited set of decryptors, one of which is selected
+>> randomly (Whale). Such viruses are obviously more polymorphic than
+>> Cascade. But are they more or less polymorphic than Suomi? They can be
+>> detected by a set of non-wildcard strings...
+>
+>By giving different ratings for encryption and polymorphism, this
+>problem would not be as big.  Also, a lesson could be taken from
+>fractal geometry.  Assign (whale) type viruses ratings between
+>numbers (1.3 for example).
+>
+>> Second, what about Bad Boy? It consists of 9 segments of code, 8 of
+>> which can appear in any order. This gives 8! = 40,320 variants. But
+>> the virus is even not encrypted, so it can be detected with a simple
+>> (non-wildcard) scan string...
+>
+>Bad Boy would have an encryption rating of 0, and a polymorphism
+>rating of 1 (or whatever.  I don't think the number of variants is
+>the only factor to be considered in the polymorphic rating.  As you
+>have shown, even a small number of segments can lead to a large
+>number of variants).
+
+ncase You Have Not Tried It TPE 1.1 Is Very Very Good..I have not
+Found a Pattern That Can be scanned with a simply Wild Card Scanner
+Yet..I think it is better than MTE..And I believe it is totaly
+Polymorphic..
+
+Arnold
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 02:10:19 +0000
+From:    sara@news.rn.com (Sara Gordon)
+Subject: What do you want?
+
+Recently I posted request for info from anti-virus product
+evaluators/services or persons with opinions on them. Thanks to
+all who responded.
+
+Now, I would like to inquire of anti-virus product users/purchasers
+(and anyone who would care to respond):
+
+
+1. What are the three most important factors you consider when
+   purchasing an anti-virus product? When your responses reference
+   technical capabilities, please be as specific as possible in
+   defining the capability which is important to you.
+
+Please e-mail the responses, which will be categorized and published
+as part of a little project i've undertaken to evaluate the 'evaluators' :)
+
+For those persons who asked me what kind of responses I have gotten
+from the evaluators and product developers, it is this way: so far
+the evaluators -for the most part- are not interested/willing to say
+- -how- they evaluate anti-virus products. I am specifically interested
+in finding information such as a.) what provisions are used to evaluate
+heuristic modes of a-v products b.) what provisions are taken/made in
+dealing with false positives c.) exactly (EXACTLY) what kind of machines
+are these evaluations performed using? drives? boxes? hardcards? what
+video displays, what dos versions?
+
+This is relative only to standalone PC's, but even with this limitation,
+I have had remarkable non-success in finding out exactly who is doing what,
+and how they are doing it.
+
+If you have any information you could share with me, I would appreciate
+an e-mail from you !!
+
+p.s. almost all people when asked what is the major problem with
+evaluating state: not enough viruses, not enough time. some state
+too many viruses, not enough time. concensus appears NOT ENOUGH TIME.
+
+
+- --
+           #  "talk to me about computer viruses............"
+           #  fax/voice:    219-277-8599     sara@gator.use.com
+           #  data          219-273-2431     SGordon@Dockmaster.ncsc.mil
+           #  fidomail      1:227/190        vfr@netcom.com
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 02:55:12 -0800
+From:    Richard W. Lefkon <dklefkon@well.sf.ca.us>
+Subject: Contents of conference proceedings, Ides of March
+
+Nine days ago, FCWturing posted a protest to Virus-L concerning the
+current ban on publishing viruses within the Proceedings of the
+International Computer Security & Virus Conference.
+
+I'm program chair and will try to be brief explaining what and why.
+Those interested in the conference can call 800-835-2246 x190 and
+get further informatin about March 10-12 in New York City.
+
+1.  The conference and its committee are NOT spokespersons for
+    DPMA/ACM/IEEE or the other five societies and five trade
+    publications involved.  The local DPMA chapter hosts the
+    conference and organizations like ACM-SIGSAC and IEEE Computer
+    Society are cooperating sponsors.
+
+    As an example, IEEE sponsors literally HUNDREDS of worthwhile
+    seminars and conferences per year.  But if IEEE wants to take
+    a position, its appropriate board will do that, not a conference.
+
+    Incidentally, the most recent position taken by the DPMA chapter
+    was in opposition to New Jersey programmer licensing legislation.
+    While this particular 1991 stance eventually did bubble up to
+    the top, the chapter does not speak for DPMA at large and the
+    conference does not speak for the chapter.
+
+2.  The ban on publishing viruses in the proceedings was put into
+    effect with last year's (5th International) conference.  It
+    resulted from a post-mortem e-mail discussion by the conference
+    committee based on contents of the 1990 (4th) gathering.
+
+    Mr. Fred Cohen is a valued memember of the 16-person conference
+    committee, but at the time of the deliberations he (like me a
+    year before) wasn't on a regular e-mail host.  Pretty clearly,
+    he is now.  And he WILL have the chance to influence the rules
+    that govern NEXT year's (7th International) conference.
+
+3.  Rationale.
+
+    I don't necessarily agree with every punctuation mark of the
+    position concerning publishing code fragments, but it WAS a
+    vote/consensus of the conference committee, approximately thus:
+
+    a.  By definition, those who attend this conference have
+        the resources to take off 2 or 3 days from work and
+        pay the modest registration fees.
+
+        Especially those who have attended before, they are pretty
+        well-connected in the technical community and if really
+        motivated could obtain the stuff you might not want your
+        5-year-old to fool with.
+
+        Among the 20% who are full-time security people, this is
+        especially true - and one reason why the anti-virus products
+        were fully prepared in '92 for "Michelangelo" was that most
+        of the major players had representatives here in '91 on
+        March 14 when Roger Riordan of Australia laid out how he
+        had discovered the thing a month beforehand, during his
+        scheduled speech at the conference.
+
+   b.  Those whose ONLY contact with the conference is the
+        Proceedings, could very well have considerably less ability
+        to "get the code, no matter what."  If the Proceedings
+        is on the shelf of their library, e.g., it may be their
+        first and only contact with viruses.
+
+        So why give the true beginners a practice set of viruses?
+
+    c.  Therefore, last year and this year, speakers who dissect
+        viruses on the front wall screen at "Ides of March" in New
+        York, are permitted to distribute a non-Proceedings handout
+        to attendees.
+
+   d.  Rest assured, that "c" necessitated a good-will compromise on
+        the part of those at the other end of the opinion spectrum
+        from Fred.
+
+    e.  This April, procedures for the 1994 conference will be fixed
+        by consensus of the committee members.  They will take into
+        account the experiences of the March 10-12 1993 sessions.
+
+        Anyone who doubts that the committee responds to realities
+        experienced, has only to be reminded that THIS conference
+        will be managed by Expoconsul, the managers of DEXPO and
+        other big events - NOT by the chapter volunteers who did
+        this task in previous years.
+
+        That's because, based on feedback, the committee was
+        unanimous in its sentiment that "Ides of March" clearly
+        hundreds of attendees past the point where it could be
+        run properly by amateurs.
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 07:56:48 -0500
+From:    Olivier MJ Crepin-Leblond <o.crepin-leblond@ic.ac.uk>
+Subject: Re: Internet Worm Functions - part 2 (CVP)
+
+>Date:    Thu, 07 Jan 93 16:51:07 -0800
+>From:    rslade@sfu.ca
+
+[...]
+
+>The Worm did have a means of checking to see whether there were
+>multiple copies running on a given computer.  However, the mechanism
+>delayed the termination of a program for a significant time.  Also,
+>the Worm regularly produced copies which would not respond to the
+>request for termination.
+
+[...stuff deleted...]
+
+>                                   The multiple copies of the
+>program that ran on the host machines meant that processing was
+>significantly affected.  In addition, communications links and
+>processes were being used for propagating the Worm rather than the
+>work they were intended to support.
+
+This is all off the top of my head, so apologies for any inaccuracy:
+
+The worm used to check if it had already infected the remote computer
+and if it indeed had, then it would not infect it again. However, in
+order to curb any attempt by system managers to "inoculate their
+machine by running a similar process", each after each 10
+interrogations, a machine would return a negative answer, thus letting
+the worm re-infect it. RTM's BIG mistake was that number. He greatly
+underestimated the speed of the internet. For a lower probability of
+detection of his worm, he would have had to use a number at least 100
+times bigger !
+
+When he came back from a break after having released the worm, the
+internet had been brought to a near standstill.
+
+Cheers,
+
+O.
+
+- --
+Olivier M.J. Crepin-Leblond, Digital Comms. Section, Elec. Eng. Department
+ Imperial College of Science, Technology and Medicine, London SW7 2BT, UK
+       Internet/Bitnet: <foobar@ic.ac.uk> - Janet: <foobar@uk.ac.ic>
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 08:41:56 -0500
+From:    fc@turing.duq.edu (Fred Cohen)
+Subject: Re: Export restrictions of anti-virus software?
+
+aryeh@mcafee.com (McAfee Associates) says:
+
+> Subject: Re: Export restrictions of anti-virus software?
+>
+> At first, it would appear that VIRUSCAN would be export-controlled since
+> it is a shareware program.  However, as I'm sure our half-dozen (or so)
+> Canadian agents (not to mention our own accounting department) would point
+> out, the programs are generally available by mail order and telephone call
+> transactions.  Now, I am not lawyer, but this would seem to invalidate any
+> export controls on the software.
+
+The US Government does not agree with you - I had to get permission to
+export Integrity Toolkit by clearing it with the State department.
+Once that was done, commerce had no problem.  A recent change was
+supposed to have been made to exempt antivirus software not containing
+any crypto from the state department portion of this, and the commerce
+department was then to create a blanket exception to enhance the flow
+of these exports - but I don't know if it ever really happenned.
+
+> Question: Does "In the public domain" mean a program that is not
+> copyrighted, e.g., "free" as in the context of "public domain"
+> software, or does it just mean a program is widely available to the
+> public, and thus not subject to export controls--even if it is
+> shareware, e.g, publicly-available but copyrighted?
+
+Public domain means that the author has given up all property rights
+to the public for anyone to use as they see fit.  It has nothing to do
+with price or availability - it has to do with ownership of
+intellectual property.
+
+ygoland@edison.SEAS.UCLA.EDU (The Jester) Says:
+> Subject: Yes, but is it a virus?
+> ...
+> To answer the question I think it needs to be restated "What is a
+> virus and to whom are we speaking to it about?".
+>
+> If Dr. Cohen is speaking of viruses to other experts in the field
+> then his comments regarding Beneficial Viruses and such are
+> appropriate and will be understood. I doubt anyone who understands
+> his comments would disagree with his assertions.
+>
+> But theres the rub, how many people really understand his assertions?
+> If I go to the average person and say "VIRUS" they are not going to
+> define it as Dr. Cohen has defined it. It is futile to argue who is
+> 'correct' in their definition, reality is perspective.  To the average
+> semi-literate computer user what Dr. Cohen defines as a Virus is
+> either a worm or not a virus at all. As such to term the products a
+> 'Beneficial Virus' is misleading, I would even go so far as to call it
+> false advertising.
+
+The average computer user is not a moron, but is often treated as one
+by the computer literate people of the world.  I think that instead of
+propogating ignorance, we should be working to eliminate it.  Perhaps
+if we all started explaining that viruses are programs that reproduce,
+they would understand them better.  Maybe we could follow it up by
+saying that, just like people can be harmed by SOME biological
+viruses, computers can be harmed by SOME computer viruses.  I doubt if
+many computer users would have difficulty understanding this.  You
+might even follow it up by telling them that, without SOME
+reproduction in the biological world, there would be no life on Earth
+- - after all, that's how we were born - and that's how all of our food
+is created!  Just like tainted food can get you sick, tainted programs
+can get your computer sick.
+
+	The analogy is actually quite good - and easily understood -
+and clarifying to the average computer user - and opposed by some
+people who wish to keep computers (or biology) mysterious - perhaps
+for their own egos - or their pocket books - or in rare cases because
+they don't think the analogy is really that good - ...
+
+> So, in summary, I have yet to see anyone on this group who understood
+> exactly what Dr. Cohen was refering to disagree with his assertions.
+> What is being argued here is definitions and personally I think its a
+> bit ungentlemanly for Dr. Cohen to make his various statements without
+> cleary explaining that he is using the term virus in a form which the
+> average individual of some computer knowledge would not be familiar
+> with.
+
+I have clearly explained my definition hundreds of times - literally.
+I have published the definition in journals - and books - and on radio
+- - and on television - and in popular magazines - and over the networks
+of the world - over the last 9 years.  Perhaps the problem is that so
+many others don't bother to do the background work and then make
+statements as if they were experts.  They then propogate the incorrect
+memes and corrupt the `average' individual's perception.  Perhaps it
+is those people who are being `ungentlemanly', and not me.  A real
+expert bothers to get the facts before making assertions.
+
+__________________________________________________________________________
+8:30AM-2PM Eastern		Protection		2PM-8:30PM Eastern
+US+412-422-4134			 Experts		   US+907-344-5164
+	FAX US+412-422-4135 -OR- 907-344-3069 24 hours - 7 days
+__________________________________________________________________________
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 09:10:12 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: On the definition of viruses
+
+  Fred Cohen writes:
+> 	So what is a computer virus? In simple terms, it is a sequence
+> of instructions that, when interpreted in an appropriate environment,
+> "replicates" in that at least one relica also "replicates", etc., ad
+> infinitum.
+
+Even though your definition(s) of "virus" differ to some extent from
+the accepted notions, I certainly respect them, not only because they
+are independent of the subjective components which you mentioned, but
+also because you defined "virus" long before most of us got into the
+game.  In contrast to some of my colleagues, I can even respect your
+notion of beneficial viruses.  However, I have several problems with
+the above definition.  (I know you have a formal definition which you
+fall back on in case of problems, but if you're going to give an
+informal definition such as the above, you're going to have to defend
+it as is.)
+
+  The first problem I find with the above definition (and I admit it
+might be considered as nit picking) is this:  It *sounds* as if you
+are defining a one-place predicate "x is a virus":
+                 V(x) iff (Ey)(x replicates in y),
+whereas I'm quite sure that what you really intend to define is a
+*two-place* predicate "x is a virus in environment y":
+                 V(x,y) iff x replicates in y.
+I have two reasons for saying this.  First, in your *example* you say
+that a backup program for DOS is a virus if run on DOS, but it is
+*not* a virus if run on a mainframe.  Secondly, you have stated that
+for *any sequence of symbols* [presumably incl. the string consisting
+of the single bit '0' or even the empty sequence], there is at least
+one "machine" (= environment?) in which it is a virus.  If this is
+correct, then according to the first interpretation, *all* files would
+be viruses and we would have a useless definition.  I therefore think
+that what you intended to write was something more like:
+  A sequence of symbols is a computer virus *in a given environment*
+if and only if it replicates when interpreted in *that* environment.
+
+  A second problem concerns your concepts of "interpretation" and
+"environment".  Both the general wording and your examples suggest
+that you are thinking of how a given string of symbols would be
+interpreted if executed as a program in a given system.  Now in order
+for BACKUP (or DISKCOPY or XCOPY) to be a virus, it must make a copy
+of *itself*, so that even within the DOS environment, a backup program
+for DOS would *not* be a virus if the file which contains it is not
+among the files being backed up.  But you have also written [in
+contrast to the usage among most virus researchers] that for you a
+virus must replicate on *every* execution, not only on some execu-
+tions.  From this it would seem that programs such as the three men-
+tioned above are *not* viruses.  I suppose that your answer will be
+that when the backup program file is not among the programs being
+backed up, we have a different "environment", and BACKUP is a virus
+only in an "environment" which includes the backup program.  But in
+that case, the difference between two "environments" is not simply a
+matter of different interpretation in different systems, but is also a
+function of the set of files which happen to be present when the
+candidate virus is executed.  And it sounds even weirder if you say
+that we're talking of different *machines* in these two cases.  Per-
+sonally, I would prefer to allow "conditionally replicating" viruses,
+but whatever your choice, I think this sort of thing should be clari-
+fied when you use terms such as "interpretation" and "environment".
+
+  There are, of course, several other problematical concepts, such as
+"replicate" (aside from your clarification that it is used in a recur-
+sive sense).  As mentioned, I anticipate that in case of problems such
+as these, you will refer us to your formal definition in place of the
+above one.  In principle, I can understand this.  Unfortunately, since
+very few people have access to that definition (I found it in an issue
+of Computers & Security, but I had to travel 120 km. in order to photo
+it from a library which subscribes to C&S), and since not very many
+would understand your formal definition even if they had it available,
+referral to your formal definition usually leads to a dead end in
+discussions such as these.  I therefore think you should do your best
+to state an informal English-language definition as precisely as you
+can and then to be prepared to answer questions with respect to that
+definition, or alternatively, to make your formal definition (with
+detailed explanations) available in machine-readable form.
+
+  One final comment.  You write:
+> 	Computer viruses do not have to be malicious, they do not have
+> to be Trojan horses, and they do not have to enter without the
+> knowledge or consent of the user.  Any definition that depends on
+> these properties depends on peoples' opinions, skills, and knowledge,
+> and are thus not "testable" in the scientific sense of the word.  (See
+> Popper and others for more details).
+
+I admit it's not at all essential for your argument, but since this is
+the second time I've seen you invoke Popper's name in this context, I
+feel I should say something on this [that rustle you hear is me don-
+ning my philosopher's hat]:  When Popper says "testable", he does not
+mean what most people mean.  In Popperese, "testable" means *falsifia-
+ble* or *refutable*.  For example, the statement "There exists at
+least one black hole in the universe" would be considered testable by
+almost every scientist, since existence of such a thing might be
+confirmed, but it would *not* be considered testable (or scientific or
+empirical) by Popper, since in order to falsify this statement it
+would be necessary to examine infinitely many stars.  By the same
+reasoning, the statement "There exists at least one virus", though
+verifiably true, would be considered "non-testable" by Popper!  I very
+much doubt that you have in mind such an extreme, asymmetric view of
+testability, and I therefore suggest that you not look to Popper for
+support of your position.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 11:39:12 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Illumination
+
+>From:    fc@turing.duq.edu (Fred Cohen) - virus-l 6.008
+>Subject: Re: A-V virus
+
+>	A side effect of the definition is that in order to discuss
+>viruses, we also must discuss environments.  For example, the
+>Christma.Exec virus spread largely because of a corporate culture where
+>people send their friends fancy Christmas cards via computer mail.  If
+>it weren't for the culture, the program might not have replicated.  The
+>same is true of the Internet virus.  The environment that allowed this
+>virus to spread included a debugging option that allowed unlimited
+>privileges without any authentication.  If the environment did not
+>include that circumstance, the Internet virus would not have replicated,
+>and it would therefore not have been a virus.  That's why we talk about
+>DOS viruses as opposed to MAC viruses, Windows viruses, etc.
+
+The light dawns ! Fred considers the class "worm" as subset of the
+class "virus". Evidently what I have been considering the "popular"
+definition is also the laboratory definition and all of those who have
+considered that stand-alone propagating programs (worms) were not
+viruses must be in error.
+
+As near as I can tell "infection of a program" must then include any
+modification of the operating system such as adding or changing a
+directory entry. No wonder I have never understood what his boundaries
+were.
+
+By this definition, no host program is necessary for a virus, all that
+is required is propagation.
+
+Next, if the term "virus" includes "worm", what else does it include ?
+("copy copy.com fred.com" comes to mind and must be what Jon meant
+originally). If this is so then we need to redraw the boundaries and
+rewrite the FAQ (see below).
+
+One side effect is to handle the question of whether companion, path,
+and boot viruses are really viruses. Obviously they are.
+
+An immediate question becomes "What is the proper term for what nearly
+all of us have been calling a virus ?" (Parisitically Propagating
+Program ?)  Youth wants to know ! (Asprin time).
+
+					Bemusidly,
+						Padgett
+
+               Excerpt from FAQ "Definitions"
+
+B1) What are computer viruses (and why should I worry about them)?
+
+According to Fred Cohen's well-known definition, a COMPUTER VIRUS is a
+computer program that can infect other computer programs by modifying
+them in such a way as to include a (possibly evolved) copy of itself.
+Note that a program does not have to perform outright damage (such as
+deleting or corrupting files) in order to to be called a 'virus'.
+However, Cohen uses the terms within his definition (e.g. 'program'
+and 'modify') a bit differently from the way most anti-virus
+researchers use them, and classifies as viruses some things which most
+of us would not consider viruses.
+
+------------------------------
+
+Date:    14 Jan 93 16:57:05 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Heuristic Scanners
+
+antkow@sis.uucp (Chris Antkow) writes:
+
+> Would someone please post information on heuristic scanning theories.
+>I'm looking to develop my own scanner and as such want to develop some
+>software that attempts to thwart these scanners.
+
+Yeah...thanks....
+
+Anybody who knows anything at all about heuristic scanning (like myself)
+is almost certainly not interested in helping you - after all, the only
+people that could benefit from the software you might develop would be
+virus authors.
+
+- -frisk
+
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 09:24:57 -0500
+From:    Kevin_Haney@nihcr31.bitnet
+Subject: Viruses in OS/2's HPFS? (OS/2)
+
+Bob Heuman asked about the differences between the 16-bit HPFS286
+shipped with OS/2 2.0 (yes, even though OS/2 2.0 is a 32-bit operating
+system in most respects, the disk drivers are still 16-bit code) and
+the 32-bit HPFS386 shipped with some versions of Lan Manager.  When
+OS/2 2.0 was introduced, some changes were made in the HPFS286
+installable file system.  The differences are in the drivers and
+associated code and provide enhancements like I/O command chaining and
+scatter/gather support, which increase overall performance.  There was
+no change made to the disk structures as far as I know.  HPFS386 did
+add some additional disk structures that aren't present in HPFS286.
+Essentially, they are access control lists for multiuser security,
+similar to what Microsoft is doing with the NTFS for Windows NT (which
+isn't surprising, since Windows NT used to be OS/2 3.0).  HPFS386 also
+provides fault tolerant capabilities such as drive mirroring and
+duplexing.
+
+Since there is no HPFS virus yet (or OS/2-specific virus either, thank
+God) we don't know what techniques virus authors may attempt to use in
+the future, so we can't predict what future viruses may do on HPFS386
+verses HPFS286.  I haven't tested to see if DOS viruses can infect DOS
+programs on an HPFS386 partition with the file access permissions
+properly set, mainly because I don't have access to a Lan Manager
+system.  An interesting area for future research...
+
+At the NCSA International Virus Prevention Conference in June, 1992, I
+predicted that we might see the first OS/2-specific virus by the end
+of the year.  I am very glad to have been wrong in that
+prognostication.  This probably reflects OS/2's low market share more
+than anything else.  However, since OS/2's market share is increasing,
+our days of innocence may be numbered.  As always, if anyone comes
+across any hard evidence of an OS/2-specific virus, I would very much
+appreciate hearing about it.
+
+Kevin Haney
+Internet: khv%nihcr31.bitnet@cu.nih.gov
+
+------------------------------
+
+Date:    13 Jan 93 19:11:11 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: How do MtE utilizing viruses detect themselves? (PC)
+
+Malte_Eppert@f535.n240.z2.fidonet.bad.se (Malte Eppert) writes:
+
+>Hello ALL!
+
+>Can anybody tell me how MtE utilizing viruses detect themselves in an
+>infected file?
+...
+>like old Jerusalem?  Can't an algorithmic scanner use the method used
+>by MtE itself to detect it?
+
+
+There is no single method. However, the important thing is that the virus does
+not have to be able to accurately differentiate between infected and clean
+files.  That is, it is PERFECTLY OK for a virus to determine that a clean
+file is infected, (the only result would just be that this file would not
+be infected), but this would be a problem for an anti-virus program using
+the same method, as it would generate a false alarm.
+
+For example, imagine that the virus makes the size of all infected files
+a multiple of 13 bytes, and will not infect any clean file that just
+happeded to fulfill that condition.  Could an A-V program use that to
+detect the virus...nope...
+
+- -frisk
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    13 Jan 93 19:26:16 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Monkey [Mon] and Multi-2 [M12] viruses (PC)
+
+LIBBIE@pucc.PRINCETON.EDU (Libbie Counselman) writes:
+
+>The first one discovered was the Monkey [Mon] virus.  It affects the
+>File Allocation Table.
+
+Eh ?
+
+The only "Monkey" viruses that I am aware of are Stoned.Empire.Monkey.A
+and Stoned.Empire.Monkey.B - boot sector viruses of Canadian origin, both
+of which are detected by F-PROT, and can (like all other "Stoned" variants
+be removed with DOS 5.0 FDISK /MBR.  It might be that what you have is a new,
+related variant, somehow modified to bypass F-PROT.
+
+>The second is known as Multi-2 [M12].
+
+Known by SCAN, that is...Multi-2 is not a standard name, and it does not help
+in the identification of the virus.  I may have a copy of it already - version
+2.07 (to be released VERY soon now) may detect it, but under a different name.
+
+>It has a predecessor called Multi [M-123], also not recognized by F-Prot.
+
+There is a virus named Multi, but it is a totally unrelated virus.  The
+CARO standard name for the virus called Multi by SCAN is SD.123, and it is
+recognized by F-PROT 2.06a. Why do you say it is not recognized by F-PROT ?
+
+- -frisk
+
+
+- --
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    13 Jan 93 19:32:31 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Possible new PC viruses ? (PC)
+
+VXC15931@VAX1.Mankato.MSUS.EDU writes:
+
+>I just came across possibly two new viruses which F-Prot 2.06a cannot
+>remove.  They are WONDER and URUGUAY.  The damage is not critical
+>since F-Prot simply renames the files.  I replaced them from an
+>uninfected(I hope) archive disk.
+
+Well, it is quite possible that there are false alarms.  I have had a few
+reports of false Uruguay alarms, and as the author of the Uruguay viruses
+claims they were never released "in the wil", and just sent to a few
+virus researchers recently, I would consider all reports of Uruguay to be
+false alarms - at least for now.
+
+"Wonder", well, some anti-virus programs had a problem with this one - it is
+a bit hard to detect without causing a false positive.  I was not aware of
+any false positives in 2.06, but if this is in just a single file, it is
+also quite likely a false positive.
+
+However, without a copy of the files in questin I cannot determine this with
+a 100% certainity.
+
+- -frisk
+
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Wed, 13 Jan 93 18:52:17 -0500
+From:    Ken Bell <SYKLB@NASAGISS.GISS.NASA.GOV>
+Subject: Trojan Horse announcement (not a virus, tho) (PC)
+
+I saw this on the RISKS Digest list .. for what it's worth:
+
+- ------------------------------
+> Date -  Mon, 11 Jan 1993 13:41:30 +0100
+> From - brunnstein@rz.informatik.uni-hamburg.dbp.de
+> Subject -  "Softkiller" as Arts?
+
+FLATZ, leading performance artist from Munich (Bavaria) recently
+advertised "SOFTKILLER - the first buyable computer art virus". For
+MS-DOS systems, you may buy a diskette (in limited version: 20
+diskettes each 1,800 DM equiv.  about 1,100$; or unlimited version:
+500 diskettes each 300 DM equiv. 185$) which after start will display
+some FLATZ head on the screen while formatting the disk. Advertised
+shortly before xmas as "the ultimate donation for PC owners", FLATZ
+explicitly warns that SOFTKILLER overwrites disks on data and will
+overwrite itself after execution.
+
+After publication of this advertisement, Bavarian Criminal Agency
+became involved to analyse whether this might imply a crime of
+"computer sabotage" (German Penal Code, section 303b) according to
+which the destruction of programs and data which are essential for
+some person or institution will be prosecuted. In the analysis, FLATZ
+admitted that his software was not self-reproducing and therefore no
+virus. Moreover, his "attack on the computerworld" is mentioned in
+capital letters on the envelope. On the other side, distribution via
+BBS (though not foreseen by him) this warning is lost.
+
+At this time, no test or reverse engineering of SOFTKILLER has been
+done.  Probably, it is technically not worth the effort. But with some
+probability, other artists may come up with similar "ideas".
+Happy,Healthy and Riskless 1993
+Klaus Brunnstein (University of Hamburg, North Germany, January 10, 1993)
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 08:58:57 +0000
+From:    ianst@qdpii.comp.qdpi.oz.au (Ian Staples)
+Subject: Cansu virus plague! (PC)
+
+An outbreak of the Cansu virus (boot sector) was discovered at one of
+this organisation's centres today.  It apparently had been around for
+awhile and was really only discovered because it (or something else,
+fortuitously?) was interfering with 32-bit disk access under Windows
+3.1 on one machine.  As machines in the "typing pool" were also
+infected (none of them run Windows, so they weren't aware of a
+problem), the virus had spread quite widely on floppies going back and
+forth between various officers and the "pool".  Fortunately, only a
+few other PCs had become infected as a result.
+
+Does anyone *know* how this virus works?  If you simply read the
+directory of an infected floppy and then run McAfee's SCAN (version
+99), you will get a warning "Virus active in memory" - which sure
+scares folk!  There was an initial theory that this meant the PC had
+been infected and would thenceforth pass on the bug.  Personally, I
+can't believe this is true - so, does anyone really *know* the answer?
+
+There were a few other interesting aspects of this plague.  One of the
+most fascinating was that if you run SCAN on an infected floppy you
+get told about the problem, but then if you run CLEAN (also v99) to
+fix it, it bombs out with a warning about "Virus active in memory"
+again!  So the answer is simply to run CLEAN on all suspect disks,
+don't bother to SCAN them first (it's a lot quicker to do that anyway,
+especially using the /MANY option with CLEAN - e.g. CLEAN d: [can]
+/MANY).
+
+My own feeling is that CLEAN is just picking up a signature left behind
+in memory by the previous SCAN - or is it that SCAN uses something
+also used by DIR, with the same result?  And, in either scenario, is
+there a *real* problem or just a false alarm?  If the latter, then I
+assume you would have to actually boot from the infected floppy to
+contaminate the PC.
+
+Please e-mail answers to me, as well as posting them if you wish.
+We are not full members of Internet yet and our feed seems to miss
+a lot of stuff (at least, rn gives a frustratingly frequent message
+"Skipping missing article"!).  Thank you for your trouble.
+
+Ian S.
+
+- --
+Ian Staples                       | Internet : ianst@qdpii.comp.qdpi.oz.au
+c/- P.O. Box 1054,                | Fax      : +61 (0)70 923 593
+MAREEBA  Queensland  4880         | Voice    : +61 (0)70 921 555
+Australia.                        | Home     : +61 (0)70 924 847
+
+------------------------------
+
+Date:    14 Jan 93 15:28:27 +0000
+From:    gronke@acpub.duke.edu (Paul Gronke)
+Subject: Norton Anti-Virus Update (PC)
+
+I am not a member of CompuServe, and can no longer use a modem out of
+the office.  I am looking for the update to NAV 2.0 in electronic
+form.  I'd prefer not to have to enter the 13 pages of definitions
+that I got from the Norton fax line.  Would someone be willing to send
+me the text file?
+
+Thanks.
+
+------------------------------
+
+Date:    Thu, 14 Jan 93 16:46:19 +0000
+From:    antkow@sis.uucp (Chris Antkow)
+Subject: Re: How do MtE utilizing viruses detect themselves? (PC)
+
+>Can anybody tell me how MtE utilizing viruses detect themselves in an
+>infected file? Or do they reinfect the file each time they attack it,
+>like old Jerusalem?  Can't an algorithmic scanner use the method used
+>by MtE itself to detect it?
+
+ As far as I know, MtE viruses do not need to detect that they are
+using the MtE polymorphism algorithym. It's up to the actual virus
+coding to decide if the file is infected, whether it's a modified
+timestamp, memory scanning, or returning an ID byte via a "new"
+interrupt function.
+
+ MtE is just an polymorphic encryption algorithm, not a detection
+method.
+
+Chris
+antkow@eclipse.sheridanc.on.ca
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 9]
+****************************************

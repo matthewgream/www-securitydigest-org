@@ -1,0 +1,446 @@
+RISKS-LIST: RISKS-FORUM Digest   Monday 21 March 1988   Volume 6 : Issue 47
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+   NTP Timewarp - the difficulties of synchronizing clocks (Jerry Leichter)
+   USA: Time for wrong time, again (Scot E. Wilcoxon)
+   Risks from smart terminals - and risks that aren't there (Jerry Leichter)
+   ATMs and Fear of Cameras (Jeff Stearns)
+   More Communications Insecurity (Dennis Hamilton)
+   What the computer says, goes - even if it is obviously wrong.
+     (Michael Newbery)
+   Risks of automatic mailwatch reply programs (Martin Minow)
+   Census data availability (Joe Morris)
+   Cyber Foundation BBS (James Jones via Martin Minow)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date: Mon, 21 Mar 88 11:37 EST
+From: "Jerry Leichter (LEICHTER-JERRY@CS.YALE.EDU)"<LEICHTER@Venus.YCC.Yale.Edu>
+Subject: "NTP Timewarp - the difficulties of synchronizing clocks" 
+
+The following message was posted to the tcp-ip newsgroup by Mills@UDEL.EDU.
+
+	Folks,
+
+	At the moment both the ISI and NCAR radio clocks have failed, while
+	the UDel radio clock is down for repair. This leaves only the UMd and
+	Ford radio clocks online. Unfortunately, sometime since Friday evening
+	the NTP primary time-server network, which usually thrives when one or
+	more radio clocks fail, went nuts and may have delivered bogus time. I
+	believe I have found and fixed the bug, which turned out to be subtle
+	indeed and bit only in an interesting and unusual scenario involving
+	broken spanning trees. As of now (Saturday afternoon) all primary
+	servers ISI, NCAR, UDel, UMd, Ford and DECWRL have been fixed. Note
+	that all except UMd and Ford are running at stratum two, since they
+	have automatically resynchronized to the remaining radio clocks.
+	Secondary servers at Linkabit and Rice, now operating at their usual
+	stratum two, have also been fixed.
+
+	There is at least one Unix site that crashed due the broken time.
+	Since the bug was due to my own error and not due to the protocol
+	design or Mike Petry's NTP daemon, I do apologize for any
+	inconvenience. When a new NTP daemon conforming to the latest protocol
+	revision becomes available, even this latest bug will not cause
+	timewarps, should something like it ever happen again.
+
+	Dave
+
+I don't know anything about the details of the system involved, but it's
+nevertheless interesting to compare the description with some of the scenarios
+Perrow describes in "Necessary Risks".  Here we have an apparently highly
+redundant system (6 primary servers).  However, we find a time when two
+have failed, just as a third goes down for repair.  (The numbers don't add up
+- DECWRL is unaccounted for.  Perhaps its network connection failed.)  At just
+that time, a bug is triggered by yet another unusual confluence of events that
+leaves the network in a particular state.
+							-- Jerry
+
+------------------------------
+
+Date: Sun, 20 Mar 88 23:02:54 CST
+From: sewilco@datapg.mn.org (Scot E. Wilcoxon)
+Subject: USA: Time for wrong time, again
+
+A few types of computers had problems with 1988 or leap year.  Next,
+many USA computer sites get to encounter Daylight Savings time.
+
+This year Daylight Savings time begins on April 3, three weeks earlier than
+it formerly began.  Computers which automatically calculate DST may have
+outdated programming.  Most systems will not actually malfunction, but users
+of the machines will not consider the old time as being correct.
+
+Systems with time-sensitive interactions with other systems might have 
+problems.  Perhaps we'll find out if they're not corrected in time.
+
+Scot E. Wilcoxon, Data Progress   {amdahl|hpda}!bungia!datapg!sewilco
++1 612-825-2607
+                                                       [Pun unintended?  PGN]
+
+------------------------------
+
+Date: Fri, 18 Mar 88 13:01 EST
+From: "Jerry Leichter (LEICHTER-JERRY@CS.YALE.EDU)"
+ <LEICHTER@Venus.YCC.Yale.Edu>
+Subject: Risks from smart terminals - and risks that aren't there
+
+The recent discussion of the various risks posed by smart terminals has in-
+evitably lead to a comment (Jim Frost's) about VT220's.  Actually, VT220's
+and related terminals are examples of the RIGHT way to design smart terminals
+for a hostile environment:
+
+	a)  It is indeed possible to send a request to a VT220 and have it
+		reply with its programmed answerback sequence - which could
+		be anything at all.  However, the answerback sequence cannot
+		be changed by anything the host sends - the only way to get
+		write access to it is from local setup mode.
+
+		BTW, this should again emphasize that if you don't have
+		adequate physical control over your equipment, all bets are
+		off.
+
+	b)  It is possible to program some of the keys on a VT220 and have
+		it send anything you like when that key is struck.  Unlike
+		the answerback sequence, key definitions CAN be changed from
+		the host.  However, it's possible to lock the key definitions.
+		Once they are locked, nothing the host does can unlock them;
+		the lock bit can only be cleared locally, from setup mode.
+
+		I should also point out that the programmable keys are all
+		inactive until you load something into them - it's not
+		possible to change, say, RETURN to "DELETE".  This makes it
+		unlikely that you can catch someone who never loads the
+		programmable keys, and hence leaves them unlocked.
+
+	c)  It's possible to lock the keyboard from the host, but it's also
+		always possible to go into setup and unlock it.  In addition,
+		a user can locally "lock user preference features", which
+		disables the host's ability to modify some terminal para-
+		meters.  "Keyboard Action", which is the parameter that con-
+		trols whether the keyboard is locked or not, is a user pre-
+		ference feature.
+
+There may be ways to "hack" a VT220 - actually, there are probably more ways
+with its graphics cousin, the VT240.  My point here is not that there are NO
+risks with a VT220; it's that it IS possible to design a smart terminal that
+does a pretty good job of avoiding most of them.  Just because some terminal
+interfaces are poorly thought out doesn't mean that it's impossible to design
+good ones.
+							-- Jerry
+
+------------------------------
+
+Date: Thu, 17 Mar 88 11:15:05 PST
+From: jeff@tc.fluke.com (Jeff Stearns)
+Subject: ATMs and Fear of Cameras (Re: RISKS-6.41)
+Organization: John Fluke Mfg. Co., Inc., Everett, WA
+
+ATMs aren't protected by cameras.  They're protected by the *fear* of cameras.
+
+Banks rely on that fear.  But that's risky for them, too.
+
+I always treated cash machines with reasonable respect until I once had to
+amuse myself while waiting for the machine to complete a particularly
+sluggish transaction.  Growing tired of mugging for the camera, I paused to
+inspect it more closely.
+
+The camera was mounted behind a semi-silvered mirror (but we fans of "one
+way" mirrors always regard them as more of a challenge than deterrent).  By
+assuming a proper viewing position about two inches from the mirror, I could
+closely study the camera and lens.
+
+The big juicy lens was clearly visible and boldly emblazoned with the single
+word "Polaroid".  The only other distinguishing mark was the corner of a
+fragment of sticky foam tape which affixed the lens to the "camera body".
+
+From that moment onward, the camera and I became fast friends.  I took
+particular pleasure in asking the bank tellers about its health.  In fact,
+I believe that I was first to alert them when the adhesive dried out and
+the lens fell off.
+
+Next time you do business with Capital Savings, be sure to smile for the
+camera.  Now I've begun to wonder about the cameras mounted *inside* the bank.
+
+Jeff Stearns 	John Fluke Mfg. Co, Inc.   (206) 356-5064
+
+    "Oh, no sir, the cash machine only gave me $20 instead of $40.  Just
+     check your camera records; you'll clearly see that only $20 came out."
+
+------------------------------
+
+Date: Thu, 17 Mar 88 17:11:41 EST
+From: rochester!cci632!sjfc!deh0654@rutgers.edu (Dennis Hamilton)
+Subject: More Communications Insecurity
+
+%A Alan Baley
+%T Tailgating: A dirty little network security problem
+%J Data Communications
+%V 17
+%N 3
+%D March, 1988
+%P 55-58
+%O Newsfront Section
+%K Open Connections Unrecognized Disconnects Concentrators Gateways
+%X This article basically confirms that tailgating is still a regular
+problem on VANs, private networks, and, of course, your friendly
+neighborhood university dial-up system.
+  Tailgating refers to the situation where a concentrator or other
+front-end equipment fails to noticed a dropped call, allowing a new
+call to seize that slot and operate in continuation of the previous
+user's session.  The article describes how many occurences are a result
+of careless strapping and configuration of modems and concentrators,
+but that systems remain vulnerable to the problem, especially when
+they are overloaded.  (When I tried my hand at PC bulletin-board
+software, this is one of the things that I was proud of getting
+right.  It is very important to *never* let a modem answer on its
+own, getting the computer to notice and handle the new ring instead.
+However, many larger systems are not able to operate that way and must
+use auto-answer modems.  It is very easy for a disconnect and new
+call to go unnoticed under those conditions, leaving the previous
+caller's accounts and data open to intrusion.  It shouldn't be allowed.)
+  [Dennis E. Hamilton: 88-03-17]
+
+%T NASA Encounters a Trojan Horse
+%J Data Communications
+%V 17
+%N 3
+%D March, 1988
+%P 83
+%O Advertisement
+%K Digital Pathways West German hackers NASA X.25 intrusion
+%X This advertisement is for a family of dial-up security products.
+It claims that the West German hackers who broke into the NASA X.25
+(SPAN?) network did so via a Trojan horse and were able to operate
+unnoticed for three months.
+  The ad suggests that NASA had comprehensive security measures
+and they were vulnerable anyhow.
+  It is not at all clear to me how network security at access
+points is any use at all against a Trojan horse, so there seems to
+be some hyperbole here.  It makes for a nice advertisement
+illustration, though, with a Trojan Horse on the moon in the
+background behind a LEM labelled X.25!  On the other hand, if this
+is the level of sophistication of the advertiser, would you
+let them do your network security?
+  Digital Pathways, Inc., 201 Ravendale Drive, Mountain View CA 94043.
+  [Dennis E. Hamilton: 88-03-17]
+	-- orcmid {uucp: ... !rochester!sjfc!deh0654 ...
+
+------------------------------
+
+Date: 20 Mar 88 21:20:35 GMT
+From: newbery@comp.vuw.ac.nz (Michael Newbery)
+Subject: What the computer says, goes - even if it is obviously wrong.
+Organization: Computing Serv. Ctr, Victoria Uni., Wellington, New Zealand
+
+Another example of "If the computer says it is so, it must be so!"
+
+From the Wellington 'Evening Post', Saturday 19 March 1988, By Karina Barrymore
+Reprinted WITHOUT permission
+
+Discovery yesterday of a computer error which overcharged interest on some
+credit cards may have never come to light except for persistent inquiries by
+a cardholder.  An article in the Post last night said Charge Card
+Corpororation, the manager of 20 retail outlet credit cards [in NZ] had been
+overcharging interest.  After a two week inquiry, [the] managing director
+finally told the cardholder a mistake had been made-the computer program
+that calculated the interest was wrong.  The company has said it will
+correct the error and refund all overcharging.
+
+However, the company's attempted fob-off and run-around given to this
+reporter, who is also the cardholder concerned, is a story on its own.  My
+latest statement showed interest of $9.97 on an opening balance of $111.49
+debt.  The statement clearly said monthly interest was calculated at 2.46% a
+month.  Out came the calculator and the card's conditions of use and what
+resulted was total confusion. It just didn't add up.
+
+The next day I rang the co. and spoke to [someone] in the cardholder
+services dept [who sent a letter] detailing account transactions and the
+formula for interest calculations. Again the calculator and again it just
+didn't add up.  I rang again and was told I probably didn't understand such
+a complicated matter and was assured it was right. I responded that I did
+understand but did not agree with the amount of interest. [The services
+rep.]  finally offered to personally go through the statement and manually
+calculate the interest, adding: "When we do that we always come up with
+something different to what the computer tells us."
+
+Why was that?
+
+"I don't know, it always happens. I think it's something to do with the way
+it's programmed."
+
+[On hearing this the reporter asked to speak with the manager and was refused.
+After much obstruction she finally reached him.]
+
+He was aware of my inquiry and said the accounts department had credited
+$5.97 against the interest of $9.97. There appeared to have been an error, he
+said. He would not say what caused the error. When I repeated the comments
+made about the computer program he said he would look into it and give me an
+answer as soon as possible.
+
+Several days and many unanswered messages later I rang the manager again.
+He had not looked into the problem any further. He thought I would forget
+about it, he said.  He also said he could, if he wanted, redebit the $5.97
+credit to my account.  On being asked why he would do this he said according
+to the computer that was the correct amount.
+
+I repeated my request for the matter to be investigated.
+
+Two days later he phoned and said there was an error in the computer
+program.  Interest had been charged incorrectly.  "There has been a mistake,
+an unintentional mistake. We will take immediate steps to rectify the
+situation." he said.
+
+Michael Newbery
+
+Internet: newbery@comp.vuw.ac.nz
+
+------------------------------
+
+From: minow%thundr.DEC@decwrl.dec.com 
+      (Martin Minow THUNDR::MINOW ML3-5/U26 223-9922)
+Date: 21 Mar 88 12:37
+Subject: Risks of automatic mailwatch reply programs
+
+While I was on vacation last week, broiling under the mind-numbing sun of
+Southern California and longing for the cool breezes of a late New England
+winter, I left a "mail watch" program running on my office system.  When
+mail arrived, it formatted a "I'll be out until Monday" response and sent it
+back to the responder.
+
+A few risks -- some humorous, some not:
+
+1. although the program is supposed to send only one response to an individual,
+   it assumes that all name/node strings are different.  This means that a
+   few people who send mailing lists from different machines or via different
+   network paths got extra responses.  They were not always amused.
+
+2. Within my company, many Usenet news groups are distributed by a mailer.
+   This means that I receive a few daily messages from "NODE::USENET".
+   My watcher dutifully replied.  This triggered a mail watcher on
+   NODE::USENET which patiently explained to my mail watcher how to
+   subscribe to the service.  Fortunately, the history file prevented
+   this from escalating to a fullscale network war.
+
+3. I received a query from someone wondering why my mail watcher sent
+   him a reply.  It turned out that he had taken some software from
+   an internal library/archive system that mails me a registration
+   notice (good for monitoring bugs and waving at my boss at salary
+   review time).
+
+4. Ken Laws (who distributes the AI-digest) was kind enough to note a
+   more serious risk of such programs:  by broadcasting a message that
+   says "I'm out of town until March 20th" to anyone who sends me mail,
+   it's easy for a thief to schedule my house for burglary.  Ken noted
+   that one of the lists that discusses stereo equipment experienced
+   some trouble along that line.
+                                               Martin
+
+        [Same thing goes for FINGER/PLAN/... data.  PGN]
+
+------------------------------
+
+Date: Mon, 21 Mar 88 09:13:40 EST
+From: Joe Morris (jcmorris@mitre.arpa)
+Subject: Census data availability
+Organization: The MITRE Corp., Washington, D.C.
+
+The recent postings concerning the integrity of the Federal Archives reminds
+me of a report I saw a couple of years ago which claimed that there are
+only two computers in existence which can read the 1960 Federal Census master
+data tapes.  One is in Japan, and the other is in the Smithsonian's collection.
+I don't know for sure, but I think that the machine used was a UNIVAC II,
+which would be consistent with the absence of any UniServo-compatible drives
+for current machines.
+
+The point being made in the article (in Spectrum, I think) was that using
+new technology is often desirable (or even necessary), but that a blind
+reliance on that technology may leave you with unusable files if the
+technology to use them becomes obsolete.
+
+How many RISKS-readers work in shops which have long since removed the last
+7-track tape drive?  OK, how many of you with hands up still have some users'
+tapes in your library which were recorded on a 7-track drive?  How about
+historical usage data tapes for the computer center itself?  (*blush*)
+
+------------------------------
+
+Date: 20 Mar 88 19:40
+From: minow%thundr.DEC@decwrl.dec.com
+      (Martin Minow THUNDR::MINOW ML3-5/U26 223-9922)
+Subject: I really don't believe this one -- Cyber Foundation BBS [jejones]
+
+from
+TELECOM Digest                         Thursday, March 17, 1988 9:56PM
+Volume 8, Issue 52
+
+From: <atari!sun!mcrware!jejones@ames.arc.nasa.gov>
+Subject: Cyber Foundation BBS
+Date: 16 Mar 88 23:08:53 CST (Wed)
+ 
+I've just read something in the "Computer Communications" column of the April
+1988 *Computer Shopper* that I find HIGHLY disturbing and which I think should
+be brought to the attention of modem users.  I quote the salient portion:
+ 
+"In a recent issue of *Info-Mat* magazine, an online 'magazine' available on
+170 selected BBSs across the country, it was reported that the feds have
+underwritten a BBS to monitor the BBS user community, with an eye toward
+taxation and regulation.  The Cyber Foundation BBS describes itself and its
+system in a text file as 'a non-profit government-supported system run by
+the United States Instructional Department. [has anyone ever heard of this
+alleged organization?]  This system is a test for the government and FCC to
+determine if bulletin board systems, non-paying information exchange systems,
+should be charged for use.'
+ 
+"The sysop of the Cyber Foundation BBS is Chris Regan, who has left messages
+to the effect that he does not work for the government, but that the govern-
+ment has paid for (part of?) the equipment and operating costs.  An elaboration
+of the system's purpose as stated by sysop Regan in some online messages is,
+'a test to see if bulletin boards, their phone lines, and others, should be
+taxed or have a tariff placed on the information.'
+ 
+"Other regulatory ideas discussed on the BBS by the sysop have included the
+licensing of modems (similar to ham radio), and the licensing of BBSs, inclu-
+ding the segregation of BBSs by computer type, and foregoing any semblance of
+BBS privacy by giving a government official the right to log on and 'inspect'
+all messages and files at random times.
+ 
+"There is little justification for regulating computer communication via
+telephone.  As a licensed ham radio operator, I understand the reasons why
+transmission of voice or data over the radio spectrum are regulated, but none
+of these reasons are applicable concerning telephone usage.  When I make a
+call on my telephone, whether I communicate by voice or computer, it is a
+private matter between the party I am calling and me.  The government has no
+more business pursuing private messages I have left on a BBS than they do
+voice messages I leave on a friend's answering machine.  The FCC has spent
+the last several years reducing regulation on the radio services; there is
+absolutely no reason for them to set up a whole new area of regulation in
+the telephone service.
+ 
+"These ideas for bureaucratic power grabbing, invasion of privacy, limitation
+of free speech and government money grubbing need to be refuted before they
+advance any further.  The Cyber Foundation BBS is located somewhere in
+Connecticut and the phone number is (203) 264-5463.  I encourage you to
+call it up and let your opinions be known (courteously, of course)."
+ 
+[end quote]
+
+I have called the phone number, and found a BBS that does indeed go by that
+name, with the stated Chris Regan as sysop.  Those messages I looked at didn't
+seem to discuss the issues mentioned in the *CS* article; however, any threat
+to the Constitution merits investigation.  (I left a message with the sysop
+expressing my concern.)  Does anyone out there know anything about this BBS?
+Are the cited issues really under discussion there?  Thanks...
+                                                    		  James Jones
+ 
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

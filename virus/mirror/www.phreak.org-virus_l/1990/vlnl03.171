@@ -1,0 +1,585 @@
+VIRUS-L Digest   Wednesday, 17 Oct 1990    Volume 3 : Issue 171
+
+Today's Topics:
+
+Re: Alleged PostScript virus
+Re: Possible Infection (GHOSTBUSTERS)
+Possible virus artifact in DR-DOS v5?
+Re: Beware of some virus researchers
+re: OHIO virus found at UTMB (PC)
+Re: Scan v67 and killer.com (PC)
+Heriot-Watt Archive Update
+Avoiding anti-viral inits (Mac)
+Ohio Virus/Postscript trojan
+Re: Help with Jerusalem B (PC)
+Viruses in Shrink-Wrapped Software - Soliciting Reports of Incidents
+About "Stoned" - variants and removal
+PC Ciling (PC)
+PC Virus Defense
+Postscript Trojan. Was alleged post...
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    15 Oct 90 03:21:54 +0000
+From:    woody@chinacat.Unicom.COM (Woody Baker @ Eagle Signal)
+Subject: Re: Alleged PostScript virus
+
+bals@hyster.enet.dec.com (Fred Bals) writes:
+> Recently both MacWorld and MacUser magazines have had short articles
+> about a PostScript printer virus which apparently is a Trojan Horse
+> hidden within some public domain clip art. According to the articles,
+> the virus, when down-loaded into a PostScript printer, resets a chip
+> password and renders the printer unusable.
+
+Certain programs that depend on knowing the password won't run, but the
+machine is not unusable.
+
+> I took these articles with some grains of salt, since the phrases,
+> "alleged," "supposedly," "appears to," is liberally used throughout
+> both of them. Plus, I've not seen any comments from this group about
+
+I think that indirectly I am responsible for this one.  Many months ago,
+I posted a message dealing with the possiblities of fonts, PS programs
+etc. etc. that could be destructive.  What I basically said, was that it
+was quite possible for a font (since it is a program) or any other PS
+program to do nasty things, like delete fonts from a hard disk (if your
+printer supports a hard disk), reset the password on the printer, etc. etc.
+
+I still know of no instance where any of this has ACTUALLY happened, tho
+I have had several people contact me, and ask for help resurecting thier
+lasers.  I posted a routine a couple of months ago on this group that
+would enable the reading of the password, regardless of what it was, so
+that it could be reset.  For a long time, I have offered a routine to
+people who requested it  on department letterhead (official stationary)
+that allows the alteration of ANY byte in the EEPROM.  It has the potential
+to do a lot of damage.  Eventualy, someone over in UK pointed out that
+all one really had to do was to read the actual password, and then they
+could reset it correctly.  He published a bit of code, and subsequently
+I modified my routines so that they return a map of the eeprom (a dump)
+and return the current password.  You can then change it using the normal
+Postscript operators.
+
+Ken was reluctant to publish the stuff (it was a CEXEC routine, because
+it was a binary, but made the exception one time.  I believe it should
+be available in the digests).  I am not going to post it again to this
+group out of respect to Ken's opinions.  Since it went out once, it is
+in the archives.  It has been posted in the Postcript group as well.
+
+Once again, while it is quite possible that some clip-art or font
+could be booby trapped with the machine language routine that allows
+unlimited writing to the eeprom, and thus could reset the printer
+password etc, etc.  I have not really had any verification of it
+actually happening.  I do know of one individual that did some
+experimentation in a controlled enviornment, and reported that indeed
+it could be done.(this was in a private email message).  This
+particular individual is above reproach, and certainly hasn't allowed
+what he did, out of his hands.  At anyrate it was not a
+self-replicating thing, just a simple trojan, to determine if the
+threat was real. He subsequently sent me a nifty "vaccine" for the
+problem, that Glenn Ried subsequently made a minor and useful
+modification to.
+
+In postscript you can re-define the operators.  The "vaccine" simply
+redifines the setpassword operator to do nothing.  This won't stop the
+machine language routine, but is rather effective for preventing
+casual changes to the password.  The default password is 0, as is
+widely known, and if it is known, then it can be changed.  If not, it
+cannot be changed through normal postcript commands.  Here is a simple
+"vaccine"
+
+/setpassword
+	{
+	/Helvetica findfont 20 scalefont setfont % create a font
+	100 100 moveto (Someone is trying to reset your password) show
+	pop pop	%remove the to setpassword parameters
+	showpage
+	} bind def
+
+Cheers
+Woody
+
+> Mail addresses:
+>
+> bals@hyster.dec.com		bals@hyster.enet.dec.com
+> UUCP:	...!decwrl!hyster.enet.dec.com!bals
+> ARPA:	bals%hyster.DEC@DECWRL.DEC.COM
+
+------------------------------
+
+Date:    Mon, 15 Oct 90 11:39:00 -0500
+From:    "Scott P Leslie" <UNCSPL@UNC.BITNET>
+Subject: Re: Possible Infection (GHOSTBUSTERS)
+
+Hello,
+   I would like information regarding a possible virus.  On one of
+our machines we have a file called DDATE.COM (512 bytes, 11-01-88
+creation date).  This program displays the message "WHO YOU GONNA
+CALL? GHOSTBUSTERS!!!!"  This is only displayed when the date is
+set at certain times.
+   Does this sound like any known virus?  Please respond via E-Mail.
+- ---
+Thank you!  Scott P. Leslie (UNCSPL@UNC)  User Service Consultant
+
+------------------------------
+
+Date:    Mon, 15 Oct 90 14:14:00 +0200
+From:    "Mark Murray, UCT Physics Department" <uctvax!MURRAY@uunet.UU.NET>
+Subject: Possible virus artifact in DR-DOS v5?
+
+I have recently upgraded my 25MHz 386 with ST4096 to DR-DOS v5.  My
+site is (touch wood!) relatively safe from viral attack, so when
+McAfee's SCAN reported the STONED virus, I looked VERY carefully at
+what was going on.
+
+The symptoms were:
+
+1) scan v54 & v67 reported Stoned in the partition table.
+2) scan v54 & v67 did not find Stoned in memory - EVEN AFTER REBOOTING
+3) no floppy that had been in this machine for the previous +- 2 days
+     had been infected.
+4) clean v67 agreed to clean out the virus, and did - scan reports all clear.
+5) no damage whatsoever, and no messages from the virus.
+
+Has anyone seen this before? Is there a dead virus sitting in some
+code here?  Am I going to get jumped on by a new kind of virus?
+
+I would appreciate any comments....
+
+Mark Murray
+Physics Department, University of Cape Town
+
+murray.uctvax@f4.n494.z5.fidonet.org (internet)
+murray%uctvax%quagga@uunet.uu.net (internet also (better))
+
+------------------------------
+
+Date:    15 Oct 90 15:17:48 +0000
+From:    ctycal!ingoldsb@uunet.UU.NET (Terry Ingoldsby)
+Subject: Re: Beware of some virus researchers
+
+ddavidso@suna.mqcc.mq.oz.au (Dean Davidson) writes:
+> It started with:
+>
+> >From: Don Sheffer <dgpickering@rose.uwaterloo.ca>
+> >To: ddavidso@sunc.mqcc.mq.oz.au
+> >
+> >Greetings from Canada!
+> >
+> >Some time ago you mentioned being hit by the "1022" or fellowship virus.
+> >We would be interested in obtaining a copy for research purposes, and
+> >also to track the infection rate of this new virus. If you could send
+...
+> >Don Sheffer, University of Waterloo Virus Response Team
+...>
+> I was a bit wary as his name was different to his account name so I
+> answered him:
+>
+> The mail bounced with:
+> > While talking to rose.uwaterloo.ca:
+> > >>> RCPT To:<dgpickering@rose.uwaterloo.ca>
+
+This guy seems to have been quite busy!  I got a similar message, but from
+a different account name:
+
+   Greetings from Ontario!
+
+   A couple of months ago you mentioned having experienced an outbreak of
+   Yankee Doodle virus.  Do you still need help with this?  If so, I would
+   be more than happy to send any and all info I have concerning this
+   virus, ....
+   Also, if you could send us a specimen for research purposes ....
+
+The account name used in this attempt was "Matthew D. Harding"
+(rose.waterloo.edu!mdharding>.  I wondered why someone who alleged to have
+a good knowledge on ways to stop the YD virus would want a copy, but unlike
+Dean Davidson, didn't ever follow up (but neither did I reply to Sheffer).
+
+It is evident that we have to be alert to this sort of abuse of the network.
+I am very concerned about this sort of thing because Usenet is a sensitive
+issue around here (a security conscious organization).
+
+- --
+  Terry Ingoldsby                ctycal!ingoldsb@calgary.UUCP
+  Land Information Services                 or
+  The City of Calgary       ...{alberta,ubc-cs,utai}!calgary!ctycal!ingoldsb
+
+------------------------------
+
+Date:    Tue, 16 Oct 90 08:49:22 -0400
+From:    FEDERMAN@CVAX.IPFW.INDIANA.EDU (ALAN N. FEDERMAN)
+Subject: re: OHIO virus found at UTMB (PC)
+
+In response to:
+
+(Reply-To:     VIRUS-L@IBM1.CC.LEHIGH.EDU
+From:         "The Moderator Kenneth R. van Wyk" <krvw@CERT.SEI.CMU.EDU>
+Subject:      VIRUS-L Digest V3 #170
+ VIRUS-L Digest   Monday, 15 Oct 1990    Volume 3 : Issue 170)
+
+>Date:    11 Oct 90 16:52:24 +0000
+>From:    perry@beach.gal.utexas.edu (John Perry KG5RG)
+>Subject: OHIO virus found at UTMB (PC)
+>
+>	Just a quick note to let everyone know that several IBM and
+>compatible PC's here at the University of Texas Medical Branch in
+>Galveston, Texas have been infected with the OHIO virus. I have not yet
+>attempted to remove the virus and I would like any suggestions on the
+>best way to go about it. I have the McAfee products. I will try them
+>first. Anybody have any thoughts or suggestions?
+>
+>                              John Perry KG5RG
+>                              University of Texas Medical Branch
+>                              Galveston, Texas  77550-2772
+
+Reply:
+
+I have run a PC lab "virus free" for the last three years. We use a
+Novel network, with student PCs equiped with auto-bootup ROMS on the
+network cards. The students cannot write to the server hard disk, only
+access applications and data. The student PCs do not have hard disks.
+No floppies are handed out by staff. Students can download shareware
+and licensed software.  They cannot make a DOS diskette. We also run
+the McAlfee program (WE ARE LICENSED FOR IT!) A student can check a
+floppy for possible infection.
+
+We recently won a NACUBO cost reduction incentive award for this Lab.
+We have stayed virus free. Other labs in this school have been
+clobered repeatedly. I don't know how you could enforce a perimeter
+defense.  Do you intend to screen every floppy comming in the door?
+Pretty labor intensive, as well as annoying to customers. Run memory
+resident virus checking programs? Those TSRs may interfer with other
+applications.
+
+ =============================================================================
+[                                                                             ]
+[          Alan Federman                                                      ]
+[                                                                             ]
+[ Coordinator of Academic Computing                                           ]
+[ Indiana University - Purdue University at Fort Wayne                        ]
+[ bitnet:    FEDERMAN@IPFWCVAX                                                ]
+[ internet:  FEDERMAN@CVAX.IPFW.INDIANA.EDU                                   ]
+[                                                                             ]
+[ "It's supposed to be automatic, but you really have to press this Button."  ]
+[               - John Bruner                                                 ]
+[                                                                             ]
+ ==============================================================================
+
+------------------------------
+
+Date:    Mon, 15 Oct 90 22:37:04 +0000
+From:    maven@rata.vuw.ac.nz (Jim Baltaxe)
+Subject: Re: Scan v67 and killer.com (PC)
+
+Bill.Viggers@comp.vuw.ac.nz (Bill Viggers) writes:
+
+>	There seems to be a little problem with the latest version of
+>	Scan and its related products.  Killer is (I think) locally written,
+>	and is designed to remove the STONED virus.
+
+>       Putting 2 and 2 together, I assume that this means that
+>	killer.com has some code in it that Scan uses to identify the
+>	invader virus.
+
+This appears to be the case, although our own testing is no finished yet.
+
+In any event, I would suggest that people, in New Zealand at least, no
+longer use KILLER to treat the Stoned virus. We have released a new
+program, NOSTONE, which handles both the original Stoned and a new
+variant with an altered signature (and one of several new messages,
+including "Donald Duck is a liar.") Recent versions (post 64) of
+McAfee's SCAN also know about both versions of the Stoned virus.
+
+NOSTONE is available on our publicly distributed collection of
+anti-virus utilities and it will be available for anonymous FTP very
+shortly; like wait a day or two. The files will be in /usr/local/ftp
+on rata.vuw.ac.nz
+
+Jim Baltaxe - MAVEN@vuw.ac.nz
+- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+There are some days when I can't be sure whether life is trying to
+pass me by or trying to run me over.
+
+------------------------------
+
+Date:    Tue, 16 Oct 90 13:40:30 +0100
+From:    David J Ferbrache <davidf@cs.hw.ac.uk>
+Subject: Heriot-Watt Archive Update
+
+The following new files have been added to the Heriot-Watt archive, to
+retrieve send an email message to "info-server@cs.hw.ac.uk" with the text:
+
+	request: string1
+	topic: string2
+
+in the message body. String1 and string2 are given below for each item.
+
+                                     String 1       String 2
+Mac archive
+
+    Disinfectant 2.2                 mac            disinfectant
+    Virus detective 4.03             mac            virusdet
+
+Ibm pc archive
+
+    Clean up 5.1v67                  ibmpc          cleanp
+    Netscan v67                      ibmpc          netscan
+    Viruscan 5.1v67                  ibmpc          scan
+    Vshield 2.3v67                   ibmpc          vshield
+    Virus summary document October   ibmpc          virussum
+    AVS search utility v 2.20        ibmpc          avs
+
+General
+
+    CERT advisory CA-90:06           cert           CA9006
+    DDN security bulletin 9011       ddn            SB9011
+    Virus-l digests to v3.170        virus-l        v3.170
+    CIAC bulletin A33                ciac           C33
+
+The aliases above will always return the latest copy of the package
+available on the server.
+
+If anyone can provide updates for Amiga and Atari ST anti-virus
+packages I would be extremely interested. Our current holdings are:
+
+    Atari ST vkiller 3.11
+    Amiga    VirusX 4.0
+
+I would also be interested in risks-l digests predating v4.18, Thanks!
+
+- ------------------------------------------------------------------------------
+Dave Ferbrache                            Internet   <davidf@cs.hw.ac.uk>
+Dept of computer science                  Janet      <davidf@uk.ac.hw.cs>
+Heriot-Watt University                    UUCP       ..!mcvax!hwcs!davidf
+79 Grassmarket                            Telephone  +44 31-225-6465 ext 538
+Edinburgh, United Kingdom                 Facsimile  +44 31-220-4277
+EH1 2HJ                                   BIX/CIX    dferbrache
+- ------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Mon, 15 Oct 90 17:10:29 -0700
+From:    cos@lclark.BITNET
+Subject: Avoiding anti-viral inits (Mac)
+
+I've been working as a disk repair person for my college's computing
+services center, and I've noticed something interesting: When I am
+copying (MacTools) or repairing (Norton Utilities) a disk, the Virex
+Init will not ask me if I want to scan the disk for viruses, at least
+not at first.  Once Norton has --oops, backup.  This only happens if
+the disk is damaged and has no working desktop.  Once Norton has
+rebuilt the desktop, Virex pops up (while Norton is running--this
+really surprised me the first time it happened) to see about scanning
+for viruses.  My question is, can a virus spread from a disk when the
+desktop is inactive, or when another program is working on the disk,
+either copying, bit-editing, repairing, or what-have-you.  I know that
+Norton will find viruses while repairing (very impressive!), but what
+about other programs?
+
+Thanks,
+
+John Costello
+ACS, student worker
+Lewis and Clark college
+PDX, OR 97219
+cos@lclark
+
+------------------------------
+
+Date:    16 Oct 90 15:53:19 +0000
+From:    treeves@hpuxa.ircc.ohio-state.edu (Terry Reeves)
+Subject: Ohio Virus/Postscript trojan
+
+first about ohio virus
+
+	it is a boot sector virus - lives only on 5.25 floppies.
+Easily removed. Skulason's F-prot will do it and so will Mcaffee's
+MDISK. What we did at Ohio state (not the home, but the discovery
+point of this virus) was simply to recopy all infected application
+disks in our labs. If a disk is bootable you can do even less work.
+Boot with a clean copy of the version of dos on the infected disk.
+Assuming dos disk in A: and infected disk in B:, at A> type SYS B: The
+hidden dos files and the boot sector will be overwritten.
+
+     We then made sure all disks that could be write protected were.
+This virus and the brain virus were found at the same time. By being
+very strict about write protects (and even using notchless disks as
+much as we can) we have no trouble with viruses on our floppies now.
+     For hard disks we licensed Skulason's F-prot. Very nice,  very cheap.
+
+   About postscript trojan. Nobody seems to know its name or any
+details, but this was all hashed out here a few weeks ago. Also, I
+seem to have been hit by it.
+	Contrary to published reports (national mac magazines) no
+hardware replacements are needed. There are FREE software fixes for
+this. You are supposed to need to know the password to chnage the
+password but the security has holes. The fix was posted to comp.virus.
+	By the way changeing the password is a bad idea. I have never
+tried this on true post script pinter (our affected machine was a
+Kyocera clone) but when it's password was change (by trojan or vandel)
+it could not be printed to by such applications as Pagemaker and
+Microsoft Word. The passord is not just for administrative functions -
+at least not on Kyocera.
+
+	Unfortunately, the published fix would not work on this
+postscript clone, but only on true postscript. After many phone calls
+and help from Woody Baker & Zbigniew Fiedorowicz a fix was eventually
+found. Amazingly the company that made it finaaly understood the
+problem and found someone who knew how to fix it.
+
+	Apple charges $600 I think to fix this. Apple loves to rip off
+customers. Apologies to them if they have never charged this.
+
+[Ed. See message from bradley@vaxr.llnl.gov below.]
+
+reeves.2@OSU.EDU
+- --
+ _____________________________________________________________________________
+|                   That's my story, and I'm sticking to it!                  |
+|_____________________________________________________________________________|
+| Microcomputer software support      |   Treeves@HPUXA.IRCC.OHIO-STATE.EDU   |
+
+------------------------------
+
+Date:    16 Oct 90 19:43:47 +0000
+From:    sigurd@vax1.udel.edu (Sigurd Andersen)
+Subject: Re: Help with Jerusalem B (PC)
+
+AZX@NIHCU.BITNET writes:
+> ... I tried to remove Jerusalem B from a computer using McAfee's M-J.
+> ... Scan (and VIRscan) said files were still infected.  I have tried
+> using a 'clean' disk for boot and virus scanning.  Note, M-J
+> complained about my write protect being on. ...
+>
+>Andrew Mitz
+>Biomed Engineer
+>NIH Animal Center               Animal Research Saves Lives!
+>Poolesville, MD
+
+If you rebooted with Ctrl-Alt-Del, you may still have a resident
+virus.  Maybe it wasn't M-J complaining about the write protect, but
+DOS due to a virus trying to infect your disk.  Try powering up the
+system with a known clean boot diskette and run your virus-removing
+programs again.
+
+	Sigurd Andersen             Internet:
+	Academic Computing Support   sigurd@brahms.udel.edu
+	University of Delaware      Bitnet: ACS20833@UDELVM
+	Newark, DE 19716            phone:   (302) 451-1992
+
+------------------------------
+
+Date:    Tue, 16 Oct 90 14:43:53 -0700
+From:    Arthur_Axelrod.WBST128@xerox.com
+Subject: Viruses in Shrink-Wrapped Software - Soliciting Reports of Incidents
+
+I am trying to assess the seriousness of the risk of viruses infecting
+shrink-wrapped software packages purchased through legitimate
+channels.  I would appreciate receiving reports or pointers to reports
+of actual incidents.
+
+My apologies if I'm rehashing an old subject.  I recall there being
+some discussion of this on the net recently, but unfortunately, I did
+not save any of it.  (I didn't know I cared at the time :-) ).
+Pointers to archives would be welcome.
+
+I would appreciate it if you'd respond to me directly at the email
+address below.  I'd be happy to post a summary, if there's interest.
+Thank you.
+
+Regards
+   Art Axelrod
+   Xerox Webster Research Center
+   716-422-5811
+   Axelrod.WBST128@Xerox.COM
+
+------------------------------
+
+Date:    17 Oct 90 13:07:32 +1000
+From:    U5434122@ucsvc.ucs.unimelb.edu.au
+Subject: About "Stoned" - variants and removal
+
+I was wondering if anyone could clarify the situation with MacAfee's SCAN
+regarding [Stoned] and its variants, please.
+
+In the VIRLIST.TXT the original 'Stoned' is marked as 'Use CLEANUP' to
+remove, while 'Stoned II' is marked as 'Use MDISK'.  The identifier which
+SCAN is supposed to report is [Stoned] for both of them, so how do you
+know which one you have, and which cleanup to use.
+
+The computers at the hospital where I study (which does have a site licence)
+have been infected with [Stoned] and CLEANP66 has worked, but I looked at
+the boot sector of a floppy and it had the message "Your PC is now stoned,
+LEGALISEd"  with no mention of Marijuana.  Is this a strain which overwrote
+the message with some extra code, or what?  Which 'Stoned' do we have?
+
+MacAfee warns against loss of partition table data and total disk corruption
+when using CLEAN to remove 'Stoned' on non-standard machines.  Would making
+CLEAN insist on putting a copy of the (infected) partition table in a file
+on a floppy disk remove the trauma of getting rid of this virus?  If a hard
+disk were rendered unusable by CLEAN, it could be 'UNCLEANED', restoring
+the partition table to a usable form so the poor user could be given a
+second chance to back up before doing a low-level format.
+
+In any case, thank you, Mr MacAfee, for reducing the extra work which virus-
+writers have heaped upon us.
+
+Danny
+
+U5434122@ucsvc.ucs.unimelb.edu.au
+
+------------------------------
+
+Date:    Wed, 17 Oct 90 10:55:12 -0500
+From:    JUAN JOSE CARMENA <ALPHACO@vm1.uam.ES>
+Subject: PC Ciling (PC)
+
+Greetings From Spain
+
+Have somebody heard something about an antivirus program called PC-Cilling?
+A friend of mine purchased a copy, and stoned get into the system, althoug
+the program claimed for something called 'hardware security' (in fact a
+- -I think- hardware protection for the program). the program has been imported
+to Spain from California, USA.
+
+Juanjo
+
+------------------------------
+
+Date:    16 Oct 90 16:09:33 +0000
+From:    furnanz@oce.orst.edu (Paul Furnanz)
+Subject: PC Virus Defense
+
+I am new to this newsgroup, so forgive me if this question has been
+asked before.  I need a good recomendation for a PC virus defense
+stategy.  Please email the responses directly to me.  Thanks in
+advance.
+
+------------------------------
+
+Date:    17 Oct 90 17:57:30 +0000
+From:    bradley@vaxr.llnl.gov
+Subject: Postscript Trojan. Was alleged post...
+
+Apple is providing a utility on AppleLink that will make the fix.  Use
+string"LaserWriter and Trojan Horse" to search in Technical info
+library.
+
+Dave
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 171]
+******************************************

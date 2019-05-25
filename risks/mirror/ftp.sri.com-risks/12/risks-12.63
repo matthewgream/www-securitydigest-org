@@ -1,0 +1,458 @@
+Subject: RISKS DIGEST 12.63
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Weds 14 November 1991  Volume 12 : Issue 63
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Copy of Letter to NIST in response to proposed DSS (Martin Hellman)
+Antivirus software vendor creates viruses (Richard Kulawiec)
+I DEMAND AN APOLOGY FOR THIS LIBEL! (W. K. Gorman)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  REQUESTS please to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 12, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Wed, 13 Nov 91 12:24:11 PST
+From: Martin Hellman <hellman@isl.stanford.edu>
+Subject: Copy of Letter to NIST in response to proposed DSS
+
+Martin E. Hellman
+Professor of Electrical Engineering
+Stanford University
+Stanford, CA 94305-4055
+(415) 723-4002 (tel)  723-8473 (fax)
+November 12, 1991
+
+Mr. James H. Burrows, Director
+Computer Systems Laboratory
+National Institute of Standards and Technology
+Gaithersburg, MD 20899
+
+Dear Mr. Burrows:
+
+I am responding to your request for comments on the "Proposed Digital Signature
+Standard," published in the Federal Register on August 30, 1991. My detailed
+comments are attached on the following pages, but I can summarize by saying
+that I am deeply concerned by faults in the technical specifications of the
+proposed DSS and by its development process.
+
+NIST has lost considerable credibility with the non-military cryptographic
+research community and, unless the revision process of DSS is carried out in a
+much more rapid and open fashion, NIST is likely to become totally ineffective
+in the setting of cryptographic standards. That would be a grave loss to both
+NIST and the nation, so I hope change is possible.
+
+I look forward to seeing your response to these concerns. 
+
+
+Sincerely,
+Martin E. Hellman
+Professor of Electrical Engineering
+
+cc:	Congressman Tom Campbell
+	Senator Alan Cranston
+	Senator John Danforth
+	Congressman John Dingell
+	Senator Patrick Leahy
+	Congresswoman Constance Morella
+	Senator John Seymour
+	Congressman Tim Valentine
+	
+    - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+
+1. DSS DOES NOT INCLUDE KEY EXCHANGE. Public-key cryptography provides two
+advantages over conventional cryptography:
+
+Key Exchange: the ability for users to communicate privately without fear of
+being overheard, and without using couriers, registered mail, or similar means
+for prearrangement of a secret key.
+
+Digital Signatures: the ability to sign messages which are easily checked by
+anyone, yet which cannot be forged or modified, even by the intended recipient.
+
+The DSS addresses only the second of these two needs. Until a key exchange
+standard is developed, users who follow the standard will be at a severe
+disadvantage in terms of the privacy of their communications. It would have
+been a simple matter for NIST to include a key exchange standard with the DSS,
+either by adopting the RSA system [1] for both operations or by specifying the
+Diffie-Hellman key exchange system [2] as the key exchange standard to be used
+with the current DSS. (The Diffie-Hellman system is the natural key exchange
+choice if the proposed DSS is used for digital signatures. The DSS is derived
+from the Diffie-Hellman system.) Because of its early publication (1976), the
+Diffie-Hellman system possesses a high degree of confidence as to its security
+level as discussed under #4 below.
+
+
+2. THE KEY SIZE IS TOO SHORT. The proposed DSS is restricted to a 512 bit
+modulus or key size. It is generally accepted in the cryptographic research
+community that this is too short for a system such as DSS, which is based on
+discrete logarithms and which requires a long life. To quote from a recent
+paper by LaMacchia and Odlyzko [3] written prior to the announcement of DSS
+"even 512-bit primes [key size] appear to offer only marginal security." This
+is such a well established viewpoint that further explanation seems
+unnecessary. While there should be lower limits on the key size to ensure a
+reasonable level of security, there is no reason for an upper limit. If, in
+spite of this argument, NIST keeps an upper limit, it should be increased to at
+least 1024 bits.
+
+The proposed DSS also limits the "subkey" size 160 bits, a value that is again
+too short. [4] Using the ideas in my paper with Pohlig [5], it is possible to
+recover a user's secret key x from his public key y in 2^80 operations by using
+2^80 words of memory. (Any other breakdown can be used so long as the time
+memory product is 2^160, for example 2^100 operations and 2^50 words of
+memory.) While such a computation is currently infeasible, it is closer to
+possibility than seems comfortable considering probable advances in technology
+and improvements in algorithms. The particular cryptanalytic problem involved
+in breaking the DSS has not been well studied (see #4 below), making such
+improvements highly probable. As with the 512-bit modulus, the subkey length
+should not have an upper bound. Or, if NIST insists on keeping an upper bound,
+it needs to be at least double, and preferably, quadruple the current 160-bit
+value.
+
+
+3. NIST DOES NOT PROVIDE ADEQUATE WARNING ON THE DANGER OF USING DSS AS A
+COMMON MODULUS SYSTEM. While common modulus systems have an advantage in speed
+of key generation, they allow a successful attack on one user's secret key to
+be extended to all users of the common modulus. Using a common modulus is
+analogous to having all personnel within an organization use combination locks
+with ten digit combinations, but with the first nine digits being common to all
+users. This simplifies setting the combination of a lock, but allows an
+opponent to amortize the cost of an attack on one lock over the large number of
+locks that are then easily picked.
+
+While DSS need not be used in common modulus mode and there are some
+applications where that mode is desirable, clear warnings are needed about
+reduced security in common modulus mode. The proposed DSS says that the modulus
+"can be common to a group of users" without any mention of the attendant
+danger.
+
+Use of a common modulus would be of less concern if the key and subkey sizes of
+DSS were increased as suggested in #2 above.
+
+
+4. DSS IS BASED ON A SYSTEM WHICH HAS HAD LIMITED TIME FOR APPRAISAL.
+Cryptography is still more an art than a science.  For most systems, including
+all digital signature system, proofs of security are currently impossible.
+Rather, we rely on concerted attacks by "friendly opponents" intent on fame,
+rather than thievery, if they are successful in breaking the system. We become
+more confident of the security of a system as it is subjected to widespread
+public scrutiny for long periods of time.
+
+The DSS is based on Schnorr's variant [6] (published 1990) of the ElGamal
+signature scheme [7] (published 1985). There has thus been little time to gain
+confidence in Schnorr's variation. ElGamal's system, while older, is still only
+half the age of its primary competition as a digital signature standard, the
+RSA system1 (published 1978).
+
+Unless Schnorr's scheme possesses some major advantage compared to RSA, it is
+strange that Schnorr's scheme was selected as the standard. I am aware of no
+such major advantage of Schnorr over RSA. The only advantage I see is that
+Schnorr's signatures are somewhat shorter (320 bits versus 512 bits for a
+comparable security RSA using today's best known algorithms). On the other
+hand, in addition to possessing a higher confidence level as regards its
+security, RSA has a major advantage over Schnorr: Using RSA would automatically
+have provided for public key exchange,a critical part of the public-key
+standard that NIST has not yet developed (see #1 above).
+
+
+5. NIST HAS IGNORED THE DANGER OF PROBABLE IMPROVEMENTS IN CRYPTANALYTIC
+ALGORITHMS. Cryptanalyzing the DSS is a special case of computing a discrete
+logarithm. The history of this problem, as well as the closely related problem
+of factoring, shows a slow but steady improvement. It was only about fifteen
+years ago that the subexponential nature of the problem was realized. Prior to
+that time, estimates of the effort required to break DSS with a 128-bit key
+would have been beyond the realm of reasonability, while today, even a 256-bit
+key would be insecure.
+
+Improvements over the last fifteen years in finding discrete logarithms have
+effectively cut key sizes by a factor of four. Should that happen again over
+the next fifteen years, the DSS would be totally insecure. For similar reasons,
+I have always advocated at least a factor of two, and preferably a factor of
+four, as a safety margin. The proposed DSS imprudently has little or no safety
+margin.
+
+The danger is increased because of recent advances. Until two years ago, all
+subexponential algorithms for discrete logarithms and for factoring took time
+of the form exp[k ln(n)^(1/2) (lnln(n))^(1/2)] with k=1 as the best value.
+Recently, number field sieves have been proposed that solve both problems in
+time exp[k ln^(1/3)(n)(lnln(n))^(2/3)] with k approximately equal to 2. While
+the higher value of k makes the new algorithm no better for 512-bit keys (1E20
+operations versus 7E19 operations for the earlier algorithms), it is probable
+that the value of k will be reduced as attention becomes focussed on number
+field sieves.
+
+Over the last fifteen years, algorithms requiring exp[k SQRT(ln(n) lnln(n)]
+operations have been improved from k=2 to k=1. It would be prudent to assume
+similar advances in number field sieves, in which case breaking the DSS would
+become trivial, requiring only 1.0E10 operations, a computation that can be
+done on a personal computer.
+
+
+6. NIST HAS MISSTATED PATENT LICENSING REQUIREMENTS. Raymond G. Kammer, Deputy
+Director of NIST, has stated that "the digital signature standard is expected
+to be available on a royalty-free basis in the public interest world-wide." [8]
+Yet at least two privately owned US patents cover the DSS (#4,200,770 and
+#4,218,582).
+
+I understand that Schnorr is claiming that his patent (#4,995,082) is also
+needed to practice the DSS. If Schnorr's claim holds, then the DSS has a patent
+disadvantage compared to either RSA or ElGamal/Diffie-Hellman since the United
+States Government has the right to use the latter systems on a royalty-free
+basis, but I doubt that it has rights to Schnorr's work. (Clarification from
+NIST would be appreciated.)
+
+
+7. NIST HAS CONFUSED THE ISSUE OF SPEED COMPARISONS. In his above referenced
+statement, Mr. Kammer, also stated that
+
+  ... the digital signature technique [DSS] provides for a less
+  computational-intensive signing function than verification function. This
+  matches up well with anticipated Federal uses of the standard. The signing
+  function is expected to be performed in a relatively computationally modest
+  environment such as with smart cards. The verification process, however, is
+  expected to be implemented in a computationally rich environment such as on
+  mainframe systems or super-minicomputers.
+
+Under the environment specified by Mr. Kammer, the DSS would have an advantage
+over RSA, the primary competing technique.  However, as a universal standard,
+the DSS will often be used in complementary environments where signing is done
+in a computationally-intensive environment and verification in a
+computationally modest environment. A good example is the use of digital
+signatures generated by a bank and checked by a customer on his or her home
+computer. This environment would favor "small exponent" RSA systems which allow
+verification to be performed with approximately one percent of the total
+signing effort of DSS (including precomputation).
+
+Rather than claim an advantage for DSS or RSA in a particular environment, I
+believe that the best standard is the one which is usable in the greatest
+number of environments envisioned for its use. That approach leads to the most
+widely applicable standard. On that basis, ElGamal or Schnorr's signature
+scheme is approximately equal to RSA.  Hence, none of the competing systems
+should be deemed to have a speed advantage over the others.
+
+
+8. THE ADOPTION PROCESS APPEARS TO HAVE BEEN CONDUCTED IN SECRET. Although
+listed last, this is the most important change since a more open adoption
+process would have avoided most of the above shortcomings in DSS.
+
+I am not aware of any attempts on NIST's part to involve researchers in
+academia and industry. (If there were such attempts, I hope NIST will make
+these a matter of public record.) Rather, NIST appears to have worked in secret
+with only NSA providing advice. This is dangerous because much of NSA's legally
+mandated mission involves foreign espionage which would be hampered by secure
+public encryption. As with any organization or individual, NSA is likely to put
+greater emphasis on its concerns than would a neutral third party.
+
+There is an unavoidable tradeoff in that providing a high level of
+communications security to American business and citizens also makes this
+protection available to our foreign adversaries. NIST's actions give strong
+indications of favoring protection of NSA's espionage mission at the expense of
+American business and individual privacy. While an impartial working group
+might conclude that such a policy was in the nation's best interests, relying
+solely on NSA for advice is unlikely to produce an optimal tradeoff for the
+nation as a whole.
+
+
+1. R. L. Rivest, A. Shamir, and L. Adleman, "A Method for Obtaining Digital
+Signatures and Public-Key Cryptosystems," Communications of the ACM, vol. 21,pp
+120-126, 1978.
+ 
+2. W. Diffie and M. E. Hellman, "New Directions in Cryptography," IEEE
+Transactions on Information Theory, vol. IT-22, pp 472-492, 1976.
+
+3. B. A. LaMacchia and A. M. Odlyzko, "Computation of Discrete Logarithms in
+Prime Fields," Design, Codes, and Cryptography, vol. 1, pp 47-62, 1991.
+ 
+4. I am indebted to Prof. Leonard Adleman of USC for pointing this out.
+ 
+5. S. C. Pohlig and M. E. Hellman, An Improved Algorithm for Computing
+Logarithms Over GF(p) and Its Cryptographic Significance, IEEE Transactions on
+Information Theory, vol. IT-24, pp 106-110, 1978.
+ 
+6.C. P. Schnorr, "Efficient identification and signatures for smart cards,"
+Advances in Cryptology: Proceedings of Crypto '89, (Giles Brassard editor),
+Lecture Notes in Computer Science 435, New York: Springer-Verlag, pp. 239-251.
+ 
+7. Taher ElGamal, "A public-key cryptosystem and a signature scheme based on
+discrete logarithms," IEEE Transactions on Information Theory, vol. IT-31, pp
+469-472, 1985.
+ 
+8. June 27, 1991 statement before the Subcommittee on Technology and
+Competitiveness of the Committee on Science, Space and Technology of the House
+of Representatives.
+
+   [This letter duplicates some of the material in Ron Rivest's letter to NIST
+   which was included in RISKS-12.57 and the correction in RISKS-12.58.
+   However, there is some new knowledge here regarding subkey size, patent
+   rights, etc.  It also serves as a reminder that the OFFICIAL DEADLINE for
+   responses to NIST is basically before Thanksgiving (90 days from 30 August)
+   for comments that will be officially recorded and acknowledged.  I was told
+   that as of recently NIST had received ONLY TWO RESPONSES, and they were both
+   POSITIVE.  You are encouraged to write NIST if you have an opinion on DSS.
+   PGN]
+
+------------------------------
+
+Date: Wed, 13 Nov 91 09:54:22 EST
+From: rsk@gynko.circ.upenn.edu (Richard Kulawiec)
+Subject: Antivirus software vendor creates viruses
+
+[Page 59 of the November 1991 "Sun Observer", in the "New Products" section]
+
+Vfind locates viruses on Unix, Mac, DOS systems.  
+Sun-3, Sparcstations (Software)
+
+Cybersoft has released its first Unix product, Vfind.
+
+Vfind is a scanner that executes directly on the Unix system and helps detect
+viruses on Unix computers which have problems with malicious computer programs
+related to viruses.
+
+Although many people do not believe that computer viruses are a direct problem
+to Unix systems, CyberSoft has developed, under quarantine, a Unix virus in an
+effort to help the company anticipate the types of viruses that may appear in
+the future, Pete Radatti, a compure representative, said.
+
+Unix computers also can act as carriers for MS-DOS and Apple Macintosh viruses
+creating the Typhoid Mary syndrome.  DOS and Mac systems connected to the same
+LAN as Unix computers can be reinfected continuously by the Unix systems where
+the viruses are undetected.
+
+---end excerpt--
+
+While Unix-based viruses have been developed before (Tom Duff of Bell Labs
+engineered a virus that propagates via executable binaries; numerous authors
+have demonstrated simple viruses that propagate via shell scripts) I found this
+report curious for two reasons:
+
+1. The tactic of developing variations of hostile organisms in an attempt to
+better understand them (and thus more effectively eradicate them) is well-known
+in the biological and medical research communities.  However, normal research
+practice includes a great deal of peer review, especially with respect to the
+quarantine procedures.  The idea, of course, is to ensure that organisms more
+hostile than those found in the environment do not escape; the peer review
+process provides some measure of assurance to the public that reasonable
+precautions have been taken in this regard.  Should a similar practice be
+adopted for those researchers creating and studying computer viruses and worms?
+
+2. I find it curious that such an anti-virus product has been developed for the
+Unix market, where security problems due to viruses are much rarer than
+security problems due to poor password selection, incorrect permission modes on
+files, sendmail bugs, setuid programs, etc.  One of the many risks that crossed
+my mind was that users coming from the PC/Mac worlds might be tempted to spend
+$7500 (cost of the package described above) and then conclude that their
+systems are reasonably secure -- even though the security area they've dealt
+with is not one of the prime areas of concern for those working with Unix.  (In
+fact, I would recommend instead that Unix admins spend $30 or so on either of
+the excellent Unix security books by Curry (Addison-Wesley) or
+Garfinkel/Spafford (O'Reilly), and avail themselves of some of the freely
+available software, such as John F. Haugh II's "shadow", Alec Muffett's
+"crack", or Dan Klein's "cops".)
+
+Rich Kulawiec rsk@gynko.circ.upenn.edu Cardiothoracic Imaging Research Center
+
+------------------------------
+
+Date: Fri, 8 Nov 91 15:30:16 CST
+From: "W. K. Gorman" <34AEJ7D@cmuvm.bitnet>
+Subject: I DEMAND AN APOLOGY FOR THIS LIBEL!
+
+[This is a copy of letter to: <gray@s5000.rsvl.uisys.com> from W.K. Gorman.]
+
+Sir:
+
+In your UNSIGNED post in RISKS-12.62 you utter and publish a number of
+spurious, gratuitous libels against myself with publicly presented, false and
+malicious accusations of "lying", "bias", "yellow journalism", and "smear"
+tactics on my part.
+
+You also libel the Safeway food store chain itself with your unsubstantiated,
+scattergun insinuations of "profiteering" on their part.
+
+You libel The Church of Jesus Christ of Latter Day Saints (Mormon) by inferring
+that some irregularity attaches, or might attach, to their legitimate ownership
+of a business, whether in whole, in part or as a controlling interest.
+
+You compound your libel by accusing me of lying, seeking to justify your
+tactics with the irrelevant assertion that Safeway is "publicly traded",
+together with a fragment of their price history.
+
+You in no way indicate that you are privy to any list of shareholders, nor do
+you seek to justify your libel with facts in any form. Instead, you
+deliberately gloss over the fact that any business corporation may be publicly
+traded, yet the aggregate of all shares available for public trading may
+nonetheless constitute a minority, (that is, a NON-controlling) interest in
+that business. Since you claim to have called a stockbroker to obtain
+information, in the absence of evidence to the contrary I must presume that
+your failure to point out this fact was deliberate.
+
+You have taken my purely informational post, which contained no pejorative or
+derogatory information whatsoever, and transformed it into a vehicle from which
+to launch a libelous electronic vendetta against me.
+
+Having done all this, you have then presumed to make our moderator (PGN)
+accomplice to your actions by publicly "chiding" him for not censoring this
+post in accordance with your notions, then managing to convince him to let your
+vicious personal attack slip through unedited.
+
+It was obviously your intent to commit libel against me by the manner in which
+you sent this post. It was unsigned. It was not sent privately as a criticism
+to myself, but was deliberately and maliciously uttered and published in a
+public forum in what seems only capable of interpretation as a preconceived,
+premeditated attempt at libel directed against me.
+
+Now quite simply, you have managed to demonstrate nothing beyond your ability
+to generate needless flames on an already crowded network. Your claims and
+allegations against me are false and libelous in their entirety.
+
+To put in bluntly:
+
+I DEMAND A PUBLIC APOLOGY AND RETRACTION, SINCE YOU CHOSE TO MAKE THIS
+LIBEL A PUBLIC AFFAIR IN THE FIRST PLACE!
+
+Signed:   W. K. Gorman <34AEJ7D@CMUVM.BITNET>
+
+  [Here is part of WKG's justification TO ME as to why I should permit this
+  strangely escalating sequence to continue: 
+
+     "Having published my original note, which contained NO pejorative or
+     derogatory information whatsoever, you then specifically chose to publish
+     the libelous comments *deliberately directed against me, personally* by
+     <gray@s5000.rsvl.unisys.com>. You cannot be an on-again, off-again
+     moderator. If, as you now claim to think, my initial posting was
+     unacceptable then so was the one from <gray@s5000.rsvl.unisys.com>." ... 
+     W.K. Gorman
+  
+  YES.  They are both unacceptable *per se*, but having let the first one
+  through, it somehow seems necessary to let the response through.  Clearly
+  there are great risks in publishing such discourses.  Anyway, I already
+  stated in RISKS-12.62 that I am sorry that I did not yank "Mormon-owned",
+  which would have avoided the whole mess.  By allowing this message through it
+  may escalate still further.  That is one of the risks of imMODERATION.  But
+  WKG's message seems to be justified -- even if it is itself possibly a
+  defensive overreaction -- under the circumstances.
+
+  I need to note that I had absolutely no intention of libelling WKG.
+  I hesitate to add that WKG's original note was also UNSIGNED.  I wish all of
+  you -- and especially BITNET folks -- would at least sign your EMail!  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 12.63
+************************

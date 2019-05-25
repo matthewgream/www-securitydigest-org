@@ -1,0 +1,436 @@
+RISKS-LIST: RISKS-FORUM Digest  Friday 20 January 1989   Volume 8 : Issue 12
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risk of using your own name (Gary T)
+  Risks in NBS time by radio (computer malfunction downs lights) (Clements)
+  Computer-related accidents in British chemical industry (Jon Jacky)
+  Re: Losing Systems (Henry Spencer, Donald Lindsay, Keane Arase)
+  Failure of Software Projects (WHMurray)
+  Re: Structured Programming (David Collier-Brown, Jerry Schwarz)
+  Discrete probability and airplanes (Mike Olson)
+  Re: Chaos theory (Phil Goetz)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp KL.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99).
+
+----------------------------------------------------------------------
+
+Date: Fri, 20-Jan-89 09:37:56 PST
+From: garyt@cup.portal.com
+Subject: Risk of using your own name
+
+Computergram Number 1098 (published by Apt Data Services in London) featured a
+story from Newsbytes that illustrates the risk of using your own name to test a
+computer program.  Michelle Gordon, training as a police dispatcher in
+Bloomfield, Connecticut, was told by her instructor to use her own name as a
+test case to see how the computer reports outstanding "wants and warrants"
+against an individual.  Michelle did so -- and was shocked to find out that she
+was wanted for passing a bad check! Back in July, she had written a $90.97
+check to a clothing store, and the check had bounced.  After turning herself
+in, she was relieved of duty -- but the police say that she should get her job
+back once the bill has been paid.
+                                     [I notice Gary did not use HIS name.  PGN]
+
+------------------------------
+
+Date: Fri, 20 Jan 89 13:11:09 -0500
+From: clements@DIP.BBN.COM
+Subject: Risks in NBS time by radio: Computer malfunction downs traffic lights.
+
+> ... The cause reportedly may have been a breakdown in the radio 
+> communications between a computer in Colorado Springs and an atomic
+> clock in Boulder.  ...  (Re: RISKS-8.11) 
+
+I'll guess that this radio communications system is the NBS transmissions from
+WWV in Fort Collins (which is synchronized to Boulder).
+
+Aside from the obvious risks in designing a system the way this one (the
+traffic signals) was apparently done, the transmission code used by WWV is
+inherently risky.  There is no parity check on the data in the code. (And only
+day of year, not year, which is another story with its own risks.)
+
+Receiving clocks must compare successive samples of the code, which is BCD-ish
+and has a one minute cycle, and see whether the samples are in the correct
+sequence.  Eventually the clock decides it has correctly read the code.  But if
+a static burst or radio fade garbles the same bit in the code for a few minutes
+the clock will set to the wrong time.  The Heath "Most Accurate Clock" reads
+these transmissions and fails in this way.  A couple of times a year I will see
+my clock confidently displaying a time which is EXACTLY 4 hours wrong or
+EXACTLY 20 minutes wrong.
+
+------------------------------
+
+Date: 20 Jan 1989 11:27:53 EST
+From: JON.JACKY@GAFFER.RAD.WASHINGTON.EDU
+Subject: Computer-related accidents in British chemical industry
+
+Here are some interesting examples of hardware-software-user interaction from
+the British trade magazine, CONTROL AND INSTRUMENTATION, Vol 20 No 10, October
+1988, pps. 57, 59: 
+
+Wise After the Event by Trevor Kletz
+
+... Computer hardware faults do occur. ... Their effects can be reduced
+by installing `watch-dogs.' However, an error in a watch-dog card actually
+caused one accident --- valves were opened at the wrong time and several
+tons of hot liquid were spilt [ref 1].
+
+...In one plant, a pump and various pipelines were used for several different
+duties -- for transferring methanol from a road tanker to storage, for charging
+it to the plant and for moving recovered methanol back from the plant. 
+A computer set the various valves, monitored their positions and switched
+the transfer pump on and off.   On the occasion in question, a road tanker
+was emptied.  The pump had been started from the panel, but had been stopped
+by means of a local button.  The next job was to transfer some methanol
+from storage to the plant.  The computer set the valves, but as the pump
+had been stopped manually it had to be started manually.  When the transfer
+was complete the PES [Programmable Electronic System --- British for computer
+control system - JJ]  told the pump to stop, but as it had been started
+manually it did not stop and a spillage occured [ref 5].
+
+... Another incident occured on a pressure filter which was controlled by
+a PES.  It circulated a liquor through a filter ... As more solid was deposited
+on the filter the pressure drop increased.  To measure the pressure drop,
+the computer counted up the number of times that tyhe pressure of the air
+in the filter needed to be topped up in 15 minutes.  It had been told that
+if less than five top-ups were needed, filtration was complete ... If more
+than five top-ups were needed, the liquor was circulated for a further two
+hours.  Unfortunately a leak of compressed air into the filter occured which
+misled the computer into thinking that the filtration was complete.  It
+signalled this fiction to the operator who opened the filter door --- and
+the entire batch, liquid and solid, was spilt. ... The system had detected
+that something was wrong, but the operator either ignored this warning sign
+or did not appreciate its significance [ref 2].
+
+... (In one incident) when a power failure occured on one site the computer
+printed a long list of alarms.  The operator did not know what had caused
+the upset and did nothing.  After a few minutes an explosion occured.
+Afterwards the designer admitted that he had overloaded the operator with
+too much information, but he asked why the individual had not assumed the
+worst and tripped the plant?
+
+... (In another incident) a computer was taken off-line so that the program
+could be changed.  At the time it was counting the revolutions on a metering
+pump which was feeding a batch reactor.  When the computer was put back
+on line it continued counting where it had left off --- with the result
+that the reactor was overcharged.
+
+References (included in the article)
+
+1. I Nimmo, SR Nunns, and BW Eddershaw, Lessons learned from the failure
+of a computer system controlling a nylon polymer plant.  Safety and Reliability
+Society Symposium, Altrincham, UK, Nov 1987.
+
+2. Chemical Safety Summary, Vol 56, No 221, 1985, p. 6, (Published by Chemical
+Industries Association, London).
+
+- Jonathan Jacky, University of Washington
+
+------------------------------
+
+Date: Fri, 20 Jan 89 00:21:32 EST
+From: attcan!utzoo!henry@uunet.UU.NET
+Subject: Re: Losing Systems
+
+>Managers see knowledge about computing only useful to engineers and 
+>programmers. Business schools for the most part do not teach computer 
+>literacy, nor how a non-technical manager should deal with a large software 
+>system in his company...
+
+This is actually part of a larger problem.  I recall reading an interview
+with a Japanese business-methods type lecturing in the US.  One of the
+first things he asks his students to do is solve a simple quadratic equation.
+Many of them are baffled; most are offended.  He then explains to them, as
+gently as possible, that one cannot do any form of optimization (of costs,
+production rate, whatever) without solving quadratics (at least).  North
+American business schools, by and large, have the same preoccupations as
+North American businesses:  mergers, acquisitions, advertising, and legal
+maneuvering, as opposed to making better products at lower cost.  The
+problem, increasingly, is not that managers are ignorant of technical
+issues, but that they consider them unimportant.  The ignorance is an
+effect, not a cause.
+                                     Henry Spencer at U of Toronto Zoology
+
+------------------------------
+
+Date: Fri, 20 Jan 1989 13:21-EDT
+From: Donald.Lindsay@K.GP.CS.CMU.EDU
+Subject: Re: Losing Systems
+
+>From:  Jerome H. Saltzer <Saltzer@LCS.MIT.Edu>
+>I believe that the more fundamental answer is that the pace of
+>improvement of hardware technology in the computer business has, for 35
+>years now, simply been running faster than our ability to develop the
+>necessary experience to use it effectively, safely, and without big
+>mistakes.
+
+I don't think it's "developing" experience: it's spreading experience.
+The technology has given us:
+ 1. online systems (terminals), which led to:
+	 - distributed systems
+	 - interactive human interfaces
+ 2. speed, price, reliability, and all that.
+
+I don't think that the failures stem from our progress on Point 1.  We
+had online systems in the 1960's.  Those development projects were seen
+as big, expensive, hairy projects that entailed risk.  Now that similar
+projects are cheap, the difficulty is somehow overlooked. Take, for
+example, the municipal system that started this debate. It was unusable
+because it did not integrate well into the complex environment that the
+projected users were already coping with. We had failures like that in
+the 1960's. I would blame our advanced technology, not for raising deep
+issues, but for putting big problems into a multitude of small hands.
+
+Don		lindsay@k.gp.cs.cmu.edu    CMU Computer Science
+
+------------------------------
+
+Date: Fri, 20 Jan 89 09:09:07 CST
+From: "Keane Arase" <kean%tank@oddjob.uchicago.edu>
+Subject: Re: Losing Systems
+
+I can add some first hand information about losing systems.  Let me tell
+you a story about a data collection manufacturing pacakge I stayed as far
+away as possible from.
+
+Background:  This was a marketing intensive company.  This company considers
+technical support people expendable.  They would rather lose their experienced
+people because programmers/analysts coming out of school are cheaper.  BTW,
+they hired on grade point average only.  Not what you know, but what you did in
+school.  In my experience, the two are *not* the same.
+
+It was decided we were to develop an off-the-shelf/base package which could be
+custom modifiable for data collection/time and attendance functions for the
+manufacturing environment.  Because of a recent reorganization, all of the
+experienced project leaders and programmers *fled* the company.
+
+Our most experienced project leader (hat was left) had stated he was leaving in
+6 weeks because of personal reasons.  Yet the project planning and design was
+given to him to do.  Six weeks later, he left, the project design about 30%
+completed.  Another person (from another area in the country) was brought in to
+complete the design.  Soon after the design was completed, *he* left the
+company because of a better offer elsewhere.  Thus, we had no one who
+completely knew the entire system design.  Worse, none of the programmers knew
+the manufacturing environment, so they couldn't spot any design errors, even if
+they stared them in the face.
+
+Since the reorganization made us a profit center, we now *had* to make money.
+This, of course, while 90% of our efforts went toward development of a product
+which was projected to make money in *two* years.  Because we were in the red,
+raises were denied to certain programmers (through no fault of their own), who
+in turn did extremely shoddy work in the programs they put together.  (And of
+course, left at first opportunity.)  Our regional manager also declared that we
+would receive no new hardware, since we couldn't justify the cost because we
+were losing money.  Thus, we didn't have the necessary hardware that this
+package was supposed to be running on.  (Only later did marketing force our
+regional manager to get the equipment.  Much of the equipment belonged to our
+certification, verification and testing site.)
+
+Because the project was losing money and behind schedule, programmers were
+*required* to work 45 hours per week.  No compensation, no exception.  Several
+more programmers *fled* the company.  They hired part time people to fill in
+the losses.  (Sorry, can't hire more people.  Can't justify the cost!)
+
+In the scheduling, there was no provision for extensive system testing, or for
+the development of test scripts.  More delays, more time and money lost.
+
+Because we were losing money, the company decided our district was expendable
+and desolved our group.  We were given the option to move to a medium sized
+city in Southern Ohio, where their home headquarters is.  *No one went*.  Thus,
+this company had a $300K+ package, somewhat complete (about 250K to 350K
+lines), but far from working correctly, with NO ONE ON THE ORGINAL OR
+SUBSEQUENT PROJECT TEAMS LEFT IN THE COMPANY! (From the spies I have in the
+company, they hired a bunch of college kids straight out of school to complete
+the work under 2 experienced project leaders.)
+
+This post details about 40% of the problems encountered during the development.
+It doesn't include poor hardware design, or the fact this package is really to
+extensive to run on the recommended hardware.  Even with all that went wrong,
+this company is still marketing this package today, training people how to sell
+it and install it.  (The base package is more or less useless without
+modification.)  I'll bet it still doesn't work today.
+
+I think I can summarized why projects fail by the following:
+
+Poor planning and quality control.  By far the worst offender.  How can you
+keep within budget and time frame if certain critical events are left out of
+the schedule?
+
+Poor management and company policy.  This is probably the second worst
+offender, although I'd probably tie it for number one.  Management is only
+interested in one thing.  The bottom line.  Does it make money NOW?  (Apologies
+to those managers who aren't this way.  But I'll bet if you work for a large
+computer corporation, and your year end bonus depends on how much your site
+makes, you *are* one of these.)  They must also provide the necessary resources
+to get the project done.  This includes keeping your people and treating them
+right.  (At least until everything works! :-) Also, managers who know nothing
+about the computer biz or the programming environment, should be managing the
+sanitation engineers or the cafeteria staff.  They have no business managing
+things they know nothing about.
+
+Poor expertise by programmers.  This is not necessarily the programmers fault,
+but the companies fault for not providing the education.  (Please note this
+assumes competent people! If the human resources department does their work
+properly, getting competent people shouldn't be a *big* problem.)  Programmers
+should know what they're programming *for* as well as what the programs should
+do.  Programmers should also know the project.  I had enough pull and technical
+expertise to be involved in *other* failing projects.  (Want to hear others?
+E-mail me, and if I have the time I'll detail others.)
+                                                                               
+Keane Arase, Systems Programmer, University of Chicago                  
+Disclaimer:  This company was *not* the University of Chicago!              
+
+------------------------------
+
+Date:  Fri, 20 Jan 89 12:43 EST
+From: WHMurray@DOCKMASTER.ARPA
+Subject:  Failure of Software Projects
+
+Jerry Saltzer suggests that the trouble with software is the speed of advance
+in hardware; that the software developer is overwhelmed by the new function and
+opportunity.  Else, he suggests, normal engineering discipline would suffice.
+
+I would like to suggest that it would suffice anyway if it were applied.  The
+difficulty is that software is managed by programmers, not engineers.
+Programmers have no tradition of quality of their own and insist that their
+activity is so different from what engineers do, that engineers have nothing to
+teach them.
+
+Suppose that you had been an electronics engineer in 1960 but had been out of
+the field since.  Don't you think that you would see more product complexity
+and risk if you re-entered today?  Engineering discipline has been adequate to
+cope there.  It would be able to cope in software too, if only it were
+regularly applied.
+
+I am hopeful that the use of the term "case" presages the application of more
+discipline in programming.
+
+I also draw hope from the entreprenurial development of software for the
+market, as opposed to works built for hire for a single organization.  I saw a
+great deal of quality software at Egghead on Saturday.
+
+William Hugh Murray, Fellow, Information System Security, Ernst & Whinney
+2000 National City Center Cleveland, Ohio 44114                          
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840                
+
+------------------------------
+
+Date: 20 Jan 89 02:21:37 GMT
+From: dave@lethe.UUCP (David Collier-Brown)
+Subject: Re: Structured Programming
+
+horning@src.dec.com (Jim Horning) comments:
+> I read Bruce Karsh's diatribe with incredulity.  He conjures up from thin
+> air a straw man to denounce.  I simply cannot find any contact between the
+> "structured programming" that he talks about and structured programming as
+> it is understood in the computer science and software engineering communities.
+
+    Fair enough, but he is describing an understanding which is very prevalent
+in the industry... Many managers from the pre-structured era understand
+structured programming to be just what was described:  a supposed panacea.
+
+    The academic community does not even know the difference. In faculty "A" of
+our major local university, it is understood as a suite of
+complexity-management tools, mostly the "mental tool" sort.  In faculty "B" it
+is understood, if at all, as a rule-set which is supposed to produce correct
+programs.
+
+   Any of my last three major employers contained people who took opposing
+views on the meaning of structured programming. What I found significant was
+that the people who regarded it as a tool also knew its weaknesses and knew
+other tools and techniques.. The people who claimed it was a panacea invariably
+knew no other technique for improving program quality.
+
+  It sounds like Bruce worked for one of the snake-oil salesmen and did not
+have the opportunity to see it used by a professional or academic software
+engineer.  And yes, I agree with him that using it as snake oil has placed us
+at risk.
+
+--dave (when faced with strawman, pull stuffing out) c-b
+
+------------------------------
+
+Date:  Wed, 18 Jan 89 20:25:34 EST
+From: jss@ulysses.att.com   <hector!jss>   (Jerry Schwarz)
+Subject: Structured Programming
+
+Arguments about the influence of structured programming seem slightly old
+fashioned to me.  In the circles I travel in "object oriented" is the hot new
+buzzword.
+                                        Jerry Schwarz
+
+------------------------------
+
+Date: 19 Jan 89 12:34:40 PST (Thu)
+From: mao@blia.UUCP (Mike Olson)
+Subject: Discrete probability and airplanes
+
+In RISKS 8.10, steve jay (shj@ultra.com) comments
+
+> Even assuming that a 3 engined plane needs two engines to fly,
+> the odds of 2 engines failing on a 3 engined plane are much, much,
+> smaller than the odds of 1 engine failing on a 2 engined plane.
+
+this is essentially true, with the ordinary mind-bending caveats that
+probability theory imposes.  if the probability of a single engine failing
+is p, then the probability of one of three engines failing is 3p (this is
+actually the expected value of the random variable that maps failure to
+one, and non-failure to zero, but it'll serve).  p is a real number between
+zero and one, by the way.  in this case, we can assume that it's closer
+to zero than to one.
+
+the probability of two of three engines failing is 6(p**2), since the
+probability of one engine failing is 3p, and the probability of one of the
+remaining two failing is 2p, and we multiply (since they're independent
+events -- the proof is sort of hairy for our purposes).
+
+all this is true, of course, as long as all the engines are working.  as
+soon as one fails, the overall probability of failure changes.  for example,
+the probability of two of three engines failing is 6(p**2), as above.  as
+we're flying along, one engine fails.  oops.  the probability that another
+engine will fail is 2p, and not the 6(p**2) that seems intuitively correct.
+airplane engines, like coins, have no memory -- or if they do, it's the
+wrong kind.
+
+the risks?  statements like "the odds of ... [failure] ... are much, much
+smaller" can be misleading.  the debate here over the likelihood of failure
+is evidence of that -- a group of intelligent, educated people can't agree
+on the odds.  numbers are tricky in this field, and don't always behave
+the way you'd expect them to.
+
+when i was studying this stuff, a friend said to me, "the first thing to do
+when a probability theorist asks you a question is to grab him by the throat,
+slam him up against the wall, and ask him, 'what do you MEAN?!?'"  this is
+good advice.  it's also a good idea to quantify things explicitly -- how
+*much* less likely is failure, when you add another engine? -- rather than
+to offer imprecise reassurance.
+    				         mike olson, britton lee, inc.
+
+------------------------------
+
+Date:     Fri, 20 Jan 89 11:12 EST
+From: PGOETZ@LOYVAX.BITNET
+Subject:  Re: Chaos theory
+
+     I'd like to know just how applying chaos theory to a defense system shows
+ANY results at all about the stability of the political systems related to that
+system.  The idea that you can mathematically prove the effects of one isolated
+system on the relations between two nations is absurd.  The current thawing
+between the US and the USSR depends largely on the fact that Reagan and
+Gorbachev like each other.  Could anybody have proved that 8 years ago?  No.
+
+Phil Goetz
+
+------------------------------
+
+End of RISKS-FORUM Digest 8.12
+************************

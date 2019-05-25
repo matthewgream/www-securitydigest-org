@@ -1,0 +1,555 @@
+VIRUS-L Digest   Tuesday, 17 Dec 1991    Volume 4 : Issue 237
+
+Today's Topics:
+
+Re: Untouchable from Fifth Generation Systems (PC)
+Re: Not a virus / Generic Boot virus (PC)
+Re: Booting from clean floppy (PC)
+Address of the Laboratory of Computer Virology
+Re: A good low-cost Macintosh anti-virus... (Mac)
+Re: Washburn and Ethics
+re: Virex antivirus software (PC)
+Where to load virstop on a network (PC)
+DOS 5.0 FDISK, UNFORMAT and the wily MBR (PC)
+Re: A good low-cost Macintosh anti-virus... (Mac)
+Copyrace Trojan (PC)
+(virus) Did someone announce? (UNIX)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 16 Dec 91 16:24:00 +0200
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: Untouchable from Fifth Generation Systems (PC)
+
+  Audrey Grosch writes:
+>I recently received an ad for an antivirus program called Untouchable
+>from Fifth Generation Systems which I have not heard of or seen
+>before.  Does anyone have any positive or negative experiences with
+>this program.  We use FPROT and SCAN here for the most part but I am
+>open to using other programs if they are decent for the $$.  The price
+>of this one is $149 in the ad.
+
+  Untouchable consists of three modules.  The main one, UT, is an
+extension of a program, V-Analyst, which I have been using for several
+years.  V-Analyst is a generic detection program (modification detec-
+tor), which, in my opinion, is the best of its kind, partly because in
+addition to checking for modifications, it takes into account several
+ways in which a virus can propagate without modifying existing files.
+(It's the only program I've heard of which was ready for companion
+viruses two years before they appeared, and it's ready for other such
+methods too.)  UT is essentially V-Analyst augmented to include
+*generic disinfection*.  That is, UT stores enough information to be
+able to restore a file infected by any virus, even an unknown one.
+(Of course, that doesn't hold for overwriting viruses, and it's possi-
+ble that there are a few non-overwriting viruses on which it won't
+work.)
+  Untouchable comes with two additional modules, UTSCAN and UTRES.
+UTSCAN is a known-virus scanner and disinfectant, like McAfee's SCAN +
+CLEAN, but it scans twice as fast.  It doesn't recognize as many vi-
+ruses (although on the test I just performed it found two that SCAN
+didn't).  UTSCAN is activated automatically by UT to check the disk
+for existing infections before the UT database is created and when new
+programs are added, but it can also be activated independently.
+  UTRES is a resident program.  Mainly it's a known-virus checker ac-
+tivated when a program is about to be executed or when a diskette is
+accessed (something like V-Shield, but smaller and faster).  However,
+it has some generic features as well, such as checking for missing
+memory when it is initially loaded.
+  Untouchable also comes in a network version.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    16 Dec 91 16:28:00 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Not a virus / Generic Boot virus (PC)
+
+NVCARLE@VCCSCENT.BITNET (Eric Carlson) writes:
+
+> I also ran into a floppy that SCANv84 said had a GENERIC BOOT SECTOR VIRUS
+> I also tried CPAV 1.0, NAV, and F-Prot 2.01. The only thing that said
+> anything (other than SCAN) was the ANALYZE function in F-PROT 2.01 and
+> it agreed with scan.
+
+Well, then there's a good chance that it's a new boot sector virus...
+
+> I didn't do anything to the disk after that, but I saved a copy of
+> the BOOT sector to a file using NORTON 6.01 DISKEDIT. I have that file if
+
+Hmm, this might have been unsufficient... Some boot sector viruses
+consist of several parts (usually two). The code in the boot sector
+contains just the loader; the rest of the virus (and the original boot
+sector) are stored somewhere else on the disk - in the last sector of
+the root directory, on an additionally formatted track, in a cluster,
+marked (or not) as bad,... When you suspect a boot sector virus, it's
+usually better to preserve the whole disk.
+
+> anyone wants it. Just tell me how to transfer it (if that is possible).
+
+Just do as with any binary file - zip & uuencode it. However, NEVER
+send unencrypted viruses over the net. Better call an anti-virus
+serearcher, who is near you, agree with him (on the phone; voice) on a
+password, and then send the encrypted file. The password must NEVER
+pass on the net either.
+
+> What should I have done to the disk? It was some sort of spreadsheet
+> file disk used in some courses.
+
+I would suggest to use TeleDisk (or something similar) to convert the
+disk to a file. TeleDisk has built-in compression, if you transfer the
+disk to a file using something less sophisticated (like copying all
+the sectors of the disk to a file with Nurton Utilities), you could
+zip the resulting file, in order to save space...
+
+In general, when you suspect a boot sector virus, which infects
+diskettes, it's a good idea to process like that:
+
+1) Find a diskless (floppy-only) machine. Remove any LAN connections
+if any. If you cannot find a diskless machine, you can physically
+disconnect the hard disk(s) of a normal computer. (My oppinion is that
+it is also safe to use the BIOS setup program, is any, and to indicate
+"no hard disk" instead; I'm sure somebody will correct me if I'm
+wrong.) Of course, the disconnecting must be done only when the
+machine is powered off.
+
+2) Prepare a blank, formatted diskette, with no DOS on it and no files
+either. Don't just delete the files from an old diskette; FORMAT it.
+
+3) Insert the diskette on which the suspected boot sector virus
+resides and try to boot from it. If the infected diskette contains an
+operating system and boots successfully, go to 5), else continue with
+the next instruction.
+
+4) Insert the blank formatted diskette and perform a DIR on it. Then
+try to write on it (e.g. REM>A:TEST). Go to 6).
+
+5) If the infected diskette does not contain DOS, then you'll see the
+message "Insert a system disk and press any key" (the exact wording
+may be a bit different). Insert the formatted diskette and press any
+key. You'll see the message again.
+
+6) Done. TeleDisk the formatted diskette and save the resulting file.
+And, of course, cold-boot the computer. (If you have disconnected the
+disk, turn the computer off and re-connect it, or run the BIOS setup
+program and indicate the correct disk type.)
+
+The above shceme is not 100 % foolproof (e.g., it won't capture a
+virus, which infects only when the boot sector is being written), but
+it will work with all of the currently known boot sector viruses.
+
+Hope the above helps.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    16 Dec 91 16:20:18 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Booting from clean floppy (PC)
+
+vhc@abacus.hgs.se (Mikael Larsson) writes:
+
+> Let me disagree with You. I think if "virus scanner" can realy
+> desinfect virus in memory it does not matter from where You booted
+> computer, for example it is very easy to stop activity of 4096 just
+> replace 3rd call to jmp in virus and it will stop activity, and "virus
+
+Well, he's more or less right, but how do you know whether the scanner
+is really able to deactivate the virus? Very often, when the author of
+the scanner says that his scanner detects a virus in memory, it means
+just that - it detects the virus, does not deactivate it... Would you
+prefer to learn this the hard way?
+
+> scanner" can try to scan any file. Of course if "virus scanner" can
+> not cure virus in memory it is very dangerous to scan files...
+
+That's the point - it's too dangerous, and you usually have no way to
+be sure that the anti-virus program is able to deactivate the virus in
+memory...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    16 Dec 91 16:57:24 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Address of the Laboratory of Computer Virology
+
+Hello, everybody!
+
+Several people asked me how to contact the Laboratory of Computer
+Virology at the Bulgarian Academy of Sciences, Sofia. After the third
+request, I decided to post the coordinates here.
+
+Snail-mail:
+	Laboratory of Computer Virology
+	Bulgarian Academy of Sciences
+	ul. Acad. G. Bontchev, bl. 8, rm. 104
+	1113, Sofia, Bulgaria
+
+Phone:	+359-2-719212
+
+BBS:	+359-2-737484 (Virus Busters)
+
+FidoNet: 2:359/110
+
+EUnet:	user@virbus.uucp
+	where user is one of the following:
+		postmaster - the general account
+		eugene	   - the boss
+		assen	   - the communications guy
+		shu	   \
+		ivan	    ) - the programmers
+		michail	   /
+		katrin	   - public relations
+
+For those who might be confused by the name - this is not a lab for
+creating viruses, it is a lab for disassembling/fighting them... :-)
+
+Regards,
+Vesselin
+
+P.S. And the "Bontchev" in the address is a street's name and has
+nothing to do with me... :-)
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 16 Dec 91 18:33:41 -0500
+>From:    metal <CWBLUMRE%MTUS5.BITNET@BITNET.CC.CMU.EDU>
+Subject: Re: A good low-cost Macintosh anti-virus... (Mac)
+
+A friend says that SAM Intercept works well. It's a system extension
+(INIT) that checks the hard drive on start up.  I t also checks all
+floppies when inserted and warns of any found viruses.  It asks if you
+want to allow a file to be changed and if a resource is made it asks
+if you want to allow it to continue.  He doesn't know how much it
+costs, but it's made by Symtech(sp?)  Check in MacWorld for info on
+it.
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 08:25:38 +0000
+>From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: Washburn and Ethics
+
+In Message 10 Dec 91 20:17:02 GMT, Eric_Florack.Wbst311@xerox.com writes:
+
+>tolerated. It stands to reason that anyone who knows enough about
+>computers to create a virus, does other 'above board' programming.
+
+Eh..I must disagree.  Most viruses are probably not written by
+programming geniuses, or even by professional programmers - many known
+virus authors are just teenagers, doing this "for fun"...
+
+- -frisk
+
+------------------------------
+
+Date:    17 Dec 91 13:14:18 -0500
+>From:    "Otto.Stolz" <RZOTTO@DKNKURZ1.BITNET>
+Subject: re: Virex antivirus software (PC)
+
+On: Wed, 04 Dec 91 15:39:00 -0500 A. Paul Reynolds <REYNOLAP@SNYBUFVA> said:
+
+> We are beginning to get hit heavily with Stoned, Dark Advenger and
+> Alameda.
+
+I've sent you descriptions of the viruses you have reported. Note that
+Dark Avenger is a "fast virus", i.e. it spreads while you are reading
+program files (e.g. scanning them for infections). You have to
+- - either boot from a clean system disk before scanning
+- - or use a professional Anti-virus package that scans for known fast
+  and stealth viruses in memory, before attempting to scan disks and
+  files.
+
+> I would like to know your impression of VIREX antivirus software.
+> Is it good?  Is there something better?
+
+I am most satisfied with F-PROT 2.01 from Fridrik Skulasson. This is
+one of the best Anti-Virus packages, and certainly the cheapest one.
+Additionally, I use F-OSCHK.EXE, part of F-PROT 1.16, to alert of
+unknown bootsector viruses (and other system viruses).
+
+Good luck,
+           Otto Stolz <RZOTTO@DKNKURZ1.Bitnet>
+                      <RZOTTO@nyx.uni-konstanz.de>
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 07:38:00 -0600
+>From:    Steven Klepzig <SKLEPZI@SSB1.SAFF.UTAH.EDU>
+Subject: Where to load virstop on a network (PC)
+
+Frisk, et al
+
+I received the following message on another list concerning Novell
+networks.  I haven't experienced the problem described here, I'm
+hoping that someone else has some insights.  If replies are made to me
+I will forward them on to the author of the message or replies can be
+made directly to him.  I will also forward any replies I see on
+VIRUS-L to him.  Thanks for your attention.
+
+Steven Klepzig (sklepzi@ssb1.saff.utah.edu)
+
+******   START OF FORWARDED MESSAGE   ******
+
+Date:        Tue, 17 Dec 91 00:18:20 AST
+>From:        "Brian Cassidy" <BPC%UNB.CA@UNBMVS1.csd.unb.ca>
+To:          <SKLEPZI@SSB1.SAFF.UTAH.EDU>
+Subject:     Re: where to load virstop
+
+[...  the discussion has been concerning loading virstop in a remote boot
+image file on a Novell network  ...]
+My boot image is on floppy diskette and I am using DOS 5 (with emm386)
+and therefore netx instead of xmsnetx and this may be an important
+difference.  Anyway, when I put virstop after netx as you suggest,
+then during login (while login is executing) the local floppy is
+accessed several times as if it were in the DOS path. This does not
+happen when virstop is loaded before ipx. When the remote boot image
+is built (and the floppy diskette removed), you still get the floppy
+drive access (several times), but this access times out (after a few
+seconds) and login eventually completes. After login, this problem
+disappears. I was wondering if the same happens to you and if you knew
+why?
+[...]
+          ==============================================
+               Brian Cassidy, Systems Support Group
+          University of New Brunswick Computing Services
+          PO Box 4400, Fredericton, NB, CANADA, E3B 5A3
+          E-Mail:BPC@UNB.CA     Telephone:(506)453-4573
+******   END OF FORWARDED MESSAGE   ******
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 10:00:40 -0500
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: DOS 5.0 FDISK, UNFORMAT and the wily MBR (PC)
+
+It seems that I am becoming something of an MBR and BSI specialist -
+it di not start out that way, it just kind of happened (or maybe I'm
+just lazy - BIOS code is easier to read than DOS).
+
+Today, most published reports show that infections are nearly evenly
+divided between file and MBR/BS infections with the great prepoderance
+of the "low level" half attacking the MBR.
+
+Interestingly, all but a very few are detectable by the SafeMBR
+technique and preventable (unless a cold boot occurs) by NoFBoot
+(Freeware technology demonstrators) - but what do you do after an
+attack has been mounted ? My FixMBR program was written with this in
+mind but if you have MS-DOS 5.0, you already have the necessary tools
+to repair the most common infections.  Interestingly enough this is
+built into three programs, two well documented, and one not-so-well.
+
+In any event some characteristics are common to most MBR & BSI
+infections: almost all preserve the proper disk information in the
+Partition-table and the Boot Parameter Block (a few confuse things but
+in this case, you will probably not be able to boot from a floppy -
+viruses that have spread avoid this since this is sumething that
+people tend to notice and viruses want to avoid notice.
+
+The three programs are FDISK, UNFORMAT, & SYS - since the use of SYS
+for recovering from BR infections is well known I am not going to go
+into it other than to say it is even effective with the Music Bug but
+you will have to change a single byte afterwards.
+
+The new FDISK is not so well known but is just as effective for the
+MBR if the cunningly named /MBR switch is used however you will not
+find mention of this by typing FDISK /? or HELP FDISK. Nor could I
+find it in the hologram-equipped manual that came with the software
+from EggHead but it does seem to work in replacing the MBR code
+section while maintaining the Partition-Table.
+
+For Partition-Table problems, the new UNFORMAT program (bundled in
+with DOS 5.0 but actually from Central Point Software) can be
+effective particularly if you have stored the MIRROR.PTN file offdisk.
+However, even if not, it will do its best to recover based on the
+BIOS/CMOS information (make sure this is correct first because if
+incorrect, it can really confuse a disk). Here the switches are well
+documented - to see the current values UNFORMAT /TEST /L /PARTN will
+display the current values - the TEST switch prevents UNFORMAT from
+changing anything.
+
+Properly used, these included utilities can provide effective generic
+recovery tools for (IMHO) half of all current infections without
+having to use DEBUG.
+
+							Padgett
+		<padgett%tccslr.dnet@mmc.com>
+		  "Usual disclaimers apply"
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 11:43:17 +0000
+>From:    plains!umn-cs!LOCAL!aslakson@uunet.uu.net (Brian Excarnate)
+Subject: Re: A good low-cost Macintosh anti-virus... (Mac)
+
+csfed@ux1.cts.eiu.edu (Frank Doss) writes:
+>Can anyone tell me what a GOOD low-cost Macintosh anti-virus package
+>would be?
+
+It's not a question of a GOOD low-cost Macintosh anti-virus package,
+it's where to get GREAT FREE Macintosh anti-virus packageS.  There are
+two that I recommend.
+
+Disinfectant (at this time 2.5.1) disinfects known viruses, and can
+make an init to protect against the same.  Well written, and very
+helpful help.  A good place to learn about viruses on the Mac.
+Available at many fine ftp sites.  It originates from ftp.acns.nwu.edu
+(129.105.113.52).  It doesn't take care of new Mac viruses, though it
+has always been updated very quickly.  Do all Mac users use this?
+They should.
+
+Gatekeeper (at this time 1.2.1) guards the door by watching for virus-
+like activity.  It has a preset list of programs/etc. that need special
+permissions.  It is in several parts (read:  modular) and reading the
+manual will give you a better idea of what is going on.  It also has on
+line help that is very informative.  It is available from many fine ftp
+sites.  It originates from ix1.cc.utexas.edu (128.83.1.21).  It is a
+little more complicated to use, but is still easy.  It will guard against
+even new viruses, but disinfecting isn't it's purpose.  Also highly
+recommended.
+
+I use both habitually.  In a lab (not mine) where hammerheads would
+sometimes disable virus protection and allow the Macs to get infected,
+putting both back on made it a race to see which would stop the
+virus(es) first.  The two programs complement each other nicely, and
+in a lab situation, I can't imagine not using both.
+
+To be fair, there are some other products out there, SAM (currently
+3.n) is the only one I ever hear of regularly.  But it's commercial
+and I'd trust Disinfectant and Gatekeeper first.  Why pay money for
+less when the best is free?
+
+> Please respond by E-mail.  If anyone wishes, I'll sumarize.
+
+Since this is all but FAQ (Mr. Moderator?), I'll post it as a summary,
+and send you a Cc: of it.
+
+Brian
+- --
+.signature: No such file or directory
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 00:32:20 +0700
+>From:    swimmer@stage.hanse.de (Morton Swimmer)
+Subject: Copyrace Trojan (PC)
+
+Copyrace - Trojan
+=================
+
+A trojan, or perhaps I should say a joke program, was sent
+out to various firms in and around Hamburg. The sender was
+given as Gesellschaft f\"ur Datentechnik, a firm that actually
+exists, but at an address and telephone number that is in-
+correct, but also exists. (In fact, its a family that has
+absolutely nothing to do with the case.)
+
+  The program promises to be the copy program that will "make you
+forget your old tools" (translation from German). It askes
+you to test its "Schnelligkeit - Handhabung - Datensicherheit",
+ie its speed, handling and security.
+
+  If you like the program, you should send DM 38.00 to a
+bank account (plausible looking) in Hamburg.
+
+  The program is started with a batch, cp.bat. The rest is
+self-descriptive.
+
+  What happens is this: cp.bat calls copyrace.com which displays
+a message, waits for you to hit a key. The program then claims
+to have found only one disk drive and say it will use the hard
+disk. It then says it will format the drive c: and asks if this
+is ok. Whatever you press, it will then pretend to format the
+disk by counting up the heads and cylinders while reseting the
+disk (so that the drive light flickers). At some point it will
+break off with a "Fatal BIOS-Error: 1701: HEAD CRASH", claim
+that air has gotten in the disk and that there is danger of
+explosion. A whistling noise acompanies this. Garbage follows,
+which can be interrupted by pressing return.
+
+  The last message before we're back in DOS is to the effect
+that we've had rotten luck.
+
+  The disk was directly addressed to my contact in the firm. We
+tried to identify the mailing list the address could possibly
+come from, but as of yet, no luck. As no damage is done, I dont
+expect legal action from any of the other recipients. I informed
+the computer fraud department of the Landeskriminalamt (the local
+police), but they wont act independently. There are some indicators
+as to where the the trojan was written, but they are not certain.
+
+  As the trojan is harmless, at least in its function, it will
+not cause too much stir. At the moment I cant tell how many people
+received a copy, but it cant be too many judging by the way it was
+sent. I hate to think of how some of the recipients reacted to
+the program, though.
+
+Cheers, Morton
+
+PS: If anyone else has seen this trojan, please let me know.
+
+..............................................................................
+.morton swimmer..odenwaldstr.9..2000 hamburg 20..germany..tel: +49 40 4910247.
+.internet: swimmer@stage.hanse.de or swimmer@rzsun1.informatik.uni-hamburg.de.
+..............to leave only footprints, and take only memories................
+
+------------------------------
+
+Date:    Tue, 17 Dec 91 19:20:55 +0000
+>From:    jstewart@mailbox.syr.edu (Ace Stewart)
+Subject: (virus) Did someone announce? (UNIX)
+
+Before heading to a conference two weeks ago, a colleague of mine
+thought he saw an announcemnt about a UNIX virus that showed up at
+U.Cal Berkeley. I understand that this was the only place it showd up.
+I am trying to find that information, since I mentioned it at the
+conference.
+
+The source was unclear, and I am annoyed at myself for mentioning
+it having not seen the original information. Did anyone see this?
+
+Ok folks -- no panick-ing :)
+
+John Stewart
+Senior UNIX/VMS Consultant
+Academic Computing Services
+Syracuse University
+(315) 443-3995
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 237]
+******************************************

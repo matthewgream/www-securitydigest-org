@@ -1,0 +1,576 @@
+VIRUS-L Digest   Thursday,  1 Aug 1991    Volume 4 : Issue 134
+
+Today's Topics:
+
+Re: Virus for Sale
+F-PROT and FluShot+ questions (PC)
+**Virus Warning** Oracle DDE/Toolbox disk (PC)
+Re: High Memory (PC)
+Re: Self-scanning executables (PC)
+Re: Self-scanning executables (PC)
+CARO Computer Virus Index
+VSUM - latest verion? where to get? (PC)
+Partition tables have serial #'s in DOS 4.0 and 5.0?
+Computer operations and viral operations
+Call for Papers - IFIP/SEC '92
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    29 Jul 91 13:57:55 +0000
+>From:    warren@worlds.COM (Warren Burstein)
+Subject: Re: Virus for Sale
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+>And what about the question of copyright?  :-)
+
+Yeah, wouldn't you just love to see the author stick his head out of
+the sewer.  Hmm, how about some work to expose the authors of these
+things, like sending infiltrators into pirate BBS's, clubs, whatever.
+If anyone has any leads in Israel, count me in.
+
+- --
+/|/-\/-\       The entire world			Jerusalem
+ |__/__/_/     is a very strange carrot
+ |warren@      But the farmer
+/ worlds.COM   is not worried at all.
+
+------------------------------
+
+Date:    Tue, 30 Jul 91 19:47:30 -0500
+>From:    tosspot!lee@uunet.UU.NET (Lee Reynolds)
+Subject: F-PROT and FluShot+ questions (PC)
+
+Greetings, all.
+
+I've been playing around with antiviral packages recently (for a few
+years, really) and I'd like to know what other folk's views are of the
+pros and cons of F-Prot and FluShot+.  I find that Flushot appears to
+a few additional features to prevent ye fiendish virus from subverting
+itself whereas F-Prot seems to be a tad more multifaceted than FS.
+
+OTOH, I find that there is a small (but noticeable) overhead in keeping
+F-Prot around.
+
+Comments?
+
+                         Lee
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 15:11:06 +0000
+>From:    daniel@netcom.com (Sam Daniel)
+Subject: **Virus Warning** Oracle DDE/Toolbox disk (PC)
+
+We were recently sent a copy of Oracle's demo disk for their new
+Windows' DDE/Toolbox.
+
+The disk came pre-infected with the Stoned virus, which was caught by
+our McAfee virus checker before it could do any damage.
+
+Oracle is trying to reach all known recipients of the disk by
+telephone, and is going to mail replacements as soon as possible.
+
+[Ed. I verified this with some folks at Oracle.  They said that they
+had indeed phoned all known recipients and that they had Federal
+Expressed (overnight mail) the new disks to all (800 some)
+recipients.]
+
+- --
+*
+*
+Sam Daniel          *   UUCP (Smart):  daniel@netcom.com
+Unisys              *         (Dumb):  {...}!uunet!netcom!daniel
+500 Macara Ave.     *          Voice:  1-408-737-8000
+Sunnyvale, CA 95131 *     Disclaimer:  Your mileage may vary...
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 11:19:24 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Re: High Memory (PC)
+
+>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+
+Mr. Walker brings up two points that relate to the ability to validate
+ROM addresses at BIOS load time.
+
+>You cannot look only at the segment prefix to determine where the
+>vector points; you must calculate the actual address.
+
+>There is a portion of extended memory on a '286 or '386, which
+>Microsoft calls the High Memory Area (HMA), which is accessible from
+>real mode.
+
+This is true within certain limits, however the segment prefix specifies
+the 64k contiguous segment that follows. With a segment address of F000h
+NONE of the HMA can be reached since the upper limit of addressing from
+this point is F000:FFFFh. In order to make the 64k less 10h bytes HMA
+available, normally a segment prefix of FFFFh is used.
+
+Since the BIOSes I have seen define the BIOS ROM vectors as
+F000:xxxxh, a test for the range C000h to F000h (not FFFFh) would seem
+to be a valid check. Please remember that this is being done before
+DOS (or any other OS) loads.
+
+>called the HIcard from RYBS Electronics.  I'm not completely familiar
+>with this device, but I believe it adds 64K to conventional memory,
+>making a total of 704K.
+
+I am also not familiar with this particular card however the "adds
+64k" part sounds like it creates a memory page frame for RAM expansion
+for DOS to use similar to the expanded memory boards that I mentioned.
+In that case I would suspect that there are jumpers on the board that
+can be set to define the memory segment to be used (typically either
+the D000h or E000h segment). There is no reason why an intelligent
+software package could not be told that this area is also RAM.
+(Read/Write a byte from each even segment would do it as Martijn
+Nykerk suggested if the software has not "locked" that segment).
+
+You must remember that DOS will accept any address in the 0000:0000h
+to FFFF:FFFFh range as valid and is a constraint imposed by Intel on
+the original iapx8086. If Intel had chosen to make the segment
+granularity 100h bytes instead of 10h, DOS would have had 16 MB to
+play with (but still in 64k "chunks"). The one true answer would have
+been direct 32 bit addressing used as by Motorola for the 68000 (how
+does Apple make it run so slow ? - gratuitous dig 8*) but in 1980, 1
+MB of address space was a great leap forward from the 64k available
+with Z80s & 6800s.
+
+The key is that at BIOS time, interrupt vercors should point only to
+non-volatile memory. Mr. Walker is correct in suggesting that this
+point is a possible intrusion vector if RAM should be located in this
+range. However, in practise and at present I would be satified to just
+check the interrupt vector segment prefix. (am an engineer, not a
+scientist).
+
+Of course, there is not reason that the BIOS validation software could
+not report all interrupts not possesing a F000h segment prefix and
+display their signature block.
+
+>Anyways johnf@apollo.hp.com (John Francis) opposing padgett%tccslr.dnet@mmc.co
+m
+>(A. Padgett Peterson) on authenticatable peripheral paths writes:
+>  On 386 or better systems, I can write a "Virtual Machine" emulator
+>  that can fool you into believing you are running on the raw hardware.
+>  This means I can write the ultimate stealth system - undetectable by any
+>  means whatsoever (not quite true, but I don't want to give everything away).
+
+Sure you can - essentially this is what an OS/2 DOS "box" or Window's
+Window or Soft ICE is - however, first you would have to gain control,
+load the VM emulator, and invoke the "box". Not only is this going to
+use a considerable amount of memory, but if it works properly (and
+even MicroSoft has trouble doing this), it will probably not fit on a
+360k disk
+
+						Padgett
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 11:19:24 -0400
+>From:    Padgett Peterson <padgett%tccslr.dnet@mmc.com>
+Subject: Re: Self-scanning executables (PC)
+
+>From:    Jeff Boyd <BOYDJ@QUCDN.QueensU.CA>
+
+>You either overlook or underestimate the value of it. When I write PC
+>software for sale or otherwise, I build this routine in and the
+>program has an INDEPENDENT self-check CRC calculation. My program will
+>not run if altered, and hence will NEVER aid in the spread of a virus.
+
+Unfortunately, a "stealth" virus will defeat this method every time
+(not to say it is not a good idea, I use something similar at home,
+just insufficient without system integrity checking). This class of
+malicious software simply presents the checksum routine with the
+original, uninfected program.  Since the routine only "sees" the
+program as it was, not as it is, the routine passes. Try it against a
+resident 4096 infection for example.
+
+However the technique will be effective against Jerusalem or Sunday
+type infections in detecting that your program **has been** altered.
+
+					Padgett
+
+"Never Say Never Again" from the movie of the same name. Based on an
+interesting comma in an Ian Fleming novel.
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 09:24:26 -0700
+>From:    a_rubin@dsg4.dse.beckman.com
+Subject: Re: Self-scanning executables (PC)
+
+In comp.virus, johnf@apollo.hp.com (John Francis) writes:
+
+>Somewhere on CompuServe, Kevin Dean writes:
+>> Cracking the algorithm is not a trivial task: a virus has one chance
+>> in four billion (2^32) of successfully infecting a program or, if it
+>> decides to fool the algorithm by changing the stored CRC, would lock
+>> up a 386 for hours bordering on days to find and change it.
+
+>Unfortunately this is nothing more than "Ignorance Protection".  There
+>has to be some way of calculating the initial CRC when the program is
+>built - they don't appear in the executable by magic!  This must be by
+>some method that is faster than exhaustive search, or else nobody will
+>use CRC protection. The same algorithms are available to virus
+>writers.
+
+>It won't take long to find the encryption code in an executable - the
+>techniques to do that can be found in all the current virus scanners,
+>and we must assume that most virus writers are conversant with these
+>methods, and could use them themselves to find the right spot.
+
+Most CRC checkers don't know where the CRC itself is, so there is a
+little more security than just Ignorance Protection (called Security
+Through Obscurity, or STO in alt.security), so an infector might break
+the program.  If I disassembled/debuged some of the CRC checkers, _I_
+probably could write a virus which checked for (some variants) of
+those checkers and modified its infections accordingly; if I didn't
+have source for the CRC generator, I might find it a difficult
+mathematical problem to solve for the values to place in memory.
+(Validation using a public key signature scheme?)
+
+- --
+2165888@mcimail.com 70707.453@compuserve.com arthur@pnet01.cts.com (personal)
+a_rubin@dsg4.dse.beckman.com (work)
+My opinions are my own, and do not represent those of my employer.
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 13:05:37 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: CARO Computer Virus Index
+
+	Just a couple of notes on the index since it is very valuable
+information but is not what might be expected.
+
+	Lately, I have been seeing quite a few "novice" postings that
+by the wording indicate that the poster is not entirely familiar with
+either the O/S involved or with viruses in general. This is a
+dangerous situation since viruses are often spread by well-meaning
+individuals who do not fully understand what they are dealing with.
+For these people, some back ground is necessary.
+
+	For a start, I would suggest Ray Duncan's "Advanced MS-DOS" as
+a good primer. However, coming from MicroSoft press, as might be
+expected there are a few omissions. The can be remedied with the QUE
+book "Programmer's Guide to MS-DOS". Understanding salient parts of
+these should be a pre-requisite, otherwise there is going to be a
+language gap.
+
+	The CARO index itself is not a single document, rather it is
+split into a number of ASCII files of under 100k each. The MSDOS virus
+section is at present made up of eight files, all with the name
+MSDOSVIR.xxx. ALL eight are necessary for a complete index. Similar
+file groups are used for AMIGA and MAC listings.
+
+	Once retrieved, the most current file (now MSDOSVIR.791) can
+be used to find individual elements from the listing in the front of
+the file. The suffix for the file each entry is found in is the final
+element on each line. (e.g. STONED is found in MSDOSVIR.290).
+
+	A final note, it looks as if CARO is maintaining its files on
+an IBM mainframe, at least the listings are in EBCDIC order. Look for
+entries having numerical names (e.g. 4096) at the end of the listing,
+not at the beginning.
+
+						Padgett
+
+------------------------------
+
+Date:    31 Jul 91 17:26:04 +0000
+>From:    mrr1@Isis.MsState.Edu (mark r rauschkolb)
+Subject: VSUM - latest verion? where to get? (PC)
+
+How often does Patricia Hoffman release new versions of VSUM?
+
+I remember seeing something about a new version with a new
+user interface, but I cannot find one newer than March 91.
+
+What is the newest version and where can I get it (via ftp)?
+
+mark
+mark@cs.msstate.edu
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 19:24:35 +0000
+>From:    glratt@is.rice.edu (Glenn Forbes Larratt)
+Subject: Partition tables have serial #'s in DOS 4.0 and 5.0?
+
+I'm writing a primitive scanner for our local labs which will compare the
+bootstrap code in the partition table record to a know-good copy, but have
+run into a problem: in DOS 3.3-created partition tables, the code just ends,
+while apparently 4.0 and 5.0 create what I assume is a serial number in the
+four bytes following the code?  (I assume it's a serial number because the
+upper 16 bits, in each case I've examined, match the upper 16 bits of the
+serial number assigned to the primary partition).
+
+Can anyone point me to a reference which will confirm/explain this, and/or
+a good source of info on DOS' method of hashing unique serial numbers?
+
+Thanks in advance,
+
+- --
+===/| Glenn Forbes Larratt      |    CRC OCIS     | "So, what do we need?" |/
+==/| glratt@rice.edu (Internet) | Rice University | "To get laid!"        |/=
+=/| GLRATT@RICEVM2 (Bitnet)     |=================| "Can we get that     |/==
+/| The Lab Ratt (not briggs :-) |  Neil  Talian?  |       at the 7-11?" |/===
+
+------------------------------
+
+Date:    Tue, 30 Jul 91 09:50:40 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Computer operations and viral operations
+
+
+
+FUNGEN1.CVP   910727
+
+           Computer operations and viral operations
+
+Having defined what viral programs are, let's look at what
+computers are, and do, briefly.  The functions that we ask of
+computers tend to fall into a few general categories.
+
+Computers are great at copying.  This makes them useful for
+storing and communicating data, and for much of the "information
+processing" that we ask them to do, such as word processing.
+Computers are also great for the automation of repetitive tasks.
+Programming allows computers to perform the same tasks, in the
+same way, with only one initiating call.  Indeed, we can, on
+occasion, eliminate the need for the call, as programs can be
+designed to make "decisions" on the basis of data available.
+Finally, computer processors need not be specially built for
+each task assigned to them: computers are multi-purpose tools
+which can do as many jobs as the programs available to them.
+
+All computer operations and programs are comprised of these
+three components: copying, automatic operation, "decision"
+making: and, in various combinations, can fulfill many
+functions.  It is no coincidence that it is these same functions
+which allow computer viral programs to operate.
+
+The first function of a viral program is to reproduce.  In other
+words, to copy.  This copying operation must be automatic, since
+the operator is not an actively informed party to the function.
+In most cases, viral program must come to some decision aobut
+when and whether to infect a program or disk, or when to deliver
+a "payload".  All of these operations must be performed
+regardless of the purpose for which the specific computer is
+intended.
+
+It should thus be clear that computer viral programs use the
+most basic of computer functions and operations.  It should also
+be clear that no additional functions are necessary for the
+operation of viral programs.  Taking these two facts together,
+noone should be surprised at the conclusion reached a number of
+years ago that not only is it extremely difficult to
+differentiate computer viral programs from valid programs, but
+that there can be no single identifying feature that can be used
+for such distinction.  Without running the program, or
+simulating its operation, there is no way to say that this
+program is viral and that one is valid.
+
+The fact that computer viral operations are, in fact, the most
+basic of computer operations means that it is very difficult to
+defend against intrusion by viral programs.  In terms of
+"guaranteed protection" we are left with Jeff Richards' Laws of
+Data Security:
+         1)   Don't buy a computer.
+         2)   If you do buy a computer, don't turn it on.
+
+copyright Robert M. Slade, 1991   FUNGEN1.CVP   910729
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Wed, 31 Jul 91 11:37:00 -0400
+>From:    "Dr. Harold Joseph Highland, FICS" <Highland@DOCKMASTER.NCSC.MIL>
+Subject: Call for Papers - IFIP/SEC '92
+
+                     C A L L        F O R      P A P E R S
+
+       THE IFIP/SEC'92 INTERNATIONAL CONFERENCE on COMPUTER SECURITY
+
+                         May 27-29, 1992    Singapore
+
+
+The purpose of the 1992 International Federation for Information
+Processing Security Conference [IFIP/Sec'92] is to provide a forum for
+the interchange of ideas, research results, and development activities
+and applications among academicians and practitioners in information,
+computer and systems sciences.  IFIP/Sec'92 will consist of advance
+seminars, tutorials, open forums, distinguished keynote speakers, and
+the presentation of high-quality accepted papers.  A high degree of
+interaction and discussion among Conference participants is expected,
+as a workshop-like setting is promoted.
+
+IFIP/Sec'92 is co-sponsored by The International Federation for
+Information Processing, Technical Committee 11 on Security and
+Protection in Information Processing Systems [IFIP/TC11] and The EDP
+Auditor's Association.  IFIP/Sec'92 is organized by the Singapore
+Computer Society and IFIP/TC11 and is sponsored by the National
+Computer Board, Singapore, Singapore Federation of Computer Industry,
+Microcomputer Trade Association of Singapore and the EDP Auditors
+Association of Singapore
+
+Because IFIP/Sec'92 is a non-profit activity funded primarily by
+registration fees, all participants and speakers are expected to have
+their organizations bear the costs of their expenses and registration.
+Presenters of papers will pay a reduced conference fee.
+
+
+WHO SHOULD ATTEND
+
+The conference is intended for computer security researchers,
+managers, advisors, EDP auditors from government and industry, as well
+as other information technology professionals interested in computer
+security.
+
+
+CONFERENCE THEME
+
+The Eighth in a series of conferences devoted to advances in data,
+computer and communication security management, planning and control,
+this Conference will encompass developments in both theory and
+practice.  Papers are invited in the areas shown and may be
+theoretical, conceptual, tutorial or descriptive in nature. Submitted
+papers will be refereed, and those presented at the Conference will be
+included in the proceedings.  Submissions must not have been
+previously published and must be the original work of the author(s).
+
+The theme for IFIP/Sec'92 is "Computer Security and Control: From Small
+Systems to Large."  Possible topics of submissions include, but are not
+restricted to:
+
+o    Auditing the Small Systems Environment
+o    Auditing Workstations
+o    PC and Microcomputer Security
+o    Security and Control of LANs and WANs
+o    OSI Security and Management
+o    GOSIP - Government OSI Protocol
+o    Electronic Data Interchange Security
+o    Management and Control of Cryptographic Systems
+o    Security in High Performance Transaction Systems
+o    Data Security in Developing Countries
+o    Software Property Rights
+o    Trans-border Data Flows
+o    ITSEC (IT Security Evaluation Criteria - The Whitebook)
+o    Database Security
+o    Risk Assessment and Management
+o    Legal Responses to Computer Crime/Privacy
+o    Smart Cards for Information Systems Security
+o    Biometric Systems for Access Control
+
+
+THE REFEREEING PROCESS
+
+All papers and panel proposals received by the submission deadline
+will be considered for presentation at the Conference.  To ensure
+acceptance of high-quality papers, each paper submitted will be blind
+refereed.
+
+All papers presented at IFIP/Sec'92 will be included in the Conference
+proceedings, copies of which will be provided to Conference attendees.
+All papers presented, will also be included in proceedings to be
+published by Elsevier Science Publishers B.V. [North-Holland].
+
+
+INSTRUCTIONS TO AUTHORS
+
+[1]  Three (3) copies of the full paper, consisting of 22-26
+     double-spaced (approximately 5000 words), typewritten pages,
+     including diagrams, must be received no later than 1 December 1991.
+     Diskettes and electronically transmitted papers will not be
+     accepted.      Papers must be sent to the Program chairman.
+
+[2]  Each paper must have a title page which includes the title of the
+     paper, full name of all authors, and their complete addresses
+     including affiliation(s), telephone number(s) and e-mail
+     address(es).  To facilitate the blind review process, these
+     particulars should appear only on a separate title page.
+
+[3]  The language of the Conference is English.
+
+[4]  The first page of the manuscript should include the title and a
+     300 word abstract of the paper.
+
+
+IMPORTANT DATES
+
+o    Full papers to be received by the Program Committee by 1 December 1991.
+
+o    Notification of accepted papers will be mailed to the author on or
+     before 1 March 1992.
+
+o    Accepted manuscripts, in camera-ready form, are due no later than 15
+     April 1992.
+
+o    Conference: 27-29 May 1992.
+
+
+WHOM TO CONTACT
+
+Questions or matters relating to the Conference Program should be directed
+to the Program chair:
+
+Mr. Guy G. Gable
+Department of Information Systems and Computer Science
+National University of Singapore
+Singapore 0511
+Telephone: (65) 772-2864   Fax: (65) 777-1296  E-mail: ISCGUYGG@NUSVM
+
+For information on any aspect of the Conference other than Program,
+panel, or paper submissions, contact the Conference Chair:
+
+Mr. Wee Tew Lim
+Organising Chairman
+c/o Singapore Computer Society
+71 Science Park Drive
+The NCB Building
+Singapore 0511
+Telephone: (65) 778-3901    Fax: (65) 778-8221
+
+Papers should be sent to:
+
+The Secretariat
+IFIP/Sec '92
+c/o Singapore Computer Society
+71 Science Park Drive
+The NCB Building
+Singapore 0511
+
+
+In the States and Canada, inquiries about the Conference can be sent to:
+
+Dr. Harold Joseph Highland, FICS
+Chairman, IFIP/WG11.8 - Information Security Education and Training
+562 Croydon Road  Elmont, New York 11003-2814  USA
+Telephone: 516 488 6868                 Telex: 650 406 5012 [MCIUW]
+Electronic mail:     Highland@dockmaster.ncsc.mil
+ X.400: C=US/A=MCI/S=Highland/D=ID=4065012         MCI Mail: 406 5012
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 134]
+******************************************

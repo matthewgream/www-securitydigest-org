@@ -1,0 +1,459 @@
+RISKS-LIST: RISKS-FORUM Digest  Monday 20 November 1989   Volume 9 : Issue 45
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Another foretaste of the Millenium (Brian Randell)
+  UNIX EXPO Blackout (Brian Randell)
+  Autodialing horror stories (John )
+  Self-trust and computer professionals (Sean Eric Fagan)
+  Bit problem with RISKS-9.39 was more global (Dan Johnson)
+  Gauge Proposed on Filing of Wage Data by Computer (David B. Benson)
+  Congress Finds Bugs in the Software (David B. Benson)
+  "Computer risks" (Randall Davis)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Fri, 17 Nov 89 9:17:33 BST
+From: Brian Randell <Brian.Randell@newcastle.ac.uk>
+Subject: Another foretaste of the Millenium
+
+We apologise for the unexpected system shutdown today (Thursday).  This was
+caused by a bug in the MTS system that was a "time-bomb" in all senses of the
+word. It was triggered by today's date, 16th November 1989.
+ 
+This date is specially significant. Dates within the file system are stored as
+half-word (16 bit) values which are the number of days since the 1st March
+1900. The value of today's date is 32,768 decimal (X'8000' hexadecimal). This
+number is exactly 1 more than the largest positive integer that can be stored
+in a half-word (the left-most bit is the sign bit). As a result, various range
+checks that are performed on these dates began to fail when the date reached
+this value.
+ 
+The problem has a particular interest because all the MTS sites world-wide are
+similarly affected. Durham and Newcastle were the first to experience the bug
+because of time zone differences and we were the first to fix it.  The American
+and Canadian MTS installations are some 4 to 8 hours behind us so the
+opportunity to be the first MTS site to fix such a serious problem has been
+some consolation.  The work was done by our MTS specialist who struggled in
+from his sick bed to have just that satisfaction!
+
+                        [I presume the MTS folks did not read RISKS-9.28, 
+                        "Hospital problems due to software bug", in which
+                        we learned that 19 Sept 89 was 32768 days after
+                        1 Jan 1900!  Does that sound familiar to you?  
+                              "When will they ever learn? ..." 
+                             ("Where Have All the Flowers Gone?")  PGN]
+
+------------------------------
+
+Date: Fri, 17 Nov 89 11:03:04 BST
+From: Brian Randell <Brian.Randell@newcastle.ac.uk>
+Subject: UNIX EXPO Blackout
+
+I do not recall seeing anything in Risks about the incident described in the
+following front page article in the Nov 16 issue of (UK) Computer Weekly.  It
+is here in full, as an amusing example for US readers of British "journalism".
+
+ UK FAULT TOLERANCE SHINES AFTER US BLACKOUT
+
+ Jon Kaye
+
+ A fault-tolerant team from the UK has scored a valuable away win in
+ New York despite strong opposition from the local favourites.
+
+ IMP, a manufacturer of fault-tolerant Unix machines based on
+ Motorola's 68030 processors, beat top US firms Tandem and Sequoia
+ during last month's Unix Expo.
+
+ On the final day a power cut left the exhibition centre without
+ electricity for half the day.
+
+ Quick-thinking Dick Penny, IMP's marketing manager, weaved his way
+ into Tandem and Sequoia territory, lobbing offers for a competition
+ once the power returned.
+
+ "I thought it would be a good idea to see which machine would be up
+ and running first once the power was back on," says Penny.
+
+ Tandem and Sequoia agreed, the latter "reluctantly", Penny says. The
+ referee was provided by Unix International, the Unix standards group,
+ setting the stage for an exciting kick-off.
+
+ The plucky UK lads were first to the goal in 70 seconds, followed by
+ Tandem in two minutes and Sequoia in four.
+
+ Penny denies suggestions that IMP caused the blackout itself to get
+ the competition staged. "Four city blocks went out', he says.
+ "Organising that would have overstretched our marketing budget for the show."
+
+Brian Randell, Computing Laboratory, University of Newcastle upon Tyne, UK
+
+------------------------------
+
+Date: Sat, 18 Nov 89 10:20:56 -0700
+From: john@anasaz.UUCP
+Subject: Autodialing horror stories
+
+I thought I would relate a couple of horror stories about a hotel reservation
+system that we implemented at Ramada Inns in 1974.
+
+...  A lady in Utah started getting anonymous phone calls in June, 1974.  She
+would answer the phone and hear nothing. Sometimes, if she kept asking who was
+there, she would hear a loud screech before the caller hung up. Calls would
+come at all times of day and night, but were most frequent between 1 and 2:30
+AM. The phone company tried to trace the calls, but they were of very short
+duration. They did determine that the calls were coming from area codes all
+over the US, with a random distribution. They were puzzled.
+
+Meanwhile, a number of Ramada franchisees complained that they were getting
+billed for long distance calls on the phone line they had installed for their
+new reservation system computer.
+
+We investigated and discovered that there was a phone number that was
+one dial pulse (there were lots of pulse-dial only exchanges then)
+away from the 800 number that the computers were supposed to call.
+We called the number and discovered on very frustrated lady! Ramada
+payed for her to get a new phone number, and the problem went away.
+
+....  Also in June, 1974, there were long distance telephone outages occurring
+in the middle of the night, every night, in the Omaha, Nebraska, area. It turns
+out that our 700 computers were all calling in in a very short period of time
+after 0100MST, jamming the circuits. At 0100, our system started a period
+(called End of Day) during which the computers called in rapidly to unload
+their message queues. I had guessed at the number of lines, put it in a
+configuration file, and forgotten about it. I had guessed 20 lines. There were
+in fact quite a few less (I think there were 7). Thus the calls were coming in
+at a rate way to high to be serviced. To make it worse, a failed call was
+retried three times! The problem was corrected by changing the constant in the
+configuration file.
+
+------------------------------
+
+Date: Sat, 18 Nov 89 18:29:48 PST
+From: sef@kithrup.COM (Sean Eric Fagan)
+Subject: Self-trust and computer professionals
+
+After reading all the recent slate about computer-controlled everything (cars,
+planes, trains, etc.), I realized something interesting: a layperson generally
+doesn't trust computers because he or she doesn't understand them (they are
+"black boxes").  A computer professional, on the other hand, doesn't trust them
+*because* he or she *does* understand them (and their limitations).  This also
+lead me to realize that ours is one of the few fields where we wouldn't
+necessarily trust our "product" with our lives.  That is, doctors generally
+will trust other doctors to operate on them, auto designers probably drive cars
+(8-)), etc.  Yet, a programmer probably wouldn't trust a computer-controlled
+plane or car very much (for good reason, in my opinion).  I'm not sure exactly
+what this says, except that it is still a very immature field.
+                                                                   Sean.
+
+------------------------------
+
+Date: Fri, 17 Nov 89 19:03:16 EST
+From: dwj@acd4.UUCP (Dan Johnson)
+Subject: Bit problem with RISKS-9.39 was more global 
+
+The problem that was experienced by some on RISKS-9.39 was not limited just to
+comp.risks.  There has been a recent discussion in news.admin about similar
+problems in other postings.  In particular <10668@claris.com> and
+<1989Nov13.230546.8399@psuvax1.cs.psu.edu> isolate the problem to lll-lcc and
+mention the munged RISKS 9.39.  Btw, we got a good copy and a bad copy of it
+(which arrived after 9.40 and 9.41); one of the bits hit was in the message ID,
+so the two copies travelled independently.
+
+Daniel W. Johnson, Applied Computing Devices, Inc.  
+
+    [Also noted by a variety of others...  Thanks for all the examples.  PGN]
+
+------------------------------
+
+Date: Sat, 18 Nov 89 16:48:19 PST
+From: dbenson@cs2.cs.WSU.EDU (David B. Benson)
+Subject: Gauge Proposed on Filing of Wage Data by Computer
+
+	[The Wall Street Journal, Novemeber 17, 1989, p. A16]
+
+	WASHINGTON -- The Social Security Administration announced
+	proposed standards for employer's computerized filing of wage
+	data and said it might establish a certification process
+	for software programs that comply.
+		The software standards are designed to reduce 
+	discrepancies between Internal Revenue Service tax data and
+	Social Security wage data by requiring software programs
+	to check for inconsistencies.  This would help ensure full
+	credit to 130 million American workers.  The Social Security
+	Administration routinely cross-checks data with the IRS.
+	Improperly reported wages often result in workers receiving
+	less than their entitled Social Security benefits.
+		Each year, in as many as a million cases information
+	reported to the IRS fails to match that reported to Social
+	Security, said Norman Goldstein, the administration's chief
+	financial officer.  He estimated that computer software is
+	used for filing the wage data of 70% to 80% of U.S. workers.
+		The proposed standards are voluntary, but Social
+	Security Commisioner Gwendolyn King said she would like to
+	see the draft proposal become the official U.S. standard.
+	The administration is seeking comments on the software standard
+	from business groups and software writers.
+
+------------------------------
+
+Date: Sat, 18 Nov 89 17:39:32 PST
+From: dbenson@cs2.cs.WSU.EDU (David B. Benson)
+Subject: Congress Finds Bugs in the Software
+
+	[AAAS Science, 10 November 1989, vol. 246, p. 753]
+	[by M. Mitchell Waldrop]
+
+	Dig into any of the government's chronically over-budget and
+	behind-schedule development programs -- the Hubble Space
+	Telescope of the B1-B Bomber, for example -- and you'll find
+	that a good fraction of what gets labeled as "waste, fraud,
+	and abuse" actually stems from crummy software.  Not only do
+	the development agencies habitually spend millions of dollars
+	on operations software that is buggy, inadequate, and late,
+	they have to spend millions of dollars more to fix it.
+		So says a just released report [nb. "Bugs in the system:
+	Problems in federal govenment computer software development and
+	regulation"(Subcommittee on Investigations and Oversight of the
+	House Committee on Science, Space, and Technology, Government
+	Printing Office, Washington, D.C., September 1989).] from the
+	House Science, Space, and Technology Committee's Subcommittee
+	on Investigations and Oversight.  Written by subcommittee staffer
+	James Paul, who spent 2 years working on it, the report also
+	names a culprit: the government itself.  "Government policies
+	on everything from budgeting to intellectual property rights
+	have congealed over time in a manner almost perfectly designed
+	to thwart the development of quality software," it says.
+		Paul's brief, but strongly worded report echoes the
+	complaints that computer scientists have been muttering for
+	years.  "The [federal government's] procurement process is as
+	much or more to blaim for poor software as any other single
+	thing," says Peter Freeman of George Mason University, who just
+	finished up a stinit as head of the computer research division
+	at the National Science Foundation.  "There are huge numbers of
+	people involved [in the agencies] who fundamentally don't have
+	the knowledge or experience to make good decisions with respect
+	to procurements."
+		The report says that reform must begin on the conceptual
+	level, becuase purchasers still regard software as an afterthought.
+	Project managers, agency heads, and congressmen alike tend to
+	focus on sexy hardware such as radars, airframes, and engines,
+	assuming that the software to control all this gadgetry can be
+	taken care of later.  Yet that assumption can be costly.  In 1979,
+	the Nuclear Regulatory Commission shut down five nuclear reactors
+	for upgrading; a software flaw in the computer-aided system used
+	to design them had left them vulnerable to earthquake damage.
+	In the mid-1980s, a Canadian-built radiation therapy machine, the
+	Therac-25, killed at least four people when a software error
+	irradiated patients with massive overdoses.
+		"Software," says the report, "is now the choke point in
+	large systems."
+		On the other hand, it will be difficult to make the
+	software development process more flexible because the federal
+	procurement system effectively demands that contractors write
+	the software using bad methodology.  "Out on the technical
+	frontiers," the report says, "the government requires a legally
+	binding contract specifying in excruciating detail exactly how
+	the system will look at delivery some years hence."  The tacit
+	assumption is that programmers will then use the specifications
+	to write, test, and debug the software.  In the programming
+	community this approach is known as the waterfall model because
+	the work supposedly cascades from one stage to the next in
+	systematic progression.
+		But modern programmers consider the waterfall approach
+	an abysmal way of doing things.  Especially when it comes to
+	high-tech systems such as the Space Telescope's scheduling
+	software or the B1-B's defensive electronics countermeasures
+	systems -- both of which were software fiascos (Science, 17
+	March 1989, p. 1437) -- it is essentially impossible for
+	anyone to write detailed specifications in advance.  Not only
+	does the hardware evolve during development, thereby forcing
+	the specifications to change, but the hardware engineers
+	themselves have no way of knowing what they really want from
+	the software until they have had a chance to try it out.
+		This is way the modern "evolutionary" approach to
+	software development looks less like a waterfall than like a
+	spiral.  Starting with general requirements, the programmers
+	quickly cobble together one or more prototype systems.  The
+	engineers then try out the prototypes on the evolving hardware.
+	Their suggestions guide the programmers in refining new
+	prototypes.  And the process repeats as long as is necessary.
+	The payoff is that the programmers have a much better chance of
+	catching errors in the design phase, when the bugs can be fixed
+	at an estimated one-tenth to one-one hundredth the cost of
+	fixing them after deployment, and the software as a whole has a
+	much better chance of doing what it really needs to do.
+		But flexibility is precisely what the spell-it-out-up-
+	front procurement culture lacks, says the report.  In addition,
+	the bereaucracy balks at the big up-front investment in problem
+	definition that must be made when the evolutionary approach is
+	used.  Furthermore, as the report notes, "mo program manager
+	relishes the thought of defending a request for funds when the
+	major activity seems to be endless arguments over abstruse
+	technical points by large numbers of well-paid engineers."
+		So, what can be done?  In the near term, very little,
+	says the report.
+		The Department of Defense and a few other agencies have
+	begun to move away from the waterfall model, and Paul thinks
+	those steps should be encouraged.  Better methods should be
+	developed for evaluating the quality, reliability, and safety of
+	software, the report says.  And perhaps the software community
+	should be encouraged to establish some form of professional
+	certification standards.
+		But nothing fundamental is going to change without changes
+	in the procurement culture, says the report.  And that is going
+	to take awhile, even though chronic cost overruns and scandals
+	are creating mounting pressures to do so.  "Its not something
+	you can jump right in and legislate," Paul told Science.  "The
+	federal procurement system is like a software system with bugs.
+	Every time it's broken down, somebody has patched it.  But
+	keeping it together is getting harder and harder and costing more
+	money.  And at that point, an experienced software engineer would
+	throw up his hands and say, 'Hey! Let's toss this out and start
+	over.'"
+
+------------------------------
+
+Date: Mon, 20 Nov 89 10:15:40 est
+From: davis@ai.mit.edu (Randall Davis)
+Subject: "Computer risks"
+
+Several people responded to my posting in 9.40 regarding "computer risks,"
+and many of them seem to me to share the same fundamental confusion.  Let me
+use Saltzer's response in 9.41 as a representative example.  He replied
+
+>I claim that it is not that simple.  In a traditional library, it was possible
+>to invade your privacy by making a list of all the books you have every 
+>checked out.  
+
+Sorry but I believe it is in fact EXACTLY that simple and indeed the example
+cited shows it to be so.
+
+The crucial point is confusing the technology that makes an act feasible, with
+the act itself.
+
+As Jerry pointed out:
+> The speed and efficiency with which data can be processed by computer can
+> convert a neglible risk into one worth discussing.
+
+Just so; it is now *worth discussing*.  But *what* is it we should *discuss*?
+Privacy, not technology.
+
+We ought to discuss whether records of one's book reading should in fact be
+public.  True, the question never arose routinely before because it wasn't
+pragmatically possible ("benign protection by the status quo," in Ware's
+elegant phrase).  Previously the question was moot, now it is worth
+discussing.  But what ought we to discuss?  The QUESTION, not the TECHNOLOGY
+that rendered it relevant.  And question is, what rights to privacy ought I to
+have when I borrow books from a public library?  That question (a social and
+moral concern, as Dave Smith points out) is the central issue in such
+discussion.
+
+That discussion will need to be INFORMED by technology to some degree: people
+need to understand that certain actions will become easy in a computerized
+book lending system that were difficult before (e.g., monitoring,
+compilations, cross-matching).  But those actions are now EASY rather than
+HARD, not POSSIBLE vs UNIMAGINABLE.
+
+On this point, Ware quotes Hamming to the effect that
+> "when something changes by an order of magnitude, there are fundamental 
+> new effects."
+
+Perhaps, but it's important to understand that they are often new only in the
+sense that we did not think of them previously (in the old technology), not
+that they are incomprehensible or unimaginable in those terms.  For example,
+monitoring, compilations, and cross-matching of library records are all
+possible now for enormous databases.  But I can perfectly well understand them
+and their effects by imagining the corresponding manual operations.  
+
+That distinction in turn is very important because it empowers people.
+Admitting that there is nothing fundamentally new in such a system makes it
+clear that ordinary people (incredibly enough, even those without degrees in
+computer science) can coherently and intelligently discuss these issues based
+on their ordinary intuitions and feelings about privacy.  It even makes it
+clear that if there is a relevant specialized experience for this discussion,
+it is probably constitutional law, not computer science.
+
+It's time to take the veil of technological mysticism off these issues.  And
+it is we in particular who ought to remove the veil.  People need to
+understand that their existing knowledge, experience, and opinions on privacy
+(and other issues) are both relevant and sufficient for informed debate.  The
+crucial decision is whether the information ought to be public, not how it is
+to be accessed.
+
+As for the argument that:
+> The Registrar of Motor Vehicles in Massachusetts has long used the "it has
+> always been public" argument on car registration information as an excuse for
+> selling tapes to mass mailers.
+
+That's little more than a bad pun, playing off two meanings of "public".  But
+perhaps we need a finer distinction to avoid being tripped up by it in the
+future, hence my use of the term "pragmatically possible".  Neither the motor
+vehicle nor the library data were in fact ever pragmatically public, so the
+issue never arose.  But now they can be and now we need to decide whether they
+ought to be.
+
+And *that* decision has nothing to do with the technology that made the point
+worth discussing, and everything to do with our own sensibilities about
+privacy.
+
+In a similar vein, David Smith suggests that
+> if there's no tool to implement [a policy] adequately... the policy
+> [will not be] pursued.  Only when a tool becomes available that makes
+> implementation feasible will the policy be ... implemented.  
+
+Right, and then we should discuss the POLICY, not the technology that made it
+worth discussing. 
+
+He also adds:
+> It's possible to maintain large, irresponsibly constructed paper databases
+> on suspected child molesters, but not feasible.
+
+Perhaps he's not had much experience with: insurance companies, medical
+records, legal records, the early social security system, etc., etc.  Large
+irresponsible paper databases have been with us a long time.
+
+King claims that he
+> supports the original thesis that, for serious breaches of privacy,
+> lack of a computer is no protection against data collection.
+
+True, lack of technology doesn't preclude serious breaches of privacy, hence to
+some degree we've always faced these issues.  But that's not the point, and it
+wasn't the original thesis.  Even if lack of computers DID prevent breaches of
+privacy, that would only render the point moot; it would not ANSWER the
+question.  And the question is, what rights to privacy ought we to have.
+
+One might say that computerizing the records will make possible invasions,
+hence it is a computer risk.  But then in the same breath one ought to point
+out as King does that computerizing the records will make possible a
+unprecendented degree of privacy (just erase the disk packs; no one could
+erase all the records in each book every two weeks, another order of magnitude
+effect).  Hence we ought also to talk about the computer benefit.  Then,
+having established that the technology can be used both to invade and to
+ensure privacy, we ought to get back to discussing the real question: what
+kinds of privacy ought I to have?
+
+Finally, Jerry indicated that he is
+> ... prepared to tolerate a certain amount of fuzziness in identifying the
+> edge of the computer-RISKS arena by our beleaguered moderator.
+
+The message was to the multitudes, not the moderator.  It is important that we
+all remove the illusions of mystery about this stuff.  People need to be
+empowered to think about this on their own and we should be telling them that.
+We need to make it clear to them that what makes the issue worth discussing
+(the technology) is quite distinct from what the issue is (what rights to
+privacy ought we to have).
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.45
+************************

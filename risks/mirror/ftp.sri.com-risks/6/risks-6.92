@@ -1,0 +1,221 @@
+RISKS-LIST: RISKS-FORUM Digest   Wednesday 25 May 1988   Volume 6 : Issue 92
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Down in the Dumps (a true story) (Peter Rowell via David Sherman)
+  "Providence Journal" virus (Martin Minow)
+  Stock market damping (David Sherman)
+  Daedalus and the Thumb Card (Dave Clayton)
+  Hinsdale (John [J.G.] Mainwaring)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j, ftp kl.sri.com, get stripe:<risks>risks-i.j ... .
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date: 25 May 88 14:36:29 EDT (Wed)
+From: lsuc!dave@unix.SRI.COM (David Sherman)
+Subject:  Down in the Dumps (a true story) from comp.unix.wizards
+
+From: peter@thirdi.UUCP (Peter Rowell)
+Newsgroups: comp.unix.wizards
+Subject: Down in the Dumps (a true story)
+Date: 19 May 88 22:13:13 GMT
+Organization: Third Eye Software, Menlo Park, CA
+
+If the following command does not look Evil to you, then read on....
+
+	dump 0usf /dev/rmt0 /dev/rrf0g
+
+I post this to the net in the hopes it will save someone else from
+nailing themselves to the cross like I did.  I am sure that more than
+a few people will read this and say.
+
+    "Oh sure, *I* knew that's what would happen.  Why didn't you:
+	(a) RTFM (read the friendly manual) (b) be more careful."
+
+Well, actually, I *did* just RTFM and then I made one simple little
+error and Murphy stepped all over my file system.
+
+In case you haven't already figured it out, the command in
+question (dump 0usf /dev/rmt0 /dev/rrf0g) will wipe out the
+file system residing on device /dev/rrf0g! (Yes, it really did...)
+
+The problem is that the "s" flag is looking for a size specification for
+the tape (which I accidently left out).  It apparently ate "/dev/rmt0"
+and decided that it liked that just fine.  Next, the "f" flag says "Oh
+boy! I get to do the dump TO /dev/rrf0g".  Now, it would have been nice
+if dump had complained that I had not told it what device to dump FROM,
+but Nnnoooooo, the manual says:
+
+     " ... If no arguments are given, the key is assumed to be 9u and a
+     default file system is dumped to the default tape.  ..."
+     ^^^^^^^^^^^^^^^^^^^
+The default on my system (an ISI box running 4.3) is /dev/rsd0g.  Since
+this is a valid device on my system, dump promptly started dumping /usr
+all over rrf0fg.
+
+I saw right away that I had left the length off and interrupted the dump.
+When I started it up again (with the length) it informed me that the
+super-block was now caca and that I should run fsck with the -b switch.
+I did this with -b 32 and -b 11600 and -b etc. etc. etc. sigh.
+(Through no fault of my own, we did have a recent dump to restore from.)
+
+In conclusion:
+I *know* that being root is dangerous.  I just never expected that
+I could *create* a dead file system by using dump!
+
+I personally would like to see dump modified along these lines:
+
+	1.	Not default *anything* (except, perhaps, dump TO tape).
+	2.	Be pickier about what a valid numerical value is.
+	3.	Require confirmation for dangerous target devices.
+		(Such as mounted file systems or things in /etc/fstab.)
+
+------------------------------
+
+Date: 18 May 88 12:18
+From: minow%thundr.DEC@decwrl.dec.com (Martin Minow THUNDR::MINOW ML3-5/U26 223-9922)
+Subject: "Providence Journal" virus
+
+On Tuesday, May 18, The Boston Globe business section included a column
+(probably syndicated) called "Your Computer" written by John J. Xenakis
+(1610 Worcester Road, Suite 629A, Framingham, MA  01701) that gave a
+decent overview of the virus phenomena.
+
+The same issue of the Globe (I think, I can't find it now) had an article
+on a virus that attacked the newsroom computers at the Providence (RI) Journal.
+
+This morning, WBUR radio broadcast a story on that virus.  These notes
+were scribbled at the time:
+
+  In an instant, a reporter lost weeks of work.  Their systems programmer
+  used a special program to look at the disk.  He found "welcome to the
+  dungeon -- beware of this virus" and three telephone numbers in Pakistan.
+  One of them reached   a person who expressed suprise that the virus had
+  gotten that far.
+
+  Fred Cohen at the University of Cincinnati said that the virus reached
+  Delaware [University of?] last year.  At least three others are on the
+  loose.  The best advice is don't share disks.  Cohen also noted that
+  the Macbug virus got into "legitimate distribution channels" so shrink-
+  wrapped software might not be safe.  Also "viruses can mutate."
+
+  The Journal's virus was found on disks in their news bureaus and on
+  their employees' home computers.  Their systems programmer is afraid
+  that, although they've gone through all their disks to elminate it,
+  "a copy might be lurking in some desk drawer."
+
+  This particular virus infects IBM PC's and clones.  You might consider
+  buying an anti-viral program, but at least one is itself infected.
+
+WBUR local news stories are often picked up by NPR, so you might keep an
+ear open to All Things Considered and/or Weekend Edition.
+
+This particular virus isn't new to RISKS readers.  What is interesting,
+however, is that the part of the general public that reads the business
+section and/or listens to public radio news is getting a reasonable education
+in this field.
+
+    [The NY Times of 25 May 1988 has an article in THE MEDIA BUSINESS, p.C18.
+    The virus made its appearance when a financial reporter, Froma Joselow,
+    saw the message "disk error" on her computer screen after she
+    unsuccessfully tried to print out a copy of a news article she had been
+    writing.  There was a virus program on her floppy, which caused this
+    message on the screen: "Welcome to the Dungeon...  Beware of this VIRUS.
+    Contact us for vaccination."  The message included an address and phone
+    number of Brain Computer Services...  PGN]
+
+PS: how can virus [programs] mutate?         
+
+                 [Self-mutating, e.g, by adapting to their environments.  PGN]
+
+    
+
+------------------------------
+
+Date: 24 May 88 13:26:14 EDT (Tue)
+Subject: Stock market damping
+From: lsuc!dave@unix.SRI.COM (David Sherman)
+
+Attempts to influence stock market trading patterns by taxing
+short-term gains at higher rates aren't likely to have much effect.
+Apart from the remoteness of the tax hit, bear in mind that the
+traders who most influence the stock market are those who manage
+the huge pension funds, which don't pay any income tax.
+
+David Sherman   dave@lsuc.uucp
+(Canadian tax lawyer)
+
+------------------------------
+
+Date:    Wed, 25 May 88 15:42 EDT
+From: Dave Clayton (401) 792-2501 <LCO101%URIMVS.BITNET@MITVMA.MIT.EDU>
+Subject: Daedalus and the Thumb Card
+
+It is quite frightening to contemplate a financial transaction system that
+can be brought down by application of a bandaid to a paper cut on the
+thumb--let alone the unthinkableness of losing a thumbnail.
+
+------------------------------
+
+Date:     25 May 88 11:07:00 EDT
+From: John (J.G.) Mainwaring <CRM312A%BNR.BITNET@CORNELLC.CCS.CORNELL.EDU>
+Subject:  Hinsdale
+
+There seems to have been a fair amount of high horsemanship in the
+correspondance to date on the Hinsdale fire.  Perhaps it shows one of
+the biggest potential risks associated with a disaster of this sort,
+namely the oversimplified fixes that people not in a position to make
+a full appraisal are likely to push on anyone who will listen.
+
+The remark about the lack of operators in a modern central office is a case
+in point.  I wonder how many people know the size of the installation
+necessary to allow manual operators to handle a large enough fraction of the
+traffic offered by tens of thousands of subscribers to make any difference?
+In any case, such equipment was typically made of beautifully polished wood,
+and would burn at least as well as an electronic switch, although the smoke
+might be less toxic.
+
+A good deal of criticism was leveled at cost cutting measures.  The phone
+companies have been under intense pressure to cut costs.  The divestiture
+decree was meant to cut costs by introducing competition.  As models of
+efficiency the phone companies may have been matched only by the federal
+government.  Some recent measures may have been misdirected, and much more
+improvement remains possible.  However, there was no widespread campaign to
+pay more for more reliable phone service.
+
+Hopefully, the hub concept will be revised to provide diverse routing from
+end offices to the rest of the network, in spite of the cost and network
+management problems involved.  Perhaps cellular phones will be recognized as
+a backup to the main network, with base station equipment separately located
+and trunking to the land network carried over diverse routes.  Policies of
+this sort are only likely to be instituted if the cost is included in the
+rate base, and then only if there is widespread public acceptance of the
+cost.
+
+Another significant risk which undoubtedly exists in many situations is the
+tendency for increases in computing power to decrease modular redundancy.
+That which is cost effective is not necessarily cheap in small doses.  The
+phone system is highly distributed, but the parts may not function well
+independantly.  Each part of the system may strike the casual observer as
+large in itself, not a small part of a whole.  In fact, each part is likely
+to be duplicated, separately powered, and and redundantly connected to
+duplicated sets of other key components.  For performance and logistic
+reasons, the duplicated parts are not likely to be geographically dispersed.
+In any case, the wires from your phone just go to one switch building, so
+the benefits of dispersal of the switch remain academic.
+
+We can all hope for lessons from the high level planning down to the the day
+to day operational procedures that allowed the delay in summoning the fire
+department.
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

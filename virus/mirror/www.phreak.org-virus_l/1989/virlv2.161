@@ -1,0 +1,156 @@
+VIRUS-L Digest   Wednesday, 26 Jul 1989    Volume 2 : Issue 161
+ 
+Today's Topics:
+ 
+Sun security problem: restore
+VNET and the CHRISMA EXEC (IBM VM/CMS)
+viruscan source (PC)
+Request for comments on anti-viral software (PC)
+ 
+---------------------------------------------------------------------------
+ 
+Date:    Wed, 26 Jul 89 09:48:27 -0400
+From:    cert@SEI.CMU.EDU
+Subject: Sun security problem: restore
+ 
+A security hole has been found in SunOS restore.  This problem affects
+SunOS 4.0, 4.0.1, and 4.0.3 systems.  It does not appear in SunOS 3.5.
+The problem occurs because restore is setuid to root.  Without going
+into details, is sufficient to say that this is a serious hole.  All
+SunOS 4.0 installations should install this workaround.  Note that a
+user does need to have an existing account to exploit this hole.
+ 
+There are two workarounds that will fix the problem.  The first is
+slightly more secure but has some side-effects.
+ 
+1) Make restore non-setuid by becoming root and doing a
+chmod 750 /usr/etc/restore
+ 
+This makes restore non-setuid and unreadable and unexecutable by
+ordinary users.
+ 
+Making restore non-setuid affects the restore command using a remote
+tape drive.  You will no longer be able to run a restore from another
+machine as an ordinary user; instead, you'll have be root to do so.
+(The reason for this is that the remote tape drive daemon on the
+machine with the tape drive expects a request on a TCP privileged
+port.  Under SunOS, you can't get a privileged port unless you are
+root.  By making restore non-setuid, when you run restore and request
+a remote tape drive, restore won't be able to get a privileged port,
+so the remote tape drive daemon won't talk to it.)
+ 
+2) If you do need to have some users run restore from remote tape
+drives without being root, you can use the following workaround.
+ 
+cd /usr/etc
+chgrp operator restore
+chmod 4550 restore
+ 
+This allows the use of restore by some trusted group.  In this case,
+we used the group 'operator', but you may substitute any other group
+that you trust with access to the tape drive.  Thus, restore is still
+setuid and vulnerable, but only to the people in the trusted group.
+ 
+The 4550 makes restore readable and executable by the group you
+specified, and unreadable by everyone else.
+ 
+Sun knows about this problem (Sun Bug 1019265) and will put in a more
+permanent fix in a future release of SunOS.
+ 
+J. Paul Holbrook
+Computer Emergency Response Team
+Internet: <cert@SEI.CMU.EDU>
+(412) 268-7090 (24 hour hotline)
+ 
+ 
+------------------------------
+ 
+Date:    26 Jul 89 00:00:00 +0000
+From:    David M. Chess <CHESS@YKTVMV.BITNET>
+Subject: VNET and the CHRISMA EXEC (IBM VM/CMS)
+ 
+Your description of the VNET topology is essentially correct.   On the
+other hand, I *don't* think it's the case that the backbone was taken
+down at any time during the CHRISTMA incident.  As I say, I was on
+vacation, but I think the response at most of the central nodes was
+to run a filter; hastier reactions (shutting down, cold-starting, etc)
+would have been more likely to have happened at "leaf" nodes, where
+the operators were perhaps less experienced.
+ 
+Just because the media like the "IBM's network was shut down" story,
+don't assume it's true...    *8)
+ 
+DC
+ 
+------------------------------
+ 
+Date:    Wed, 26 Jul 89 09:17:58 -0700
+From:    Steve Clancy <SLCLANCY@UCI.BITNET>
+Subject: viruscan source (PC)
+ 
+I am offering my BBS as another source for Viruscan.  I currently have v29,
+which was downloaded DIRECTLY from the HOMEBASE BBS.  The file name is
+SCANV29.ZIP.  You will need the latest version of PKUNZIP.EXE to extract
+it.  Normally, new users on the BBS are not allowed to download until they
+have been registered. However, to gain immediate access to this file, use
+the following login:  First name:  VIRUSL
+                      Last  name:  BITNET
+                      Password  :  SCAN
+ 
+This will give each caller 30 minutes to download this file.  Other
+badware-related files are listed in the VIR files directory. The BBS uses
+RBBS format commands.
+ 
+Two nodes are available. If another caller is using the special login above
+on the other node, use the first name  VIRUSL2 as an alternate with the same
+last name and password.
+ 
+The phone numbers and parameters are as follows:
+ 
+       714-856-7996   300-9600 baud (HST) N81  -- 24 hrs
+       714-856-5087   300-1200 baud  N81       -- Evenings & weekends
+ 
+The BBS is located at the Biomedical Library, University of California,
+Irvine, California, U.S.A.
+ 
+- --SteveClancy, Sysop
+ 
+%   Steve Clancy, Biomedical Library  %  WELLSPRING RBBS            %
+%   P.O. Box 19556                    %  714-856-7996 300-9600      %
+%   University of California, Irvine  %  714-856-5087 300-1200      %
+%   Irvine, CA  92713                 %                             %
+%   SLCLANCY@UCI                      %  "Are we having fun yet?"   %
+ 
+------------------------------
+ 
+Date:    Wed, 26 Jul 89 16:29:15 +0700
+From:    CCEYEOYT@NUSVM.BITNET
+Subject: Request for comments on anti-viral software (PC)
+ 
+I have just tested a few 'old' anti-viral software and would like to
+have your comments on the following findings (hopefully answers for
+the questions as well) :
+ 
+1) SERUM.COM (236 bytes)
+   -- This is a TSR program which removes (c)Brain from RAM as well as
+      floppy diskettes. However, it does not work on an AT machine. The
+      program claims to remove the virus from the infected disk and change
+      the disk's label to 'cured'. But when I tested it, the disk was changed
+      to the word 'Sidsoft' instead. Does anyone know what's wrong?
+2) KILLPP.EXE (40533 bytes)
+   -- This program is able to detect and eradicte the Ping-Pong virus I
+      have. However, it only replaces the boot sector with the original
+      boot record. The bad sectors remain and hence the viral code still
+      exits on the disk. Is that all it does?
+3) NOBRAIN.EXE
+   -- This is another program for removing (c)Brain from diskettes. However
+      it only works well for diskettes which are formatted using IBM DOS.
+ 
+Thanks in adance for all your help and time.
+ 
+Yeo
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

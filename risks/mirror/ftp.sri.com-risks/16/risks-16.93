@@ -1,0 +1,576 @@
+Subject: RISKS DIGEST 16.93
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 20 March 1995  Volume 16 : Issue 93
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, etc.       *****
+
+  Contents:
+About the "Altona Railway software glitch" (Klaus Brunnstein)
+Credit-Card Fraud (NYT via Edupage)
+Keeping buses on time plus a little eavesdropping (Mark Kruse)
+Does Internet threaten civilization? (Dick Mills)
+Latent risks of cost-benefit analysis (Phil Brown)
+Re: Internet-Finland Privacy (Peter Kaiser)
+Risks of doing date arithmetic early in the year without FP (Peter Ludemann)
+Phone companies with wrong 555-1212 databases (Frederick B. Cohen)
+Re: The Manchurian Printer & Prodigy Spies on Users (Frank C Ferguson)
+Software System Safety Class (Nancy Leveson)
+First Bank of Internet (FBOI) Opens (Vinn Beigh)
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.
+
+----------------------------------------------------------------------
+
+Date: Fri, 17 Mar 1995 17:48:54 +0100
+From: Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.d400.de>
+Subject: About the "Altona Railway software glitch"
+
+German Railway attempted, Sunday March 12 1995 evening, to replace its long
+established railway switch tower at Hamburg-Altona station by a fully
+computerized system manufactured by Siemens branch on railway technology.
+Altona station is one of Germany's large station, with many national and
+international lines starting or ending here or passing through. Each day,
+about 30,000 travellers arrive or depart here, in addition to more than
+100,000 passengers using local rapid (S-Bahn) or regional trains.
+
+With about 250 rail shunts and an equivalent number of signals, the old
+system consisted of 7 major switch-stands, controlled by roughly 50
+experienced switchmen. Siemens and German Railway decided to completely
+change the topology with now about 18 switch-stands to be controlled by
+INTEL-486 based Real-Time systems. The different switch computers are
+coordinated by one central operating and display system (BAR 16, for Bedien-
+und-Anzeige-Rechner, and 16 standing for 16-Bit connection). PC hardware is
+redundant (2 processors, modular RAM, no disk) to enhance availability and
+reliability as requested by the certification authority (Eisenbahn
+Bundes-Amt, EBA). The new architecture is incompatible with the old one and
+it cannot run in parallel to the old; one economic advantage is that the new
+system needs about 40 switchmen less which only control the central BAR
+site.
+
+Immediately after starting the new systems, the central computer (BAR 16)
+failed. Siemens' experts could not find the cause for hours, so German
+Railway decided to close up the whole station, forcing passengers to North
+and South to start from locations up to 25 kilometers away. Search for the
+fault was difficult as it were very rare. Only on Tuesday afternoon, experts
+detected that under certain conditions a stack overflow happened. When
+looking into the routine which should handle stack overflows, they found
+that this went into a deadloop due to a programming error. Though sufficient
+free space was available in principle, the allocation of the stack required
+to build a new RAM with 4,000 bytes onstead of 3,500 as foreseen (indeed,
+overflow was only with few bytes, so +500 bytes adds some safety :-). Only
+on Wednesday morning, the bug (which appeared only 4 times in 2 days) was
+fixed, and rail traffic began to return to Altona station on Wednesday 1:59
+pm. But as the switchmen are not accustomed to the new system, even days
+later allowed restricted traffic.
+
+In a press conference, the responsible Siemens manager argued that the
+"hidden" faults were difficult to find, and that Siemens experts had assumed
+that the routine handling stack overflow would NEVER be used! The related
+operating system is regarded by Siemens as rather safe RT system :-)
+
+In German media (you know: Hamburg is media capital of Germany :-), a
+discussion on overreliance on computers started. This was stimulated by
+statements of Siemens and German Railway that any future computer failure
+will require to again stop the whole switching system to avoid any safety
+hazard. This is very bad news as the same system is being installed at
+another site connecting main railway station (Hauptbahnhof) with Berlin and
+controlling all goods transport originating and ending in Hamburg harbour
+(Europes 2nd largest container harbour). [Another reason for discussing
+overreliance are recent bad news on Airbuses, most of which are finally
+assembled in Hamburg-Finkenwerder's Airbus factories, with many operational
+Airbuses being maintained in Lufthansa's Hamburg workshops].
+
+The Altona Railway software glitch is another example where (for purposes of
+rationalisation) all customers become fully dependent of a computerized
+system.  Moreover, the few remaining switchmen will NOT be able to
+understand, in critical situations, why the computer system behaves as it
+does, and they will ONLY be able to switch off the whole system as NO manual
+mode is foreseen!
+
+Klaus Brunnstein (Univ Hamburg, 17 March 1995)
+
+------------------------------
+
+Date: Mon, 20 Mar 95 11:24:48 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Credit-Card Fraud (NYT via Edupage 19 Mar 1995)
+
+Security experts are disdainful of the low level of programming talent
+displayed in the pirate program Credit Master, which generates phony credit
+card numbers.  The program works by mimicking the simple "checksum"
+algorithm that creates the last four digits of a credit card; the checksum
+formula was developed merely to prevent data-entry errors and never meant to
+be high-tech security screening.  Four college students were arrested last
+week in Nassau County, NY, charged with using a program to generate false
+credit numbers and order thousands of dollars of goods.  The students then
+had the merchandise shipped to addresses staked out by the police -- a
+mistake almost as bad as using cheap programs.  (The New York Times, 19 Mar
+1995, p.18)
+
+------------------------------
+
+Date: Sat, 18 Mar 1995 08:48:33 -0500
+From: Mark Kruse <kruse@sector.kodak.com>
+Subject: Keeping buses on time plus a little eavesdropping
+
+Seen in the Washington Post:
+
+  As part of a war on traffic congestion, Montgomery County Maryland
+  transit officials plan to use the satellite <GPS - "one of the same
+  satellites the Pentagon used during the Persian Gulf War"> to keep buses
+  on time and increase safety for Ride-On's 58,000 weekday riders.  ...
+  When the system is begun countywide later this year, county technicians
+  will be able to change traffic signals to green as a tardy bus approaches
+  an intersection.  When people call to ask for bus information, a county
+  transit employee will be able to give them the precise time a buss will
+  arrive instead of when it is scheduled to be there.  In an emergency,
+  police will know the bus's exact location and will be able ***to listen in
+  over a microphone installed in the bus."
+
+I see two risks here:
+
+- If riders become dependent on calling in for information on EXACTLY when
+  a bus will be at a particular location, the transit authority will soon
+  be overloaded with phone calls and thus probably making it more difficult
+  for people calling for other reasons to get through (a relatively minor
+  risk given that this is probably not a critical service phone number?)
+
+- What are the criteria for when the police are allowed to listen in over
+  the microphone installed in the bus?  Slowly, but surely, 1984 is approaching
+  (or is time just flowing backwards :-)
+
+Mark W. Kruse
+
+------------------------------
+
+Date: Sat, 18 Mar 1995 10:29:11 -0500
+From: rj.mills@pti-us.com (Dick Mills)
+Subject: Does Internet threaten civilization?
+
+An attribute of the Internet it that it makes one-to-many personal
+communication more effective and more resistant to censorship than any prior
+form of communication. Therein lies some risks.  I am not sure which are
+most real. Consider the following.
+
+It seems that everyone from Scientologists, to United States senators, to
+Swedish journalists, to the National Security Agency, to holocaust
+survivors, wants to censor or constrain the net in some way. Indeed, nearly
+everyone on this planet seems to believe that we must, at all costs, censor
+some other person or group. If net censorship proves to be impossible, then
+the logical conclusion is that everyone, ourselves included, will come to
+oppose the net. The continued existence of the net must therefore be at
+risk; right?
+
+Can it be that the stability of civilization is dependent on the natural
+barriers to effective one-to-many communication?  Without the barriers,
+criminals, pranksters, demagogues, exploiters, fanatics, the politically
+incorrect, and the religiously incorrect, will all be able to do their thing
+more effectively.  Society becomes more vulnerable, to hoaxes, scams, spams,
+diatribes, sensationalism, and manipulation. Many laws may become
+unenforceable. Is it the net that threatens civilization?
+
+More speculative, but perhaps more likely, is the eventual development of a
+number of object-oriented virus-like agents able to police the net for us.
+Call it distributed RoboCop. The risk then will be to prevent it from
+becoming RoboSoverign.  :-/
+
+Dick Mills, Power Technologies, Inc., P.O. Box 1058 Schenectady, NY 12301-1058
+  rj.mills@pti-us.com     phone +1(518)395-5154      fax   +1(518)346-2777
+
+------------------------------
+
+Date: Fri, 17 Mar 1995 17:25:57 -0600
+From: pdbrown@mindspring.com (Phil Brown)
+Subject: Latent risks of cost-benefit analysis
+
+Recently there was an article in the Atlanta Journal-Constitution about an
+association of pediatricians (I forget the group's exact name offhand) that
+was lobbying for a complete ban on advertising for alcoholic beverages,
+citing health and economic benefits.  What makes this issue pertinent for
+Risks readers, I believe, is the risk of rampant cost-benefit analysis.  The
+problem is not so much with the technique itself, which I have often used
+with great success, as it is with the slippery slope people find themselves
+on once they try to apply it to social situations and human behavior that
+have strong intangible elements.  Alcohol consumption is a case in point.
+Even in my surliest moods toward purveyors of political correctness, I would
+agree that alcohol can carry a heavy social burden.  So what?  Societies are
+good at identifying and labelling (and then castigating!) perceived burdens.
+While not a raving libertarian, I am disturbed by forces that trot
+"scientific method" out on a leash (e.g. cost-benefit analysis) to determine
+social "costs" and "benefits" and use the results to try and dictate
+behavior.
+
+I understand that proponents of the Republican Contract With America
+want to use cost-benefit analysis as a tool to determine when environmental
+regulation is appropriate.  This is a seductive idea on its face, and
+speaks to the same general problem of trying to reduce human value
+judgments to the level of dollars and cents.  The yin and yang of
+individual right versus social responsibility is ancient and irremediable.
+Where one triumphs the other suffers.  Yet the human spirit dwells most
+often in the wasteland between libertarianism and communitarianism, in
+my humble opinion.  As much as the engineering side of my nature wants to
+believe we all benefit from being able to analyze social issues in the
+mathematical realm, mathematics is about probing the edges of problems
+and not about dwelling in the comfortable middle ground.
+
+I guess my real beef with cost-benefit analysis, at least as I have seen it
+practiced by social policy types, is that it skews in favor of social
+benefit, given that quantizing individual liberty is at best an ethereal
+exercise.  When confronted with a statistic such as one shouting out that
+"alcohol consumption costs the US in excess of $100 billion per year in
+illness, disability, and lost productivity", is one to assume that otherwise
+rational individuals are wantonly placing some tremendous burden on society
+with no commensurate return?  That's a statistic racing away from the center
+of any reasoned debate.
+
+We are shackling ourselves with tautologies, brought on by a desire
+to remove judgment from public discourse. Oppression flows from within.
+
+Phil Brown, Atlanta, GA  pdbrown@mindspring.com -or-  xstential1@aol.com
+
+------------------------------
+
+Date: Thu, 16 Mar 95 19:23:31 MET
+From: Peter Kaiser  16-Mar-1995 1925 <kaiser@heron.enet.dec.com>
+Subject: Re: Internet-Finland Privacy (Green, RISKS-16.92)
+
+Jon Green says about anon remailers that if "you use them illegally, you may
+well be identified.  Them's the breaks."
+
+Not so fast.  A friend of mine, a political activist of the 1960s, says of
+his political activities, that "I've been jailed several times, always for
+something I actually did.  But none of it was illegal."  And he points out
+that in court all the cases were either dismissed or found in his favor.
+
+So the risk of abuse is clear: you may be identified, and pursued by
+authority (or by the Church of Scientology) even if you have done nothing
+illegal.  This has a lot to do with the original point of this thread.
+
+___Pete  kaiser@acm.org  +33 92.95.62.97 FAX +33 92.95.50.50
+
+------------------------------
+
+Date: Fri, 17 Mar 95 17:44 PST
+From: ludemann@netcom.netcom.com (Peter Ludemann)
+Subject: Risks of doing date arithmetic early in the year without floating point
+
+The recent discussions of risks-of-dates (RISK-16.74, etc.) and Pentium
+floating point bugs reminded me ...
+
+Some years ago, I had to write a program to match the accounting
+records from the database server with those of the batch system.  The
+records were in different formats: the database server used the system
+clock and the batch system used day-of-year+hhmmss.
+
+The database vendor had provided a conversion routine which I happily
+used, only to discover that there were discrepancies of up to 3
+minutes between the two systems' records.  Eventually I determined
+that the database vendor's conversion routine was faulty.
+
+I quickly wrote some code in PL/I using double-precision floating
+point arithmetic (which gave me 55-bit precision, more than enough)
+and everything worked fine.  My code was only a few lines, compared
+with the pages of convolution that the vendor had provided (it was in
+assembler, emulating 48-bit integer arithmetic on a 32-bit system).
+
+The only reason I caught this error was that I happened to be writing
+the program near the end of the year: the conversion routine's error
+increased from almost nothing in January to about 3 minutes in
+December.  If I had written the code in January, I probably wouldn't
+have caught the error.  But the error probably wouldn't have existed
+in the first place if the conversion code had been written with
+floating point instead of integer arithmetic.
+
+- peter ludemann	ludemann@netcom.com
+
+------------------------------
+
+Date: Fri, 17 Mar 1995 17:53:49 -0500 (EST)
+From: fc@all.net (Dr. Frederick B. Cohen)
+Subject: Phone companies with wrong 555-1212 databases
+
+For the last 6 months, people trying to reach my company have been
+misdirected to the phone number of some poor woman whose family has had
+ever-increasing numbers of telephone calls for a company she has never heard
+of.  We finally talked to her today and found out that she has been
+inundated over the last few weeks as a result of articles in Newsweek and
+the Wall Street journal mentioning my company's name.
+
+She has been trying to get the phone company information operator to
+make the change since December of 1994, but they have repeatedly told
+her that her phone number was that of my company and they they could not
+change it for her.
+
+Finally, today, a reporter called me, told me of the problem he had in
+finding me, and started me down the path to track down this problem. 
+Several operators and phone companies later (two phone companies were
+involved here - and they don't talk to each other) I found out that
+neither company could change the listing - the other one had it.
+
+I got desperate and called the information operator (who had told me
+previously that they could not change these things).  She told me she
+would change it right away in both databases.
+
+So I called again a little bit later only to find the number had not
+been changed and that they could not change it except from the business
+office.  The supervisor (it was now after 5PM) tried to find someone in
+the business office to authorize the change.
+
+Meanwhile, my wife had convinced the poor woman whose family has been
+traumatized for the last 4 months to give people the new number by
+herself - there was a certain telephone company hatred comraderie
+between them - they both said that they had no problem believing that
+phone companies could screw up this badly.
+
+It is now the weekend, and I am assured by all parties that if I will
+only try this whole thing again next week sometime, it will be fixed in
+a jiffie.  I'm getting ready to call my lawyer.
+FC
+
+------------------------------
+
+Date: Sat, 18 Mar 1995 17:16:59 -0500 (EST)
+From: Frank C Ferguson <ferguson@eri.erinet.com>
+Subject: Re: The Manchurian Printer & Prodigy Spies on Users (RISKS-16.92)
+
+  ... Prodigy insisted that the copied data was the result of a software
+  bug, and it wasn't spying on its customers.  But fundamentally, if you use
+  a modem to access ..., there is no way to be sure that your computer isn't
+  spying on you while you surf the information highway."  [Simson Garfinkel]
+
+The above is another example of insufficient research.  There was and is no
+software bug.  When you delete a file in DOS, all you are deleting is the
+location of the file that is stored in the FAT (File Allocation Table).  The
+file itself remains on the disk until it eventually gets written over by new
+files.  Prodigy software reserves a "space" on your disk, the size of which
+is determined by you when you load their software.  They use this "space" to
+cache data that your computer needs to display information on your screen.
+Use of this space saves large amounts of time because if the data is already
+on your disk, then they don't have to waste time transferring it to you from
+a distant location.  Initially when this "space" is first allocated, there
+will be remnants of your old files in it.  Eventually, as more and more data
+is "cached" in this "space" all your old file info will be written over and
+no longer viewable.  When people became concerned, Prodigy offered free
+software that would erase all the users old files from that allocated space.
+They also allowed an independent software auditor to inspect their software
+to see if it was being used to upload the users files to Prodigy.  The
+Auditor reported that it was not written to do that.  That's not to say that
+it couldn't be.  Of course it could be.  But if you don't want to risk loss
+of privacy, then disconnect your modem, LAN, or any other comm link you may
+have.  Why?  Because any service could "sneak a peek", not just the ones you
+mentioned.  You obviously are at risk yourself since your address indicates
+that you are connected to the internet in some fashion.
+
+Frank C. Ferguson  ferguson@erinet.com
+
+------------------------------
+
+Date: Thu, 16 Mar 1995 10:24:21 PST
+From: Nancy Leveson <leveson@cs.washington.edu>
+Subject: Software System Safety Class, Nancy Leveson
+
+LOCATION AND DATE:  Seattle, Washington,  July 24-26 
+
+TEXT: N.G. Leveson, Safeware: System Safety and Computers, Addison-Wesley, 
+1995.
+
+DESCRIPTION: This class will focus on the unique problems involved in 
+building safety-critical software and describe some techniques that can be
+used to enhance the safety of software-controlled systems.  Emphasis will 
+be on procedures and techniques that are practical enough to be applied to 
+projects today. Real-project experiences with these techniques in different
+application areas will be described.   The class size will be limited to 30
+in order to encourage interaction.  
+
+  Part 1 (Day 1):  Management of Safety-Critical Software Projects:
+     including organizational, managerial, and technical risk factors,
+     human error and safety, system and software process and tasks, role
+     of management, setting up a safety organization, setting up a safety
+     information system, cost and resource requirements.
+
+  Part 2 (Days 2 and 3): Technical Aspects:
+     including formal models of accidents, hazard analysis, software 
+     hazard analysis, software requirements completeness and analysis, 
+     principles of safe design, safe design of the human-machine interface,
+     safety testing and software fault tree analysis (verification of safety).
+
+The two parts may be taken separately or together.  
+
+INSTRUCTOR:  Nancy Leveson is Boeing Professor of Computer Science and 
+Engineering at the University of Washington (and Adjunct Professor at
+the University of British Columbia).  Dr. Leveson is a founder of the
+field of software safety and has been doing research and consulting on this
+topic since 1980.  Before becoming a professor, she was a system engineer 
+for IBM.  Dr. Leveson consults widely on safety-critical systems for both 
+government and industry.  She has worked with aerospace, nuclear power, 
+transportation, aircraft, and medical systems.  
+
+Dr. Leveson is the Editor-in-Chief of IEEE Transactions on Software 
+Engineering, on the editorial board of the Journal of Reliability Engineering
+and System Safety, an elected member of the Board of Directors of the Computing
+Research Association, and an appointed member of the NAS/NAE National 
+Research Council Commission on Engineering and Technical Systems.  She 
+recently completed a study of the Space Shuttle Flight Software Processes 
+for NASA and the National Research Council and is currently on a National
+Research Council committee to establish criteria for digital instrumentation 
+and control in nuclear power plants.
+
+For Additional Information Contact Dr. Nancy Leveson, 206-685-1934
+leveson@cs.washington.edu
+
+------------------------------
+
+Date: Sun, 19 Mar 1995 23:03:43 -0800
+From: fboi@netcom.com (Vinn Beigh)
+Subject: First Bank of Internet (FBOI) Opens
+
+___/\___
+_|_()_|_               A N N O U C E M E N T
+
+For immediate release:                  Contact: fboi@netcom.com
+Monday, March 20, 1995                  Subject of 'info' for details
+                                        Direct questions to Vinn K. Beigh
+
+The First Bank of Internet, FBOI, is announcing the initiation of
+transaction processing services for Internet electronic commerce.  
+Purchases over the Internet can now be made without exposing personal
+credit card information.  Vendors can now sell products on the Internet
+without the restrictions imposed by credit card use.
+
+Other Internet purchase procedures require personal credit card information.  
+Those proceedings will be monitored by thousands of people all over
+the world.  Some will attempt to either decode the credit card information
+or impersonate the customer in future transactions.  
+
+The alternative to personal credit cards for electronic commerce is
+based on an FBOI procured Visa (tm) Automated Teller Machine (ATM) card.
+The card is prepaid, PIN protected, replaceable, disposable, and good 
+at over 200,000 Visa/PLUS (tm) ATMs in 83 countries.  
+
+The safety of FBOI is ensured because access to ATM funds without 
+possession of both the ATM card and the Personal Identification Number 
+(PIN) is not possible.  ATM cards are also better than credit cards because
+their purchase does not require the personal, financial, and employment 
+background of the consumer.
+
+The Visa ATM card is not a credit card.  It is cash.  The ATM card 
+will be used as a checking account.  Using an ATM card allows consumers 
+to set aside dedicated funds for Internet data purchases.  It provides 
+a safe, secure way to transfer cash from consumers to producers.  In
+addition, consumers can reclaim their funds at any time using an ATM.
+
+A check/invoice procedure is used that consumers will find familiar.  
+The consumer first places an order with a vendor.  The consumer then 
+sends to the vendor or FBOI an e-mail 'check' for the purchase of the 
+program/file/data product.  The vendor sends FBOI an e-mail 'invoice'.
+FBOI will reconcile the transaction and send e-mail transaction receipts 
+to both the vendor and customer.  Cash will be taken from the customer 
+ATM account and credited to the vendor for later payment.  FBOI charges 
+a 5% vendor commission per transaction.
+
+Producers of software, information collections, newsletters, graphics, 
+and other data products can use FBOI services for the sale of their 
+products.   These vendors can sell their products for prices that would 
+be too low for credit card transactions.  Subscription services that 
+charge an up-front fee for one time access to data depositories and 
+services also can participate. 
+
+Vendors will benefit from a very large consumer base because this 
+global solution works just as well outside the U.S. as within the U.S..
+The Visa ATM network is worldwide.  Consumers will benefit from a very
+large vendor base because software produced in non-North American 
+countries can be offered for sale much easier than now.
+
+The worldwide producers on the Internet can use FBOI services without the
+expense of owning or renting a dedicated Internet server or a World-Wide 
+Web site.  E-mail is the cheapest and simplest of all Internet services. 
+Large Internet commercial services will soon be starting that provide only 
+for the on-line purchase of catalog products.  It will not be possible
+for the individual producer to sell a data product using those services.  
+Those services will collect the consumers credit card information in 
+advance because of Internet security problems.
+
+FBOI transmits no sensitive information over the Internet and prevents
+forgery and impersonation by using Pretty Good Privacy, PGP (tm), 
+software for all transactions.  This freeware provides excellent 
+authentication and anti-alteration security.
+
+In addition to the unsecured nature of the Internet, consumers should be 
+hesitant giving out their credit card information to vendors of unknown 
+credibility.  Tracking is much harder on the Internet than magazine 
+direct marketing.  Also, it is not the same as mail order merchandise 
+since U.S. Postal Service and Federal Trade Commission mail order laws 
+do not apply to the Internet.
+
+For high volume, low cost, transactions directly between producers and 
+consumers on the Internet contact FBOI.
+
+Further information can be obtained from The First Bank of Internet
+by sending an e-mail message with the subject "info" to <fboi@netcom.com>. 
+
+Visa is a trademark of Visa International Service Association.
+PLUS is a trademark of Plus System, Inc.
+PGP and Pretty Good Privacy are trademarks of Philip Zimmermann.
+The First Bank of Internet (tm) is not a lending institution, and is not
+chartered.
+
+------------------------------
+
+Date: 6 February 1995 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  U.S.
+ users on .mil or .gov domains should contact <risks-request@pica.army.mil> 
+ (Dennis Rears <drears@pica.army.mil>).  UK subscribers please contact 
+ <Lindsay.Marshall@newcastle.ac.uk>.  Local redistribution services are 
+ provided at many other sites as well.  Check FIRST with your local system or 
+ netnews wizards.  If that does not work, THEN please send requests to 
+ <risks-request@csl.sri.com> (which is not yet automated).  SUBJECT: SUBSCRIBE
+ or UNSUBSCRIBE; text line (UN)SUBscribe RISKS [address to which RISKS is sent]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+ All other reuses of RISKS material should respect stated copyright notices,
+ and should cite the sources explicitly; as a courtesy, publications using
+ RISKS material should obtain permission from the contributors.  
+
+ RISKS can also be read on the web at URL http://catless.ncl.ac.uk/Risks 
+   Individual issues can be accessed using a URL of the form
+   http://catless.ncl.ac.uk/Risks/VL.IS.html 
+   (Please report any format errors to Lindsay.Marshall@newcastle.ac.uk)
+
+ RISKS ARCHIVES: "ftp unix.sri.com<CR>login anonymous<CR>YourName<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.
+ Issue J of volume 16 is in that directory: "get risks-16.J<CR>".  For issues
+ of earlier volumes, "get I/risks-I.J<CR>" (where I=1 to 15, J always TWO 
+ digits) for Vol I Issue j.  Vol I summaries in J=00, in both main directory
+ and I subdirectory; "bye<CR>"  I and J are dummy variables here.  REMEMBER,
+ Unix is case sensitive; file names are lower-case only.  <CR>=CarriageReturn;
+ UNIX.SRI.COM = [128.18.30.66]; FTPs may differ; Unix prompts for username and
+ password.  Also ftp bitftp@pucc.Princeton.EDU.  WAIS repository exists at
+ server.wais.com [192.216.46.98], with DB=RISK (E-mail info@wais.com for info)
+   or visit the web wais URL http://www.wais.com/ .
+ Management Analytics Searcher Services (1st item) under http://all.net:8080/
+ also contains RISKS search services, courtesy of Fred Cohen.  Use wisely.
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.93 
+************************

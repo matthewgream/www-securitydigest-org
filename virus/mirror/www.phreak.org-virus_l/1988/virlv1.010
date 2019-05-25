@@ -1,0 +1,246 @@
+VIRUS-L Digest            Wednesday, 16 Nov 1988        Volume 1 : Issue 10
+
+Today's Topics:
+Cryptoviruses
+Viruses in VM/CMS
+Re: Security@Aim.Rutgers.Edu -- has anyone seen it?
+hiring virus writers and evil hackers
+ramifications
+Viruses in Military Computers
+
+---------------------------------------------------------------------------
+
+Date:  Tue, 15 Nov 88 19:22 EST
+From:  Lynn R Grant <Grant@DOCKMASTER.ARPA>
+Subject:  Cryptoviruses
+
+There are several crypto packages on the market that implement the DES
+algorithm on PCs.  A couple that come to mind are "Codename: Password"
+and I believe Sidekick (I may have the name wrong).  I have been
+thinking (and worrying) lately about how a virus could exploit these
+packages to make itself very painful to remove.  Here is how it would
+work:
+
+The virus would go along, propagating itself in the normal way, but it
+would recognize when it had attached itself to the crypto program.  It
+would then modify the encryption tables slightly in a reversable way,
+so that encrypted things could be decrypted (in DES, the IP and IP-1
+tables would probably be the most appropriate targets).  It would then
+have to know if files were encrypted the old (good) or new (bad) way.
+If there is some kind of a crypto header in the file, it could stuff
+the information in an unused bit; or maybe it could do it based on
+date.
+
+Anyway, if you decrypted an old file, it would work fine, and if you
+encrypted a new file then decrypted it, it would work fine.  But
+suppose you discovered the virus, and re-installed all your software
+to ensure that your system was clean.  Suddenly all the files you had
+encrypted after the initial attack of the virus would be garbage.  If
+you put back the virus-laden version of the crypto package, you could
+get at your files, but the virus could continue to spread.
+
+Of course, on a system where gurus were available, it would be
+possible to compare the infected and uninfected versions of the crypto
+package, disassemble the changes, and come up with the necessary zaps
+to make a crypto package that would decrypt the damaged files without
+propagating the virus.  A system with only non-technoid users would
+not have this option.  (And if the virus chose its modifications to
+the crypto tables randomly when it first infected the crypto package,
+it would make it hard for a central support organization, or the
+VIRUS-L forum, or whatever, to provide all the crypto users with
+patches to decrypt the damaged files.)
+
+I must admit that most of my experience with computers and DES has
+been on large mainframes (IBM MVS and VM), so I may have overlooked
+something that would make this attack less of a concern, but if I
+have, I don't see it.  (I guess that's what overlooking's all about.)
+
+    Lynn Grant
+    Technical Consultant
+    Computer Associates International, Inc.
+
+Disclaimer:  These are my opinions, not those of my employer.
+
+------------------------------
+
+Date: 16 November 1988, 01:00:06 ECT
+From: Stig Hemmer                                    HEMMER   at NORUNIT
+Subject: Viruses in VM/CMS
+
+This discussion started in ETHICS-L, but I think it should be
+continued in VIRUS-L.
+
+Somebody mentioned the Christmas Card 'virus'. I would just like to
+mention the really BIG security hole in VM/CMS. The CCv did not use
+this hole, but if it had it would have been MUCH worse.
+
+VM/CMS has a 'feature' that when a program returns to toplevel
+anything left on the program stack will be parsed as commands. Pretty
+useful sometimes but it makes possible some hideous bugs and security
+holes.
+
+RECEIVE EXEC has such a bug, if a spoolfile is of incorrect format
+RECEIVE may leave part of it on the stack upon exit. SENDFILE or NOTE
+will never make such a file of course, but more low level commands
+make it possible. I don't know any more details (and wouldn't publish
+them anyway), but the cure is simple:
+
+Insert a MAKEBUF in the start and a DROFBUF in the end(s) of RECEIVE.
+(Be careful though not to change the effekt of the STack option.)
+Everybody should use M/D in their programs as it makes them infinitely
+more robust.
+                                  -Tortoise
+
+PS: DISCARD uses RECEIVE but I think (and hope!) that it is more
+robust.
+
+------------------------------
+
+Date: Tue, 15 Nov 88 21:16:19 EST
+From: msmith@topaz.rutgers.edu (Mark Robert Smith)
+In-Reply-To: "shafferj@amethyst.bucknell.edu"'s message of Mon,
+   14 Nov 88 23:16:30 est
+Subject: Re: Security@Aim.Rutgers.Edu -- has anyone seen it?
+
+Hobbit, who moderates that list, has been busy working on the big move
+from the vax AIM.RUTGERS.EDU to a Sun PYRITE.RUTGERS.EDU, which is now
+aliased to AIM.  He says that the list will re-awaken when he gets
+done with the move.  Mark
+
+- ----
+
+Mark Smith (alias Smitty) "Be careful when looking into the distance,
+RPO 1604; P.O. Box 5063  that you do not miss what is right under your nose."
+New Brunswick, NJ 08903-5063    {backbone}!rutgers!topaz.rutgers.edu!msmith
+msmith@topaz.rutgers.edu          R.I.P. Individual Freedoms - 11/8/88
+
+[Ed. Thanks for the update!]
+
+------------------------------
+
+Date:     Tue, 15 Nov 88 15:17:10 EST
+From:     Jefferson Ogata (me!) <OGATA@UMDD>
+Subject:  hiring virus writers and evil hackers
+
+Not all evil hackers are meet for hiring.  Morris at any rate would
+not be a prime candidate, despite his successful attack, because the
+attack mode was not the result of his own research, nor was his code
+particularly excellent.  Apparently the debug hole was revealed to him
+by other sources, so there is no evidence he is a wonderfully clever
+hacker.  Burleson also is not a candidate; he simply planted an evil
+program in his former employer's computers.  Once again, no evidence
+of extreme cleverness.
+
+Evil hackers can be hired by major companies if the following two
+constraints are met: the hacker has, through his own initiative and
+intellect, explored security holes or bugs that were not widely known;
+the hacker himself has not become famous.
+
+The first constraint simply means that there is no practical reason
+for a company to take any risk with someone who ain't that smart.
+
+The second constraint is very important, and is the reason why you
+won't see publicly known hackers getting great security jobs.
+Ignoring this constraint would promote the image that anyone could get
+a great job by being an evil hacker.  There is apparently enough
+incentive for this kind of behavior already; if employers increased
+the incentive, they would merely be complicating their own hiring
+process.
+
+One other reason why Morris hasn't got a chance at getting hired is
+that the media has portrayed him essentially as a wimp.  Everything
+they've described about him implies that he's a man with no balls.
+Real evil hackers have got to have balls.
+
+I wish people would stop trying to inject morality and ethics into the
+question of whether hackers should get good jobs.  The question is not
+'should'; it is 'will', and morality has nothing to do with it; it's
+called economics.  Part of being a successful business is knowing when
+to take a risk.  Ethics are only an issue when the public finds out
+about it.
+
+- - Jeff Ogata
+
+------------------------------
+
+Date:         Tue, 15 Nov 88 18:39:14 EST
+From:         "Homer W. Smith" <CTM@CORNELLC>
+Subject:      ramifications
+
+
+     With all due respect, Mr Doug Hunt could not be more wrong.
+
+     Those of us who have some small access to memories of our past
+lives have learned that people do to others what was done to them.
+
+     People who fervently believe that criminals should be executed
+were criminals themselves in a past life and were executed.  In this
+life they are self righteous upstanding citizens who have 'never lived
+before and would NEVER have done such a thing.'
+
+     When we incarcerate people or ruin their lives for 'crimes
+against the empire' we punish them and satisfy our hurts by doing so,
+and maybe we scare those who would follow in their footsteps, but we
+always fail to extract the amends from such people that they owe us
+and must give in order to be rehabilitated.
+
+     I would be proud to have Mr. Morris as a security expert for our
+nation as long as the proper amends is allowed to take its course.
+Amends does not mean I break your toy because you broke my toy.  Two
+broken toys is two broken toys.  Then we BOTH owe amends to society.
+
+     The road to hell is NOT paved with good intentions.  That is just
+Christian/Creationist double junk and they know it.  THESE people who
+rant and rave in such a way are a FAR GREATER danger to our national
+security than Mr. Morris.  They are just jealous as hell that Mr.
+Morris is brighter than they are and could undermine their computer
+defenses while scribbling on napkins over morning coffee.
+
+     God does not approve of a society that produces criminals or can
+not handle them once they produce themselves.  God can handle them.
+Why can not we?  Have we bought the line that some people SHOULD not
+be handled?  Or that some people CAN NOT be handled?  Or that God does
+not WANT us to handle them?  Rubbish.  Especially for someone like
+Morris who is clearly very far from the pit.  Probably farther from
+the pit than the American Government themselves in their dealings with
+the world at large.
+
+     Why punish when you can salvage?  Surely Morris is salvagable.
+(Don't tell me I am a bleeding heart Liberal.  I voted for Bush.  If
+you want to worry about viruses, worry about HIM.)
+
+     Morris needs to make amends.  Not by having his toys broken
+because he broke ours, but by what ever means necessary so that we can
+feel resolved about the matter and in some sense be glad it happened
+with no lingering resentments or bitterness, and most importantly in a
+way that society can feel safe trusting Morris with the run of the
+land again.  [Ed. Any (hypothetical, of course) suggestions?]
+
+     Placing Morris in jail or ruining his career may satisfy the
+stone cold hearts of some but it wont make a better land for any of
+us.  The Eternal NAME is not SHAME.
+
+
+Homer Wilson Smith
+
+Hubbard Fractal Research Laboratory
+Cornell National Supercomputer Facility
+
+------------------------------
+
+Date:         Tue, 15 Nov 1988 15:30:05 EST
+From:         Gabriel Basco <GJB100C@ODUVM>
+Subject:      Viruses in Military Computers
+
+I was wondering. There might be a possiblity there is a bug in one of
+the fire-control programs that might just start working when a real
+threat appears. Is it possible and can be done against it?
+
+[Ed. I would think that's what they do drills for.  In a (properly
+planned) drill, the computer (or other controlling agent) would truly
+believe that it is the real thing.  Comments?]
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

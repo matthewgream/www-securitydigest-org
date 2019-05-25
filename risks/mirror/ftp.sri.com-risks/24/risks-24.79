@@ -1,0 +1,620 @@
+precedence: bulk
+Subject: Risks Digest 24.79
+
+RISKS-LIST: Risks-Forum Digest  Thursday 16 August 2007  Volume 24 : Issue 79
+
+ACM FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+Peter G. Neumann, moderator, chmn ACM Committee on Computers and Public Policy
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <http://www.risks.org> as
+  <http://catless.ncl.ac.uk/Risks/24.79.html>
+The current issue can be found at
+  <http://www.csl.sri.com/users/risko/risks.txt>
+
+  Contents:
+Computer glitch holds up 20,000 at LAX (Paul Saffo)
+LAX airport delay cause (David Magda)
+U.S. legal time changing to UTC (Rob Seaman)
+Source code at issue in drunk test (Ted Nelson)
+Toll data nabs unfaithful spouses (Jonathan A. Marshall)
+Voting excerpts from CRYPTO-GRAM (Bruce Schneier)
+Computer-generated names (PGN)
+Re: User-hostile behavior (Alexander Klimov)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Sun, 12 Aug 2007 06:37:52 -0700
+From: Paul Saffo <paul@saffo.com>
+Subject: Computer glitch holds up 20,000 at LAX
+
+More than 20,000 international passengers were stranded for hours at Los
+Angeles International Airport on Saturday, 11 Aug 2007, waiting on airplanes
+and in packed customs halls while the malfunctioning of a computer system
+that determined who would be subject to secondary searches prevented
+officials from processing travelers entering the U.S.  The system was down
+from 2pm until just after midnight, and the final passengers were not
+cleared until 3:50am -- except for six more requiring human intervention.
+As of 3am, some parking lots were still gridlocked.
+
+"This is probably one of the worst days we've had.  I've been with the
+agency for 30 years and I've never seen the system go down and stay down for
+as long as it did," said Peter Gordon, acting port director for customs.
+[Source: Computer glitch holds up 20,000 at LAX; Passengers are delayed for
+hours on planes and in terminals after a customs processing system goes
+down.  Karen Kaplan, Rong-Gong Lin II and Ari B. Bloomekatz, *Los Angeles
+Times*, 12 Aug 2007; PGN-ed]
+http://www.latimes.com/news/local/la-me-lax12aug12,0,5727961.story?coll=la-home-center
+
+------------------------------
+
+Date: Wed, 15 Aug 2007 14:12:14 -0400 (EDT)
+From: dmagda@ee.ryerson.ca
+Subject: LAX airport delay cause
+
+According to the *Los Angeles Times* (and an Associated Press article), the
+issue that caused thousands of travelers to be delayed at LAX was caused by
+a faulty network interface card (NIC) on a single machine:
+
+> The card, which allows computers to connect to a local area network,
+> experienced a partial failure that started about 12:50 p.m. Saturday,
+> slowing down the system, said Jennifer Connors, a chief in the office of
+> field operations for the Customs and Border Protection agency.
+>
+> As data overloaded the system, a domino effect occurred with other
+> computer network cards, eventually causing a total system failure a
+> little after 2 p.m., Connors said.
+
+http://www.latimes.com/news/nationworld/nation/la-me-lax15aug15,1,6802259.story?coll=la-headlines-nation
+http://www.lompocrecord.com/articles/2007/08/15/ap-state-ca/d8r1dhl00.txt
+
+I've noticed on more than one occasion that often when the primary system
+breaks, and then fail-over occurs, the secondary system can't handle the
+backlog of requests.
+
+When setting up new systems, two identically configured units are usually
+ordered and configured.  Perhaps the secondary units should be more powerful
+as standard practice?  Or the two should always run in parallel/round-robin?
+This way you know things are working on both, and if one goes away the
+second one is still around (in a known working state).
+
+------------------------------
+
+Date: Mon, 13 Aug 2007 02:06:52 -0700
+From: Rob Seaman <seaman@noao.edu>
+Subject: U.S. legal time changing to UTC
+
+H.R. 2272: the "21st Century Competitiveness Act of 2007" has been signed
+into law:
+
+  http://www.govtrack.us/congress/bill.xpd?bill=h110-2272
+
+One of its provisions has changed the legal basis of U.S. timekeeping from
+mean solar time to UTC (Coordinated Universal Time).  UTC (in its current
+form) has existed since the early 1970s, relying on the issuance of leap
+seconds every year or two to remain within 0.9 SI seconds of Greenwich Mean
+Time.  Thus, if leap seconds continue, the effect of changing from mean
+solar time to UTC (overlaid by the standard time zones and varying Daylight
+Saving Time rules) is small for most purposes.
+
+However, since 1999, (feed://www.mail-archive.com/leapsecs@leapsecond.com)
+the LEAPSECS forum has existed precisely to discuss the proposed elimination
+of leap seconds -- and thus the divergence of all civil and legal clocks
+from time as kept by the sun in the sky.  With the passage of H.R. 2272, the
+decision now rests not with the U.S. Congress, but with Working Party 7A of
+the Radiocommunication Sector of the International Telecommunication Union
+(ITU-R WP-7A):
+
+  http://www.itu.int/pub/R-QUE-SG07.236
+
+Much of the LEAPSECS discussion has revolved around the large Y2K-like
+resource drain that the international astronomical community would face
+should UTC be redefined so as to no longer track mean solar time -- not only
+data structures would change, but also algorithms and runtime services.  Now
+that UTC is legal time for the U.S., one wonders what similar expenses other
+sectors would face.
+
+It is straightforward to show that civil timekeeping must track mean solar
+time closely:
+
+1) Time kept by Mother Earth (mean solar time) differs from that kept by
+   atomic clocks due to slowing caused by lunar tides.  (There are many
+   other periodic and aperiodic effects, but the tidal transfer of angular
+   momentum accumulates secularly over long periods.)
+
+2) Leap seconds are issued to compensate for the accumulation of a few
+   milliseconds per day due to slowing that has already occurred, i.e.,
+   2ms/day times 500 days would be one leap second even in the absence of
+   further tidal effects.  The solar day itself lengthens by just a few SI
+   milliseconds per century.
+
+3) With no leap seconds, day would literally turn into night over a few
+   thousand years - i.e., this would be a redefinition of the much more
+   fundamental concept of a "day".
+
+4) There is a notion of embargoing leap seconds 3600 at a time into leap
+   hours as a kind of unfunded mandate placed on our N-great grandchildren.
+   Even those parties agitating for the cessation of leap seconds agree that
+   eventually they must still be released in such a larger jump.
+
+5) A larger jump would be more disruptive than a smaller jump, therefore it
+   cannot be tolerated as frequently.
+
+6) Pick a period of time over which a jump of such an amplitude would be
+   deemed too frequent.  I suspect we could agree that one per century is
+   too many, but for the sake of argument let's specify the looser
+   constraint of a maximum of one leap hour per decade.
+
+7) Simply divide.  One hour per ten years = 3600 SI seconds per 3652 days.
+
+QED.  Civil time must track mean solar time to better than one SI second per
+day.  (In actuality, much better than one second.)
+
+The fundamental challenge for precision timekeeping is that there are two
+flavors of time: 1) the steady cadence of atomic clocks, and 2) the
+wondering orientation of the Earth in space.  A "second" is a unit with two
+definitions that are often conflated.  A second is either 1/86400 of a day,
+or a second is the SI unit.  In fact, the name first proposed for the SI
+unit was the "essen", after Louis Essen, a pioneer timekeeper.  Much
+confusion would have been saved if only this name had been chosen.
+
+Q: What about apparent versus mean solar time?
+A: A red herring.  The Earth spins very regularly with respect to the stars.
+   Mean solar time is simply sidereal time offset by a little under four
+   minutes daily to account for the day "lost" each year from lapping the
+   Sun.  That sundials run fast or slow at different times of year has
+   nothing to do with our clocks.  People do care, however, whether the sun
+   is up at midnight in populated latitudes.
+
+Q: Surely there have been professional meetings on this topic?
+A: Yes, Torino in 2003. (http://www.gfy.ku.dk/~iag/ecag05doc/torino_coll.pdf)
+   The consensus was to leave UTC alone and that any civil timescale without
+   leap seconds should be called "TI" (International Time in the French
+   acronym).  The ITU appears to have rejected this position.
+
+Q: What's happened recently?
+A: NASA has proposed a fall back recommendation making GPS time (with no
+   leap seconds) a standard interval time scale for precision timekeeping
+   projects, while leaving UTC alone:
+
+http://ussg7.org/documents/fact%20sheet%20modified%20and%20proposed%20new%20Recommendation.doc
+
+(This writer supports this recommendation.)
+
+A couple of good references for leap second and general UTC information:
+
+  http://www.ucolick.org/~sla/leapsecs
+  http://leapsecond.com
+
+My apologies for the length of this Risks submission.  Confusion is often
+rife in even simple timekeeping applications.
+
+Rob Seaman, National Optical Astronomy Observatory, Tucson, AZ
+
+  [Considering the plethora of calendar-clock-related cases reported
+  in RISKS, this seems worthy despite its length.  PGN]
+
+------------------------------
+
+Date: August 12, 2007 4:16:34 PM EDT
+From: Ted Nelson <tandm@xanadu.net>
+Subject: Source code at issue in drunk test (via Dave Farber's IP)
+
+This is like the voting-machine thing: citizen concern over what's inside
+the boxes we live with.
+
+An attorney for a Minnesota man accused of drunken driving says he doesn't
+think the manufacturer of a breathalyzer will meet a court-imposed deadline
+of August 17 to turn over its source code.
+
+If that happens, his client could go free.
+
+As CNET News.com reported earlier this week, the Minnesota Supreme Court
+ruled late last month that source code for the Intoxilyzer 5000EN, made by a
+Kentucky-based company called CMI, must be handed to defense attorneys for
+use in a case involving charges of third- degree DUI against a man named
+Dale Lee Underdahl. CMI's historic resistance to such demands has led to
+charges being dropped in at least one case outside of Minnesota.  ...
+
+http://news.zdnet.com/2100-1009_22-6202038.html
+
+Theodor Holm Nelson, Founder, Project Xanadu; Visiting Fellow, Oxford
+Internet Institute; Visiting Professor, University of Southampton
+
+IP Archives: http://v2.listbox.com/member/archive/247/=now
+
+------------------------------
+
+Date: Fri, 10 Aug 2007 15:59:18 -0400
+From: "Jonathan A. Marshall" <marshall_mail@yahoo.com>
+Subject: Toll data nabs unfaithful spouses
+
+Adulterers, beware: Your cheatin' heart might be exposed by E-ZPass.
+Seven of the 12 E-ZPass states in the U.S. Northeast and Midwest provide
+toll records to to court orders in criminal and civil cases.  Four of those
+states (including NJ and PA) allow release only in criminal cases.
+[Source: *Star-Ledger* by The Associated Press, 10 Aug 2007; PGN-ed]
+http://www.nj.com/news/index.ssf/2007/08/toll_data_nabs_unfaithful_spou.html
+
+------------------------------
+
+Date: Wed, 15 Aug 2007 03:34:56 -0500
+From: Bruce Schneier <schneier@SCHNEIER.COM>
+Subject: Voting excerpts from CRYPTO-GRAM
+
+   [Note: This item has been PGN-excerpted with Bruce's permission.  PGN]
+
+                  CRYPTO-GRAM
+                August 15, 2007
+               by Bruce Schneier
+                Founder and CTO
+                 BT Counterpane
+              schneier@schneier.com
+             http://www.schneier.com
+            http://www.counterpane.com
+
+A free monthly newsletter providing summaries, analyses, insights, and
+commentaries on security: computer and otherwise.
+For back issues, or to subscribe, visit
+<http://www.schneier.com/crypto-gram.html>.
+
+You can read this issue on the web at
+<http://www.schneier.com/crypto-gram-0807.html>.  These same essays
+appear in the "Schneier on Security" blog:
+<http://www.schneier.com/blog>.  An RSS feed is available.
+
+      Assurance
+
+Over the past several months, the state of California conducted the most
+comprehensive security review yet of electronic voting machines. People
+I consider to be security experts analyzed machines from three different
+manufacturers, performing both a red-team attack analysis and a detailed
+source code review. Serious flaws were discovered in all machines and,
+as a result, the machines were all decertified for use in California
+elections.
+
+The reports are worth reading, as is much of the commentary on the
+topic. The reviewers were given an unrealistic timetable and had trouble
+getting needed documentation. The fact that major security
+vulnerabilities were found in all machines is a testament to how poorly
+they were designed, not to the thoroughness of the analysis. Yet
+California Secretary of State Debra Bowen has conditionally recertified
+the machines for use, as long as the makers fix the discovered
+vulnerabilities and adhere to a lengthy list of security requirements
+designed to limit future security breaches and failures.
+
+While this is a good effort, it has security completely backward. It
+begins with a presumption of security: If there are no known
+vulnerabilities, the system must be secure. If there is a vulnerability,
+then once it's fixed, the system is again secure. How anyone comes to
+this presumption is a mystery to me. Is there any version of any
+operating system anywhere where the last security bug was found and
+fixed? Is there a major piece of software anywhere that has been, and
+continues to be, vulnerability-free?
+
+Yet again and again we react with surprise when a system has a
+vulnerability. Last weekend at the hacker convention DefCon, I saw new
+attacks against supervisory control and data acquisition (SCADA) systems
+-- those are embedded control systems found in infrastructure systems
+like fuel pipelines and power transmission facilities -- electronic
+badge-entry systems, MySpace, and the high-security locks used in places
+like the White House. I will guarantee you that the manufacturers of
+these systems all claimed they were secure, and that their customers
+believed them.
+
+Earlier this month, the government disclosed that the computer system of
+the US-Visit border control system is full of security holes. Weaknesses
+existed in all control areas and computing device types reviewed, the
+report said. How exactly is this different from any large government
+database? I'm not surprised that the system is so insecure; I'm
+surprised that anyone is surprised.
+
+We've been assured again and again that RFID passports are secure. When
+researcher Lukas Grunwald successfully cloned one last year at DefCon,
+industry experts told us there was little risk. This year, Grunwald
+revealed that he could use a cloned passport chip to sabotage passport
+readers. Government officials are again downplaying the significance of
+this result, although Grunwald speculates that this or another similar
+vulnerability could be used to take over passport readers and force them
+to accept fraudulent passports. Anyone care to guess who's more likely
+to be right?
+
+It's all backward. Insecurity is the norm. If any system -- whether a
+voting machine, operating system, database, badge-entry system, RFID
+passport system, etc. -- is ever built completely vulnerability-free,
+it'll be the first time in the history of mankind. It's not a good bet.
+
+Once you stop thinking about security backward, you immediately
+understand why the current software security paradigm of patching
+doesn't make us any more secure. If vulnerabilities are so common,
+finding a few doesn't materially reduce the quantity remaining. A system
+with 100 patched vulnerabilities isn't more secure than a system with
+10, nor is it less secure. A patched buffer overflow doesn't mean that
+there's one less way attackers can get into your system; it means that
+your design process was so lousy that it permitted buffer overflows, and
+there are probably thousands more lurking in your code.
+
+Diebold Election Systems has patched a certain vulnerability in its
+voting-machine software twice, and each patch contained another
+vulnerability. Don't tell me it's my job to find another vulnerability
+in the third patch; it's Diebold's job to convince me it has finally
+learned how to patch vulnerabilities properly.
+
+Several years ago, former National Security Agency technical director
+Brian Snow began talking about the concept of "assurance" in security.
+Snow, who spent 35 years at the NSA building systems at security levels
+far higher than anything the commercial world deals with, told audiences
+that the agency couldn't use modern commercial systems with their
+backward security thinking. Assurance was his antidote:
+
+"Assurances are confidence-building activities demonstrating that:
+"1. The system's security policy is internally consistent and reflects
+    the requirements of the organization,
+"2. There are sufficient security functions to support the security policy,
+"3. The system functions to meet a desired set of properties and *only*
+    those properties,
+"4. The functions are implemented correctly, and
+"5. The assurances *hold up* through the manufacturing, delivery and
+    life cycle of the system."
+
+Basically, demonstrate that your system is secure, because I'm just not
+going to believe you otherwise.
+
+Assurance is less about developing new security techniques than about
+using the ones we have. It's all the things described in books like
+"Building Secure Software," "Software Security," and "Writing Secure
+Code."  It's some of what Microsoft is trying to do with its Security
+Development Lifecycle (SDL). It's the Department of Homeland Security's
+Build Security In program. It's what every aircraft manufacturer goes
+through before it puts a piece of software in a critical role on an
+aircraft. It's what the NSA demands before it purchases a piece of
+security equipment. As an industry, we know how to provide security
+assurance in software and systems; we just tend not to bother.
+
+And most of the time, we don't care. Commercial software, as insecure as
+it is, is good enough for most purposes. And while backward security is
+more expensive over the life cycle of the software, it's cheaper where
+it counts: at the beginning. Most software companies are short-term
+smart to ignore the cost of never-ending patching, even though it's
+long-term dumb.
+
+Assurance is expensive, in terms of money and time for both the process
+and the documentation. But the NSA needs assurance for critical military
+systems; Boeing needs it for its avionics. And the government needs it
+more and more: for voting machines, for databases entrusted with our
+personal information, for electronic passports, for communications
+systems, for the computers and systems controlling our critical
+infrastructure. Assurance requirements should be common in IT contracts,
+not rare. It's time we stopped thinking backward and pretending that
+computers are secure until proven otherwise.
+
+California reports:
+http://www.sos.ca.gov/elections/elections_vsr.htm
+
+Commentary and blog posts:
+http://www.freedom-to-tinker.com/?p=1181
+http://blog.wired.com/27bstroke6/2007/07/ca-releases-res.html
+http://www.schneier.com/blog/archives/2007/07/california_voti.html
+http://www.freedom-to-tinker.com/?p=1184
+http://blog.wired.com/27bstroke6/2007/08/ca-releases-sou.html
+http://avi-rubin.blogspot.com/2007/08/california-source-code-study-results.html
+or http://tinyurl.com/2bz7ks
+http://www.crypto.com/blog/ca_voting_report/
+http://twistedphysics.typepad.com/cocktail_party_physics/2007/08/caveat-voter.html
+or http://tinyurl.com/2737c7
+http://www.schneier.com/blog/archives/2007/08/more_on_the_cal.html
+
+California's recertification requirements:
+http://arstechnica.com/news.ars/post/20070806-california-to-recertify-insecure-voting-machines.html
+or http://tinyurl.com/ytesbj
+
+DefCon reports:
+http://www.defcon.org/
+http://www.physorg.com/news105533409.html
+http://blog.wired.com/27bstroke6/2007/08/open-sesame-acc.html
+http://www.newsfactor.com/news/Social-Networking-Sites-Are-Vulnerable/story.xhtml?story_id=012000EW8420
+or http://tinyurl.com/22uoza
+http://blog.wired.com/27bstroke6/2007/08/jennalynn-a-12-.html
+
+US-VISIT database vulnerabilities:
+http://www.washingtonpost.com/wp-dyn/content/article/2007/08/02/AR2007080202260.html
+or http://tinyurl.com/33cglf
+
+RFID passport hacking:
+http://www.engadget.com/2006/08/03/german-hackers-clone-rfid-e-passports/
+or http://tinyurl.com/sy439
+http://www.rfidjournal.com/article/articleview/2559/2/1/
+http://www.wired.com/politics/security/news/2007/08/epassport
+http://money.cnn.com/2007/08/03/news/rfid/?postversion=2007080314
+
+How common are bugs:
+http://www.rtfm.com/bugrate.pdf
+
+Diebold patch:
+http://www.schneier.com/blog/archives/2007/08/florida_evoting.html
+
+Brian Snow on assurance:
+http://www.acsac.org/2005/papers/Snow.pdf
+
+Books on secure software development:
+http://www.amazon.com/Building-Secure-Software-Security-Problems/dp/020172152X/ref=counterpane/
+or http://tinyurl.com/28p4hu
+http://www.amazon.com/Software-Security-Building-Addison-Wesley/dp/0321356705/ref=counterpane/
+or http://tinyurl.com/ypkkwk
+http://www.amazon.com/Writing-Secure-Second-Michael-Howard/dp/0735617228/ref=counterpane/
+or http://tinyurl.com/2f5mdt
+
+Microsoft's SDL:
+http://www.microsoft.com/MSPress/books/8753.asp
+
+DHS's Build Security In program:
+https://buildsecurityin.us-cert.gov/daisy/bsi/home.html
+
+This essay originally appeared on Wired.com.
+http://www.wired.com/politics/security/commentary/securitymatters/2007/08/securitymatters_0809
+or http://tinyurl.com/2nyo8c
+
+ ** ***
+
+      More Voting News
+
+California Secretary of State Bowen's certification decisions are
+online.  She has totally decertified the ES&S Inkavote Plus system, used
+in L.A. County, because of ES&S noncompliance with the Top to Bottom
+Review.  The Diebold and Sequoia systems have been decertified and
+conditionally recertified.  The same was done with one Hart Intercivic
+system (system 6.2.1).  (Certification of the Hart system 6.1 was
+voluntarily withdrawn.)  To those who thought she was staging this
+review as security theater, this seems like evidence to the contrary.
+She wants to do the right thing, but has no idea how to conduct a
+security review.
+http://www.sos.ca.gov/elections/elections_vsr.htm
+http://www.nytimes.com/2007/08/05/us/05vote.html?_r=1&adxnnl=1&oref=slogin&adxnnlx=1186287020-khO/ehBMuFtZIyeXCC4wHg
+or http://tinyurl.com/yto8ss
+
+Florida just recently released another study of the Diebold voting
+machines.  They -- and it was real security researchers like the
+California study, and not posers -- studied v4.6.5 of the Diebold TSx
+and v1.96.8 of the Diebold Optical Scan.  (California studied older
+versions (v4.6.4 of the TSx and v1.96.6 of the Optical Scan).
+http://www.sait.fsu.edu/news/2007-07-31.shtml
+http://election.dos.state.fl.us/pdf/SAITreport.pdf
+The most interesting issues are (1) Diebold's apparent "find-then-patch"
+approach to computer security, and (2) Diebold's lousy use of
+cryptography.  More here:
+http://www.schneier.com/blog/archives/2007/08/florida_evoting.html
+
+The UK Electoral Commission released a report on the 2007 e-voting and
+e-counting pilots.  The results are none too good.
+http://www.electoralcommission.org.uk/elections/pilotsmay2007.cfm
+http://www.lightbluetouchpaper.org/2007/08/02/electoral-commission-releases-e-voting-and-e-counting-reports
+or http://tinyurl.com/yukeot
+
+And the Brennan Center released a report on post-election audits:
+http://www.brennancenter.org/dynamic/subpages/download_file_50089.pdf
+
+My previous essays on electronic voting, from 2004:
+http://www.schneier.com/crypto-gram-0411.html#1
+http://www.schneier.com/crypto-gram-0411.html#2
+
+My previous essay on electronic voting, from 2000:
+http://www.schneier.com/crypto-gram-0012.html#1
+
+ ** ***
+
+CRYPTO-GRAM is written by Bruce Schneier.  Schneier is the author of the
+best sellers "Beyond Fear," "Secrets and Lies," and "Applied Cryptography,"
+and an inventor of the Blowfish and Twofish algorithms.  He is founder and
+CTO of BT Counterpane, and is a member of the Board of Directors of the
+Electronic Privacy Information Center (EPIC).  He is a frequent writer and
+lecturer on security topics.  See <http://www.schneier.com>.
+
+Crypto-Gram is a personal newsletter.  Opinions expressed are not
+necessarily those of BT or BT Counterpane.
+
+Copyright (c) 2007 by Bruce Schneier.
+
+------------------------------
+
+Date: Tue, 14 Aug 2007 15:07:10 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Computer-generated names
+
+This is amusing, but not particularly unusual -- the computer programmed
+elision of an overly long concatenation of individual and company names
+where a new-line character presumably was omitted.
+
+I just received an "Exclusive Platinum Visa Offer" from First Equity in Fort
+Mill, South Carolina, addressed to
+
+   Peter G. Nmnnsri Intrntnl
+
+offering a credit line up to $100K, no annual fee, low rates, and 5% cash
+back.  The form is of course already filled in with the above name and
+offers an immediate cash advance.  I wonder whether a routine credit check
+would cause the application to bounce?  Or perhaps they are so eager for new
+customers that they don't even bother with credit checks for people
+answering their preprinted exclusive-offer applications?  Or perhaps it is
+a total scam?  Well, a Web search gives me the assurance that
+
+  "During the last five years First Equity has not been convicted in a
+  criminal proceeding, nor has it been a party to a civil proceeding of a
+  judicial or administrative body of competent jurisdiction."
+
+That is certainly reassuring, but makes one wonder about the preceding
+years.  On the other hand, I certainly have enough credit cards already.
+
+------------------------------
+
+Date: Wed, 15 Aug 2007 16:16:08 +0300 (IDT)
+From: Alexander Klimov <alserkli@inbox.ru>
+Subject: Re: User-hostile behavior (Summit, RISKS-24.77)
+
+I guess it is done this way on purpose: average user does not understand why
+they must patch the system and if there is an option on the dialog `I'll
+reboot myself', most users will choose it without thinking. There is a way
+to stop this countdown: go to services (e.g., Win-R services.msc Enter) and
+stop `Automatic Updates'), but this hidden option is akin to self-moderation
+of alt.sysadmin.recovery -- if one cannot find it, most likely they do not
+understand the security implications (of course, there is a risk of
+security-savvy users who are new to Windows).
+
+Although, in my opinion, the solution is best for given problem of forcing
+reboot on novices, in a reasonable system there should be no need to reboot
+for update.
+
+------------------------------
+
+Date: 2 Oct 2005 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The ACM RISKS Forum is a MODERATED digest, with Usenet equivalent comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.   The mailman web interface can
+ be used directly to subscribe and unsubscribe:
+   http://lists.csl.sri.com/mailman/listinfo/risks
+ Alternatively, to subscribe or unsubscribe via e-mail to mailman your
+ FROM: address, send a message to
+   risks-request@csl.sri.com
+ containing only the one-word text subscribe or unsubscribe.  You may
+ also specify a different receiving address: subscribe address= ... .
+ You may short-circuit that process by sending directly to either
+   risks-subscribe@csl.sri.com or risks-unsubscribe@csl.sri.com
+ depending on which action is to be taken.
+
+ Subscription and unsubscription requests require that you reply to a
+ confirmation message sent to the subscribing mail address.  Instructions
+ are included in the confirmation message.  Each issue of RISKS that you
+ receive contains information on how to post, unsubscribe, etc.
+
+=> The complete INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, etc.) is online.
+   <http://www.CSL.sri.com/risksinfo.html>
+ The full info file may appear now and then in RISKS issues.
+ *** Contributors are assumed to have read the full info file for guidelines.
+
+=> .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> SPAM challenge-responses will not be honored.  Instead, use an alternative
+ address from which you NEVER send mail!
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+ *** NOTE: Including the string "notsp" at the beginning or end of the subject
+ *** line will be very helpful in separating real contributions from spam.
+ *** This attention-string may change, so watch this space now and then.
+=> ARCHIVES: ftp://ftp.sri.com/risks for current volume
+     or ftp://ftp.sri.com/VL/risks for previous VoLume
+ <http://www.risks.org> redirects you to Lindsay Marshall's Newcastle archive
+ http://catless.ncl.ac.uk/Risks/VL.IS.html gets you VoLume, ISsue.
+   Lindsay has also added to the Newcastle catless site a palmtop version
+   of the most recent RISKS issue and a WAP version that works for many but
+   not all telephones: http://catless.ncl.ac.uk/w/r
+ <http://the.wiretapped.net/security/info/textfiles/risks-digest/> .
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    <http://www.csl.sri.com/illustrative.html> for browsing,
+    <http://www.csl.sri.com/illustrative.pdf> or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 24.79
+************************

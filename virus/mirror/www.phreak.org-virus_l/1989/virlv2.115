@@ -1,0 +1,175 @@
+VIRUS-L Digest              Monday, 15 May 1989        Volume 2 : Issue 115
+ 
+Today's Topics:
+Macintosh Virus query
+Follow-up to "Yet another virus?" (Mac)
+Certus (PC)
+Stop a BOOT virus at BOOT time (PC)
+re: data disks (PC)
+ 
+---------------------------------------------------------------------------
+ 
+Date:    Fri, 12 May 89 10:50:06 EDT
+From:    rocksanne!rainero@cs.rochester.edu (Emil Rainero)
+Subject: Macintosh Virus query
+ 
+Has there ever been a macintosh virus than is part of a document? The
+macintosh has both data and resource forks. It would be interesting to
+create a macwrite or MS-word document with the document in the data
+fork and the virus as a code resource that is preloaded to override an
+application code resource (the printing code comes to mind). This
+would allow documents as well as applications to transfer the virus.
+ 
+------------------------------
+ 
+Date:    Fri, 12 May 89       14:55:24 PST
+From:    Donna Reynolds <DR9021@UCSFVM.UCSF.EDU>
+Subject: Follow-up to "Yet another virus?" (Mac)
+ 
+Yesterday we posted a notice to the net describing a number of
+apparently virus-like problems experienced in the UCSF Computer
+Center.  All were detected while MacDraw was in use.  It now appears
+that all problems were unrelated and that none were virus-induced.
+Just an unhappy coincidence, it would seem, that three separate
+machines developed similar-looking difficulties at the same time.
+ 
+Ken Walter, a software engineer with Claris, solved one of our
+problems for us.  The system errors on one machine appear to be the
+result of running MacDraw 1.9 with System 6.02.  We now suspect the
+problems exhibited by the two remaining machines to be
+hardware-related.  They just happened to show up at about the same
+time while users just happened to be running MacDraw.  We are
+currently running additional diagnostic tests, just to be certain.
+ 
+That said, we'd like to thank everyone who responded to our posting.
+The ever-helpful folks at BMUG were quick to get in touch and offer
+their assistance.  Ken Walter of Claris, and the Claris folks in
+general, were exceptionally helpful.  We sincerely appreciate both
+their expert assistance and their genuine concern.
+ 
+Once again, our most sincere thanks.
+ 
+Donna Reynolds
+Senior Editor
+UCSF Computer Center
+ 
+------------------------------
+ 
+Date:    Sun, 14-May-89 22:14:15 PDT
+From:    portal!cup.portal.com!Alan_J_Roberts@Sun.COM
+Subject: Certus (PC)
+ 
+        I'll have to disagree with Bill Gorman's comments about the
+Certus virus protection package.  I worked on the preliminary
+selection for Jim Goodwin's evaluation project and I found none of the
+negative's that Mr.  Gorman indicated.  Additionally, Certus proved
+second only to Sentry in it's ability to detect viruses.  I believe
+Jim would have included it in his final paper had he not thought that
+the steep price of the product limited its interest for most
+researchers.
+ 
+                        David Zoz
+                        HomeBase  408 988 4004
+ 
+------------------------------
+ 
+Date:    15 May 89, 12:14:09 HMT
+From:    Stanley Fragakis <CSSTU011@GRCRUN11.BITNET>
+Subject: Stop a BOOT virus at BOOT time (PC)
+ 
+The idea:
+ When the boot sector is read in memory and given control its the only
+valid program in RAM. Other valid RAM locations include the interrupt
+vector table etc. Normally a boot loaded virus has it's own boot
+sector which loads the virus in memory and gives control to the
+original boot sector of the disk.  (the original boot sector is saved
+somewhere in the disk).  If we modify the original boot sector of the
+disk in such a way that clears the computer memory when executed, we
+will kill the virus code since it HAS TO be somewhere in RAM.
+ 
+What to do and how :
+ The MSDOS 3.2 disk boot sector contains in offset 0 a JMP instruction
+(JMP 36). In the boot sector there is just enough space to add a few
+instructions that will clear the memory starting at 7e0:0h. Again in
+MSDOS 3.2 the 1st free location is at offset 1DBh. We enter the MSDOS
+DEBUG and type :
+ 
+- - L 0 0 0 1 (enter)
+- - a 1db     (enter)
+then we type the following commands
+ 
+ CLI
+ CLD
+ MOV AX,07E0
+ MOV ES,AX
+ XOR DI,DI
+ MOV CX,8
+ MOV AX,F4FA
+ REP STOSW
+ PUSH ES
+ POP AX
+ INC AX
+ CMP AX,A000
+ JB 1E0
+ JMP 36
+ 
+Now we type :
+- - A 0
+then
+ JMP 1DB
+ 
+finally we save the new boot using
+- - W 0 0 0 1
+ 
+let's see what's the use of this program.
+Staring at seg 7E0 it fills the memory locations with hex value
+F4FA  witch represents the assembler instructions CLI, HLT
+It stops when the segment reaches A000 (the 640K limit)
+the JB 1E0  jumps to instruction MOV ES,AX
+the JMP 36  jumps to the location the JMP at offset 0 originally
+            points to.
+ 
+Note that the locations 36,1E0,1DB as mentioned above could
+be different in your MSDOS version.
+ 
+Why fill the memory with F4FA :
+ When the original boot sector gets control and we are about to clear
+the memory, the virus is already active. That means one or more
+interrupt vectors point into virus code. Sooner or later these
+interrupts will be activated. If we fill the memory with e.g. 0 that
+would represent an ADD instruction and the computer would execute ADD
+instructions even beyond the valid RAM. We wish to halt the computer.
+A simple HLT instruction would not be enough since the external
+interrupts are enabled (e.g. timer tick so we have the same problem as
+before).  The solution is CLI then HLT, that is make sure that
+interrupts are disabled then halt the CPU till an interrupt occurs.
+(which is never going to happen, so computer is 'dead' ).
+ 
+What's the use :
+ It is quite clear that any Ping Pong style virus will be stopped. How
+will you know that ? Well the computer will crash if you boot with an
+infected disk (you get no message at all).  You can't even use
+CTRL-ALT-DEL to re-Boot. This is the time to check your disk.  This
+program will not prevent a virus from entering your disk.  However it
+will not let you boot from that disk, not even once |
+ 
+if you have any questions let me know.
+ 
+* Stanley Fragakis, Greece (CSSTU011 at GRCRUN11)
+ 
+------------------------------
+ 
+Date:    Wed, 10 May 89 19:22:34 -0400
+From:    William Bader-84668 <wbader@scarecrow.csee.Lehigh.EDU>
+Subject: re: data disks (PC)
+ 
+Someone mentioned viruses propagating on data disks.  I don't know if
+this was said before, but MSDOS formatted data disks are bootable,
+just that all the boot program does is to print "Non-System disk or
+disk error. Replace and strike any key when ready".
+                                                William Bader
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

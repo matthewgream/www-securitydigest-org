@@ -1,0 +1,257 @@
+Subject: RISKS DIGEST 10.29
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Saturday 1 September 1990  Volume 10 : Issue 29
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  What is "safety-critical"? (Nancy Leveson)
+  Re: Computer Unreliability and Social Vulnerability (David Gillespie)
+  Risks of selling/buying used computers (Fernando Pereira)
+  Accidental disclosure of non-published telephone number (Peter Jones)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory listing of back issues.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Fri, 31 Aug 90 18:08:40 -0700
+From: Nancy Leveson <nancy@murphy.ICS.UCI.EDU>
+Subject: What is "safety-critical"?
+Reply-To: nancy@ics.UCI.EDU
+
+RISKS-10.28 was certainly provocative.  I do not want to enter into the basic
+argument, but I would like to comment on a couple of statements that appear
+incorrect to me.
+
+Peter Mellor writes:
+   >Safety-*related*, I would say, but not safety-*critical*. The usual 
+   >definition of safety-critical is that a system failure results in 
+   >catastrophe. 
+
+System safety engineers in the textbooks I have read do not define 
+"safety-critical" in terms of catastrophic failure.  They use "hazards" 
+and the ability to contribute to a hazard.  A safety-critical system or 
+subsystem is one that can contribute to the system getting into a hazardous 
+state.  There are very good reasons for this, which I will attempt to explain.
+
+Accidents do not usually have single causes -- most are multi-factorial.
+We usually eliminate the simpler accident potentials from our systems which
+only leaves multi-failure accidents.   The basic system safety goal
+is to eliminate all single-point failures that could lead to unacceptable
+consequences and minimize the probability of accidents caused by multi-point
+failures.  Using Pete`s definition, there are almost NO systems that are 
+safety critical including nuclear power plant and air traffic control systems
+because we rarely build these systems so that a single failure of a single 
+component can lead to an accident.  That the failure of the whole nuclear power
+plant or air traffic "system" is an accident is tautological -- what we are 
+really talking about are failures of components or subsystems of these larger
+"systems" like the control components or the simulators (in this case).
+
+The term "safety-related" seems unfortunate to me because it is too vague
+to be defined.  Some U.S. standards talk about "first-level interfaces" 
+(actions can directly contribute to a system hazard) or "second-level"
+(actions can adversely affect the operation of another component that can
+directly contribute to a hazard).  Another way of handling this is to talk
+about likelihood of contributing to a hazard -- with the longer chains having
+a lower likelihood.  But I would consider them all safety-critical if their
+behavior can contribute to a hazard -- it is only the magnitude of the risk 
+that differs.  I have a feeling that the term "safety-related" is often used 
+to abdicate or lessen responsibility.
+
+There is a very practical reason for using hazards (states which in
+combination with particular environmental conditions have an unacceptable risk
+of leading to an accident).  In most complex systems, the designer has no 
+control over many of the conditions that could lead to an accident.  For
+example, air traffic control hazards are stated in terms of minimum separation
+between aircraft (or near misses) rather than in terms of eliminating 
+collisions (which, of course, is the ultimate goal).  The reason is that 
+whether a collision occurs depends not only on close proximity of the 
+aircraft but also partly on pilot alertness, luck, weather, and a lot of 
+other things that are not under the control of the designer of the system.
+So what can the designer do to reduce risk?  She can control only the 
+proximity hazard and that is what she does, i.e., assumes that the environment
+is in the worst plausible conditions (bad weather, pilot daydreaming) and 
+attempts to keep the planes separated by at least 500 feet (or whatever, the
+exact requirements depend on the circumstances).
+
+When assessing the risk of the air traffic control system, the likelihood 
+of the hazard, i.e., violation of minimum separation standards, is assessed,
+not the likelihood of an ATC-caused accident.  When one later does a complete
+system safety assessment, the risk involved in this hazard along with the 
+risk of the other contributory factors are combined into the risk of a 
+collision.  
+
+Why does this push my hot button?  Well, I cannot tell you how many times
+I have been told that X system is not safety-critical because it's failure
+will not cause an accident.  For example, a man from MITRE and the FAA argued
+with me that the U.S. air traffic control software is not safety critical (and
+therefore does not require any special treatment) because there is no possible
+failure of the software that could cause an accident.  They argued that the 
+software merely gives information to the controller who is the one who gives 
+the pilot directions.  If the software provides the wrong information to
+the controller, well there was always the chance that the controller
+or the pilot could have determined that it was wrong somehow.  But an ATC
+software failure does not necessarily result in a catastrophe so it is not
+safety critical (as defined above).  Perhaps this argument appeals to you, 
+but as a person who flies a lot, I am not thrilled by it.  As I said,
+this argument can be applied to EVERY system and thus, by the above 
+definition, NO systems are safety-critical.
+
+Again, there may be disagreement, but I think the argument has been pushed
+to its absurd limit in commercial avionic software.  The argument has been
+made by some to the FAA (and it is in DO-178A and will probably be in 
+D0-178B) that reduction in criticality of software be allowed on the
+basis of the use of a protective device.  That is, if you put in a backup
+system for autoland software, then the autoland system itself is not safety 
+critical and need not be as thoroughly tested.  (One could argue similarly 
+that the backup system is also not safety-critical since it's failure alone 
+will not cause an accident -- both of them must fail -- and therefore neither 
+needs to be tested thoroughly.  This argument is fine when you can accurately
+access reliability and thus can accurately combine the probabilities.  But
+we have no measures for software reliability that provide adequate confidence
+at the levels required, as Pete says).  The major reason for some to support 
+allowing this reduction is that they want to argue that the use of n-version
+software reduces the criticality of the function provided by that software 
+(none of the versions is safety critical because a failure in one alone will 
+not lead to an accident) and therefore required testing and other quality
+assurance procedures for the software can be reduced.
+
+   >With a safety-critical airborne system, we are certifying that it has 
+   >a certain maximum probability of crashing the aircraft. 
+
+Actually, you are more likely to be certifying that it will not get into 
+(or has a maximum probability of getting into) a hazardous state from which
+the pilot or a backup system cannot recover or has an unacceptably low
+probability of recovering.  The distinction is subtle, but important as I 
+argued above.  Few airborn systems have the capacity to crash the aircraft 
+by themselves (although we are heading in this direction and some do 
+exist -- which violates basic system safety design principles).
+
+   >RTCA/DO-178A ('Software Considerations in Airborne Systems and Equipment
+   >Certification') does *not* define any reliability figures. It is merely a
+   >set of guidelines defining quality assurance practices for software.
+   >Regulatory approval depends upon the developer supplying certain documents 
+   >(e.g., software test plan, procedures and results) to show that the 
+   >guidelines have been followed.
+
+There is currently an effort to produce a DO-178B.  This will go farther than
+178A does.  For one thing, it is likely to include the use of formal methods.
+Second, it will almost certainly require hazard-analysis procedures.  If anyone
+is interested in attending these meetings and participating, they are open
+to the public and to all nationalities.  
+
+>From Pete Mellor's description of the Forrester and Morrison article:
+    >This is likely to change following the publication of the draft defence 
+    >standard 00-55 by the MoD in the UK in May 1989. The DoD in the US are 
+    >not doing anything similar, though the International Civil Aviation 
+    >Organisation is planning to go to formal methods.  
+
+Depends on what you mean by similar.  The DoD, in Mil-Std-882B (System Safety)
+has required formal analysis of software safety since the early 80s.  MoD draft
+defense standard 00-56 requires less than the equivalent DoD standard.  There
+has been a DoD standard called "Software Nuclear Safety" that has been in force
+for nuclear systems for about 4-5 years.  And there are other standards
+requiring software safety analysis (e.g., for Air Force missile systems) that
+were supplanted by 882B.  882B is likely to be replaced by 882C soon -- and the
+accompanying handbooks, etc. do mention the use of formal methods to accomplish
+the software safety analysis tasks.
+                                                       nancy
+
+------------------------------
+
+Date: Fri, 31 Aug 90 21:41:05 -0700
+From: daveg@csvax.cs.caltech.edu (David Gillespie)
+Subject: Re: Computer Unreliability and Social Vulnerability
+
+I think one point that a lot of people have been glossing over is that in a
+very real sense, computers themselves are *not* the danger in large,
+safety-critical systems.  The danger is in the complexity of the system itself.
+
+Forester and Morrison propose to ban computers from life-critical systems,
+citing air-traffic control systems as one example.  But it seems to me that
+air-traffic control is an inherently complicated problem; if we switched to
+networks of relays, humans with spotting glasses, or anything else, ATC would
+still be complex and would still be prone to errors beyond our abilities to
+prevent.  Perhaps long ago ATC was done reliably with no automation, but there
+were a lot fewer planes in the air back then.  If it was safe with humans, it
+probably would have been safe with computers, too.  As our ATC systems became
+more ambitious, we switched to computers precisely because humans are even less
+reliable in overwhelmingly large systems than computers are.
+
+The same can be said of large banking software, early-warning systems, and so
+on.  There's no question that computers leave much to be desired, or that we
+desperately need to find better ways to write reliable software, but as long as
+the problems we try to solve are huge and intricate, the bugs in our solutions
+will be many and intricate.  Rather than banning computers, we should be
+learning how to use them without biting off more than we can chew.
+   								     -- Dave
+
+------------------------------
+
+Date: Sat, 1 Sep 90 14:27:27 EDT
+From: pereira@icarus.att.com
+Subject: Risks of selling/buying used computers
+Reply-To: pereira@research.att.com
+
+A 8/31/90 Associated Press newswire story by AP writer Rob Wells, entitled
+``Sealed Indictments Accidentally Sold as Computer Surplus,'' describes how
+confidential files from a federal prosecutor in Lexington, KY, were left on the
+disks of a broken computer sold for $45 to a dealer in government surplus
+equipment. The files included information about informants, protected
+witnesses, sealed federal indictments and personal data on employees at the
+prosecutor's office.  The Justice Department is suing the equipment dealer to
+return the computer and storage media and reveal who bought the equipment and
+who had access to the files.
+
+The government claims that a technician for the computer's manufacturer tried
+to erase the files, but since the machine was broken he could not do it with
+the normal commands, and had instead to rely on what the AP calls a ``magnetic
+probe'' (a degausser?) which apparently wasn't strong enough to to the job.
+
+The dealer complains that the FBI treated him rudely and tried to search his
+premises without a warrant; the Justice Department argues that the dealer
+hasn't been helpful and could get at the files. The dealer denies he has done
+so.
+
+Fernando Pereira, 2D-447, AT&T Bell Laboratories, 600 Mountain Ave, 
+Murray Hill, NJ 07974                      pereira@research.att.com
+
+  [One of the earlier classics was related in RISKS-3.48, 2 Sep 86:
+  "Air Force puts secrets up for sale", in which thousands of tapes
+  containing Secret information on launch times, aircraft tests,
+  vehicles, etc., were auctioned off without having been deGaussed.  PGN]
+ 
+------------------------------
+
+Date: 	Fri, 31 Aug 90 16:27:12 EDT
+From: Peter Jones <MAINT@UQAM.bitnet>
+Subject: Accidental disclosure of non-published telephone number
+
+The following appeared on a recent mailout from the Bell Canada telephone
+company. It's probably about time to repeat this warning, even if it has
+already appeared on the list:
+
+  "If you have a non-published telephone number, please keep in mind that if
+  someone else uses your phone to make a collect call or to charge a call to
+  another number, your number will appear on the statement of the person billed
+  for the call. This is necessary because the customer being billed must be
+  able to verify whether or not he or she is responsible for the charge."
+
+Peter Jones   UUCP: ...psuvax1!uqam.bitnet!maint   (514)-987-3542
+              Internet: MAINT%UQAM.bitnet@ugw.utcs.utoronto.ca
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.29
+************************

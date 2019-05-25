@@ -1,0 +1,661 @@
+VIRUS-L Digest   Thursday,  3 Oct 1991    Volume 4 : Issue 180
+
+Today's Topics:
+
+Re: DIR II (Cluster) Virus (PC)
+Re: Hardware vs. software
+Re: Typical incidents
+Virus-proofing a StarLAN server (UNIX) (PC)
+Infectable Areas (PC)
+Heuristic analysis?
+re: Precise identification (PC) Reaction and Philosophy
+Re: Azusa Virus & CLEAN question (PC)
+Akron U (PC)
+Tequila virus (PC)
+Hardware Damage?
+Virus Questions
+Re: New NetWare Virus ? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    01 Oct 91 09:03:22 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: DIR II (Cluster) Virus (PC)
+
+0004886415@mcimail.com (Joe Wells) writes:
+
+> listed in the structure above. The original is scrambled by using a
+> straight forward rotating xor encryption. Once an altered entry is
+
+It's not that "straight forward"... :-) It's not easily computable by
+hand and is based on a key, which tends to be different for different
+disks. The key depends on the DOS partition size, the number of
+sectors in a cluster, etc.
+
+> last two bytes of the unused area is zeroed out.  Viewing the last
+> cluster is also redirected.
+
+Not exactly. The virus intercepts the disk device drive call BuildBPB
+and modifies the returned disk size, so that the disk looks two
+sectors "shorter".
+
+> The virus sets up its own INT 21 redirector (the only detectable INT
+> call is an INT 20), accesses the undocumented DOS list of lists, and
+> does not infect the system (DOS & BIOS) files even if they have COM
+> extentions.
+
+More exactly, the virus does not use any interrupts (and does not
+intercept any of them). The INT 20 is executed only if the virus
+thinks that it's not able to install in memory (because a copy of the
+virus is already installed, or because the disk is accessed through a
+device driver, see below). The virus does not check for the two DOS
+files explicitely, it just does not "infect" directory entries, which
+have the System, or Directory, or VolumeLabel attribute on.
+
+> The virus doesn't really "crosslink" anything in the FAT. But if you
+
+Yes, it just crosslinks everything in the directory entries... :-)
+
+> run CHKDSK with the /f option (and the virus isn't in memory) all your
+> executables will become 1k files (all pointing to the virus code).
+
+More exactly, they will become one cluster or 1024 bytes long,
+whichever is larger. You'll observe the same effect if you try to copy
+a files when the virus is not in memory - you'll be able to copy only
+the virus body.
+
+More about the virus.
+
+As I said above, it does not intercept any interrupts (or use any). It
+patches itself in the DOS disk device drivers chain and intercepts the
+device drivers requests.
+
+When a file, whose directory entry is infected is run on a clean
+system, the virus installs itself in memory, marking its current PSP
+as 0008 (as if it belongs to COMMAND.COM). MAPMEM will show that
+COMMAND.COM occupies three memory blocks. Afterwards, the virus tries
+to execute a file with the name consisting of one character with ASCII
+code 0FFh in the current directory of drive C:. Of course, such file
+will not be found, which will lead to the search of the current
+directory on drive C: and of all directories, listed in the PATH
+variable. Since the virus infects the directory entries on any sector
+operation with a directory sector, this will lead to the infection of
+all executable files in these directories.
+
+When a machine with an infected command interpretter is booted, the
+virus detects this and installs itself in memory in a different way.
+It waits until the command interpreter's memory control block is
+created and then extends it and copies itself in the added space.
+Therefore, when you boot an infected system, you won't be able to
+notice three MCB belonging to the command interpretter - there will be
+only two, as usual, but one of them will be about 1.5 Kb larger.
+
+Since the virus does not execute any interrupts and does not try to
+write to the files either, none of the currently available monitoring
+programs are able to intercept it. Even some smart hardware cards that
+try to prevent direct disk access and file modification, are unable to
+detect and stop the virus, since (1) there is no file modification and
+(2) the interrupts for direct disk writing seem to come from the DOS
+device drivers, and therefore seem perfectly legal. Only hardware
+protection that denies any kind of disk writing is able to stop the
+virus.
+
+Since the virus is fully stealth, it's rather hopeless to rely on
+checksumming programs if there is a possibility that it is active in
+memory. ALWAYS BOOT FROM A NON-INFECTED WRITE-PROTECTED SYSTEM
+DISKETTE before trying to check for viruses! Furthermore, if a
+checksummer tries to be too smart and instead of doing file I/O tries
+to remember on which sectors the files reside and then access these
+sectors through direct BIOS calls and checksum them will be totally
+useless against this virus, even if the virus is not in memory. The
+reason for this is, of course, that the files are never modified.
+
+The virus is not intentionally destructive (that is, it contains no
+payload). However, due to its method of infection, it may destroy
+data. First of all, the virus writes it's body to the last cluster of
+the disk (or to the last two sectors, whichever is larger), which is
+not marked as bad. It does not check whether the sector is already
+in use or not. Therefore, it can destroy part of a file (or directory)
+which uses this cluster. Since the virus body is written on any
+accessed disk, regardless whether the latter contains executable
+files, the destruction of information described above occurs most
+often on backup diskettes or diskettes that contain only one large
+archive file, or that are otherwise full up to the last cluster. Since
+the DOS program BACKUP tends to write its control information in a
+small files -after- the backup, such destruction will damage the whole
+backup on the diskette.
+
+The second kind of damage occurs if the user notices that something is
+wrong, boots from a non-infected disk, and runs CHKDSK/F or Norton
+Disk Doctor. As was mentioned above, all executable files, whose
+directory entries are infected, will be lost. Since the virus marks
+its body as occupied cluster only in the first copy of the FAT, the
+user is often tempted to believe that there is just something wrong
+with the FAT and to run Norton Disk Doctor. One more thing - the virus
+body is marked as 0(F)FFEh in the FAT. This is interpretted as EOF by
+DOS. In fact, DOS interptrets as EOF any value from 0(F)FF8h to
+0(F)FFFh, but uses only the last one. The virus does not check whether
+a disk is already infected (i.e., that the virus body is already
+present on the disk), so this marker cannot be used to "vaccinate" the
+disks.
+
+Just forgot to mention - the virus is exactly 1024 bytes long. It is
+as tricky as the Number of the Beast (i.e., the same amount of tricks
+per byte <grin>), but is twice as long. It contains a counter of the
+number of infected systems.
+
+The virus has been created and released in the wild in May 1991 in
+Varna - a town on the Black Sea in Bulgaria. It has been created by
+two kids from the Mathematical Highschool there. They are also authors
+of the Shake, Dir, and MG viruses. They continue to write and spread
+viruses. The virus has been first discovered by Nikolay Spahiev from
+Varna and was reported by him on the VIRUS echo on FidoNet, but nobody
+payed any serious attention.
+
+The virus spread in Bulgaria like wildfire. In fact, at the Laboratory
+of Computer Virology in Sofia we just stopped receiving reports for
+any other viruses! (This can be partially explained by the fact that
+if a disk is infected by this virus and the virus is not in memory,
+reading the files, whose directory entries are infected, will show
+only the virus body and therefore mask any other viruses present in
+the files.) Currently I have reports that this virus is escaped
+Bulgaria and is extremely widespread in the Soviet Union, Poland, and
+probably Norway.
+
+The virus is not able to infect disk partitions, which are accessed
+through an installable device driver. Therefore, partitions accessed
+through programs like Disk Manager are immune against this virus.
+
+Here is a small TSR program that, when resident in memory, will
+prevent you from executing or copying a file, whose directory entry is
+infected by this virus. The program is supposed to detect if the virus
+is already present in memory, but it sometimes fails to do so.
+
+IMV.XXE
+QXXNCD Ver. 1.2, by Theodore A. Kaldis.
+BEGIN--cut here--CUT HERE--
+begin 644 imv.com
+huI+-4OKXKeBCcNFg8rlUcqGZc3-HIPWZdPg1+PY6+0sl-oB1sjZNKpX1yyFV
+hI3ASAxiCqsgSP+G1kk6A+yNVg9PaEv1WtY8k+yN0Cltg-5LuUwA1g8baEf+4
+htY6v5ak2RTcTKpXaMQDceDyoIgoV7jxrzXD+XhWV2kGuE+1rscjE5nDqjkA-
+hiEU+wuRp+zbf0cnME6vMCw7muDUC5ks5u55zkp3KJkMC-sjmjkA-iEU+u3zz
+hwuSQu3bzbTVp+TY5LptNksP2ik+-nnr-dLHpUDl9R-O+z2-o+ihFuALzQonc
+hFzys-E1tmU6+I3BFIVus+1rc8k1pQm49q+sTiXA0iF++h1zc4E1pQkUvkTVp
+h+yWFztmoDiU6+7oTKZZPKCiy9cw4AE8Q1WvzBX20uU++++++++++++++++++
+h++++++++++0uVE8o0QoVu-jziXE1QWqskOLB6HqZkPcO+rEUi02pnG475Wo0
+hX+Mj+ff8+PEZnG4uxk8o0QoViYA0nGSo0QoVnG+B0YZhMKRdPa3oOKxi62pZ
+hPKxmSG-KMKBXOKtZ90-KNL7nOKxi612iA12g63-ZR4Jm62FdPKxq90+lCHYl
+h1EcU60+U60+U60+U63-mPrFZMrFn643bMKZiQrEUF4Zm62Z760V4EJEUOqZg
+hP4Jm8Eo80WF7HJMUAGsk64ZiQrFVP4lZN0-nRKBXNLBnNbJgP5Yi1Ec872ZB
+hJW-dQm-VP57ZMKFt643XR4ZqNGsB0UcYJm--636UHW-762sUFm+V6G+UJ4VZ
+h62FdQW-7GG-qOL7pQm-dQm-VP57ZMKFt65-mNLBZPbEUOKsUPKJhPr7t6EQB
+10UcY
++
+end
+633
+END--cut here--CUT HERE--
+
+According to my reports, at least two more different mutations of this
+virus are available in Bulgaria, but they are not as widespread. I
+predict that this virus will become a large threat to the whole world
+before the end of the year. It is much more infective than Stoned and
+will still are unable to stop the spreading of the latter. Probably
+this virus will become to the IBM PC world what WDEF has become for
+the MACs... :-(
+
+One last remark. I have a program that successfully disinfects this
+virus. If there are major infections and sufficient interest, I'll
+send it to Ken and shall ask him to make it publicly available. The
+current problem is that the program has no docs (more exactly, they
+are in Bulgarian <grin>).
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    01 Oct 91 10:36:01 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Hardware vs. software
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  But hardware alone is enough. To illustrate: there's no virus in
+>  the world that can bypass a simple hardware device called a write-
+>  protect tab.  This humble little piece of black paper doesn't care
+>  one bit about Cohen's theories.  Disobeys them every time.  :-)
+
+Wrong. Completely wrong. There is a Bulgarian virus, called Darth
+Vader, which infects COM files only when you copy them. And I guess
+that you always remove the write protect tab when you copy a files to
+a diskette, don't you? Another Bulgarian virus, the Compiler, infects
+files only when they are created (by the compiler/linker) or when
+their size is about to change. In both cases either the respective
+media is not write-protected, or the user will remove the tab as soon
+as s/he sees the "Write protected" error message. Remember, Cohen
+proved that on machines with Turing capability, shareing of
+information, and transitivity of information flow, the viruses are
+possible, and unstoppable in general.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    01 Oct 91 12:07:04 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Typical incidents
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  I would say that typical incident involves cure rather than
+>  prevention because we allow it to be so.  The public is being
+>  trained to rely on virus scanning as the main prophylactic measure.
+
+Yes, it is so, and it is bad... But it was natural that it happened.
+Scanners are the easiest anti-virus programs to write and update. Can
+you imagine a disinfector updated as frequently as SCAN? Who will
+disassemble all these new viruses? Here at the VTC we have about 800
+different variants and haven't analyzed fully even the half of them...
+And if you speak about monitoring programs (like SECURE), the problem
+with them is that once a virus appears that is able to circumvent
+them, you must rewrite the whole thing from scratch...
+
+Some friends of mine in Bulgaria wrote a whole extension to the
+operating system, which was able to use file access rights, just like
+Washbrun's program. And it was much more difficult to subvert, since
+it was not just yet another TSR, but formed part of the operating
+system... Yet, they had to renonce the project, after two times when
+new virusea appeared that used new ideas and were able to bypass the
+product. Note that the virus authors even didn't knew about the
+product, since it was not available in the market. After rewriting
+twice the product from the very beginning, changing each time the
+conceptions, my friends dropped the whole thing, and began to write a
+resident programmable scanner - a major step backwards, but a product
+which is much easyer to update and sell...
+
+>  the enemy uses for attack.  Hardware defenses are needed to put a
+>  stop to viruses.  Software defenses can never do that.  Hardware
+>  defenses cannot be subverted by software.
+
+Prove your claim. Describe a hardware defense that cannot be
+subverted.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 08:49:59 -0400
+>From:    Wes Morgan <morgan@ms.uky.edu>
+Subject: Virus-proofing a StarLAN server (UNIX) (PC)
+
+We have found a remarkably effective method of "virus-proofing" a
+StarLAN server running Unix.  This posting will tell you all you need
+to know.  I'm assuming a certain amount of Unix knowledge, but all the
+commands used are "basic" Unix.  Questions and/or comments may be
+directed to me, morgan@engr.uky.edu.
+
+This technique applies to StarLAN v3.2 and earlier.  I haven't had the
+opportunity to check out v3.3 or later.  Once our StarServers are running
+v3.4, I will check into this and report back to this list.
+
+Normally, the administrator will use the StarLAN utilities to load
+a DOS application into the server.  The default ownership of the
+installed application is "msnet"; this is the id of the server it-
+self.  However, it also assigns a default protection that gives "msnet"
+read/write permission on the file.  This is the "loophole" through which
+a virus may infect the server from a client.
+
+Changing the file permissions of each executable file will NOT close
+this loophole.  Since the file is still owned by "msnet", the server
+software can override the file permissions, allowing infection.
+
+We have found that changing the ownership of the .exe, .com, .ovl, and .sys
+files ON THE SERVER to "root" closes this loophole.  The server, running
+as "msnet", still has read/execute permissions, since "msnet" runs with
+the permissions assigned to "other" on the Unix side of the server.  How-
+ever, since "msnet" no longer owns the file, it can neither write to the file
+nor override the file protection.  Virus infection, therefore, is
+not possible.
+
+The actual command sequence is as follows (You must be superuser to do this):
+
+	- Install the DOS application with the StarLAN utilities.
+	- Move to the directory in which the application has been installed.
+	- Give the command "chmod -w *.exe *.com *.ovl *.sys"
+	- Give the command "chown root *.exe *.com *.ovl *.sys"
+
+It is not necessary to change the ownership of regular data files, since
+they are not a target for infection (in most cases).  In fact, some appli-
+cations *require* write permission for data files on the server.  Therefore,
+this technique should only be applied to *executable* files (*.exe, *.com,
+*.ovl, etc.)
+
+This DOES NOT protect the client PCs; they can still be infected on an
+individual basis.  This method, however, prevents an infected PC client
+from infecting the application on the server.
+
+Questions and comments may be directed to me, morgan@engr.uky.edu.
+
+Best,
+Wes Morgan
+
+- --
+ morgan@ms.uky.edu    |Wes Morgan, not speaking for|     ....!ukma!ukecc!morgan
+ morgan@engr.uky.edu  |the University of Kentucky's|   morgan%engr.uky.edu@UKCC
+ morgan@ie.pa.uky.edu |Engineering Computing Center| morgan@wuarchive.wustl.edu
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 10:39:12 -0400
+>From:    pshuang@Athena.MIT.EDU
+Subject: Infectable Areas (PC)
+
+ > IMNSHO, we need a shell program (a la Shez), that is able to unpack the
+ > compressed files and to run a user supplied scanner on them.
+
+At least one program already exists (DIRX) which is capable of reading
+the startup code of executables and make a guess as to which compressor
+was used on them, so this is certainly possible.  (It allows you to
+compress uncompressed files and decompress compressed files, but does
+not offer from within itself an option to scan the resulting code.)
+
+- --
+UNIX:/etc/ping instantiated (Ping Huang) [INTERNET: pshuang@athena.mit.edu]
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 10:46:59 -0400
+>From:    pshuang@Athena.MIT.EDU
+Subject: Heuristic analysis?
+
+ > But DIET v1.10a is not a virus.  Instead, it's a brilliantly- conceived
+ > public-domain program that does things no utility has ever been able to
+ > do before. In fact, DIET v1.10a uses stealth-virus technology for a
+ > good, useful purpose in a competent and original way.
+
+I find it interesting that DIET has branched out in function as you have
+described, thus making it much more like a general-purpose on-the-fly
+disk compressor such as Stacker or DoubleDisk, or, for that matter, a
+set of utilities (freely distributable but still copyrighted) published
+by PC Magazine some years back called DCOMPRESS.  However, the fact that
+these commercial utilities have existed for many years negates your
+claim that DIET is first in providing this kind of functionality,
+although your summary of why heuristic analysis can never be depended
+upon *NOT* to give false alarms is well-done.
+
+- ---
+UNIX:/etc/ping instantiated (Ping Huang) [INTERNET: pshuang@athena.mit.edu]
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 10:33:37 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: Precise identification (PC) Reaction and Philosophy
+
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+
+I wrote:
+>> permitted to load from DataDisk (see PATH). Need to update a file or...
+
+This simply meant that you do not have to be in the directory, or even
+on the disk a program resides in to invoke it. Necessary temporary
+files can be created in the current (writable) directory, not the
+protected partition. Again, let me emphasize that this is not theory,
+but actual working code. It is the "nice" installation and maintenance
+portions that are incomplete.
+
+>How do you achieve this by using only the PATH variable? That is, how
+>do you prevent the files in the current directory on the data disk
+>from being executed (if the data disk is also the current drive)?
+
+Interception and filtering of Int 21 EXEC function. There are other
+more rigorous ways but given a layered approach, this seems sufficient.
+I also like tiny.
+
+>Unless the protection is achieved by a strong cryptographic scheme,
+>there is no way to prevent the information from being read, using
+>software only... And no way of protecting the disk from being
+>destroyed, regardless of the software protection used... Or do I miss
+>something? How do you achieve your protection exactly?
+
+Never said that an expert couldn't manually subvert it, the only thing
+that works in that case is full encryption with seeds stored off-platform.
+
+For that matter, most protection schemes that "protect against floppy
+boots" can be disabled by wiping the MBR & Boot Record then using
+Norton's Disk Doctor to recover. A very few are more secure but not
+many.
+
+Suffice to say that if you authenticate and capture Int 13 at the BIOS
+level (before DOS loads) malicious software must come through your
+code to find the disk. Given the plethora of disk controllers and special
+ROM extensions, blind calls by a virus to the BIOS (segment F000h) would
+be chancy at best.
+
+Since writing to a specific partition could be controlled through such a
+disk access control, attacks such as used by the DIR-2 virus would be
+detected by the attempt to write. (Incidently, the resident code to
+achieve this is only c.a. 256 bytes).
+
+Certainly, specific code could be written to break this approach since it
+is in software but would require very specific and exhaustive programming.
+Add in simple (but unknown or variable) validation, much more rigorous
+programming than seen in any virus to date would be needed.
+
+As mentioned previously, software can be created to break software HOWEVER
+the increase in complexity to break is usually an order of magnitude
+greater than that to protect unless a specific "hole" exists. Viruses
+only exist in their present form because DOS has near-zero integrity
+checking (AA55h).
+
+					Padgett
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 10:36:32 -0600
+>From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: Re: Azusa Virus & CLEAN question (PC)
+
+twong@civil.ubc.ca (Thomas Wong) writes:
+
+>morgan@ms.uky.edu (Wes Morgan) writes:
+>>For those who track such things, the Azusa virus was discovered at the
+>>University of Kentucky today (9.24.91).  The Azusa virus infects the..
+>We found it on our grad student's floppies too, here in University of
+>British Columbia (Vanoucver, B.C., Canada). We found them before they
+>corrupted any files. It was still dormant in the boot sector.
+
+>>McAfee SCAN found it, and McAfee CLEAN removed it.  However, on several
+>>occasions,  the data on the floppies was unrecoverable.
+
+Are you certain the virus was Azusa?  McAfee's SCAN, up to release 80,
+(I haven't yet had time to check SCAN v82 against the Empire variants)
+called some of the Empire variants "Azusa".  We would be quite concerned
+At U of Alberta if we found that the Empire viruses are now in Kentucky
+and British Columbia.  I suppose it is to be expected, sooner or later.
+Anyway, FPROT 1.16 and 2.0 correctly identify the Empire variants as
+"Empire".  Wes, Thomas: if you still have infected disks about, would
+you use FPROT to test which virus it is, or else send me an Email message
+and I'll describe how you can identify the Empire variants.  (I don't
+know the Azusa virus, thankfully!)
+
+>Unfortunately, CLEAN stated that it wasn't save enough to remove it
+>from the boot sector and aborted. Since we found this virus on non
+>bootable floppies, we don't care what CLEAN does to the boot sector.
+>Is there a way to force CLEAN to erase it regardless? I can't find
+>this feature in the doc files. Thanks.
+
+I don't know about using CLEAN, but with Norton Utilities you can
+simply copy a clean boot sector from an identically sized floppy to
+a file, then copy that file, in "absolute sector" mode, to the boot
+sector of the infected floppies.  Or you can use Norton Utilities to
+find out where Azusa (Empire?) has hidden the correct boot sector
+and use it to copy the correct boot sector back into place.  Or write
+a ten line assembler program to do the same thing.  Lots of possibilities!
+
+ -------------------------------------------------------------
+  Tim Martin                 *
+  Soil Science               *     These opinions are my own:
+  University of Alberta      *        My employer has none!
+  martin@cs.ualberta.ca      *
+ -------------------------------------------------------------
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 15:34:01 -0400
+>From:    RICH BASILE <R3RB%AKRONVM@vm1.cc.UAKRON.EDU>
+Subject: Akron U (PC)
+
+Thank you to all who responded to my recent catastrophe.
+
+FYI --
+   The infected file has been deleted.  (Sorry, no copies made)
+   I was using F-PROT 1.16
+
+Question -- How do I subscribe to this group.  I know didly about vm
+groups  (I always used VAX for this)
+
+     THANK YOU,
+     RICHARD BASILE
+     UNIVERSITY OF AKRON
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 20:49:20 +0000
+>From:    rsr%garnet.Berkeley.EDU@ucbvax.Berkeley.EDU (Roger Rosenblum)
+Subject: Tequila virus (PC)
+
+Patricia Hoffman's virus summary indicates that the Tequila virus
+can be detected/removed by McAfee & Associates SCAN/CLEAN programs
+(Version 80+), yet I see no mention of this virus in the documentation
+(VIRLIST.TXT) for version 80 or 82.  Am I missing something?
+
+Roger Rosenblum                          Internet: rsr@garnet.Berkeley.Edu
+Workstation Software Support             Bitnet:   rsr@ucbgarnet.Bitnet
+University of California at Berkeley
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 10:48:29 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Hardware Damage?
+
+axtlp@acad2.alaska.edu (PIKEY TAM L) writes:
+
+> confirmation or denial of the following.  I read somewhere that a few
+> REALLY RARE virus's can do hardware damage basically by stressing out
+> the system.  In particuliar burning in monitors or burning out cpu
+> chips on brand specific motherboards.
+
+It is possible to write programs which can take advantage of specific
+weaknesses in specific hardware in order to generate hardware damage.
+Certain monitor/adapter combinations, hard drives and printers are
+subject to such.  Old (*very* old) aminframe CPUs were subject to such
+damage on occasion, new microprocessors are not.
+
+Any such damaging programs are extremely hardware specific, and would
+only damage a very small fraction of the target population.
+
+To the best of my knowledge, no existing virus contains such code.
+
+Having said all that, any virus which attempts to do a low level format
+will "damage" an IDE drive in a manner indistinguishable (at the user
+level) from hardware damage.
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      CyberStore               |  turn it on."
+User                (Datapac 3020 8530 1030)| Richards' 2d Law
+Security           Canada V7K 2G6           | of Data Security
+
+------------------------------
+
+Date:    Tue, 01 Oct 91 22:35:30 +0000
+>From:    cberrett@tau.sim.es.com (C. Berrett)
+Subject: Virus Questions
+
+Having just recently become interested in computer viruses (due to an
+infection by one called Joshi) I would appreciate some answers to some
+questions.  As I have browsed this newsgroup, I have come upon several
+terms with which I am unfamiliar. Can someone give me the definitions
+and/or information on the following:
+
+	1.  Stealth virus or stealth techniques.
+	2.  MBR
+	3.  Where did Joshi get its name and where can I get detailed
+	      information on it.
+
+	Thanks in advance,
+			C. Berrett
+
+------------------------------
+
+Date:    Thu, 03 Oct 91 09:59:06 -0600
+>From:    kev@inel.gov (Kevin Hemsley)
+Subject: Re: New NetWare Virus ? (PC)
+
+In Volume 4 Issue 178 Ronnie Nader (RONNIE@ECUAFUN.BITNET) writes:
+
+> Today, a network under NOVELL 3.11, was hit by a unknown virus, at
+> least in our environment, the virus only affects the server, when you
+> issue the command "load monitor", few minutes later, the screen clears
+> and a worm composed by block characters showing different levels of
+> gray begins to run across the screen, the creature disappears when you
+> press the ESC key.
+>
+> We're checked the server under DOS with CPAV v 1.0, and installed the
+> VSAFE.SYS program in memory, then run the program SERVER.EXE, issue
+> the "load monitor" command, and few minutes later, the worm appears on
+> the screen, and the VSAFE program says nothing, the CPAV program
+> doesn't say anything, and the worm continue to run across the screen.
+
+I don't think that you have anything to worry about.  It is not a new
+virus, or a new NetWare worm :-) What you are seeing is a screen saver
+which is included in the Monitor NLM; just a nifty little feature
+included in your NetWare package.  I couldn't find any reference to
+this feature to determine how it can be configured, or removed.  Its
+only purpose is to prevent screen burn-in.
+
+-
+ -------------------------------------------------------------------------------
+ Kevin Hemsley                             |
+ Information & Technical Security          | If you think that you have someone
+ Idaho National Engineering Laboratory     | eating out of your hand, it's a
+ (208) 526-9322                            | good idea to count your fingers!
+ kev@inel.gov                              |
+-
+ -------------------------------------------------------------------------------
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 180]
+******************************************

@@ -1,0 +1,545 @@
+VIRUS-L Digest   Monday, 10 Sep 1990    Volume 3 : Issue 155
+
+Today's Topics:
+
+Re: Salk Vaccine
+Removing Joshi (PC)
+Revised "Guide to Fighting Macintosh Viruses"
+re: Mysterial message (KONIEC)
+Re: 1701/help (PC)
+Strange things are afoot on my Mac IIcx (Mac)
+Soviet Viruses
+Interaction Between Security Programs (Mac)
+Fuse in text file ???
+Virus in Sound Effect (MAC)
+Re: Anti-virus viruses
+12 Tricks in virucide? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    05 Sep 90 20:51:26 +0000
+From:    decomyn@penguin.uss.tek.com
+Subject: Re: Salk Vaccine
+
+HAMER@VCUVAX.BITNET (ROBERT M. HAMER) writes:
+>On 26 Aug 90 00:48:38 decomyn@penguin.uss.tek.com writes:
+>
+>>This is not exactly true.  Although the person getting the vaccine (or
+>>their parents) hopefully understand the risks and benifits, the Salk
+>>vaccine actually spreads to non-vaccinated people, transmitting the
+>>benifits of the vaccine to them without their knowledge or consent.
+>>That is why the Salk vaccine is used, rather than a killed virus
+>>vaccine.
+>
+>The Salk vaccine was a _KILLED_ virus vaccine, created by Jonas Salk.
+
+You're right, of course.  I always have trouble keeping these two straight.
+
+>Several years later, Albert Sabin created a weakened _LIVE_ virus
+>vaccine, called, not surprisingly, the Sabin vaccine.  Its purpose was
+>not to spread to "non-vaccinated" people.  It was designed neither to
+>spread not to make people sick; just to do a better job of getting the
+>immune system to create antibodies to polio than did the Salk vaccine.
+
+I am afraid you need to do a little more research on this.  The
+government policy pushing the live-virus vaccine (Sabin) in favor of
+the killed- virus vaccine emphasizes the ability of the live-virus
+vaccine to spread to non-vaccinated children, spreading the benefits.
+There have been several popular accounts of this as well, including
+one episode on Nova (PBS).
+
+If you wish to discuss this further. let us move it to email or
+sci.medicine.
+
+Brendt Hess
+decomyn@penguin.uss.tek.com
+
+------------------------------
+
+Date:    Wed, 05 Sep 90 17:21:29 -0400
+From:    MMCCUNE@sctnve.BITNET
+Subject: Removing Joshi (PC)
+
+Here is a program that will detect and remove the Joshi Virus from
+hard disks. It is free to use by all private individuals and any
+institution that I give permission to use it. I wrote it for the
+shareware A86, but it should assemble with MASM, TASM or WASM
+with minor modifications.
+
+mov dx,80h
+mov cx,1h
+mov bx,200h
+mov ax,201h
+int 13h
+or ah,ah
+jnz read_error
+es:
+cmp w[bx],1feb
+jnz no_virus
+mov cx,000ah
+mov ax,301h
+int 13h
+or ah,ah
+jnz write_error
+mov cx,9h
+mov ax,201h
+int 13h
+or ah,ah
+jnz read_error
+mov cx,1h
+mov ax,301h
+int 13h
+or ah,ah
+jnz write_error
+mov ah,9h
+lea dx,remove_message
+int 21h
+int 20h
+remove_message:
+db 'Joshi Removed$'
+no_virus:
+mov ah,9h
+lea dx,virus_message
+int 21h
+int 20h
+virus_message:
+db 'Joshi not found$'
+read_error:
+mov ah,9h
+lea dx,read_message
+int 21h
+int 20h
+read_message:
+db 'Read Error$'
+write_error:
+mov ah,9h
+lea dx,write_message
+int 21h
+int 20h
+write_message:
+db 'Write Error$'
+
+This program will remove the Joshi virus from the hard disk. McAfee's
+SCANV64 or above will detect it. The virus can also be detected by
+looking at the partition table with a HEX editor such as Norton
+Utilities. First, cold boot (turn the machine off) off a clean, write
+protected diskette. Then look at the partition record (Track 0, Head
+0, Sector 1). If the first two bytes are Hex EB 1F, the hard disk is
+infected.
+
+The virus also does some other things to make itself detectable. When
+the date is set to 1-05-(any year), a green screen with the words
+"TYPE HAPPY BIRTHDAY JOSHI" appear on the screen. The machine will
+halt until the message is typed.
+
+Also, CHKDSK will show 6k less memory than is available on an
+unifected system.
+
+Probably the most annoying bug in the virus is that it won't allow you
+to format a diskette while it is active in memory; the system will
+give a "bad track 0" error.
+
+To use, first boot off an unifected diskette (this is very important).
+Then type RMJOSHI. This will remove the virus from the hard disk. It
+will leave traces of the virus in the partition table but the virus
+will be disabled and the system will be returned to normal. On some
+systems, RMJOSHI may damage the partition table. The program
+RETURN.COM will restore the hard disk to it's origonal state. Do not
+use RETURN unless you have used RMJOSHI on the hard disk at least one
+time.
+
+RMJOSHI will give four messages:
+
+Joshi Removed   - The virus was found and removed from the partition table
+                  of the hard disk.
+Joshi not found - Either the virus is active in memory or the hard disk is not
+                  infected.
+Read Error      - The program aborted because there was an error reading the
+                  hard disk.
+Write Error     - The program aborted because there was an error writing to
+                  the hard disk.
+
+When dealing with viruses, there is always a danger of losing programs
+or data.  Thus, I offer no warranty on these programs. They may be
+freely distributed as long as they are not altered in any way. I can
+be reached on the FIDONET virus echo, the INTERLINK virus echo and
+VIRUS-L digest. I can also be reached on BITNET as MMCCUNE@SCT.NVE.
+
+Mike McCune.
+
+------------------------------
+
+Date:    06 Sep 90 14:22:51 +0000
+From:    shull@kings.wharton.upenn.edu (Christopher E. Shull)
+Subject: Revised "Guide to Fighting Macintosh Viruses"
+
+If you are still losing your voice explaining to normal people how to
+get rid of and avoid viruses on their Macs, perhaps my newly updated
+"Guide to Fighting Macintosh Viruses; Instructions for the Rest of Us"
+will help. As with the previous version please feel free to steal from
+it shamelessly ("Lesser artists borrow, great artists steal." - Igor
+Stravinsky) to write your own document, or just use it as is.
+
+First I include the plain, virtually unformated text followed by the
+PostScript version.  In either case it is comprised of a single page
+of simple instructions and advice, followed by the page and a half
+long "Quick Start" section of the Disinfectant 2.1 Manual by John
+Norstad.
+
+Good luck and happy hunting.
+
+- -Chris
+Christopher E. Shull                   Academic Technology Services &
+The Wharton School                     Department of Decision Sciences
+University of Pennsylvania             Shull@wharton.upenn.edu
+3620 Locust Walk                       Shull@desci.wharton.upenn.edu
+Philadelphia, PA 19104-6366            (215) 898-5930
+- ------
+
+[Ed. Thanks for the contribution, Chris!  I've placed it on the CERT
+anonymous FTP under pub/virus-l/docs/mac.guide.shull.  The host name
+is cert.sei.cmu.edu.]
+
+------------------------------
+
+Date:    06 Sep 90 13:23:00 -0500
+From:    "Otto.Stolz" <RZOTTO@DKNKURZ1.BITNET>
+Subject: re: Mysterial message (KONIEC)
+
+Hello amateur linguists,
+
+my note of yesterday was a near miss or (stated euphemisticly) almost
+correct. A browse through our library's dictionaries during
+lunch-break revealed that the exact spelling KONIEC is used only in
+the West-Slavic languages Polish and Slovac, not in Serbo-Croatian as
+I had erroneously assumed. In particular, the Bulgarian word is
+spelled differently and has a completely different meaning (see
+below); this might be of interest to virus researchers, as we have
+read of many viruses originating in Bulgaria.
+
+Btw. the C is pronounced like a TS (definitely not like a K or G) in
+all slavic languages using the Latin script; hence there is no
+connection with the Germanic root KING/K
+NIG, as had been conjectured
+by somebody else.
+
+I hope this will settle the discussion. Best wishes
+                                                    Otto
+- - - - - - - - - -
+Appendix: Summary of KONIEC root
+
+East-Slavic Languages:
+Russian *     KONJEC  End, tip, point; distance, way (between 2 points)
+Ukrainian *   KINEC'  end, termination, conclusion, limit;
+                      extremity, point
+Bjelo-Russian not checked
+
+West-Slavic Languages:
+Polish        KONIEC  End, tip, termination
+Czech         KONEC   End, termination
+Slovac        KONIEC  End, termination
+Minor West-Slavic languages not checked
+
+South-Slavic Languages
+Slovenian     KONEC   End, termination, aim; thread
+Serbo-croatic KONAC   End
+Makedonian *  KONJEC  Thread  (KRAJ = end)
+Bulgarian *   KONJEC  Thread  (KRAJ = end)
+
+* These languages use the Cyrillic script,
+  where JE is one single letter
+
+------------------------------
+
+Date:    06 Sep 90 16:53:46 +0000
+From:    buchholz@ese3.ogi.edu (Don Buchholz)
+Subject: Re: 1701/help (PC)
+
+... uh, excuse me -- I'm new to the virus group, but I do know a
+little bit about 1701/hard disk errors.
+
+The 1701 error will also come up on a disk drive that needs a
+low-level format.  (I don't know if it is *possible to trash* a
+low-level format with *software*.)
+
+You should have your friend redo the low-level format on his hard
+disk, although you can probably kiss the files goodbye.
+
+On the bright side, we've had 2 XT-clones, with Seagate ST-225's that
+had gone "sour" (for lack of a better term), that were revived (files
+recovered and all!) by redoing the low-level format!  I won't promise
+anything, but if the files aren't *critical* (i.e. worth paying $100+
+for data recovery at a drive repair shop) then you ought to give it a
+try.  Costs nothing.
+
+- -------------------------------------------------------------------------------
+Don Buchholz                         "I wish I'd never gone to Bangkok ..."
+Oregon Graduate Institute            "I wouldn't be so sad I wasn't there now."
+buchholz@ese.ogi.edu                  -- J. DeWitt (1985)
+- -------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    06 Sep 90 23:06:11 +0000
+From:    edmunds%gandalf.nosc.mil@nosc.mil (Daniel G. Edmunds)
+Subject: Strange things are afoot on my Mac IIcx (Mac)
+
+Well, I think my Mac IIcx has come down with a strange virus.
+Seemingly unrelated weird goings on have cropped up in the last two
+days.  Not all at once, but gradually.  I have run Disenfectant 2.1
+scans on numerous occasions and turned up nothing.
+
+The first thing that happened was that Finder Sounds just stopped
+working when I closed a window.  Everything looked OK, but it just
+wouldn't work.  I ran Dis 2.1 and it said that Finder Sounds had a
+corrupted data fork.  So I removed it from the system folder and
+continued on.
+
+Later that day, I tried to print out a Word file on my PaintJet and I
+got a "The application 'Microsoft Word' has unexpectedlly quit (1)" I
+tried again and got the same message.  I tried again with the printer
+set to draft mode only (the other attempts had been "Best" mode) and
+it worked.  Hmmm.
+
+This morning, Iwas editing an AutoCad drawing and the printer began
+printing out a constant stream of three ascii characters in a
+repeating pattern whenever the mouse was idle.  As soon as I moved it
+or clicked, the printer would stop until the mouse was idle and I
+wasn't in the middle of a command.  Then, suddenly, it stopped
+printing when the mouse was idle and began to do it whenever the
+pointer was moved off of the drawing window and onto a scroll bar or
+pull down menu (as long as the button is not depressed) I should point
+out that no printer was selected on chooser.  In fact, I had selected
+another printer just to see if I could make it stop doing this.  No
+luck.
+
+I have tried reinstalling the system (6.0.5), rebuilding the desktop,
+runnig with Finder on and Multifinder off and vice versa.  The only
+recent change to my system has been a Kensington Turbo ADB Mouse that
+is installed in the same port as my old mouse had been in.  That was a
+hardware change only, no software was involved.
+
+As you can probably tell, I am a new Mac user, and know little about
+the inner workings of this thing.  It could be a hardware problem, but
+the seemingly unrelatedness and weirdness of these problems makes me
+think that, I can't stop myself from saying this, my APPLE has a WORM
+in it.
+
+Anything sound familiar to anyone?
+
+Dan Edmunds                                                    (619) 672-0975
+                                                     edmunds@gandalf.NOSC.MIL
+
+------------------------------
+
+Date:    Fri, 07 Sep 90 08:23:00 -0500
+From:    Sanford Sherizen <0003965782@mcimail.com>
+Subject: Soviet Viruses
+
+Some time ago, I posted an inquiry about viruses in the USSR.  Thanks
+for responding to Y. Radai, Fridrik Skulason, Dimitri Vulis, Werner
+Klotzbuecher, E.  Shapira, Aryeh Goretsky, and a person who prefers to
+remain anonymous.
+
+My article on computerization in the USSR was printed in
+COMPUTERWORLD, In Depth Section, August 20, 1990, 73-74.  For Virus-L
+readers, here are the major findings regarding viruses.
+
+One of the earliest publicized cases of a computer virus in the USSR
+occurred in 1988, when an unidentified programmer at the Gorky
+Automobile Works on the Volga River was charged with deliberately
+using a virus to shut down an assembly line in a dispute over work
+conditions.  The man was convicted under Article 206, the so-called
+hooliganism law, which provides for a jail term of up to six years for
+(quote) violating public order in a coarse manner and expressing a
+clear disrespect toward society.(end quote)
+
+Pirated software appears all over the USSR and the Soviets often get
+hit with viruses when they buy copies via the Hong Kong or Swiss
+connections.  There are also several Bulgaria contributions. Aryeh
+Goretsky at McAffee Associates says that there have been confirmed
+attacks of Yankee Doodle, Vacsina, Microsoft88 (534), Sunday, Amstrad
+or Pixel, Disk Killer 170X, Stoned, Ping Pong, Vienna, Jerusalem,
+Friday the 13th COM, Pakistani Brain, Disk Killer and W-13.
+Anti-virus program in the USSR are AIDSTEST by Lozynky and ANTI-KOT
+and ANTI-KOR by Kotik.  Some Western anti-virus programs and some
+homegrown verisons are also available there.
+
+While the Soviet computerists whom I met are aware of the virus
+threat, there is a general lack of organizational preparedness to meet
+the challenge.  Soviet hackers, forces from out side the borders, and
+even some political or ideological persons may set off viruses in the
+near future.  Several of the experts I met knew how to creat a virus
+and others certainly know how to get copies. More than likely, viruses
+will be sold or traded as so many other commodity are.
+
+Since perestroika is heavily based on rapid computerization of
+enterprises, virus created disruptions could mean serious disruptions
+of basic economic restructuring efforts.
+
+Further comments are found in the full article.
+
+Sandy
+
+******************
+Sanford Sherizen, Ph.D.
+President
+Data Security Systems, Inc.
+5 Keane Terrace
+Natick, MA 01760 USA
+
+RESPOND VIA-------------------> MCI MAIL:   SSHERIZEN  (396-5782)
+           -------------------> FAX:        508-879-0698
+           -------------------> PHONE:      (508) 655-9888
+******************
+
+------------------------------
+
+Date:    07 Sep 90 09:22:37 -0400
+From:    Robert McClenon <76476.337@CompuServe.COM>
+Subject: Interaction Between Security Programs (Mac)
+
+A correspondent to this forum recently mentioned an odd interaction
+between two viral scanners on the PC, where one of them identified the
+list of viral signatures used by the other one as containing the
+viruses.  I have observed a different type of odd interaction between
+anti-viral packages on the Macintosh.  The virus scanner Virex and the
+security package A.M.E. (Access Managed Environment) have been
+installed on a Macintosh.  If a diskette containing new applications
+is inserted into a drive, Virex attempts to scan the diskette for
+virus signatures.  However, A.M.E. intercepts the scan and puts up a
+message saying that an attempt is being made to open an unregistered
+item of software.  It allows the system administrator to bypass
+registration or to cancel the open, but warns that bypassing the
+requirement for registration is dangerous.  If the diskette contains a
+new release of previously installed software (an update), it puts up
+an even more strongly worded warning that an attempt is being made to
+open an altered copy of a registered program and that it may have
+viruses.  The message may confuse an inexperienced system
+administrator because she may assume that an attempt is being made to
+EXECUTE an unregistered or altered application.  In fact, Virex is
+opening the applications to READ them to scan for viruses.  The proper
+response is to bypass the A.M.E. registration check at this point.
+Cancelling the open causes the diskette to be ejected.
+
+If the user is not the system administrator, A.M.E. does not offer the
+bypass option.  It simply cancels the open.  This is reasonable since
+in a controlled environment only the system administrator should be
+loading new programs.
+
+The specific moral to this concerns the interaction between A.M.E.
+and Virex.  The general moral to this is that anti-viral programs may
+interact with each other oddly, and that they do require expert
+knowledge of what the virus threat is and what the other threats are
+and what they are doing to protect the users.
+
+    Robert McClenon
+    Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    Fri, 07 Sep 90 16:23:00 -0400
+From:    Wallace@DOCKMASTER.NCSC.MIL
+Subject: Fuse in text file ???
+
+          A correspondent of mine says that he recently scanned a text
+file of sattelite ephemeris data, and was informed by VIRUSMD that the
+file contain*ed a "fuse"
+
+          Does anyone know what a fuse is??  Does anyone use VIRUSMD,
+and if so, can you explain this error message???
+
+Thanks,
+          Mark C. Wallace
+
+------------------------------
+
+Date:    08 Sep 90 11:07:40 -0400
+From:    Robert McClenon <76476.337@CompuServe.COM>
+Subject: Virus in Sound Effect (MAC)
+
+     A co-worker a few months ago had a problem that should be
+mentioned.  He picked up some free disks containing some installable
+sound effects for a Macintosh.  He knew that he should scan any
+applications or desk accessories for viruses.  It didn't occur to him
+to scan sound effects.  He installed them without using a virus
+checker, although a commercial virus scanner was was installed.  He
+probably thought sound effects were harmless.  (They are, unless they
+have viruses.)  Shortly thereafter he noticed that 75M of his 80M hard
+disk was in use, and that the system and various applications had
+increased in size.  At this point he scanned for viruses and found
+multiple infections by nVIR.  The version of nVIR that he had picked
+up was (like many subspecies of nVIR) extremely virulent and produced
+very many copies of itself.  An installable sound effect is of course
+a resource, and on the Macintosh anything having a resource fork can
+be infected by viruses.  There would seem to be a moral to this: Check
+everything, even things that you don't think are subject to viral
+infections.
+
+On the Macintosh, viruses are not limited to the System or
+applications, but anything having a resource fork.  On IBM-compatible
+PC's, viruses can be not only in .COM and .EXE but in other types of
+code such as .OBJ or .BIN.
+
+    Robert McClenon
+    Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    Sat, 08 Sep 90 13:35:50 -0400
+From:    flaps@dgp.toronto.edu (Alan J Rosenthal)
+Subject: Re: Anti-virus viruses
+
+FXJWK@ALASKA.BITNET (Jo Knox - UAF Academic Computing) writes:
+>Every virus that I know of is already platform-specific, and I don't see why
+>it shouldn't be easy to make a virus OS-specific:
+>  (pseudo code)
+>     if( os-version != "6.0.5" ) exit;
+>     infect_it();
+
+Even if the WDEF virus for the mac contained such a test, it would
+still probably be the case that "the virus causes the Mac IIci, the
+IIfx, and the Portable to crash almost immediately after insertion of
+an infected floppy."  (Disinfectant 2.1 help screen)
+
+The issue is the same here.  The author of the wdef virus didn't have
+any of these machines to test the virus on at the time (most of them
+weren't released yet (I don't know the exact timing)).  But they are
+all supported by system 6.0.5.
+
+There's no way to write that test correctly.  Virus writers can't test
+for machines they don't know about.
+
+ajr
+
+------------------------------
+
+Date:    Sun, 09 Sep 90 16:36:19 -0400
+From:    gparry@gmuvax2.gmu.edu (Gordon R. Parry)
+Subject: 12 Tricks in virucide? (PC)
+
+	A friend of mine got a file called "VIRUCIDE.EXE" which
+Scan66b says has the "12 Tricks Trojan Horse."  He hasn't run it,
+but would like to find out more about it.  Does anyone have any
+information they can send me on it?  Thanks in advance.
+
+				Gordon
+				(gparry@gmuvax2.gmu.edu)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 155]
+******************************************

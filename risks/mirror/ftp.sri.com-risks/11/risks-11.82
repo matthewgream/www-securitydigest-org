@@ -1,0 +1,494 @@
+Subject: RISKS DIGEST 11.82
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 4 June 1991  Volume 11 : Issue 82
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Risks of open anonymous ftp (Pete Cottrell)
+Magellan spacecraft performance; followup (Randall Davis)
+Lauda Air Boeing 767 Aircraft crash (Hermann Kopetz, Richard Shapiro, 
+  Joe Morris, Steven Philipson, Jeremy Grodberg)
+RISKS of posting humor to the net (Phil R. Karn)
+Digital Fingerprints in California (Mike Caplinger)
+CPSR Review of FBI Net Surveillance (David Sobel)
+Computers and Academic Freedom Groups Now at EFF.ORG (Jim Horning)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 11, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 4 Jun 91 17:50:01 -0400 
+From: pete@cs.UMD.EDU (Pete Cottrell)
+Subject: risks of open anonymous ftp
+
+	I have discovered some risks of having an open anonymous FTP
+environment on your machine. By 'open', I mean that there are one or more
+writable directories available for people using anonymous FTP into which files
+can be uploaded. This arrangement is popular on several of our professors'
+workstations, as it allows them to exchange files and papers with colleagues at
+other sites. It is particularly nice for dvi or binary files, which can't be
+sent directly via e-mail. Occasionally, we have seen a file called
+MAKE_MONEY_EASY or something similar advertising some get-rich-quick pyramid
+scheme that someone uploads. This hasn't been a problem in the past, but it has
+become one when escalated by an order of magnitude or two.
+	Some background first: the USENET newsgroup alt.sex.pictures is used to
+distribute what are usually called X- or R-rated pictures. These pictures are
+uuencoded files, usually in the GIF format, sometimes in others. Because of the
+size of the pictures, a individual pictures is broken down into parts, usually
+3 or 4, but sometimes up to 20. A fully assembled and decoded picture is
+sometimes as small as 25 or 30K, but is typically 150-250K and may be even
+larger. Monthly posted reports of USENET traffic flow show that this newsgroup
+is consistently among the leaders in terms of quantity of megabytes of traffic.
+	Many sites refuse to carry or forward this newsgroup. For some, it is
+simply a question of traffic; they don't want to double or triple their phone
+and modems costs to transmit the group. For others, it is a matter of the
+material itself. More than one group has been forced to shut down the group
+under orders from superiors, often under political pressure.
+	To make up for the lack of availability of the newsgroup, and also for
+the limited bandwidth it provides even if available, seekers of the GIF files
+look for ftp sites. A good site can have many pictures available, and the ftper
+can grab many megabytes of files at once. Several of these have been found in
+the past, but what typically happens is that someone will announce the location
+of such a site, at which point the poor machine is swamped with anonymous ftp
+sessions and traffic, forcing the administrators of the machine to turn off
+anonymous ftp. As a consequence, the source of ftp sites is few.
+	So, another tack must be taken and it is this: find a site that has a
+writable anonymous ftp directory, create gif directories, and ftp away.
+Requests and questions are communicated by creating files whose name is the
+request/question itself, like this:
+
+	-rw-r--r-- 1 ftp 1 May 23 18:57 more-asian-gifs-PLEASE
+
+		or
+
+	1 -rw-rw-rw- 1 ftp 1 May 23 14:21 00-Otherwise-this-site-wo
+uld-be-shut-down-soon
+        1 -rw-rw-rw- 1 ftp 1 May 23 14:21 00+Please-do-you-file-tra
+nsfer-at-non-prime-time.---7pm-6am.eastern-time
+
+Announcement of new sites is handled in a similar fashion:
+
+	-rw-r--r-- 1 ftp 1 May 22 00:16 I-saw-somebody-suggesting-t
+o-switch-to-xxxxx.yyy.zzz
+	
+	People upload and download to their hearts conten<t. Everyone is
+happy....except for perhaps the unknowing users of the machine and the network
+it is on.
+	This has been happening on my machines the last few weeks. When we
+first discovered it several weeks ago, I quickly hacked logging into the FTP
+server and saw connections from Canada, Australia, England, Israel, France,
+Italy, Switzerland, Denmark, Germany, Austria, Sweden, Norway, Finland and of
+course from the US, all within a single 24 hour period.  I had to shut it down
+at the time, but I started watching my other hosts, and sure enough, it started
+again. I began watching intently for a couple of days and was able to determine
+who some of the people who were doing this were. I watched one person create
+and 'seed' two new sites by uploading a small collection of files to others to
+grab. Within hours, these sites had been advertised to others and were being
+used.
+	This activity get clog a machine and a network. I have seen people
+upload 10MB of pictures to my machines at once, and then have seen anywhere
+from 5 to 8 people grabbing them at the same time. People write scripts to log
+in every 15 minutes and check for new files automatically; sometimes these
+continued to run even after I had shut down the site.
+	One way to protect yourself is to make a directory writable, but not
+readable. This way, people can upload files, but fetching them is more
+difficult, since you can't know what the names are. However, I think that that
+would be of limited use in this case, since people can put a list of what
+they've uploaded to a machine on another site. Then, others can use that list
+to retrieve what they want from the repository. The scheme also curtails the
+legitimate use of a writable area.
+	I see several risks. First, your site can become severely clogged,
+often without your having any idea of what is going on. This makes it harder to
+fix; we found out about it because we *were* having network problems and just
+happened to notice a lof of network activity to a particular machine. A quick
+'ps' soon pointed out the problem. However, I believe that many sites are less
+sophisticated and will be less able to pick up on this.
+	Second, this activity affects legitimate use of the anonymous ftp
+facility. Sharing and convenience suffer because of it.
+	Third, shutting it down and then confronting the abusers in a public
+forum (newsgroup alt.sex.pictures.d) can attract attention to your site and may
+spur people into more diligent efforts to 'pay you back' for spoiling their
+fun. While I received some supportive responses, I also received a few telling
+me what I could do with myself. Curiously enough, I also got a few requests for
+the addresses of the other sites I had discovered being victimized.
+	Check your systems, you might be suffering from network parasitic
+terrorism.
+                    		Pete
+
+------------------------------
+
+Date: Tue, 4 Jun 91 19:33:00 edt 
+From: davis@ai.mit.edu (Randall Davis)
+Subject: Magellan spacecraft performance; followup
+
+The Magellan craft doing radar mapping Venus had several failures early in the
+mission, including one 32-hour outage, as noted in some previous Risks
+postings.
+
+This update on subsequent performance is extracted from a 2 page article in
+appeared in Aviation Week of 20 May:
+
+ The Magellan spacecraft successfully completed the first cycle of Venus
+ mapping on May 15, producing more data than required despite occasional
+ spacecraft glitches...
+
+ A second cycle of mapping was started May 16 to cover most of the surface
+ that was not mapped on the first cycle, with emphasis on south polar regions
+ that have not been seen before.
+
+ Ambitious plans for future use of the spacecraft are being formulated,
+ including using aerobraking to circularize the orbit...
+
+ Magellan's basic mission was to radar map at least 70% of Venus' surface and
+ 83.7% had been covered as of May 15.  The Martin Marietta spacecraft has done
+ a ``great job'' and the Magellan radar, built by Huges has been ``flawless,
+ beautiful,'' said A. J. Spear, Magellan project manager at JPL.
+
+------------------------------
+
+Date: Tue, 4 Jun 91 10:37:28 +0200 
+From: Hermann Kopetz <hk@vmars.tuwien.ac.at>
+Subject: Lauda Air Boeing 767 Aircraft crash
+
+Nearly all major newspapers in Austria had the main headline on Monday along
+the following topic:
+
+Computer failure causes Boeing 767 airplane crash
+
+Niki Lauda, the owner of Lauda Air (and former grand prix champion) gave the
+following explanation in a televised press conference in Vienna on Sunday at
+1:00 p.m.  (I watched it.):
+
+Both the voice recorder and the data recorder have been recovered after last
+Sunday's crash of the 767 near Bangkok. The data recorder was unreadable
+because it did not withstand the crash.  After an analysis of the voice
+recorder the following sequence of events has been established:
+
+Sunday, May 26, 23:05 Bangkok time: The plane, coming from Hongkong took off
+from Bangkok airport. Everything was normal, the plane has climbed to 7000 m
+and was still climbing further.
+
+23:16 An advisory warning light (lowest of three criticality degrees) started
+to blink intermittently. The copilot referred to the checklist which read
+(about): Another failure can cause the deployment of the thrust reversal. Expect
+normal operation of thrust reversal after landing. No immediate action to be
+taken.
+
+23:18 The voice of copilot Turner: "It deployed" (i.e. the thrust reversal was
+activated while the plane was still climbing with high engine power).  A few
+moments later one can hear an acoustic warning signal on the tape indicating
+that the forces on the plane are critical.  Two seconds later the voice
+recorder stops, because the plane crashed.
+
+I have been asked by newspapers to comment on the suspected computer failure
+but do not have any further information.  Do you have access to any further
+information about the B 767, in particular:
+
+ * Do they use single or multiversion software?
+
+ * How is it possible that a dangerous state, which has been indicated,
+   does not require any action?  (Consider this happened in the first
+   fifteen minutes of a 10 hour flight!)
+
+Looking forward to some more information
+
+Hermann --Tel 43 1 588018180--FAX 43 1 569149 -- ++++++ PLEASE NOTE THE CHANGE
+IN THE E-MAIL ADDRESS ++++++
+
+  [An anonymous commenter sent in this: "Speculation is now increasing that
+  the thrust reversal deployment, while the system was under computer control,
+  was part of the problem.  I just spoke to my Airline Pilot Association friend
+  who does all the interviews after such events, and he tells me that there is
+  a mechanical system that is supposed to prevent the reversers from deploying
+  until the plane is on the ground, but he says that they do break down and
+  such a failure would allow a computer malfunction to deploy the reversers.
+  He also says that contrary to what Boeing is saying, it can be VERY hard to
+  avoid having a plane tear apart if the reversers deploy while the plane is in
+  a high power situation (e.g.  climbing--as was this plane).  Note that the
+  767-300 is NOT a "fly by wire" plane in the sense the new Airbuses are, but
+  that the engines are normally under computer control with no direct
+  mechanical connection with the pilots."  There is some redundancy in the
+  following messages, and in the preceding ones, but I think that the subject
+  is potentially too complex for me to try to do an accurate and careful
+  differential reading and analysis, in the absence of more definitude.  PGN]
+
+------------------------------
+
+Date: Mon, 3 Jun 91 12:19:42 EDT 
+From: richard shapiro <shapiro@Think.COM>
+Subject: Reply to rmoonen concerning "the wings ripping off"
+
+No, thrust reversal in mid-flight wouldn't rip off the wing. It would have some
+potentially unpleasant control consequences, by introducing a very large yaw
+moment, but reverse thrust is far less efficient than forward thrust.  Also, I
+understand that as part of the flight certification of an airplane, it must be
+able to fly with one engine at full reverse thrust.  I don't know what might
+happen if the thrust reverser activated at low altitude, where there isn't a
+lot of time to recover, but the plane should hold together until it hits the
+ground.
+
+------------------------------
+
+Date: Mon, 03 Jun 91 12:57:23 EDT 
+From: Joe Morris <jcmorris@mwunix.mitre.org>
+Subject: Re: Lauda air plane crash (Moonen, RISKS-11.78)
+
+Extracted from this morning's _Washington_Post_ (3 June 91) p. A11:
+
+    "What happened in the plane is that the thrust reverser, for whatever
+  reason, was deployed in the air," Lauda told a news conference upon
+  returning to Vienna from Washington, where U.S. authorities are examining
+  equipment retrieved from the wreck.  His conclusions were echoed in a
+  statement by Austrian Transport Minister Rudolf Streicher, who said a
+  computer error may have activated the thrust reverser.
+      [...]
+    However, a spokesman for the Seattle-based Boeing Co. said a 767
+  should be able to continue flying even if the situation described by
+  Lauda occurred.  The Federal Aviation Administration will not certify
+  any jet aircraft to fly unless it passes an in-flight test in which
+  a thrust reverser is deployed at full power.
+      [...]
+    Some U.S. sources close to the investigation expressed irritation
+  at the flow of statements from both Thailand and Austria as the
+  investigation of the crash continues.  In any crash, they noted, an
+  agency can determine a final cause only after months of painstaking
+  investigation.
+
+    The sources, who asked not to be identified, did not rule out the
+  possibility that the thrust reverser may have malfunctioned.  However,
+  Boeing spokeswoman Elizabeth Reese said that owners of the more than
+  350 767's now flying had never reported any thrust reverser problems.
+      [...]
+    To receive FAA certification, each type of aircraft produced [in]
+  the United States must have a thrust reverser deployed at full power
+  in flight.  The pilot must be able to control the plane using
+  normal procedures.
+
+Joe Morris
+
+------------------------------
+
+Date: Mon, 3 Jun 91 12:40:05 -0700 
+From: stevenp@kodak.pa.dec.com (Steven Philipson) 
+Subject: Re:  RISKS DIGEST 11.78
+
+Re: In-flight engine reversal as reported in _The Times_ (London), Monday
+   June 3rd 1991.
+
+> [...] If the diagnosis were confirmed, the accident would
+> be unprecedented, Herr Lauda said.
+
+   A crash of a 767 is unprecedented.  In-flight thrust reversal leading to an
+accident is not -- there is a long history of accidents from both intentional
+and unintentional in-flight reversing, for both jet and propeller driven
+aircraft.
+
+>rmoonen@hvlpa.att.com (Ralph 'Hairy' Moonen) writes;
+
+>And certainly, wouldn't a mid-air reversal of thrust just rip
+>off the wing, leaving the plane to plummet down totally out of control?
+
+   No, it would not.  The engine would depart the aircraft well before that
+level of stress could be reached.  Application of significant amounts of
+reverse thrust would cause a severe controllability problem in and of itself
+though.  If one engine were providing full foward thrust and the other
+significant reverse thrust, the result would be a very large yawing moment.
+The crew would likely notice this very quickly.  It is possible that the
+reversers deployed as part of a engine failure that was already in progress.
+More data will be required before this can be ascertained.
+
+						Steve Philipson
+
+------------------------------
+
+Date: Tue, 4 Jun 91 20:10:44 GMT
+From: lia!jgro@fernwood.mpk.ca.us (Jeremy Grodberg)
+Subject: Re: Lauda Air Crash  (RISKS-11.78)
+
+According to the Wall Street Journal, 6/3/91, In order to receive federal
+(US) certification, the Boeing had to *demonstrate* that the 767 could
+fly with one thrust reverser deployed (emphasis added).  I take this to
+mean that they had to actually fly the plane this way.
+
+The same report also said that Boeing engineers knew of one other time
+the thrust reverser deployed in mid-air, but that plane landed without
+incident, and the situation may not have been entirely analogous.
+
+Jeremy Grodberg   jgro@lia.com   
+
+------------------------------
+
+Date: Tue, 4 Jun 91 19:31:15 EDT
+From: karn@thumper.bellcore.com (Phil R. Karn)
+Subject: RISKS of posting humor to the net
+
+Uh, the line
+
+  for(;P("\n"),R-;P("|"))for(e=C;e-;P("_"+(*u++/8)%2))P("| "+(*u/4)%2);
+
+does *not* compile cleanly on my system (Sparc). The problem is with the
+operators "R-" and "e-". Change them to "R--" and "e--" and it will compile
+successfully, but drop core when it runs. Then initialize u, C and R to
+something reasonable (like "the address of an array of 100 ints initialized to
+0', "10" and "10", respectively), and define P() to be printf(), and you'll get
+output that looks something like this:
+
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+| _| _| _| _| _| _| _| _| _| _|
+
+Make the initial values of the array random, and you get something that
+looks like a maze:
+
+ _ _ _ | _| _| _|   |
+  _| | | | _ _ _ _ |
+| _| _| _|     _| | |
+| | _ _ _ _ | _| _| _| |
+    _| | | | _ _ _|
+ _ | _| _| _|     _|
+| | | | _ _ _ _ | _| _|
+| _|     _| | | | _|
+ _ _ _ | _| _| _|   |
+  _| | | | _ _ _ _ |
+
+
+Cute, yes. Useful? You tell me...
+
+Phil
+
+------------------------------
+
+Date: Thu, 30 May 91 09:48:16 PDT 
+From: mc%miranda.uucp@moc.jpl.nasa.gov (Mike Caplinger) 
+Subject: Digital Fingerprints in California
+
+I recently applied for a California driver's license, and was surprised to
+learn that the fingerprinting required for a license (right thumbprint) was now
+done by a digital scanner instead of with paper and ink pad.  The RISK is
+obvious -- sometime down the road, when pattern matching of fingerprints has
+been more or less totally automated, the State of California will have a
+database ready to go without the hassle of scanning paper fingerprints in.
+It's my understanding that current matching technology is too labor- and
+computer-intensive to perform regularly on anything larger than a database of
+known felons, but with advances in computer power, matching against the whole
+population may be possible.  Anybody know more about the California database,
+or how viable thumbprint matching may be?  Would one expect many false matches
+using just a thumbprint?  How many other states require fingerprints for
+driver's licenses, and does any other use digital scanners?
+
+I suppose it's possible that the California DMV doesn't retain the digital data
+-- but I doubt it.  I'm less certain but fairly sure that the "mugshot" is also
+taken with a video system.  I could imagine it would be awfully tempting for
+law enforcement agencies to combine those two databases.
+
+	Mike Caplinger, MSSS/Caltech Mars Observer Camera   mc@moc.jpl.nasa.gov
+
+------------------------------
+
+Date: Tue, 4 Jun 91 18:25:15 PDT
+From: cdp!dsobel@labrea.Stanford.EDU
+Subject: CPSR Review of FBI Net Surveillance
+ 
+I 'd like to add a bit of relevant information to the discussion.  Computer
+Professionals for Social Responsibility (CPSR) is currently litigating a FOIA
+lawsuit against the FBI seeking information on the Bureau's policies and
+practices with regard to computer bulletin boards.  A couple of months ago, we
+received a heavily censored copy of a 1985 internal FBI legal opinion entitled
+"Acquisition of Information from Electronic Bulletin Boards."
+ 
+Although couched in terms of a prohibition, the opinion does *not* establish an
+across-the-board prohibition on monitoring and/or surveillance of computer
+bulletin boards.  All that the opinion prohibits is a "comprehensive"
+monitoring program.  Bulletin boards may be monitored, so long as Fourth
+Amendment standards are satisfied, i.e., where there is a "reasonable
+expectation of privacy," a warrant must be obtained.  The opinion might not be
+using precise language when it refers to "bulletin boards," since most are
+public and do not generally involve an expectation of privacy.  As I read the
+opinion, it permits warrantless monitoring of public bulletin boards on a
+case-by-case basis.
+ 
+CPSR believes that such monitoring, even of public bulletin boards, is
+inappropriate.  There is an undeniable "chill" placed on the free exchange of
+opinions when participants need to worry if the discussion is being monitored
+by government agents.  The history of the FBI demonstrates that individuals
+expressing views deemed to be unpopular or "subversive" became the subjects of
+official scrutiny and extensive record-keeping.  While some might argue that
+bulletin board discussions are completely open and that participants should
+expect them to be monitored, such a concession seriously erodes First Amendment
+values.  How would we feel if we knew that every political meeting or community
+gathering we attended was monitored and recorded by government agents?  Isn't
+that the sort of governmental conduct we so strongly condemned when it was
+practiced by the old communist regimes in Eastern Europe?
+ 
+While it is unclear whether we will be able to learn anything about the
+implementation of the FBI's policy through our lawsuit, the legal opinion
+described above certainly raises questions that should be pursued.  I would be
+glad to keep interested folks posted on developments, though I'd prefer to do
+so through private e-mail, i.e., "with an expectation of privacy."  Send me a
+note if you'd like to be kept informed about the litigation.
+ 
+	David Sobel, CPSR Legal Counsel       cdp!dsobel@labrea.stanford.edu
+
+            ["... with an expectation of privacy" is subtle, in that apart from
+            "privacy enhanced e-mail", e-mail goes over unencrypted local and 
+            global networks, is handled by some decidely unsecure systems, and
+            is typically forwarded iteratively to other people.  "... with some
+            hope of privacy" might be more accurate!  But I imagine David will
+            get some requests from a few government RISKS contributors, who
+            might like to know what "developments" are turning up...  PGN]
+                        
+------------------------------
+
+Date: Tue,  4 Jun 91 12:22:59 PDT
+From: horning@Pa.dec.com (Jim Horning)
+Subject: Computers and Academic Freedom Groups Now at EFF.ORG
+
+    CAF discusses such questions as : How should general principles of academic
+freedom (such as freedom of expression, freedom to read, due process, and
+privacy) be applied to university computers and networks? How are these
+principles actually being applied? How can the principles of academic freedom
+as applied to computers and networks be defended?
+    The EFF has given the discussion a home on the eff.org machine.  As of
+April 23, less than two week after its creation, the list has 230 members in
+four countries.
+    There are three versions of the mailing list:
+comp-academic-freedom-talk
+        - you'll received dozens of e-mail notes every day.
+comp-academic-freedom-batch
+        - about once a day, you'll receive a compilation of the day's notes.
+comp-academic-freedom-news
+        - about once a week you'll receive a compilation of the best
+          notes of the week. (I play the editor for this one).
+    To join a version of the list, send mail to listserv@eff.org. 
+Include the line "add <name-of-version>". (Other commands are "delete
+<name-of-version>" and "help").
+    In any case, after you join the list you can send e-mail to the 
+LIST BY addressing it to caf-talk@eff.org.
+    These mailing lists are also available as the USENET alt groups
+'alt.comp.acad-freedom.talk' and 'alt.comp.acad-freedom.news'.
+
+------------------------------
+
+End of RISKS-FORUM Digest 11.82
+************************

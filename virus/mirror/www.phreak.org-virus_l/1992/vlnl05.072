@@ -1,0 +1,676 @@
+VIRUS-L Digest   Monday, 23 Mar 1992    Volume 5 : Issue 72
+
+Today's Topics:
+
+Re: FDISK /MBR and Stealth viruses. (PC)
+Re: FDISK /MBR and Stealth viruses. (PC)
+Scan via email and shure FAQ (PC)
+Network Viruses (PC)
+re: INFO wanted: BBS methods of virus detection (PC)
+re: Telecom/Anti-tel (PC)
+F-Prot false positive? (PC)
+SBC Virus identified by F-PROT (PC)
+Re: Stoned/Michelangelo/etc overwriting partition (PC)
+Michelangelo bug ? (PC)
+Victor Charlie program (PC)
+ParaScan (PC)
+Re: Stoned/Azusa/McAfee's SCAN & CLEAN (PC)
+Re: Stoned/Michelangelo/etc overwriting partition (PC)
+bogus virus and vshield? (PC)
+Re: Mardi Bros (PC)
+Re: 5.0's FDISK /MBR on lower versions (PC)
+Re: FORM in mem (PC)
+Re: f-prot shows FLIP on VSAFE (PC)
+Central Point and OS/2? (OS/2)
+Checklist part 6
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 19 Mar 92 14:19:15 -0700
+From:    Russ Ether (219) 231-3527 <ether@10249.gedlab.allied.com>
+Subject: Re: FDISK /MBR and Stealth viruses. (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+> Doesn't FDISK /MBR just rewrite the MBR program? Does is try to
+> interpret in some way the partition table data? Why?
+
+OK, here's the deal.  If the last two bytes of sector 0,0,1 are
+055h 0AAh, then FDISK /MBR leaves the PT area of sector 0,0,1
+alone and just writes the MBR to it.
+
+If the last two bytes of sector 0,0,1 are *not* 055h 0AAh,
+then FDISK /MBR fills the PT area of sector 0,0,1 with
+*nulls*.
+
+The moral of the story seems to be this:  FDISK /MBR will clean
+a boot sector virus from your PC only if the virus code in
+sector 0,0,1 does not encroach into the PT area, *and* the virus
+code did not modify the last 2 bytes of sector 0,0,1.  Michelangelo
+meets both these requirements (at least the strain we've seen here
+does), and so FDISK /MBR works.  But it is not a general-purpose
+solution for every boot-sector virus.
+
+------------------------------
+
+Date:    Thu, 19 Mar 92 12:50:26 -0700
+From:    Russ Ether (219) 231-3527 <ether@10249.gedlab.allied.com>
+Subject: Re: FDISK /MBR and Stealth viruses. (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+> barnold@watson.ibm.com writes:
+>
+>> I don't know of any viruses that don't leave a partition table intact
+>> in the master boot record.  (Not that ignorance means much :) If you
+>
+> There are one or two, but for obvious reasons they haven't spread too
+> far... :-)
+
+What are the obvious reasons? I a virus does all the following...
+
+  - saves a copy of the original sector 0,0,1 when it installs itself
+  - loads and executes the original 0,0,1 when the PC is booted
+    ( after executing itself, of course )
+  - intercepts int13 and returns the original 0,0,1 when an app
+    calls for 0,0,1
+
+.. then I don't see why the virus has to leave the PT table area
+of the MBR alone.
+
+>> the original master boot record decides what the active partition is
+>> based on the contents of the original master boot record, not the
+>> partition table in head 0 track 0 sector 1.)  I'm sure that there are
+
+I believe this is correct.
+
+> Doesn't FDISK /MBR just rewrite the MBR program? Does is try to
+> interpret in some way the partition table data? Why?
+
+Yes and no.  I tried the following two experiments:
+
+1) I filled the entire sector 0,0,1 of a Compaq 386 with the letter
+'E', booted from a DOS5 diskette, and ran FDISK /MBR.  This created
+a nice MBR in sector 0,0,1 but the PT area of 0,0,1 was now filled
+with nulls.  So in this case, FDISK /MBR changed the PT (from all
+'E's to all nulls ).
+
+2) Using a sector editor and a saved copy of the original sector
+0,0,1 I restored the PC to its original condition.  Then I garbaged
+up the MBR part of 0,0,1 but left the PT area alone.  Then I ran
+FDISK /MBR again as above.  This time I wound up with a bootable
+disk.  FDISK /MBR left the PT area alone.  Seems like FDISK /MBR
+is smart enough to leave a "good" PT alone? Go figure.
+
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 12:42:24 +0200
+From:    KARGRA@GBA930.ZAMG.AC.AT
+Subject: Scan via email and shure FAQ (PC)
+
+I have some questions: (at least one is not a faq)
+1) Is there a possibility to get the latest version of scan via email?
+   If there is one, where can I get it?
+2) Now the FAQ: (I make some statements and ask for a short yes or no)
+  a)Michelangelo is NOT a *.COM or *.EXE or *.SYS infector.
+  b)Therefore you can't be infected from downloaded programs.
+3) Is there really a FAQ-list?? If yes, when will it be sent ?
+
+This was all, sincerely
+Alfred
+*******************************************************************************
+Alfred JILKA        *     KARGRA%gba930.zamg.ac.at@awiuni11.bitnet
+Geologic Survey     * KARGRA%gba930.zamg.ac.at@helios.edvz.univie.ac.at
+Vienna, AUSTRIA     *       ---- Download your VIRI to hell. ----
+*******************************************************************************
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 13:18:51 +0000
+From:    suresh@iss.nus.sg (Suresh Thennarangam - Research Scholar)
+Subject: Network Viruses (PC)
+
+1> Is it possible to bypass the read-only file-locking mechanism
+   provided by Novell Netware and Banyan Vines ?
+
+2> Is it possible to bypass the read-only file server option in 3COM ?
+
+3> Technically, there ought to be a low-level hack way to achieve
+both, but has anyone come across a virus that does this ?
+
+ST.
+
+------------------------------
+
+Date:    20 Mar 92 09:18:38 -0500
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: INFO wanted: BBS methods of virus detection (PC)
+
+> From:    jkristof@lucpul.it.luc.edu (NiteLine)
+
+> There are some
+> BBSes that scan the upload automatically as soon as it is recieved.
+> Is that safe?  Wouldn't the virus be able to infect the BBS program if
+> one is detected.  Depending on the type of virus of course.
+
+A virus can't do anything unless it gets executed.  If someone just
+uploads a file to a BBS, and the BBS software just examines it, as
+data, there's no way anything in that file can run, including a virus.
+Of course, if somewhere in that process the uploader (or an accident)
+can arrange for the data in the file to be -executed-, all bets are
+off.  This means, for instance, that the scanning process must be
+careful that the programs it runs come from some safe directory, and
+that there's no way a name-conflict can cause the program that's being
+examined to be run instead!
+
+DC
+
+------------------------------
+
+Date:    20 Mar 92 09:13:01 -0500
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Telecom/Anti-tel (PC)
+
+> From:    "Pete Lucas" <PJML@IBMA.NERC-WALLINGFORD.AC.UK>
+
+>My understanding is that the virus is
+>spread by a memory-resident .COM infector, and that the
+>boot/partition-table infection will *not* spread by itself. Is this
+>right, or do i labor under a misapprehension?
+
+Only a slight misapprehension!  *8) The situation is complex, and
+there are a number of ways to describe it, but I think it's clearest
+like this:
+
+  - There's a small family of boot-infecting viruses called
+    variously "Campana", "Telephonica" and so on, which infect
+    only boot records (no effect on files), and do nasty
+    damage and display a message against some telephone
+    company after a number of boots.  They are basically
+    normal boot infectors, and spread just fine by
+    themselves.
+
+  - There's another group of viruses, called things like
+    "Telecom", which are memory-resident file infectors
+    (some infect only COM files, some both COM and EXE).
+    As a side-effect, these viruses *install* the above-
+    mentioned boot infector onto various disks.
+
+So it's perfectly possible to have just the boot-infector (in fact, it
+seems to be much more widespread than any of the file-infectors, most
+of which are rather buggy).  On the other hand, *if* you have one of
+the file-infectors, you almost certainly have one of the
+boot-infectors as well (since the former install the latter).
+
+In your case, I'd guess that you have a normal infection by one of the
+boot-infectors, acquired by booting from an infected diskette, and
+that your files aren't involved at all.
+
+DC
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 13:28:00 -0800
+From:    Michael_Kessler.Hum@mailgate.sfsu.edu
+Subject: F-Prot false positive? (PC)
+
+I do not know if this has been reported before, fixed etc. but I just
+ran F-Prot to check a diskette that had 2to1.com and safembr.com on
+it.  Both programs were reported as "Possibly a dropper program for a
+new variant of Stoned."  The date of 2to1 is 9/28/91, of safembr
+10/12/91 and I am using F-Prot 2.02D.
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 20:00:37 -0500
+From:    "LORRAINE CLARKE, SEABRIGHT CORP." <lclarke@kean.ucs.mun.ca>
+Subject: SBC Virus identified by F-PROT (PC)
+
+I have run F-PROT and had the message returned identifying one file as
+having an error "ERROR IN C:\GK4\GK4.EXE" and an SBC infection in
+"C:\IDM\RS1.EXE".  The machine is an old XT (belongs to a friend) and
+IDM is the brand name.
+
+The GK4.EXE file was a "demo" program lent by a salesman almost a year
+ago.  Recently, problems with setting the system date have surfaced on
+the machine - no matter how often you reset, the date resets on
+re-boot to 01-01-2000.  I thought initially it might be the backup
+battery failing - but when I dropped by to check out the machine,
+Norton Utilities shows the 20 mb hard disk as having 8.5 mb of files,
+1.2 mb free, and ~9 mb in "unmoveable sectors/files?"
+
+I assume this virus has been running along merrily, writing these hidden
+"unmoveable sectors", and gradually filling up the hard disk.
+
+I guess the only option is to back-up the uninfected files, reformat the
+hard disk, and start over.  I've never run into a virus before (being
+relatively paranoid about files from unknown sources - I always check a
+disk before copying it) - so F-PROT can identify it ... now what do I do?
+
+Has anyone else had these symptoms?
+
+Am I solving the problem the right way?  HELP!!
+
+L. Clarke
+lclarke@leif.ucs.mun.ca
+
+p.s.  It seems like MICH was a fizzle here in Newfoundland, from what I've
+heard, but all the press about it raised awareness levels enough that other
+odd viruses have been found, before they could do damage (noteably several
+variations on the stoned virus).  Again, any help or suggestions would be
+appreciated.
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 12:21:30 -0500
+From:    Otto Stolz <RZOTTO@DKNKURZ1>
+Subject: Re: Stoned/Michelangelo/etc overwriting partition (PC)
+
+Dear Virus hunter,
+
+I hate to be pedantic, yet I think somebody should clarify the following
+issue, lest we send anybody astray.
+
+On Fri, 13 Mar 92 08:49:18 -0500 Michael Fry <FRYSTD@ACAD.LVC.EDU> said,
+regarding the start address of the 1st partition:
+> Padgett's FIXMBR [...] dumps the partition table on the screen.  [...]
+> Mine (2 DOS partitions) looks like:
+>     80 01 01 00 04 05 51 98 11 00 00 00 E5 A2 00 00
+>     00 00 41 99 04 05 D1 31 F6 A2 00 00 F6 A2 00 00
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> Read off starting sectors from 8th-11th byte of each row [...]
+> Hex, 32 bits, least significant bytes first, [...]
+
+> In the MBR, those 4 bytes are at offsets 1C6-1C9 .
+
+Off course, the exact offset depends on how many partitions you have.
+E.g. on my (compatible) PCD-2M, which has only one partition, these
+Bytes are at offsets 1F6..1F9. Generally speaking, you'll have to look
+at 1F6, 1E6, 1D6, and so on, and choose the smallest starting address
+you can find.
+
+Regards,
+                    Otto Stolz <RZOTTO@DKNKURZ1.Bitnet>
+                               <RZOTTO@nyx.uni-konstanz.de>
+
+------------------------------
+
+Date:    Sat, 21 Mar 92 16:02:42 +0300
+From:    kermits@akkali.iesl.forth.gr
+Subject: Michelangelo bug ? (PC)
+
+I have a PC XT running under MSDOS 5.0 and recently discovered that
+the boot disk along with some others was infected by Michelangelo
+virus.  Funny thing is that all the contaminated diskettes had been
+unused for at least 2 months.  So,is Michelangelo more older than
+already assumed ?
+
+But the strange in this occasion is elsewhere : after i cleaned ALL
+the other diskettes (using Viruscan 85 by McAfee) i thought i could
+test the boot disk to see how the virus works.  Well, no matter how
+many times i tried, Michelangelo never activated, although i used no
+other program to monitor it.  This, along with what i wrote on the
+first paragraph, makes me wonder if there is a serious bug in
+Michelangelo's code or whether there are two versions of it ( or even
+more).
+
+Anyone out there with some idea?
+ Kermits@akkali.iesl.forth.gr
+| Security assistant of University of Crete Computer Center, Greece.         |
+
+------------------------------
+
+Date:    Sat, 21 Mar 92 16:11:28 +0000
+From:    cs4cb3ii@maccs.dcss.mcmaster.ca (Group I)
+Subject: Victor Charlie program (PC)
+
+Netters;
+	If anyone out there has used the program Victor Charlie could
+you please give me your experiences with it.  It has been created by a
+company called "Bankok Security Associates" and is based in Thailand.
+I am interested in any opinions (from people not associated with the
+company).
+
+Thanks!
+Scott Gregory
+cs4cb3ii@maccs.dcss.mcmaster.ca
+
+------------------------------
+
+Date:    Sun, 22 Mar 92 15:18:42 -0600
+From:    be215645@uwspmail.uwsp.edu
+Subject: ParaScan (PC)
+
+ ParaScan is a joke program that simulates a virus scanner.  It acts
+like it is scaning your computer for viruses and then it displays
+messages like
+  "Hot Damn! You got one!"
+  It then "identifies" the "virus".  For example, there is the "Gerald
+Ford" virus (Predecessor of the "Dan Quail" virus).
+  It's a fun program.  If you are interested in it, I recommend the
+book "Stupid PC Tricks" It includes a disk with 10-20 amusing programs
+for the PC, including ParaScan.  It should be in your local bookstore
+(B. Daltons, WaldenBooks, etc.)
+  Have Fun!
+
+=====================================================================
+Andy Berkvam                      | be215645@uwspmail.uwsp.edu
+414 Neale Hall                    |
+University of Wisconsin           | "Kids? Who said anything about
+Stevens Point, WI 54481           | kids?"
+(715) 346-3153                    |                        -Conan ;-)
+================================\\//_================================
+
+------------------------------
+
+Date:    Mon, 23 Mar 92 09:30:00 +1200
+From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: Stoned/Azusa/McAfee's SCAN & CLEAN (PC)
+
+"a_rubin@dsg4.dse.beckman.com"@BIIVAX.DP.BECKMAN.COM writes:
+> rsr@garnet.berkeley.edu (Roger Rosenblum) writes:
+>
+>>One of our users brought us a disk infected with the Stoned virus.  We
+>>ran SCAN (V. 85) which reported it was infected, then we ran CLEAN (V.
+>>85) which reported that it removed the virus.  re-SCANning reported
+>>that the disk was infected with the Stoned virus.
+>
+> It sounds like your user had multiple infections of Stoned and Azusa.
+
+I've used both F-PROT and CLEAN on a diskette infected with the stoned
+virus where the "original" boot sector was missing, and appreciate the
+problem the software has in finding a good boot sector to replace the
+infected one with.  There are, as I understand it, legal problems with
+a commercial product carrying its own copy of a MicroSoft boot sector
+(although I don't understand why, since the distribution disk is
+allowed to have one, surely). Anyway, for what ever reason, these
+disinfecting programs insist on trying to use the original boot
+sector, if they can find it on the disk. I know F-PROT 2.02 will
+refuse to disinfect if it finds the replacement is not a valid boot
+sector, not necessarily infected, by the way, but (in my case) all
+zero bytes. While SCAN seems to not care what it contains.  I must
+admit that allowing an infected boot sector to be written there is a
+surprisingly bad flaw.
+
+There seem to be two better possibilities...
+
+(1) hunt around the current disks (all hard disk partitions anyway),
+    looking for a good boot sector, and copy that, or
+
+(2) carry with the program a good, but not copyrighted, boot sector;
+    I've got one if anyone is interested, by the way.
+
+Now there is a problem with all this: it is impossible to produce a
+boot sector which will be truely bootable with all versions of DOS.
+Not only does it have to cope with calling the "invisible" files -
+even when they don't start at the second cluster, but the DOS seems to
+makes calls back to locations inside the original boot sector for disk
+I-O, and those entry points vary from version to version.  So the
+answer is to make it a non-bootable diskette - which most would be
+anyway, and if anyone wants it bootable they must redo the SYS
+command, which is a darned good idea anyway.  Of course, the
+disinfector would have to have to fix up the BPB to suit the disk.
+
+There are some disinfectors that do this sort of thing now.  Why don't
+the major ones like CLEAN and F-PROT?  Surely it is easy to implement,
+and very safe.  Is there some disadvantage I'm missing?
+
+Mark Aitchison, Physics, University of Canterbury, New Zealand.
+
+------------------------------
+
+Date:    Sun, 22 Mar 92 18:29:57 -0500
+From:    FRYSTD@ACAD.LVC.EDU (Michael Fry)
+Subject: Re: Stoned/Michelangelo/etc overwriting partition (PC)
+
+So with Ottos's correction, FIXMBR might dump a table like:
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+     00 00 41 99 04 05 D1 31 F6 A2 00 00 F6 A2 00 00
+     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+     80 01 01 00 04 05 51 98 11 00 00 00 E5 A2 00 00
+                             ^^ ^^ ^^ ^^  Relevant columns
+And look for the smallest nonzero 32-bit number (least significant
+byte first) in that column to find where your first partition starts.
+(All those are starting sector numbers of partitions).  Also, those
+are in 9th to 12th columns, not 8th to 11th like I said before.  They
+start at offsets 1C6, 1D6, 1E6, and 1F6 in the actual MBR.
+
+If you get pedantic, we'll let you know, Otto.  Thanks.
+
+Mike Fry
+
+------------------------------
+
+Date:    Sun, 22 Mar 92 16:26:26 -0800
+From:    John Paul Morrison <stat656@unixg.ubc.ca>
+Subject: bogus virus and vshield? (PC)
+
+MS Windows 3.1 comes with a program msd.exe, which is pklite
+compressed.  msd.exe is a dos program to snoop around memory, and
+report system diagnostics, sort of like Quarterdeck Manifest, or
+Norton SI.
+
+After running msd, vshield (86b) pops up the next time you try and run
+a program and reports varius viruses (it varies).
+
+Has anyone observed this?
+
+__________________________________________________________________________
+ John Paul Morrison                     |
+ University of British Columbia, Canada |
+ Electrical Engineering                 |   .sig closed for repairs
+                                        |
+ jmorriso@ee.ubc.ca                     |
+________________________________________|_________________________________
+
+------------------------------
+
+Date:    Mon, 23 Mar 92 15:34:00 +1200
+From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: Mardi Bros (PC)
+
+BRENT@morekypr.BITNET writes:
+> Can someone tell me what Mardi Bros does?  F-Prot is sketchy and will
+> not remove the virus from floppies.  Seems to have been around a while
+> and not did much of anything.
+
+McAfee's SCAN calls this DenZuk; I don't know why F-Prot calls it
+Mardi Bros (virus names are the 8th wonder of the world). What it does
+is replace the boot sector with something that calls the main part of
+the virus from the 41st track with high sector numbers.  (Most, but
+not all, diskette drives let the heads go pas the 40th track - viz pas
+track #39).  There's quite a lot in teh virus, can't remember it all
+at the details at the moment.  What would you like to know about it?
+
+Mark Aitchison.
+
+------------------------------
+
+Date:    23 Mar 92 11:13:48 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: 5.0's FDISK /MBR on lower versions (PC)
+
+CALANA95@SNYBUFVA.CS.SNYBUF.EDU writes:
+
+> I have a question concerning the use of MS-DOS 5.0's FDISK /MBR.  Is
+> it possible to use this feature on machines running lower versions of
+> DOS?
+
+Yes. All you need is to boot from a DOS 5.0 diskette and use the FDISK
+program from there. It doesn't matter what DOS version resides on your
+hard disk. FDISK /MBR rewrites the master boot sector program, which
+is not DOS version-specific. (It is operating system specific,
+however, for instance, some versions of Unix might use a different MBS
+boot program.)
+
+> And, if it is, will it then designate the machine as a 5.0
+> machine?
+
+No.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    23 Mar 92 12:27:04 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FORM in mem (PC)
+
+dgreefho@cs.ruu.nl (Danny Greefhorst) writes:
+
+> I discovered something strange ; I booted from a perfectly clean
+> system.  Then I asked the directory of disk that was infected by FORM.
+> After that I let Scan 86b search my memory for viruses and it said
+> that FORM was active in memory.
+
+> How come that a virus is active after just reading the directory list ?
+
+This is called a ghost false positive and is caused by Scan's silly
+way to check the memory. It scans the whole memory for the virus
+signatures, instead of looking for them only where they have to be. In
+your particular case, it finds the Form signature in the DOS buffers.
+It is there, because DOS has read the infected boot sector when you
+tried to obtain a directory listing of the infected diskette. The
+virus code is not active, though, since it never gets control.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    23 Mar 92 12:33:13 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: f-prot shows FLIP on VSAFE (PC)
+
+kdorma@nemesis.eche.ualberta.ca (Kevin Dorma) writes:
+
+> I ran f-prot and it came up with vsafe.sys and vwatch.sys (both from
+> Central Point Anti Virus) being infected with a new or modified
+> varient of FLIP.
+
+Yes, this is a false positive. CPAV is silly enough not to encrypt its
+scan strings. Throw it away.
+
+> Is it normal for these programs to show up as infected
+
+Yes. Throw them away.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Sun, 22 Mar 92 19:14:00 -0600
+From:    EBATH@VAX1.UMKC.EDU
+Subject: Central Point and OS/2? (OS/2)
+
+Does anyone have experience using Central Point's Anti-Virus with OS/2
+2.0 and a HPFS partition?  I am planning to upgrade to OS/2 and was
+wondering how CPAV would deal with the partion and boot sector.
+
+Thanks for any help/insight.
+
+------------------------------
+
+Date:    Fri, 20 Mar 92 22:54:32 -0800
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Checklist part 6
+
+920314   PRTCKL6.CVP
+
+                    Antiviral checklist - part 6
+
+                          For each office: (cont.)
+
+_   List of all hardware and software purchased, supplier and serial
+         number
+
+As I mentioned before, this is one of the items that should be a part
+of any office computer "kit" simply on the basis of good management.
+The reason for its inclusion on the virus fighting side is partly in
+an attempt to track where a virus came from.  (Again, as I have
+mentioned before, originals should be protected, copied, and the
+"copies" protected before installation.)  More and more companies are
+becoming aware of the need for software auditing, and this may become
+very helpful here.  (It is less helpful in those companies which take
+a "righteously indignant" stance against shareware.)  The hardware
+list is also valuable, as certain pieces of hardware will affect the
+operation of the computer, particularly in regard to memory
+utilization.
+
+_ Designated machine for receiving/ testing new disks/software
+
+Now *this* recommendation I *know* is going to stir up a storm.  It
+always does.  Why spend good money on a machine that is going to be
+used for nothing except testing software?
+
+This appears to be based in the deeply rooted prejudice which says
+that the only important part of a computer system is the part you can
+see, feel and throw through windows at times of stress.  Let's look
+at the picture in real financial terms.  If you buy two copies of a
+commercial antiviral program (for an "office" of, say, twenty
+computers), plus the "upgrade fees" for a year, you've spent about
+$400.  $300 will get you a bare bones PC for testing, and, in
+addition to antiviral testing you can also detect trojans, which
+relatively few antiviral programs do.  (An AT level machine should
+only be $500, even low end Macs can now be had for about $1500.)  A
+designated machine also allows you "pro-active" rather than reactive
+protection.
+
+Besides, very likely you already have a computer that no one in the
+office will use because of its age and "obsolescence".  However, a
+word of warning is in order here: we have seen cases, most recently
+with Michelangelo, where older machines will not detect the full
+range of functions of the viral program.  There are also a number of
+viri which are "version specific" in terms of the operating system;
+but it is relatively easy to set up a situation which allows for
+quick changing of the operating system.
+
+One point I also stress in regard to testing is to make sure that the
+hard disk is not empty.  There are some "prima donna" viri which
+refuse to operate unless it is "worth their while" in terms of the
+amount of file space used.  Keep the drive about 80 percent full.
+
+copyright Robert M. Slade, 1992   PRTCKL6.CVP   920314
+
+=============
+Vancouver                               | "Kill all: God will know his own."
+Institute for  Robert_Slade@sfu.ca      |       - originally spoken by Papal
+Research into  rslade@cue.bc.ca         |         Legate Bishop Arnald-Amalric
+User           CyberStore Dpac 85301030 |         of Citeaux, at the siege of
+Security       Canada V7K 2G6           |         Beziers, 1209 AD
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 72]
+*****************************************

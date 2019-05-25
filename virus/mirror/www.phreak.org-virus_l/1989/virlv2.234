@@ -1,0 +1,445 @@
+VIRUS-L Digest   Tuesday,  7 Nov 1989    Volume 2 : Issue 234
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Datacrime report at ERIM followup (PC)
+Re: Where are the Sophisticated Viruses?
+Re: Imbeded virus detection
+Re: 2608- possible virus? (AMIGA)
+Re: Macintosh Virus List (Mac)
+dBase and Typo-COM viruses (PC)
+Re: CRC's
+SCANV42 and ASHAR Virus (Mac)
+
+---------------------------------------------------------------------------
+
+Date:    Mon, 06 Nov 89 13:46:07 -0500
+From:    Arthur Gutowski <AGUTOWS%WAYNEST1.BITNET@VMA.CC.CMU.EDU>
+Subject: Datacrime report at ERIM followup (PC)
+
+A couple of weeks back, I posted an article concerning a Datacrime hit
+at the Environmental Research Institute of Michigan (ERIM).  More
+recent info precludes any correlation of the hit with the discovery of
+the name Siegmar Schmidt in the partition table.  I recieved a message
+from Leo Stephens (also a subscriber to Virus-L), in which he said
+that a friend of his had also discovered this name in the partition
+table.  He also had found the name David Litton on some of his
+machines at work, and others had no name at all.  A couple of people
+who know more about partition tables and editors than I do suggested
+that it was just the author of the editor taking credit for the
+program by placing his name there (there is enough unused space in the
+partition sector to do this harmlessly).  All of the other occurences
+of names have come without any disk problems associated with a virus
+(McAfee's Scanv46 and IBM's Virscan was used on on the above disks).
+I guess the moral of the story is to just make sure pertinent data
+does not change.  But, if anyone else can confirm that these names
+aren't anything too out of the ordinary, it would set my mind (and
+computer) at ease.
+
+Again, my friend at ERIM did get hit by a Datacrime version either by
+an bum copy of PKZ102.EXE or his FDISK program became
+infected...Siegmar is innocent.
+
++--------------------------------------------------------------------+
+| Arthur J. Gutowski                                                 |
+| Antiviral Group / Tech Support / WSU University Computing Center   |
+| 5925 Woodward; Detroit MI  48202; PH#: (313) 577-0718              |
+| Bitnet: AGUTOWS@WAYNEST1   Internet: AGUTOWS@WAYNEST1.BITNET       |
++====================================================================+
+| "To do is to be."  -Socrates  "To be is to do."  -Plato            |
+| "Do-bee do-bee do."  -Sinatra  "Yabba dabba doo."  -Fred Flintstone|
++--------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Mon, 06 Nov 89 20:54:24 +0000
+From:    madd@world.std.com (jim frost)
+Subject: Re: Where are the Sophisticated Viruses?
+
+CHESS@YKTVMV.BITNET (David.M..Chess) writes:
+>You're forgetting one important kind of virus detector: a
+>general modification-detector that does a check-code of some
+>kind (CRC, MDC, or whatever), and alerts the user when
+>a file's *contents* (not the date) change.
+>I think even
+>a virus that talked straight to the hardware to avoid
+>"suspicious activity" detectors wouldn't get far before
+>it was detected.                        DC
+
+Sigh.  We're lucky that no very competent programmer has tried to
+write a virus, all right.  Consider that there are three phases to any
+virus, not including side-effects such as damaging data:
+
+        1) infection
+        2) propagation
+        3) survival
+
+A sophisticated virus spends almost all of its time surviving, so it's
+the most interesting stage.  Survival traits include:
+
+        * limiting propagation rates
+        * limiting re-infections
+        * detecting and avoiding "virus-protected" hosts
+        * staying within normal system activity boundaries
+        * hiding from standard system utilities
+        * modifying hosts to make them more susceptible to
+          re-infection
+
+There are a lot more things that a sophisticated virus can do, but
+these are food for thought.  Let's examine them in more detail.
+
+Limiting Propagation Rates.  Simple viruses, and often not-so-simple
+ones, will proliferate without bounds.  Rampant proliferation will
+cause the virus to be noticed early in its lifetime and will probably
+lead to its early demise.  The internet worm did not do this.
+
+Limiting Re-Infections.  Most simple viruses don't detect systems
+which have already been infected and will re-infect them.  Such
+viruses will incrementally eat system resources until they are
+noticed.  The internet worm did not do this.
+
+Detecting and Avoiding "Virus-Protected" Hosts.  I have yet to see a
+virus which looked at the state of a system to detect virus detection
+mechanisms to nullify them and/or avoid infecting them.  There are a
+variety of simple ways which a virus could do this, especially on
+PC-based systems where hardware and software is extremely standard.  A
+virus which did this might go undetected forever.  Of course it's
+possible that such a beastie exists and is undetected.  Even CRC
+detectors will not detect a properly written virus which avoids
+systems with CRC detection mechanisms!
+
+Staying Within Normal System Activity Boundaries.  Some viruses will
+actively search devices which a user did not request activity from;
+this activity will often be noticed.  A good many Apple II viruses had
+this trait, and so did the internet worm.  It leads to early
+detection.
+
+Hiding From Standard System Utilities.  A sophisticated virus would
+avoid showing anomalies when the system is perused with standard
+system utilities such as those which display currently active
+processes, memory or disk usage, etc.  Given the primitive state of
+many PC operating systems, this capability is seldom needed, and it's
+easy to remain unnoticed on larger systems without any effort at all.
+The internet worm had some of these avoidance techniques which made it
+much harder to track down.
+
+Modifying Hosts To Make Them More Susceptible To Re-Infection.  A very
+sophisticated virus could make subtle changes to an operating system
+or operating system environment to make it easier to re-infect.  This
+capability is generally useless amongst PCs but it's extremely easy to
+make small modifications to many multiuser systems -- particularly
+UNIX -- to make re-infection trivial.  I believe a recent VMS virus
+did this by adding a user, although I'm not certain of that.
+
+[Ed. The DECnet WANK worm did indeed add (or alter an existing)
+username, FIELD.  It also modified .COM files (which are shell scripts
+on VMS, similar to MS-DOS .BAT files) to do the same if run from a
+privileged account.  Making any such changes to MS-DOS PCs would seem
+redundant, IMHO.]
+
+By now you should get the idea that almost every virus we've seen is
+primitive, although several showed some of the survival traits which I
+outline above.  Given the limited resources of PC environments, it's
+unlikely that you'll get a very sophisticated virus.  The internet worm
+was itself only sophisticated at infection; propagation and survival
+techniques were woefully inadequate, although they need not have been
+because the infected hosts could have supported a much more
+sophisticated virus.
+
+This is food for thought, but should give you an idea of just how
+tough a virus could actually be.  Count our blessings now because you
+won't believe how bad tomorrow's nightmares will be unless we start
+teaching ethics to tomorrow's programmers!
+
+jim frost
+madd@std.com
+
+------------------------------
+
+Date:    Sat, 03 Nov 89 14:47:35 +0000
+From:    rwallace@vax1.tcd.ie
+Subject: Re: Imbeded virus detection
+
+PSYMCCAB@UOGUELPH.BITNET (Bob McCabe) writes:
+>   As a consultant who writes software for the PC I am worried
+> about the possibility of my programs getting infected and
+> becoming vectors by which viri are spread.
+>   In particular I am developing an application that will be hand
+> carried from site to site to gather data by a number of users. If
+> this program were to get infected it could cause wide spread loss
+> of data to an important research project, not to mention other
+> programs and data on affected systems. I am looking at including
+> a check to see if there has been any change in the EXE files.
+> Failure on such a check would cause the program to disable it's
+> self and report a possible infection.
+
+Easy enough to do: just have something like this (in C):
+
+main (argc,argv)
+{
+        if (crc_check (argv[0])!=ORIGINAL_CRC_VALUE)
+        {
+                printf ("Virus infection - now committing suicide!\n");
+                unlink (argv[0]);
+                exit (20);
+        }
+        ...
+}
+
+ok so you probably wouldn't want the program to actually commit
+suicide but it looks good. Only problem is entering the original CRC
+value as a constant because putting in the value into the program
+would change the executable file and thereby the value ... maybe have
+some unused static data you change the value of to compensate and make
+the total CRC unchanged.
+
+"To summarize the summary of the summary: people are a problem"
+Russell Wallace, Trinity College, Dublin
+rwallace@vax1.tcd.ie
+
+------------------------------
+
+Date:    Mon, 06 Nov 89 12:05:32 +0000
+From:    rwallace@vax1.tcd.ie
+Subject: Re: 2608- possible virus? (AMIGA)
+
+n8735053@unicorn.wwu.edu (Iain Davidson) writes:
+> Well, while up in Vancouver, BC at an Amiga Users Group meeting, a
+> interesting thing was demostrated.....
+>
+> I call it the "2608" virus. (don't know the offical name).
+>
+> It worked like the IRQ virus attaching itself to the first executable in
+>   the startup-sequence.  But with a slight twist.  It would copy the
+>   found executable to devs:"    " and copy itself into the old name in
+>   the "C" directory (size 2608 bytes).
+
+Sounds like BGS-9. Make sure you don't leave any copies on any working
+disks because the version of BGS-9 I found trashes sectors of your
+floppies.
+
+"To summarize the summary of the summary: people are a problem"
+Russell Wallace, Trinity College, Dublin
+rwallace@vax1.tcd.ie
+
+------------------------------
+
+Date:    Sun, 06 Nov 89 04:28:04 +0000
+From:    <polari!robert@beaver.cs.washington.edu>,
+         robert@polari.UUCP (robert)
+Subject: Re: Macintosh Virus List (Mac)
+
+ > Recently I have been writing an article on Macintosh infections.  In
+ > writing the article I tried to compile an exhaustive list of Macintosh
+ > viruses. Below is the list.  If anyone has anything to add to the list
+ > I would appreciate them notifying me so I can update the list.  Thanks
+ > much!
+
+ Your list includes "SNEAK" and "San Jose Flu". I've never heard of the
+ "San Jose Flu". Could you furnish more information about this one?
+
+ The "SNEAK" is not a Macintosh virus. This is apparently a generic term
+ (like "Trojan Horse" or "Time Bomb") for a type of virus. All uses of
+ the term "SNEAK" that I have seen trace back to Robert Woodhead, the
+ author of the Macintosh anti-virus program Interferon, and I suspect
+ that Robert coined the term himself. The documentation for Interferon
+ defines a "SNEAK" as follows:
+
+ 003    A SNEAK virus.  This is a virus that adds it's code to a
+        common System folder file and changes it's type to INIT so
+        that it is run at boot time.  Type 003 is a generic "Virus
+        sniffer" that detects if common System folder files have
+        been adulterated in this way.  If you get a type 003 virus,
+        please get in contact, you may have discovered a new strain.
+
+Interferon was one of the first Mac anti-virus programs and was, at the
+time, an excellent (and free) virus detection program (though it should
+NOT be used for virus removal!). The intent of the author was, apparently,
+to provide checks for possible future viruses. Unfortunately, some software
+that was released after Interferon tended to trigger this generic virus
+check. The result was that Interferon would report a "SNEAK virus" in cases
+where no virus actually existed. Early versions of Interferon found "SNEAK
+virus" in the LaserWriter and LaserPrep files that were part of later system
+software releases from Apple. Even Interferon 3.1, which is the latest
+version of Interferon I have seen (dated May 16, 1988), reported the "SNEAK
+virus" in TOPS version 2.1.
+
+These early attempts by Interferon to detect unknown viruses with generic
+checks bring out the dangers of such an approach. I get the impression
+that the author of Disinfectant, John Norstad, has taken a more conservative
+approach and checks only for KNOWN virus entities (resources and files).
+I imagine that Robert Woodhead has taken a similar approach with Virex,
+his newer commercial anti-virus program (replacing Interferon), though I
+haven't had an opportunity to see Virex.
+
+ ---------------------------------------
+    Robert Riebman
+    robert@polari
+    Northwest Information Technology
+    P.O. Box 3156
+    Redmond, WA   98073
+ ========================================
+
+------------------------------
+
+Date:    06 Nov 89 20:45:07 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: dBase and Typo-COM viruses (PC)
+
+Alan J Roberts writes:
+>
+>        A number of folks have looked at the DBASE virus (Ross
+>Greenberg's discovery), including Joe Hirst, Steffan Campbell and T.B.
+>Allen, and the general consensus is that the virus is very similar in
+>style to the TYPO virus (The COM version).  If the author of these two
+>viruses is one and the same person, then perhaps the DBASE author has
+>not completely been "re-habilitated" as Ross Greenberg has suggested.
+
+I must disagree. The dBase and Typo-COM viruses are similar in some ways,
+but there are also quite a few differences.
+
+Similarities:
+
+1) Both viruses use an identical, but very unusual, method to transfer control
+   back to the original program:
+
+                MOV        AX,100
+                JMP        AX
+
+2) Both viruses infect files with names ending in .COM, instead of checking
+   the first two bytes to determine the type of the file. They will not
+   infect .EXE files.
+
+3) The viruses use similar methods to determine if the system is alredy
+   infected - defining new interrupt subfunctions.
+
+                dBase:                               Typo-COM:
+
+                MOV        AX,FB0A                   XOR        AL,AL
+                INT        21                        MOV        AH,DD
+                CMP        AX,0AFB                   INT        16
+                JE         infected                  CMP        AL,AH
+                                                     JE         not_infected
+
+Differences:
+
+1) Typo-COM will search for programs to infect, looking for *.COM files
+   in the current directory. The dBase virus will infect a program when
+   it is executed.
+
+2) Typo-COM will install itself in memory when the infected program
+   terminates, (by using DOS functions 0 or 4C, or by a INT 20 call).
+   dBase will install itself as soon as it has determined that it is not
+   already present in memory.
+
+3) The code used to hook INT 21 is very dissimilar, the dBase virus using
+   DOS functions, but Typo-COM using direct manipulation.
+
+                dBase:                           Typo-COM:
+
+                MOV AX,3521                      MOV AX,[84]
+                INT 21                           :
+                :                                MOV [84],SI
+                :                                SUB [84],98
+                MOV DS,DX                        :
+                MOV DX,new_21                    MOV AX,[86]
+                MOV AX,2521                      :
+                INT 21                           PUSH CS
+                                                 POP [86]
+
+4) dBase hooks INT 21 when it is first executed. Typo-COM hooks INT 21,
+   INT 20 and INT 16 at the same time, but when it installs itself in memory
+   it restores INT 21 and INT 20.
+
+5) The "install in memory" procedure is VERY different. The dBase virus
+   manipulates the MCB directly, in a way similar to the method used
+   by the Icelandic virus. It will then transfer itself upwards in memory.
+   Typo-COM will transfer itself down, overwriting the original infected
+   program, as soon as the program exits (see [2] above.)
+
+6) Finally:  The Typo-COM is a "harmless" virus, meaning that it does no
+   direct, permanent damage, like destroying data or formatting the hard
+   disk. It contains a generation counter, but it does not seem to be used
+   (reserved for future expansion ?) All it does is to produce a "typing
+   error" every now and then. It is therefore in the "joke" category,
+   along with Cascade, Ping-Pong and a few other viruses.
+
+   The dBase virus is quite different. It will garble data when it is written
+   and restore it when it is read back. If the system is not infected at the
+   time, the data will be useless. This also applies if the virus is removed.
+   But, if the file has not been written to for three months when it is
+   read, the virus will do serious damage, erasing the first 100H sectors on
+   drive D: E: .... Z: - or at least it was designed to do so. The author
+   forgot one small detail, which will make the destruction rather
+   unpredictable.
+
+   This is a clear difference in attitude, which does not support the
+   theory that the viruses have the same author
+
+Comments, anyone ?
+
+- -frisk
+
+         Fridrik Skulason          University of Iceland
+         frisk@rhi.hi.is           Computing Sevices
+
+          Guvf yvar vagragvbanyyl yrsg oynax .................
+
+------------------------------
+
+Date:    Mon, 06 Nov 89 22:48:39 +0000
+From:    kichler@harris.cis.ksu.edu (Charles Kichler)
+Subject: Re: CRC's
+
+> A CRC will work if you:
+> (1) Keep the polynomial secret and personal.
+> (2) Keep   the  comparison  information  secret  and
+>     personal.
+
+I don't think this is fool-proof.  The problem is that the polynomial
+and the comparison information must be known to the program.  Therefore,
+if you know where to look IN THE PROGRAM, then you could find the
+information.
+
+I believe the only iron-clad method might be a hardware device which
+could verify a programs "health".  I imagine it to be device akin to
+those that attach to the serial port of a computer for copy protection.
+The advantage is hardware is difficult to modify via software.  As of yet,
+I haven't seen a program that can beat a write protect tab.
+
+Charles "chuck" E. Kichler,        Intro. to PC Instructor/Co-ordinator
+Computer & Info. Science    Kansas State Univ. * Yesterday,
+Internet: kichler@harris.cis.ksu.edu           |  I knew the answers.
+BITNET: kichler@ksuvax1.bitnet                 * Today,
+UUCP: {rutgers,texbell}!harris!kichler         |  they changed the questions.
+
+------------------------------
+
+Date:    Mon, 06 Nov 89 16:33:01 -0800
+From:    portal!cup.portal.com!Alan_J_Roberts@Sun.COM
+Subject: SCANV42 and ASHAR Virus (Mac)
+
+    Tom Sheriff noted in a recent Virus-L listing that SCANV42
+displays an unusual virus number and appears to show both the ASHAR
+and the BRAIN virus whenever the BRAIN virus is encountered.  The
+duplicate virus messages were caused by new strings added to version
+42, fixed in V44.  The "1d viruses found" message has also been fixed
+in version 44.  (The "d" was an extraneous character caused by the
+duplicate strings).
+Alan
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

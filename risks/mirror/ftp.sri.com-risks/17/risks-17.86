@@ -1,0 +1,587 @@
+Subject: RISKS DIGEST 17.86
+
+RISKS-LIST: Risks-Forum Digest  Thursday 7 March 1996  Volume 17 : Issue 86
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, etc.       *****
+
+  Contents: 
+Chase Manhattan computer glitch affects thousands
+Harvard Pilgrim HMO scheduling system creates chaos (Saul Tannenbaum)
+New web page and risks to personal information (Joseph Richardson)
+Protecting yourself against Java applets (Tad Taylor)
+More on Java applet loading (Lee Hasiuk, David Hopwood)
+Quoting from online Java tutorial [draft] (Li Gong)
+Another Java risk -- Theft of Service (Alan Miller)
+Re: Positive feedback and the law of averages (Harlan Rosenthal)
+Leap-years and leap-seconds (Joe A. Dellinger)
+Leap year and time-zone calculations (Steve Allen via Max Hadley)
+Re: Leap-year arithmetic (Amos Shapir)
+More on Excel and leap days (Roy Murphy)
+Re: bleep-year (Steven Tepper)
+Year 2000, COBOL, and real-time clocks (Martin Gregorie)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 7 Mar 96 14:39:00 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Chase Manhattan computer glitch affects thousands
+
+As a result of a SMOP (small matter of programming) resulting from a few
+missing keystrokes that would have properly defined the recipient list,
+about 11,000 out of 13,000 of Chase Manhattan Corp.'s secured credit-card
+customers received a letter intended for just 89 customers -- informing them
+that their accounts were in default and could not be converted to unsecured
+accounts.  The screwup was blamed on an outside firm that administers the
+secured card program.  Chase is apologizing.  [Perhaps the apology letter
+will also go to the 89, using the same mailing-list glitch? (Sorry.  That
+was a semi-snide RISKS-related comment from PGN.)]
+
+  ``The incident shows how quickly relatively minor errors can balloon into
+  big problems as financial services firms use computers to send hundreds of
+  thousands of notices to customers almost instantaneously.  Vanguard Group,
+  the big mutual fund company, recently mailed incorrect tax-preparation
+  materials to more than 5 million fund shareholders that could force
+  customers to amend their federal income tax returns. In 1994, Fidelity
+  accidentally reneged on a promise to pay investors a year-end dividend.''
+
+[Source: An article in *The New York Times* 7 Mar 1996 Chase Manhattan
+Computer Glitch Brands 11,000 As Bad Risks, By Michael Smith, from Bloomberg
+Business News.  PGN Abstracting]
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 12:18:20 -0500 (EST)
+From: Saul Tannenbaum <stannenb@emerald.tufts.edu>
+Subject: Harvard Pilgrim HMO scheduling system creates chaos
+
+*The Boston Globe* (7 Mar 1996) reports that the scheduling computers of the
+Harvard Pilgrim HMO ``broke down" on 4 Mar 1996 and are not expected to be
+available until Saturday.  Patients needing to make appointments must wait
+until the computers are available; urgent care patients are being seen
+immediately.  The medical records system, as well, was down for seven hours
+on 6 Mar.  
+
+Harvard Pilgrim declined to specify the cause other than to say that it's a
+standard database problem, although requiring an intricate process to solve
+it.  The full story can be retrieved from the Globe's web site:
+
+	http://www.boston.com/globe/eco/cgi-bin
+		/retrieve?%2Fglobe%2Fvurdy%2F067%2Feco%2F002
+
+The Risks?  The more things change, the more they remain the same.
+
+Saul Tannenbaum, Manager, Academic Systems, Tufts University Computing and
+Communications Services   http://www.tufts.edu/~stannenb
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 09:11:41 -0500
+From: Joseph125@aol.com
+Subject: New web page and risks to personal information
+
+The web page of the week in the most recent Information Week is
+www.switchboard.com.  It is a compilation of the telephone white pages from
+all across the nation.  You can search on combinations of last name, first
+name, city and state to find long lost friends, relatives or just
+interesting names.  (A quick search found a Santa Claus in FL and a Bunny
+Easter in WA.)
+
+This kind of information is not particularly new, of course.  What is
+interesting is that Switchboard allows you to register by identifying your
+listing and sending your email address.  They send back a password.  Now you
+can login and add or modify information in your listing or even make your
+listing "unlisted".  It is clearly a very easy thing to use throwaway email
+addresses to modify any number of listings.  Switchboard admits as much in
+their policy statement (http://www2.switchboard.com/policy.htm) saying that
+their security is "designed to discourage" such impersonation.  They will
+correct any falsification with appropriate documentation and take steps
+(this seems to mean blocking access from the offending email address) to
+prevent additional occurrences including, if applicable, legal action.  (I
+fear there is very little substance behind that claim.)
+
+Despite Switchboard's benevolent claims, the possibilities make me nervous.
+
+I should note that when a listing has been modified by a user, it appears
+with an asterisk.
+
+Joseph Richardson (Joseph125@aol.com)
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 16:57:04 GMT
+From: taylort@dg-rtp.dg.com (Tad Taylor)
+Subject: Protecting yourself against Java applets (Gong, RISKS-17.85)
+
+In RISKS-17.85, Li Gong talks about the Risks of running an applet of
+questionable parentage as ones self.  In this context, he makes two related
+statements that I would like to address:
+
+1)  Such an applet, unless its authenticity can be verified to the
+    satisfaction of the downloading client, should instead run within
+    a confined (protected) sub-domain, and any further invocations
+    from this code should also run within this sub-domain.
+
+2)  Most machines and OSs obviously do not support such confined domains.
+
+I absolutely agree with the first statement.  If you are going to run
+software (applet or otherwise) of questionable intent, you should be sealed
+off into a domain from which your process or any of its descendents cannot
+escape.
+
+It is the second statement I wish to address. Data General's DG/UX operating
+system (with DSO, an additional security option) provides exactly this
+protection and for exactly the reason Li Gong points out (among other
+reasons).  When a user first authenticates to the system (e.g., logs in), a
+session is created.  Sessions are authorized for some number of sub-sessions
+(n >= 1).  The session establishes a maximum set of credentials for any
+sub-sessions (i.e., a master domain).  The credentials establish what a
+process can see and do *and* provide hard and fast limits for what any
+descendent processes can do.  Within this context, each sub-session has its
+own domain which is more restrictive than the master domain.
+
+So, for the scenario under discussion, a user might log in and begin
+performing their regular activities on the system (which might even include
+administrative duties).  If a desire or need to surf the Net strikes them, a
+new sub-session is established with a very restricted set of credentials.
+Presumably, a site would be configured such that normal sessions did not
+have access to any Web browsers.  The new sub-session would pick up the
+privilege to run the browser while simultaneously giving up access to
+virtually all information and other privileges on the system.  This is
+assuming the master domain permits such actions. Then, and only then, the
+user could find and run Java applets.  Regardless of what the applet tried
+to do or have other programs do on its behalf, the browser sub-session would
+be severely limited in what it could access or affect.
+
+I hope this hasn't sounded too much like a commercial, but I did want to
+point out that there are operating systems that take this sort of thing
+*very* seriously and are actively working to provide the necessary
+protections and assurances.
+
+Tad Taylor  taylort@dg-rtp.dg.com
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 06:35:05 -0800
+From: Lee Hasiuk <leeh@worlds.net>
+Subject: More on Java applet loading (Gong, RISKS-17.85)
+
+Li Gong's article in RISKS-17.85 postulates that the flaw which David
+Hopwood uncovered in Java is really a feature.  It really is a serious bug.
+Java was designed to only use local classes which are part of its CLASSPATH
+(usually an environment variable).  Here's a very real example of a
+situation where Mr. Hopwood's bug could cause a user to unknowingly delete
+every file on their hard disk, by simply browsing a Web page!
+
+1) Victim browses Attacker's Web page.  Web page entices victim to submit a
+form with their e-mail address.  Actually, a bug in JavaScript, in Netscape
+2.0, can be exploited to automatically determine the user's e-mail address.
+
+2) Attacker postulates or determines from message headers that Victim uses
+Eudora mail, and sends Victim a message with Mr. Hopwood's two attack files
+as binary attachments.  Eudora automatically unpacks attachments and places
+them into its directory.  Attacker assumes that Eudora is installed in a
+"standard place", i.e. the installation default.
+
+3) Victim now switches to another Web page on attacker's site, which
+exploits the bug.  This allows the two attack files to be loaded, and
+bypasses all of Netscape's Java security restrictions, allowing attacker to
+do whatever they want to user's machine.
+
+Another possibility for getting the files onto the victims machine include
+anonymous FTP (if the victim runs an FTP server).  All the attacker has to
+know is the directory in which the files are stored.
+
+Lee Hasiuk  leeh@worlds.net
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 17:15:06 +0000 (GMT)
+From: David Hopwood <david.hopwood@lady-margaret-hall.oxford.ac.uk>
+Subject: More on Java applet loading (Hasiuk, RISKS-17.86)
+
+Lee Hasiuk <leeh@worlds.net> wrote:
+
+> Your [Li Gong's] article in RISKS-17.85 postulates that the flaw
+> which David Hopwood uncovered in Java is really a feature.  It really is
+> a serious bug.
+
+In fact it is more serious than I had first thought.
+
+The locations of files in Netscape's cache are predictable. By using a known
+security bug in JavaScript, it may be possible to arrange for downloaded
+files to be cached using a path and filename known to the attacker.
+
+Although I haven't implemented an attack based on this, it is probable that
+it removes the requirement for the Loader and dynamic library to have been
+installed in advance, if Netscape's cache is enabled.
+
+Li Gong <gong@csl.sri.com> wrote:
+> >A security problem occurs, however, if the remote web page refers (directly
+> >or indirectly) to code that happens to exist on the client machine.  [...]
+
+However, they will be loaded by the standard AppletClassLoader, which causes
+the same security settings to be applied as for applets loaded from the
+network. For example, here is the result of an applet loaded via a file: URL
+attempting to link a native method:
+
+  [...]
+  Opening stream to: file:/tmp/Loader.class to get Loader
+  *** Security Exception: link:/tmp/libtest.so ***
+  sun.applet.AppletSecurityException: security.link: /tmp/libtest.so
+        at sun.applet.AppletSecurity.checkLink(AppletSecurity.java:153)
+  [...]
+
+The bug I found loads applets using the built-in class loader, and so the
+above test succeeds.
+
+David Hopwood  david.hopwood@lmh.ox.ac.uk
+
+------------------------------
+
+Date: Thu, 7 Mar 1996 11:24:25 -0800 (PST)
+From: Li Gong <gong@csl.sri.com>
+Subject: Quoting from online Java tutorial [draft]
+
+The Netscape browser appears to be secure in this respect, but the online
+Java tutorial (draft version) seems to suggest that the security behaviors
+may be dependent on the specific browser, rather than being intrinsic in
+Java.  Following is a direct quote from the tutorial.  Note particularly the
+first point under "things ... that you might not expect".
+
+[Draft Java online tutorial excerpt follows:]
+
+What Applets Can and Can't Do
+
+     For security reasons, an applet that's loaded over the network has
+     the following restrictions:
+
+        * It can't load libraries or define native methods.
+        * It can't ordinarily read or write files on the host that's
+          executing it.
+        * It can't make network connections except to the host that it
+          came from.
+        * It can't start any program on the host that's executing it.
+        * It can't read every system property.
+        * Windows that an applet brings up are distinguished by some
+          warning text and either a colored bar or an image, so that
+          the windows don't look like they're part of a trusted application.
+
+     Things that applets can do, that you might not expect:
+
+        * Applets that are loaded from the local file system (from a
+          directory in the user's CLASSPATH [or from a file URL?]) have
+          none of the restrictions that applets loaded over the network
+          do (as listed above). For this reason, some browsers don't
+          allow applets to be loaded via file: URLs.
+        * Although most applets stop running once you leave their page,
+          they don't have to.
+
+     Each browser has a SecurityManager object that checks for applet
+     security violations. When a SecurityManager detects a violation,
+     it throws a SecurityException. [ need an example applet that tries
+     to do a few forbidden things ]     [Reminder: this is a draft.  PGN]
+
+------------------------------
+
+Date: 7 Mar 1996 12:37:43 -0600
+From: ajm@mcs.com (Alan Miller)
+Subject: Another Java risk -- Theft of Service
+
+Another (possibly minor) risk of Java is implicit in its nature - it allows
+someone else to run a program on your system.  If I wanted to do something
+like, say, set up a system to break encryption keys, my best way to get the
+needed processing power might be to build a Java applet that would do a
+small amount of the processing needed, then send the result back to me and
+wait for another 'assignment.'  If I then proceeded to build an attractive
+Web site, I could drop that applet to anyone visiting my site and simply sit
+back and wait for results (which I'd need to refine).
+
+I as the user might never notice this, but there'd be at least a small
+decrease in the resources available to me on my system, most notably a lack
+of available processing power.  Depending on how the applet was written and
+whether it could detect other instances, my system might proceed to get
+slower and slower each time I visited the site in question.  Would I notice
+this, or would I just chalk it up to overloaded servers and wonder later why
+my system was so sluggish?
+
+There are a variety of other possible attacks based on this as well, which
+might or might not work depending on the capabilities of Java.  Other
+possibilities include file 'storage', with small files being sent for
+storage and returned before the applet would exit for a shutdown and
+Miller's Migrating MUD, with a small private MUD/chat system being run on
+someone else's system, with only an address at a fixed site.
+
+Alan Miller    ajm@mcs.com    http://www.mcs.net/~ajm/home.html
+
+     [Li Gong suggested that Arjen Lenstra and friends might be 
+     interested in porting their large-number-factoring distributed
+     software to Java.  Perhaps they already have!  Remember, they are
+     looking for prime suspects (and sometimes suspect primes).  PGN]
+
+------------------------------
+
+Date: Mon, 4 Mar 96 10:09:35 -0500
+From: "Rosenthal, Harlan" <rosenthh@dialogic.com>
+Subject: Re: Positive feedback and the law of averages (Light, RISKS-17.82)
+
+Read Larry Niven's short story, "Flash Crowd", and its two sequels.  These
+deal with the problems that occur given an instantaneous transportation
+system (the fictional part), modern communication, and especially the
+accident "rubbernecker" instinct.  Instant Woodstocks, or instant riots?
+Note for the science-fiction-impaired: Niven's teleportation stories aren't
+so much about teleportation, which he himself doesn't believe can be
+feasible [see his essay "Theory and practice of teleportation"], as about
+what would happen to society if it *could* exist, along the same lines of
+what happened to society with the telephone, the auto and highway system,
+etc.
+
+John Light's comment: ``... a positive review ... of your favorite website
+may send millions of people to it ...'' is in very much the same vein.
+
+-Harlan Rosenthal
+
+  [The Larry Niven Flash Crowd, Flash Riot connection was also noted by
+     wb8foz@netcom.com (David Lesher)
+        observing the White Bronco phenomenon, AltaVista, and a though 
+        that universal teleportation had better wait until after 1/1/00,
+     <soreff@VNET.IBM.COM> (Jeffrey Soreff),
+     "Alan H. Martin" <amartin@zko.dec.com>,
+        who points to Duncan Galloway in "Known Space" at
+        http://ibm590.aims.gov.au/~duncang/niven.html,
+     Andrew Duane <duane@zk3.dec.com>,
+     hugh.davies@rnb.com (Hugh J.E. Davies),
+     Christopher Davis <ckd@loiosh.kei.com>,
+     bkis@nanaimo.island.net (Jonathan Thornburg).  PGN]
+
+------------------------------
+
+Date: Wed, 6 Mar 96 18:54:04 CST
+From: jdellinger@amoco.com (Joe A. Dellinger)
+Subject: Leap-years and leap-seconds
+
+	Starting in the 1970's we have had to add occasional leap *seconds*
+to keep our official time in sync with the Earth's rotation. A leap second
+is a 61st second in a minute (always just before UT midnight), so that some
+date specifications such as "23:59:60 Dec 31 1972" are actually perfectly
+valid.  This has worked reasonably well so far, but I've read predictions
+that within only a couple of decades we'll first start needing leap seconds
+every year, then twice a year, then even more and more often as the Earth
+slows down... (Note also that the Earth doesn't only slow down, it can
+sometimes speed up as well as our moment of inertia changes due to
+redistributions of atmospheric mass! To my knowledge we haven't yet needed
+an "anti leap-second" but it is bound to happen eventually.)
+
+	What shall we do then? Redefine the second? Keep two separate time
+standards, one with a fixed second and another with a stretchy second that
+changes to accommodate the Earth? There is already something called
+"Ephemeris time" that has been steadily diverging from standard time since
+1900.
+
+	Another source of confusion is technical terms that mean different
+things in different fields. Geophysicists have appropriated the astronomical
+terms "Julian Day" and "Sidereal Year". The only trouble is they use
+"Julian Day" to mean day number in the current year, and "sidereal year"
+to mean tropical year!
+
+  [Some of you have submitted items relating to why do we need leap-days
+  when we keep adding leap-seconds, and I have pointed out the difference
+  between rotation and revolution to you.  I am delighted to have this
+  clear exposition from Joe in RISKS.  TNX]
+
+------------------------------
+
+Date: Thu, 07 Mar 1996 17:02:55 +0000
+From: Max Hadley <mrh@shl.co.uk>
+Subject: Leap year and time-zone calculations
+
+Recent postings have discussed the various algorithms used to calculate leap
+years, and the switching on and off of summer time (daylight saving time). A
+couple more thing to bear in mind (thanks to Steve Allen of UCO Lick
+Observatory, <sla@ucolick.org> ).
+
+The length of day (LOD) will be increasing for the next few hundred million
+years.  This is due to tidal drag.  The exact amount of this increase in LOD
+is not yet certain because it cannot be calculated from simple physics; it
+must be measured and the tidal component painstakingly distinguished from
+the contributions of the changing currents in the fluid core of the earth
+and the angular momentum of the atmosphere and oceans.
+
+The length of the year (LOY) is not changing in such a long-term
+secular fashion.  Unless there is a fifth force or the fundamental
+constants of nature are changing as the universe ages, the size of the
+earth's orbit is pretty much fixed.  There are subtle changes due to
+the other planets, but viewed over the long term these are mostly
+periodic. 
+
+For these orbital time periods you will find polynomial expressions (usually
+cubic) for their length.  These expressions are the ones upon which
+Herschel's calculation of the proposed 4000-year leap are based.  The most
+common expressions found in available literature are the cubic ones
+calculated by S. Newcomb at the beginning of this century.  Those
+expressions are based on roughly 300 years of accurate observations.  For
+that reason, it is a mistake to extrapolate those cubic polynomials more
+than about 300 years into the future.  The cubic is really only the leading
+terms of a cyclical trigonometric series.
+
+Even now, with another century's worth of data under our belts, and with the
+milliarcsecond accuracy with which we now know the positions of the inner
+planets, I think it might be a mistake to try to resolve whether the
+Herschel 4000-year term should be added to the calendar.  Discriminating
+between the different schemes of the Gregorian and Eastern Orthodox
+calendars might be possible, but it would depend on how accurately you think
+you can predict the earth's rotation, and that depends on your ability to
+predict the weather in the earth's core."
+
+So there isn't much point in trying to be too accurate about the number of
+days in a year! The variation in the length of the day is the prime reason
+for the introduction of leap seconds, which attempt to stop the calendar
+getting too far adrift from real (atomic) time. Leap seconds, at present,
+are not appearing in a predictable fashion, but as and when they are needed.
+
+For computer system designers, here are some possibly helpful guidelines:
+
+1. For a 'time base', count seconds (or microseconds) from some datum,
+preferably using a Cesium clock. These are available by radio in many parts
+of the world.
+
+2. A minute can have 59, 60, or 61 seconds.
+
+3. February can have 28 or 29 days.
+
+4. The rules for converting from a seconds count to a date and time are
+arbitrary, complex, and subject to change at short notice! However, changes
+to the rules are not (?) retrospective.
+
+Any neat little C one-liners are going to be wrong at some point. Maybe an
+ideal solution is a Java applet downloaded from the custodian of the legal
+calendar each time a conversion is needed? (;-)xxxxxxxxxx   
+
+Stewart Hughes Ltd, School Lane, Chandlers Ford, Eastleigh, Hampshire 
+SO53 4YG UK  xx@shluk.co.uk  +44(0)1703 270027  Fax: +44(0)1703 270007
+
+------------------------------
+
+Date: Thu, 7 Mar 96 16:48:48 IST
+From: amos@nsof.co.il (Amos Shapir)
+Subject: Re: Leap-year arithmetic (Jaspan, RISKS-17.84)
+
+I've heard (but never actually found a source) that this 4000-year
+correction is in the standard Soviet calendar.  The Greek Orthodox church's
+calendar (which I think is the official standard in Greece) replaces the
+400-year rule by the rule "century divided by 9 gives a remainder of 2 or
+6".  This is more accurate than the Gregorian calendar, but agrees with it
+on the years 2000 and 2400.
+
+Since the Greek Orthodox church is prevalent in Russia too, it seems the
+Russians have until 2/28/2800 to make up their minds which calendar they're
+using...  :-)
+
+Amos Shapir  nSOF Parallel Software, Ltd. Givat-Hashlosha 48800, Israel
+amos@nsof.co.il  Tel: +972 3 9388551   Fax: +972 3 9388552
+
+------------------------------
+
+Date: Wed, 06 Mar 1996 11:07:08 +0000
+From: Roy Murphy <murphy@panix.com>
+Subject: More on Excel and leap days (Hauser, RISKS-17.84)
+
+> ... This means, of course, that computations such as "number of days 
+> between x and y" where one or the other date is in early 1900 will be wrong.
+
+This is actually a bug introduced by Lotus 1-2-3 and deliberately maintained
+by Excel in the interests of "compatibility". There is an option to use the
+1904 Date System which was developed on the Mac for the original version of
+Excel which does not have this bug.
+
+Roy Murphy  murphy@panix.com
+
+------------------------------
+
+Date: Thu, 7 Mar 96 14:47:35 PST
+From: greep@datatools.com (Steven Tepper)
+Subject: Re: bleep-year 
+
+Let's just leap from December 31, 1999 straight to January 1, 2001.  That
+will eliminate not only any question about whether 2000 is a leap year, but
+also the arguments about when the twenty-first century begins.  Of course
+some data processing software may need a bit of tinkering to know how to
+count the number of years when spanning century boundaries...
+
+  [And, of course, it won't solve the two-digit year problem...  PGN]
+
+------------------------------
+
+Date: Thu, 07 Mar 1996 11:25:46 GMT
+From: gregorie@logica.com (Martin Gregorie)
+Subject: Year 2000, COBOL, and real-time clocks
+
+As far as I know all CODASYL definitions up to and including COBOL-85 define
+the receiving field from
+	ACCEPT variable FROM DATE
+which is used to read the system date, as a 6-digit field (PIC 9(6)) that
+holds yymmdd.
+
+The risk is obvious -- no system compiled with a standard COBOL compiler can
+deal with the turn of the century without explicit date manipulations being
+added to application programs.
+
+  [Yes, this one has appeared here before, most recently in RISKS-16.69.  PGN]
+
+Many of the most popular real-time clock chips only hold the year as two
+digits and do not make provision for a century. As a consequence quite a few
+operating systems (including UNIX, via the ANSI C time_t structure) do not
+return the century as a separate field in their system time structures.
+Although time_t.year is not limited to two digits I suspect that it will not
+exceed 99 in practise if the clock chip used in the box doesn't have a
+century counter.
+
+The risk? Same as described for COBOL.
+
+Martin Gregorie   Logica UK Ltd  Gregorie@logica.com  +44 (0171) 637 9111
+
+------------------------------
+
+Date: 27 February 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ By submitting an item that is accepted for publication in RISKS, the author
+ grants permission for unlimited noncommercial public distribution and 
+ redistribution in electronic and print form.  Relevant contributions may 
+ appear in the RISKS section of regular issues of ACM SIGSOFT Software 
+ Engineering Notes or SIGSAC Review.
+
+ RISKS can also be read on the web at URL http://catless.ncl.ac.uk/Risks 
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.86 
+************************

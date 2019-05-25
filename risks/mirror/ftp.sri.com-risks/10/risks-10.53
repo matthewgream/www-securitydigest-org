@@ -1,0 +1,369 @@
+Subject: RISKS DIGEST 10.53
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Wednesday 17 October 1990  Volume 10 : Issue 53
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Lies, damn lies, and statistics... computer cabin-safety (Robert Dorsett)
+  Ada MultiTasking (Edward V. Berard, Bertrand Meyer, Robert Firth, 
+    Ray Diederich, Brian Hanafee)
+  Re: Technophilia-induced problem at Educom? (Miles R. Fidelman)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+CD RISKS:<CR>GET RISKS-i.j<CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory; bye logs out.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Wed, 17 Oct 90 16:50:58 -0500
+From: rdd@ccwf.cc.utexas.edu (Robert Dorsett)
+Subject: Lies, damn lies, and statistics...
+
+>From FLIGHT INTERNATIONAL, September 26, 1990
+
+CALL FOR COMPUTER CABIN-SAFETY TEST
+
+"Future cabin safety testing for new airliners should be determined by
+computer-based analysis, according to Michel Le Clerc, Airbus Industrie's
+deputy chief engineer, widebodies.
+
+"Practical evacuation tests are limited in their scope, produce unreliable
+conclusions, are dangerous for participants and extremely expensive, said
+Le Clerc at the conference.
+
+"Le Clerc wants intensive studies of evacuation tests and actual accidents
+to be conducted, saying, 'Steps should be taken to set up a database and
+computer model available to everyone.  Sufficient data already exsits for
+the necessary analysis' ...although unconventional configurations may require
+testing," he adds.
+
+"A full certification test evacuation program costs about $1 million for a 
+narrowbody and $2 million for a widebody, points out Le Clerc, and about
+one in ten people are injured."
+
+Just a couple of comments. :-)
+
+1.  $1-$2 million is about 0.03% to 0.1% of the total development costs for a 
+new aircraft.  On a 2000-aircraft production run, the per-aircraft cost will
+be about a thousand dollars, or .0014% of the cost of a $70 million airplane.  
+We're talking peanuts, here.
+
+2.  The notion that a *computerized* model will work, whereas earlier models
+have failed, is of concern.  Statistical analysis of exits is nothing new.
+However, time and time again, such analyses tend to cut corners, to rely on
+ideal conditions, and use admittedly imperfect evidence (the same "data",
+I'm afraid, that Le Clerc's referring to).  Problems are usually shown in 
+practical demonstrations.  However, by using "data" and putting it into a 
+"computer," it becomes much more difficult to refute that model's 
+"conclusions."
+
+3.  Part of the reason for Airbus's desire to rely on models is its enormous
+investment in a massive CAD/CAM/documentation system.
+
+4.  The last major fiasco which involved the use of raw statistics to set
+evacuation policies was when Northwest, and other operators, petitioned the
+FAA to seal the over-wing exit doors of 747-200's.  The FAA's northwest
+district approved it, but the national branch overturned the approval, citing
+unnecessary risk.  
+
+The entire industry has also been collaborating in certifying twin-engine air-
+planes for extended-range over-water operations, a controversial issue at
+best.  This summer, a proposal arose to also use models in lieu of practical
+demonstrations.
+
+
+I think it's only a matter of time before a major manufacturer petitions for 
+a waiver of major airframe "practical" tests in favor of simulations.  After
+all, if they can build it, the theory can't be wrong, right?  Or something
+like that.
+
+------------------------------
+
+Date: Fri, 12 Oct 90 05:44:44 EDT
+From: eberard@bse.com (Edward V. Berard)
+Subject: Re: Ada and Multitasking
+
+> The author then describes several features of the Ada language, such as data
+> typing, separate compilation units, and concurrent tasks. 
+> The RISKy bit comes in the discussion of task priorities.  [...]
+
+This "problem" is more one of a misunderstanding of the capabilities of the Ada
+language than an actual language definition problem. A serious user of Ada
+should know that some things, especially in the area of tasking, are defined in
+a non-deterministic manner. This is usually phrased in terms like "if several
+select alternatives are open, one will be selected in a non-deterministic
+manner."
+
+Yes, each implementer (of an Ada compiler) does indeed have a certain amount of
+freedom in choosing how to do scheduling, and the Ada programmer has the option
+of leaving it entirely up to the compiler to select a particular alternative.
+Further, this definitely has the potential of different behaviors as a result
+of using the same source code with different Ada compilers.
+
+However, if this is truly unacceptable to the program's author, it is entirely
+possible to write the same code in such a way that it behaves in exactly the
+same manner on all Ada systems. This does not even require "tricky code."
+
+Writing portable and predictable code using Ada is definitely possible, and,
+and for that matter, is done all the time. Please be aware of the fact that
+Ada does not force you to write only deterministic tasking code, but does
+provide you the capability to do so if you desire.
+
+> ... A language which boasts high portability and reliability includes
+> features which mean that there is no guarantee that a program will work the
+> same way if ported to another compiler and/or run-time environment.
+
+If I went out of my way not to learn the proper semantics of the language,
+and worked at writing non-portable code, this would be true.
+
+The crux of the matter is really flexibility. If the designer of the Ada
+language (Jean Ichbiah) decided that there was only one way to set priorities,
+he could have built that into the language. Unfortunately, not everyone would
+have agreed on that mechanism. So, Ada was designed in a manner which gives the
+programmer a choice:
+
+	a. Allow the underlying implementation to select among a set of choices
+	   in a non-deterministic manner, or
+
+	b. Force a particular, programmer-defined set of priorities, which can
+	   always be the same regardless of the compiler implementation
+
+> Does anybody have any experience (good or bad) in porting Ada programs, in
+> particular real-time programs?
+
+My experience (hundreds of thousand of lines of code ported to many different
+platforms) shows that it is possible to routinely write very portable,
+predictable Ada code. However, I have seen the following:
+
+	* A poorly trained Ada programmer determines the underlying scheduling
+	  algorithm for his or her Ada compiler and writes code to take
+          advantage of this scheduling algorithm. Problems occurred when:
+
+          - a new version of the compiler came out with a different scheduling
+            algorithm,
+
+          - the source code was ported to an Ada compiler with a different
+            scheduling algorithm, and/or
+
+          - the programmer did not understand (or correctly identify) the
+ 	    underlying scheduling algorithm.
+
+	* An Ada programmer realized that Ada compiler writers have a certain
+	  amount of flexibility when it comes to some (not all) priority
+	  issues, and then wrote very deterministic code. However, the actual
+	  application called for non-deterministic code. (This problem is
+	  very similar to having a "not-so-random" random number generator.)
+
+There are definitely risks associated with this issue. However, one must be
+careful in identifying the source. For example, if an Ada programmer is poorly
+trained, should we blame the language, the programmer, or management?
+                                        				-- Ed
+
+Edward V. Berard, Berard Software Engineering, Inc.  18620 Mateney Road
+Germantown, Maryland 20874                      Phone: (301) 353-9652
+
+------------------------------
+
+Date: Fri, 12 Oct 90 15:30:27 PDT 
+From: bertrand@eiffel.UUCP (Bertrand Meyer @ Interactive Software Engineering
+        Inc.)
+Subject: Re: Ada and multitasking (RISKS 10.48) 
+
+	In his contribution to RISKS 10.48, Erling Kristiansen criticizes Ada's
+concurrency features (the tasking mechanism) as hampering reliability because
+the language definition leaves room for more than one possible program response
+to the same sequence of events, depending for example on the way the scheduler
+handles task priorities to reflect various possible fairness policies.  In his
+words, this highlights a contradiction between portability and reliability.
+
+	Regardless of one's opinion about Ada's support for reliable
+programming (concurrent or not), which certainly leaves room
+for criticism, Mr. Kristiansen's comments seem based on an
+over-restricted view of reliability. In his opinion,
+
+	``A language which boasts high portability and reliability
+	[must not] include features which mean that there is no guarantee
+	that a program will work the same way if ported to another compiler
+	and/or run-time environment.''
+
+Depending on how one defines ``work the same way'', this requirement
+is either appropriate or too strong.
+
+	It is too strong if ``working the same way'' means always executing the
+same actions in the same order as a response to the same input events. After
+all, isn't non-determinism a fundamental aspect of concurrency? Even in a
+purely sequential world, one can hardly guarantee that computations (on
+floating-point numbers, for example) will execute identically on all computers.
+
+	The only productive way of transforming the above into a realistic
+requirement is to accept that a program, or program element, is based on a
+higher-level description of intended semantics - in other words, a
+specification. (I have called this ``programming by contract'' in various
+publications, some of which, incidentally, directly criticize another aspect of
+Ada, its exception mechanism, precisely for its possible risks to reliability.)
+A specification states the required properties of the acceptable observable
+behaviors of a software system. It does not need to prescribe only one behavior
+as acceptable.
+
+	Different implementations that behave differently, and possibly even
+produce different observable results, are then acceptable as long as they
+conform to the specification.
+
+	Two of the possible reasons to leave certain properties open in the
+specification are portability and the need to support various scheduling or
+fairness policies. They do not conflict with the reliability requirement. To
+take an obvious non-computer analogy, you may tell a taxi driver to get you to
+point X in at most half an hour, without specifiying the itinerary, which is
+not part of your definition of ``reliability'' for this trip.
+
+	All this assumes, of course, that there is a way to express precise
+specifications, which Ada does not provide, although some Ada-based tools,
+notably Anna, do.
+
+-- Bertrand Meyer                      bertrand@eiffel.com
+
+------------------------------
+
+Date: Tue, 16 Oct 90 08:07:29 -0400
+From: firth@SEI.CMU.EDU
+Subject: Ada MultiTasking
+
+>        ... Or one could blame the language.
+
+Or, of course, one could ask that the instructor take the trouble to learn the
+language he proposes to teach!  The Ada Reference Manual [RM 9.8(4)] mandates
+exactly this behaviour:
+
+	If two tasks with different priorities are both eligible
+	for execution and could sensibly be executed using the
+	same physical processors and the same other processing
+	resources, then it cannot be the case that the task with
+	the lower priority is executing while the task with the
+	higher priority is not.
+
+In other words, and without any vagueness whatever - run the higher
+priority task until it ends, and then run the lower priority task.
+
+Robert Firth
+
+------------------------------
+
+Date: Tue, 16 Oct 90 14:54:42 -0400
+From: diederich_r_%ncsd.dnet@gte.com (Ray Diederich)
+Subject: Re: Ada MultiTasking
+
+In RISKS 10.50, Chet Laughlin <ctl8588@rigel.tamu.edu> writes:
+>The first lab involved two tasks running in pa[r]ellel.  In reality it was
+>figured that the tasks would time-slice on a single machine.  However, this 
+>was not the case.  The compiler would simply run the highest priority task 
+>until it ended, and then run the lower task.  ...
+
+In response, ANSI/MIL-STD-1815A, chapter 9, paragraph 2 states:
+>Tasks are entities whose executions proceed *in parallel* in the following
+>sense. Each task can be considered to be executed by a logical processor of
+>its own. Different tasks (different logical processors) proceed
+>independently, except at points where they synchronize. 
+
+Nowhere in this paragraph nor the surrounding text is the idea of time-slicing
+mentioned nor implied. Depending on time-slicing is erroneous programming,
+because it means depending on characteristics which are out of the control of
+the programmer. Further, resorting to time slicing is simply a way of saying "I
+don't know how to best schedule these tasks; you, the compiler, may schedule
+them for me." Ada supplies several synchronizing tools which allow logically
+concurrent processing without depending on time-slicing.
+
+Time-slicing gives you a means of relieving your responsibility to solve your
+real-time processing design problems -- at the expense of added overhead, less
+control of your program, and less reliability in your system. Yet, every time I
+come up against a problem which requires real-time performance, I find that
+most of my peers start chanting "we need to time-slice, we need to time-slice."
+
+I challenge any circumstance which would require time-slicing to be
+"correct." If the point of Mr. Laughlin's project was intended to teach the
+real-time use of the multiprocessor environment (by simulating
+multiprocessing with tasks), I suggest that his choice of problems is
+flawed. A good real-time multiprocessor problem requires interprocess
+dependency (which may be implemented by Ada task rendezvous). Without the
+interprocess dependency, you might as well cut the cables and run with
+stand-alone processors.
+
+In response to Erling Kirstainsen's article which originated the topic, any
+time one resorts to erroneous programming methods, one sacrifices
+reliability and portability. It's not the fault of the language nor the
+associated hype. 
+
+------------------------------
+
+Date: Tue, 16 Oct 90 12:19:25 -0700
+From: bhanafee@ads.com (Brian Hanafee)
+Subject: Re: Ada MultiTasking (Laughlin, RISKS-10.50)
+
+The basic error is contained in the statement: "In reality it was figured that
+the tasks would time-slice on a single machine."  This assumption is in direct
+contradiction of the Ada LRM, section 9.8, paragraph 4:
+
+     "If two tasks with different priorities are both eligible for
+     execution and could sensibly be executed using the same physical
+     processors and the same other processing resources, then it
+     cannot be the case that the task with the lower priority is
+     executing while the task with the higher priority is not."
+
+Running the higher priority task until it ended was the correct behavior!
+
+	Much of the difficulty people have with Ada tasking is (in my
+opinion) related to the fact that the Ada tasking model does not
+assume (nor preclude) a time-slicing mechanism.  I believe the Apple
+Macintosh Multifinder implementation is another example of
+multitasking without time slicing.
+
+	The decision to use or not use time slicing should be based on a number
+of factors including the availability of a clock to cause interrupts, the cost
+of saving the machine state, and the benefit of "fair" scheduling.  The
+availability of an appropriate clock is not a given for all computer systems,
+particularly embedded systems.  Furthermore, the cost of saving the machine
+state at a random point in the execution of the program is almost always
+greater than the cost of saving state only at predefined points such as task
+entry and exits.  The benefit of "fair" scheduling occurs frequently in
+multi-user systems where users are often competing for the same resources,
+however in dedicated or embedded systems, the designers could use tasking and
+programming discipline to enforce "fair" scheduling without requiring the
+additional overhead of time-slicing.  The decision to use or not use time
+slicing is usually made by the compiler vendor (although ideally it should be
+switchable by the compiler user); programs in Ada (or any other language) which
+depend on a particular implementation are erroneous.
+
+Brian Hanafee                                     bhanafee@ads.com
+
+------------------------------
+
+Date: 17 Oct 90 17:14:32 GMT
+From: "Miles R. Fidelman" <mfidelma@BBN.COM>
+Subject: Re: Technophilia-induced problem at Educom? (RISKS-10.51)
+
+I've seen a talk where real-time transcription was provided by court
+stenographers.  They used a version of a stenotype machine coupled to display
+software.
+
+Stenotype machines have phonetic keyboards, and their raw output looks very
+much like what is described here. In courtroom practice, a clean transcript is
+made later. In the talk I saw, some software provided partial on-the-fly
+cleanup, but no where near perfect.
+
+Another reader comments that an ASL translator would be preferable. My own
+take is that for technical talks this real-time transcription seems better able
+to catch technical vocabulary.
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.53
+************************

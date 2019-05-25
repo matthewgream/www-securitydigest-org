@@ -1,0 +1,430 @@
+
+VIRUS-L Digest   Thursday,  7 Jun 1990    Volume 3 : Issue 109
+
+Today's Topics:
+
+Steriod Trojan -- WARNING! (Mac)
+re: Stoned (PC)
+Search strings for IBM VIRSCAN program (PC)
+re: Possible virus (PC)
+Re: clearing ps/2 pw, faces on screen (PC)
+"validate" program for Macs
+MDEF anyone? (Mac)
+Steroid Trojan and SAM 2.0 (Mac)
+Re: Intentional Virus(es?)
+MAC Trojan announcement
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Wed, 06 Jun 90 09:19:51 -0400
+From:    Tom Coradeschi <tcora@PICA.ARMY.MIL>
+Subject: Steriod Trojan -- WARNING! (Mac)
+
+This was posted today to Info-Mac.
+
+tom c
+
+                           = Every Day is Earth Day =
+          ARPA: tcora@pica.army.mil     BITNET: Tcora@DACTH01.BITNET
+                UUCP: ...!{uunet,rutgers}!pica.army.mil!tcora
+
+- ----- Forwarded message # 1:
+
+Date: Tue, 5 Jun 90 15:07:26 -0700
+From: William Lipa <wlipa@hqpyr1.oracle.com>
+Subject: Steriod Trojan -- WARNING!
+
+Steroid Trojan Horse
+
+There is a Trojan Horse called "Steroid".  It is an INIT that claims to speed
+up QuickDraw on Macintosh computers with 9" screens.  The INIT contains code
+that checks for the date being greater than June 6,1990.  If it is, it will
+ERASE all mounted drives.
+
+I have performed some tests on a Macintosh SE.  Having Comm Toolbox installed
+seemed to interfere with the INIT and keep the erase from happening.  The SE
+simply crashed.
+
+I then installed the INIT on a floppy disk and booted the SE.  The floppy and
+hard disk were promply erased.  NOTE: I had set the date to 7/7/90.
+
+So far, we know that the code does the following:
+
+OPERATIONS AT RESTART:
+
+ DATE & TIME CHECK (Loop)
+ SYSENVIRONS CHECK
+ GETS VOLUME INFORMATION (probably checking for HFS)
+ GETS SOME ADRESSES (Toolbox traps)
+ DOES SOME HFS DISPATCH OPERATIONS
+ VOLUME IS REINITIALIZED to "Untitled"
+
+INFORMATION:
+- ------------
+TYPE:      INIT
+CREATOR:   qdac
+CODE SIZE: 1080
+DATA SIZE: 267
+ID:        148
+Name:      QuickDraw Accelorator
+File Name: "  Steroid" (First 2 characters are ASCII 1)
+
+WHAT TO DO:
+- -----------
+If your disk becomes erased, you can use SUM II Disk Clinic to recover the
+deleted files.  We have tried this and it seems to work.  If you read this
+today, before June 6 1990, REMOVE the Steroid INIT from all disks IMMEDIATELY.
+
+POSTED BY:
+
+Thomas Scott
+Desktop Services
+AppleLink: MICRO.SUPT
+
+Thanks to Larry Nedry, Lee Neuse, & Gary Giusti for information
+
+- ----- End of forwarded messages
+
+------------------------------
+
+Date:    06 Jun 90 09:41:01 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Stoned (PC)
+
+Yep, the Stoned installs itself on the bottommost sector of the
+physical disk, which is the place where the partition table lives on a
+partitioned hard disk.
+
+>                        DEBUG cannot read/modify the partition table so
+> some of the methods presented thusfar will not necessarily work on
+> such a disk.
+
+That's only sort of true; the DEBUG "load" command can only
+see within the DOS partition, and therefore it can't see the
+bottommost sector; but I think people were suggesting using
+DEBUG to type in the tiny program needed to do the work.
+For instance, if you go into debug and type
+
+a 100
+xor ax,ax
+int 13
+mov ax,0201
+mov bx,0200
+mov cx,0001
+mov dx,0080
+int 13
+<enter by itself>
+g 112
+d 200 3ff
+
+you'll be able to see the bottommost sector of the first hard disk,
+including the partition table and the master boot code, sitting there
+at address 200.  (Only do this if you have some idea of what you're
+doing, of course!  The wrong typo in the above could easily make your
+hard disk inaccessible.)  Similar tiny programs can read the original
+stashed bottommost sector on a Stoned-infected hard disk, and write it
+back to where it belongs.  I think that's what some folks were
+suggesting...
+
+DC
+
+------------------------------
+
+Date:    06 Jun 90 09:50:49 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Search strings for IBM VIRSCAN program (PC)
+
+> We have versions of these files dated Sept 11, 1989.  Are there any
+> persons who maintain updated versions of these files as new viruses are
+> discovered?
+
+A new version of the scanning program, including new search strings,
+was released the other month; ask your IBM marketing rep, or local
+branch office, about the IBM Virus Scanning Program version 1.1.  (If
+they can't find the information about it, give them my name; it's sort
+of an unusual product...)
+
+DC
+
+------------------------------
+
+Date:    06 Jun 90 09:53:28 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Possible virus (PC)
+
+SEAN KRULEWITCH <IBNG300@INDYVAX.BITNET>:
+> One symptom
+> that seems to be common is a small section of the lower left hand side
+> of the screen seems to shift up, leaving a small "hole".
+
+That's a common symptom of the 1813 (or "Jerusalem") virus, one of the
+most common PC-DOS viruses.  Have you used a virus-scanner on your
+system?  If you *do* have an 1813 infection, the other symptoms that
+you're seeing are probably due to various bugs in the virus and/or
+"incompatibilities" between the virus and your various programs...
+
+DC
+
+------------------------------
+
+Date:    06 Jun 90 14:02:33 +0000
+From:    mike@client1.DRETOR (Mike Cummings )
+Subject: Re: clearing ps/2 pw, faces on screen (PC)
+
+GLWARNER@SAMFORD.BITNET (The.Gar) writes:
+>Dimitri -
+>    I can't help you with your problem, other than to tell you that
+>IBM's recommended procedure for a forgotten password USED TO BE to
+>remove the battery from the motherboard (I had an original PS/2 70.)
+>THIS HAS CHANGED, however, and they now have a "trick" that let's you
+>quickly clear the password.  What one is now able to do, is unplug the
+>speaker connector from the bus adapter card, and plug it in in the
+
+          It seems to me that this is also a new way to compromise the
+security of IBM equipment.  A better, more secure method of dealing
+with the problem (ie. not a "trick") should be found and implemented.
+
+- ---->  mike%zorac@dretor.dciem.dnd.ca
+
+------------------------------
+
+Date:    Wed, 06 Jun 90 11:30:33 -0500
+From:    m19940@mwvm.mitre.org (Emily H. Lonsford)
+Subject: "validate" program for Macs
+
+Does anyone know of a "validate" - type program for the Macintosh?
+I'm looking for something similar to McAfee's VALIDATE program, which
+is used to generate two checksums on a file, with independent
+algorithms.  Thus when the file is transmitted, the checksums
+generated before transmission are compared to the ones obtained after
+transmission, to ensure that what is sent is received uncorrupted.
+
+Thanks in advance for the help.
+*        Emily H. Lonsford
+*        MITRE - Houston W123  (713) 333-0922
+
+------------------------------
+
+Date:    Wed, 06 Jun 90 10:30:59 -0600
+From:    "McMahon,Brian D" <MCMAHON@GRIN1.Bitnet>
+Subject: MDEF anyone? (Mac)
+
+Since the initial report, there's been a conspicuous LACK of any reports of
+MDEF/Garfield hits.  Have they just not made it to the list?  Has Garfield
+been contained?  Is it spreading undetected?  Inquiring minds want to know.
+
+;-)
+
+I posted a query to the Virus SIG in the Mac Utilities area of America
+Online, and got this:
+
+>Subj:  MDEF Marching Through Georgia?        90-06-04 19:50:27 EDT
+>From:  DavidIIci
+>
+>    Brian,
+>
+>     While perusing through postings on the Mac Software BBS on PRODIGY, I
+>came across a post from an individual in Douglasville, Georgia (a suburb to
+>the west of Atlanta) who confirmed that he had been victimized by MDEF. It
+>had been found on a disk that he'd brought back from a local service
+>bureau. He'd taken a Quark XPress job there to be run out. When he
+>returned, a scan from a virus detection program (think it was Disinfectant)
+>confirmed a viral infection.....MDEF.
+[ Stuff deleted ]
+
+If this (third-hand) report is accurate, then the thing is on its merry
+way.  If anyone has further info, please consider contacting me directly.
+Indulge me in my little quirk...  :-)
+
+Brian McMahon  <MCMAHON@GRIN1.BITNET> | VAX Kludgemeister, Macintosh Medic,
+Grinnell College Computer Services    | Human Help Key, various and sundry
+Grinnell, Iowa 50112                  | stats packages.  Please allow two
+(515) 269-4901                        | to four weeks for miracles.
+(No, *NOT* Idaho!  Not Ohio, either!)
+
+------------------------------
+
+Date:    06 Jun 90 16:20:00 +0000
+From:    D1660@AppleLink.Apple.COM (SoftPlus, Paul Cozza,PRT)
+Subject: Steroid Trojan and SAM 2.0 (Mac)
+
+For SAM 2.0 users:
+
+As recently reported, a new Trojan horse named Steroid has recently
+been discovered. It is set to go off on July 1st, 1990, at which time
+it zeroes your volume directories (it is possible to recover files on
+hard disks with utilities such as SUM II). Before that time the Trojan
+remains dormant.
+
+This Trojan is shipped with the file name (Steroid) preceded by 2
+invisible characters along with a warning not to change the file name.
+These 2 invisible characters are there to make it load before SAM (or
+other INITs). If you leave this file in your system folder, then you
+are in danger (especially if have not renamed it).
+
+If you have renamed the file so that it runs after SAM (in general, NO
+unknown INITs should ever be allowed to run before SAM), then in
+advanced or custom modes you will get SAM alerts saying "There is an
+attempt to bypass the file system" when this Trojan attacks your
+volumes. Denying these attempts prevents the Trojan from doing any
+damage.
+
+You can enter the following virus definition in Virus Clinic to allow
+both SAM Intercept and Virus Clinic to detect this Trojan during
+scans.
+
+   Virus Name:  Steroid Trojan
+Resource Type:  INIT
+  Resource ID:  148
+Resource Size:  1080
+Search String:  ADE9 343C 000A 4EFA FFF2 4A78    (hexadecimal)
+String Offset:  96
+
+If you have entered this definition and have renamed the Trojan to run
+after SAM, then SAM Intercept will also notify you when this INIT is
+run at startup time.
+
+Paul Cozza
+SAM Author
+
+------------------------------
+
+Date:    06 Jun 90 17:03:52 +0000
+From:    rww@demon.siemens.com (Richard W West)
+Subject: Re: Intentional Virus(es?)
+
+- -From: Peter Jaspers-Fayer <SOFPJF@vm.uoguelph.ca>
+- -
+- -Hmm, and do you also imagine that while the dentist is in there with
+- -the drill that (just maybe) some extra bits of enamel may get
+- -chipped off a nearby tooth, so that you'll get another cavity andd
+- -have to come back sooner?  I guess there has to be some trust
+- -someplace.
+
+Yes, that is true, there has to be some trust someplace, but too much is
+a bad thing.
+
+- -From D1660@AppleLink.Apple.COM Wed Jun  6 10:46:02 1990
+- -
+- -You're not the first person to think that maybe it's the commercial
+ anti-virus
+- -programmers who are writing viruses. In fact, you're wrong. Also, don't you
+- -think it's judgemental to single out a product like SAM and suggest a
+- -malicious motive lurks behind its development and distribution?
+- -
+
+- -The facts are:
+- -1) The SAM author has never written a virus;
+- -
+- -2) The author spends a huge amount of time and energy making the product as
+- -   powerful as possible for the benefit of SAM's users;
+- -
+- -3) The author would be making his living on other software if there weren't a
+- -   need for SAM. Contrary to your thought, many people consider his effort a
+- -   service to the Mac community, not a scheme to bilk the Mac users!
+- -
+- -4) SAM 2.0 was upgraded to allow SAM users to get better defense against new
+- -   viruses at no cost. Once the virus definition is entered by the user,
+ there
+- -   is next to no chance of becoming infected even unknowingly.  And the
+ proper
+- -   virus definition is posted usually within a day of the discovery of a new
+- -   virus. All registered SAM users are send a postcard with the proper virus
+- -   definition free of charge. Symantec has even stopped its subscription
+- -   service since there is no need for it.
+- -
+- -5) It is somewhat true that upgrading SAM for virus removal requires a modest
+- -   $15 fee. BUT, this simply covers Symantec costs. It was judged too
+- -   dangerous for the user to enter his own repair information, and posting a
+- -   program that would update SAM with the repair information could lead to
+- -   someone using the program for a Trojan Horse. Hence, the decision was made
+- -   to distribute SAM 2.0 as you now see it.  In the future, something even
+- -   better will be done...
+- -
+- -In short, the SAM author has nothing to gain from writing a virus, and also
+- -does not have the time, energy, or motivation to write a virus.
+- -
+- -Rich, I am an honest person, trying to make an honest living. And from my
+- -contact with the other anti-virus authors, I don't suspect that any of them
+- -would do what you suggest either.
+- -
+- -Paul Cozza
+- -Author of SAM
+
+I apologize for singling out SAM in that way, but I was aiming the
+article at the entire market, not just the single product.  SAM was an
+example, it was not to be portrayed as a criminal.
+
+I had only realized that a great amount of trust is being put in the
+hands of large corporations, and the two words "trust" and "large
+corporation" do not commonly appear in the same sentence.  I am not
+trying to say that we should not trust Symantec or any other such
+company, I am saying, though, that we, as consumers, should not put
+our entire trust in any large corporation, no matter how good the
+cause.  I pointed out a rather large blind spot in the consumer mind.
+
+You mention that you are an "honest person, trying to make an honest
+living," and I truly believe you, but can you say that about everyone
+within the Symantec Corporation?  What I am trying to say is that
+there is always someone out there who will think of another way of
+making another dollar.  It may not be within the Symantec corporation,
+but there are other companies out there, and there are many people
+working for each of those companies.  It would be very incorrect to
+say that each of those employees, at least the higher-ups in the
+companies, would never consider or try implementing such an idea.
+
+Just as a side note, I am a proud owner of Symantec's Anti-Virus for
+the Macintosh, and I have been testing it for building-wide
+implementation/ installation here at Siemens.  I personally feel that
+SAM is the best virus protection utility out there on the market to
+date.
+
+- -Rich West
+Siemens Corporate Research and Development Labs
+Princeton, New Jersey
+Internet: rww@demon.siemens.com
+
+------------------------------
+
+Date:    06 Jun 90 19:24:37 +0000
+From:    dweissman@amarna.gsfc.nasa.gov (WiseGuy)
+Subject: MAC Trojan announcement
+
+I have seen two or three different announcements of the newest
+possible MAC Trojan.  The firs two messages said the Trojan trigger
+date would be today, Jun 6, 1990.  The last message, from the SAM
+author, says the trigger date is July 1st.  Could someone please
+clarify the discrepancy......
+
+*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*
+*   Dave Weissman - Goddard Space Flight Center - Code 543.0                *
+*   X.400 - (C:USA,ADMD:TELEMAIL,PRMD:GSFC,O:GSFCMAIL,SN:WEISSMAN,FN:DAVID  *
+*   INTERNET - dweissman@dftnic.gsfc.nasa.gov  BITNET - dweissman@dftbit    *
+*    ____      ____    _____________    __________   _____________          *
+*   |    \    |    |  |             |  |          | |             |         *
+*   |      \  |    |  |     ///|    |  |   ///////  |     ///|    |         *
+*   |        \|    |  |    |___|    |  |  |_______  |    |___|    |         *
+*   |    |\        |  |             |  |          | |             |         *
+*   |    |  \      |  |     ///     |   ///////|  | |     ///     |         *
+*   |    |    \    |  |    |   |    |   _______|  | |    |   |    |         *
+*   |    |    |    |  |    |   |    |  |          | |    |   |    |         *
+*    ////      ////    ////     ////    //////////   ////     ////          *
+*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 109]
+******************************************

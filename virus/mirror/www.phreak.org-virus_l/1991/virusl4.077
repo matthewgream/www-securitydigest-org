@@ -1,0 +1,421 @@
+VIRUS-L Digest   Wednesday,  8 May 1991    Volume 4 : Issue 77
+
+Today's Topics:
+
+F-PROT and FluShot problems (PC)
+Original-Equipment Viruses
+amiga virus
+Viral or other problem? (Mac)
+Re: TSR Virus Detector (PC)
+Re: help with mac "virus"? (Mac)
+Re: help with mac "virus"? (Mac)
+Re: help with mac "virus"? (Mac)
+re: What's so bad about self-extracting archives?
+Re: What's so bad about self-extracting archives?
+Re: can we trust diskette write-protection? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Tue, 07 May 91 09:35:29 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: F-PROT and FluShot problems (PC)
+
+>From:    umbc3!umbc3.umbc.edu!cs106132@uunet.UU.NET (cs106132)
+
+>I was testing the new release of F-PROT 1.15a the other day, and came
+>across an interesting problem.  It happened when a variant of 4096 was
+>active.  Since F-PROT did not know this strain, it could not detect
+>it.  This is expected as the documentation hints.
+> However, when I ran F-OSCHK, the virus infected the system files
+>(IBMBIO....), the result was a non-bootable hard disk.
+>   I repeated the same test using FluShot+ (1.81), the same thing
+>happened in a slightly different manner.  But the system again became
+>impossible to boot from the hard disk.
+
+Simple integrity checking (e.g. intelligent use of CHKDSK-type values)
+would have revealed that something unusual was going on, particularly
+with the varieties of 4096 that I have seen since a memory mis-match
+occurs. You get what you pay for.
+                                      Warmly,
+                                               Padgett
+
+------------------------------
+
+Date:    Tue, 07 May 91 10:02:16 -0400
+>From:    Sandy=OToole%COMPUTER%UMASS@server2.UMMED.EDU
+Subject: Original-Equipment Viruses
+
+I would like to get more information on viruses originating from
+manufacturers, such as Packard Bell recently.  Is this widespread with
+this particular company? What has been the remedy to this situation?
+Should purchasers scan new software for viruses before using?
+
+------------------------------
+
+Date:    08 May 91 02:53:04 +0000
+>From:    c8847468@jupiter.newcastle.edu.au (jonathan ross coombes)
+Subject: amiga virus
+
+	I seen this in the amiga newsgroup and thought I would post
+  it here. Does anyone have any more information on the virus as yet?
+
+	The post is actually of two files that was posted.
+
+***********************************************************************
+
+I new virus was sent to me today that will infect a machine just by
+sticking a disk in the drive. No need to run any program from it.  It
+turns out that the disk was not validated and was write protected.
+When the disk is inserted in the drive AmigaDOS kicks in the
+Disk-Validator but instead of getting it from the L: directory it gets
+it from the l directory of the inseted disk. The virus replaced this
+file with itself so when AmigaDOS ran it it infects the machine. The
+virus is the same size as the original 1.3 validator and is encrypted.
+Upon decrypting it it calls itself the SADDAM virus and has a mention
+of IRAK. I am not sure what it does when it is triggered but there is
+a call to Alert().  It patches itself into the intterupts, TrackDisk,
+InitResident and OpenWindow calls at various times.
+
+I hope CBM will fix this before 2.0 is finished so that the Validator is
+called from the L:  directory in future and stop this new type of virus.
+- --
+
+************************************************************************
+
+
+I have worked out what the Saddam virus does and it is very nasty.
+There are a few different stages to it so I will go through it.  It
+infects your machine by AmigaDOS using the Disk-Validator on the disk
+you insert in the drive.
+
+When you write to the root directory of any drive the virus will move
+the BitMap page pointer to another slot. If the virus is active then
+when the root block is read it moves it back so AmigaDOS thinks the
+disk is okay. If the virus is not running AmigaDOS will see no BitMap
+pages and run the Disk-Validator on the disk and infecting your
+machine again.  When AmigaDOS writes to Data blocks the virus will
+change the first bit to IRAK and encode the rest of the block. If the
+virus is running when the block is read it replaces in memory the IRAK
+with the proper number (8) and decode the data block. If the virus is
+not running you will get a read write error as AmigaDOS can't find a
+valid DATA block there.  No comes the worst bit.
+
+When the virus is triggered it will (if the disk is write enabled)
+wipe out both sides of the disk with random data (what ever is in
+memory at the time) by writing to every track on the disk. It will
+then bring up an Alert() telling you it is the SADDAM virus and reboot
+the machine once the alert is canceled.
+
+So beware this virus and try to wipe it out early.
+
+Please CBM fix this little loophole before you finish 2.0 so that the
+Disk-Validator is got from L: instead of :L/ first
+- --
+*** John Veldthuis, NZAmigaUG.         johnv@tower.actrix.gen.nz       ***
+
+**************************************************************************
+
+
+/************************************************************************/
+/*  Jonathan Coombes 			THE TECHNOMANCER		*/
+/*  University of Newcastle						*/
+/*  Australia								*/
+/*  									*/
+/*		"I wasn't born, I was compiled!!!			*/
+/*									*/
+/*  Internet: c8847468@orion.newcastle.edu.au				*/
+/************************************************************************/
+
+------------------------------
+
+Date:    Wed, 08 May 91 06:38:57 -0400
+>From:    dennisp@AIC.NRL.Navy.Mil
+Subject: Viral or other problem? (Mac)
+
+I don't know if my problem is virus-related or not, but I've been
+trying other methods of eliminating the problem with no results.  Here
+is my problem: I have a MacIIfx and a Mac IIci in my lab.  Both are
+using System 6.0.7, which came with the hardware.  Since installation,
+both Macs have had problems opening Superpaint 1.1MS, MacDrawII, and
+MacPaint.  I get messages stating either that the document type is
+unknown (the documents were created with resident applications on an
+older machine!) or there is not enough memory to open the document
+(one of the machines has 8 Meg on it!)  My local Apple techie has told
+me to remove 6.0.7 and install 6.0.5 to correct the problem (seems
+that 6.0.7 and certain Mac models have problems?).  I did what he
+suggested, but the problem persists.  I have scanned the hard disks on
+both machines with Disinfectant 2.4, but have found no viral
+infections.  Is what I've got a viral problem, a system problem, a
+hardware problem?  Granted, this is a viral board, but if I can be
+told it is a virus, perhaps I can isolate what the real problem is.
+Thanks in advance.  Dennis Perzanowski
+
+------------------------------
+
+Date:    Wed, 08 May 91 15:28:00 +0300
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: TSR Virus Detector (PC)
+
+  John Councill asks:
+>Can anyone reading this recommend a reliable program that will sit in
+>memory and warn against writes to .EXE and .COM files, as well as
+>other suspicious virus-like activity without degrading performance of
+>the machine too much?
+
+  Several months ago, I made a quick comparison between several pro-
+grams of this type which I have.  (I call them "monitoring" programs.
+There are other reasonable names, and also one which I consider very
+inappropriate: Robert Slade's term "vaccine" software.)
+  When I saw John's question, I thought this would be a good opportu-
+nity to make my comparison more complete, but I see I'm not going to
+find the time, so for now I'm reporting only my previous results.
+  The programs which I compared were F-LOCK, FSP, SECURE, TSAFE, and
+VTAC.  I decided that the most important criterion was the ability to
+prevent infection by the largest number of viruses (without giving too
+many false alarms, of course), and that the type of virus which would
+be most likely to separate the good programs from the mediocre would
+be those viruses which avoid re-direction of interrupt vectors (by
+jumping directly to the interrupt handlers or by issuing commands
+directly to the controller).
+  So I threw 4 viruses of this type against each of the above programs.
+The number which each program stopped was as follows:
+                            SECURE  4
+                            F-LOCK  1
+                            others  0
+  On this criterion, SECURE is clearly the best monitoring program.
+(Fridrik Skulason has an alternative version of F-LOCK which would do
+better, but he hasn't released it because of conflicts with certain
+software.)  It's conceivable that other viruses would give opposite
+results, but I very much doubt it.  On the other hand, there are many
+other criteria which I did not subject to a systematic comparison,
+such as false alarms, slowing down of ordinary computer activity,
+flexibility and convenience.
+  Btw, the author of SECURE, Mark Washburn, is also the author of the
+V2P* virus series, all of which are variable self-encrypting viruses
+designed to demonstrate the futility of relying on programs which
+attempt to detect viruses by scanning for characteristic strings.
+V2P1 (better known as the 1260) was distributed publicly, and while it
+is not itself destructive, someone evidently used its disassembly as
+the basis for the Casper virus, which is quite destructive.
+  This, of course, does not prevent SECURE from being the best moni-
+toring program, at least judging by my limited comparison.  I can only
+hope that others will make more thorough tests.  (All of the above
+except TSAFE are available from Simtel20 in <MSDOS.TROJAN-PRO>.)
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    07 May 91 13:27:07
+>From:    keir@vms.macc.wisc.edu (Rick Keir, MACC)
+Subject: Re: help with mac "virus"? (Mac)
+
+billj@uop.uop.edu (Snugglupagus) writes...
+
+>- - the mac has a 40 meg hard disk
+>- - there is only about 16 meg of software installed
+>- - both the finder and mactools report 38 meg used, 2 meg free
+
+This is fairly common in the Mac labs here.  Run "Disk First Aid"
+(from Apple, the free thing) and tell it to fix the drive.  Your
+students have probably been having programs crash frequently, so that
+you have unused space which is neither in a file nor free.  (What DOS
+refers to as "lost" space -- D.F.A. will just say "fixed").
+
+Important:  Disk First Aid is NOT the same thing as "First Aid
+HFS", although half the people I tell about these programs seem
+to want to use whichever one I *didn't* mean.  Both programs are
+good but they do different things.  Use Apple's to recover lost
+space from your hard disk
+
+------------------------------
+
+Date:    07 May 91 23:13:27
+>From:    pandy@vipunen.hut.fi (Pandy Holmberg)
+Subject: Re: help with mac "virus"? (Mac)
+
+billj@uop.uop.edu (Snugglupagus) writes:
+
+- -> recently, we've come across a problem with one of the macs in our lab.
+- -> we really don't know if it's a virus or not, but it does act something
+- -> like one.  anyway, here are the symptoms:
+
+- -> - - there is only about 16 meg of software installed
+- -> - - both the finder and mactools report 38 meg used, 2 meg free
+
+- -> what we really want to know is: is this some sort of new virus, or is
+- -> our mac just confused?
+
+	I wouldn't blame it on the machine....
+
+	I think that perhaps the directory information on your disk
+	has been damaged and thus the computer can't use all the
+	space that really is free.
+
+	Therefore I suggest:
+	Copy the 16 megs of software to floppies and format your hard disk.
+
+	In the future:
+	It's good to format your HD every once in a while. Not only
+	does it give you more space, but the HD becomes much faster.
+
+- --
+                    Tsaukki says
+                              Pandy
+
+- --                                  ,
+"La nostalgie n'est plus ce qu'elle etait."
+				- S. Signoret
+
+===============================================================================
+              Andreas "Pandy" Holmberg          Email:  pandy@hut.fi
+     Helsinki University of Technology          Finger: pandy@spiff.hut.fi
+===============================================================================
+
+------------------------------
+
+Date:    Tue, 07 May 91 20:21:44 +0000
+>From:    geoffb@eleazar.dartmouth.edu (Geoff Bronner)
+Subject: Re: help with mac "virus"? (Mac)
+
+billj@uop.uop.edu (Snugglupagus) writes:
+
+>recently, we've come across a problem with one of the macs in our lab.
+>we really don't know if it's a virus or not, but it does act something
+>like one.  anyway, here are the symptoms:
+>- - the mac has a 40 meg hard disk
+>- - there is only about 16 meg of software installed
+>- - both the finder and mactools report 38 meg used, 2 meg free
+>what we really want to know is: is this some sort of new virus, or is
+>our mac just confused?
+
+I think it is confused. I have seen a similar problem with MacIIcx's
+with 80MB drives. They thought they had 56MB instead of the actual
+amount (around 30). This occured on several machines in a public
+cluster of 17 identical cx's.
+
+Solution: about 50% of the time I was able to fix the problem by
+simply re-building the desktop file. In the other cases, tranferring
+the entire disk to another hard disk or tape and then putting it back
+also worked. This implies that fragmentation may have been the cause
+and I have seen similar cases where using Disk Express or a similar
+utility also helped.
+
+- -Geoff Bronner '91
+ Student Consultant, Dartmouth College Computing Services
+
+- --
+ geoffb@eleazar.Dartmouth.EDU
+
+ "Congress shall make no law...abridging the freedom of speech,
+  or of the press..."
+
+------------------------------
+
+Date:    Tue, 07 May 91 14:38:04 -0400
+>From:    Peter Jones <MAINT@UQAM.BITNET>
+Subject: re: What's so bad about self-extracting archives?
+
+On Mon, 06 May 91 15:08:43 -0400 you said:
+>>From:    Murray_RJ@cc.curtin.edu.au
+>
+>>The other objection I have with self-extracting
+>>archives is that you're stuck with extracting the whole lot, even if
+>>you only want to find out what the !@#$%^&*() thing does.
+
+One objection I have is the lack of a guarantee that the incoming
+extraction code doesn't have a trojan lurking in it. This is a
+well-known security risk in UNIX self-extracting SHAR archives.
+There's an un-archiver on SIMTEL20 that runs without executing
+incoming code, allowing incoming programs to be inspected.
+
+Another is the unexpected increase in disk space use when the archive
+is run, and starts extracting itself unexpectedly.
+
+Peter Jones                    (514)-987-3542
+Internet:Peter Jones <MAINT%UQAM.bitnet@ugw.utcs.utoronto.ca>
+UUCP: ...psuvax1!uqam.bitnet!maint
+N.B.
+"Our customers will forgive a one-time error far more quickly than they will
+forgive our inability to correct that error." - Karen Ward (wardk@cse.ogi.edu)
+
+------------------------------
+
+Date:    08 May 91 09:51:45 +0000
+>From:    groot@idca.tds.philips.nl (Henk de Groot)
+Subject: Re: What's so bad about self-extracting archives?
+
+Murray_RJ@cc.curtin.edu.au writes:
+
+>magnus%thep.lu.se@Urd.lth.se (Magnus Olsson) writes:
+>> Can't you just first run the archive file through your favourite virus
+>> checker, and if it passes the test extract it, and then test the
+>> individual files that were inside it? Or have I missed something?
+
+>   Well, yes, I suppose you could, but it involves an extra step which
+>is unnecessary. The other objection I have with self-extracting
+>archives is that you're stuck with extracting the whole lot, even if
+>you only want to find out what the !@#$%^&*() thing does.
+
+Most of the popular archiveing programs (ZIP, LHA, ARJ) are able to
+extract files from their SFX files. If you insist on using a shell on
+it just rename the .EXE file to a file with the proper extension. You
+can avoid virus problems this way.
+
+An ARJ type SFX file allows you to list files just by running the SFX
+file with flag "-l". You can also selecively extract files.
+
+The only real problem I see with SFX files is that it may be a trojan
+horse.  Just getting files from trusted places will cure this type of
+problem.  (Trusted places like SIMTEL20 and Garbo).
+
+Henk.
+
+- --
+  /   /            Henk de Groot      | Department: PG 9000i - System Services
+ /---/ __  __  /   V2/A12-A13         | Internet : groot@idca.tds.philips.nl
+/   / (-_ / / /(   Tel: +31 55 432099 |  == PHILIPS INFORMATION SYSTEMS ==
+          Disclaimer: I only speak for myself, not for my employer!
+
+------------------------------
+
+Date:    Tue, 07 May 91 15:03:15 +0000
+>From:    csg068@cck.cov.ac.uk (** DECKER **)
+Subject: Re: can we trust diskette write-protection? (PC)
+
+jesse%altos86.Altos.COM@vicom.com (Acer - Jesse Chisholm) writes:
+>PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+>| Possibly, the reason why it sometimes fails, other than obvious loose
+>| wires, is because of light bouncing around the diskette drive.
+
+I used to use red masking tape whenver I ran out of labels, but this
+caused problems due to the fact that some drives use infra-red light
+to detect a label.
+
+- --
+ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+ : DECKER : csg068@uk.ac.cov.cck : Dept. of Computer Science, Coventry Poly  :
+ :                        G  O  D   F  O  D  D  E  R                         :
+ =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 77]
+*****************************************

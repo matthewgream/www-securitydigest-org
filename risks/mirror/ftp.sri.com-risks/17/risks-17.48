@@ -1,0 +1,605 @@
+Subject: RISKS DIGEST 17.48
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 28 November 1995  Volume 17 : Issue 48
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, etc.       *****
+
+  Contents:
+Programming Error "issues" shares (Martyn Thomas)
+NEW should never abort! (David Chase)
+Resistance to intelligent traffic (Phil Agre)
+Can you have enough backups? (M.Cushman)
+Bank doors trap boy (Stuart A Yeates)
+Luggage lockers (Steve Kilbane)
+Re: Solid code (RISKS-17.45) and solid buildings (17.16) (Steve Branam)
+Re: Writing solid code (Marcus Marr, David Phillip Oster, Edward Reid,
+    Thomas Lawrence)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 27 Nov 1995 11:55:34 +0000 (GMT)
+From: Martyn Thomas <mct@praxis.co.uk>
+Subject: Programming Error "issues" shares
+
+Eyecare Products plc, a company listed on the UK stock exchange, recently
+offered a 'scrip dividend', where shareholders could opt to take extra
+shares in place of the cash dividend. As a result of what the company
+describe as a programming fault, "several certificates were issued in error
+to shareholders".
+
+I received the correct certificate, plus another for almost twice the number
+of shares. It is not clear to me how many other shareholders received extra
+certificates.
+
+      Martyn Thomas, Praxis plc, 20 Manvers Street, Bath BA1 1PX UK.
+Tel:  +44-1225-444700.   Email:   mct@praxis.co.uk 	Fax: +44-1225-465205
+
+      [Perhaps this is known as a scrip tease?  PGN]
+
+------------------------------
+
+Date: Mon, 27 Nov 95 16:41:00 EST
+From: David Chase <chase@centerline.com>
+Subject: NEW should never abort!
+
+  [Jerry Leichter <LEICHTER@zodiac.rutgers.edu> suggested this be
+  sent to RISKS, commenting that the underlying debate on what NEW 
+  should do when there is no more memory - is an excellent illustration 
+  of the difficulties of producing reliable code.  PGN]
+
+I originally posted this in comp.lang.modula3 and a couple of other
+newsgroups.  I was somewhat reluctant to air a former employer's dirty
+laundry (ah, a RISK in itself), but a decent amount of time has passed (two
+years).  I felt that a reality check of some sort was needed on discussions
+of fault recovery.
+
+Here's the original posting, with minor edits for clarity:
+
+>From: chase@centerline.com (David Chase)
+Subject: Re: NEW should never abort
+Date: 14 Nov 1995 18:21:56 GMT
+Message-ID:<48amo4$940@wcap.centerline.com>
+
+> In article <martelli.816078504@cadlab> martelli@cadlab.it (Alex
+> Martelli) writes:
+> |> Nonportable, but -- you trap the signals you're going to get on such
+> |> conditions and longjmp back somewhere safe.  Don't all of the languages
+> |> on this list offer similar "emergency recovery" functionality under
+> |> some guise or other, at least under OS's that enable this...?
+
+In article 95Nov13183840@slsvijt.lts.sel.alcatel.de,
+   kanze@lts.sel.alcatel.de (James Kanze US/ESC 60/3/141 #40763) writes:
+> Where does the system signal handler store the information to return
+> (since the system cannot know that you are going to longjmp out)?
+> Some Unixes (Sun, for example) allow you to specify a separate stack
+> for signal handling, but this is far from universal.  In all cases,
+> the default action is to push the current context onto the stack
+> (oops).
+
+On SunOS and Solaris, there is a portion of the context reserved for storing
+register windows that could not be spilled because the stack (where they
+would ordinarily be spilled) was not mapped.  This assumes, of course, the
+use of an alternate stack for catching signals.  It is possible, in theory,
+to reserve a guard page, and remap it in your signal handler, and return
+from the interrupt in some more appropriate way.
+
+However, this code was not extremely well-tested (or rather, I appear to be
+the first person to ever write a thorough test of it).  A test program whose
+only function was to recurse a lot on just such a guarded stack, extending
+it as necessary in the signal handler, and then return from the recursion,
+ultimately failed (this was in 1993) on every single hardware-OS combination
+available to me (while working at Sun, mind you) except a SparcStation 10
+running SunOS 4.1.3.  Any other Sparc hardware, any other Sun OS, it would
+eventually fail.  Solaris (at the time, releases 2.1, 2.2, and 2.3alpha)
+failed a little faster than SunOS, but except on that one platform, SunOS
+running this program would eventually enter a "funny state".  Here, "funny
+state" is defined as "neither longjmp, exit, nor abort behaves as
+documented" (think about recovering gracefully from that for a minute or two
+:-).
+
+( Actually exploring the failure modes was somewhat difficult.  The 
+  "write" system call actually continued to work just fine, so this 
+  program could talk about what was wrong with it, and I checked 
+  ALL return codes in detail, but the behavior changed completely 
+  when run under any debugger.  For good measure, alarming messages 
+  would appear on the system console every time I ran the program. 
+  The bug was actually first found on Solaris, by reading the OS 
+  to try to figure out what some of those funny fields in the context 
+  structure were.  The bug tracker wanted a reproducible test case,
+  so (after much thought) I wrote one. )
+
+So, I ask, those of you theorizing so confidently about code which recovers
+from errors, have you written such code?  Have you tested it thoroughly?  Do
+you have confidence that the OS code to handle this situation was tested
+thoroughly?  (If so, why? Do you think people write and run this sort of
+code every day?  It's not exactly as common as opening and closing files.)
+If you tested it "thoroughly" on a Sun running SunOS or Solaris, how DO you
+suppose that you avoided the bug that I described above?  Did you test your
+recovery code across multiple platforms, just-in-case?  What's the point of
+writing "recovery code" if you didn't?
+
+I realize, too, that this is a golden opportunity to sling mud at Sun and
+those dratted register windows, but -- Sun ships very many boxes, and runs a
+great diversity of code on those boxes.  It's a simple matter of programming
+(no harder than the fault recovery that people are proposing here :-) to get
+this right, and they were capable of this, as demonstrated by the SS10+4.1.3
+combination. The customer mix was still relatively technical at the time I
+left (i.e., someone who buys a PC to run games and word-processing is
+unlikely to report THIS bug).  The internal bug-tracking software is
+relatively easy to use, so people use it.  Bugs do get reported, they do get
+recorded.  This one still slipped through. For what (rational) reason do you
+think that any other platform would do better?  I've never had an
+opportunity to give any of the other boxes as thorough a going over as I've
+given to SunOS or Solaris over the years, so my failure to discover such a
+bug in HPUX or AIX or IRIX or NT is not a ringing endorsement of their
+stability.
+
+( On the other hand, I am happy that my editor (emacs) doesn't fall 
+  over and lose all my edits when faced with the occasional inability
+  to obtain resources.  As someone pointed out in reply, it is not
+  acceptable to simply throw up one's hands and walk away when 
+  something that is always harmless and usually sensible could be done. )
+
+David Chase
+
+------------------------------
+
+Date: Tue, 21 Nov 1995 15:07:48 -0800 (PST)
+From: Phil Agre <pagre@weber.ucsd.edu>
+Subject: Resistance to intelligent traffic
+
+Public resistance to electronic road-use taxes is continually to grow
+worldwide.  Most recently, a panel of 14 laymen assembled by Teknologi
+Naevnet (i.e., The Danish Board of Technology, Antonigade 4, DK-1106,
+Denmark, +45 33 32 05 03 -- see report number 5/1995), having been presented
+with arguments pro and con concerning "intelligent traffic" technologies,
+concluded that it "does not see any substantial economic, environmental or
+safety benefits from massive public investments in traffic informatics --
+perhaps with the exception of public transport".  On the issue of safety,
+for example, they accepted that some likely safety benefits existed, but
+that they had to be weighed against other potential dangers, for example
+that drivers' skills may deteriorate due to reliance on automation, and in
+any event they concluded that if safety should be improved then much more
+cost-effective measures were available anyway.  They also raised concerns
+about privacy and emphasized that new legislation would have to regulate the
+new databases that such systems would accumulate.
+
+The report fits an emerging global pattern.  When electronic road tolls and
+other forms of high technology that entail surveillance of citizens'
+movements are implemented quietly, creating a fait accompli, citizens tend
+to accept them fatalistically.  But when any sort of democratic procedure is
+employed, public resistance is very stiff indeed.  This phenomenon suggests
+two possible scenarios for the future:
+
+ (1) Continued stealth implementation, leading to deepening public distrust
+     of information technology and the organizations that control it.
+
+ (2) Genuine public involvement in the social choices being made about
+     "intelligent" roadway technologies, leading to legitimate decisions
+     based on full public debate, and potentially as well to technological
+     improvements (such as the use of digital cash and other technologies
+     of anonymity) that deliver a broad range of functionality while 
+     responding appropriately to legitimate public concerns.
+
+Which scenario occurs will depend on the political culture of each country.
+More concretely, it will depend on the degree to which people are informed
+about the issues, express their concerns, and ensure that the more legitimate
+course is taken.
+
+Phil Agre, UCSD
+
+------------------------------
+
+Date: Fri, 24 Nov 95 16:15:26 GMT
+From: M.Cushman@lse.ac.uk
+Subject: Can you have enough backups?
+
+I was talking to a friend yesterday about the fear of losing our computers
+and did we have adequate backups for the work we did at home.  As a result,
+she recounted the following cautionary tale. Although it was from a number
+of years ago (as the technology will show), the lessons remain relevant.
+
+She was responsible for a major health research project, which involved the
+collection of a large quantity of survey data.
+
+The data was coded onto punched cards.
+
+The punched cards were read into the computer.
+
+Two tape backups were kept one locally and one at a secure distant location.
+
+Adequate precautions one would think - the same data existed in five
+different forms. However:
+
+1. The computer crashed eliminating the current file.
+
+2. Someone had written over the first part of the local tape - making the
+tape unusable.
+
+3. When the computer centre was contacted they said that a boiler explosion
+had destroyed many of the tapes in the storage area and the records of who
+they belonged to. They were waiting for client to contact them so they could
+identify the scope of the damage. The backup my friend was seeking was one
+of those destroyed.
+
+4. They went back to the punched cards. This meant losing the analysis of
+the data, but this could be redone if the original data was available,
+
+   BUT
+
+Someone had dropped the cards on the floor. There were several thousand of
+them and they could only be entered in the right order. There were now in
+random order. There was a faint dot matrix printed number on each card.
+
+5. The project team were faced with three options:
+
+a. sorting the cards
+b. re-punching all the data
+c. abandoning the project
+
+They chose c.
+
+------------------------------
+
+Date: 27 Nov 1995 23:57:33 GMT
+From: syeates@borg.cs.waikato.ac.nz (Stuart A Yeates)
+Subject: Bank doors trap boy
+
+The *New Zealand Herald* of 27 Nov 1995 carried an article which described
+who a five-year-old boy had been trapped in a closed bank for 30 minutes
+after somehow managing to get the doors open. The doors then closed behind
+him, trapping him in the entrance-way between two sets of double doors.
+
+The Police and Fire Service were called and tried unsuccessfully to free
+him, but he remained trapped until one of the branch managers arrived "with
+a card which opened the doors electronically. The Manager told Police it was
+not the first time the front doors of the bank had caused problems."
+
+Stuart Yeates  stuart@cosc.canterbury.ac.nz  syeates@cs.waikato.ac.nz
+
+------------------------------
+
+Date: Mon, 27 Nov 1995 12:38:13 GMT
+From: Steve_Kilbane@cegelecproj.co.uk (Steve_Kilbane)
+Subject: Luggage lockers
+
+I had occasion to store some luggage in a locker at Edinburgh railway
+station last weekend. They have a computer-controlled system. The idea is
+that you place your luggage in a locker, and close the door, which then
+locks. You then go to a control panel with an LCD display, and enter the
+required money. The panel gives you a printout with the code which you
+later enter to unlock the locker.
+
+There is a safety feature, in that if you don't enter the required money
+within 30 seconds, the locker unlocks again. Green and red lights show the
+state of the door lock, not to mention the fairly noticeable clunk of the
+lock mechanism.
+
+The problem is that there is one control panel shared among several lockers.
+When you close a locker, it appears to "grab" the control panel.  However,
+you can still close other lockers, which presumably wait their turn for the
+control panel.
+
+As far as I can work out, while placed a lot of luggage in on locker, I
+closed one of the other doors, by accident (such as leaning a case against
+it), with the result that I paid for a couple of hours security of an empty
+locker, while the locker with my luggage unlocked after I had left it.
+Thankfully, nothing was stolen (perhaps nothing was worth stealing.:-)).
+
+I returned to the locker shortly before my train was due to leave, so didn't
+have much time to experiment with the system before I had to catch the
+train. However, there was nothing which drew my attention to the fact that I
+might be paying to lock the wrong door.  This might happen more than you
+would suppose - someone else was feeding stuff into a locker just after me.
+It's not too hard to foresee a race condition where someone pays to lock
+your luggage in, and then walks off with the unlocking code.
+
+steve
+
+------------------------------
+
+Date: Wed, 22 Nov 95 12:16:04 EST
+From: Steve Branam - Hub Products Engineering  <branam@dechub.lkg.dec.com>
+Subject: Re: Solid code (RISKS-17.45) and solid buildings (17.16)
+
+  [This message is a resubmission of comments I originally made regarding an
+  item in RISKS 17.16.  While the context is different, I feel they are
+  apropos, since people are debating the safety of removing runtime assertions
+  that check for programming errors.]
+
+In RISKS DIGEST 17.16, Andy Huber <arhuber@SEI.CMU.EDU> says "One of the
+conclusions is that many buildings fail due to a lack of redundancy, which I
+find very interesting since very few operating systems (or software of any
+kind) has any kind of redundancy designed or built into it.]"
+
+On the contrary, I do see quite a bit of software with redundancy built in
+(but not nearly enough). We often think of redundant systems as meaning
+side-by-side system/subsystem duplication, but a practice that should be
+more widely promoted is that of "sanity checking", where redundant (i.e.,
+apparently unnecessary) code is introduced to check information generated by
+another part of the software. The idea is that one part of the system checks
+up on the other part, to determine if the other part has "gone insane".
+
+For example, a routine may compute a value intended to be in a certain
+range, then pass it to another routine that first verifies the value is in
+range before actually trying to use it. Especially when this is all within a
+single subsystem, one could argue that checking the value is unnecessary,
+since it was just generated by a routine known to be generating correct
+data; thus compute cycles and memory (for the additional instructions) are
+being wasted. This argument is generally the one used to skip sanity
+checking (assuming anyone bothers to consider it in the first place).
+However, the further apart the producer and consumer of the value are, the
+greater the opportunity for something to corrupt it.
+
+Besides, what happens when someone makes an incorrect "enhancement" to the
+producing routine, so that now it does produce bad data? Or what if the
+consuming code is reused on another project, called from different code than
+that for which it was originally written? Or what if the stack gets
+corrupted due to a bad interrupt service routine? Or there is a read error
+pulling the value in from the database on the disk? Or... ad infinitum until
+you can be convinced that it is worthwhile to do a little more rigorous
+checking of data before using it.
+
+The point of all this is to detect data corruption or faulty code and try
+and do something about it before the situation gets worse. For instance,
+some operating systems incorporates sanity checks on internal data
+structures, and generally respond to detected faults by crashing the system
+with a "bugcheck", the logic being that once a problem is detected, the
+system should be shutdown before the problem propagates further and possibly
+corrupts user data. So while users might complain about the system going
+down, bugchecks are their friends.
+
+The difference between software and buildings is that a building can not
+take itself down and bring itself back up to correct its problems. The same
+may be said of critical realtime control software, since an aircraft on
+final approach is not a good time for the flight control system to reboot
+itself. So in reality, detecting a problem is the easy part; it's dealing
+with the problem with the least undesirable consequences that is the hard
+part!
+
+Steve Branam
+
+------------------------------
+
+Date: Tue, 21 Nov 1995 16:18:15 GMT
+From: Marcus Marr <marr@dcs.ed.ac.uk>
+Subject: Re: Writing solid code (Wolff, RISKS-17.46)
+
+Roger Wolff and others recommend leaving checks for programming errors in
+production code to ensure the consistency of internal data representations,
+but also to ``catch lots of errors earlier on''.
+
+This has the `disadvantage' of clearly identifying problems in the
+code, which:
+
+  (a) the users are more likely to report, and 
+  (b) the users are going to want fixed.
+
+The cost of telephone support would increase, as would the workload of
+the programming departments.
+
+``There are no bugs in Microsoft products that the majority of users
+want fixed''
+
+Make sure that the majority of users don't know about the bugs (the
+``luddites'' will probably blame themselves for ``not using the
+software properly''), and the above marketing statement will stand.
+
+The risks?  `Luddites' expecting higher quality software.
+
+Marcus
+
+------------------------------
+
+Date: Tue, 21 Nov 1995 17:22:54 GMT
+From: oster@netcom.com (David Phillip Oster)
+Subject: Re: Writing solid code (Beatty, RISKS 17.45)
+
+I seem to have read a different "Writing Solid Code" than the other posters
+to this list. The version I read supported the following coding style:
+
+Add two blocks of checks to significant pieces of your algorithm:
+
+<1> ASSERT
+<2> fixup
+algorithm
+
+The ASSERT checks are designed for use in a run-time environment where all
+the source code is available. If an ASSERT check fails, it does so showing
+the user the line in the source where a precondition violation has been
+detected. It is intented for programmers who are clients of an interface,
+and its goal is to get programmers to call the interface correctly.
+("Writing Solid Code" also recommends that the ASSERT re-compute the return
+value by another, slower algorithm, and compare the two values. Surely such
+checks can be removed in the production version.)
+
+The "fixup" checks often check the exact same preconditions that the ASSERT
+checks check. These checks are intended to be executed in all environments,
+but since they check the same things as the ASSERTs, they generally don't
+fire in the development environment, since the ASSERT will already have
+fired.  The "fixup" checks job is to handle the error in a way appropriate
+for a production environment. Often this means throwing an exception, which
+cleanly backs out of a partially completed operation, and displays an error
+message to the user explaining in the users terminology what went wrong.
+
+Sometimes it just means fixing up the precondition and continuing. For
+example, if you pass a bad pointer for one of three output arguments, should
+the program die or should it compute the two outputs it can, and not touch
+the third? The "Writing Solid Code" answer to this question is: The program
+should die during development so that the developer will discover and fix
+the problem. The program should continue after deployment, because immediate
+termination is less useful to the customer.
+
+If you want to bash Microsoft, just quote the section of "Writing Solid
+Code" where the author says he wrote the book because he had observed
+a decline in code quality inside Microsoft, that the lessons of the past
+that his book was supposed to teach were being ignored within Microsoft.
+
+------------------------------
+
+Date: Tue, 21 Nov 95 09:39:56 -0500
+From: ed@titipu.resun.com (Edward Reid)
+Subject: Re: Writing solid code (da Silva, RISKS 17.46)
+
+> This is much like the old Burroughs boxes, where the compiler guaranteed
+> that no operation that violated the security policy was generated.
+
+Presumably Peter is speaking of the Burroughs B-6700 -- and its modern
+descendent, the Unisys A-Series, which has all the same attributes. In fact,
+the A-Series is still virtually code-compatible with the defunct B-6700.
+
+To say the compiler guaranteed that no operation violated security is a
+vast oversimplification. Security, in the broad sense, is a joint
+responsibility of the compilers, the instruction set architecture (ISA), and
+the operating system (MCP). The compilers do not generate code which
+unconditionally violates security, but often the generated code is further
+checked by the ISA or the MCP. For example, the ISA checks array bounds and
+prevents the code from accessing memory outside that allocated to the task.
+The MCP manages file access security. And so on. This division of
+responsibilities is a sound method, as evidenced by the high security level
+and reliability of A-Series systems. Doing all the checks at run time is not
+necessary.
+
+The A-Series actively supports the paradigm that all assertion checks should
+remain in the code. The most obvious such support is the ISA checking for
+array bounds, as it can do so in parallel with the actual memory addressing
+operations at no cost in performance and a very small cost in the price of
+the CPU. Numerous similar examples exist in the architecture.
+
+Edward Reid
+
+------------------------------
+
+Date: 21 Nov 1995 19:07:49 GMT
+From: trlawren@dclsn12.cen.uiuc.edu (Thomas Lawrence)
+Subject: Re: Writing solid code (Beatty, RISKS 17.45)
+
+>There are probably a few assertions which belong only in development code,
+>because they are so expensive to check that they make the product unusable.
+>In my experience, this is surely *not* the common case.
+
+I'm not sure if this experience is that wide-spread.  In my own experience,
+there are a great many assertions which are unacceptably expensive to check.
+Here are a few examples:
+
+  Heap/Pointer Integrity:  Many (most?) programmers use pointer checking
+  techniques to catch dangling pointer uses and memory leaks.  This typically
+  involves using a special tool (e.g. purify) if you're lucky enough to run
+  on a platform that supports it, or using a special malloc library along
+  with routines called by the user at appropriate points (e.g. CheckPtr,
+  CheckRefWithinRange, etc.)  Most of these schemes cause programs to run
+  3 to 10 times slower than without the checks.  That's generally not
+  acceptable in a production application, so such checks are omitted from the
+  final version.  I would estimate that at least 50% of the assertions I
+  put in my code are calls to such utilities.
+
+  Algorithmic Redundancy:  It is common to run multiple independent algorithms
+  in a debug version and compare their results.  For instance, in the
+  Microsoft book, they say the debugging spreadsheet engine uses 2 algorithms
+  to recompute values.  One is the fancy dataflow based one which only
+  recomputes stuff that depends on changed values.  The other recomputes
+  everything.  Then the results are compared.  If they are different, then
+  there is a bug somewhere.  This approach is useful anytime one uses a very
+  complex algorithm to try to improve performance.  Applications which use
+  many such algorithms (spreadsheets, databases, and compilers, perhaps?)
+  may have a significant amount of code devoted to these checks.  Since the
+  verification algorithm is usually much slower, you wouldn't want to include
+  it in the production version.
+
+  Structural Checks:  In programs that use complex internal data structures
+  (like compilers), it is common to write routines which verify the integrity
+  of the structure.  Such routines are usually expensive since they traverse
+  the entire structure.  I certainly have a tendency to call these checks
+  anytime I modify the data structure in some way.  This usually results in
+  serious slowdowns, so they can't be included in the final version.
+
+  Simple checks such as array bounds, NULL pointer, and unexpected switch/enum
+  value checks can also be very expensive.  I tend not to be that great a
+  programmer, so my code is really peppered with these checks.  (Some modules
+  have more than 50% of the lines devoted to this stuff.)  Even after turning
+  off the fancy memory and algorithm checks, these alone may cause slowdowns
+  of 2 or 3, and sometimes serious as 5 times (always in the compute-intensive
+  sections of the code, too, wouldn't ya know it!).  You might want to keep
+  some checks in the final version, but you may have to turn off a significant
+  number of them.
+
+The main reason for this approach to programming is the reality that
+programmers don't like to put stuff in the code that makes it run slower.
+If you can convince a programmer that "your checks will not be in the
+final version", then he'll be much more willing to put assertions into the
+code.  By having so many more assertions, you can catch many bugs much more
+quickly than by putting in only as many assertions as you can get away with
+given the program performance you are targeting.  By catching more problems,
+you may be able to produce a program that has fewer bugs by the time it
+reaches the user.  Although bugs that do slip through might be harder to
+detect, and perhaps more damaging, the tradeoff may still favor turning off
+many of the assertions.
+
+I'd like to suggest a different reason why Microsoft's products may not be
+very good.  It's because of their complexity.  The approach advocated in the
+book is based on the idea that bugs will be caught during the beta-test stage.
+In many situations, this is reasonable (and many solid programs have been
+written using the above approach; it's not just Microsoft's idea, although
+they published the book).  However, I suspect that Microsoft's applications
+are becoming so complex that it is no longer possible to thoroughly test the
+programs, so bugs start slipping through.  Perhaps a redesign of Microsoft's
+design philosophy is what's required.
+
+Perhaps the best solution is to give 2 versions of the program to the end user.
+One with debugging, to satisfy people who are paranoid about losing all their
+data due to internal program corruption.  The other without any debugging, for
+situations where you need maximum performance.  Then let the user decide which
+to use.
+
+>(no, I haven't reported these to Microsoft. Why should I? They're not going
+>to fix it... we're going to have to upgrade to 3.51 just to get around this
+>bug, for all that Bill Gates claimed "A bug fix is the worst possible reason
+>to release an upgrade" or words to that effect).
+
+The bugs will be in the code regardless of whether or not you remove the
+assertions (excepting the tradeoff I mentioned above).  Whether or not the
+company is willing to release bug fixes for the bugs (however detected) is an
+entirely different matter -- a marketing matter.  I'd say the programmers are
+well aware of the reported bugs, and probably have versions of the code
+with the bugs fixed.  It's management's decision not to provide these fixes
+to the end user, for whatever reason (saving money, etc).
+
+------------------------------
+
+Date: 6 September 1995 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for further information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+ RISKS can also be read on the web at URL http://catless.ncl.ac.uk/Risks 
+
+ RISKS ARCHIVES: "ftp unix.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://unix.sri.com/risks  [if your browser accepts URLs.]
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.48 
+************************

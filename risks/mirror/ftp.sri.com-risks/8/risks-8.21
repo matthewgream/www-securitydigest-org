@@ -1,0 +1,339 @@
+RISKS-LIST: RISKS-FORUM Digest  Sunday 5 February 1989   Volume 8 : Issue 21
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  `User friendliness' tradeoffs can lead to total nonsecurity (Eric S. Raymond)
+  Capturing a password (Phil Karn)
+  Collisions in DES (Jean-Jac. Quisquater) 
+  Re: Crashing a PDP-11/40 [static electricity] (Jeffrey Mogul)
+  ATM error (Douglas Jones)
+  Anecdotes: ping-pong robot; CCC breaks net (Konrad Neuwirth)
+  Request for information:  Health Hazards of Office Laser Printers
+    (Keith Dancey)
+  Re: Structured Programming (Michael J. Chinni)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp KL.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99).
+
+----------------------------------------------------------------------
+
+Date: 1 Feb 89 20:48:42 GMT
+From: eric@snark.uu.net (Eric S. Raymond)
+Subject:  `User friendliness' tradeoffs can lead to total nonsecurity
+
+What would you say about a UNIX box vendor that included a section entitled
+`How to crack into root privileges on this machine' in their manuals? Not
+much that's printable? Read on...
+
+Yesterday morning my evaluation T5100 arrived from the good people at Toshiba
+America, their loan to my HyperNews project (it will be the field remote-test
+machine). I had great playing with this sleek little machine, assembling
+hardware and installing software and generally admiring the Neatness Of It
+All. Finally, a true portable capable enough to run a real operating system!
+
+Installation was easy; the documentation took pains to make the system and
+its setup procedures accessible to people who hadn't necessarily seen a UNIX
+before. Someone had obviously worked overtime on the `user friendliness'
+factor. I was impressed.
+
+Between that and my own level of who-needs-the-manuals UNIX expertise it wasn't
+till this morning that I cracked the "T/PIX System Administrator's Guide",
+flipped through the Table of Contents and got a rude shock. There, staring
+up at me, was printed "Procedure 1.5: Forgotten Root Password Recovery"
+
+"Ai yi yi!" I thought, and flipped hurriedly to the section. Sure 'nuf,
+it was a blow-by-blow description of how to do the boot-mount-and-edit trick
+every guru on a UNIX system with bootable floppies knows how to set up but
+seldom talks about -- and to make the trick easy the Toshiba people had
+helpfully supplied a microfloppy already built to do it with!
+
+I wonder how much the Toshiba people thought about what they're doing. In their
+worthy concern with making it easier for novice administrators to recover from
+dumb errors without calling in an expert, they've broadcast a procedure that
+allows anyone who can get a copy of the tool disk and remember a few simple
+instructions to crack *any* T5100 they can get physical access to. And since
+these machines are portables it is unlikely they'll get much site protection.
+
+If I needed one, this would have made a perfect and pointed reminder of the
+opposition between convenience and security, and the risks of designing for
+user-friendliness at all costs. As desktop and portable UNIX systems designed
+for serious and potentially sensitive work proliferate, I wonder how many
+vendors will make this kind of choice; how many others will leave that hole
+open though undocumented because "that's the way it's *always* been done"; and
+how many innocent users will become cracking victims for these reasons.
+
+      Eric S. Raymond                     (the mad mastermind of TMN-Netnews)
+      Email: eric@snark.uu.net                       CompuServe: [72037,2306]
+      Post: 22 S. Warren Avenue, Malvern, PA 19355      Phone: (215)-296-5718
+
+------------------------------
+
+Date: Thu, 2 Feb 89 00:22:09 EST
+From: karn@ka9q.bellcore.com (Phil Karn)
+Subject: Capturing a password (Re: RISKS-8.18)
+
+I once passed a REVERSE "Turing test". Back at Bell Labs in the early 1980s,
+we used a large PBX for terminal networking.  Everyone had two phones on
+their desk: one for voice and another (with 212 modem) for data.
+
+Late one night, my office-mate's data phone rang a few times and stopped.
+Thinking that someone had put the wrong number into their UUCP database, I set
+up a terminal and waited for the retry to see if I could spoof the UUCP login
+procedure and figure out the system responsible. Sure enough, a minute later
+the second call came. I typed "login: ". To my surprise, a human responded by
+typing her login name! "Hoookaaaay, let's try this," I muttered as I typed
+"Password: " The person obediently typed her password! After a few seconds I
+revealed who I was.  Click. No more annoying calls.
+                                                              Phil
+
+------------------------------
+
+Date: 5 Feb 89 11:00:28 GMT
+From: jjq@prlb2.UUCP (Jean-Jac. Quisquater) < quisquat@prlb2.UUCP )
+Subject: Collisions in DES
+Organization: Philips Research Laboratory, Brussels
+
+To avoid any incorrect rumor, here is the complete announcement:
+
+We (Jean-Paul Delescaille and Jean-Jacques Quisquater) were able to find 3
+collisions in DES using a network of workstations during some weeks.
+
+Definition of a collision: given a message M and an cryptographic algorithm f
+with 2 parameters M and K (the key), a collision is a pair (K1, K2) such that
+
+  f (M, K1) = f (M, K2),
+
+that is, for a fixed message M and using a cryptographic algorithm f, the key
+K1 and the key K2 give the SAME encrypted message.
+
+Jean-Jacques devised a new probabilistic distributed asynchronous algorithm for
+finding collisions without any sorting and with a small storage (a la Pollard).
+We used a fast implementation of DES in C (by Jean-Paul: about 2000 *
+(encryption + change of key) / second/machine)
+
+We used the idle time of a network of 20 SUN-3's and 10 microVAXes 
+(a la Lenstra and Manasse). Total: about 100 Mips during one month.
+
+ 37
+2  encryptions performed (about 20 potential collisions) only in software!
+
+The message M is 0404040404040404 (hexadecimal form) for the 3 collisions.
+
+Collision 1: found Fri Jan 13 23:15 GMT (birthday of Jean-Jacques!
+Yes, it is another birthday attack (Hi! Don Coppersmith)).
+
+   cipher = F02D67223CEAF91C
+   K1     = 4A5AA8D0BA30585A
+   K2     = suspense!
+
+Collision 2: found Fri Jan 20 19:13 GMT
+
+   cipher = E20332821871EB8F
+   K1, K2 = suspense!
+
+Collision 3; found Fri Feb  3 03:22 GMT
+
+   suspense!
+
+Conclusion: Friday is a good day for finding collisions :-)
+
+Well, there is a problem because there is no proof we effectively found such
+collisions.
+
+Question 1: Find a protocol for proving or for convincing you that we know K2
+for collision 1 (zero-knowledge protocols are useful in this context).
+
+Question 2: Find a protocol for proving or convincing that we know
+K1 and K2 for collision 2 (idem).
+
+Question 3: Find a protocol for proving or convincing that we know
+3 different collisions (idem).
+
+
+Useful information: the nice paper by Brassard, Chaum and Crepeau,
+``Minimum disclosure proofs of knowledge'', 1987.
+
+The complete information will be given at EUROCRYPT '89, Houthalen, 
+Belgium, with the restriction that the submitted abstract is
+accepted :-) The paper will be sent in April if you want it.
+
+Thanks are due to Paul Branquart, Frans Heymans, Michel Lacroix, Vincent
+Marlair, Marc Vauclair, the members of PRLB for permission and active help in
+the effective implementation of the distributed algorithm on their workstations.
+
+Warning: There is no implication about the security of DES used for encryption.
+Indeed these experiments only prove that DES is a good random mapping (a
+necessary property for any cryptographic algorithm). However the use of DES for
+protecting the integrity of files is not very easy and needs very careful
+studies.
+
+Jean-Jacques Quisquater                    (Program chairman of EUROCRYPT '89)
+
+------------------------------
+
+Date: 31 Jan 1989 1101-PST (Tuesday)
+From: mogul@decwrl.dec.com (Jeffrey Mogul)
+Subject: Re: Crashing a PDP-11/40 [static electricity]
+
+In RISKS 8.18, Jeff Makey writes about a PDP-11/40 that could be
+crashed by walking across the room and kicking the console terminal,
+thereby transferring a static charge to the console and the CPU.
+
+I can confirm this feature of PDP-11/40s.  When I was in high school,
+around 15 years ago, we had a PDP-11/40 (it's hard to believe that this
+machine, with 56Kbytes of RAM and a few Mbytes of disk, could serve 8
+simultaneous users).  I used to use the console occasionally, and found
+that when I was wearing a sweater knitted from acrylic wool I had to be
+careful not to let my arms rub on the case of the terminal.
+
+We also had to go around the terminal room every few hours and spray
+some sort of anti-static mist over the ASR33s.  I don't know if this
+really worked, or if we just had a placebo effect.
+
+If a PC were this sensitive to static, typewriters would still be big sellers.
+It was extremely unpleasant to have to reboot every few hours on a dry winter's
+day.  I still remember the sound made when I typed at a full-duplex ASR33 just
+after the computer stopped echoing.
+                                               -Jeff Mogul
+
+------------------------------
+
+Date: Wed, 1 Feb 89 16:18:39 CST
+From: Douglas Jones <jones@herky.cs.uiowa.edu>
+Subject: ATM error
+
+I just had a run-in with an ATM that makes me wonder about the quality of
+programs (or is it programmers) used in the banking industry.
+
+I went through the normal sequence, putting in my card, entering my PIN,
+and pressing the "FAST CASH, $25" button.
+
+It came back with the error message:  "THE AMOUNT YOU REQUESTED IS NOT
+DIVISIBLE BY $5.00."  Then it gave me the option of entering a new
+amount or aborting the transaction.
+
+I tried $50.00, $40.00, and $5.00, and got the same result each time.  I'd
+bet the machine was out of money, but if this is the case, the error message
+suggests incredibly ineptly written code.
+
+Of course, a hardware error could add or drop a bit in a key storage location
+to make it think I'd asked for an odd amount, but such errors are rare
+enough that I wouldn't bet on it.
+
+Oh yes, the ATM was relatively new, made by NCR, and at a very heavily used
+location.
+                        Douglas W. Jones, University of Iowa.
+
+------------------------------
+
+Date: Sun, 05 Feb 89 18:34:19 MEZ
+From: Konrad Neuwirth <A4422DAE@AWIUNI11.BITNET>
+Subject: Anecdotes: ping-pong robot; CCC breaks net 
+
+There is a nice(? find out for yourself) story about a Ping-Pong robot built at
+MIT. Now the guys who had built that machine were very proud of the device and
+wanted to show it to Mr. Minsky.  First they explained to him how they built
+it, and made it recognize round objects with a certain amount of reflecting
+light, for what they had installed some lights, too. Now they turned on the
+lights, and started the software. One fact is important: mr. minsky is bald.
+They started the software, and he stand in front of the robot, directly in the
+lights..
+
+****T H A N G*****, and the robot hit the "ping pong ball".
+
+The other one is about a German group of hackers (the CCC, Chaos Computer
+Club) breaking into a net. First about the net: it is called BTX
+(BildSchirmText = ScreenText) and is, well, sort of a mailbox system,
+but really more one way, as the lines are 1200/75 baud. Now there are
+some banks taking part in the system, too. And there are pages, which yu
+have to pay for if you want to read them. Due to a security-leak, the CCC
+found out the password of one of the big banks in the system. They set
+up a page which you have to pay for, and made a computer (with the bank's
+account) dial up that page again and again and again......
+They had the software running for a whole night, and in the morning, had
+130.000 DM on their account.
+
+But that's not all: they had warned the german Bundespost, who runs the
+BTX system, about the bug they had found in the system. The authities said
+"we have a bug-free system". And imagine, they also said that directly
+after the CCC had gone public with the hack! they said that the CCC must
+have had spies in the bank.
+
+-konrad
+
+p.s.: the bug was reproduceable. About the pong story: you can find it
+somewhere in Steven Levy's HACKERS book.
+
+Konrad Neuwirth, Fernkorngasse 44/2/4, A-1100 Wien AUSTRIA
+Phone : +43 / 222 /604 15 30
+
+------------------------------
+
+Date: Thu, 2 Feb 89 12:55:09 GMT
+From: kgd@informatics.rutherford.ac.uk
+Return-Path: <@CSL.SRI.COM:kgd%informatics.rutherford.ac.uk@NSS.Cs.Ucl.AC.UK>
+Subject: Request for information:  Health Hazards of Office Laser Printers
+
+This is a request for information, or pointers to relevant sources of
+information, on the hazards of Laser Printers.   I am more interested
+in the chemical health hazards than, say, heat and noise which are
+easy to appreciate.  In particular, what is the wisdom of sharing
+office space without active ventilation with one or more Laser Printers?
+ 
+I have a reference to arsenic compounds present on the drum, and a
+widely held "view" that the toner is carcinogenic, but nothing
+substantial and no authoritative source for the hazards these may pose.
+ 
+I am also aware that erosion printers deposit light metals or other
+unpleasant material in the atmosphere, but then I am not familiar
+with this type of printer ever being used inside a permanently
+occupied office.
+ 
+Perhaps the relatively recent development of desk-top laser printers pose
+a new hazard in those countries which do not habitually air-condition
+their offices?
+ 
+Keith Dancey,                               UUCP:   ..!mcvax!ukc!rlinf!kgd
+Rutherford Appleton Laboratory,
+Chilton, Didcot, Oxon  OX11 0QX             
+                                        JANET:       K.DANCEY@uk.ac.rl.inf
+Tel: (0235) 21900   ext 6756
+
+------------------------------
+
+Date:     Thu, 2 Feb 89 10:47:32 EST
+From: "Michael J. Chinni, SMCAR-CCS-E" <mchinni@ARDEC.ARPA>
+Subject:  Re:  Structured Programming
+
+One "war story" I can relate is the following.  As an R&D computer facility we
+serve as what you might call a "job shop" for engineers at our site. One time
+an engineer came to us with a several thousand line program that he wanted us
+to put on our system (i.e. get it working).  After accepting the job we found
+to our horror the the code was TOTALLY unstructured.  It had NO comments; had
+no conection what-so-ever between variable names and their use; and frequently
+used system-specific code without mentioning that it was system-specific OR
+what the code did; and the entire program was replete with gotos.
+
+It took us about 2 man-months of work to get that monstrosity working.
+However, if the code had been "structured" it would have taken us no more that
+2 man-weeks.
+
+The moral of the story is that had the code been structured we would have saved
+1.5 man-months of work. And since we charge by time spent on a job, it would
+have saved much money.
+
+Michael J. Chinni, US Army Armament Research, Development, and Engineering 
+Center, Picatinny Arsenal, New Jersey  
+
+------------------------------
+
+End of RISKS-FORUM Digest 8.21
+************************

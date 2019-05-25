@@ -1,0 +1,499 @@
+VIRUS-L Digest   Friday, 13 Apr 1990    Volume 3 : Issue 75
+
+Today's Topics:
+
+Hardware Security
+Loophole in VIREX 2.6? (Mac)
+Antiviral Validation
+Re:Signature Programs
+Re: Virus in Text Files (Mac)
+Re: validation
+Re: Validating Virus Software
+Re: Virus in Text Files (Mac)
+New (mean) Virus? (PC)
+Jerusalem Viri (PC)
+Re: Death of a Virus
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Wed, 11 Apr 90 15:21:24 -0400
+From:    David_Conrad%Wayne-MTS@um.cc.umich.edu
+Subject: Hardware Security
+
+Dave Ihnat <ignatz@chinet.chi.il.us> writes:
+>So the point I was making is that in an environment which doesn't even
+>provide underlying hardware support for protection, it's impossible to
+>make a secure, safe system no matter how good you are in software
+>development.  Having the hardware, however, does not guarantee such
+>security; but id [sic] does make it possible.
+
+   Having the hardware neither guarantees such security nor makes it
+possible; what it does make possible is a greater degree of security,
+and that is, in itself, a good thing.  But a completely safe,
+completely secure system is impossible unless no changes could be
+made.  (If no changes could be made, then, of course, we must ask
+ourselves how such a system was brought into being, and then realize
+that no such system can exist.)  As long as some changes can be made,
+whether they are loopholes due to an imperfect strategy (because even
+if the security system could be perfectly implemented, it would also
+have to be perfect in its conception), or they are changes that are
+considered to be proper under most conditions, then some program could
+exploit that ability to make changes and create harmful or virulent
+code.  Hardware support for security makes the virus writer's job more
+difficult and the virus interceptor's job easier, which, as I said, is
+good.  But do not confuse increased security for complete security.
+
+                             Regards,
+                             David R. Conrad
+
++-------------------------------------------------------------------------+
+| David R. Conrad           (preferred) dconrad%wayne-mts@um.cc.umich.edu |
+| /\/\oore Soft\/\/are                  dave@thundercat.com               |
+| Disclaimer: No one necessarily shares my views, but anyone is free to.  |
++-------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Wed, 11 Apr 90 15:31:16 -0400
+From:    David_Conrad%Wayne-MTS@um.cc.umich.edu
+Subject: Loophole in VIREX 2.6? (Mac)
+
+Mr. James M. Vavrina writes:
+>From:    SDSV%ISEC-OA@IBM1.CC.Lehigh.Edu
+>Subject: False Indications from VIREX 2.5.1 (MAC)
+>
+>HJC Software, authors of VIREX Virus Detection Software, has confirmed
+>a bug in their software version 2.5.1, ALL software written in
+>QuickBasic will give you a false msg of a Trojan Horse being detected.
+>HJC Software will be releasing version 2.6 shortly which will correct
+>this problem.  It will be sent to all registered users.
+
+   I wonder if this is a problem with VIREX or an anomaly in QuickBasic?
+It could be the case that, in the future, any trojan which emulates the
+structure of a QB object will be passed over by VIREX, creating a loophole
+similar to the one created by checking the "Always Compile MPW INITs" box
+in Vaccine.
+
++-------------------------------------------------------------------------+
+| David R. Conrad           (preferred) dconrad%wayne-mts@um.cc.umich.edu |
+| /\/\oore Soft\/\/are                  dave@thundercat.com               |
+| Disclaimer: No one necessarily shares my views, but anyone is free to.  |
++-------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Wed, 11 Apr 90 15:50:14 -0400
+From:    David_Conrad%Wayne-MTS@um.cc.umich.edu
+Subject: Antiviral Validation
+
+Stephen R. van den Berg writes:
+>From:    berg@cip-s02.informatik.rwth-aachen.de (SRB)
+>Subject: Re: Validating Virus Software
+>
+>I always wondered: shouldn't the crc-32 and crc-16 of zip and arc files be
+>unique enough to validate any file?
+>
+>Why can't we just put these checks and the length of a file on the net.
+>If you insist, then of course you could add any propietary validation values
+>like the ones obtained from the validate program.  But I'm pretty sure that
+>most people trust their favorite zip or arc program more than some kind
+>of a so-called validate program.
+
+   The problem with this plan lies in that the CRC algorithms used by
+these archive programs are public knowledge, and it is very easy to
+arrange for a file to have a specific CRC value.  Publishing the file
+size in addition to the CRC value makes the problem harder, since one
+can't simply add inert data to the end of the file to finagle the CRC
+value, but even this doesn't provide sufficient protection, since some
+of the data in the file may be safely changed (perhaps a statically
+allocated buffer), or, in extreme cases, a dedicated virus writer
+could sacrifice some rarely-used routine in the target program.
+Proprietary validation routines provide slightly better security,
+since the algo- rithm is not public information, but once again a
+dedicated virus writer could reverse-engineer the algorithm from the
+validation program itself.  The best solution at this time is to use
+validation algorithms from which it is computationally infeasable to
+produce a specific value.  Snefru 2.0 and MD4 are two good examples.
+
+                             Regards,
+                             David R. Conrad
+
+P.S. Snefru 2.0 is The Xerox Secure Hash Function.  I seem to recall that
+  the author of MD4 requested that it be referred to by some specific
+  name, but the name itself I have forgotten.  My apologies.
+
++-------------------------------------------------------------------------+
+| David R. Conrad           (preferred) dconrad%wayne-mts@um.cc.umich.edu |
+| /\/\oore Soft\/\/are                  dave@thundercat.com               |
+| Disclaimer: No one necessarily shares my views, but anyone is free to.  |
++-------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Wed, 11 Apr 90 16:08:48 -0500
+From:    utoday!greenber@uunet.UU.NET (Ross M. Greenberg)
+Subject: Re:Signature Programs
+
+>My personal feeling is that an authentication algorithm may be very
+>simple (CRC or less) provided that it is unknown (or unpredictable).
+>Since my 4.77 Mhz/ST-412 museum piece is capable of a simple byte
+>count/XOR/ROR disk file check at 50k bytes/second (and could be faster
+>if done in RAM by a TSR between LORD and EXECUTE), performance
+>concerns are unnecessary (quantum economics).  This method is suitable
+>for any physically controlled system.
+>
+>Unfortunately, Mr. Greenberg's algorithm fails this test because it is
+>publicly known.  A mechanism designed to subvert his programs is
+>feasible (worm, trojan, virus, bomb, etc.).  However, given a small
+>number of different algorithms (ADD/SUB/XOR followed by ROL/ROR/NOP
+>give nine easily) generated by a machine-unique seed (time hack at
+>initial algorithm load would work), a non-resident intruder would have
+>a very hard time subverting a system without generating a few errors
+>first.
+
+Sorry: although it would be easy to ascertain via disassembly the
+particluar method I use in my code for generating a signature, I would
+hope that the bad guys are as easily fooled by someone using the word
+"Checksum" or "CRC" as you were.  <Gotcha! Heheheh> My signature code
+stuff is proprietary and has never been released to anyone.  I use the
+word "checksum" or "CRC" loosely because it's easier to say than "an
+assortment of instructions that merely generate a unique number based
+upon a stream of input with no real formal basis for figuring out just
+how good the particular algorithm issince it seems good enough so
+far."
+
+>This is particularly effective if even the creator of such a program
+>cannot predict which algorithm/seed will be used on a particular
+>machine.
+
+I may include such a random seed in the future, but it seems pretty
+easy to be able to determine that seed and therefore why bother?
+Remember that DOS isn;t really an operating system anyway and it would
+be pretty easy for someone to subvert *any* signature generating code
+easily. Better still would be to use two differing algorithms that
+combine into one unique signature.
+
+>However, over 90% of all PC virii could have been caught early by a
+>CLI that occasionally compares the Top-Of-Memory, the end of DOS/TSR
+>memory, and the first byte of the Boot Sector against known values.
+>MS-DOS doesn't.
+
+Fascinating number, that 90%.  No justification for it from what I can
+see.  And your statement on the Boot Sector's first byte being the
+important one to check is totally wrong.  If you could send me the
+background on that number, I'd apreciate it.  I believe none of the
+numbers I see bandied about regarding viruses.  Too easy to slip a
+decimal point or two, or to extrapolate from a limited subset.
+
+Mr. Peterson makes some interesting points.  They do not, however,
+seem conclusive to me.  I stand by my earlier statements that a simple
+algorithm for CRC/signature/checksum checks is "good enough".
+
+Ross M. Greenberg,     Software Concepts Design,    greenber@utoday.UU.NET
+             594 Third Avenue, New York, New York, 10016
+ Voice:(212)-889-6431 BIX: greenber  MCI: greenber   CIS: 72461,3212
+                            BBS:(212)-889-6438
+
+------------------------------
+
+Date:    10 Apr 90 23:19:34 +0000
+From:    kellogg@prodigal.psych.rochester.edu (Carol K. Kellogg)
+Subject: Re: Virus in Text Files (Mac)
+
+In article 2076, woody@chinacat.Unicom.COM (Woody Baker @ Eagle
+Signal) said, in part...
+ >Macintosh datafiles, as I understand them, have 2 parts, a resource
+ >fork and a data fork.  Anything in resource fork (so I've been told)
+ >can execute.  Does this imply that one could bury a virus in the
+ >resource fork of a data file?  >
+
+Arrrgh...more Macintosh Myths.
+
+First, one minor correction..."the resource fork of a data file" is an
+oxymoron - data file usually implies information stored in the data
+fork (which is non-executable), and a resource file implies a file in
+which the information is stored in the resource fork (SOME of which is
+exexcutable).
+
+Not _EVERYTHING_ in the resource fork can be executed - only
+executable resources, such as CODE (actual program code) resources,
+WDEF (window definition), INIT (startup "terminate and stay resident"
+type of code), etc.
+
+The ONLY way to infect a Mac file is to put a virus in one of these
+executable resources.  Many viruses add their own CODE resource, and
+then patch the jump table so that they're executed before the rest of
+the application.
+
+There is one virus that spreads infections via WDEF resources, but its
+fairly easy to guard against.
+
+Disinfectant (an excellent virus protection/repair) utility deals
+effectively with all the known viruses on the Mac.
+
+>Woody
+
+Lars Kellogg-Stedman
+kellogg@prodigal.psych.rochester.edu
+
+------------------------------
+
+Date:    12 Apr 90 03:49:01 +0000
+From:    phaedrus@milton.u.washington.edu (The Wanderer)
+Subject: Re: validation
+
+hobbit@pyrite.rutgers.edu (*Hobbit*) writes:
+>The best way anyone could validate his antiviral is to distribute the
+>sources.  Which most of these authors seem highly unwilling to do, for
+>some odd reason.  Did you ever wonder what they were hiding sometimes?
+>This exe-file validation stuff is a crock.
+>
+>_H*
+
+     I don't think this is a valid argument, for at least three reasons.
+     1) SCANRES, SCAN, et al are *commercial* programs.  Commercial programs
+do not generally have their source code distributed; that is a simple fact of
+the industry.  We can argue the merits of free software all day and it won't
+change that.  Take your argument to its logical conclusion:  The lab where I
+work uses Microsoft Word for word processing.  We would be just as damaged if
+we were to receive a virus-infected copy of Word that if we were to receive a
+virus-infected copy of SCAN.  Therefore, we should expect Microsoft to supply
+complete source to Word with every update of their program, so we can compile
+Word ourselves and avoid any possible contamination of their masters.  I don't
+see this happening.  (I don't see why it should...  I for one would not care to
+have to keep a copy of every language ever written around just in case some
+program I wanted to use happened to be written in it.  And if you're not going
+to recompile from the source, what's the good of having it?  How do you know
+the executables contain the same code as the source?)
+     2) Source would be absolutely useless to 99%+ of the program's users.
+If someone were to hand me a copy of, say, SCAN source, and say "Two lines of
+this code will destroy your hard disk.  Find them," I wouldn't know where to
+begin; I don't know enough about low-level file access to tell the normal calls
+from the destructive ones, and I consider myself a pretty darn good programmer.
+And that's assuming the destructive code was written in a straightforward
+fashion; ever read the Obfuscated C contest?  (And the SCAN programs are
+relatively small; you could hide a battleship in, say, the Word source...)
+     3) Such a listing, however, would be *extremely* useful to 99%+ of the
+virus writers out there.  Given exact knowledge of how a virus-checking routine
+works, writing a counter-routine specifically designed to evade or disable it
+is trivial.  Let the virus writers at least go through the work of
+disassembling the executable; it won't stop 'em, but it'll slow 'em down at
+any rate.
+- --
+Internet: phaedrus@u.washington.edu        (University of Washington, Seattle)
+  The views expressed here are not those of this station or its management.
+   "If you can keep your head while those about you are losing theirs,
+      consider an exciting career as a guillotine operator!"
+
+------------------------------
+
+Date:    12 Apr 90 06:30:57 +0000
+From:    nixpbe!gla%linus@uunet.UU.NET (gla)
+Subject: Re: Validating Virus Software
+
+WARD@SENECA.BITNET (David Ward -- Computer Support/Special Needs) writes:
+
+>Periodically we hear concerns about the validity of SCANVxx and other
+>antiviral programs.  I think these concerns are valid since a
+>virmentor creating a virus would likely take great joy in attaching
+>the virus software to a product designed to fight viruses.
+>...
+>A simple solution to this problem is that when new versions of scan
+>are announced on this digest, the announcement should include the
+>validation strings given by McAfee.  Then we can download from any
+>local source and compare the strings published in Virus-L to
+>those we generate with the validate program.
+
+The problem adressed here is well-known: we need a MAC, a message
+authentication code. It means that you can check the checksum by using
+a public known key of the author.  The first system usable for this is
+the RSA public key encryption system. For a MAC, you encrypt the
+checksum with the privat key of the author and append it to the
+message. It can be decrypted by anyone using the public key which has
+to be obtained once, and then the checksum can be checked.
+Unfortunately, it is patent copyrithed in USA and requires lengthy
+computations of prime numbers for the keys, and depends both on the
+problem of factorisation and the discrete logarithm.
+
+But there is an alternative scheme: the ElGamal-Scheme. It requires
+modulo arithmetic and depends only on the discrete logarithm problem,
+and it is - to my knowledge - not protected. To check the signature,
+the calculations are somewhat longer than for RSA; to obtain the
+signature, an equation has to be solved which is straighforward using
+Euclid's algorithm, extended.
+
+For the original description, see: ElGamal, T.: A Public Key Cryptosystem
+and a Signature Scheme Based on Discrete Logarithms. IEEE Trans. Inf.
+Theory, Vol. 31, No. 7, 1985, pp. 469-472.
+
+Rainer Glaschick, Nixdorf Computers, Paderborn, W-Germany
+EMail: glaschick@nixpbe.de  or  !uunet!nixbur!glaschick.pad
+Phone: +49 5251 14 6150  (absent till April 23)
+
+------------------------------
+
+Date:    11 Apr 90 13:49:10 +0000
+From:    trebor@biar.UUCP (Robert J Woodhead)
+Subject: Re: Virus in Text Files (Mac)
+
+
+woody@chinacat.Unicom.COM (Woody Baker @ Eagle Signal) writes:
+
+>Macintosh datafiles, as I understand them, have 2 parts, a resource
+>fork and a data fork.  Anything in resource fork (so I've been told)
+>can execute.  Does this imply that one could bury a virus in the
+>resource fork of a data file?
+
+>I'm sure that this has been hashed over before.
+>Cheers
+>Woody
+
+Not quite.  Resource forks contain resources.  Some resources are "code-
+bearing" resources, some are data.  Only code bearing resources could
+ever get executed.  However, for this to happen, the system (or an app)
+has to decide it wants to do so.  For a variety of technical reasons,
+it is extremely unlikely that this can be induced to occur.  It might be
+possible to write a virus that infects a certain application only and
+once in that app can spread to others (that piggybacks on that target
+app's documents) but it would be an unreliable and difficult infection
+vector.
+
+Summary : very difficult, unreliable, not bloody likely
+
+PS: a semi-example of this "piggybacking" is WDEF, which depends on a
+quirk of the OS to get executed if it is in the desktop file.  However,
+the desktop file is a very special file on a macintosh.
+- --
+Robert J Woodhead, Biar Games, Inc.   !uunet!biar!trebor | trebor@biar.UUCP
+Announcing TEMPORAL EXPRESS.  For only $999,999.95 (per page), your message
+will be carefully stored, then sent back in time as soon as technologically
+possible.  TEMEX - when it absolutely, postively has to be there yesterday!
+
+------------------------------
+
+Date:    Thu, 12 Apr 90 13:32:16 -0700
+From:    Peter Sturdee <sturdee@troa02.enet.dec.com>
+Subject: New (mean) Virus? (PC)
+
+    A friend of mine sent me this request for information.  I, not knowing
+    the answer, am forwarding it to you people.  The entire message
+    follows.  Replies can be sent to me.
+
+    Thanks, alot, really,
+    Peter Sturdee
+
+- ------< Start of message >------
+
+From:     DECPA::"alopez-ortiz@trillium.waterloo.edu" "Alex Lopez-Ortiz" 12-APR
+\c-1
+990
+ 15:46:16.17
+To:       troa02::sturdee
+Subj:     Virus Attack!
+
+Pete,
+
+  Do you know of a virus that does this?
+
+Wipes Boot sector on "C" Drive to 0's
+Erases every directory entry (including subdirecty entries)
+from every directory of the disk (by puting the Delete char as
+first character in the file/directory name)
+
+Kills all FAT copies on "C" drive
+changes the date and size of IBM PC-DOS V3.3 from 25307 -> 25324 (increase)
+and dates from 3-17-87 to 11-27-89 at 12:00.
+
+We recovered the machine with Norton and PCTools.. but a virus scan
+doesn't get anything.. mind you we might not have the latest edition
+of the scanner...
+
+Have you read anything about this type of one?  We still can't figure out
+what program spawed the virus.
+
+Alex
+
+- ------< End of message >------
+
+------------------------------
+
+Date:    Thu, 12 Apr 90 18:53:30 +0000
+From:    rowley%LOCAL@umn-cs.cs.cs.umn.edu (Henry A. Rowley)
+Subject: Jerusalem Viri (PC)
+
+The undergraduate student laboratories in the Electrical Engineering
+Department at the University of Minnesota have been infected
+with the Jerusalem virus.  I think the specific strain in Jerusalem
+B.  I plan to write a program that will detect when the viruses
+are infecting the machines (as opposed to cleaning up afterwards).
+
+Does anyone have any information about how the Jerusalem viri work?
+Such information as file signatures, infection methods, cleanup
+methods, and disassembled code would be greatly appreciated.
+
+Please send any responses through E-mail, and I will post a summary
+in this news group if there is any interest.
+
+Thanks in advance.
+
+Henry A. Rowley                   rowley@umn-cs.cs.umn.edu
+
+- --
+Henry A. Rowley         rowley@umn-cs.cs.umn.edu
+"Don't Panic!"
+
+------------------------------
+
+Date:    13 Apr 90 10:19:01 +0000
+From:    kelly@uts.amdahl.com (Kelly Goen)
+Subject: Re: Death of a Virus
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+>kelly@uts.amdahl.com (Kelly Goen) writes, apparently in response
+>to a posting of mine:
+>
+>> Yes dave but under environments which use say the VM8086 model on
+>> the 386 (such as VPIX) file writability and/or hardware acces is
+>> TOTALLY under the control of unix...  weak unix security weak dos
+>> security good unix security = good dos security in this case....
+>
+>My point was that putting file access under the control of the
+>operating system *doesn't help*, at least not as much as people
+>generally assume.  Viruses spread by writing to files that they are
+>*allowed* to write to; they don't depend on a lack of security.  If
+>most programs have write access to only a few other programs, viruses
+>may not be able to spread as fast; but lowering the exponent on an
+>exponential spread helps surprisingly little.
+>
+>Now of course this may be what you were saying; I'm not entirely sure
+>I understand the posting...
+>
+>DC
+
+Well close dave what I was referring to is the running of DOS programs
+in a virtual environment and preventing access to hardware models or
+real "Anything..." Viruses written to attack MS-DOS only or the
+Hardware model under which MS-DOS functions will fail to infect under
+such an environment.... That is what I was trying to say... of course
+the platform itself is vunerable to infections native to it...*nix
+that is...  so the security is only for now(i.e. temporary..)
+   cheers
+   kelly
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

@@ -1,0 +1,627 @@
+VIRUS-L Digest   Tuesday, 10 Dec 1991    Volume 4 : Issue 233
+
+Today's Topics:
+
+Re: What is special about "stealth" viruses?
+re: Password Program
+Bad Sectors (was Possible Virus) (PC)
+Re: Virus Verification and Removal
+Virus: "stoned" (PC)
+re: password program (PC)
+Macs Running Soft PC (Mac) (PC)
+Re: DIR II (PC)
+Re: What is special about "stealth" viruses?
+Re: Forward from FidoNet
+Re: F-PROT 2.01 (PC)
+Washburn and Ethics
+In-Re: Re: In-Re: Radai re: Murray re: Radai re: Frisk, [etc]
+NIST document on setting up an incident handling team
+FIXMBR update (PC)
+Files available from urvax.urich.edu (PC)
+Files uploaded to risc.ua.edu (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 06 Dec 91 12:38:42 -0500
+>From:    Otto Stolz <RZOTTO@nyx.uni-konstanz.de>
+Subject: Re: What is special about "stealth" viruses?
+
+[Ed. This one went into the FAQ file - thanks Otto!]
+
+On Tue, 03 Dec 91 12:06:00 -0700 Ted Shapin
+<TSHAPIN@BIIVAX.DP.BECKMAN.COM> said:
+> What is special about stealth viruses?  Why are they called "stealth"?
+
+Every virus makes changes to executable code; hence all viruses can be
+detected by checking all executable code in a system for discrepancies
+between presumed and actual contents. A stealth virus camouflages the
+changes it has made from detection by other programs, usually by
+monitoring the system functions used by programs to read files or
+physical blocks from storage media, and forging the results of such
+system functions suitably.
+
+Example: One of the oldest MS-DOS Viruses, Brain, a boot sector infector,
+monitors physical disk-I/O and re-directs any attempt to read a Brain-
+infected boot sector to the disk area where the original boot sector is
+stored.
+
+Countermeasures: To gain unadulterated access to storage media, a "clean"
+system is needed so that no virus is present to interfere with its oper-
+ation. Hence the system should be built from a trusted, clean master copy
+before any virus-checking is attempted; this is "The Golden Rule of the
+Trade". With MS-DOS, (1) boot from original DOS diskettes (i.e. DOS
+Startup/Program diskettes from a major vendor that have been write-
+protected since their creation), (2) use only tools from original
+diskettes until virus-checking has completed.
+
+------------------------------
+
+Date:    Fri, 06 Dec 91 13:09:01 -0500
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: Password Program
+
+	First off, a PC cannot execute from CMOS memory, it can only
+store data there (and requires special commands to do it). Thus while
+a password may be STORED there, it cnnot be EXECUTED from there. Hence
+the code invoking the password must be "somewhere else". The most
+likely bet is that you have a COMPAQ, NEC, TANDON, ZENITH or some
+other BIOS that incorporates a password protection and it has somehow
+gotten turned on (oh yes, PS/2's also). When off, you never see it.
+
+	The most generic means to recover is to record the disk and
+memory information from CMOS, then with the system turned off,
+interrupt the power to the CMOS (e.g. pull the battery) and bring the
+system back up from an installation floppy that will allow you to
+reset the CMOS values.
+
+						Padgett
+
+ps, a dying battery could also conceivably cause these symptoms.
+
+------------------------------
+
+Date:    Fri, 06 Dec 91 13:20:04 -0500
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Bad Sectors (was Possible Virus) (PC)
+
+	The symptoms match those of a few viruses (notably MusicBug) but
+there is a fairly simple check that will help.
+
+	Simply put, bad sectors are allocated in tracks not sectors while
+DOS allocates information on a hard disk in clusters consequently, "bad"
+sectors are reported in fairly sizable quanta.
+
+	Different drive architectures allocate different numbers of sectors
+per track from 17 (11h) for most MFM and IDE drives), to 26 (1Ah) for non-
+translated RLL drives, all the way up to 63 (3Fh) for some large drives usu.
+EDSI.
+
+	The key here is that the quanta is fixed: a single bad track on most
+MFM drives will result in 10240 "bad" bytes on a drive using 2k clusters, two
+bad tracks will give 20480 "bad" bytes, and this will increase as an even
+multiple of 10240 bytes.
+
+	The equation is simple: divide the number of sectors per track (17)
+by the number of sectors per cluster (4) = (4.25) round up to the next
+integer (Dos can't break up clusters) (=5) and multiply by bytes per
+cluster (2048). The same technique can be used for different sizes (e.q.
+RLL drive with 26 sectors & cluster size of 4096 bytes-8 sectors/cluster &
+512 bytes per sector - a few are 1024 but most fixed disks use 512 bytes per
+sector - 26/8=3.25 round to 4 * 4096 = 16384 bytes per "bad" track.
+
+	Consequently, if an ST 251-1 (42 mb MFM) reports 40960 bytes in
+"bad" sectors (10240 x 4), it does not bother me, but if I see 7168 bytes
+reported bad, alarum bells go off.
+
+						Padgett
+
+     BTW we went through this last year some time - Anthony ?
+
+ps CHKDSK will usually return the number of bytes/cluster (allocation units)
+   and if you AND the CX return from Int 13 Fn 8 with 3Fh, the CX value will
+   be the "apparent" number of sectors per track. Have phun.
+
+   mov ah,8
+   mov dx,80
+   int 13
+   and cx,3f
+
+
+------------------------------
+
+Date:    06 Dec 91 19:18:32 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus Verification and Removal
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+
+> implement the verification function themselves.  On the other hand, if
+> the algorithm is well-known and not hard to invert, a malicious virus
+> writer could produce a new virus that would be misidentified as an old
+> one; something we definitely want to avoid!
+
+I don't believe this to be a problem, especially if the user is able
+to program the checksum functions that is being used. But if you
+really want something strong and reasonably fast, why not using MD5
+authentification codes?
+
+> (Because various people have expressed an interest in more details of
+> the language that VERV uses, I may write up a more detailed
+> description of it, including all the verbs and their operands.  I'd be
+
+That would be great! I'll try to write something about our program as
+well.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Sat, 07 Dec 91 03:58:58 +0000
+>From:    yjj@ctr.columbia.edu (Yuan Jiang)
+Subject: Virus: "stoned" (PC)
+
+Virus "stoned" is spreading around here.  I suspect that my disk being
+infected.  Is there any vaccine for this virus?
+
+Thanks.
+
+------------------------------
+
+Date:    Sat, 07 Dec 91 23:48:47 -0500
+>From:    Jon Freivald <jaflrn!jaf@uunet.UU.NET>
+Subject: re: password program (PC)
+
+steve@castle.ed.ac.uk (S D Law) writes:
+
+> Hello,
+>
+> We have recently found on our public pc's some sort of password
+> program that I think has somehow been put into the cmos.  It seems to
+> be a "commercial type product" that has been put on for fun.  Does
+> anyone know of this and abviously more importantly, how do I get into
+> the pc to get it off.  Booting from floppy does not work as cmos is
+> run before this.
+
+What does it say on the screen when it prompts for the password?
+
+=============================================================================
+		       Jon Freivald ( jaf@jaflrn.uucp )
+	 Nothing is impossible for the man who doesn't have to do it.
+=============================================================================
+
+------------------------------
+
+Date:    Sun, 08 Dec 91 21:33:00 -0500
+>From:    S1HA162@MOE.TOWSON.EDU
+Subject: Macs Running Soft PC (Mac) (PC)
+
+     I regularly use Soft PC on my Macintosh SE.  Do I need MS DOS and
+macintosh antiviral programs or will an antiviral program for the
+macintosh suffice?
+     Thank you in advance for your cooperation.
+						-Mike Taylor
+
+------------------------------
+
+Date:    09 Dec 91 06:17:21 +0000
+>From:    stella@remus.rutgers.edu (Ricky Suave Stella)
+Subject: Re: DIR II (PC)
+
+> If you want a program which clears DIR II virus, you can write to:
+> Miroslaw Startek
+> <KNSF@PLUMCS11.BITNET>
+
+DIR II virus can be perfectly weed out with McAfee's CLEAN v.84
+- --
+
+- ------------------------------------------------------------------------------
+Ricardo Stella					stella@remus.rutgers.edu
+RUCS US - CCF					stella@elbereth.rutgers.edu
+Owl's Roost Manager				stella@zodiac.rutgers.edu
+Hill 118 - (908)932-2491			Rutgers University, NJ
+			     	...suave...
+- ------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 10:43:58 +0000
+>From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: What is special about "stealth" viruses?
+
+In Message 3 Dec 91 19:06:00 GMT,
+  TSHAPIN@BIIVAX.DP.BECKMAN.COM (TED SHAPIN) writes:
+
+>What is special about "stealth" viruses?  Why are they called
+>"stealth"?
+
+A "stealth" virus is one which..
+
+   ...intercepts open/read operations if it is active in memory, and
+      makes infected programs (or boot sectors) look "normal.
+
+and
+
+   ...shows no increase in file size if it is active.
+
+The first ability is the reason it is recommended to boot from a "clean"
+floppy before you run a virus scanner.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 10:49:40 +0000
+>From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: Forward from FidoNet
+
+> As 1963 is not listed in the F-PROT.EXE Virus Information section of
+>your program, i presume that it is the generic scanner thats detects
+>the suspicious code & identifies it as "Possibly a new variant of
+>Eddie".
+
+No, the 1963 virus just happens by chance to contain one of my "Eddie"
+signature strings, but the virus still does not look like Eddie, so I
+only identified it as a "possible new variant".
+
+I have now updated the program to detect the virus, and 2.02 (to be
+released later this month) detects it without problems.
+
+>(2) Why was nothing detected in memory? (- or does the generic scanner only
+>work on files?)
+
+Nothing was detected, because version 2.01 simply does not identify
+1963 - I did not add it because I had not been able to get it to work.
+The "Possibly new Eddie" varing is actually a false alarm - caused by
+the fact that the author of 1963 borrowed a bit of code from Eddie,
+but the viruses are totally unrelated.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 10:55:41 +0000
+>From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: F-PROT 2.01 (PC)
+
+In Message 28 Nov 91 23:20:58 GMT, pjc@melb.bull.oz.au (Paul Carapetis) writes:
+
+>I sent an enquiry to Frisk earlier this month but have not had a reply.
+
+Yeah..when I came back from the NCSA conference I had 250 E-mail messages
+waiting and 35 new viruses. The last week has been a very busy one....
+
+>The question: Does F-PROT 2.01 support the detection of suspicious activity
+>              and, if not, will future versions?
+
+The answers are NO, and MAYBE.
+
+The program F-LOCK would detect various types of suspicious activity, such
+as attempts to write to executable files and the boot sector.  However, I
+decided to drop the programn in version 2.0, for the following reasons:
+
+   Too many viruses were able to bypass it, simply by jumping straight
+   into ROM or DOS, bypassing any interrupt-monitoring program like
+   F-LOCK, FLUSHOT+ or similar.
+
+   The program was not Windows compatible.
+
+When/if I solve those problems I will release an updated version.  Until
+then, you can use F-LOCK/F-POPUP from version 1.16 - just be aware of the
+problems.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 18:29:00 +0200
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Washburn and Ethics
+
+  I had vowed to myself that I wasn't going to submit any more post-
+ings on the ethical aspects of Washburn's actions (discussions of
+ethics usually generate more heat than light), but after seeing Gene
+Spafford's posting, I changed my mind.  I quote from the beginning of
+his posting:
+
+>I must agree with Bill Murray.  Releasing *any* compuer virus is an
+>unethical act that should be deplored by any responsible professional.
+
+  Tell me, Gene, do you see any place where I have claimed that re-
+leasing a virus is *ethical*?  I merely gave counter-considerations
+in a particular case in order to show that the situation is not as
+black-and-white as some people make it out to be.  Since I never said
+that virus releasing is ethical, what you have written above is not an
+argument against me.  And I do not disagree with most of your other
+statements either.  The main problem with your position is not that
+it's incorrect, but that it ignores the counter-considerations which I
+presented.
+  In the case of Washburn, I was faced with the following dilemma:  A
+long time ago I compared the program SECURE against other generic pre-
+vention programs and found it to be the best.  (No, that does not mean
+that it's *perfect* or that I recommend relying on it *alone*.  I wan-
+ted the best generic prevention program as a first line of defense, to
+be followed by the best generic detection program as a second line of
+defense.)  So I started using it and recommending it to others.  Then
+I noticed that the author of SECURE was the same person as the one who
+had released the 1260 virus. True, release of even a non-deliberately-
+destructive virus is dangerous and unethical (ordinarily; but see re-
+mark below).  Still, does that necessarily imply that I should stop
+using and recommending SECURE?
+  The problem is similar to one which arose from a panel discussion on
+Jung which I heard on the radio a couple of days ago.  Most of the
+discussion was on relatively "objective" issues, but at the end it was
+mentioned that he had cooperated with the Nazis.  Surely that was
+unethical.  But does it follow that Jung's psychology should be boy-
+cotted because of this?  Some will say Yes, while others will say No.
+  In the case of SECURE, I was faced with a similar dilemma.  Ok, what
+Washburn did was unethical.  But boycotting Washburn would hardly act
+as a deterrent in any similar case since it's highly unlikely that
+other authors of anti-viral software would be naive enough to admit to
+having written a virus.  Therefore the deterrent power of boycotting
+software of known virus writers seems to be nil.  I suspect that the
+main motive for the demand to boycott Washburn is simply to get re-
+venge on him, and such considerations do not particularly interest me.
+I came to the conclusion that the advantage of a good program out-
+weighed any benefit gained by punishing Washburn.  I therefore decided
+to continue using SECURE and recommending it to the users at my uni-
+versity and to anyone else who's interested in my opinion.  Anyone
+who thinks otherwise is certainly entitled to his opinion, but please
+spare me the ethics lectures for daring to take the position I have
+taken.
+
+  Above, I was speaking of specific dilemmas.  If it is hard to make a
+decision in these cases, how much harder is it to make *general* ethi-
+cal pronouncements, such as you have made in the passage quoted above.
+There is hardly a single rule of ethics that most people would not
+find it justifiable to violate under certain conditions.  For exam-
+ple, it is considered unethical to interfere in the internal affairs
+of other countries.  But what if the rulers of the country in question
+are committing genocide?  Many would say that interference *is* justi-
+fied and ethical in that case.
+  I can even think of a case where virus releasing might be consi-
+dered ethical by most people.  Suppose we are at war and our intelli-
+gence service uses viruses to cause damage to the enemy (who is always
+unethical, of course).  Would *such* a use of viruses be unethical?  I
+think most people would conclude that in *this* case the answer is No.
+So what happens to your above-quoted ethical principle that "releasing
+*any* compuer virus is an unethical act that should be deplored by any
+responsible professional"?  You might say "Well, I didn't mean it in
+*that* sort of case."  So you rephrase your principle so that it
+excludes such a case.  But then someone finds another exception, and
+so on.  I, on the other hand, am not trying to propose any general
+ethical rule.  I judge each case on its own merits.
+
+  As I said a couple of times, this subject has little to do with the
+facts, and therefore no one is likely to convince the other side of
+his opinion.  This time I'm going to keep my vow not to react to any
+further correspondence on this subject.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    09 Dec 91 11:39:00 -0500
+>From:    "zmudzinski, thomas" <ZMUDZINSKIT@imo-uvax.dca.mil>
+Subject: In-Re: Re: In-Re: Radai re: Murray re: Radai re: Frisk, [etc]
+
+Martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences) wrote:
+
+> In
+> Waterloo County, where my grandfather was shunned, the average "old
+> order" mennonite family has eight children, yet the community hasn't
+> grown in size for decades.  The policy may be perceived as winning,
+> but history shows it isn't.
+
+Good reply, Tim.  However I think that the lack of growth is in no
+small part economic, vice societal.  At that, I'm not certain that
+any non-proselytizing religion counts grown as "winning".  Likewise
+I'd be very suspicious of anyone claiming that Israel's population
+growth is a result of their policy of not dealing with kidnapers.
+
+Relative to the computer security community, I wouldn't want to
+equate "growth" with "winning".  Like many defensive (some would
+say reactionary) groups (DoD, doctors, police, etc.), we'll "win"
+the day we're obsolete.  Our goal should be to work ourselves out
+of a job.  At that, computer users don't want security; they want
+to be left alone!  (What they REALLY want is magic, but that's
+another topic).  So none of us need worry too much about finding
+jobs in other fields. ;{)
+
+However, the question is not "crime & punishment" or even "philos-
+ophy & political science", but "deterrence".  This may sound heret-
+ical, but I honestly don't care if a single virus writer is ever
+"punished"; I do care very much about effective ways of deterring
+them.  The more I've looked into the "punishment" angle, the less
+I believe it to be effective.
+
+My thesis is that "shunning", "excommunicating", "putting beyond
+the Pale", "banishment", "sending to Coventry", etc. is such a
+deterrent.  The "kicker" is that it has to be practiced universally
+by the group in question to be an effective deterrent.  ^^^^^^^^^^^
+                                  ^^^^^^^^^
+/z/
+
+"No matter how subtle the wizard, a dagger between the shoulderblades
+ seriously cramps his style" -- Stephen Burst
+
+"AAAARRGGHH!" -- some wizard with a dagger between his shoulderblades ;{)
+
+------------------------------
+
+Date:    Tue, 10 Dec 91 10:49:16 -0500
+>From:    wack@csmes.ncsl.nist.gov (John Wack)
+Subject: NIST document on setting up an incident handling team
+
+The National Institute of Standards and Technology (NIST) has just
+published a document on setting up computer security incident handling
+teams and capabilities.  The document is titled,
+
+Establishing a Computer Security Incident Handling Capability (CSIRC)
+
+The document is intended as a starting point for setting up some form of
+incident response capability to respond to viruses, intruders, and so
+forth - it does not contain detailed information on incident response.
+It is written at a fairly high-level, but contains a number of references
+to more detailed information.  It also contains an annotated bibliography
+of related reading and information about FIRST, the Forum of Incident
+Response and Security Teams.
+
+The document, as well as some of its more obscure references, is available
+via anonymous ftp from csrc.ncsl.nist.gov (129.6.54.11) in
+pub/pubs/csirc_pub in PostScript format only - see the README file there
+for additional info.  If you want hardcopy (please opt for electronic
+version if possible) send your name and address to csrc@csrc.ncsl.nist.gov.
+
+Thank you, John Wack
+
+------------------------------
+
+Date:    Sun, 08 Dec 91 20:44:00 -0500
+>From:    HAYES@urvax.urich.edu
+Subject: FIXMBR update (PC)
+
+Now available from our site for FTP processing:
+
+FIXMBR17.ZIP	FixMBR v1.7 (beta).  By A. Padgett Peterson.  Sent by the
+		author.  Copyright (C) 1991, all rights reserved.
+			1.5:  first released version
+			1.6:  bug fix
+			1.7:  allows use of at least two (2) hard disks
+		This program is designed to replace the standard MS-DOS master
+		boot record program with code that does more than just find the
+		active partition and jump to the O/S boot record, SAFEMBR first
+		checks the disk access integrity, its own integrity, and
+		validates the indicated partition.
+		FixMBR will only work with the first hard disk if more than one
+		unit is present on the system.
+
+Please note that FIXMBR16 is now removed from our system.
+
+address;	urvax.urich.edu
+IP#:		141.166.1.6
+user:		anonymous
+password;	your_e-mail_address
+directory:	.msdos.antivirus
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Claude Bersano-Hayes     HAYES @ URVAX                 (Vanilla BITNET)
+University of Richmond   hayes@urvax.urich.edu     (Bitnet or Internet)
+Richmond, VA  23173
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 08:13:00 -0500
+>From:    HAYES@urvax.urich.edu
+Subject: Files available from urvax.urich.edu (PC)
+
+Hello.
+Following is the file list of the programs the University of Richmond makes
+available for anonymous FTP.
+
+A file, AAAAREAD.ME, contains short descriptions of the programs when needed.
+
+In case of problems, please drop me a line at the address found at the end of
+this message.
+
+Directory content (12/09/91):
+- -----------------
+
+VSHLD84 .ZIP	McAfee's VirusShield - TSR - detection		*
+CLEAN84 .ZIP	McAfee's Clean               eradication        *
+NETSCN84.ZIP	McAfee's NetScan - network - detection          *
+SCANV84 .ZIP	McAfee's Scan                detection          *
+VCOPY82 .ZIP	McAfee's Vcopy
+WSCAN84B.ZIP	McAfee's Scan for windows
+
+* update.  Files fetched from McAfee's BBS
+
+FPROT201.ZIP	Update.  Stand alone - detection/eradication
+
+LOCK    .ZIP	Hard-disk protection scheme; from NZ.  Freeware
+
+DS95    .ZIP	Hard-disk protection; sent by the author, Padgett Paterson.
+
+NOFBOOT .ZIP	TSR designed to	prevent inadvertant booting from a floppy disk.
+
+SAFEMBR .ZIP	Integrity checking Master Boot Record program
+
+FIXMBR17.ZIP	This program is designed to replace the standard MS-DOS master
+		boot record program with code that does more than just find the
+		active partition and jump to the O/S boot record, SAFEMBR first
+		checks the disk access integrity, its own integrity, and
+		validates the indicated partition.
+
+VIRX18  .ZIP	Easy to use free virus checker
+
+SECUR231.ZIP	Hard disk protection (update).
+
+DIR2CLR .ZIP	DIR2 virus cleaner.
+
+VIRnnnn .LZH	The virus digests, archived in LHARC format.  The nnnn repre-
+		sent the month and year.
+
+V-FAQ   .ZIP	Frequently Asked Questions about PC viruses.  Version 2
+		By:  Tapio Keihanen.
+
+ANSIKILL.ZIP	Kill embedded escape sequences which can be included into
+		"comment files" in self-extracting .ZIP archives.
+
+VIRLAB14.ZIP	Virus simulator from Germany
+
+IMAST101.ZIP    Integrity Master version 1.01a is an easy to use, anti-virus and
+		data integrity program.
+
+AUTOSN33.ZIP	Checks archive files for viruses.  The way it works is very
+		simple, all it does is un-archive any ZIP, ARC, ICE, LZH, PAK,
+		or ARJ file into a work directory (\AUTOSN), then use McAffee's
+		SCAN.EXE to scan it for any virus.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Claude Bersano-Hayes     HAYES @ URVAX                 (Vanilla BITNET)
+University of Richmond   hayes@urvax.urich.edu     (Bitnet or Internet)
+Richmond, VA  23173
+
+------------------------------
+
+Date:    Mon, 09 Dec 91 10:30:51 -0600
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: Files uploaded to risc.ua.edu (PC)
+
+The following files have been placed on risc.ua.edu (130.160.4.7) for
+anonymous FTP in the directory pub/ibm-antivirus:
+
+                vsumx111.zip  (replaces vsumx110.zip)
+                vtec30a.zip   (replaces vtec25.zip)
+
+- -----------
+I don't think, therefor I am not.
+- -----------
+James Ford - Consultant II, Seebeck Computer Center
+             jford@ua1vm.ua.edu, jford@risc.ua.edu
+             The University of Alabama in Tuscaloosa
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 233]
+******************************************

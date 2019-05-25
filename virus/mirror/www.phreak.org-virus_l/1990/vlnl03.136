@@ -1,0 +1,320 @@
+
+VIRUS-L Digest   Wednesday,  1 Aug 1990    Volume 3 : Issue 136
+
+Today's Topics:
+
+re: Multi-platform virus scanning
+re: other ways for viral injection?
+mac disk locking (Mac)
+Stoned Remover (PC)
+Back issues now available in indexed/digested format
+Site licenses
+Joshi-B Infection Alert (PC)
+Periodic virus sighting report
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Mon, 30 Jul 90 15:51:30 -0400
+From:    attcan!vpk1!john@uunet.uu.net
+Subject: re: Multi-platform virus scanning
+
+Paul,
+          Most virus scanning software does simple pattern matching
+of an existing 'known-virus' database against any files that you 'scan'.
+If you have a list of viruses for the machine in question, it shouldn't
+matter what platform you do the actual scan on. I have successfully
+used a product called CERTUS in the exact manner that you described in
+your letter. I simply defined a database for each platform and then
+did the comparisons with the appropriate database based on the software
+extension.
+
+
+____________________________________________________________________________
+        ===
+      =--====  AT&T Canada Inc.             John Benfield
+     =----==== 3650 Victoria Park Ave.      Network Support Analyst (MIS)
+     =----==== Suite 800
+     ==--===== Willowdale, Ontario          attmail   : ~jbenfield
+      =======  M2H-3P7                                email     : uunet!attcan!john
+        ===    (416) 756-5221               Compu$erve: 72137,722
+
+____"Sometimes it just happens...People explode...Natural causes."__________
+
+------------------------------
+
+Date:    Mon, 30 Jul 90 16:14:35 -0400
+From:    attcan!vpk1!john@uunet.uu.net
+Subject: re: other ways for viral injection?
+
+>        Does somebody known if there was some cases of
+>viral infection that came through other than floppy exchange
+>and data interchange over Internet ? I think to other networks,
+>through atmospheric radio transmissions, magnetic induction, ...
+
+          I think back to a wonderful little nasty from the CP/M
+days. There was a version of MODEM7 floating around that had a patch
+in it that caused it to do all sorts of neat things when certain
+character sequences were received over the async channel. One of these
+nasty things was to take a character string coming in over the modem
+and patch it into the bios at a jump vector specified in the incoming
+string. I'm sure this was probably intended to allow someone to do
+something useful such as replace I/O drivers on the fly for things
+like remote tty services or other form of redirection. But, if you had
+a nasty streak and you knew about this 'backdoor', imagine the damage
+you could have done. (btw: it did this patching with no notification
+to the user of the 'patched' machine). This was actually one of the
+slickest little routines I ever saw in the CP/M 'virus/trojan' category
+and it has caused me to run all of my comm programs through a datagram
+analyzer while I'm 'breaking them in'. Especially if they are 'special'
+purpose comm programs or if they require passwords to be automatically
+sent by the package rather than manually entered by the user. As for
+other networks....I can't think of a network that HASN'T come under attack
+in one way or another. Magnetic induction? Hmmmm...I don't think the
+technology is advanced enough to permit a focused field of the precision
+required to affect a machine (selectively altering bits that is) from
+an external source. Of course a good magnetic 'bulk eraser' provides a
+quick method of simplifying your file management :)
+
+____________________________________________________________________________
+        ===
+      =--====  AT&T Canada Inc.             John Benfield
+     =----==== 3650 Victoria Park Ave.      Network Support Analyst (MIS)
+     =----==== Suite 800
+     ==--===== Willowdale, Ontario          attmail   : ~jbenfield
+      =======  M2H-3P7                                email     : uunet!attcan!john
+        ===    (416) 756-5221               Compu$erve: 72137,722
+
+____"Sometimes it just happens...People explode...Natural causes."__________
+
+------------------------------
+
+Date:    Mon, 30 Jul 90 17:29:14 -0400
+From:    flaps@dgp.toronto.edu (Alan J Rosenthal)
+Subject: mac disk locking (Mac)
+
+
+cos@lclark.BITNET writes:
+[disk is damaged]
+>The catcher is this: although the disk is physically unlocked, it is marked
+>"locked" under the info box, and cannot be modified or unlocked.
+
+You may not be aware that mac floppies have software and hardware
+locking.  I don't know how to set or unset the software lock on
+floppies, but Virus Blockade has an option to do this.
+
+ajr
+
+------------------------------
+
+Date:    Mon, 30 Jul 90 19:10:36 -0400
+From:    <MMCCUNE@sctnve.BITNET>
+Subject: Stoned Remover (PC)
+
+The stoned is a troublesome virus because it infects the hard disk
+partition table. If left on the hard disk, it will eventually corrupt
+the FAT (this is due to compatability problems and was not intended by
+the author of the virus). Here is a short assembler program to remove
+it from the hard disk. It can be assem- bled through DEBUG
+
+DEBUG
+- -A
+MOV DX,80    ; THE HARD DISK, HEAD 0
+MOV DX,7     ; CLUSTER 0, SECTOR 7
+MOV BX,200   ; MEMORY LOCATION 200
+MOV AX,201   ; READ FROM HARD DISK TO MEMORY
+INT 13       ; DISK ACCESS
+MOV CX,1     ; CLUSTER 0, SECTOR 1 (THE PARTITION TABLE)
+MOV AX,301   ; WRITE FROM MEMORY TO HARD DISK
+INT 13       ; DISK ACCESS
+MOV AH,0     ; RESET AH REGISTER
+INT 21       ; TERMINATE
+
+N STONEDHD.COM
+RCX
+:30
+W
+Q
+
+Only use this on hard drives that are infected. It will destroy the
+partition table on uninfected drives.
+
+This program will remove it from drive A:
+
+DEBUG
+A
+MOV DX,100  ; HEAD 1, DRIVE A:
+MOV CX,3    ; CLUSTER 0 SECTOR 3
+MOV BX,200  ; MEMORY LOCATION 200
+MOV AX,201  ; READ FROM DISK TO MEMORY
+INT 13      ; DISK ACCESS
+MOV DX,0    ; HEAD 0 DRIVE A:
+MOV CX,1    ; CLUSTER 0, SECTOR 1 ( THE BOOT RECORD)
+MOV AX,301  ; WRITE FROM MEMORY TO DISK
+MOV AH,0    ; RESET AH REGISTER
+INT 21      ; END
+
+N STONEDA.COM
+RCX
+:30
+W
+Q
+
+This will remove it from drive A:
+To do a lot of disks, try this
+Put an uninfected disk in A:
+DEBUG
+L 0 0 0 1
+Put an infected disk in A:
+W 0 0 0 1
+Put another infected disk in A:
+W
+Repeat as often as necessary
+
+If you have any mor questions or need any more help, drop me a
+line.............
+
+Mike McCune...<MM>
+
+------------------------------
+
+Date:    Tue, 31 Jul 90 11:49:03 -0400
+From:    Kenneth R. van Wyk <krvw@cert.sei.cmu.edu>
+Subject: Back issues now available in indexed/digested format
+
+                          A long time ago,
+                    from a computer far far away,
+                 VIRUS-L was unmoderated and undigested.
+
+Sorry...  Bad attempt at humor.  Anyway, as I was saying, V-L existed
+in a very different form from the day that it was started (April 22,
+1988) until shortly after the Internet worm of November 1988.
+Previously, all of the pre-digest traffic has been available on both
+Lehigh's LISTSERV machine (LEHIIBM1 from BITNET or IBM1.CC.LEHIGH.EDU
+from Internet) and the CERT ftp machine (cert.sei.cmu.edu) in the form
+of weekly logs.  Anthony Appleyard,
+XPUM04@prime-a.central-services.umist.ac.uk, has graciously (and
+painstakingly) compiled these weekly logs into digests.  The digests
+make up volume 0 and are now available for anonymous FTP on
+cert.sei.cmu.edu in the pub/virus-l/archives/predig.digested
+directory.  The information in volume 0 is somewhat dated, of course,
+but can provide some interesting insight into current virus events
+(and perhaps a laugh or two - things have changed a bit...).
+
+Also included in all of this is an index to volume 0.  That, too, is
+on the CERT anonymous FTP machine, in the pub/virus-l/archives
+directory.
+
+A wholehearted thanks to Anthony for his effort on putting together
+all of this traffic!
+
+Cheers,
+
+Ken van Wyk
+
+------------------------------
+
+Date:    Tue, 31 Jul 90 14:49:00 -0400
+From:    Don Kazem <DKAZEM@NAS.BITNET>
+Subject: Site licenses
+
+We have been thinking about standardizing on a virus
+scanner/disinfector for our organization. We have about 1500 users.
+
+Our vision is to have a scanner/disinfector package available
+to the PC support analysts and have them use it on suspicious
+machines or perform random audits.
+
+I have been thinking about purchasing a Service Industry
+License from McAfee Associates. The total package would cost
+about $6800.00 for (20 copies). This license would allow us
+to perform checks on various machines, however, the software
+must not remain with the clients.
+
+Has anyone one else in the corporate arena implemented such a
+policy/structure?
+
+Don Kazem
+National Academy of Sciences
+DKAZEM@NAS.BITNET
+
+------------------------------
+
+Date:    Tue, 31 Jul 90 17:41:58 -0700
+From:    Alan_J_Roberts@cup.portal.com
+Subject: Joshi-B Infection Alert (PC)
+
+This is a forward from Aryeh Goretsky of the Computer Virus
+Industry Association:
+================================================================
+
+Note:  Contact information from the following CVIA Membership Alert
+has been removed from the posting, but has been submitted
+separately to the Virus-L moderator.
+
+July 31, 1990
+CVIA Membership Alert
+Originating Member: [Information Removed]
+Alert Type: Initial Infection Spread
+Library Entry: Joshi-B
+Entry Type: Boot Sector & Partition Table / "Stealth" Virus
+
+          The Joshi virus has been reported and verified on July 30 on
+a number of workstations in a local area network in North Carolina,
+marking the first incident of the virus reported to the CVIA in the
+South-Central U.S.  A variant of Joshi was also reported and
+verified on July 31 in Riyadh, Saudi Arabia.  It has been named the
+Joshi-B.  This variant causes destruction of the Partition Record
+and boot sector of hard disks, as well as the virus' normal
+interference with floppy diskette use.
+          The virus is a "stealth" Boot sector and Partition Table virus
+and thus is very difficult to identify on an already infected
+system.  It is becoming widely dispersed in the U.S. and is likely
+to become one of the more common viruses, based on its past
+performance and speed of replication.
+          A remover for the virus is available through your CVIA contact
+person.
+
+John McAfee
+
+------------------------------
+
+Date:    Wed, 01 Aug 90 09:19:13 -0400
+From:    "Kenneth R. van Wyk" <krvw@cert.sei.cmu.edu>
+Subject: Periodic virus sighting report
+
+The following new virus infections were reported recently:
+
+- - First sighting of Slow (PC) virus reported in Australia.  Major
+  infection path so far seems to be Taiwan -> Hong Kong -> Phillipines
+  -> Malaysia -> New Zealand -> Australia.
+
+- - Joshi (PC) virus reported in Lakeland Florida area.
+
+- - 4096 (PC) virus reported in Spokane/Seattle Washington area.
+  Several sites hit.
+
+These sightings were reported to me; they are in addition to the other
+reports that have appeared on VALERT-L and/or VIRUS-L.  When possible,
+I have phoned at least one contact in the area to verify the
+sightings.
+
+Ken van Wyk
+August 1, 1990
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 136]
+******************************************

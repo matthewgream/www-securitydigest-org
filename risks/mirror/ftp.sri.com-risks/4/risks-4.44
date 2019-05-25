@@ -1,0 +1,374 @@
+29-Jan-87 20:37:34-PST,17565;000000000000
+Mail-From: NEUMANN created at 29-Jan-87 20:36:07
+Date: Thu 29 Jan 87 20:36:07-PST
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.44 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday, 29 January 1987  Volume 4 : Issue 44
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Air Traffic Control -- More Mid-Air Collisions and Prevention (PGN)
+  Time warp for Honeywell CP-6 sites (P. Higgins)
+  GM On-Board Computers (Martin Harriman)
+  Loose coupling (Ephraim Vishniac)
+  Units RISKS and also a book to read (Lindsay F. Marshall)
+  Re: Unit conversion errors (Alan M. Marcum, Keith F. Lynch)
+  DP Ethics: The "Stanley House" Criteria (Pete McVay)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+                                     ************** (EXCEPT FOR THIS HEADER!)
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+Date: Thu 29 Jan 87 20:12:19-PST
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Air Traffic Control -- More Mid-Air Collisions and Prevention
+To: RISKS@CSL.SRI.COM
+
+There were several collisions recently that are worthy of note here.
+
+  A twin-engine 18-seat Metroliner and a single-engine private plane
+  collided near Salt Lake City on 15 January 1987.  All 10 aboard killed.
+  The small plane had no altitude transponder.
+
+  An Army twin-enginer turboprop collided with a twin-engine business plane 
+  near Independence, MO.  All 6 people killed.  19 January 1987.  Both
+  planes had altitude transponders, but controllers said they did not see
+  the altitude data on their screens.
+
+  A six-seat regional airliner and a single-engine private plane grazed
+  each other near Westerly, RI.  No one hurt.  19 January 1987.
+
+The FAA is contemplating extending its forthcoming Mode-C regulations to
+include commuter planes as well as mainliners.   [Source: SFChron 25 Jan 87]
+
+------------------------------
+
+Date:  Thu, 29-JAN-1987 10:30 PST
+From:   <PHiggins@UCIVMSA.BITNET>
+To:    <RISKS@CSL.SRI.COM>
+Subject:  Time warp for Honeywell CP-6 sites
+
+All Honeywell CP-6 sites running version C01 of CP-6 suddenly entered a time
+warp Wednesday morning.  The Front End Processor (FEP) suddenly thought it was
+December of 1968, but the host still knew the correct time and date.  It
+turns out that the sign bit of the word containing the time finally got set.
+Unfortunately, that word appears to have been declared as a signed number
+rather than an unsigned one.  (How you could ever have a negative time is
+beyond me.)  Since the base time for CP-6 is January 1, 1978, we suddenly
+scooted back in time to 1968.  The problem was first reported by a CP-6
+site in Germany at 5:23am Pacific Standard Time.
+ 
+What impact did this have on CP-6 users?  Those using programs running
+solely on the host weren't affected, though the login message gave the
+wrong time and date.  Those using the Transaction Processing (TP) features
+of the FEP, however, discovered that incorrect dates were entered into
+their databases on the host.  CP-6 sites are now manually correcting the
+bad data.
+ 
+The problem was fixed by early Wednesday afternoon and a patch was made
+available to Honeywell's customers.
+ 
+By the way, one CP-6 site determined that the time stamp will overflow
+at 15:26:07.35 on October 11, 1999.  Mark that down on your calendars!
+ 
+Here's the message Honeywell sent to its customers.  (A STAR is a problem
+report.)
+
+    Sent: 01/28/87 06:39  Rcvd: 01/28/87 06:53  Number: 68
+    To: CUSTOMERS,CP-6 FOLKS                    From: (deleted)
+    Subject: FEP timestamp problem
+
+    Yes, good morning y'all.  The CP-6 interpretation of the level-6 timestamp
+    seems to have started to pickup a sign bit today, so every site in the
+    world, regardless of patch revision or system revision is happy, happy,
+    happy.  Star 32173 has been generated to track this problem at severity
+    one.  If you want to be on the list of people to be notified as soon as a
+    fix is available, please build a note on that star. Sorry 'bout that.
+
+------------------------------
+
+Date:     Wed, 28 Jan 87 15:24 PDT
+From:     Martin Harriman <"SRUCAD::MARTIN%sc.intel.com"@RELAY.CS.NET>
+To:       gzt.eww@mc.lcs.mit.edu, risks@CSL.SRI.COM
+Subject:  GM On-Board Computers
+
+The reason that the ROMs on the GM Engine Control Module do not come with
+the replacement unit is that they are specific to the automobile--they vary,
+depending on the particular automobile model, engine, and transmission.
+This is no different from a number of other components (distributor innards
+in older cars, for instance).  The ROMs are available (on special order)
+as replacement parts; you need to know the exact configuration of your
+GM car to order them (that is, the VIN, the engine code, and the transmission
+code--I don't think you need the complete set of option order codes, though
+these are usually available on a sticker buried in the trunk).  The ECMs are
+generic (there have only been a few major revisions of the basic module), and
+the ROMs are (extremely) specific--so it is not possible to stock the complete
+set of ROMs, nor to stock ECMs with ROMs installed.
+
+There are several specialized tools available for ECM based diagnostics.
+For field use, several companies make special tools which plug in to a
+connector under the dash, and communicate with the ECM to monitor engine
+parameters and diagnose faults.  This is an amazingly powerful tool for
+diagnosing engine problems; you can, for instance, see if the engine tends
+to run rich or lean in one particular regime by reading out the current
+"block learn mode" matrix from the ECM (this is a set of fudge factors the
+ECM keeps so it can guess at the correct fuel delivery for your particular
+car and engine).  All GM dealers should have such tools, and (presumably)
+know how to use them.
+
+Incidentally, you can read out some of the ECM diagnostics with nothing
+fancier than a bent paperclip; the GM shop manuals give all the details.
+This is most useful in a case where the ECM has already found a problem,
+and illuminated the "Service Engine Soon" light (the ECM checks all its
+sensor values for "reasonableness"; if things don't seem right, it
+complains).
+
+------------------------------
+
+Date: Wed, 28 Jan 87 20:25:34 est
+From: <decvax!wanginst!wang!ephraim@ucbvax.Berkeley.EDU>
+To: CSL.SRI.COM!RISKS
+Subject: Loose coupling
+
+In Risks 4.42, Alan Wexelblat asks about the applicability of the
+principle of "loose coupling" to computer systems.  I think the
+principle is a valuable one.  Herewith, a brief study in contrast.
+
+My present employer, Wang Labs, makes a variety of computer systems.  The
+Wang VS series are conventional minicomputers.  That is, they have a cpu
+which runs user tasks, with a conventional OS.  The Wang OIS is a
+loosely-coupled system in which a central file server (the OIS "master")
+supports a collection of workstations and peripheral devices.  The VS, which
+is probably no better or worse than most computers of its class, suffers
+occasionally from task crashes and OS crashes.  Installation of new
+peripherals or major new software generally requires an IPL or two.  On the
+OIS, all user code runs in the workstation.  If your workstation (or other
+peripheral) crashes, the most that's required is to cycle power on the
+device.  The master sees the power-up, and reloads you.  *All* OIS software
+except the master code can be re-installed without an IPL.  Peripherals can
+be installed simply by plugging them in.
+
+In a development environment, VS's are sometimes reloaded hourly in
+order to change software, change configuration, or recover from crashes.
+(Released software, of course, is orders of magnitude more stable.)
+OIS's?  The last time mine was IPLed was to recover from a mechanical
+disk failure, months ago.  Master crashes are practically unheard of.
+
+Generally, I think loose coupling presents an invaluable opportunity
+for bullet-proofing of components.  It becomes possible to validate
+your input and to recover from external problems, only when "input" and
+"external" are well-defined terms.  Let the lines be drawn.
+
+Disclaimer:  These are my own opinions about Wang products.  Other
+Wang employees, salesmen, and customers have their own opinions.
+
+Ephraim Vishniac, decvax!wanginst!wang!ephraim
+
+------------------------------
+
+From: "Lindsay F. Marshall" <lindsay%cheviot.newcastle.ac.uk@Cs.Ucl.AC.UK>
+Date: Tue, 27 Jan 87 16:29:56 GMT
+To: risks@csl.sri.com
+Subject: Units RISKS and also a book to read
+
+Another classic case of mistaken magnitude is documented in a variety of
+books on the CIA. When they were carrying out their infamous LSD experiments
+they heard that Sandoz had for sale 22lbs of LSD and being so afraid that
+the Russians would buy, put $250,000 in a case and went shopping. The people
+at Sandoz looked very puzzled - they had only ever made about the 0.5 oz of
+the drug. Someone in the CIA Swiss office didn't know the difference between
+milligrams and kilograms.
+
+I just finished a quite entertaining book featuring a computer crimes
+investigator of the year 2000. The technical stuff is OK (for a change) and
+the basic idea behind the plot is quite feasible (and scary!!) from a RISKS
+point of view.  The book is :
+
+		Downtime
+		by Peter Fox
+		ISBN 0-340-39362-9
+
+		Published 1986 by Hodder & SToughton (in the UK at least)
+Lindsay
+
+------------------------------
+
+Date: Tue, 27 Jan 87 10:45:25 PST
+From: marcum@Sun.COM (Alan M. Marcum, Consulting)
+Subject: Re: Unit conversion errors
+To: risks@csl.Sri.COM
+
+A unit conversion error (pounds and kilograms, if I recall) was a major
+contributing factor in the Air Canada 767 flameout incident a few years
+ago.  The jet ran out of fuel during cruise; the pilot also flew
+sailplanes, the co-pilot trained near (90 miles away from) the flameout
+site, and they were able to land safely.
+
+Alan M. Marcum				Sun Microsystems, Technical Consulting
+marcum@nescorna.Sun.COM			Mountain View, California
+
+------------------------------
+
+Date: Wed, 28 Jan 87 00:04:03 EST
+From: "Keith F. Lynch" <KFL%MX.LCS.MIT.EDU@MC.LCS.MIT.EDU>
+Subject: Units
+To: brian%kelpie.newcastle.ac.uk@CS.UCL.AC.UK
+cc: KFL%MX.LCS.MIT.EDU@MC.LCS.MIT.EDU, RISKS@CSL.SRI.COM
+
+  I think it goes like this:
+
+ Power    American       British      Metric
+of ten      name          name        prefix
+
+   3      Thousand      Thousand       Kilo
+   6      Million       Million        Mega
+   9      Billion       Milliard       Giga
+  12      Trillion      Billion        Tera
+  15      Quadrillion  
+  18      Quintillion   Trillion
+  21      Sextillion   
+  24      Septillion    Quadrillion
+  27      Octillion
+  30      Nonillion     Quintillion
+
+  The problem is not that different names are used, but that the same
+names are used for very different numbers.  This is why metric
+prefixes have caught on.  For instance a thousand million electron
+volts is now called a GEV (for Giga) rather than a BEV (for Billion).
+
+  Unfortunately, the metric prefixes don't go very far.  In any case,
+they are hard to remember.  And they are no longer always unambiguous,
+at least in the computer world, where the prefix Mega may mean 1,000,000
+or 1,048,576 or even 1,024,000.
+
+  The best solution is to use the exponents of ten.  Instead of GEV,
+just say 1E9 EV.  This is catching on rapidly, perhaps due to computers,
+which are more easily programmed to say 1.02E+09 than 1.02 GEV, etc.
+
+  You are right, Milliard is not used in the United States.  Actually, the
+highest name I ever hear is trillion.  People who speak of quadrillions tend
+to get funny looks.
+             [Wait until our national budget gets there in a few years!  PGN]
+
+  Science meets engineering where I work, too.  This results in code where a
+distance is always stored as millimeters, but is output and read in in mills
+(thousandths of an inch).  Similarly with degrees C and F.  Sometimes fully
+a third of my programming time is taken up with making sure incompatible
+units don't mix, and making extra sure whether I multiply or divide by a
+conversion factor or its inverse, etc.
+
+  I discovered a bug in someone else's code where a unit was BTUs per cubic
+foot per degree F and was later used as calories per cubic centimeter per
+degree C.  I spent a whole day fixing this, before working out the actual
+conversion factor to put in the constants section - and the conversion
+factor was exactly 1.
+								...Keith
+
+------------------------------
+
+Date: Wednesday, 28 Jan 1987 06:48:37-PST
+From: mcvay%telcom.DEC@decwrl.DEC.COM (Pete McVay -- VRO 5-1/D7 --DTN 273-3106)
+To: risks@csl.sri.com, mcvay%telcom.DEC@decwrl.DEC.COM
+Subject: DP Ethics: The "Stanley House" Criteria
+
+     In 1976, the Canadian government sponsored a meeting in Quebec at the
+"Stanley House", composed of top data processing experts and philosophers.
+The meeting specifically addressed the issue of ethical conduct in the
+computer industry.  The list that follows was extracted from an article
+published that year in SCIENCE Magazine (the official magazine of AAAS).
+Unfortunately, I do not have the date of the magazine.
+
+     I have not heard of any followup on these criteria, either in a
+discussion on computer risks or ethics, or as any meaningful attempt
+to implement them.  I present them here to RISKS DIGEST for comments
+by other readers--and perhaps someone has some later information?
+
+                      Stanley House Criteria for
+                    Humanizing Information Systems
+
+
+     1.  Procedures for dealing with users.
+
+         A.  The language of a system should be easy to understand.
+         B.  Transactions with a system should be courteous.
+         C.  A system should be quick to react.
+         D.  A system should respond quickly to users (if it is unable
+             to resolve its intended procedure).
+         E.  A system should relieve the users of unnecessary chores.
+         F.  A system should provide for human information interface.
+         G.  A system should include provisions for corrections.
+         H.  Management should be held responsible for mismanagement.
+
+
+     2.  Procedures for dealing with exceptions.
+
+         A.  A system should recognize as much as possible that it
+             deals with different classes of individuals.
+         B.  A system should recognize that special conditions might
+             occur that could require special actions by it.
+         C.  A system must allow for alternatives in input and
+             processing.
+         D.  A system should give individuals choices on how to deal
+             with it.
+         E.  A procedure must exist to override the system.
+
+
+     3.  Action of the system with respect to information.
+
+         A.  There should be provisions to permit individuals to
+             inspect information about themselves.
+         B.  There should be provisions to correct errors.
+         C.  There should be provisions for evaluating information
+             stored in the system.
+         D.  There should be provisions for individuals to add
+             information that they consider important.
+         E.  It should be made known in general what information is
+             stored in systems and what use will be made of that
+             information.
+
+
+     4.  The problem of privacy.
+
+         A.  In the design of a system all procedures should be
+             evaluated with respect to both privacy and humanizing
+             requirements.
+         B.  The decision to merge information from different files
+             and systems should never occur automatically.  Whenever
+             information from one file is made available to another
+             file, it should be examined first for its implications
+             for privacy and humanization.
+
+
+     5.  Guidelines for ethical system design.
+
+         A.  A system should not trick or deceive.
+         B.  A system should assist participants and users and not
+             manipulate them.
+         C.  A system should not eliminate opportunities for
+             employment without a careful examination of consequences
+             to other available jobs.
+         D.  System designers should not participate in the creation
+             or maintenance of secret data banks.
+         E.  A system should treat with consideration all individuals
+             who come in contact with it.
+
+   [This seemed worth drawing to your attention, although it might also
+    be suited to Human-Nets and Soft-Eng.  But to prevent subsequent 
+    discussion from wandering all over the place, let's see if we can
+    constrain it to RISKS-related matters.  Thanks.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

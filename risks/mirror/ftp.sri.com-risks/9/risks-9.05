@@ -1,0 +1,504 @@
+RISKS-LIST: RISKS-FORUM Digest  Saturday 15 July 1989   Volume 9 : Issue 5
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  UK Defence Software Standard (Dave Parnas, Nancy Leveson, Dave Parnas)
+  DARPA contract: use AI to select targets during nuclear war (Jon Jacky)
+  "Flying the Electric Skies" (Steve Philipson)
+  Automobile Electronic Performance management (Pete Lucas)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j, ftp KL.sri.com[CR]login anonymous (ANY NONNULL PASSWORD)[CR]
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks>[CR]get risks-i.j 
+  Vol summaries (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99),(8.88).
+
+----------------------------------------------------------------------
+
+Date: Thu, 13 Jul 89 22:07:37 EDT
+From: parnas@qucis.queensu.ca (Dave Parnas)
+Subject: UK Defence Software Standard (Nancy Leveson, RISKS-9.3)
+
+Nancy Leveson suggests that eliminating dynamic memory allocation, recursion,
+interrupts and multi-processing is done in safety critical systems to make them
+deterministic.  I disagree.  Software that uses those techniques can be just as
+deterministic as software that does not.  Further, software without any of
+those features can be non-deterministic in its behaviour.  For example, the
+non-determinism associated with interrupt handling comes from the unknown
+timing of the external events and is not affected by the replacement of
+interrupts with polling.
+
+The MOD restrictions do not rule out non-determinism.  Further, they do not
+rule out bad programming.  If I am forbidden to use compilers or operating
+systems with dynamic memory allocation and consequently write complex programs
+that use "static" variables for many different purposes I am likely to
+introduce more mistakes than would have been present in the mature dynamic
+allocation system that I was not allowed to use.  If, because I am forbidden to
+use recursion, I write a complex program that does the stacking and
+backtracking hidden by recursion, I am likely to introduce more errors than
+were present in the compiler's well-tested implementation of recursion.
+Similarly, if I introduce busy waiting and polling in my programs because I
+cannot use interrupts, I may again make things worse rather than better.
+
+Nancy is right in saying that "it is simply untrue that these limitations rule
+out real systems."  Many perfectly horrible real-systems have been written
+without any of those features.
+
+Nor, would I agree that non-determinism is bad.  Non-determinism has been
+demonstrated by Dijkstra (and much earlier by Robert Floyd) to allow programs
+that are much more easily verified than some deterministic ones.
+
+These regulations remind me of the old story about a man found looking
+carefully under a street lamp.  When asked, he said he was looking for a coin
+he had dropped on the other side of the street.  When asked why he was looking
+on this side, rather than where he dropped the coin, he replied that it was too
+dark over there.
+
+Regulations of this sort are imposed not because they are the right
+restrictions but because they are easily enforced by people who do not want to
+read programs carefully.  It is much easier to verify that recursion and
+interrupts have not been used than to verify that the program is
+well-structured, well-documented, systematically inspected (verified), and
+adequately tested.  Just as it is easier to look for a ring under a street
+light, it is easier to check for the absence of features than the presence of
+quality.
+
+All my knowledge of the Therac software comes from discussions with Nancy.
+However, from her description the problem with that software was not the use of
+multi-tasking but the failure to use well-known (and well-understood) ways of
+making multi-tasking verifiable.
+
+As Nancy says, "The most effective way to increase the reliability of software
+that we currently know about is simply to make it understandable and
+predictable."  "Sophisticated programming techniques", properly used, can do
+just that.  Unfortunately, we cannot make regulations that define "properly
+used" so some of us are throwing the baby out with the bath water.
+
+David L. Parnas
+
+------------------------------
+
+Date: Fri, 14 Jul 89 16:08:56 -0700 
+From: Nancy Leveson <nancy@ICS.UCI.EDU>
+Subject: UK Defence Software Standard
+
+I have great regard for David Parnas and his opinions, but we do have a 
+difference of opinion with respect to this issue.
+
+Perhaps I am using the term "non-deterministic" incorrectly.  When interrupts
+are used, it is not possible to pre-determine in exactly what sequence 
+the statements of the software will be executed because the interrupt-handling
+code can be executed at any time.  When using polling, the programmer has
+more control over when the input-handling code is executed.  It is possible
+to use priorities to ensure that the code to abort a missile launch is not 
+interrupted, for example, but this just complicates things further and 
+introduces the possibility of different types of errors.  At the least, 
+limiting the possible execution sequences allows for more extensive testing 
+given a fixed amount of testing resources.  It also allows for more reliable 
+timing analysis as pointed out by someone in a previous posting to Risks.  Am 
+I misunderstanding something here?
+
+With respect to Therac, it is true that the errors were involved in 
+multi-tasking and its poor implementation.  But the use of the "well-known
+and well-understood ways of implementing multi-tasking" do not guarantee 
+errors will not be introduced.  You are assuming that they would implement 
+those features correctly.  Although I have great confidence that David 
+Parnas or Edsgar Dijkstra could use ANY techniques with great skill, I 
+have less confidence that this is true for all the programmers writing 
+military software.  
+
+David is obviously right that using recursive constructs is safer than 
+implementing recursion oneself with stacks and backtracking.  But it would be 
+safest (in terms of all types of potential faults including run-time 
+stack overflows) to try to find a simple, non-recursive algorithm to 
+accomplish the same thing.  If one does not exist, then the argument for
+this should be included in the certification procedure.  It is easier to 
+grant dispensations to standards when someone provides an argument that 
+it is safer to do so than it is to try to check all software to ensure 
+that superfluous complexity has not been introduced.  The person arguing 
+to certify their software must then provide good arguments for introducing 
+complexity rather than the certifier having to determine whether simpler 
+designs exist.  Remember, we are talking about a potential nuclear 
+armageddon here and with certifiers who may be no more knowledgeable 
+than the programmers.  
+
+David is also right that it is better to check for the presence of 
+quality than the absence of features.  I would hope that standards would
+require that quality be built-in and assessed and not just include these 
+simple rules.  Unfortunately, I have no way of looking at a program, even 
+a well-designed one, and guaranteeing that there are no errors in it.  I 
+do have more confidence that people will make fewer mistakes when their 
+programs are simpler and when they use techniques that rule out various 
+common types of errors.  For example, if the design they choose does not 
+involve the potential for deadlock, then I need not worry about it 
+occurring.  If the man had carried his coin safely ensconced in his
+wallet, he would not have had to look for it on either side of the street. 
+Sure, as David says, "perfectly horrible real-systems have been written 
+without any of these features."  That is exactly why such standards should 
+contain more than just simplistic rules.  But that does not mean that 
+rules are not also useful in the context of an imperfect world.
+
+I guess our disagreement comes down to the following:  Assuming David's
+belief that these techniques, properly used, can increase reliability, 
+is it more likely that errors will be introduced (1) because they are 
+improperly used or (2) because they are not used at all?  Until we have
+experimental data on this, it remains a matter of personal opinion.
+
+It would be nice if the people who introduce these programming techniques
+and argue that they increase reliability would do comparative studies to 
+confirm their claims.  This type of experimentation is very difficult
+(as we have found out by trying to do it), but long overdue in our field.
+
+Nancy G. Leveson
+
+------------------------------
+
+Date: Fri, 14 Jul 89 22:05:28 EDT 
+From: parnas@qucis.queensu.ca (Dave Parnas)
+Subject: UK Defence Software Standard 
+
+I have great respect for Nancy Leveson's work and for the great effort she has
+put into increase everyone's awareness of safety issues, but we continue to
+have a difference of opinion here.
+
+1)  In fact, hardware interrupts are simply hardware implemented polling
+and the use of interrupts gives the programmer  control (because 
+of more rapid response) than can usually be achieved by software polling.
+Nancy's impression that the programmer loses control comes from the fact
+that we often use interrupt response code written by others (operating
+system code) and consequently feel that we have less control.  If we allowed
+someone else to write the polling code, and the code to respond when 
+an event was detected, we would be in exactly the same situation, except
+that there would be a slower reaction time.  Both software polling and 
+interrupt handling can be done badly and both can be done well. 
+
+Edsger Dijkstra's 1968 papers showed how an interrupt handling system could be
+set up in a way that the programmers could restrict the order of events as much
+as they wish.  Moreover, the beauty of his approach was that most of the
+software was unaffected by the choice between interrupts and software polling.
+The P and V interface hid the difference between events detected by hardware
+and those detected by software.  Twenty years later I meet people who are
+called "software engineers" but have no knowledge of that work or understanding
+of similar techniques.  Today's hardware and software technology would allow us
+to do even better than was possible in 1968.
+
+2) Nancy is wrong when she states that I am assuming that programmers would
+implement those ideas correctly.  I have too much experience to make such an
+assumption.  She could equally well be accused of assuming that programmers
+will avoid those ideas "correctly".  There is no idea so good that it cannot be
+used badly.  
+
+3) No one is more in favour of the use of "simple algorithms than I.  My vitae
+carries a quote from A.  Einstein, "Everything should be as simple as possible,
+but not simpler".  Further, I don't even believe that there are such things as
+recursive programs.  They are all iterative programs in disguise.  I do however
+find that recursive descriptions of programs programs are often simpler, and
+easier to verify, than iterative descriptions of the same algorithm.  We must
+never forget the "but not simpler" phrase in Einstein's remark.
+
+4) If Nancy thinks that the danger of deadlock is caused by multi-programming I
+must also disagree.  Every program built using pseudo-parallel processes has an
+equivalent "sequential program" that can exhibit exactly the same abortive
+behaviour as its deadlocking counterpart.  If Nancy, thinking that deadlock is
+impossible because there is no multi-programming, does not look for those
+errors, she will just be surprised and dismayed when the program enters an
+unending loop or a permanent idle state at unexpected times.
+
+I believe that organisations such as MoD would be better advised to introduce
+regulations requiring the use of certain good programming techniques, requiring
+the use of highly qualified people, requiring systematic, formal, and detailed
+documentation, requiring thorough inspection, requiring thorough testing, etc.
+than to introduce regulations forbidding out the use of perfectly reasonable
+techniques.
+
+Like Nancy, I wish we had experimental data to confirm or disprove my belief in
+the potential of these techniques but I don't expect to get such data.  Other
+differences, such as the qualifications and interest of the personnell will
+swamp the effect of the techniques that we are debating.  Safety depends
+on the use of highly qualified, disciplined personnel for the design,
+documentation and inspection of softwre.   By forbidding modern programming
+techniques, we could drive those people away and achieve just the opposite.
+
+David L. Parnas.
+
+------------------------------
+
+Date: 14 Jul 1989 17:39:10 EST
+From: JON.JACKY@GAFFER.RAD.WASHINGTON.EDU
+Subject: DARPA contract: use AI to select targets during nuclear war
+
+Here is a story from FEDERAL COMPUTER WEEK, July 10, 1989, pages 10,11:
+
+DOD TARGET SYSTEMS FACE IMPROVEMENT by Gary H. Anthes
+
+The Defense Department plans to improve substantially its planning system
+for the targeting of strategic nuclear weapons.  As a first step, it is
+about to award a contract for a prototype system that would identify targets,
+allocate weapons and specify the timing and modes of weapons delivery.
+
+DOD hopes to reduce the planning-cycle time from 18 months to three days,
+reduce personnel requirements by a factor of 10 and increase survivability
+by a factor of eight (see chart, below).
+
+The overhaul of the process by which the plans are developed and changed
+during conflict reflects a shift away from large-scale use of nuclear weapons
+against fixed targets to more limited conflicts involving mobile targets.
+It also reflects recent presidential requests for more flexibility in the
+use of nuclear weapons.
+
+The project, called Survivable Adaptive Planning Experiment (SAPE), is being
+funded jointly by the Defense Advanced Research Projects Agency and the
+Air Force.  Prime bidders on the job are Harris Corp., McDonnell Douglas
+Corp. and IBM Corp.
+
+The United States' plan for nuclear warfare, called the Single Integrated
+Operational Plan (SIOP), is produced annually under the direction of the
+Joint Strategic Target Planning Staff (JSTPS), an element of the Joint
+Chiefs of Staff.  The plans are developed at the headquarters of the Strategic
+Air Command in Omaha, Neb., using intelligence data, force-status information
+and guidance from the president, the secretary of Defense and other
+authorities. 
+
+``The president decides in broad terms the types of options and results
+he wants, and the JSTPS takes the guidance and produces the SIOP,'' said
+Army Lt. Col. Peter W. Sowa, SAPE project manager at DARPA.
+
+SAPE is not intended to replace the initial planning process.  Rather, it
+is geared to enabling rapid adaptation of the plan before and during a nuclear
+conflict while ensuring the survivability of the planning system.  Sowa
+said: ``During a conflict, the situation will be different [from the one
+anticipated] especially if tactical nuclear weapons are used.  Something
+is sure to be different, so you want to be able to replan quickly.''
+
+It now takes 18 months to create a new plan.  Although it could be done
+faster, Sowa said, a completely new plan could not be developed in three
+days, which is the SAPE goal.  Another SAPE goal is reducing the time required
+to change targets and to configure the planning network.
+
+Retargeting time is of growing importance as the Soviet ballistic missile
+force becomes more mobile.  ``Planning to hold fixed targets at risk is
+straightforward in concept but exquisitely complex in detail,'' the SAPE
+statement of work says.  ``[But] when targets are capable of relocation
+over short time periods, accomodating those changes into strategic attack
+plans becomes enormously difficult.''
+
+SAPE specifications require the ability to change 600 targets per day during
+a nuclear conflict and to reduce the time required to change a target from
+eight hours to three minutes.  The system also must be able to generate
+plan options involving 2,000 weapons and up to 4,000 targets in 30 minutes.
+
+These objectives can only be overcome by powerful hardware, smart software
+and a high-speed communications network --- the cornerstones of SAPE.
+According to Sowa, the system will consist of several mobile processing
+clusters, each possibly consisting of a large mainframe or supercomputer,
+data base machines, parallel processors, and workstations.  Each local cluster
+will be able to execute the whole plan, and each will connect to a survivable
+communications internetwork through a gateway.
+
+The core software, most likely written in Ada and Lisp, will consist of
+mathematical algorithms and artificial-intelligence techniques, Sowa said.
+``It will be a software development effort and an expert-knowledge-building
+effort.  A lot of interviewing experts will be needed.'' 
+
+But the smart software will be of little use if the system is damaged during
+hostilities.  By using redundant, distributed and mobile parts, DARPA aims
+to increase the system's tolerance to loss from 10 percent to 83 percent
+and its communications connectivity during a conflict from 10 percent to
+50 percent.
+
+According to Sowa, the benefits of the more flexible SIOPs include the
+following: 
+
+	o Enhanced deterrence through the ability to hit mobile targets.
+
+	o More efficient use of weapons.  ``If you don't shoot at empty
+	  holes, you don't need as many weapons,'' Sowa said.
+
+	o Smarter wargaming.  The system could be used to conduct what-if
+	  analyses - predicting the effects of different options --- as
+	  part of planning or negotiating processes.
+
+Sowa said SAPE, which will require $20 million to $30 million over five
+years, is a demonstration project and is not intended to field a system.
+Some or all may be deployed, or the existing system might be enhanced in
+some other way, he said.
+
+A contract will be awarded in about a month, and it will call for the design
+and development of an engineering development model.  The model must be
+able to rapidly retarget and generate new options in an environment before
+a nuclear conflict.  In subsequent phases, the model will be expanded to
+include those functions needed during a nuclear conflict and to create a
+new nuclear strike plan at the end of hostilities.
+
+(This table accompanied the article:)
+
+	SURVIVABLE ADAPTIVE PLANNING EXPERIMENT PERFORMANCE GOALS
+
+FACTOR				CURRENT		GOAL
+
+Number of primary nodes		1		7
+Time to replan full SIOP	18 months	3 days
+Personnel resources		500 persons	50 persons
+Retarget actions		10 per day	1000 per day
+Time to retarget		8 hours		5 minutes
+System tolerance to loss	10 percent	83 percent
+
+Communications connectivity
+	Pre-SIOP		99 percent	99 percent
+	Trans-SIOP		10 percent	50 percent
+	Post-SIOP		30 percent	90 percent
+
+Reconfiguration time		Hours		Seconds
+                                          
+(end of excerpts from FEDERAL COMPUTER WEEK)
+
+- Jonathan Jacky, University of Washington
+
+------------------------------
+
+Date: Thu, 13 Jul 89 18:29:02 PDT
+From: Steve Philipson <steve@eos.arc.nasa.gov>
+Subject: "Flying the Electric Skies" (RISKS-9.4)
+
+>  [...]  Airbus [doesn't agree.  They think their stuff is great and saves
+>weight and can't fail; but]... the A320 does have a partial backup system: 
+
+   "Can't fail"?  This is pretty amusing.  It's my understanding (possibly
+incorrect) that Airbus made this same argument about the A-320 control
+system before the manual backup systems were in place.  The US FAA indicated
+that the A-320 would not be certified without those backups, no matter how
+reliable Airbus claimed the fly-by-wire system to be.  Airbus gave in.  
+During flight tests, the "can't fail" system suffered a total failure, and 
+the A-320 prototype was flown using "peanut" self-powered flight instruments 
+and the back-up manual controls (this event was reported in Aviation Week).
+
+    Airbus reports that the failure was a freak, they've fixed the problem,
+and that it won't ever happen again.  Now it really can't fail.  Right.  Do
+we know that their analysis can't fail... again?
+
+>No matter how desperately he or shell hauls back on that sidestick, the
+>envelope protection system will not let the airplane respond beyond a certain
+>rate: namely, the rate that limits stress on the airframe to... 2.5G.
+
+   This is indeed a problem.  There are situations where the crew may elect
+to damage the airframe in return for avoiding a worse alternative.  The
+protection system will not let them do this.  It's not clear whether we'll
+lose more people from not having such a system or because of it.  One point
+worth considering is that second generation fly-by-wire systems for fighters
+are now being designed to allow maneuvering beyond critical alpha as the
+disadvantages (high drag, loss of airspeed, structural risk) may allow the
+pilot to shoot first and thus survive.
+
+   [re: the 747 loss of control incident]
+>Airbus, not surprisingly, responds that an A320 never would have [entered the
+>dive] in the first place. 
+
+   This contention may be incorrect.  The flight control laws prevent a 
+pilot from deliberatly maneuvering the aircraft to a control departure, but 
+they don't prevent one from occuring under all conditions.  
+
+   As part of a previous job, I occasionally flew an advanced cockpit flight 
+simulator.  I was curious as to the flight limits, and found them rather 
+rapidly.  The flight control laws would not allow me to roll the airplane 
+beyond 70 degrees of bank.  It seemed obvious to me that an aerodynamic 
+departure could result in a maneuver that would exceed the control law 
+limits.  I brought the aircraft to the limiting angle of attack, then 
+reduced thrust on one engine to idle.  The resulting asymmetric thrust 
+produced a rolling moment that caused the aircraft to exceed the control 
+limits by a considerable margin.  This is virtually the same situation as 
+occured on the 747 mentioned above, and could conceivably occur on an Airbus 
+aircraft with control-law limits.
+
+   One more anecdote:  Several years ago an Air Florida 737 crashed into the
+Potomac River.  One of the contributing causes was faulty engine power
+indication.  The crew believed that maximum power was being applied, but their
+indications showed considerably more power was being generated than was
+actually being produced.  There was nothing preventing them from advancing the
+power levels beyond the "max power" setting other than training that
+predisposed them to not do this.  It is now regarded as correct procedure to
+exceed such limits in an emergency if doing so might save the aircraft.  You
+can always replace the engines after the emergency landing.  If you would have
+crashed without such power application, the engines (among other things) would
+be lost anyway.  If they fail from excessive power application, well, you were
+going to crash anyway.  This is, after all, an effort of last resort.
+
+   It is a classic error to design systems to handle the majority of cases
+correctly but omit the handing of limit cases.  Advanced systems are intended
+to increase safety and efficiency.  It would be an error to design-out
+application of control in limit cases that might be necessary to save lives.
+
+------------------------------
+
+Date: Fri, 14 Jul 89 10:23:11 BST
+From: "Pete Lucas, NERC Swindon UK." <PJML@ibma.nerc-wallingford.ac.uk>
+Subject: Automobile Electronic Performance management
+
+There has recently been some considerable discussion of the potential risks
+associated with 'fly by wire' systems in airplanes, and the way in which the
+electronics prevent excursions outside a pre-defined `performance envelope'.
+This sort of thing is not only found in planes - there are now on the market
+(in the United Kingdom at least, not sure about the States) quite a number of
+high performance automobiles which do much the same thing.
+
+Examples are: electronic monitoring of turbocharger boost/charge temperature
+to prevent detonation, monitoring of engine speed (prevents overspeed),
+control of auto transmissions (to prevent shifts to low gears at high
+road speeds) etc.
+
+Most of these limitations are done to prevent possibly hazardous and damaging
+operation of the vehicle, others are done to comply with the national or
+regional restrictions on exhaust emissions, or to adapt to the local fuel
+octane availability.  They do, in many cases, mean that the vehicle is also
+operated well within its design limitations, hence helping to reduce
+manufacturers warranty claims.
+
+There are several organisations in Europe which have, by devious means, gained
+access to the control programs of these microprocessors (either by
+disassembling, or by blatant and unashamed bribery of the software writers) and
+are thus able to modify the software and produce what they then sell as
+`Superchips' that, for a couple of hundred pounds and ten minutes effort with a
+chip-puller, can transform the performance of an already rapid car - examples
+given in UK literature are as follows::
+
+   Sierra/Merkur Cosworth - 388 brake horsepower
+   Volvo turbos - 280 brake horsepower
+   Mazda 323    - 180 brake horsepower
+   Nissan 300ZX - 370 brake horsepower
+   SAAB turbos  - 280 brake horsepower.
+
+Now apart from the potential hazards of improperly programmed microprocessors
+leading to the destruction of engines/transmissions due to excessive stress
+that the manufacturer/designer did not forsee, i wonder about the legal
+position of the car should you be involved in an accident. Cars in Europe have
+to be 'Type approved', that is to say, there are national testing authorities
+who oversee the safety of production cars and prevent the sale or import of
+those vehicles that fail to reach certain standards.  Any modifications to a
+type-approved vehicle should strictly only incorporate parts that have been
+themselves type-approved.  In this context, 'software' is a rather tenuous
+'part', again lawyers lagging decades behind technology.....  There are, as far
+as i am aware, no provisions for policing the status of on-board software, nor
+to prevent its alteration.  Since the changes are visually undetectable (who
+walks round their local friendly used car lot with a signature analyser and an
+EPROM blower in their pocket?)  it would be very hard to spot, either by the
+licensing authorities, or the insurers who may be asked to meet claims
+resulting from accidents.
+
+Don't any of you think i am against the enhancement of performance of vehicles
+- i want my 70-90 acceleration times to be as short as is humanly possible (and
+anyone who has driven the motorway network here will agree on that!), its just
+that i can forsee potential problems in the future (like what is the risk if
+you sell such a modified vehicle and fail to disclose the modifications and the
+purchaser then smashes himself up - can he sue you for failing to tell him
+about the changes???)
+                                          Pete Lucas.  PHONE: +44 793 411665 
+JANET: PJML@UK.AC.NERC-WALLINGFORD.IBMA EARN : PJML%UK.AC.NWL.IA@UKACRL      
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.5
+************************

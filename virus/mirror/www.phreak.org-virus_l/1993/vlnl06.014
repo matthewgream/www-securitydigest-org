@@ -1,0 +1,994 @@
+VIRUS-L Digest   Monday,  1 Feb 1993    Volume 6 : Issue 14
+
+Today's Topics:
+
+Re: Virus Calendar
+Re: Infection question (was: Viral Based Distribution System)
+Re: How to measure polymorphism
+Re: Illumination
+Re: What is a virus ?
+Re: Asymmetric Cryptographic Checksums
+Re: Virus Calendar
+Re: Mr. BIOS (PC)
+Re: Problems with PCs (PC)
+Chinese Fish Virus found (PC)
+Apparent new PC virus (PC)
+Has anyone heard of the filler virus (PC)
+PKZIP 2'S AV is cracked (PC)
+Help identifying a directory table erasing virus/trojan (PC)
+need help with Green Caterpillar!! (PC)
+the jackson virus (PC)
+Wide range unpacker available (PC)
+McAfee 100's available (PC)
+New files on phil.utmb.edu (PC)
+Internet Worm - the "Cops" (CVP)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Sat, 23 Jan 93 11:49:20 +0000
+From:    X0421DAA@helios.edvz.univie.ac.at
+Subject: Re: Virus Calendar
+
+mdbois@hvlpx.ns-nl.att.com (Big Foot) writes
+
+>      I'm  trying to  compile a  calendar,  specificing just those  virusses
+>   that hit on [a]  certain day[s], like Payday on every friday except 13th.
+>   I already have the list from VSUM.
+
+Morton Swimmer (swimmer@stage.hanse.de) and S&S International (no e-mail
+address at hand) have compiled such calendars. You might want to contact
+them.
+
+Michael Weiner - x0421daa@vm.univie.ac.at (*temporary*)
+
+------------------------------
+
+Date:    Sat, 23 Jan 93 20:36:23 -0500
+From:    Anthony Naggs <AMN@vms.brighton.ac.uk>
+Subject: Re: Infection question (was: Viral Based Distribution System)
+
+There has been quite alot of discussion here of 'what is a virus' recently.
+
+I don't find Fred Cohen definition to be of practical value, although in
+the abstract it is a simple concept to model.  Like most computer users,
+and other a-v researchers, I am concerned principally with what Alan
+Solomon might call "Real Viruses".
+
+So rather than argue about other peoples defintions I offer my taxonomy.
+I don't claim any particular rigour in producing this, but trust it is of
+some interest never the less.  I usually apply this in my head, this is
+the first time I have tried to write it down, so the wording is a little
+awkward, :-)
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Classification Questions to identify Viruses and Worms (aka Tapeworms)
+
+Simply answer the questions, as directed, about the 'program' you wish
+to classify.
+
+1   Does the program either create or replace (in an irreversible manner)
+    executable images (executable files, in Flash ROM, in disk boot
+    sector, ...) ?
+
+    YES: goto question 3        NO: goto question 2
+
+2   Does the program modify executable images while preserving a
+    representation of them?
+
+    YES: goto question 3        NO: program is outside this taxonomy
+
+3   Is the information for the generated image contained entirely internally?
+
+    YES: goto question 4        NO: program is a Linker (Link Editor),
+                                    similar programming tool, copy program ...
+
+4   Do the generated images always replace or otherwise intercept the execution
+    pre-existing programs, (includes taking advantage of OS quirks in selecting
+    executable images)?
+
+    YES: goto question 5        NO: goto question 7
+
+5   Can the generated image recreate the original 'program' from internal
+    information?
+    (Also if an image generated in direct decent, from internal information,
+    can do this).
+
+    YES: program is a Virus     NO: goto question 6
+
+6   Can the generated image recreate itself from internal information?
+    (Also if an image generated in direct decent, from internal information,
+    can do this).
+
+    YES: program is a launcher of a Virus, goto question 11
+    NO: goto question 11
+
+7   Is the generated image placed in mass storage (disk, tape, ...) or a
+    remote system (across a network)?
+    (Also if the generated image subsequently does this).
+
+    YES: goto question 8        NO: Exact classification is outside this
+                                    taxonomy, possibly a 'Rabbit'.
+
+
+8   Does the program attempt to guarantee the execution of the generated image
+    (eg by submitting it as a batch job, using CRON in Unix, remote execution
+    across a network)?
+
+    YES: goto question 9        NO: program is outside this taxonomy
+
+9   Can the generated image recreate the original 'program' from internal
+    information?
+    (Also if an image generated in direct decent, from internal information,
+    can do this).
+
+    YES: program is a Worm      NO: goto question 10
+
+10  Can the generated image recreate itself from internal information?
+    (Also if an image generated in direct decent, from internal information,
+    can do this).
+
+    YES: program is a launcher of a Worm, goto question 11
+    NO: goto question 11
+
+11  Is program action contrary to the normally supplied documentation or
+    does it proceed without interactive confirmation with the user?
+
+    YES: program is a Trojan (Horse)    NO: program is outside this taxonomy
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Let's try a couple of examples:
+
+XCOPY.EXE (copy program for MS-DOS)
+
+Question 1: YES, it can create or replace existing programs.
+Question 3: NO, it reads source files to gather the content of the generated
+            programs.
+Result: "program is a Linker (Link Editor), similar programming tool,
+    copy program ..."
+
+Stoned virus
+Question 1: NO.
+Question 2: YES, it chains itself in front of a bootstrap program.
+Question 3: YES, an exact image of the executable parts, (disregarding
+            static data).
+Question 4: YES, the bootstrap program already existed, though this may
+            not be obvious to all users.
+Question 5: YES, booting from an infected diskette places the program in
+            memory, and on detecting use a diskette without the program
+            present it copies itself there.  The original and copy are
+            the same.
+Result: "program is a Virus"
+
+
+As usual constructive contributions are welcome.
+
+Regards,
+Anthony Naggs
+Software/Electronics Engineer                   P O Box 1080, Peacehaven
+(and virus researcher)                          East Sussex  BN10 8PZ
+Phone: +44 273 589701                           Great Britain
+Email: (c/o Univ of Brighton) amn@vms.brighton.ac.uk  or  xa329@city.ac.uk
+
+
+------------------------------
+
+Date:    25 Jan 93 18:01:41 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: How to measure polymorphism
+
+ncoast!arnold@usenet.INS.CWRU.Edu writes:
+
+> ncase You Have Not Tried It TPE 1.1 Is Very Very Good..I have not
+> Found a Pattern That Can be scanned with a simply Wild Card Scanner
+> Yet..I think it is better than MTE..And I believe it is totaly
+> Polymorphic..
+
+Gee, just because you have not been able to find a scan string for it,
+does not necessarily mean that it is more polymorphic than the MtE...
+Hint: try removing all the do-nothing instructions in the decryptors
+and then compare the different decryptors... You'll see that they are
+pretty similar structurally... The decryptors generated by the MtE
+are much more variable...
+
+Yes, the TPE is pretty polymorphic, but not as much as the MtE... It
+is also polymorphic in a slightly different way... Arrghh, we need an
+objective way to measure this...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    25 Jan 93 18:11:11 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Illumination
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> The light dawns ! Fred considers the class "worm" as subset of the
+> class "virus". Evidently what I have been considering the "popular"
+> definition is also the laboratory definition and all of those who have
+> considered that stand-alone propagating programs (worms) were not
+> viruses must be in error.
+
+Uh, yes, actually this seems to be old news... I was not aware about
+that and it was me who introduced the confusion, sorry about it...
+Anyway, yes, Dr. Cohen already makes the difference between a virus
+and a worm. This can clearly be seen from his paper in the November
+issue of Computers & Security. The mathematical definitions for
+"virus" and "worm" are clearly different... Well, when I have finished
+going through all the math in the paper, I might be able to tell you
+more...
+
+> originally). If this is so then we need to redraw the boundaries and
+> rewrite the FAQ (see below).
+
+Maybe not... Even if he already distinguishes between viruses and
+worms, this does not necessarily mean that the FAQ entry is wrong - I
+still think that his definition of a virus (the human-language
+definition, that is) still includes things not considered as viruses
+by most people...
+
+> One side effect is to handle the question of whether companion, path,
+> and boot viruses are really viruses. Obviously they are.
+
+Uhm... As I said, I have not finished fighting with the math in the
+paper, but the above does not seem obvious at all to me, when looking
+at the definitions there... But maybe I am wrong...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    25 Jan 93 18:37:17 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: What is a virus ?
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+
+> Therefore, to be strictly a virus, a program (xA) must affect a change
+> to another program (B) that adds the functionality of A to (B) such that
+> the function of a third program (C) can also have the functionality of
+> (A) added to it by the new program (BA).
+
+> In other words when xA executes in the presence of B, B becomes BA.
+> When BA executes in the presence of C, C becomes CA (*not* CBA).
+
+There are two problems with this definition. First, consider the
+overwriting viruses. When you execute A in the presence of B, B
+becomes A, not BA, and so on. For the second problem, see below.
+
+> Now many people including myself have pointed to COPY as an example
+> of a virus. On reflection this is not true since while it is possible
+> to say COPY B.COM+COPY.COM B.COM, this will not add the functionality
+> of COPY.COM to B.COM. COPY cannot propagate itself. It can cause
+> programs to fail if used this way but that in itself does not make
+> COPY a virus.
+
+Minor nit-picking - in such examples, use XCOPY.EXE, instead of COPY.
+COPY is an internal command and cannot be copied by itself - you have
+to include COMMAND.COM and the example becomes not so clear. XCOPY is
+a much better illustration for what you are saying.
+
+> Further, we have discussed the use of a program on a LAN to update
+> Client programs, but these do not meet the test since (C) cannot be
+> affected, only (B). Further since (B) has just been updated or
+> replaced and cannot update anything else once "fixed" this does not
+> meet the propagation test of a virus.
+
+Aha, this is the second problem. I have seen several "viruses" that
+are so buggy, that they are able to replicate only once. That is, when
+you run the virus, it infects yet another program. When you run that
+program, it either crashes or does not replicate the virus further.
+Now, I personally would prefer to call such thing a trojan horse, but
+most people are calling it a virus - because it attaches itself (the
+whole code) to another executable file, and because (if one is patient
+enough) it is possible to get all your executables "infected" by it...
+Currently in CARO we are classifying such things in a separate group,
+called "Intended" (or "wannabes" in a popular language), but...
+
+> Consider the recent CHKDSK furor. I posted a simple detection mechanism and
+> "fix" that could easily be put into a program that might be executed as
+> part of the login script for a LAN. When a client logs in, his C: drive is
+> searched for CHKDSK.EXE. If found, it is checked. If the old one, the
+> fix is applied.
+
+> THIS IS NOT A VIRUS. The original program's function is not propagated.
+
+Suppose that the script did the following: check if the worsktation is
+running a corrected example of CHKDSK and, if not, copy a corrected
+version of CHKDSK.EXE to that workstation. The main difference is that
+the whole program from the server (CHKDSK.EXE) is copied, instead of
+patching the executable on the workstation... Now, is this a virus or
+a worm?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 26 Jan 93 11:20:11 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Asymmetric Cryptographic Checksums
+
+  After reference to a discussion between Vesselin and me, Padgett Pe-
+terson writes:
+> You see, unlike a public key which must be very strong since the algorithm
+> is known, this can be considerably simpler since it is unknown and the
+> intruder must derive iteratively from a number of choices.
+
+It is true that an algorithm for detection of viral infection on a
+given machine can be cryptographically unsophisticated if it depends
+on an unknown key.  But why do you contrast this with "a public key"?
+We are dealing here with authentication, and the situation in which an
+authentication algorithm does have to be strong is in inter-machine
+authentication, wherein *keyless* algorithms are used.  (One *could*
+use a key-dependent algorithm with a key which is publicly known, but
+that would be completely pointless.)  If you substitute "keyless algo-
+rithm" (or "MDC") for "public key" in your above statement, I can
+(almost) accept it.
+
+  I had written:
+>>                  Regardless of which is used, the important criteria
+>>are security and speed, where "security" means mainly the requirement
+>>that, given a file (without knowledge of the key or seed), it be com-
+>>putationally infeasible to create another file with the same checksum
+>>as the given one.
+
+You reply:
+> I would modify this statement slightly. In the field of confidentiality
+> from which such cypto approaches derived the protection of each and
+> every file is necessary. In a PC, virus protection is different and what
+> we are looking for is immediate detection, the use of a checksum implies
+> that we expect the file to be changed/infected/damaged.
+
+Since you're commenting on my statement, I'd really like to understand
+what it is that you're trying to say here.  But despite several at-
+tempts, I have to admit defeat.  For one thing, the syntax of that
+last sentence leaves me mystified.  And even with the most generous of
+reconstructions, I still can't make head or tail of what you're trying
+to say.  (I showed this to someone else, who was only slightly less
+puzzled.  He suggested that maybe what you're trying to get at is that
+if a file arrives on one's disk already infected, then computing an
+initial checksum at that point won't detect the existing infection on
+that file.  If so, please say so and explain why you think that's
+relevant to my statement.  If not, please try to express yourself more
+clearly.)
+
+>                                                         Access control
+> is something else entirely.
+
+Who was speaking of access control?  Certainly not me.
+
+  Now comes the "correction" to my above criterion:
+
+>                             As a result IMHO the following is adequate:
+>
+> Given a group of files (without knowledge of the key or seed), it be com-
+> putationally difficult to create a single file with the same checksum
+> as the given one and infeasible that two or more files could be affected
+> in the same way without detection.
+
+Maybe I could understand why you made changes to my criterion (such as
+replacement of "file" by "group of files") if I could understand your
+previous statements.  As it stands, I don't understand what you mean
+by two files being "affected in the same way" or practically anything
+else that you've written.
+
+> Further, CRC "uniqueness" may be a clue that an intruder could use as
+> a test for success of a given attack. Better to alow for a (small) number
+> of duplications possible.
+
+Again, I wish I could understand you.  Uniqueness of what?  Duplica-
+tions of what?  Are you suggesting that it's better for many files to
+have the same checksum?  I.e., that the probability of two files
+having the same checksum should be *greater* than 1/2^n ?  If so, why?
+If not, what *do* you mean?
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+
+------------------------------
+
+Date:    26 Jan 93 18:08:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus Calendar
+
+mdbois@hvlpx.ns-nl.att.com (Big Foot) writes:
+
+>        I'm  trying to  compile a  calendar,  specificing just those  virusses
+>     that hit on [a]  certain day[s], like Payday on every friday except 13th.
+>     I already have the list from VSUM.
+
+Morton Swimmer from S&S International (Deutchland) has created such a
+calendar for Windows. Unfortunately, it is not public
+domain/shareware. I am even not certain what the exact status is and
+who owns/sells the product. You can try to contact Morton at
+swimmer@stage.hanse.de.
+
+> [Moderator's note: Yes, there is a way to scan the backlogs.  All
+> postings to VIRUS-L/comp.virus, since day one, are archived on
+> cert.org in pub/virus-l/archives.
+
+Sorry, I did not understand... Do you mean that there is a way to scan
+the backlogs for a keyword, -without- downloading them via anonymous
+ftp? That is, to scan them at cert.org? How?
+
+[Moderator's follow-up note:-) Currently, the only way to search all
+of the archives would be to download the whole thing.  Some FTP-based
+services to exist, however, for interactively performing keyword
+searches (e.g., WAIS, Essence).  We are looking into these.]
+
+>     Third, a Dutch  magazine  mentioned the Hymn virus, which seems to hit on
+
+>     the day with the same number as the month, so Jan. 1th, Feb. 2nd, etc ...
+
+Yes, that's true. On these dates the virus plays the ex-USSR hymn and
+displays lots of framed copyright messages in the form of a big V.
+Unfortunately, it also trashes the boot sector of the hard disk, so
+experiments are not recommended...
+
+>     VSUM and F-prot did not know about it ?!?
+
+Nope, this is not true. Get a recent version of VSUM (2.12 is what we
+have here) and look carefully. It has the virus described, under the
+name Hymn. Of course, the description is wordy/incomplete/incorrect as
+usual. And F-prot -does- recognize this virus. It can even disinfect
+it, I think...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Sat, 23 Jan 93 12:56:50 +0200
+From:    Tapio Keih{nen <tapio@nic.funet.fi>
+Subject: Re: Mr. BIOS (PC)
+
+In comp.virus Joel A. Frahm write:
+
+>    I was recently called in to work on a new PC clone, and it had BIOS
+>from the Mr. BIOS corporation.  And if that wasn't weird enough, this BIOS
+>contains some type of antivirus code, perhaps an MBR protector or something.
+>Does anyone out there in the real world know anything more about this BIOS
+>and the ramifications of BIOS based AV software?
+
+My 386sx has the Mr Bios too (That name always brings some Pac Man
+game to my mind:-). The antivirus thing prevents write attempts to
+MBR. I haven't had too much time to test it well, but this far every
+virus which writes something to MBR has been stopped by it.
+
+- --
+  Tapio Keihanen   | "Computerize God -- it's the new religion
+tapio@nic.funet.fi |    Program the brain -- not the heartbeat"  -R.J.D.'92
+
+------------------------------
+
+Date:    Sat, 23 Jan 93 12:50:25 +0000
+From:    dan@symcom.math.uiuc.edu (Daniel R. Grayson)
+Subject: Re: Problems with PCs (PC)
+
+I think I have found the same virus you have.  I have compared infected files
+to uninfected ones and found that the following file will work with the /EXT
+option for McAfee's scan.exe.
+
+# here is the egg virus I found, Jan 22, 1993
+# the string "eggPSQWVU" occurs 626 bytes from the end
+"65 67 67 50 53 51 57 56 55" egg
+
+
+I called it the "egg" virus because of the string I found.
+
+For a .com file it changes the first three bytes of the file (to a jump
+instruction, I suppose) and appends about 833 to the end of the file.
+For an .exe file, the growth is similar, but there are more changes in the
+header of the file.
+
+I've sent an infected file to McAfee by email - maybe they can make a version
+of clean.exe which will remove it.
+
+------------------------------
+
+Date:    Sat, 23 Jan 93 14:57:53 -0500
+From:    James Ford <JFORD@UA1VM.UA.EDU>
+Subject: Chinese Fish Virus found (PC)
+
+For those people who keep up with virus tracking, FProt v2.06 has identified
+the Chinese Fish Virus (Fish Boot in VSum) here at the University of Alabama
+in Tuscaloosa.  F-Prot handled it with no problem.
+- ----------
+The secret of selling yourself is to have a product you truly believe in.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@seebeck.ua.edu
+              Work (205)348-3968  fax (205)348-3993
+
+
+------------------------------
+
+Date:    Sun, 24 Jan 93 00:46:39 +0000
+From:    nmurrayr@cc.curtin.edu.au (Ron Murray)
+Subject: Apparent new PC virus (PC)
+
+   I've come across an apparent new PC virus which is not detectable by
+either Scan V99 or F-Prot v206a. Characteristics observed so far are:
+
+* Memory size (as reported by CHKDSK) is reduced to 650752 (yep, takes
+  about 4.6k).
+* Appears to be a .COM and .EXE file infector, but doesn't appear to infect
+  boot sectors or MBR (that is, if the computer is re-booted, CHKDSK reports
+  memory size of 655360, as it should). Running an infected file will, of
+  course, change the size back to 650752.
+* Changes the size of the COM/EXE file, but apparently by varying amounts (not
+  sure of this though). File time and date remains unchanged.
+* Using DEBUG to look at memory in the area above 9E00:0E00 shows, apart from
+  the usual junk, the string "Dudley". There's no evidence of this in infected
+  files, so perhaps it's encrypted. It also may be an artifact of the system
+  I was using at the time.
+* Reputed to stop operation of Windows and Microsoft Word 5.5. I haven't
+  observed this (neither was available at the time), but an attempt to install
+  Windows 3.0 resulted in a crash at disk 2. Suspect these are only
+  side-effects.
+* I haven't seen any other odd effects, but of course this doesn't mean that
+  there aren't any.
+
+   I have a copy of Scan v99 which has been infected by the virus; it's
+available to any of the recognised virus researchers if they want it.
+
+ .....Ron
+
+- --
+                                 ***
+ Ron Murray
+ Internet: nmurrayr@cc.curtin.edu.au
+     Are we having fun yet?    -- Garfield
+
+------------------------------
+
+Date:    Mon, 25 Jan 93 01:34:49 +0000
+From:    di.dio@acadiau.ca (Danny Didio)
+Subject: Has anyone heard of the filler virus (PC)
+
+I've recently dicovered a virus called the filler virus on my hard
+drive.  I though I cleaned it but it keeps popping up over and over
+again.  Does anyone know what this virus actually does?  Please email
+me.I really don't read the news much and probly won't see any posted
+responses.  Thanks in advance
+
+					Danny
+					From Canada,N.S
+
+------------------------------
+
+Date:    Mon, 25 Jan 93 14:26:00 +0200
+From:    mikko.hypponen@compart.fi (Mikko Hypponen)
+Subject: PKZIP 2'S AV is cracked (PC)
+
+The following is ment to inform the participants of this newsgroup. I
+am not bashing PKWare nor any other company or individual.
+
+The "Authentic files Verified" feature of PKZIP 2 has been compromised
+and cannot be trusted.
+
+The Authenticity Verification -option is ment to give software
+distributors a way to ensure that their products get to the users in
+their exact original state. PKWare is selling special "-AV" codes to
+it's customers. With these codes zipfiles can be "locked" and the zip
+will display the name of the author when unpacked. An AV-locked
+zipfile cannot be tampered with without the AV getting broken.
+
+PKZIP has offered this protection scheme from version 1.1.  Several
+shareware authors began to use it, and it's commonly mentioned in the
+documents of several shareware-products that "if the program didn't
+come in an AV-protected zip-file, it should not be used".
+
+Most notably, McAfee Associates are distributing their ViruScan suite
+in AV-protected zip-files, and are stating in their documentation:
+
+              "Beginning with Version 72, all of McAfee
+          Associates' VIRUSCAN series are archived with PKWare's
+          PKZIP Authentic File Verification.  If you do not see
+          an "-AV" after every file is unzipped and receive the
+          "Authentic Files Verified! # NWN405 Zip Source: McAFEE
+          ASSOCIATES" message when you unzip the files then do
+          not use them.  If your version of PKUNZIP does not have
+          verification ability, then this message may not be
+          displayed. Please contact us if you believe tampering
+          has occurred to the .ZIP file."
+
+It is common knowledge that the AV scheme used by PKZIP 1.1 was broken
+during 1992 and AV-protected fake versions of SCAN (and other popular
+shareware products) showed up.
+
+When PKWare released PKZIP 2.04c, they also changed their
+AV-scheme. PKUNZIP 2 will not display the old-styled AV-stamps
+at all, which is probably a good thing since now anybody could
+AV-protect zips to any name.
+
+The computer undergound has been busy trying to crack the new
+AV-scheme. Now it has obviously been done. A file called
+MAKAV204.ZIP is circulating around the underground BBS's and with
+it anybody can secure an PKZIP 2 archive to any name.
+
+To demonstrate this, I'm enclosing an UUencoded zip-file,
+which will show an AV to "Zip Source: McAFEE ASSOCIATES" when
+unpacked with PKUNZIP 2.04c.
+
+- ------------------------cut-here-----------------------------
+section 1 of uuencode 5.02 of file fake-av.zip
+
+begin 644 fake-av.zip
+M4$L#!!0``(`(`*9K.1IQ>C%6*@```"X````+`"X`1D%+12U!5BY46%0'`"H`
+M,3IXUY0N37`'5:O62'=PH+[55:!RI4&YZ3V8#3P,A1A\0EGD[:M^8W,B"\G(
+M+%:(RBQ0`%)^_B$*:47YN0J^R8YIJ:D*CL7%^<F9B26IQ;Q<$`@`4$L!`A0`
+M%`````@`IFLY&G%Z,58J````+@````L`+@```````P`@`````````$9!2T4M
+M058N5%A4!P`J```3><[]J;#]8Y"05_K53DNI)27"4.(J[8[`85);78E?-W[Z
+=&W-4MP/,=%!+!08``````0`!`&<```"!````````
+`
+end
+sum -r/size 30682/380 section (from "begin" to "end")
+sum -r/size 48531/254 entire input file
+- ------------------------cut-here-----------------------------
+
+It remains to be seen whether McAfee Assiciotes begins to ship their
+products archived (and secured) by PKZIP 2.04c or not. Their latest
+release, 9.2V100 was archived with PKZIP 1.1.
+
+It should also be noted that the AV in above zipfile does not match
+the number shown before the authors name. McAfee's number should be #
+NWN405 (at least that was with pkzip 1.1). In fact this faked zip
+displays the number "# PKW655" which is the AV-number for PKWare
+itself. The cracker probably found a short-cut way by just changing
+the name and not the number.
+
+Please note that the similar "Security Envelope" feature of ARJ 2.30
+has also been broken. The author of ARJ, Robert K. Jung, is currently
+working on a new method the secure the ARJ archives.
+
+Hopefully PKWare will be doing the same.
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
++ Mikko Hypp|nen     +    internet: mikko.hypponen@compart.fi +
++ Wavulinintie 10    +    mobile tel: +358-49-648 180         +
++ 00210 Helsinki     +    fax:        +358-0-670 156          +
++ FINLAND            +    Data Fellows Ltd's F-PROT support   +
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+
+- ----
++=======================================================================+
+|    ComPart BBS     PCBoard 14.5a/100  +358-0-506-3329 (ZyXEL V.32bis) |
+| Helsinki, Finland       14 lines      *** Number 1 BBS in Finland *** |
++=======================================================================+
+
+------------------------------
+
+Date:    Mon, 25 Jan 93 14:52:20 -0500
+From:    LOA@QUCDN.QueensU.CA
+Subject: Help identifying a directory table erasing virus/trojan (PC)
+
+I've seached a bunch of virus/trojan lists and have run scanners
+F-Prot 2.06a, VirX 2.5 and Scan 911V100, but I cannot identify the
+following virus/trojan:
+  It affects the directory table only, erasing the top 14 entries, and
+  adding a fake file to the top of the list call DISK TAB.LESS
+  The rest are left blank so that a dir will only show the message.
+  The FAT is unchanged, and the entries are otherwise easily fixed.
+However, I cannot seem to find where it came from. I don't even know
+if it is a virus or a trojan. It may play a tune and display a cute
+message as well.
+Any help on how to identify this and get rid of it will be greatly
+appreciated. Thanks.
+
+Alan Lo
+Bitnet: loa@qucdn.bitnet
+Internet: lo@chem.queensu.ca
+
+
+------------------------------
+
+Date:    Mon, 25 Jan 93 20:08:30 -0500
+From:    MCHLG%CUNYVM.BITNET@mitvma.mit.edu
+Subject: need help with Green Caterpillar!! (PC)
+
+does anybody have info. on the Green Caterpillar Virus? While I was
+doing some performance tweaking on my 386-33dx Virstop prevented me
+from loading a program I use to check the speed of the system i'm
+working on. The exact message i got from virstop was:
+ This file is infected with the Green Caterpillar virus
+ Cannot load c:\speed.com
+
+After seeing this I first rebooted the system from a write protected
+bootable floppy (MS-DOS 5, QEMM, Himem, RAMdisk, Virstop) copied the
+infected files to the ramdisk ( which Virstop allowed... Hmmm.. ) ran
+f-prot and sure enough all the files from one of my diagnostic disks
+were infected with the green caterpillar virus.  I then proceeded to
+set up F-prot to do automatic disinfect on. It worked! the files that
+were previously infected were no longer accoring to f-prot 2.06a. then
+I ran, Scan97, Virus Secure 2.03, Nav 1.0, & 2.0, Cpav 2.  & Virex
+2.3. They all said that these files were clean! :) <yay!> After that I
+re-copied the utility files which were on the ramdisk i created back
+to a flopp y. My question now is since i now have a good sample of the
+caterpillar virus I would like to begin to dissect it. the problem is,
+First I need more info on th e little bugger.  Any information
+provided would be greatly appreciated.
+
+- -------
+ ____________________________________________________________________________
+| Christopher Mateja   (PRES. / OWNER) |Bitnet:     <MCHLG@CUNYVM.BITNET>    |
+| Bits-N-Bytes Computer Services       |Internet:   <MCHLG@CUNYVM.CUNY.EDU>  |
+| 333 15th street, Suite #2            |Compu$erve: Disabled Due To Conflict |
+| Brooklyn, NY 11215-5005 ( USA )      |Phone:      (718)-788-3096           |
+|======================================+-------------------------------------|
+|                                                                            |
+|     My toys!   Where are my toys??   I can't do this job without my toys!! |
+|____________________________________________________________________________|
+
+------------------------------
+
+Date:    Tue, 26 Jan 93 13:02:25
+From:    <GHGAOAT@cc1.kuleuven.ac.be>
+Subject: the jackson virus (PC)
+
+Has anybody ever occured a virus named "Jackson"?
+
+Yesterday it showed me a message on my PC: "Your floppy is dead|"
+
+None of my (recent) anti-virus-programs recognizes it. Of what I saw,
+I think that it is a boot virus, starting every time that I want to
+format a floppy.  Until now, it has not damaged my hard disk, only new
+floppy's.
+
+Can somebody give me more details about this one?
+
+<SJAMAYEE>
+
+------------------------------
+
+Date:    25 Jan 93 18:47:49 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Wide range unpacker available (PC)
+
+- -----BEGIN PGP SIGNED MESSAGE-----
+
+Hello, everybody!
+
+It has been mentioned several times that a virus writer could use an
+executable files compressing program like LZEXE or PKLite to "hide"
+an infected file from a scanner. All viruses released by such a
+program will be detectable by the scanner, but the "generation 0" -
+the original source of infection, will remain undetected.
+
+Therefore, several producers of scanning software are including the
+capability to unpack the self-compressed executables in memory, before
+scanning them.
+
+The main problem with this is that there are so many different
+programs that can compress executables! LZEXE, PKLite, Diet, PGMPAK,
+Slim, TinyProg, Kvetch, ICE, OPTILINK, SCRNCH - just to name a few.
+Often the different versions of these programs use quite diffrent
+compressing methods... Should every scanner support all those methods?
+This would be a bit silly, IMHO... A much better solution would be to
+check all new files that you get, to determine whether they are
+self-compressed somehow, and if they are, to decompress them in a
+temporary directory and scan them. I could be done with some kind of
+shell program like the popular SHEZ. All you need is ONE program, that
+can handle all known self-compressing schemes - not support of all
+these schemes in every scanner on the market.
+
+Well, I am glad to inform you that such program has been developped by
+Ben Castricum from the Netherlands. It can handle almost any kind of
+compressor for executable files known to me, except PGMPAK and
+SysPack, I think... Read the documentation for more information.
+
+The program is available for anonymous ftp from our site as
+
+ftp.informatik.uni-hamburg.de:/pub/virus/progs/unp212.zip
+
+Enjoy.
+
+Regards,
+Vesselin
+
+P.S. Well, the other purpose of this message is to check whether I am
+able to post public-key authenticated messages to comp.virus... :-)
+
+- -----BEGIN PGP SIGNATURE-----
+Version: 2.1
+
+iQCVAgUBK2Q4bjZWl8Yy3ZjZAQFJpwP5AeH3f7knbtq0628CG/Z2e9UCK67t2I0X
+O0+1yy6yr7FcN3vC3LKmf5Jlo0+rVGPAVnGhlxVu1yj1IoX/MXZdXLbGTHOW4x5P
+z5LTkyB2hwka9yh4B2KFri5T3xdNmTxEPRYL9DUHwppYNQhPMZ1dQ7XG7xT/ccV2
+ZTViGQB5ihg=
+=YqA1
+- -----END PGP SIGNATURE-----
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Fri, 29 Jan 93 12:50:24 -0500
+From:    HAYES@urvax.urich.edu
+Subject: McAfee 100's available (PC)
+
+Hello.
+just a short word to mention the availability for FTP of the new McAfee's serie
+of virus detectiion/eradication programs.
+
+Good weekend to all, Claude.
+
+Site:       urvax.urich.edu,  [141.166.36.6]    (VAX/VMS using Multinet)
+Directory:  [anonymous.msdos.antivirus]
+
+FTP to urvax.urich.edu with username anonymous and your email address
+as password.  You are in the [anonymous] directory when you connect.
+cd msdos.antivirus, and remember to use binary mode for the zip files.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Claude Bersano-Hayes     HAYES @ URVAX                 (Vanilla BITNET)
+University of Richmond   hayes@urvax.urich.edu     (Bitnet or Internet)
+Richmond, VA  23173
+
+
+------------------------------
+
+Date:    Mon, 01 Feb 93 09:38:35 -0600
+From:    John Perry <perry@phil.utmb.edu>
+Subject: New files on phil.utmb.edu (PC)
+
+
+
+- -----BEGIN PGP SIGNED MESSAGE-----
+
+Hello Everyone!
+
+	The following files have been added to the anti-viral archive on
+phil.utmb.edu (129.109.9.22) in the pub/virus-software/pc directory. If
+you have any problems or questions, please send e-mail to
+perry@phil.utmb.edu or perry@jpunix.com.
+
+CLEAN100.ZIP
+HTSCAN19.ZIP
+MSG_912.ZIP
+NETSC100.ZIP
+SCANV100.ZIP
+TBAV503.ZIP
+TBAVX503.ZIP
+VIRX25.ZIP
+VSHLD100.ZIP
+VSIG9301.ZIP
+WSCAN100.ZIP
+
+- ---
+
+ John Perry - perry@phil.utmb.edu (129.109.9.22)
+
+ PGP Public Key available by fingering perry@phil.utmb.edu
+
+- -----BEGIN PGP SIGNATURE-----
+Version: 2.1
+
+iQCVAgUBK21DjVoWmV4X/7GZAQGmvwQAoMkIyLd3X9DIERoP/y8Km4X8xxDH61Ym
+znm2xMcrjHHGFpsL/jNxh9CUMDbHS8kcQg0GKFyxqD4fiWUN7quWJhcZeGNq9kYf
+e2QC+AzvMoXSTrgVm7QK/IIC5oBOHGMt8x1j9IGH+PmoJeeiILt2YyYYH9whwP1i
+eE/2zHGYfjc=
+=FN2t
+- -----END PGP SIGNATURE-----
+
+------------------------------
+
+Date:    Fri, 22 Jan 93 22:11:31 -0800
+From:    rslade@sfu.ca
+Subject: Internet Worm - the "Cops" (CVP)
+
+HISVIRS.CVP   921215
+
+                  The Internet Worm - "the Cops"
+
+The attempts to secure systems, and the attempts to circumvent that
+security, form a never ending cycle of escalating programs, features
+and procedures.  There are two seemingly mutually contradictory
+factors at work.  First, security, by and large, works.  Second,
+there is no useful security system which cannot be circumvented.
+
+Two philosophically opposed camps tend to form around this issue.
+The first states that security information should be restricted.
+This restriction will limit the information available to those who
+would try to break security systems.  The second philosophy often
+refers to this first position as "security by obscurity", and
+proposes that restriction of information only serves to keep it out
+of the hands of those who need it.  The "crackers", so this second
+theory goes, already have it.
+
+(Of course, most people find themselves somewhere in between the two
+positions.  The dividing line as to what information should be in
+the "public domain" is constantly moving.)
+
+The experience of the Internet worm must be said to favour the
+latter position more than the former.  The fixes, "work-arounds" and
+patches which enabled systems to recover and prevent re-infection
+were developed by an informal "network" of individual researchers
+who freely broadcast their results.  (The "free broadcast" was
+somewhat hampered by the fact that the primary means of
+communication was the same system that was under attack.  The
+important factor is that the information was not being censored as
+it was discovered, nor was it being provided by a central
+"authority" or clearing house.)
+
+The "authority" in this case is generally conceded to be the
+National Security Agency of the United States.  It is quite
+fashionable, and likely unfairly so, to speculate that the NSA
+actually attempts to cripple, or at least limit, the security of
+systems in order to have access to them if need be.  Bob Morris
+Senior is also often held to be suspect in relation to the
+authorship of the Internet Worm, despite the complete absence of any
+evidence to support this notion.
+
+I suspect that the NSA is comprised of well-meaning, and generally
+hard-working, public servants.  I further suspect they are more
+effective than most.  However, it is well established that the
+weaknesses in system security that the Internet Worm exploited were
+well known to the NSA.  It is also well established that the system
+managers who should have been made aware of those holes had not been
+sufficiently warned.
+
+copyright Robert M. Slade, 1992   HISVIRS.CVP   921215
+
+==============
+Vancouver      ROBERTS@decus.ca         | "It says 'Hit any
+Institute for  Robert_Slade@sfu.ca      | key to continue.'
+Research into  rslade@cue.bc.ca         | I can't find the
+User           p1@CyberStore.ca         | 'Any' key on my
+Security       Canada V7K 2G6           | keyboard."
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 14]
+*****************************************

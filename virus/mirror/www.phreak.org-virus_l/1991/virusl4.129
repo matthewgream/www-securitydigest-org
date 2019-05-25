@@ -1,0 +1,579 @@
+VIRUS-L Digest   Wednesday, 24 Jul 1991    Volume 4 : Issue 129
+
+Today's Topics:
+
+HighMemory(Re:long & technical) (PC)
+Re: long and technical (PC)
+Re : multiple compressions with Pklite (PC)
+re: Multiple compression
+Conflicting comments
+double compression
+re: SECURE.COM (PC)
+Anti-Virus software recommendation sought
+Info sources for PC viruses wanted. (PC)
+Fprot & DOS5.0 (PC)
+How do managers protect networks?
+Philosophy, comments & Re: long and technical (PC)
+CARMEL TntVirus, A Trojan suspect. (PC)
+New Devil's Dance?
+Re: virus for sale
+NSAi announces Computer Security Connection
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 22 Jul 91 13:34:12 +0300
+>From:    vasya@stack.fian.msk.su (Vasili Bykov)
+Subject: HighMemory(Re:long & technical) (PC)
+
+In his article rohrer@fnacp1.fnal.gov (Keith Rohrer) writes:
+
+>>Scanner sets INT 01 ( single-step ) on itself and calls some function of
+>>INT 13, setting TF simultaneously. A handler of interrupt 01 traces the
+>>addresses through which the execution passes( until it returns to the
+>>scanner ). It is sure that BIOS INT 13 handler resides somewhere between
+>>segment adresses 0C000h and 0FFFFh. As soon as the execution gets into
+>>this region, a scanner stores current address and later use it as an entry
+>>point of INT 13 handler.
+>>
+>	Yeah, but what if I have an infected program (whose infection
+>traps INT 13) in high memory?  On my machine, for one, I've got disk
+>BIOS at CC00 and everything from D000 to EFFF is high RAM...
+>	The advantage one *does* have in such a setup as originally
+>mentioned is that you can
+>just find the "real" BIOS INT13 handler location *once*, then remember
+>it for that machine.
+
+The article I wrote was too concise and the idea of it appeared to be
+a bit ambiguous. I think I should explain in more details:
+
+Using such a technique (tracing addresses during INT 13h execution) you
+cannot guarantee that the address you find is the same as the one which
+is set by BIOS during POST. If you have some card installed, its
+firmware can re-install INT 13 on itself during ROM-scan. In such a
+case the address you get is the entry point of this firmware's routine.
+
+So the only thing you can guarantee is: this code is situated above
+0C00h and below 0FFFFh memory segment (or some other values which you
+choose). MAY THIS CODE BE A PART OF SOME VIRUS?
+
+[]      In case of trivial PC without high memory the answer is *NO*,
+        surely.  For those machines anything you have above 0A000h
+        segment is either video data or some ROM routines. It is
+        unlikely that you bought a card with virus and installed it
+        into your PC.
+
+[]      Well, so what if you have a high RAM ? I say, "No, in 9999
+        cases of 10000 it is not a virus too." The reason is the
+        principles of high memory organization.
+
+If you have expanded memory, that is a memory above 0A000h segment, but
+within 1 megabyte address space, you should follow Lotus-Intel-Microsoft
+convention named EMS (Expanded Memory Specification) in order to
+handle it. You must use EMS memory driver to do so. Usually this memory is
+used for keeping huge amounts of data like spreadsheets. Some code may
+be placed there too. But it *MUST NOT* be a code which handles
+interrupts. Expanded memory is bankable, that is its total amount may
+be (and usually is) greater than the address space it occupies. In such
+a case only some part of this memory resides in address space. In order
+to access your data you should first tell EMS driver to place them in
+memory, to be sure that the data located where you think they are. So
+if you set interrupt address to code located in expanded memory, a
+situation when an interrupt occurs but a bank where virus resides is
+switched off the memory space, will result in a system crash.  So
+expanded memory is not the best place for a virus.
+
+If you have extended memory, that is a memory above 0FFFFh segment, you
+can use it only in protected mode of 80286/386/486 processor using
+their segment selectors mechanism. MS DOS runs in real processor mode,
+and you cannot reach code there via real mode's interrupt table.
+
+Surely, some buffer code may be provided which resides in lower memory,
+catches interrupts, switches into protected mode or tells EMS driver to
+place bank with code into memory space, and gives control to virus
+itself.  But if you take into account that different computers have
+different high memory configuration, your virus should be extremely
+intelligent in order to work properly with any of them. A virus of size
+about 20 or 30 Kbytes is not the best one. It would not hide for long.
+
+That's why I suggest that a code in high memory address space is not a
+malicious one.
+
+Vasya. :)
+
+- --
+- -|- Vasili Bykov -|- Moscow -|- vasya@stack.fian.msk.su -|-
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 12:46:40 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Re: long and technical (PC)
+
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+
+>By the way, the original poster suggested that the original int 13
+>vector should be restored, if the bootup checking program found a
+>problem. It is better to rewrite the correct boot sector (using the
+>known, clean, int 13 address), and then force a cold boot. There is
+>toom much chance of some other interrupt (e.g. the timer) being
+>intercepted, in which case the virus might be able to re-install
+>itself after being "cleaned" from int 13.
+
+While this is a good solution, once given the fact that a PC may be
+infected, I would not trust anything that system does. e.g. Could you
+trust the keyboard ? For this reason, DiskSecure was designed to lock
+up the system with a terse warning message, forcing a cold boot from a
+"recovery" floppy (nice to see that Central Point Software picked up
+this technique for PCTools 7.0)
+
+Consequently, a cold boot from a write-protected floppy should be the
+first action followed by verification of the infection, analysis of
+the charactoristics, and concluded with virus removal and
+reverification.
+
+						Padgett
+
+Note to DiskSecure users: If McAfee's VSHIELD is in use, it will
+detect the odd boot sector used on the maintenance disk (used to boot
+bare for cranky software and defragmenting), flag it as an "unknown
+boot sector virus" and refuse to allow a warm boot.
+
+Personally, this is the kind of "false positive" I like since DS has
+many of the traits I would be suspicious of on a floppy, but if
+VSHIELD is in use, a cold boot or other modification is necessary to
+use the maintenance disk.
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 14:24:25 -0400
+>From:    Dmitri Schoeman <T530083@UNIVSCVM.CSD.SCAROLINA.EDU>
+Subject: Re : multiple compressions with Pklite (PC)
+
+Someone inquired about how to achieve multiple compressions, and since
+it is such a trivial method to impliment I feel that it adds no threat
+to the computer world to explain it.  Pklite and Lzexe both create
+temporary files on disk with the "compressed" code.  If the
+"compressed" code is larger than the original code it will erase the
+temp file, and I am sure we are all aware of the non-permancy of the
+erase command, so either by using one of the Norton utilities or, I
+imagine DOS 5.0 the file can be unerased and renamed as an EXE file.
+If one wishes to not allow PKlite to uncompress, or to compress the
+file multiple times with PKlite, one can change the first occurance of
+the letters PK(lite) which will prevent pklite from recgonizing the
+file, but will still allow correct excution.  One thing which I was
+unable to check, due to my virus free enviornment is if this method
+will hide a virus.  It is a possiblity that, depending on the
+compression scheme, the file would not be changed sufficiently to hide
+the search strings, however if they rely on the location of the string
+they might be fooled.  Can anyone verify if the code is sufficiently
+changed by the above method?
+
+- -----Dmitri Schoeman                               T530083@UNIVSCVM.BITNET
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 15:00:44 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: Multiple compression
+
+	Since this shows no inclination to dieing out on V-L, it may
+be of interest to clear the air. However, I am reluctant to post this
+openly lest it give people ideas.
+
+	Simply, it is very possible to multiply compress files. I have
+started with EXEPACK, then gone to LZEXE, thence to PKLITE. Order is
+unimportant however it does take some "fiddling" between stages to
+ensure that each program succeeds.
+
+	While such a process provides no gains in size (the result
+often turns out larger than the original), it does give single-pass
+signature scanners fits. Consequently, there is probably some slight
+chance of a trojan using such a technique to transmit a virus or other
+malicious software.
+
+	The answer, of course, is for scanners to use a recursive
+technique for unravelling files and it would be relatively easy to
+check. Eternal Vigilance and all that.
+
+						Padgett
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 15:16:40 -0400
+>From:    padgett%tccslr.dnet@uvs1.orl.mmc.com (A. Padgett Peterson)
+Subject: Conflicting comments
+
+	I just realized that in the last few days that I made two
+seemingly conflicting comments reguarding when you can trust a PC.
+
+	In issue 128, the statement was made that given knowlege of
+the "clean" paths to the hardware, software could be written that
+would allow disinfecting an infected machine "on the fly".
+
+	Later, a response was posted to another comment that you must
+boot cold from an infected floppy before trust is possible even if a
+clean Int 13 (disk access) path is known.
+
+	The two are not really in conflict since the first presupposes
+a knowlege base that does not exist at the moment. Without this
+knowlege base, the second comment holds true. ("In theory vs In
+practise").
+
+						Padgett
+
+        "What I said is not necessarily all of what I was thinking"
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 13:15:02 -0700
+>From:    Eric_Florack.Wbst311@xerox.com
+Subject: double compression
+
+- -=-=-=-=
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: multi-compression
+
+Eric_Florack.Wbst311@xerox.com writes:
+>Let's say I have an EXE that I've run through LZEXE. PKLITE, regardless of
+>version will do a test on the file to see if the file is smaller after the
+>compression is added. Since the file's already compressed, PK won't make the
+>file any smaller, and will crash off, and inform the user that it can't
+>compress the file.... leaving the file untouched.
+
+Ah, but what if you first use a compression program which is not as
+good as LZEXE or PKLITE.  Try for example to compress a program with
+EXEPACK - PKLITE is often able to compress them still further...
+- -=-=-=
+
+Your point well taken.  Without checking the doc files, I'd be at a
+loss to tell you at what point the software makes the choice of not
+bothering with the file.
+
+I was of the idea that LZEXE, at least would cough any EXEPACK file
+up. before even attempting to compress it. Unsure on this point, and
+about PKL's ability in this area. BTW, I understand Phil has another
+version of PKL out... 1.16, I think.
+
+On MY BBS's, I've taken the stance that I will not accept, as uploads,
+files that have been treated with PKLite, LZEXE, or EXEpack... for a
+couple reasons:
+
+1: Such files, once treated with PKL, LZEXE, or PACK, are never as
+small as files that have been treated by an archiver alone, such as
+LZH, ARJ or even PKZIP.  This reason alone would be enough, as far as
+I'm concerned even as large as the systems are, disk space is at a
+premium, as is user line tine.
+
+2: I'm taking no chances of anything hiding inside such files.
+Granted, I'm more or less convinced that the chances are pretty small
+of something ever happning in this area....  a point which I've spoken
+on here just recently.  Just call it an instinctive move. I get
+worried about things I can't check on, I guess.
+
+Understand, I like the idea of using PKL or what have you, on files
+that can use it... once the file in question has been checked for
+virus contaminants, (Indeed, I use myself, after checking each file)
+but I've taken a stand against distributing files treated with such as
+PKL.
+
+While in theory, the genre of compression tools such as the PKL, LZEXE
+and PACK are great, and could serve well, in light of virus
+considerations and in light of the added phoneline time involved in
+transferring files treated with LZ, etc, I can't see accepting such
+files.
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 22:14:00 +0000
+>From:    William Hugh Murray <0003158580@mcimail.com>
+Subject: re: SECURE.COM (PC)
+
+>There has been some discussion in comp.sys.novell about a new "virus"
+>called SECURE.COM which opens up and damages netware binderies.
+>No-one has seen it themselves yet, everyone has heard about it, so it
+>may be another "urban legend".  It is likely that if it does exist
+>someone in this group will have heard of it, or be CERTAIN that it
+>does not exist.
+
+SECURE.COM exists.  It is not a virus.  Rather, it is a password guessing
+program.  It is not widespread and never will be.  Nonetheless, it is an
+example of a program that exploits weak system implementations.  However,
+it exploits implementation, not design, weakness.  Properly used, the
+security features implemented in NetWare are more than adequate.
+
+Be certain that minimum password length is set to at least 5 (five) and that
+"intrusion detection" is set "on."  After that you can forget SECURE.COM.
+
+Would God that there were such a simple defense for Jerusalem-B.
+
+____________________________________________________________________
+William Hugh Murray                     203-966-4769
+Information System Security             203-326-1833 (CELLULAR)
+Consultant to Deloitte & Touche         203-761-3088
+Wilton, Connecticut                     email: 315-8580@MCIMAIL.COM
+                                        WHMurray@DOCKMASTER.NCSC.MIL
+                                        MCI-Mail: 315-8580
+                                        TELEX: 6503158580
+                                        FAX: 203-966-8612
+                                        Compu-Serve: 75126,1722
+21 Locust Avenue, Suite 2D              DASnet: [DCM1WM]WMURRAY
+New Canaan, Connecticut 06840           PRODIGY: DXBM57A
+
+------------------------------
+
+Date:    22 Jul 91 23:19:28 +0000
+>From:    D.Ivens@deakin.OZ.AU (David Ivens)
+Subject: Anti-Virus software recommendation sought
+
+We are considering purchasing a site licence for Virus Buster from
+Leprechaun Software.
+
+It looks a very good package.
+
+Any advice?
+
+------------------------------
+
+Date:    23 Jul 91 00:23:37 +0000
+>From:    rajan@ai.mit.edu (Rajan Ramaswamy)
+Subject: Info sources for PC viruses wanted. (PC)
+
+greetings fellow hackers,
+
+i would like to get some information about viruses for the
+ibm-pc being the unix/c type myself, i don't know where to
+start. ideally i would like the following information,
+- -- a document describing principles used by known pc viruses
+- -- source code to some viruses/worms, if available
+- -- source code or description for writing a virus scanner
+   any language is probably ok.
+
+thanks in advance,
+
+rajan ramaswamy
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 19:31:36 -0700
+>From:    Steve Clancy <SLCLANCY@UCI.BITNET>
+Subject: Fprot & DOS5.0 (PC)
+
+I recently received a reply from the user on our BBS who had the
+original problem with FPROT and DOS5.0  Here it is.
+
+Msg #: *3521  Security: 0         MAIN
+ From:  ARTHUR MCCREARY           Sent: 07-20-91 18:54
+   To:  SYSOP                     Rcvd: 07-22-91 16:43
+   Re:  COMMENT
+
+Steve,  I tried all the suggestions and the one that works is placing
+the device driver f-driver.sys as the last entry in my config.sys.
+Thanks to you and every one for their help. Arthur
+
+- ---------------------------------------------------------------------
+
+My thanks as well.
+
+- -- Steve Clancy
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+%   Steve Clancy, Biomedical Library  %  WELLSPRING RBBS              %
+%   University of California, Irvine  %  714-856-7996 300-2400 24hrs  %
+%   P.O. Box 19556                    %  714-856-5087 300-9600 24hrs  %
+%   Irvine, CA  92713   U.S.A.        %  SLCLANCY@UCI.BITNET          %
+%                                     %  SLCLANCY@UCI.EDU             %
+%.....................................................................%
+%       "As long as I'm alive, I figure I'm making a profit."         %
+%                                           -- John Leas, 1973        %
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 21:02:00 -0600
+>From:    Peter Lenhart <SLC5C@cc.usu.edu>
+Subject: How do managers protect networks?
+
+Hi,
+
+I am writing a research paper on how to protect networks against virus
+infection.  I have some real good information already, but I would be
+indebted to anyone who feels like they might offers some more ideas.
+I would like to thank anyone in advance who might send me suggestions.
+Feel free to post or to e-mail them to me.  Thanks.
+
+Peter
+
+=============================================================================
+Internet: slc5c@cc.usu.edu
+=============================================================================
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 21:16:06 -0700
+>From:    msb-ce@cup.portal.com
+Subject: Philosophy, comments & Re: long and technical (PC)
+
+In a recent VIRUS-L posting, A. Padgett Peterson wrote:
+
+>         The simplest answer to the dilemma is to separate
+> into two tasks:
+>
+> 1) Determine the BIOS entry points for interrupts needed to
+> authenticate the system.
+>
+> 2) Authenticate the system.
+>         The easiest way to do this is to accomplish (1) during
+> the BIOS load before DOS (or any other O/S) has had a chance
+> to muddy the  waters.  Since at BIOS time, a PC is a fully
+> functioning computer, it  is posible to retrieve the pointers
+> to essential elements (Interrupts 0-1Fh) and store these values
+> in an accessable location, possibly encrypted.
+
+One problem that may occur is that of BIOS-shadowing. We can no longer
+assume that the BIOS is in ROM at the time that it is executed. Many
+machines now copy it to faster RAM. It is possible that a virus might
+intercept the BIOS call inside the BIOS itself rather than in the
+interrupt table.
+
+Relying on such an infection mechanism would limit the viability of
+the virus in today's world, but as the 1M chip becomes more and more
+standard, the percentage of machines that have BIOS modifiable during
+execution will go up.
+
+Fritz Schneider (msb-ce@cup.portal.com)
+
+------------------------------
+
+Date:    23 Jul 91 08:33:12 +0000
+>From:    cssr@hippo.ru.ac.za ( Mr S. Rahim )
+Subject: CARMEL TntVirus, A Trojan suspect. (PC)
+
+I got hold of Carmel Antivirus package through a bulletin board. After
+having installed it on the harddisk two weeks ago, I began to have
+problems. This included EXE and COM files which were working before
+Carmel came on the PC.  Some files hang up while others refuse to run.
+
+When TntVirus is activated, I performed a scan of the memory with
+McAffee Scan V80, and it reported that P1 Related virus was active in
+memory. Another file relating to the package when run, SCAN revealed
+that Brain was active in memory.
+
+The possibilities which arose with the indetification by Scan were
+that either Carmel software was using signatures to be resident in
+memory which were the same as those viruses. I tried to infect a COM
+and EXE file but there was no increase in file size not the date of
+modification. However during this process a directorying of the root
+directory revealed that an AUTOEXEC.$$$ file had been created in the
+past few minutes. I deleted that file but it appeared back again.
+
+I am leaving this question open for discussion. Is this a work of a
+trojan?
+
+Sajid Rahim
+
+- --
+============================================================================
+Internet: cssr@hippo.ru.ac.za
+- ----------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Tue, 23 Jul 91 07:01:57 -0400
+>From:    Charles_Rutstein@NIHDRG.BITNET
+Subject: New Devil's Dance?
+
+Does anyone have any hard evidence about the message displayed upon an
+attempted soft reboot when devil's dance is resident?  I've been
+experimenting here with a version that has a different message (and
+seemingly different actions) than those I've read about elsewhere.
+Most of the popular scanners seem to recognize it as Devil's Dance.
+Thanks for any info you can provide...
+
+                                       Charles
+
+------------------------------
+
+Date:    Tue, 23 Jul 91 13:07:00 +0000
+>From:    Sanford Sherizen <0003965782@mcimail.com>
+Subject: Re: virus for sale
+
+Thanks to Bill Murray for raising the issue of a virus for sale.  This
+is not a new situation.  About two years ago, I found out that someone
+was selling copies of the Pakistani Brain virus.  I called him and
+asked how I could get a copy.  He said that it was only available to
+sys ops and computer security people.  He asked whether I was one or
+the other and I told him that I was.  After that vigorous
+authentication check, I was told to send a certified check (no
+personal checks allowed) for $50 and I would get "the virus, source
+code, and antidote on a disk (NOT infected)".  I decided to forgo the
+opportunity.
+
+I have been told that under U.S. law, sale of this and other viruses
+appears to be legal.  However, if the seller claims it is a virus and
+it is only a harmless substitute, it can be considered as mail or wire
+fraud and therefore a federal violation.
+
+Next?  "Shoppers, in aisle 3, there is a special on our generic virus."
+
+Sandy
+
+------------------------------
+
+Date:    Mon, 22 Jul 91 12:12:36 -0400
+>From:    kyle@incomsec.ORG (Kyle Myers)
+Subject: NSAi announces Computer Security Connection
+
+     National Security Associates, Inc. (NSAi) has brought the
+Computer Security industry a long awaited tool " a worldwide network
+with the world's largest and most current compilation of Computer
+Security information.  It is a powerful tool because it is current, it
+spans all platforms and Security disciplines and it has a growing
+wealth of information " all accessible with a local phone call and a
+Keyword search!
+     The system, called the Computer Security Connection (CSC)), gives
+access to: 20-25 news articles per week entered from 190+
+publications; Law and computer crime; Virus information databases;
+shareware; personalities and experts conducting Forums; a restricted
+database of Hacker activities and "products"; Vendors of products and
+services with E-mail connection; Incident reports; the "Rainbow
+Series"; Back issues of ISPNews, Contingency Journal (more to come);
+Events Calendar; Bibliography; Planning help for new configurations;
+and more, all ReSearchable by Keyword queries!
+     Current and back issues of texts such as VIRUS-L (of course!),
+Computer Underground Digest and CERT Alerts available on the Internet
+are now included in CSC) " and on CSC) they are ReSearchable by
+Keyword queries!
+     NSAi is a private company whose charter is to collect and
+disseminate only Computer Security information " objectively " without
+political ties, vendor pressure or bureaucracy.  Its Board of Advisors
+plays an active role in providing policy input and is made up of
+representatives from: Johnson & Johnson, SRI International, ISSA, I-4,
+Eastman Kodak, Boeing, Mellon Bank, MIS Training Institute, Bank of
+America, as well as experts in Viruses, Cryptography and Privacy "
+many of whom will conduct Forums on their respective expertise.
+Special interest groups and organizations now have a medium to hold
+conferences and meetings in their own "Conference Rooms" and have all
+their input categorized and ReSearchable.
+     CSC) will invoice you for the $30.00 registration fee and
+$12.50 per hour of access time.
+     To gain access to CSC send your name, title, organization,
+address and phone number to mbrsvcs @ incomsec.org OR FAX this
+contact information to 703-758-8338.
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 129]
+******************************************

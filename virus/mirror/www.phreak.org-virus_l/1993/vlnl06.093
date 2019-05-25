@@ -1,0 +1,983 @@
+VIRUS-L Digest   Friday, 11 Jun 1993    Volume 6 : Issue 93
+
+Today's Topics:
+
+Computer Crimes Unit: Scotland Yard
+$5,000 Challenge
+Re: FDISK/MBR with OS/2 boot manager. (OS/2)
+Non-FTP Source for F-Prot? (PC)
+dual boot (PC)
+TSRs & Desqview (PC)
+Re: The Anti-Viral Software of MS-DOS 6 (PC)
+Yankee Doodle Virus - What does it do? (PC)
+How a floppy is accessed (was "DIR" infection) (PC)
+Anyone have something like this? (PC)
+Port Writes (PC)
+Anti-Virus Techniques and direct Port Writes (PC)
+F-Prot 2.07 (PC)
+Port Writes (PC)
+CPAV updates? (PC)
+Re: Cure against Tremor available? (PC)
+Tremor (PC)
+False alarms due to A-V colision (PC)
+CPAV updates? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a gatewayed and non-digested USENET
+counterpart.  Discussions are not limited to any one hardware/software
+platform - diversity is welcomed.  Contributions should be relevant,
+concise, polite, etc.  (The complete set of posting guidelines is
+available by FTP on cert.org or upon request.)  Please sign submissions
+with your real name; anonymous postings will not be accepted.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on CERT.org (192.88.209.5).
+
+Administrative mail (e.g., comments, suggestions, beer recipes)
+should be sent to me at: krvw@AGARNE.IMS.DISA.MIL.
+
+All submissions should be sent to: VIRUS-L@Lehigh.edu.
+
+   Ken van Wyk
+
+
+----------------------------------------------------------------------
+
+Date:    Wed, 09 Jun 93 05:32:17 -0400
+From:    S.M.Baines@sheffield.ac.uk
+Subject: Computer Crimes Unit: Scotland Yard
+
+I have recently reported an infection of Maltese Amoeba to the CCU at
+Scotland Yard (UK). They have written back to confirm the report, and
+have also sent details of the number of reports of the number of
+*REPORTED* viral infections in the UK from May 1991 to May 1992. It
+makes startling reading.
+
+The biggest reported viral infector is New Zealand 2. There were 20
+cases reported to the CCU. Next was Form with 16 reports. A total of
+20 virii are listed. The number of computers infected shows that
+Spanish Telecom infected over 750 computers (the highest in the
+list), followed by Jerusalem (>200), Form (>150), New Zealand 2
+(>100).
+
+It would appear that very few people are actually reporting virus
+infections to the CCU at Scotland Yard. It can't be that only about
+2000 computers in total were infected in the UK? I wouldn't have
+known about the CCU if I hadn't read it in Virus-L, and many other
+people are equally ignorant of its existance. It needs more
+publicity. It could help if with Anti Virus software there was a
+mention of it in the documentation, and a DOS text file that can be
+printed for the report form. If they made it clear that reports are
+dealt with in strictest confidence, and that it can all help to build
+up a case against people if they are ever caught, and that it IS a
+crime that has been perpetrated against them, then maybe reports may
+be more frequently made. Also, it may be worthwhile from time to time
+to put an advert in some of the computer press with details of what
+to do if you are infected and want to report it. What does anyone
+else think about this for an idea?
+
+Stephen Baines
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 15:42:42 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: $5,000 Challenge
+
+>    to its headquarters through mid-July to try their hand at
+>    loading a true virus (Trojan horses and bombs don't count)
+>    onto the system. The computer must be rendered non-bootable
+>    and files must be non-recoverable while V-Card is operating.
+
+Sounds like a carnival side show barker - no definitions and mutually
+exclusive -
+
+1) "Must load a true virus" - heck, even the experts cannot agree on
+    a definition.
+
+2) "The computer" - a Banana ? - "must be rendered non-bootable and files
+    must be non-recoverable while V-Card is operating". Heck I could prevent
+    that on an MFM, RLL, or SCSI drive with a SPDT switch and a 5k resistor.
+
+Now if they claimed that "all legitemate DOS commands" (like FDISK/MBR)
+"are still fully operational with V-Disk operating." Then I might be
+interested but as it is, all they are looking for is hype - and apparently
+are being successful.
+
+What they really need to do is to bring it to a suite with a complementary
+bar at the CSI conference in Washington (Capitol Hilton June 20-24) and let
+some professionals (note: I didn't say professional *what*) take a crack at
+it 8*).
+				Bemusidly,
+					Padgett
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 16:18:38 -0400
+From:    duck@nuustak.csir.co.za
+Subject: Re: FDISK/MBR with OS/2 boot manager. (OS/2)
+
+Thus spake Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv):
+>Actually it is usually simpler, In most Double Boot systems I know it
+>goes like this:
+>The partition table itself is a program that prompts for type of
+>desired boot, the selection made by the user replaces the "Active
+>Partition" byte in the MBR and reboots, so that this time the next
+>step in the chain (reading the boot-sector) is calling the desired
+>boot-loader, and it continues the load chain normally.
+
+Not necessary. MBR code which supports "double booting" [or, more
+accurately, "boot-time boot-partition selection"] doesn't need to
+modify the MBR and reboot!
+
+FDISK's "regular" MBR simply finds the bootable partition entry,
+reads the starting T.H.S of that partition into RAM at 0000:7C00,
+performs a simple sanity check on it [must start JMP; must end
+0x55 0xAA] and then JMPs to 0000:7C00. All that dual-boot MBR code
+needs to do is to ask the user to select a partition, and then boot
+from it as detailed above without taking the setting of that
+partition's "bootable" flag into account.
+
+I have MBR code which does just that -- if you do nothing during bootup,
+then the "bootable" partition is selected. If you hold down <Shift>
+during bootup, then you are prompted to select a partition number, and
+that partition is booted instead...you can even boot from a partition
+on a second physical drive, if you have one. FDISK's MBR code [last
+time I looked, anyway] won't let you do that. It insists that the
+"bootable" flag be set to 0x00 [unbootable] or 0x80 [bootable]. That
+value is then used as the drive specifier -- so you can only boot from
+drive 0x80 [first physical hard drive].
+
+OS/2's "dual boot", I gather, is different. This allows a DOS-FAT file
+system to contain OS/2 and DOS kernel files, and to have the *same*
+physical partition boot up either into the OS/2 kernel, or the DOS one.
+
+Paul
+
+    /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+    \  Paul Ducklin                         duck@nuustak.csir.co.za  /
+    /  CSIR Computer Virus Lab + Box 395 + Pretoria + 0001 S Africa  \
+    \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 10:19:30 -0400
+From:    ralf@meaddata.com (Ralf Grisard)
+Subject: Non-FTP Source for F-Prot? (PC)
+
+For those of us who don't have ftp access, is there any reliable
+source to get F-Prot?
+
+[Moderator's note: Try using FTP via one of the several ftpmail
+servers, such as ftpmail@decwrl.dec.com.  Send a mail message there
+saying "help" for more info.]
+
+- --
+Ralf Grisard                ralf@meaddata.com          !uunet!meaddata!ralf
+Mead Data Central, Technical Communications, P.O. Box 933, Dayton, OH 45401
+                              (513)865-7314
+     "As far as I know, my opinions are my own, not anybody else's."
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 15:57:25 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: dual boot (PC)
+
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+
+> (Vesselin Bontchev) writes in reply to Johan Wevers
+
+>JW:
+> >> using different operating systems. My direct question is: is it safe to
+> >> give the command FDISK/MBR on this drive, or would it destroy something?
+>VB:
+> > Should be safe.
+
+>I wouldnt bet my life on it.
+
+While Mr. Netiv appears quite knowlegable otherwise (and has hedged his
+statements admirably), here I must agree with Vesselin.
+
+FDISK/MBR does nothing to a valid partition table and neither "dual boot"
+method used by OS/2 changes anything else (that I am aware of - hedge 8*).
+
+OS/2 uses two methods to provide dual boot - if you boot from DOS a DOS
+program can change the active partition (two byte change to the P-Table)
+and the same from OS/2. A reboot is then necessary. Alternatively the
+"active partiton" can point to a selection sector that will continue the
+boot with a user selection. Neither is a function of the MBR code.
+
+COHERANT on the other hand uses custom MBR code. This will be affected by
+FDISK/MBR.
+
+				Warmly,
+					Padgett
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 18:56:57 -0400
+From:    radoslav@symantec.com (Radoslav Stanev)
+Subject: TSRs & Desqview (PC)
+
+Hello you Desqview gurus, antivirus writers, programmers, hackers, etc,
+
+I am developing a TSR which is hooking Int 21/Fctn 4B.  At the beginning I
+thought that it would be one tiny TSR, which could fit in one ASM file, but
+later it turned out to be the worst and the longest nightmare I ever had.
+
+The biggest problems which I have are with supporting Desqview.  I have
+solved several issues under other multitaskers, such as Windows and DOS
+Task Swapper, and now it's time to look at Quarterdeck's product:
+
+
+- -   Desqview does its own processing of the 4B function.  Thus, the TSR
+    looses control after Desqview was loaded.  Some network shells do
+    the same thing; that's why I check if a network shell was loaded and
+    "overhook" int 21.  Can I do something similar when Desqview launches?
+    When would it be the best time to intercept int 21 again?
+
+- -   How do I instantiate data under Desqview?  There are standard functions
+    provided by Microsoft for Windows & Task Swapper.  I can't find anything
+    like this in Desqview's API reference (probably because I did not have
+    enough time to read the whole book...)
+
+- -   For those of you who answered both questions, do you know if there is
+    anything else which I need to know for Desqview & TSRs?
+
+Thanks for all responses,
+
+Radoslav
+
+------------------------------
+
+Date:    Wed, 09 Jun 93 07:54:11 -0400
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: The Anti-Viral Software of MS-DOS 6 (PC)
+
+  In a previous message I wrote, among other things:
+>>                                              It is also clear that
+>> F-PROT is giving a false positive.  The only question is: Which scan-
+>> ner is at fault: MSAV or F-PROT?  If instead of running F-PROT (after
+>> MSAV) I run SCAN, FINDVIRU, or UTSCAN, no message is output.  Since
+>> the other three scanners disagree with F-PROT, the most likely answer
+>> is that it is F-PROT which is at fault in this case.
+
+ Paul Coen replies:
+> That's a really unique way of looking at it.  What is probably happening
+> is that F-PROT and MSAV happen to use the same string, or F-PROT uses
+> a sub-string of what MSAV is using.  MSAV is leaving unencrypted strings
+> in memory (like CPAV and Carmel Turbo A-V before it), and f-prot is
+> going off.  I've seen versions of other scanners give false positives with CP
+AV
+> or Turbo A-V.  What it comes down to is that because they leave strings in
+> memory, the whole MSAV/CPAV/TAV line is ruining perfectly good search strings;
+> at best, this is inconsiderate, at worst, it demonstrates a "screw you"
+> attitude which is unwelcome.
+
+Things are not quite that black-and-white.  Your argument misses at
+least two important points:
+  The first is that the program authors long ago made a sincere
+attempt to correct the problem, and as a result, the software has
+improved in this respect.  A few years ago, after running the then
+current version of CPAV, I had run a scanner which indeed found
+ghost positives in memory, as you mention.  However, a couple of
+months ago I was in contact with the head of the Israeli team
+developing the TAV/CPAV/MSAV software (it is developed partially in
+Israel and partially in the U.S.), who admitted that in the past the
+software caused serious problems for other scanners, but said that
+*they had fixed this a long time ago* (definitely over a year ago and
+in all probability closer to two years ago) by encrypting their scan
+strings and cleaning up when finished.
+  I tested this by running the same scanner (in fact approx. the same
+version of it) which I had run several years earlier on CPAV, but this
+time on MSAV.  It did not find any ghost positives.  And I am not the
+only one to report this, e.g. Vesselin found a similar result last
+January on a beta version of MSAV.  While this does not prove that
+*all* problems have been solved, it does confirm the fact that *some-
+thing* has indeed changed for the better during that interval, a fact
+which one would never guess from reading your posting.  Since the
+experimental evidence seemed to bear out the developer's claim, and
+since scanners other than F-PROT did not detect any false positives
+(a factor which would have been more significant if we were talking
+of *file* scanning), I became more or less convinced that everything
+had indeed been fixed.  Perhaps now it will be a little more under-
+standable why I came to the conclusion that "the most likely answer is
+that it is F-PROT which is at fault", although I now admit that that
+was an excessively strong conclusion.  Otoh, it is incorrect to con-
+tinue to take the developers of MSAV/VSafe to task two years later as
+if they still don't care.
+
+  Yesterday I contacted the same developer and asked him if he had any
+opinion why, if the problem has been fixed, F-PROT still reports
+*some* ghost positives.  After checking, he found that while VSafe
+encrypts fixed scan strings, it does not encrypt those containing
+wildcard portions.  (He says this will be fixed in the next release of
+VSafe.)  Thus it is correct that the current version of VSafe is still
+responsible for at least some of the false positives which F-PROT
+gives.  However, he could not conceive of any reason why F-PROT com-
+plains after MSAV is run *without VSafe in memory*, since he claims
+that *MSAV* encrypts *all* its strings.  (He suggested that Frisk try
+to check this out at his end.)  There also remains the question of why
+only F-PROT complains and not other scanners.
+
+  This brings us to the second point which is missing from your argu-
+ment:  One gets the impression from what you have written that the
+difference in behavior between F-PROT and the other three scanners I
+mentioned above is either (1) just a matter of luck (Frisk just
+happened to pick strings which are identical with or are sub-strings
+of MSAV's, whereas the other scanner developers just happened to pick
+other strings), or else (2) the other scanner developers went to the
+trouble of changing their scan strings so as not to conflict with
+those of MSAV/VSafe.  (Btw, F-PROT reports only the *first* virus
+which it finds in memory.  If allowed to continue, it might report
+several more, and if so, explanation (1) becomes less likely.)  In any
+case, there is no mention, in your account of things, of the important
+fact that *even if two scanners use the very same strings*, one of
+them might report ghost positives while the other one doesn't.
+  Not all scanners work according to the same strategy.  In general,
+there's no point in looking for a given virus where it can't possibly
+reside.  In particular, since most viruses align themselves on para-
+graph boundaries, UTScan searches for its strings only at *specific
+offsets relative to paragraph boundaries*.  This reduces both scan
+time and the likelihood of false positives (and not only those due to
+another scanner's carelessly leaving unencrypted strings in memory).
+Evidently F-PROT does not use such a strategy.  Thus UTScan is much
+less prone to ghost positives, without its developers having to take
+into account the particular strings used by CPAV/MSAV/VSafe.
+
+   Paul continues:
+> So basically, you're blaming F-Prot for not getting out of the way of
+> a crummy, problem-causing product.  Sorry, but that's blaming the victim.
+> F-Prot will probably get fixed, simply because people are going to make
+> the same conclusion as you, only based on even less -- they'll just say
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> "Gee, Microsoft is distributing this, so it can't stink.  Must be this
+> other program's fault."
+
+That is an unfair remark.  It would have been a bit more understanda-
+ble if I had never expressed any other opinion on MSAV/VSafe.  But
+since this entire thread is based on a single sentence which appeared
+in my evaluation of this software, it is unfair to take this thing out
+of context.  Anyone who reads my review will see that it is definitely
+*NOT* my conclusion that MSAV/VSafe "can't stink" (as you put it).  On
+the contrary, my conclusions concerning this software were on the
+whole negative.  However, I try to be as fair and objective as possi-
+ble, which means that even though MSAV/VSafe has many shortcomings, I
+don't just label it a "crummy, problem-causing product"; I check each
+accusation individually.  I am sometimes mistaken, of course, but to
+attribute the above conclusion to me is unjustified.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Wed, 09 Jun 93 10:05:21 -0400
+From:    m-overmier1@uiuc.edu (Zorkahn)
+Subject: Yankee Doodle Virus - What does it do? (PC)
+
+     I found the Yankee Doodle virus on a floppy disk one of my users
+brought in.  I have eradicated it and it did not infect any of our computers
+or network.
+     I am curious as to WHEN and WHAT the Yankee Doodle virus would do if I
+had not caught it.      ^^^^     ^^^^
+     Any and all replies are welcome!
+________________________________________________________________________
+
+        _/_/  _/_/  _/_/_/_/           M A R K   O V E R M I E R
+      _/ _/_/ _/  _/    _/     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    _/  _/  _/  _/    _/       Network Administrator, Personnel Services
+  _/      _/  _/    _/                   University of Illinois
+_/      _/  _/_/_/_/                 Internet: m-overmier1@uiuc.edu
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+------------------------------
+
+Date:    Thu, 10 Jun 93 03:45:05 -0400
+From:    "Roger Riordan" <riordan@tmxmelb.mhs.oz.au>
+Subject: How a floppy is accessed (was "DIR" infection) (PC)
+
+Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv) writes
+
+> Roger Riordan in a comment to Amir Netiv
+
+ >> Whenever you attempt to access a disk drive DOS first
+ >> checks the status of the door open line. If the door has been
+ >> opened since the last disk access DOS then reads the FAT.
+
+> This doesn't make sens. If the door has been opened since last disk
+> access, it is reasonable to assume that the floppy was replaced,
+> therefore it is necessary to first check the type of disk and to
+> calculate the location of the FATS, or else you might read garbage.
+
+>> Thus, in the normal state of affairs, the boot sector of each
+>> floppy is read just once. This READ is usually preceded by an
+>> attempt to read the FAT and this is preceded by a call to
+>> Int 13 to check the door opened status.
+
+> If what you sujjest is right, whay is it necessary to acess the boot
+> sector every time?
+
+I should know better than to assume that anything I measured last
+month applies now!  I find I have made two errors in my
+assuptions.
+
+The first was the statement that if the disk was changed the
+first thing DOS did was to read the FAT.  This is clearly wrong,
+and I think I probably confused myself by opening the door but
+not pulling the disk out, as the door opened flag is only set if
+the disk is actually pulled out 10 or 20 mm.
+
+I have done some more tests, and when I did a DIR, after changing
+a floppy, the sequence of calls to Int 13 (for DOS 5) was
+
+     Read door status
+     Read sect 1
+     Reset drive
+     Read sects 1, 6, 7, 8, 2, 1, 6, 7, 8, 6, 7, 8, 1
+"Volume in drive A has no label"
+     Read door status (Three times!)
+ "1 file(s), XXX bytes"
+     Read door status
+     Read Sect 3
+"   XXX bytes free."
+
+For a second DIR the sequence was simply
+
+     Read door status
+     Read sect 1
+     Read door status
+
+For some obscure reason the "reset drive" command has no effect
+until an error has occurred (indeed I almost convinced myself
+that it would actually hang a particular semi-compatible PC it it
+was issued in the absence of an error), and the first read after
+changing a disk always fails, so DOS reads sect 1, then resets
+the drive, then reads it again.
+
+Amir comments one of my statements makes no sense, but if he can
+give any logical explanation for the sequence above he is doing
+better than me!
+
+>> Thus, in the normal state of affairs, the boot sector of each
+>> floppy is read just once. ...
+
+This statement illustrates the danger of generalising from one
+persons experiences.  It is literally true for me, but only
+because I have written my own version of the disk utility D, and
+hardly ever use DIR.  My resident scanner VET_RES relies on the
+fact that DOS will read the boot sector of every new disk.
+During testing I observed that if, for example, I accessed a
+disk, so DOS read the boot sector, and then replaced the boot
+sector with an infected one, I could do whatever I liked to the
+disk without the infection being detected.  I could list the
+directory, run programs, edit files, anything I wanted to.  I
+never thought to try DIR, or even realised that I had not.  If I
+had I would have discovered, as Amir evidently has, that for some
+reason unknown it always reads the boot sector.
+
+It is interesting to note that despite all the advances in drive
+technology DOS apparently still always reads everything one
+sector at a time.  Stone Age software in a fancy box!
+
+Roger Riordan                 Author of the VET Anti-Viral Software.
+riordan.cybec@tmxmelb.mhs.oz.au
+
+CYBEC Pty Ltd.                                 Tel: +613 521 0655
+PO Box 205, Hampton Vic 3188   AUSTRALIA       Fax: +613 521 0727
+
+------------------------------
+
+Date:    Thu, 03 Jun 93 14:52:00 +0200
+From:    Malte_Eppert@f6051.n491.z9.virnet.bad.se (Malte Eppert)
+Subject: Anyone have something like this? (PC)
+
+Hello Waldi! Nice to meet you here!
+
+ > I think, a virus can also physically destroy tracs: he has only
+ > reformat some tracs with its own sector numbering. OK, it's only
+ > possible on old MFM/RLL or ESDI-HD-Drives, and I don't know
+ > viruses doing this, but like you can see ... it's possible.
+
+If some virus did that, simply reformat the track. If a virus can, you can
+also - where's the physical damage?
+
+cu!
+eppi
+
+- --- GEcho 1.00
+ * Origin: No Point for Viruses - Eppi's Point (9:491/6051)
+
+------------------------------
+
+Date:    Wed, 02 Jun 93 08:47:02 +0200
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+Subject: Port Writes (PC)
+
+bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+Vesselin wrote:
+
+ >>  > I thought that this would crash the computer. DOS seems to intercept
+ >>                                                  ^^^^^^^^^^^^^^^^^^^^^^
+
+And I replied:
+
+ >> Exactly. DOS. But _I_ am NOT dos. I am 'interacting' with the disk
+directly > ,
+ >> and I don't need any IRQs from it when I can LOOP until it's not busy.
+
+So Vesselin continued:
+
+ > Yes, I understand. But I mean that your activities will "steal" some
+ > disk access operations from DOS. DOS will not "see" them. I don't know
+ > why (or even if) it is looking for them; I just assumed that there is
+ > a good reason for that and that if a few of them suddenly disappear,
+ > this could have unwanted results.
+
+Sorry, Vesselin, but DOS has nothing to do with it. DOS interprets the Device
+requests (sent to logical deviceses, which represent drives), and the logical
+requests (sent by interrupts 25h and 26h), and translates the data to
+physical address values, then calls INT 13h.
+
+It is interrupt 13h that talks with the drive, including waiting for the busy
+line to go off, calling the DEVICE BUSY interrupt (15h/ah=90), respoding to
+any drive IRQ's (if at all), and INSB'ing/OUTSB'ing the sector data from and
+to the controller buffer.
+
+Vesselin wrote:
+
+ > Wait, wait, wait, this cannot be true. When you want to do some disk
+ > access, you eventually reduce it to INT 13h calls to the hard disk
+ > handler, which is in the BIOS. (Even if you request the disk access at
+ > a higher level, e.g. from DOS, it is still reduced to INT 13h calls.)
+
+ > When the INT 13h handler in the BIOS gets control, it must somehow
+ > perform the disk access. Obviously - through the ports (unless the INT
+ > 15/90 handler does it, which I find difficult to believe). What I am
+ > trying to say is that each time when the BIOS accesses the disk
+ > through the ports, this is caused by an INT 13h request. Therefore,
+ > your program must match the INT 13h requests with the "device busy"
+ > interrupts, which are caused by the controller.
+
+NO! Come on, Vesselin, I thought you figured it out by now.
+
+I do NOT need any IRQ when PORT-INTERACTING with a drive! Why would I use an
+IRQ, if I can simply LOOP and wait until the drive is DONE? Since I'm don't
+have anything else to do at the moment (which distinguishes me from DOS), I
+have all the time I need to wait for the busy line to go off. I don't need
+the IRQ.
+
+The DEVICE BUSY interrupt, usually does nothing. At one time, someone showed
+how you can multitaks with that interrupt, as it is so commonly executed by
+the BIOS, that it really takes a valuable CPU range and disables it, so to
+speak. In most cases, it is not used, and a virus writer couldn't care less
+for programs that DO need that interrupt.
+
+I said I can distinguish between IDE, MFM and SCSI.
+
+Vesselin:
+
+ > Sure, you can. I meant that you won't be able to use the method on MFM
+ > disks and there are still quite a lot of them around... But, the virus
+ > author usually don't care.
+
+Exactly. The virus writers don't care, which is why they also don't care
+about the Device Busy interrupt.
+
+Inbar Raz
+Chief Data Recovery
+- - --
+Inbar Raz                 5 Henegev, Yavne 70600, ISRAEL. Phone: +972-8-438660
+Chief Data Recovery, 15 Habanim, Nes-Ziona 70400, ISRAEL. Phone: +972-8-400070
+Netmail: 2:401/100.1, 2:403/100.42, 9:9721/210 nyvirus@weizmann.weizmann.ac.il
+
+- --- FMail 0.94
+ * Origin: Inbar's Point - Home of the first UnTinyProg. (9:9721/210)
+
+------------------------------
+
+Date:    Wed, 02 Jun 93 08:27:00 +0200
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+Subject: Anti-Virus Techniques and direct Port Writes (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) wrote:
+
+I wrote:
+
+ >>The moment someone uses QEMM386 in stealth mode, there goes your FAR call.
+
+A. Padgett replied:
+
+ > True, but not if you load from the BIOS *before* QEMM, then the fact
+ > that QEMM tool it away is easily detectable (was how I found out what
+
+Out of mere curiousity - How do you plan on doing that? Correct me if I'm
+wrong, but I see these options possible:
+
+1. Load a non-resident device driver before QEMM
+2. Go even deeper and write an MBR program that'd do that.
+
+ > This is deeper than I usually get but Inbar is quite good at first
+ > generation problems so we need to use some secong generation thinking.
+
+Thanks for the compliment... I just don't know THAT much about viruses, so I
+do my best to help in fighting/avoiding them.
+
+ > Before the 386 came out, "big" software all used page frame memory to
+ > swap extended memory in and out by designating a 64k upper memory area
+
+------------------------------
+
+Date:    Wed, 02 Jun 93 08:36:01 +0200
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+Subject: F-Prot 2.07 (PC)
+
+bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev) wrote:
+
+Vesselin originally wrote:
+
+ >>  > Well, SCAN says that it has been "damaged" - why do you think that
+ >>          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+And I replied:
+
+ >> That's the whole point! It DOESN'T.
+
+Vesselin continued:
+
+ > Ooops, I see where the misunderstanding comes from. Mea culpa, you are
+ > right. I uncompressed the file with the program UNP 3.01, while you
+ > have used PKLITE -x. Obviously, UNP seems to have a bug, because it
+ > uncompresses to a file which is a few bytes shorter than the original.
+ > Obviously, the file length difference triggers SCAN's alarm. Is the
+ > author of UNP listening?
+
+The problem with programs like Ben's (Ben Castricum, benc@solist.htsa.aha.nl)
+is that they don't REVERSE the process. They manipulate the extracting
+algorithm attached to every compressed file, and they capture the results.
+Not always do they actually reply with the original file, but whatever comes
+out works in most cases.
+
+Ben does not read this echo, to my knowledge, but you have his address now.
+
+I expressed my opinion:
+
+ >> I believe that such programs should ask me wether it was I who tampered
+wit > h
+ >> them. Only if I say yes, will they agree to run.
+
+Yet Vesselin responded quickly:
+
+ > Not good. Do you imagine how many (l)users will always reply 'Yes' to
+ > such questions? When it is a security-related question, one has to be
+ > always paranoid and never rely on the competence of the users...
+
+Oh God. I hate that.
+
+Say, Fridrik, is there a possibility for a special version for people who
+know what they're doing? :-)
+
+Vesselin:
+
+ > But it's a cute idea to veirfy both the compressed and uncompressed
+ > image of the file and to accept any of them - maybe more producers of
+ > anti-virus software should become to implement it.
+
+I think Frisk should do that. If I do DIET -RA, thus resore the REAL original
+file, he should support that form as well. TO MY OPINION.
+
+Inbar Raz
+Chief Data Recovery
+- - --
+Inbar Raz                 5 Henegev, Yavne 70600, ISRAEL. Phone: +972-8-438660
+Chief Data Recovery, 15 Habanim, Nes-Ziona 70400, ISRAEL. Phone: +972-8-400070
+Netmail: 2:401/100.1, 2:403/100.42, 9:9721/210 nyvirus@weizmann.weizmann.ac.il
+
+- --- FMail 0.94
+ * Origin: Inbar's Point - Home of the first UnTinyProg. (9:9721/210)
+
+------------------------------
+
+Date:    Wed, 02 Jun 93 09:06:03 +0200
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+Subject: Port Writes (PC)
+
+bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev) wrote:
+
+ > Inbar Raz (Inbar_Raz@f210.n9721.z9.virnet.bad.se) writes:
+
+ >> The moment someone uses QEMM386 in stealth mode, there goes your FAR call.
+
+ > Heh... Padgett's protection programs are usually invoked when the boot
+ > sector is executed, so he doesn't care much about QEMM and all its
+ > stealth modes... :-) It is just not loaded at that time... That's why
+
+This answers the question I asked Padgett, as for in what manner his programs
+run. I said I could think of two ways - one as a device driver run before
+QEMM, and one as an MBR code.
+
+ > Padgett keeps repeating that the protection must begin from the BIOS
+ > level - then the machine is being booted up.
+
+Ofcourse. Before DOS touches things :-)
+
+ > Who told you that Padgett is talking only about INT 13h? :-) In order
+
+This is useless. Since I now understood what method Padgett uses, I withdraw
+from this argument.
+
+I said:
+
+ >> Remember what Vesselin wrote about the new russian virus? It was
+ >> undetectable. And it uses a one-degree-less technique from port-writes.
+
+Vesselin replied:
+
+ > Uh, I didn't say that it was undetectable. I only said that it is able
+ > to stealth its presence, even if you have a clean path to the INT 13h
+ > handler. I'm pretty sure that it will be detected by Padgett's boot
+ > sector protection program. Maybe VirStop will be able to say something
+ > meaningful about some interrupt vectors being modified (Frisk?).
+
+Ofcourse. Everything that runs BEFORE DOS, and therefore before any devices/
+TSRs, can do that.
+
+ > It is just one more trick to think about; nothing else. OK, it caught
+ > us by surprise, OK, the current "automatic boot sector virus removers"
+ > will most probably miss it, but it is far from undetectable...
+
+Sorry if I misunderstood you.
+
+Inbar Raz
+Chief Data Recovery
+- - --
+Inbar Raz                 5 Henegev, Yavne 70600, ISRAEL. Phone: +972-8-438660
+Chief Data Recovery, 15 Habanim, Nes-Ziona 70400, ISRAEL. Phone: +972-8-400070
+Netmail: 2:401/100.1, 2:403/100.42, 9:9721/210 nyvirus@weizmann.weizmann.ac.il
+
+- --- FMail 0.94
+ * Origin: Inbar's Point - Home of the first UnTinyProg. (9:9721/210)
+
+------------------------------
+
+Date:    Sun, 06 Jun 93 11:05:00 +0200
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: CPAV updates? (PC)
+
+Alan Boon writes:
+ > With Bootsafe and Vsafe running, your system is well
+ > protected provided you update the signature files.
+Yeah sure, and your system is also 5 times slower then usual. Did you ever
+stopped to check the performance of your PC with or without these programs in
+memory?
+
+ > It offers a comprehensive protection system that no other can match.
+WRONG !  Many others can match, sometimes better.
+
+ > Anyway, it wasn't the user interface that attracted me but the
+ > protection level it offered.
+You mean the protection level you 'think' it offers.
+
+Usually users tend to fall for things that no onw bothers to test, and
+it is many times wrong. Besides, if you really want to be protected
+you must choose all the switches ON, and then the program becomes a
+real menace, when it rings on anything you do. Ofcourse if you trip
+upon a virus that "knows" how to uninstall VSAFE and is not yet known
+to it (that's easy today, there are already several viruses htat do
+so), then you'll get infected, believing that nothing is wrong with
+your system, and become a threat to those you exchange floppies with.
+THAT, is the greatest threat of all!
+
+Try some other programs, you'll be surprised.
+
+regards
+
+* Amir Netiv. V-CARE Anti-Virus, head team *
+
+- ---
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Fri, 04 Jun 93 19:22:00 +0200
+From:    Robert_Hoerner@f2170.n492.z9.virnet.bad.se (Robert Hoerner)
+Subject: Re: Cure against Tremor available? (PC)
+
+Hello Vesselin,
+
+ >> F-PROT 2.08 finds it.
+
+ VB> Unfortunately, neither version 2.08, nor version 2.08a of F-Prot is
+ VB> able to find the Tremor virus -reliably-, let alone to disinfect it.
+
+My information was, that f-prot would find it _reliable_, but I did not check
+it out :(
+I checked TBCLEAN against one tremor-infected file and it cleaned it perfectly.
+Since TBCLEAN uses something like a soft-ICE to find the original codeentry I
+am sure that it will clean all other files, too.
+
+ >> I myself wrote a finder+cleaner : ANTISER.ZIP, frequestable. It
+ VB> BTW, are you sure that your program detects the Tremor virus reliably?
+
+Yes I am :) You already have it, and I'm sorry, that you need a scanner
+instead of a residend desinfector/vaccine.
+Btw : I have no access to internet at all, must ask for an account first.
+
+ VB> This is extremely difficult to test, because the virus has a
+ VB> considerable potential for polymorphism, but mutates very slowly. That
+ VB> is, even if you generate a few thousands of replicants, you'll still
+ VB> have only a few different mutations and a test based only on them
+ VB> might not be good enough.
+
+C. Fischer wrote there are 5.8 billion (german "Billionen" or USA "billions" ??
+) possibilities. I didn't count it :) but there are a lot of them.
+
+Ok, but there is only one single and constant "am I here" :) Therefore antiser
+and NEMESIS will find it reliable (and since i have made a complete
+disassembly, I am sure, that this "am I here" is absolutely correct !).
+
+I did not start to make a reverse polymorphic machine for it, since I have no
+use for it at all (I am using nemesis :)
+
+greetings from karlsruhe,frgdr,
+      Robert
+
+- ---
+ * Origin: Virus Help Service Karlsruhe, 49-721-821355 (9:492/2170)
+
+------------------------------
+
+Date:    Sat, 05 Jun 93 09:16:04 +0200
+From:    Pedro_Lima@f0.n462.z9.virnet.bad.se (Pedro Lima)
+Subject: Tremor (PC)
+
+ DME> have clean backups? Nooooo! (Incidentally, how does one make sure that
+ DME> the backups are *really* clean? If no permanent infection watch is run
+ DME> - - as of course should be, but also of course often is not - you are
+ DME> apt to sooner or later replace the clean copy with an infected one,
+ DME> aren't you?)
+
+ There's no absolute way to make sure the backups are clean. However, in
+ a disaster situation, you can restore the infected files and what's
+ perhaps more important, the data. You then use a cleaner to erradicate
+ the infection or, even better, replace all infected files with clean
+ ones from the master diskettes. The conclusion is that an infected
+ backup can be useful too.
+
+ DME> While we are at it: I can't remember to have seen in the discussion
+ DME> any description of Tremor's payload. Is there more to it than the
+ DME> trembling screen image? Or has it not yet been fully analysed?
+
+ I believe it also shows sometimes a message in the screen. It seems
+ there is no destructive payload in Tremor, but it isn't my analysis, so
+ I really don't know.
+
+ Regards,
+
+ Pedro Lima
+
+- --- FMail 0.94
+ * Origin: Kaos BBS * Lisboa, Portugal * +351-1-8869085 (9:3511/104.0)
+
+------------------------------
+
+Date:    Tue, 08 Jun 93 11:57:00 +0200
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: False alarms due to A-V colision (PC)
+
+I've lost track of who is saying:
+
+ > What is clear is that in this case F-PROT is complaining about what
+ > *MSAV* has left in memory, not about VSAFE.  It is also clear that
+ > F-PROT is giving a false positive.  The only question is: Which scan-
+ > ner is at fault: MSAV or F-PROT?  If instead of running F-PROT (after
+ > MSAV) I run SCAN, FINDVIRU, or UTSCAN, no message is output.  Since
+ > the other three scanners disagree with F-PROT, the most likely answer
+ > is that it is F-PROT which is at fault in this case.
+
+IMHO the problem is *defintly* in CPAV (or MSAV or TURBO-A-V, all
+practically the same product). These products assume that they are
+working alone, and that no other Anti-Virus will be applied to the PC
+at that time (wich is a legitimate assumption), so they don't bother
+to encrypt the signatures, (how about something simple like swapping
+words ? or adding a constant or simple xor, is it so dificult? or is
+it just arrogance?).
+
+It is resonable that ANY Anti-Virus will do so, BUT in such cases it is
+necessary to tell that to the user.
+
+So the alternatives probably are:
+1. That all of us (A-V manufacturers) start encypting our    signatures (those
+few of us that still doesn't).
+2. That we all start detecting eacother`s product and    display a warning or
+disable the other product  ;-(
+3. That we let people know that comtimes (CPAV etc... in    particular) using
+more then one Anti-Virus at a time is    a bad idea.
+4. Anything I didn't think about ?.... Vesseline ? ;-))
+
+BTW: did any of you noticed that "some" Anti Virus products hide the MBR so
+that if you try to read and rewrite it (simple INT 13h) you'll end up with a
+blank MBR?  8-))
+
+Paul R. Coen commented that people will usually put the blame on
+the other product because they'll think:
+ > "Gee, Microsoft is distributing this, so it can't stink.  Must be this
+ > other program's fault."
+And I couldn't agree with him more! People have the habit of playing "folow
+the leader" (in various fields), Not always for the best!
+
+"thoughts come from the mind, not from the heart."....(encient scientific
+assumption).
+
+* Amir Netiv. V-CARE Anti-Virus, head team *
+
+- ---
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Sat, 05 Jun 93 09:15:03 +0200
+From:    Pedro_Lima@f0.n462.z9.virnet.bad.se (Pedro Lima)
+Subject: CPAV updates? (PC)
+
+ AB> With Bootsafe and Vsafe running, your system is well protected
+ AB> provided you update the signature files. It offers a comprehensive
+ AB> protection system that no other can match. Anyway, it wasn't the user
+ AB> interface that attracted me but the protection level it offered.
+
+ I disagree.
+
+ 1 - Resident scanners aren't invulnerable to some viruses, such as
+ Tremor.
+
+ 2 - There are quite a few programs which offer a much more
+ comprehensive protection, such as the TBAV package or Integrity Master.
+ Besides, to have REAL protection, you start with backups, an integrity
+ checker (or several), and several scanners/cleaners (personally I use
+ SCAN, F-PROT and TBAV). You can also add to this a resident scanner, if
+ you don't mind having a little bit less memory (I do).
+
+ 3 - The protection level offered by CPAV is really quite poor, judging
+ by several independent opinions I've been gathering through the last
+ years and also by some tests I performed against my collection of
+ viruses/trojans.
+
+ Anyway, if you like it, use it, why not? Glad it isn't MY system,
+ though.
+
+ C ya, Pedro Lima
+
+- --- FMail 0.94
+ * Origin: Kaos BBS * Lisboa, Portugal * +351-1-8869085 (9:3511/104.0)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 93]
+*****************************************
+
+

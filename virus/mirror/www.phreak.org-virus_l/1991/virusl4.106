@@ -1,0 +1,531 @@
+VIRUS-L Digest   Thursday, 20 Jun 1991    Volume 4 : Issue 106
+
+Today's Topics:
+
+Re: Virus scanners (PC)
+Questons about "Disinfectant" are ANSWERED.. Thanks (Mac)
+virus detection by scanners ? (PC)
+re: FSP and sales figures (was: Into the 1990s)
+Int 24 virus info needed (PC)
+Re: Checksumming
+How viruses actually spread
+Review of Victor Charlie (addendum) (PC)
+Spanish Virus/Telefonica (PC)
+Re: Scanning infected files (PC)
+Re: joshi & vsum & f-prot & ll format (PC)
+Re: virus detection by scanners ? (PC)
+Requirements for Virus Checkers (PC)
+Re: Interesting interaction ( VIRx & SCAN ) (PC)
+
+is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+--------------------------------------------------------------------------------
+
+Date:    18 Jun 91 11:53:35 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Re: Virus scanners (PC)
+
+>Date:    Mon, 17 Jun 91 13:05:00 -0400
+>From:    Al Woodhull <AWOODHULL@hamp.hampshire.edu>
+
+>The new files contain all of the infected code and so are
+>good test targets, but since there is no way to execute the infected
+>code it is essentially just a block of data.
+
+They aren't necessarily good test targets.  "Bulk" scanners (like
+IBM's), that look through every byte of every file for patterns, will
+identify them as infected, but scanners that look at, for instance,
+specific areas based on the file's entrypoint will not see them as
+infected, even if they work fine on actually-infected files.  I
+believe Alan Solomon's Anti-Virus Toolkit (I may have the name wrong)
+is of the latter kind, for instance.  So if a scanner doesn't see
+those files as infected, it doesn't necessarily mean that it wouldn't
+see a normally-infected file as such...
+
+DC
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 11:11:11 -0600
+From:    James Firmiss <firmiss@cae.wisc.edu>
+Subject: Questons about "Disinfectant" are ANSWERED.. Thanks (Mac)
+
+Thanks for all the info...
+
+ "Vaccine (TM) 1.0.1", "KillVirus", and "Kill WDEF - virus INIT" have
+been cast into our pit of obsolete & useless programs (with "Ferret"
+and "Kill Scores").
+  Disinfectant 2.4 and it's init are on all our MACs.
+  Sam Intercept is on all of them too.  I hear it requres some sort
+of password to remove it.  I've never tried to but I don't think anyone
+here remembers what the password is.  I'll have to RTFM (if I can FIND TFM).
+
+
+ + -  - +   |... P_lasma         --- James Firmiss     (Foxx Fox) ---
+  - + +  -  |... S_ource         --- firmiss@cae.wisc.edu         ---
+ +  +  - =====>+ I_on            --- Univ. of Wisc. Madison       ---
+  -  +  -   |... I_mplantation   --- Materials Science Program    ---
+ - + - + -  |..._______________________________________________________
+         "Beep.  Beep Beep.  Beep Beep."  -  vi editor
+
+------------------------------
+
+Date:    18 Jun 91 13:05:32 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: virus detection by scanners ? (PC)
+
+>From:    hermann@uran.informatik.uni-bonn.de (Hermann Stamm)
+>Date:    07 Jun 91 14:33:23 +0000
+
+>I have a few questions concerning detection of virii in general and
+>1701 in special.
+
+The main thing you've discovered here is that scanners only reliably
+detect the viruses that they know about.  If you create a new virus
+(from scratch, or by modifying an old one), it's very likely that some
+scanners will no longer detect it.  No big surprises there!
+
+>First of all, I hope that only good guys are on this list, because the
+>remarks made here would otherwise result in hundreds of newly virii.
+
+Almost certainly a false hope; there's no reason to think that no
+virus writers are reading this.  On the other hand, I think they
+already understand the principle!  One could have wished you'd been a
+little less explicitly helpful to them, but I don't it'll hurt, at
+least in the long run.
+
+> - what other scanner should I try for these versions ?
+
+Some scanners may be "lucky", and see your home-grown variants as
+infected.  IBM's Virus Scanning Product, for instance, will recognize
+the first of your monsters as a variant of the 1701.
+
+> - is it true, that any scanner must try to look at the
+>   semantics of such decoders, and not at the shape ?
+>   (undecidable problem ?)
+
+Yep, deciding whether or not a given program is a virus is definitely
+undecidable.  Fred Cohen proved that awhile back.  So if you take some
+existing virus, and make some changes to it, the question of whether
+or not the result is still a virus is not one that *any* program is
+going to get right all the time.  Scanners reliably detect only
+*exactly* the viruses they know about, not variants that you (probably
+unwisely) choose to create.
+
+> - which systems are good by looking at the length of
+>   files and reporting differences ?
+
+Any good modification-detection program will look at the *contents* of
+files (not just the length), and tell you what's changed.  Of course,
+if you want to be able to trust the result, you have to get the
+machine into a known state first (cold-boot from a trusted floppy,
+don't run anything from the suspect hard disk).
+
+> - Is the following behaviour possible for a virus:
+>
+>   After getting resident, it forces to do a warm-start
+>   with ctrl-alt-del, and then it copies itself to all
+>   .com-files encountered during rebooting
+>   (like command.com, ...).
+>
+>   I think, that this is the way most of my .com-files
+>   were infected.
+
+A virus could certainly do that, but the 1701 doesn't.  Most likely it
+infected something in the autoexec, so that the next time you booted,
+it got control early, and then infected everything else executed
+thereafter (that's how the 1701 works; it infects every com executed
+after you run the first infected one).
+
+DC
+
+P.S. Assume that anything you post in public will be read by
+     large number of virus authors.   Please *don't* post
+     live virus code, or suggestions for improvements to
+     existing viruses!   *8)
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 13:24:44
+From:    microsoft!c-rossgr@uunet.uu.net
+Subject: re: FSP and sales figures (was: Into the 1990s)
+
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+
+(Sorry for the delay...off line for a while)
+
+>Ross: we seem to be cross communicating. In our shop we do not use "pre-
+      >installed" copies, no two machines are alike anyway & we are running
+      >everything from DOS 2.0 up. On installation, the package we use takes
+      >3-5 minutes to take a "snapshot" of the PC and record every executable
+      >on it during installation.
+
+So, then, you have to install the program on each machine.  Taking
+that "snapshot" is a good idea, but still has problems if you use a)a
+new seed on each machine and b) store that seed someplace where it can
+be seen by "the bad guy".
+
+If someone is going to subvert the code, they're gonna subvert the code
+and there's nothing we can do about it.  It's not as if DOS were a real
+operating system -- it provides no real protection and simply putting
+more and more layers of "feel-good-and-warm-and-fuzzy" dressing on DOS
+simply makes a person *feel* better, but provides them with nothing.
+
+If somebody wanted to mcreate a virus that gets around my stuff and the
+code of everybody else out there, they probably could.  Targetting my
+code is sorta silly: it's too easy to simply go right out to the disk
+controller if you really needed to.
+
+>Only if the "bad guy" knows where it is stored and if the offsets are
+>the same on every machine - one of the drawbacks to
+>"pre-installation". If you cannot ensure the physical integrity of the
+>machine all bets are off. It would take a complex and specifically
+>targetted piece of software to be able to determin that you were there
+>(and not some other routine) and bypass it - not for an amateur.
+
+Right.  So, if they're targetting my code, no protection will suffice,
+if they are not targetting my code, why bother making things more
+complex.  Your mileage may, of course, vary.
+
+> One
+>of the problems is that at present there is a single criteria for
+>judging PC protection programs: the number of viruses it detects.  In
+>actuality, this is one of the lesser threats that a full package
+>should take care of.
+
+Well, the efficiency of a package in stopping viral infections has yet
+to have any scale to measure it by.  When such a scale exists, all the
+vendors will be climbing to the top of that heap, too.
+
+Ross
+
+(My views, not Microsoft's)
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 14:26:47 -0400
+From:    Alex Nemeth <AN5@CORNELLC.BITNET>
+Subject: Int 24 virus info needed (PC)
+
+I remember something about an INT 24 virus that was discussed several
+months ago. could someone pleas send me some info on it, or tell me
+which back issue of Virus-L where i might find more.
+
+Thanks
+
+Alex Nemeth
+AN5@cornellc.cit.cornell.edu
+AN5@CORNELLC.BITNET
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 15:17:36 -0400
+From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Re: Checksumming
+
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+
+>  Mike Lawrie writes:
+>>                         ... sooner or later this scenario [infecting
+>>files by performing SCAN while a virus like Plastique is in RAM] will
+>>re-occur, as you will get hit with a similar type of virus that McAfee
+>>has not yet catered for, even if you have their very latest version.
+>Right;
+
+First, organizations have been woefully lacking in training of
+personnel expected to deal with malicious software (a management
+problem). Our technicians get two days of targetted training before
+being certified to respond to suspected viruses.
+
+That said, since employees are instructed to power down and quarentine
+any PC suspected of having a virus, the first action after questioning
+the employee for symptoms is to cold boot from a write-protected
+floppy and check the system out in that manner including a "scan" of
+the disk and examination of the MBR and DOS Boot Record
+
+Only if that comes up negative is the PC allowed to boot itself. At
+this point the system integrity is repeatedly validated using
+MEM/DEBUG and CHKDSK to determine if something is trying to go
+resident.
+
+At this point, McAfee's SCAN is often used in a different way: the
+command "SCAN NUL /M" results in only memory (no files) being checked
+for all viruses it knows about. If this fails then file comparisons
+are done and the audit trails are checked (all PCs including employees
+home machines are authorized to use a site-licensed checksumming
+program).
+
+Again a layered approach by trained personnel is necessary to protect
+against the sort of global disaster mentioned (incidently, during my
+training session at the CSI Conference in Denver, I thoroughly
+infected the demo PC with the 4096 only to discover that there was no
+5 1/4 boot floppy to use for recovery - Had several 3 1/2s for the
+laptop, but no 5 1/4s.  Entertaining.)
+
+BTW the McAfee product .DOCs do mention in several places the
+advisability of booting from a known clean, write-protected floppy
+first.
+
+>>A checksummer gives you no
+>>security whatsoever, because it does not prevent a viral infection.
+
+>True, a checksummer does not prevent infection, but at least it can
+>*detect* infections, and that's a lot better than no security at all!!
+
+Depends on the checksummer - the one we use performs the checksum
+routine on any program presented for execution. If the program is not
+known to the audit trail, a screen warns the user that the program is
+unknown.  Depending on the setting, the user may or may not be
+permitted to execute the program. I suppose that this really comes
+under the heading of access control but should be part of any
+integrity management solution.
+
+>... a program which prevents infections through floppy boots (to
+>be mentioned soon)...
+
+I believe that VSHIELD protects from hot-boots now - do not believe
+that prevention from cold boots can be done without hardware or
+special BIOS.  My next project now that DISKSECURE is essentially
+complete will be a small addition to warn the user on boot if a floppy
+is in the drive - should not be difficult or require much code (trap
+cntrl-alt-del, check for floppy, write warning message, loop for
+response), several viruses make use of this technique already so it
+cannot be too difficult (famous last words).
+
+					Cooly (a/c working again)
+
+							Padgett
+
+------------------------------
+
+Date:    Wed, 19 Jun 91 00:50:00 +0000
+From:    William Hugh Murray <0003158580@mcimail.com>
+Subject: How viruses actually spread
+
+>Of course I don't do much with shareware or BBS downloading which is
+>where I imagine most of the problems are.
+
+Along with many others, you imagine an untruth.  Both PC and Mac
+viruses spread by sharing of machines and diskettes.  They might have
+been spread by BBSs but they have not been.  They might have been
+spread by shareware, but they have not been.
+
+Regular readers of this forum are aware of this, but it bears
+re-stating, particularly in the face of specualtion to the contrary.
+
+The most successful viruses infect boot sectors of diskettes,
+partition tables or boot sectors of hard drives, and go resident,
+i.e., they are TSRs.  They spread when users permit strange diskettes
+to be inserted in their machines, or when they put their diskettes in
+machines that they did not themselves boot from a known source.  While
+they can and do spread marginally in other ways, this high-risk
+behavior accounts for their current success.
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 18:23:54 -0700
+From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Review of Victor Charlie (addendum) (PC)
+
+For those who want to "try before you buy", Victor Charlie version 3.2 is
+a "freeware" demo version.  The file VC3-2.ZIP should be available on
+BBS's, and is posted on SUZY.
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Wed, 19 Jun 91 04:14:00 +0000
+From:    Ben Zajac <0004193926@mcimail.com>
+Subject: Spanish Virus/Telefonica (PC)
+
+Recently, a virus was discovered at Oxford University, Oxford
+(England) and the City Univerity at London (England).  It has been
+named, "Spanish Telecom," and also, "Telefonica."
+
+According to information that I have received from the UK, the
+virus does not kick in until after the system has been booted up
+400 times.
+
+The code reportedly contains the following message:
+
+             "Menos tarifes y mas servivios"
+
+    Which means: "Lower tariffs, more service"
+
+Damage -- When triggered, destroys (overwrites) hard disks.
+
+Detection:
+
+     The virus is in *.COM files and boot sector.
+
+     Pattern:
+
+     Header 1 - 881D 8200 83FB 0074 188F 5500 B2; OFFSET 034H
+
+     Header 2 - 83ED 09BE 2001 03F5 FC86; OFFSET 024H
+
+     Boot Sector -
+
+                8A0E EC00 8E700 0003 F18A 4C02 8A74 03C3;OFFSET 083H
+
+I have not personally examined this virus, however the I have no
+reason to doubt the source.
+
+           Bernard P. Zajac, Jr.
+           MCI MAIL - 4193926@MCIMAIL.COM
+
+------------------------------
+
+Date:    19 Jun 91 08:26:44 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Scanning infected files (PC)
+
+>Good question, but: wouldn't it be possible for the stealthy virus to
+>trap the sector I/O and "fix" it to also hide its tracks?
+
+Not only possible - it has already been done.  At least one virus,
+simply known as INT13 does just this.
+
+- -frisk
+
+------------------------------
+
+Date:    19 Jun 91 08:30:32 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: joshi & vsum & f-prot & ll format (PC)
+
+treeves@magnus.acs.ohio-state.edu (Terry N Reeves) writes:
+>	f-prot must be intended to work - "cured" - so can the author
+>speak to this?
+
+As far as I knew, F-DISINF should have been able to remove the Joshi virus.
+I'll look into this right away and check what the problem is.
+
+- -frisk
+
+------------------------------
+
+Date:    19 Jun 91 08:22:54 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: virus detection by scanners ? (PC)
+
+hermann@uran.informatik.uni-bonn.de (Hermann Stamm) writes:
+>  - what other scanner should I try for these versions ?
+
+It does not matter - you will get practically the same results.  My
+scanner may detect some of those SCAN missed or vice versa, but that
+is not important.
+
+What is important is that you cannot expect a scanner to detect a
+modified virus. It may work, or it may not, but there is absolutely no
+guarantee.  A scanner is designed to detect existing viruses, not new
+ones or new variants of older viruses, although some scanners may
+detect some new variants of some viruses.
+
+>  - is it true, that any scanner must try to look at the
+>    semantics of such decoders, and not at the shape ?
+
+Well, if it looked at something else, it would not be a scanner.... :-)
+
+Don't misunderstand me - there are programs which may look at the 1701
+virus, or some of your modified variants, and report something like:
+
+	This program seems to cotain additional code at the end,
+	which starts by performing decryption of itself. This is
+	typical of a virus.
+
+But, a program like this is not a scanner - it is a generic analysis
+tool, unable to identify viruses - it just reports anything
+"suspicious".
+
+>  - which systems are good by looking at the length of
+>    files and reporting differences ?
+
+Differences between what ?
+
+>  - Is the following behaviour possible for a virus:
+>
+>    After getting resident, it forces to do a warm-start
+>    with ctrl-alt-del, and then it copies itself to all
+>    .com-files encountered during rebooting
+>    (like command.com, ...).
+
+No - it is not possible.
+
+------------------------------
+
+Date:    Tue, 18 Jun 91 23:11:30
+From:    microsoft!c-rossgr@uunet.uu.net
+Subject: Requirements for Virus Checkers (PC)
+
+>From:    Robert McClenon <76476.337@CompuServe.COM>
+
+(Sorry for the delay...offline for a while)
+
+>Excuse me, but I use Virex-PC, which is Ross's product.  I do
+>occasionally need to remove it, not to troubleshoot IT, but because
+>something is incompatible with it.  One commercial game requires 540K
+>of FREE memory, not counting MOUSE.SYS, which it uses, and can't fit
+>if Virex-PC is installed.
+
+The next version of the code runs the resident virus checker in 608
+bytes, Robert.  I think I can shave about 150 more off of that....
+
+>  A third-party fax board program has TSR
+>conflicts with Virex-PC.  I don't know what it is doing, but it tries
+>to take over the same interrupts as Virex-PC and the results are
+>unpredictable.  (Sometimes it refuses to run.  Sometimes it crashes.)
+
+Have you called tech support @ Microcom (919-490-1277) and told them
+about it?  We might have a fix someplace around, or can attempt to
+figure out what's wrong and fix it in the next release.
+
+EVERYBODY: Never accept a problem with a piece of code: the vendor
+can't fix it if they don't know there is a problem.
+
+Ross
+
+------------------------------
+
+Date:    Wed, 19 Jun 91 16:30:21 +0000
+From:    kforward@kean.ucs.mun.ca (Ken Forward)
+Subject: Re: Interesting interaction ( VIRx & SCAN ) (PC)
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+> Noted an interesting interaction between two antivirals the other day,
+> and finally tracked it down.  If VIRx 1.4 is run before SCAN 77, SCAN
+> will "detect" the presence of the 3445 and Doom 2 viri in memory and
+> refuse to run.
+
+Tried this out for myself; no 3445 or Doom 2, but Taiwan3 [T3] was
+"found" in memory.  Has anyone experienced any other false positives
+with this combination ?
+
+Cheers,
+- ---------------------------------------------------------------------------
+     Kenneth Forward             |    "...don't plant your bad days,
+     MUN Dept of Physics         |        they grow into weeks..."
+     kforward@kean.ucs.mun.ca    |                    -Tom Waits-
+- ---------------------------------------------------------------------------
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 106]
+******************************************

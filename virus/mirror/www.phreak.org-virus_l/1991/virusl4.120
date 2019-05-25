@@ -1,0 +1,479 @@
+VIRUS-L Digest   Tuesday,  9 Jul 1991    Volume 4 : Issue 120
+     
+Today's Topics:
+     
+New Scanner! (well, not really) (PC)
+Input sought on security course
+Problem with GUARD (PC)
+Re: DOS 5.0 & FPROT116 (PC)
+Re: TNT AntiVirus from CARMEL / WARNING !!! (PC)
+Re: Self scanning executables (PC)
+Re: Stoned virus and DIR command. (PC)
+Virus protection reviews needed (PC)
+Re: Stoned virus and DIR command. (PC)
+Re: Stoned virus and DIR command (PC)
+Re: Recalciterant 4096 virus (PC)
+General definition - part 2 (general)
+     
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+     
+   Ken van Wyk
+     
+----------------------------------------------------------------------
+     
+Date:    Tue, 25 Jun 91 17:57:05 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: New Scanner! (well, not really) (PC)
+     
+I don't think I'm going to be doing a review on this one ...
+     
+A recent posting from one of the local boards ...
+     
+RW>         One more thing.  Is anyone there been in Antics?  If
+RW> you do and you've seen their virus protection files then
+RW> have you heard of a file called PARASCAN.ZIP.  I got it and
+RW> it kept saying things like "VIRUS FOUND: THE ZSA ZSA GABOR
+RW> VIRUS ... or some other famous person.  It then goes
+RW> FIGHTING VIRUS...  OH NO IT IS A TOUGH BATTLE...  Almost
+RW> like a cartoon if you ask me.  Well I just want to make sure
+RW> it is a fake because I did download it and I erased it.
+     
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+     
+------------------------------
+     
+Date:    Mon, 08 Jul 91 22:00:25 +0000
+>From:    moncol!n9179@tsdiag.ocpt.ccur.com
+Subject: Input sought on security course
+     
+  I am preparing to write a paper for a graduate computer secrity
+course, and would appreciate input on the following:
+  I will be comparing the effects (not structure or design) of compter
+virses and biological viruses.  I have seen in the literature
+references to how computer viruses spread at a (typically) exponential
+rate.  This is without any numbers to back it up.  Viruses affecting
+people have various distributions, eg. exponential, uniform, etc...
+If anyone has information on this, or can describe an accurate
+accounting of where, when, and how many machines were hit and how an
+attack ran over time of a computer virus, I would find it most
+helpful.  Part of my paper will regard factors which affect the rate
+of spread of viral programs.
+  If you know of any journal with a well-documented case, or similiar
+articles, I would find that helpful.  Also, a while back, I believe
+Computers & Security ran an issue which included information on the
+mathematical modeling of viruses or at least certain aspects.  Did
+anybody (or any of you) read it?
+     
+Thank you
+  Sam Nitzberg
+     
+------------------------------
+     
+Date:    Mon, 08 Jul 91 21:30:17 -0600
+>From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: Problem with GUARD (PC)
+     
+   I received GUARD from Y. Radai today.  I think I found a
+significant problem with it.  On rebooting from the hard drive, after
+an infection by "stoned", Guard removes stoned from the PBR but not
+from memory.  The Int 13 vector is still routed through stoned.
+FPROT's "f-mmap" shows a 2k block of memory taken from the top of
+memory.  Debug shows this to be the stoned virus.  If this area is
+overwritten, the system will crash on the next disk read or write.  If
+instead a floppy disk is formatted, chances are it will be infected
+with the stoned virus.  On the next bootup from the C drive, the virus
+is gone from memory.  I haven't tried this behavior yet with other
+viruses.
+     
+The experiment:
+1. Install "guard", as described in the documentation.
+2. Reboot the computer from a "stoned" floppy.  (Cold or warm reboot:
+doesn't matter.)
+3. Reboot the computer from the Hard Drive.  (Cold or warm boot, doesn't
+matter.)
+4. CHKDSK will show 2k missing from total memory.
+5. On a 640K computer, the DEBUG command "d9f80:0000 1ff" will show the
+virus at TOM.
+6. At this point I formatted a 360k floppy.  It became infected.
+7. Using debug to overwrite the virus area at 9f80:0000-1ff caused a
+system crash on the next disk read or write.
+8. Reboot from C:.  The virus is no longer in memory.  (This is because
+it is no longer in the PBR.
+     
+Comments:
+In my opinion, "Guard" doesn't give us anything that is not already in
+Padgett's DiskSecure package.
+     
+When it is infected by a stealth virus (at least by the Empire family
+of viruses) guard does not permit the computer to be rebooted from the
+hard drive, and automatically remove the virus from the hard disk. (I
+had expected, from the promises Mr. Radai has been making.)  One must
+boot from a clean floppy and run guard from the floppy to clean the
+hard drive.  I think Padgett has been right all along: you cannot keep
+an MBR from being infected by a cold boot from a floppy, using
+software alone.  The best you can do is immediately recognize the
+infection, on rebooting from the hard drive, and then manually clean
+the system after re-booting from a floppy.
+     
+Even without the error described above, Guard gives less protection
+than DiskSecure. Guard does not itself use stealth to protect the MBR
+from reads or writes.
+     
+     
+     Tim Martin
+     Soil Science
+     University of Alberta.
+***  These are my opinions: my boss has none. ***
+     
+------------------------------
+     
+Date:    09 Jul 91 08:41:38 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: DOS 5.0 & FPROT116 (PC)
+     
+SLCLANCY@UCI.BITNET (Steve Clancy) writes:
+>A user recently posted this on our BBS.  Has anyone else experienced this?
+>
+>"I was wondering if any one has experienced a problem with FPROT116.
+>Since I installed it with msdos ver 5.00 it hangs my system with the
+>message Virus Alert!! Int 13 has been changed.
+     
+I have heard of this problem, but am not sure what the cause is, as I
+do not yet have DOS 5.0 A fix will be provided as soon as possible.
+     
+One person reported this problem went away if he used DEVICEHIGH=
+instead of DEVICE=
+     
+- -frisk
+     
+Fridrik Skulason                 Technical Editor of the Virus Bulletin (UK)
+(author of F-PROT)               E-Mail: frisk@rhi.hi.is    Fax: 354-1-28801
+     
+------------------------------
+     
+Date:    09 Jul 91 08:49:00 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: TNT AntiVirus from CARMEL / WARNING !!! (PC)
+     
+infocenter@urz.unibas.ch writes:
+>This is a warning to everybody, who intends buying
+>
+>    the product            Turbo Anti-Virus
+>    from                   CARMEL
+>    distributed by         EPG Softwareservice, Germany
+>
+>I got version 7.02. It's now half a year later and I've never seen an
+>update.  I know from other people who bought the stuff later, that
+>they got meanwhile up to 7.06. During a phone call with EPG they told
+>me about V7.1.
+     
+Well - keep in mind that this program has now been repackaged as the
+'Central Point Anti-Virus'.  I don't know the terms of the contract,
+of course, but I would not be too surprised if Turbo Anti-Virus would
+be discontinued soon.
+     
+Of course, this is pure speculation form a not-entirely-unbiased
+source, so don't take me too seriously ..... :-)
+     
+ -frisk
+     
+------------------------------
+     
+Date:    09 Jul 91 08:54:00 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Self scanning executables (PC)
+     
+vaitl@ucselx.sdsu.edu (Eric Vaitl) writes:
+>    Just in case this may be of interest to someone, I am sending out
+>this little code segment. I have added a call to vscan() right at the
+>beginning of main() in a couple of programs. vscan() should (in
+>theory) be able to tell if the program has been attacked by a virus
+>and report it to the user.
+     
+It works - 95% of the time.
+     
+It is unable to catch two groups of viruses - overwriting/destuctive
+viruses such as Burger, and sophisticated "stealth" viruses such as
+Frodo.
+     
+Overwriting viruses are not a problem - but detecting infection by
+stealth viruses when they are active is more difficult - although not
+impossible.
+     
+- -frisk
+     
+------------------------------
+     
+Date:    09 Jul 91 09:00:56 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Stoned virus and DIR command. (PC)
+     
+mramey@u.washington.edu (Mike Ramey) writes:
+>Discovered several grad students had diskettes infected with Stoned.
+>Experiments confirmed that a DIR command on these diskettes caused
+>Stoned to become resident in RAM.
+     
+NO - NO - NO
+     
+This is not correct.  Even if a 'Stoned' signature is found in memory
+after you do a 'DIR' on an infected diskette, it does not mean that
+the virus is installed or active.
+     
+The reason is very simple - when you do a DIR, DOS may read the boot
+sector, as it contains information on the structure of the diskette.
+The boot sector is simply found in one of the disk buffers - it is not
+executed or active in any way.
+     
+Therefore - no problem.
+     
+- -frisk
+     
+Fridrik Skulason                 Technical Editor of the Virus Bulletin (UK)
+(author of F-PROT)               E-Mail: frisk@rhi.hi.is    Fax: 354-1-28801
+     
+------------------------------
+     
+Date:    Tue, 09 Jul 91 13:00:57 +0000
+>From:    hanrahan@bingvaxu.cc.binghamton.edu (Bill Hanrahan)
+Subject: Virus protection reviews needed (PC)
+     
+Hi folks,
+     
+Does anyone know where I can get software reviews, published or not,
+of f-prot, McAfee's viruscan or IBM's virscan? The July issue of PC
+WORLD doesn't mention any of these and I'm required to provide some
+sort of "official" comparison documentation before purchasing
+anything.
+     
+Thanks for any help you can provide.
+     
+[Ed. There are two sets of independent reviews (one by Rob Slade and
+the other by Chris McDonald) available by anonymous FTP on
+cert.sei.cmu.edu (*NEW* IP number is 192.88.209.5) in the
+pub/virus-l/docs/reviews directory.]
+     
+======================================================================
+bill hanrahan                      hanrahan@bingvaxu.cc.binghamton.edu
+SUNY Binghamton                    hanrahan@bingvaxu.bitnet
+     
+------------------------------
+     
+Date:    Mon, 08 Jul 91 23:41:57 +0000
+>From:    act@softserver.canberra.edu.au (Andrew Turner)
+Subject: Re: Stoned virus and DIR command. (PC)
+     
+mramey@u.washington.edu (Mike Ramey) writes:
+>Discovered several grad students had diskettes infected with Stoned.
+>Experiments confirmed that a DIR command on these diskettes caused
+>Stoned to become resident in RAM.  I do not know how or when Stoned
+>moves to the fixed-disk partition sector/boot record.
+     
+NO NO NO!! Doing a DIR on an infected floppy cannot and will not cause
+the Stoned virus to either infect the hard disk NOR go memory
+resident.  The only way for the Stoned virus to go memory resident is
+to boot off an infected floppy - even if it is a 'non-bootable'
+floppy(All formatted floppies have a valid boot sector - a bootable
+floppy also has the two hidden system files and command.com).
+     
+Once this has happened then the Stoned virus has gone resident and has
+also infected the partition table on the hard disk. Any subsequent
+boots off the hard disk will send Stoned memory resident - after all
+the hard disk is now infected.
+     
+Note that the stoned virus can be classed as a stealth virus as it
+hides itself - it was released before the 'stealth' definition was
+invented.
+     
+Once Stoned is memory resident accesses of subsequent uninfected
+floppies will cause the Stoned virus to infect the subject floppies -
+I believe a DIR command will do this. NB!!!! The virus must already be
+memory resident and the infection goes to the floppy - not the other
+way!!.
+     
+Your situation sound as if your hard disk is already infected.  The
+ONLY safe way to confirm this and to remove the Stoned virus is to
+boot off a CLEAN and write protected floppy and THEN run the
+anti-viral software to detect and remove the virus.
+     
+To be specific the Stoned virus infects your hard disk the moment the
+boot sequence access the boot sector of an infected floppy. This
+happens very early and before the systems files are loaded.  Suffice
+to say that if you boot with an infected floppy in Drive A: then as
+soon as the boot sequence accesses the floppy, the drive light comes
+on, then its too late - you've been zapped.  Once on an hard disk it
+resides in the partition table. The partition table, along with
+storing the hard disk partition info, also has executable code that
+hands control of the boot to the hard disk boot sector. It is the
+partition table executable code that the Stoned virus invades.
+     
+>Does this pose special problems for virus hunting & removal?
+>- - Mike Ramey, Computer Tech., Civil Eng. Dept., U of WA, Seattle.
+     
+- --
+ Andrew Turner  act@csc.canberra.edu.au
+	Die, v:	To stop sinning suddenly.
+			-- Elbert Hubbard
+     
+------------------------------
+     
+Date:    09 Jul 91 12:05:00 -0500
+>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+Subject: Re: Stoned virus and DIR command (PC)
+     
+OOPS.  In my reply to Mike Ramey concerning putting Stoned into memory
+merely by doing DIR, I listed several simple tests.  One of them was:
+>      SCAN C: /M
+>           "No viruses found."
+>      DISKCOPY A: B:
+>      SCAN C: /M
+>           "Found Stoned Related Virus [Stoned] active in memory."
+     
+Well, here's my mistake.  Some time before writing the reply I had
+actually done this sequence, getting the above results.  HOWEVER, I
+had run DISKCOPY from within another program, then ran SCAN after
+exiting the program.  As a result, SCAN did not overwrite the copy of
+Stoned in memory.  If DISKCOPY and SCAN are run back-to-back, SCAN
+will overwrite part of DISKCOPY's data space, producing these results:
+     
+     SCAN C: /M
+          "No viruses found."
+     DISKCOPY A: B:
+     SCAN C: /M
+          "No viruses found."
+     
+Just for consistency's sake, I retried the DIR and NU tests both from
+the DOS prompt and from within a program.  All results were as written
+before.
+     
+No doubt there are several comments about this mistake already on
+their way as I write this.  I'm just letting those who caught it know
+that I'm aware of it, and those who did not catch it understand it.
+     
+Bill Walker ( WALKER@AEDC-VAX.AF.MIL ) |
+OAO Corporation                        | "Non sequitur -- your facts are
+Arnold Engineering Development Center  |  un-coordinated."
+M.S. 120                               |           -- NOMAD
+Arnold Air Force Base, TN  37389-9998  |
+     
+------------------------------
+     
+Date:    Tue, 09 Jul 91 21:04:20 +0700
+>From:    Aviel Roy-Shapira <AVIR@BGUVM.BITNET>
+Subject: Re: Recalciterant 4096 virus (PC)
+     
+I want to thank everyone who sent me advice and ideas.  Padgett
+Patersen and Fridrik Skulson gave the best advice. It turned out that
+I had two problems, both of which were identified correctly by
+Fridrik.  A few data files were infected by the virus, and the virus
+was hidden in a LZE compressed file /files.  The compressed files were
+part of a commercial anti virus package popular in Israel.
+     
+The first is supposed to immunize the computer and is a TSR, the
+second scans a nd cleans.  When the program detects a TSR virus it can
+de-activate it and proceed to clean the disk.  Would would happen, I
+think, is the program would load, run the virus, and immediately
+deactivate it. The signature probably remained in memory, and was
+subsequently detected by other scanners.
+     
+When the TSR protecting program was run, it simply activated the virus.
+     
+Thanks again every one.
+Aviel
+     
+------------------------------
+     
+Date:    Sun, 07 Jul 91 18:48:51 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: General definition - part 2 (general)
+     
+DEFGEN2.CVP   910707
+                       What and What Not
+Having established that viral programs copy themselves, and
+before going on to related types of programs, let me list a few
+things that viri are *not*.
+     
+Let me first say that computer viral programs are not a
+"natural" occurence.  These are programs which are written by
+programmers.  They did not just appear through some kind of
+electronic evolution.  Viral programs are written, deliberately,
+by people.  (Having studied the beasts almost from their
+inception, I was rather startled when a young, intelligent, well
+educated executive proposed to me that viri had somehow "just
+grown" like their biological counterparts.)
+     
+The popular press has recently started to publicize the term
+computer virus, but without giving any details other than the
+fact that viri are to be feared.  (Often the reports talk about
+"main storage destroyed" and other such phrases which have very
+little meaning.)  This has given most people the impression that
+anything that goes wrong with a computer is a virus.  From
+hardware failures to errors in use, everything is blamed on a
+virus.  *A VIRUS IS NOT JUST ANY DAMAGING CONDITION.*
+     
+Likewise, it is now considered that any program that may do
+damage to your data or your access to computing resources is a
+virus.  We will speak further about trojan horse programs, logic
+bombs and worms, but it is important to note that viral programs
+have common characteristics that other damaging or security
+breaking programs may lack.  Viri are not just any damaging
+program.
+     
+Indeed, viral programs are not always damaging, at least not in
+the sense of being deliberately designed to erase data or
+disrupt operations.  Most viral programs seem to have designed
+to be a kind of electronic graffiti: intended to make the
+writer's mark in the world, if not his or her name.  In some
+cases a name is displayed, on occasion an address, phone number,
+company name or political party (and in one case, a ham radio
+license number.)
+     
+On the other hand, viral programs cannot be considered a joke.
+Often they may have been written as a prank, but even those
+which have been written so as not to do any damage have had
+bugs, in common with any poorly written program.  The author of
+Stoned abviously knew nothing of high density floppies or RLL
+drive specifications.  In fact, it appears that the trashing of
+data by the Ogre/Disk Killer virus, one of the most damaging,
+was originally intended to be reversible, were it not for an
+error on the part of the programmer.  Any program which makes
+changes to the computer system that are unknown to the operator
+can cause trouble, the more so when they are designed to keep
+spreading those changes to more and more systems.
+     
+However, it is going to far to say, as some have, that the very
+existence of viral programs, and the fact that both viral
+strains and numbers of individual infections are growing, means
+that computers are finished.  At the present time, the general
+public is not well informed about the virus threat, and so more
+copies of viri are being produced than are being destroyed.  As
+people become aware of the danger, this will change.
+     
+copyright 1991, Robert M. Slade   DEFGEN2.CVP   910707
+     
+     
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+     
+------------------------------
+     
+End of VIRUS-L Digest [Volume 4 Issue 120]
+******************************************
+

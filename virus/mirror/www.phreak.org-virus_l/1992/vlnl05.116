@@ -1,0 +1,841 @@
+VIRUS-L Digest   Monday, 15 Jun 1992    Volume 5 : Issue 116
+
+Today's Topics:
+
+Re: Zipped Viruses (PC)
+Screaming Fist-696 analysis (PC)
+Re: VIRx version 2.3 released (PC)
+New virus? (PC)
+VET anti-virus software (PC)
+Re: ISPNews and why 100% is the only good enough (PC)
+Re: McAfee VIRUSCAN V91 uploaded to SIMTEL20 (PC)
+Re: Virus Program for a Macintosh? (Mac)
+"Menem's Revenge" virus (Amiga)
+Re: MVS Virii (IBM MVS)
+re: Mainframe viruses (was: MVS Virii)
+Virus Detection Software Review
+Re: Taxonomy of viruses
+Polymorphic Virii
+Re: BAD IDEA (was: Where can I find Virus signatures)
+Misinformation does more damage than viruses themselves
+McAfee CLEAN-UP 91B and WSCAN91 uploaded to SIMTEL20 (PC)
+Scan updates available (PC)
+F-PROT 2.04 (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Sat, 06 Jun 92 07:09:18 -0400
+From:    David_Conrad@MTS.cc.Wayne.edu
+Subject: Re: Zipped Viruses (PC)
+
+In VIRUS-L v005i111 Magnus Olsson <magnus@thep.lu.se> writes:
+>David_Conrad@MTS.cc.Wayne.edu writes:
+>
+>[excellent description of stealth viruses deleted]
+>
+>Thanks for a very informative article! There's one point I think
+>you're missing, though, when describing the dangers of using scanners
+>on an infected system:
+>
+>>Here's what happens: Your virus scanner is infected with a stealth,
+>>fast infecting virus.  It isn't currently active.  You run the scanner,
+>>telling it to scan your entire hard drive.  First the virus gets control:
+>>It goes resident, takes over, then runs the scanner.  Now the scanner
+>>attempts to perform a self-check on its file.  This detects nothing,
+>>because the virus disinfects the file as it reads it.  Now your scanner
+>>goes through your entire hard drive, reading all programs.  Not only
+>>does it have no chance of catching the virus in any program, but every
+>>program (even ones which weren't infected before) will get infected!!!
+>
+>At least McAfee's scanner doesn't only check files on the disk and
+>make a self-check, but also scans memory for viruses before doing
+>anything else. Doesn't this cure the above problem, as the
+>memory-resident stealth virus would be detected in memory?
+
+Not if the afore mentioned virus is a new one which the scanner does not
+yet detect.  In that case, you're in big trouble.  Note that this is not
+merely a problem with McAfee's scanner, but with any; also note that the
+memory check is a excellent idea, it just isn't perfect.
+
+But then again, what is?
+
+>Magnus Olsson                   | \e+      /_
+>Dept. of Theoretical Physics    |  \  Z   / q
+>University of Lund, Sweden      |   >----<
+>Internet: magnus@thep.lu.se     |  /      \===== g
+>Bitnet: THEPMO@SELDC52          | /e-      \q
+
+Regards,
+David R. Conrad
+David_Conrad@mts.cc.wayne.edu
+
+------------------------------
+
+Date:    07 Jun 92 02:23:05 -0400
+From:    "Tarkan Yetiser" <TYETISER@ssw02.ab.umd.edu>
+Subject: Screaming Fist-696 analysis (PC)
+
+   Hello everyone,
+
+We have analyzed the polymorphic (semi-poly :-)) variant of the
+Screaming Fist (696) virus. It should be mentioned that the virus is
+simply encryptive, and therefore, the decryptor can be used as a scan
+string to search for the virus in both COM and EXE files. It uses a
+16-byte XOR-type decryption routine with a variable key (obtained from
+BIOS timer area 0:046c), and one instruction is modified to be either
+an INC AX or a DEC AX. It is a fast infector, but not stealth;
+therefore, it is advisable to boot from a clean floppy before
+scanning. McAfee's SCAN 91 does recognize it [Scr-2], though F-PROT
+2.03a does NOT.  If you add the given signature to F-PROT, make sure
+you use SECURE scan, otherwise, it will be missed. Heuristic scan
+flags it as a possible virus.  We have used DIS86 by Mr. James Zandt
+(available at Simtel archives under /msdos/disasm/dis86212.zip) to
+analyze it. Here are the details:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Suggested Name: Screaming Fist-696-pm
+Date/Location : May 1992, USA
+Scan string   : 5d 8b f5 56 b0 ?? b9 a3 02 (40 or 48) 2e 30 04 46 e2 f9 c3
+Damage trigger: None
+Payload       : None
+Interrupts    : 21h & 24h
+hooked          21h is hooked using direct memory reference to IVT, but
+                Int 24h is hooked in a standard manner using DOS 25h/35h
+                subfunctions of Int 21h.
+Peculiarity   : Reduces BIOS base memory indicator (0:0413) by 2 just like
+                an MBR/BR virus, though it is a file infector type. So,
+                CHKDSK will report 2K less of base memory size.
+Targets       : COM and EXE files when FILE OPEN (3d), RENAME (56),
+                LOAD/EXEC (4b), GET/SET ATTRIB (43) services are requested.
+                It will infect C:\COMMAND.COM after the first time it goes
+                resident by issuing a file open call with mode set to FF,
+                which is an invalid open mode value. Only the copy of
+                COMMAND.COM in the root directory is infected.
+                COM files are appended at the end, EXE files are modified
+                by changing the header to point to virus. The COM
+                files are always increased by 696 bytes, but EXE files
+                depend on what the victim has in the header.
+                COM files less than 300 bytes or greater than 64000 bytes
+                will not be infected.
+
+RU-there call : mov  AX, 0FFFFh
+                int  21h
+                or   AX, AX
+                jz   virus_is_resident
+
+        In English: The virus extends INT 21h services by setting up a
+                    handler which responds to a request FFFF with a 0000
+                    in AX register.
+
+Comments  : This is an encryptive virus that uses BIOS timer value (1 byte
+            at 0:046c), and either INC AX or DEC AX in the decryption
+            routine. The virus is not encrypted in memory. The decryptor
+            is 16 bytes long, and it is located at the end of infected
+            files.
+            It appears to be a research virus in that it includes no
+            damage trigger, and it is fairly bug-free! It is a resident
+            COM/EXE file infector that does nothing but replicates.
+            It uses handle-oriented file access routines, and does NOT
+            implement stealth to evade detection.
+            The virus INT 21h handler offset is always 0088 in memory.
+            Inside the virus there is a text which reads:
+
+               Screaming Fist
+
+            therefore, the name.
+            The virus determines if a program is infected as follows:
+            For COM-type files:
+               if the fourth byte of the file plus 1 is equal to thevirus will
+infect
+            C:\COMMAND.COM and return control over to the host program.
+            From then on, it monitors INT 21h services (see above).
+            File extension as well as 'MZ' signature is checked before
+            infection. Decoys can be used to capture the virus easily.
+
+Regards,
+
+Tarkan Yetiser
+VDS Advanced Research Group               P.O. Box 9393
+(410) 247-7117                            Baltimore, MD 21228
+e-mail:  tyetiser@ssw02.ab.umd.edu
+
+------------------------------
+
+Date:    Sun, 07 Jun 92 23:20:00 +0100
+From:    Anthony Naggs <AMN@VMS.BRIGHTON.AC.UK>
+Subject: Re: VIRx version 2.3 released (PC)
+
+Vesselin Bontchev (bontchev@fbihh.informatik.uni-hamburg.de) says:
+> trent@rock.concert.net (C. Glenn Jordan -- Virex-PC Development Team) writes:
+>
+> >    2.  VIRx now detects all files encrypted with the "Mutating Engine"
+> >    attributed to the Dark Avenger that are not already destroyed by the
+> >    Engine's attempts to encrypt them (and most of those, as well).
+>
+> This requires a bit of clarification. No files are "destroyed by the
+> Engine's attempts to encrypt them". ...
+
+Vesselin you are over looking the fact that there are already 2
+versions of MtE in circulation, one ('0.92' I think) is found on
+"Dedicated" & "Fear" and the other ('0.90') is on "Pogue".  I have
+only looked at the one on "Pogue" so far, and around 20% of the files
+I infected were corrupt.
+
+These corrupt files usually crash when executed, sometimes with video
+effects as display memory is overwritten and sometimes the crash was
+postponed until a subsequent program was executed.  This seems to
+coincide closely with Glenn Jordan's description.
+
+To generate infected files with out crashing the PC (as happens when
+infecting at execution time), I simply had a batch file which copied
+each new host file to NULL.
+
+> ... However, the MtE sometimes (a bit
+> too often, IMHO) generates something that I call a "zero-key
+> decryptor". It does not encrypt the body of the virus and generates a
+> decryptor which essentially does nothing else than juggling a few
+> constants around some registers. No attempt to perform decryption is
+> present in these cases.
+
+IMHO not often enough!  This feature means that a proportion of
+infected files will not have the polymorphic endowments of MtE, and
+established more reliable detection methods can cope with these in the
+same way as any other virus.  Given an infected hard drive the
+presence of same copies of the virus in this form will give
+reassurance that the virus is known, rather than something new hiding
+under the MtE cloak.
+
+If the MtE detection tests that you are performing are going to be of
+relevance you will need to test for the variations produced by "Pogue"
+as well.
+
+Regards, Anthony Naggs
+
+Internet:  amn@vms.brighton.ac.uk  or  xa329@city.ac.uk
+Janet:     amn@uk.ac.brighton.vms  (  cbs%uk.ac.brighton.vms::amn  )
+    or     xa329@uk.ac.city        (  cbs%uk.ac.city::xa329        )
+
+------------------------------
+
+Date:    Mon, 08 Jun 92 16:11:38 -0400
+From:    d246@uni05.larc.nasa.gov (Braden Glen)
+Subject: New virus? (PC)
+
+   One of the Managers here has a virus on his home computer. I
+haven't been keeping up on my reading for all the VIRUS-L since at
+least May. If I may post some of the symptoms he is experiencing and
+hopefully, it hasn't been a hot subject over the past month someone
+will know what it is or isn't (like a virus :-) ).
+   He has harddrives C thru G. When he executes a program, the system
+hangs and after rebooting the exe module is gone. This only happens
+when he tries to executes a module. Also, he starts getting bad
+clusters. when he uses PC Tools and changes these bad clusters to
+files and then looks at them, he finds his lost modules. After
+cleaning up these clusters and trying to figure what is wrong he will
+create new bad clusters which contain his EXE's.
+  Using Scan 86 revealed no virus. He then used CPAV with no virus,
+then he used FPROT203 which said he had a virus. He knew that the use
+of CPAV produces false positives so he rebooted and reran FPROT203
+which showed no virus.
+  I will write up a better description of what he is experiencing and
+what EXE's he is running that get converted to bad clusters. I wanted
+to get this out right away. I also gave him a copy of scan89b and
+asked him to run it after booting from a write-protected disk. If
+anyone has any ideas, please let me know, as you usually do.
+
+Glen Braden             d246@uni05.larc.nasa.gov
+                        804 865-9387
+
+
+------------------------------
+
+Date:    09 Jun 92 09:18:42 +0000
+From:    zlsiial@cs.man.ac.uk (A. V. Le Blanc)
+Subject: VET anti-virus software (PC)
+
+Has anyone used, and can anyone comment on the VET anti-virus
+software from Australia?  It does not seem to be reviewed in
+the standard places, and I don't recall seeing any mention of
+it on this list.  I ask because the University of Manchester
+has bought a site license for this package, apparently because
+it is cheaper than the licenses for better known packages.
+
+     -- Owen
+     LeBlanc@mcc.ac.uk
+
+------------------------------
+
+Date:    10 Jun 92 12:51:17 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Re: ISPNews and why 100% is the only good enough solution (PC)
+
+(Sorry for the delayed reply; missed this in my mailbox...)
+
+> From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+
+>BTW, we discussed the problem with David Chess and agreed that
+>- -disinfection- of MtE-based viruses is even more difficult than
+>- -detecting- them!
+
+Only because it's hard to do just what the degarbler would have done,
+when the degarbler can be any one of zillions.  You'd have to write a
+subset-interpreter for the chip, which (while useful for various
+purposes) is a pain, and doesn't tend to be fast.  Any good hacker, of
+course, will be able to recover a few critical files manually, but
+replacement is much safer.  That's true of just the plain old
+Jerusalem, too, though!  Nothing too new there...
+
+> So, if a system is found to be infected by such a
+> virus, the recomended solution is to remove all executable files and
+> to replace them with clean copies.
+
+If you trust your scanner (and I'm sure we'll have trustable scanners
+for the MtE before long; probably before there are any MtE viruses
+bothering real users), you only have to remove and replace the
+*infected* executables.  Which is probably what you meant, but I
+thought I'd make the point explicitly...
+
+- - -- -
+David M. Chess                |  "Some look at the world as it is,
+High Integrity Computing Lab  |   and ask 'why?'. I look at the world as it is,
+IBM Watson Research           |   and say 'Hey, neat hack!'."  - J. R. H.
+
+------------------------------
+
+Date:    Fri, 05 Jun 92 13:54:56 -0500
+From:    Sten M. Drescher <smd@hrlid1.brooks.af.mil>
+Subject: Re: McAfee VIRUSCAN V91 uploaded to SIMTEL20 (PC)
+
+"Jean-Pierre Engel (CMU Geneva)" <ENGEL%cmu.unige.ch@BITNET.CC.CMU.EDU> writes:
+
+>I have Uploaded from SIMTEL20: NETSC91B, CLEAN91, SCANV91, VSHLD91. I
+>have found the following value with the validation prog.:
+
+>netsc91b.zip	S:  116,543	D:  6-2-1992	M1:  16DC	M2:  12FC
+>clean91.zip	S:  141,577	D:  6-2-1992	M1:  FD45	M2:  0101
+>scanv91.zip	S:  129,268	D:  6-2-1992	M1:  F2C3	M2:  0AC7
+>vshld91.zip	S:  107,574	D:  6-2-1992	M1:  71B7	M2:  190B
+
+>Where is the probleme?
+
+	Problem 1: You ran validate on the .ZIP files, not the .EXE
+files.  Try unZIPping it.
+        Problem 2: The validate data from McAfee for NETSCAN is for
+v91, NOT v91b.
+
+			Sten
+
+------------------------------
+
+Date:    Fri, 05 Jun 92 23:30:00 +0000
+From:    lev@amarna.gsfc.nasa.gov (Brian S. Lev)
+Subject: Re: Virus Program for a Macintosh? (Mac)
+
+an939@cleveland.Freenet.Edu (David Carlin) writes...
+>Two weeks ago, while at Computer class, I poped in a disk at our
+>schools Macintosh Classic. A program I had bought that is on the
+>System Utilities disk, Said there was a virus, and not to use the
+>disk. I am only in 7th grade, and don't know much about Macintosh
+>Viruses. Can anyone tell me of a Public Domain Program that I might be
+>able to use?
+
+One that I like a *lot* is John Norstad's "Disinfectant" (currently at
+version 2.8) -- it's free, and it works!  It's available via FTP from
+an almost infinite variety of sites on the Internet... if you have a
+problem doing FTPs, contact me and I'll be glad to send you a copy of
+the "MacSecure" anti-viral tool kit we use here at Goddard (it's based
+on Disinfectant and includes some neat HyperCard stacks as well).
+
+- -- Brian Lev
+
+ +----------------------------------------------------------------------------+
+ |              NASA SCIENCE INTERNET NETWORK INFORMATION CENTER              |
+ |                  Code 930.6, Goddard Space Flight Center                   |
+ |                          Greenbelt, MD  20771  USA                         |
+ +----------------------------------------------------------------------------+
+ |                   Phone: 301-286-7251    FAX: 301-286-5152                 |
+ |     NSINIC::NSIHELP  or  nsihelp@nic.nsi.nasa.gov  or  NSIHELP@DFTBIT      |
+ +----------------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Sun, 07 Jun 92 11:31:00 +0100
+From:    Anthony Naggs <AMN@VMS.BRIGHTON.AC.UK>
+Subject: "Menem's Revenge" virus (Amiga)
+
+The following is lifted from the news pages of the British mag "Just Amiga
+Monthly" (JAM), which I received yesterday.  I am unable to confirm the
+accuracy of this material, and the Metropolitan Police Computer Crime Unit
+(London) didn't mention it to me when I spoke to them recently.
+
++   FRESH WARNINGS AS NEW VIRUS SPREADS
++
++   A new Amiga virus called Menem's Revenge is sweeping the country.
++
++   It is a particularly nasty file or 'link' virus that starts a task
++   called a single space.  This task's sole job is to patch the LoadSeg
++   vector in DOS.  It thus infects programs that are run.
++
++   It is triggered through the Amiga's internal time clock will write its
++   messages to files on DH0: and/or DF0:.  The message it writes and then
++   displays as an alert is "Menem's Revenge has arrived / Argentina still
++   alive".
++
++   Because it can write to executable files, those files may very well
++   crash, or not run at all, after being infected.  Menem's Revenge adds
++   3,076 bytes to each file it infects.
+
+The news item recommends the use of Virus_Checker as protection from this
+virus, and as it advertises version 6.05 on a JAM disk later in the magazine
+I presume you should use at least that version.
+
+Anthony Naggs
+
+Internet:  amn@vms.brighton.ac.uk  or  xa329@city.ac.uk
+Janet:     amn@uk.ac.brighton.vms  (  cbs%uk.ac.brighton.vms::amn  )
+    or     xa329@uk.ac.city        (  cbs%uk.ac.city::xa329        )
+
+------------------------------
+
+Date:    Fri, 05 Jun 92 21:51:03 +0000
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Re: MVS Virii (IBM MVS)
+
+While not, in the very strictest sense, a virus, the CHRISTMA EXEC of
+1987 nevertheless was a self-reproducing object which operated with
+IBM mainframe systems and over mainframe network links.
+
+While no data was at risk, CHRISTMA resulted in denial of service and
+extra time expended in its removal.
+
+I will be covering it and similar mainframe/network programs in coming
+columns.
+
+=============
+Vancouver      ROBERTS@decus.ca         | Lotteries are a tax
+Institute for  Robert_Slade@sfu.ca      | on the arithmetically
+Research into  rslade@cue.bc.ca         | impaired.
+User           CyberStore Dpac 85301030 |
+Security       Canada V7K 2G6           |
+
+------------------------------
+
+Date:    10 Jun 92 13:06:17 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Mainframe viruses (was: MVS Virii)
+
+"Tim Hare" <SS942TH@DOT1.MAIL.UFL.EDU> (in a posting that's been
+sitting in my mailbox for quite awhile) asks about mainframe viruses,
+trojan horses, and the like.  Such programs certainly exist, and a few
+(the CHRISTMA EXEC for VM/CMS/RSCS, for instance) have become briefly
+widespread.  In general, though, we have not seen any viruses become
+endemic in the mainframe area the way we have on all popular
+microcomputers.  The reasons for this are partly technical and partly
+cultural.  Viruses don't become widespread unless they can spread
+faster than they are caught.  Access controls help to slow spread
+(although I would claim that the access controls that separate my PC
+from your PC are as strong as any mainframe access controls that
+separate one userid from another!).  But at least as importantly,
+there are many fewer people at this moment walking around with 9-track
+tapes reels in their back pockets than there are people with
+diskettes.  The micro world is just a more tightly-connected graph
+(and it has many more nodes) than is the mainframe world.  Someone
+could write a mainframe virus (as Cohen has shown, this is technically
+possible on, roughly, any general-purpose computer), but it'd be
+unlikely to get anywhere before going extinct.
+
+- - -- -
+David M. Chess                    |   * Undecidable Signature ?Virus *
+High Integrity Computing Lab      |  Copy me to your .sig iff you don't
+IBM Watson Research               |     think I'm a signature virus!
+
+------------------------------
+
+Date:    Sat, 06 Jun 92 01:12:55 +0000
+From:    as194@cleveland.Freenet.Edu (Doren Rosenthal)
+Subject: Virus Detection Software Review
+
+Doren Rosenthal
+Rosenthal Engineering
+3737 Sequoia
+San Luis Obispo, CA USA 93401
+
+This  June  '92 issue of "Shareware Update"  magazine  (P.O.  Box
+2454,  White City, OR 97503-9901) is devoted to  virus  detection
+software  and includes several articles including  an  especially
+insightfull one from Ross Greenberg.
+
+Doren Rosenthal
+
+------------------------------
+
+Date:    Fri, 05 Jun 92 22:22:08 +0000
+From:    mkkuhner@phylo.genetics.washington.edu (Mary K. Kuhner)
+Subject: Re: Taxonomy of viruses
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+[discussion of parsimony analysis]
+
+>Well, this is essentially what we are doing now... Unfortunately, it
+>cannot be automated or even formalized - as you said, it reflects our
+>intuitive ideas about virus relationship.
+
+Taxonomy was originally based on the biologists' intuitive ideas about
+organism relationships too, but algorithms for describing and
+systematizing these intuitions still proved useful.
+
+I agree, however, that it will be very hard to do anything mechanical
+about classifying viruses.  It was hard for biologists, and a
+biological organism is easier to get a grip on than a computer virus.
+
+Mary Kuhner mkkuhner@genetics.washington.edu
+
+------------------------------
+
+Date:    Sat, 06 Jun 92 18:26:53 +0000
+From:    shadmas@sdf.lonestar.org (Tom Downs)
+Subject: Polymorphic Virii
+
+I appreciate the discussion on polymorphic viruses. One of the users
+suggested moving the discussion to E-Mail. I would prefer that you
+didn't because I feel that the subject of Polymorphism is very
+pertinent. We are going to have to understand them to combat those
+types of viruses.
+
+Tom Downs
+
+------------------------------
+
+Date:    Sun, 07 Jun 92 04:57:15 +0000
+From:    markd@psy.uwa.oz.au (Mark Diamond)
+Subject: Re: BAD IDEA (was: Where can I find Virus signatures?)
+
+Zmudzinski recently replied to a query on this bulletin board by
+saying to the enquirer that "if you haven't already got a collection
+of virus signatures then you aren't a legitimate researcher".  I think
+this is a olish view that smacks of a guild memtality.
+
+Those in the business of producing anti-viral software obviously have
+little difficulty in acquiring new viruses. Others, like me, who have
+an academic research interest in virus algorithms,always seem to have
+an impossible time obtaining copies of new viruses.  I have had to
+rely on the high turn-over of foreign students in our department
+(mostly from Indonesia and Pakistan) to bring infected discs with
+them.  I always check their discs before they can use them in a
+Department machine, and I trade them a clean disc for their infected
+ones.  It has been an extremely slow and tedious process obtaining the
+viruses this way, and could have been made a hell of a lot easier if
+some of the other people working in the field had been willing to
+share their knowledge.  Also, with the number of bulletin boards open
+to virus-producers, its about time that those of us of the other side
+of the line began being a little bit more free in sharing what we've
+learned.
+
+M A R K  R  D I A M O N D   markd@ psy.uwa.edu.au
+
+------------------------------
+
+Date:    07 Jun 92 11:51:53 +0000
+From:    rob@wzv.win.tue.nl (Rob J. Nauta)
+Subject: Misinformation does more damage than viruses themselves
+
+Unfortunately misinformation about viruses still does more damage than
+the viruses itself. The following article appeared in the Dutch
+magazine 'Computable' dd. june 5 1992:
+
+"Professional computer users underestimate the threat of computer
+viruses, that are no longer exclusively spread by illegal games and
+bulletin boards.
+
+This conclusion was made by the Pilotteam Computer Criminality of the
+Dutch police in a report about the Michelangelo virus.
+
+[...] "
+
+The article continues with conclusions that almost nobody of the users
+hit by the virus had a backup to fall back on.
+
+It's sad to see the police, and especially the special Pilotteam who
+really should know better, spread such misinformation. I've attened
+several lectures of the chief of that team, H. Onderwater recently, and
+his stories consist mostly of popular folklore and fables about
+hackers, which seem to have originated from 'Wargames' and the press
+reports of the German CCC. He continues to spread the fables of hackers
+being able to increase their bank account and highschool grades, that
+every hacker supports the CCC 'freedom of information for all' policy,
+and is out to view your hospital data. He also claims many companies
+prefer to employ hackers, even though not a single case of this claim
+is known.
+
+The story of viruses being spread only by hobbyists via bulletion
+boards and cracked games is a very persistent one. It is a very popular
+theory because it allows companies to ban use of all games and public
+domain software to prevent viruses. They then rely on this policy as
+sole protection, just like an ostrich sticks his head in the sand. If a
+virus does show up, it is blamed on some employee who brought in a game
+or public domain software.
+
+Recent discoveries of viruses in shrink-wrapped software and demo disks
+has proved relying on the assumption of viruses spread by games and
+BBSes is a big risk, which leads to a false sense of security.
+Unfortunately companies are more interested in formal policies than
+practical security. Unless this attitude changes, false information and
+virus panic will cause more damage than the occasional virus itself.
+
+------------------------------
+
+Date:    Sat, 06 Jun 92 02:20:09 -0400
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: McAfee CLEAN-UP 91B and WSCAN91 uploaded to SIMTEL20 (PC)
+
+I have uploaded to WSMR-SIMTEL20.Army.Mil
+
+pd1:<msdos.trojan-pro>
+CLEAN91B.ZIP    CLEAN-UP Version 91-B virus disinfector for PC's, LAN's
+WSCAN91.ZIP     SCAN for Windows Version 91 shell program
+
+CLEAN-UP VERSION 91-B, WSCAN91 RELEASED
+
+     Version 91-B of CLEAN-UP has been released.  This version replaces V91
+and adds a remover for the Multi-2 virus which has been reported as widespread.
+
+     Version 91 of WSCAN has been released.  This version brings all of SCAN
+V91's features to the Windows environment.
+
+VALIDATE VALUES FOR CLEAN and WSCAN:
+CLEAN-UP 91B (CLEAN.EXE)            S:96,124   D:06-01-92   M1: C7BA  M2: 019B
+SCAN FOR WINDOWS V91 (WINSTALL.EXE) S:13,263   D:05-28-92   M1: 0251  M2: 09F0
+SCAN FOR WINDOWS V91 (WSCAN.EXE)    S:87,870   D:06-04-92   M1: 13C4  M2: 08FD
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - - -
+McAfee Associates        | Voice (408) 988-3832 | mcafee@netcom.com  (business)
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | ObQuote: "Log... from Blammo"
+Santa Clara, California  |                      |
+95054-3107  USA          | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | USR Courier DS 14.4Kb| or GO VIRUSFORUM
+
+------------------------------
+
+Date:    Sat, 06 Jun 92 22:25:37 -0400
+From:    Jon Freivald <jaflrn!jaf@uunet.UU.NET>
+Subject: Scan updates available (PC)
+
+I have the following available on my mail-server now:
+
+     scan91.zip
+     clean91b.zip
+     netsc91b.zip
+     vshld91.zip
+     wscan91.zip
+     virus-l.faq
+
+Please be advised that I have changed my mail-server software, however,
+it should properly process all requests sent to the old one.  To
+retrieve any of the files listed above, send a message to:
+
+     jaflrn!mail-server@uunet.uu.net
+
+Include in the message body the line (here "filename" represents the
+file you wish to retrieve from the list above) below - the part in
+brackets ([]) is optional, as it will automatically send .zip files in
+uuencode format:
+
+     get dos/virus/filename [uuencode|xxencode]
+
+For a list of all available files, include the line "get index" in your
+message.  If anyone has any problems using the new mail-server, please
+let me know right away.
+
+Jon
+
+=============================================================================
+		   Jon Freivald ( jaflrn!jaf@uunet.UU.NET )
+	 Nothing is impossible for the man who doesn't have to do it.
+=============================================================================
+
+------------------------------
+
+Date:    Mon, 15 Jun 92 08:42:09 +0700
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: F-PROT 2.04 (PC)
+
+Version 2.04 - major changes:
+
+   The program can now scan into DIET-compressed files
+
+   Variant identification is now even more accurate than before - in
+   particular regarding EXE-infecting viruses.
+
+   The disinfection capabilities have been improved somewhat - the
+   program can now disinfect several viruses which were only detected in
+   previous versions.
+
+   The program is now faster than before - for example the scanning speed
+   on our primary development machine went from 23 files/sec to 40
+   files/sec, but the relative speed increase might be even greater on
+   slower machines.
+
+Version 2.04 - corrections:
+
+   The heuristic analysis produced a false alarm on a program named
+   DDIR.COM, (C) Charles Petzold - fixed.
+
+   The scanner reported some versions of 123.COM as "Possibly infected
+   with a new version of Frogs" - fixed.
+
+   The program only detected around 99.86% of MtE encrypted files - this
+   should be fixed now.
+
+   OPTLINK-packed programs, such as the Norton Utilities are no longer
+   flagged as packed in heuristic analysis.  The programs are actually
+   packed, but users were not aware of that, which has caused considerable
+   confusion.
+
+Version 2.04 - minor improvements:
+
+   The following command-line switches have been added:
+
+       /APPEND - used with /REPORT. Append to an existing file.
+       /NOBREAK command line switch added - disables ESC during scanning
+       /NOWRAP - do not wrap text in the report.
+
+Version 2.04 - new viruses:
+
+   The following 72 new viruses can now be detected and removed.
+
+	_16850
+	Black Jec-(4B, 6B, 8B and Digital F/X)
+	Breeder
+	Cascade (1621 and 1704-B2)
+	Close
+	Cossiga (883 and Friends)
+	Creeper (252 and 475)
+	Danish Tiny (191 and Brenda)
+	Dark Avenger (1687 and Milana)
+	Datalock-1043
+	Diamond-Rock Steady
+	Dutch Tiny-99
+	Eddie 2 (B and C)
+	Europe '92 (424)
+	FGT
+	Fichv EXE 1.0
+	Flash-Gyorgy
+	Freew-718
+	Gotcha-E
+	Got You
+	Intruder-B
+       Jerusalem (AntiCad-Tobacco, CNDER, IRA, Mummy-1.0, Mummy-1.2 and Triple)
+	Joe's Demise
+	Keypress-1744
+	Kit
+	Ko (407 and Birdie)
+	Macedonia
+	Malaga (only file infections)
+	Murphy-Tormentor-D
+	Nines Complement (706 and 776)
+	Plaice (1129 and 1273)
+	Plovdiv-1.3B
+	Possessed-2443
+	RNA-1
+	Shirley-Vivaldi
+	Squawk
+	Stupid-Profesor
+	Suriv 1 (Anti-D and Xuxa)
+	SVS
+	Swedish Boys (Data Molester, Headache and Why Windows)
+	Tabulero
+	Terminator-918
+	Troi II
+	Vienna (637, Betaboys, BNB, Memo 2.0, Parasite-2 and Violator-B2)
+	Violetta-1024
+	Yankee (1909 and Login)
+
+   The following 21 new viruses can now be detected but not removed,
+   only deleted.  This is because they overwrite infected files, or
+   damage them irreversibly.
+
+	BloodLust
+	Burger (560-J, 560-K)
+	Leprosy (B2,Busted and Scribble)
+	SHHS
+	Tack
+	Trivial (30D,31,35,45B,Banana,Hastings and NKOTB)
+	Vengence (A,B,C,D,E and F)
+
+   The following 14 new viruses can now be detected but not removed.
+
+	_572
+	Denzuko-PC Club
+	Ear-6
+	EMF
+	Enemy
+	Hafenstrasse-1641
+	HH&H
+	Munich
+	Phoenix
+	Scion
+	Screamer II
+	Starship
+	Vienna-712
+	Vsign
+	Yankee-Micropox
+
+   The following 43 viruses that could be detected but not removed with
+   earlier versions of F-PROT can now be disinfected.
+
+	_5792
+	Anthrax
+	Best Wishes (970 and 1024)
+	Caz-1159
+	Compiler (1 and 2)
+	Cookie (7360 and 7392)
+	Diamond (Damage-A, Damage-B, David and Greemlin)
+	Forger
+	Freew-692
+	Gotcha-D
+	Halloween
+	Helloween
+	Hero (394 and 506)
+	Intruder
+	Liberty-SSSSS
+	Many fingers
+	Mosquito-Pisello
+	Murphy (Bad Taste, Cemetery, Kamasya, Migram-1, Migram-2, Tormentor-A
+		and Tormentor-B)
+	Nov. 17.
+	Peach
+	Possessed-2446
+	RNA2
+	Sadist
+	Sentinel-1
+	Shirley
+	STSV
+	Swiss-143
+	TV
+	Vcomm-2
+	VVF 3.4
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 116]
+******************************************

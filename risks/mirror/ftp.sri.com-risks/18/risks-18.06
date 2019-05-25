@@ -1,0 +1,611 @@
+Subject: RISKS DIGEST 18.06
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 23 April 1996  Volume 18 : Issue 06
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Java security/privacy bug (Daniel Abplanalp and Stephan Goldstein)
+Swedish court fines parents for son's overly long name (Li Gong)
+Baltimore Throws the Book at Criminals (Peter Wayner)
+AMD5K86 Floating-Point Division Algorithm (J Strother Moore)
+MCI recommending bad security practices (Chad Ray McDaniel)
+Sometimes, stratum 1 time isn't so good (Dave Hsu)
+Filename bug in Windows 95 (Vsevolod Ilyushchenko)
+Web page e-mail addresses Risky (Ray Normandeau)
+Re: Web Called "Ultimate Act of Intellectual Colonialism" (Vadim Antonov,
+    A. E. Siegman)
+Re: Euthanasia via computer (Paul Menon)
+Yes, there are new Word Macro viruses, no, this isn't one of them (Rob Slade)
+888 Risks (Russ Broomell)
+Databases without SSNs and UIDs? (Robert Ellis Smith)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 22 Apr 96 17:37:54 +0200
+From: goldstei@iamexwi.unibe.ch (TERMINATOR)
+Subject: Java security/privacy bug
+
+We have found a privacy/security bug in the Java implementation of the
+Netscape Navigator. It is very easily possible for an applet to find out the
+pathname of the directory in which the Netscape Navigator was started.  This
+information could then be sent back to a CGI program for logging. Clearly
+this information should not be available to an applet, as is indicated by
+the fact that applets are prevented from reading the "user.home" and
+"user.dir" system properties.
+
+When the Netscape Navigator is run under the Windows 95 OS, the pathname
+usually does not contain any critical information. However, when the
+Navigator is run under a multi-user network OS, such as UNIX, the pathname
+often contains the e-mail and/or login name of the user. In addition, the
+pathname might reveal details about the topology of the user's network,
+which an experienced hacker might be able to exploit.
+
+There are two ways to protect yourself from this problem: Either start up
+the Netscape Navigator in a directory whose pathname does not reveal any
+critical information, or disable Java altogether (Options | Security
+Preferences | General). A system administrator can protect his network by
+configuring the HTTP proxy server not to retrieve Java ".class" files.
+
+This bug is present in at least the following versions of the Navigator:
+
+        2.0
+        2.01
+        3.0b2
+        2.0GoldB1
+        2.01Gold
+
+and in the implementations for at least the following platforms:
+
+        SunOS 4.1.2, 4.1.3, 4.1.4
+        SunOS 5.3, 5.4, 5.5
+        Windows 95, Windows NT
+        IRIX 5.2, 5.3
+        HP-UX A.0903, A.0905
+        Linux 1.2.10, 1.2.13
+        FreeBSD 2.1.0-RELEASE
+        OSF1 V3.2
+
+We have not tested whether this bug also exists in Sun's HotJava browser.
+
+We will release full details of the bug as soon as Sun and Netscape have
+issued patches which fix the problem.
+
+Full details have been sent to Sun and Netscape. This announcements has also
+been posted to the "comp.lang.java" newsgroup and has been sent to CERT.
+
+Daniel Abplanalp and Stephan Goldstein (goldstei@iamexwi.unibe.ch)
+Berne, Switzerland
+
+------------------------------
+
+Date: Mon, 22 Apr 1996 23:10:42 -0700 (PDT)
+From: Li Gong <gong@csl.sri.com>
+Subject: Swedish court fines parents for son's overly long name
+
+It is well known that numerous computer programs are so poorly designed and
+implemented that they cannot handle special cases of people's names (e.g.,
+the case of the person simply named "Smith", as in RISKS-18.05).  In some
+other cases, there are real physical (and other) constraints that are hard
+to code around, such as in the case of some colleagues whose long names risk
+falling off the edge of their company badges.
+
+Sometimes people just push things to far to the extreme.  The Guardian
+Weekly reported (in the issue ending 21 Apr 1996, p.4) that "a Swedish court
+has fined a couple $660 for breaking the law by naming their son
+Brfxxxcccxxmnnpcccclllmmnprxxvvclmnckssqlbb11116--or Albin for short."
+
+Does anyone know what law was broken, and can anyone decode the meaning or
+origin, if any, of this choice of name?
+
+Li Gong, SRI Computer Science Laboratory, http://www.csl.sri.com/~gong
+
+  [Their son will be lucky if he does not get called Albin0,
+  even the full given name might appear to be white noise.  
+  This is clearly job for a new Sesame Street song to help
+  us remember the given name.  PGN]
+
+------------------------------
+
+Date: Fri, 19 Apr 1996 17:22:03 -0400
+From: pcw@access.digex.net (Peter Wayner)
+Subject: Baltimore throws the book at criminals
+
+Baltimore just finished creating a brand new technologically advanced
+"central booking" building where police take people after they've been
+arrested. Unfortunately, this heavily computerized system has become media
+fodder lately as people get lost in the building and are not released for
+days. I've seen one television news report that interviewed a woman who said
+she spent five days in the building because of a minor warrant for an unpaid
+fine. Bail was posted several times and lost.
+
+The Thursday 18 Apr 1996 edition of the *Baltimore Sun* reports that the
+system is now working faster after the police started overriding the
+computers. For instance, there was an automated system by which prisoners
+could be called up for their hearings.  The handheld computers that carried
+these messages, however, didn't work and now the City has detailed five
+extra officers to escort the prisoners instead.
+
+Another woman complained that her 18-year-old retarded child was held a full
+day after bail was set. She says that she was speaking with booking center
+over the telephone when the child knocked at the door. The booking center
+was telling her that her son could *not* be released until all of the
+computer records were complete. I can only hope that the same glitch won't
+let out a dangerous criminal.
+
+The article ends by noting that the District Court Commissioner says that
+"Anybody [who's] been in this building would be a damn fool to [go] back to
+it."
+
+------------------------------
+
+Date: Fri, 19 Apr 96 14:28:31 CDT
+From: moore@cli.com (J Strother Moore)
+Subject: AMD5K86 Floating-Point Division Algorithm
+
+I would like to bring your attention to some recent joint work by Advanced
+Micro Devices, Inc., and Computational Logic, Inc., in which the ACL2
+theorem prover was used to prove the correctness of an algorithm of
+commercial interest.  In particular we proved the correctness of the kernel
+of the floating-point division algorithm on the AMD5K86, the first
+Pentium-class processor produced by AMD.  Roughly speaking, we proved that
+the algorithm implements division on the double extended precision normal
+and denormal numbers of the IEEE standard, in the sense that (under
+appropriate hypotheses) it returns the floating-point number obtained by
+rounding the ``infinitely precise'' quotient by the method and to the
+precision specified by a given rounding mode.  The permitted rounding modes
+include round to 0, round away from 0, round to nearest, round to positive
+(or negative) infinity, and ``sticky'' rounding.  The proof is quite
+interesting, involving as it does the formalization of a lot of
+floating-point ``folklore'' and classical numerical analysis.
+
+J Strother Moore
+
+The paper may be obtained via the URL:
+ http://devil.ece.utexas.edu:80/~lynch/divide/divide.html
+
+The title and abstract are shown below.
+
+         A Mechanically Checked Proof of the Correctness of the Kernel
+             of the AMD5K86 (tm) Floating-point Division Algorithm
+
+		       J Strother Moore (Moore@cli.com)
+			 Tom Lynch (Tom.Lynch@amd.com)
+		  Matt Kaufmann (Matt_Kaufmann@email.mot.com)
+
+ABSTRACT:
+
+We describe a mechanically checked proof of the correctness of the kernel of
+the floating-point division algorithm used on the AMD5K86 microprocessor.
+The kernel is a non-restoring division algorithm that computes the
+floating-point quotient of two double extended precision floating-point
+numbers, p and d (d \= 0), with respect to a rounding mode, mode.  The
+algorithm is defined in terms of floating-point addition and multiplication.
+First, two Newton-Raphson iterations are used to compute a floating-point
+approximation of the reciprocal of d.  The result is used to compute four
+floating-point quotient digits in the 24,,17 format (24 bits of precision
+and 17 bit exponents) which are then summed using appropriate rounding
+modes.  We prove that if p and d are 64,,15 (possibly denormal)
+floating-point numbers, d \= 0 and mode specifies one of six rounding
+procedures and a desired precision 0 < n <= 64, then the output of the
+algorithm is p/d rounded according to mode.  We prove that every
+intermediate result is a floating-point number in the format required by the
+resources allocated to it.  Our claims have been mechanically checked using
+the ACL2 theorem prover.
+
+------------------------------
+
+Date: 19 Apr 1996 21:07:06 GMT
+From: chadm@unhinged.engr.sgi.com (Chad Ray McDaniel)
+Subject: MCI recommending bad security practices
+
+Taking advantage of yet another incentive offer, I recently switched my long
+distance carrier to MCI. They sent me the standard
+yet-another-piece-of-plastic-to-stick-in-my-wallet calling cards. The way
+these cards work is that you call an 1-800 number and type in your code
+consisting of your phone number followed by your PIN (Personal
+Identification Number) which happens to be printed on the card.
+
+Enclosed with the cards was a piece of paper in which MCI wisely suggests
+that you change your PIN to something other than what they assigned to you
+and printed on the card:
+  
+  Customizing your PIN
+
+  Choosing your own four-digit number is the best way to assure you'll
+  never forget your PIN. Make it the month and year of a loved one's
+  birthday or use the same password you have for your voice mail or
+  computer. We'll quickly replace the PIN we assigned you with any four
+  digits you choose - just call 1-800-476-7306
+
+For some strange reason MCI is recommending you to do exactly the opposite
+of what good security practices would proscribe! Not only do they suggest
+that you use an easily-breakable password such as an important date, but
+they recommend a practice that would weaken the security of potentially more
+sensitive information in a voice-mail or computer system.
+
+Of course, what probably prompted note from MCI was a desire to prevent
+MCI's customer service department from being inundated with calls from
+people who forgot their PINs. This alludes to the associated risk of
+requiring people to remember Yet Another Password (YAP).
+
+-chad
+
+------------------------------
+
+Date: 21 Apr 1996 01:16:09 -0400
+From: hsu@va.pubnix.com (Dave Hsu)
+Subject: Sometimes, stratum 1 time isn't so good
+
+I find it necessary every few weeks to set the clock on my Unix box at home
+because PCs are not generally known for incorporating accurate timekeeping
+hardware.  Shortly before doing this recently, I ran across this notice on
+the web page of the US Naval Observatory Directorate of Time, operates a
+number of stratum-1 NTP servers, and is otherwise the official source of
+time in the United States.
+
+ http://tycho.usno.navy.mil/phonecheck.html
+
+ On the morning of April 16, the Directorate of Time moved its
+ Master Clock #1 Hydrogen Maser to a new environmental chamber in
+ Washington, D.C. Timing operations were switched to Master Clock #2
+ Hydrogen Maser. All except our network time servers tick and tock,
+ which failed to switch over, and jumped back 744.126 seconds
+ between 12:32:58 UT and 14:23:46 UT, when the problem was corrected.
+
+ This jump was 10 million times the normal precision of these systems. 
+
+Presumably, other stratum 1 NTP servers operating from local clocks, WWV or
+GPS broadcasts successfully made both changeovers and never noticed.  Many
+protocols, kerberos for instance, would not take kindly to a ten-minute
+drift.  While the close coupling of hosts "tick" and "tock" to the actual US
+time standard make them appealing servers as far as nerdly bragging rights
+are concerned, in this instance it also made them vulnerable to the
+_process_ by which US time is determined.
+
+Dave Hsu  <hsu@va.pubnix.com> Systems Programmer  Software Development Group 
+UUNET Technologies   http://www.va.pubnix.com
+
+------------------------------
+
+Date: Tue, 23 Apr 96 20:26:16 +0400
+From: Vsevolod Ilyushchenko <SimonF@rrg.msk.su>
+Subject: Filename bug in Windows 95
+
+I have found a serious bug (feature?) in Windows 95. It does not properly
+treat files that contain certain characters in their names.  These
+characters include those with ASCII values of 255, 254, 249, 244, 23* and
+some others, all above 127. I have not found a common rule (so I probably
+failed the Microsoft IQ test :).
+
+This problem was noted by Olcay Cirit in RISKS-17.64 in regards to ASCII
+229.  He wrote that if this character is the first in a filename, then the
+file cannot be deleted, copied, renamed or executed.  Actually, *any* of
+these characters at *any* place in the filename will spoil the file.  Such
+files are visible in Explorer, with bad characters shown as underscores.
+You can create shortcuts to them, view their properties or even try to
+rename them.  But any serious operation has to be performed from the command
+line.
+
+A pecularity of my DOS file managing program is that it uses direct disk
+access to delete files.  I could not do that under Windows 95 until
+recently, so to deal with the "bad characters" I had to reboot into DOS
+prompt.  Then I discovered the the "LOCK" command will allow DOS utilities
+to access disk directly.  However, this is probably an undocumented command,
+it's absent in the DOS help file, and it is not an executable file.
+
+A note for those unfamiliar with the "funny" characters.  You can enter any
+character at the DOS prompt by holding the Alt key and pressing the keys
+with digits for the character at the numeric keypad.  For example, Alt+097
+is 'a', and Alt+255 is one of the "bad characters".  So, to see the
+described behaviour for yourself, create at the DOS prompt a new file that
+has a "bad character" in its name, then try to do something with it in
+Windows 95.
+
+The RISKS? Aside from user confusion and possible pranks (which cannot do
+much harm, because you can always go to the command line and fix the
+things), there is another issue.  Usually filenames with "bad characters"
+are not used.  However, here in Russia one way of russifying a PC is to
+replace all those Greek, German and Swedish symbols that reside in the upper
+part of the ASCII table with Russian letters.  So, if a Russian user had
+many files with Russian names, and then switched to Windows 95... Surprise,
+surprise!  You can't manage your old files there.
+
+I have to confess that I do not know how Russian edition of Windows 95
+works. I am using the US edition.
+
+Simon (Vsevolod Ilyushchenko)   simonf@rrg.msk.su  simonf@fubar.cs.montana.edu
+
+------------------------------
+
+Date: Sun, 21 Apr 96 22:50:00 -0500
+From: ray.normandeau@factory.com (Ray Normandeau)
+Subject: Web page e-mail addresses Risky
+
+Bell Atlantic NYNEX Mobile has a web page at: http://www.banm.com
+
+>From that web page I got an e-mail address (ny@bam.com) and sent a report
+ of a service difficulty.
+
+I also identified my account and the dealer from which I signed up for
+service.
+
+Fortunately I did NOT post my PIN number in the message.
+
+The dealer then called me to say that my message had gone "all over the
+internet"!
+
+I then e-mailed BANM again asking:
+     "Do private e-mail messages such as this wind up being spread all over
+     the internet by your site?
+
+     I was not aware of this. Why don't you warn people sending you e-mail
+     messages that this happens.
+
+     I would assume that some of your customers would feel that this is an
+     invasion of privacy and possibly litigatable.
+
+BELL ATLANTIC NYNEX MOBILE has not replied yet.
+
+I think that this should be a warning to people sending BANM what they THINK
+to be private e-mail messages to be advised that they may wind being
+published on their web page. So be sure not to put confidential information
+in messages to BANM.
+
+Ray Normandeau, ray.normandeau@factory.com
+http://www.buzznyc.com/actors/res.normandeau.raymond.html
+                                                      
+------------------------------
+
+Date: Fri, 19 Apr 1996 22:01:10 -0400
+From: Vadim Antonov <avg@sprint.net>
+Subject: Re: Web Called "Ultimate Act of Intellectual Colonialism" (R-18.05)
+
+>Anatoly Voronov, the director of Glasnet, an Internet service provider in
+>Russia, says:  "It is just incredible when I hear people talking about how
+>open the Web is.  It is the ultimate act of intellectual colonialism.  The
+>product comes from America so we either must adapt to English or stop using
+>it.  ...
+
+Sigh.  As always clueless get most publicity.
+
+Apparently Mr. Director of small but noisy local service provider is not
+aware that Russia-language newsgroup traffic is second to English-language.
+Apparently he's not aware that domestic ISPs in Russia offer quite a lot of
+Russian-language material.  Apparently he does not even realize that
+understanding of Internet technology in Russia is good enough that there
+happened to be quite a few recent Russian immigrants taking senior positions
+in U.S. telecom industry.
+
+The prevalence of English is merely due to the need for some common
+language.  A modern man cannot be considered educated if he cannot read it.
+It's like Latin centuries ago.
+
+How can anybody's head to be so screwed as to consider the only real advance
+in destroying the inter-cultural communication barriers to be "the ultimate
+act of intellectual colonialism" (ain't that an oxymoron?) is beyond my
+comprehension.
+
+Maybe French government should send him a job offer.
+
+--vadim
+
+------------------------------
+
+Date: Fri, 19 Apr 1996 15:32:32 -0700
+From: siegman@ee.stanford.edu (A. E. Siegman)
+Subject: Re: Web Called "Ultimate Act of Intellectual Colonialism" (R-18.05)
+
+1) Nicholas (sp?) Negroponte of MIT's Media Lab begins his book 
+   "Being Digital" by emphasizing the difference between transporting 
+   bits and transporting atoms.  The Internet moves bits.  The Soviet
+   Union, in its heyday of real rather than intellectual colonialism, 
+   moved atoms, i.e., people, in very large numbers, specifically natives 
+   out of subordinated lands, Russians into them.
+
+2) The "product", I thought, came largely from *CERN*: an *international*
+   organization, located as it happens in *France*.
+
+[...]
+
+------------------------------
+
+Date: Sat, 20 Apr 1996 16:23:44 +1000 (EST)
+From: Paul Big-Ears Menon <pnm@cs.rmit.edu.au>
+Subject: Re: Euthanasia via computer (Grooby, R-18.05)
+
+I think one of the most frightening aspects of this was the penultimate
+screen image.  There is an option "YES" (i.e., proceed) but none for "NO"
+(i.e., I've changed my mind).
+
+OK, the very last screen _does_ give you this choice, but ... how is the
+intended patient to know that there's another screen coming up (unless they
+go through a dress rehearsal)???  That screen yelled out at me from the
+(I think it was last Tuesday's Australian newspaper but could have been
+the Sun's) Computer Section page.
+
+There was no obvious way to change one's mind.
+
+This is the ultimate bad GUI design - no apparent option to cancel or go for
+a "none of the above" decision.  Stupidity?  Criminal?  I don't know, but it
+was downright frightening.
+
+It reminds me of (and I don't mean to belittle the thread) dialog boxes 
+(or alerts) which used to notify you of a (serious) System Error on the Mac.  
+It gave you the "choice" of doing a restart (reboot) or a quit.  The trouble 
+was that the quit almost always never worked and the thing froze anyway.
+Current Mac SW gives you the "choice" of restarting only (apart from those 
+that automatically quit to the Finder).
+
+Perhaps the subtle differences between an Alert
+
+	Where you usually don't have a choice - e.g., "You are about to 
+	die.. Press OK to continue"
+
+and all other forms of dialog boxes
+	
+	Where you _do_ have a choice (and even an escape hatch not covered
+	by those being solicited)..
+
+need to be made more obvious.  The ornamentation (at least on the Mac) for both
+types of displays (windows) are very similar.  The windows in question 
+(from memory) actually seemed more like web browser pages  with the YES/NO
+options as links.
+
+As for an escape hatch, there should always be one, regardless.  It should
+never be out of view (ie, it should *never* be scrolled off the top).
+
+Say, for example, a patient had a change of heart with that penultimate
+window displayed.  OK, there's always the "quit" menu option, hitting the
+power switch, etc, but how comfortable and certain is he/she that this
+hasn't left the drip (or whatever) still in a primed state?  There is no
+confirmation that equipment has been de-activated, especially if he/she hits
+the power/restart switch.
+
+Critical systems indeed.
+                                              
+Paul Menon, Dept of Computer Science, Royal Melbourne Institute of Technology,
+124 Latrobe Street, Melbourne 3001, Victoria, Australia  +61 3 9660 3209/2348
+
+  [Various other folks commented on other aspects of this situation,
+  testability using placebos, social implications, the long-standing RISKS
+  issue of trying to solve social problems with technological solutions,
+  etc.  All very interesting, but drifting a little too much.  TNX.  PGN]
+
+------------------------------
+
+Date: Fri, 19 Apr 1996 15:43:47 EST
+From: Rob Slade <roberts@mukluk.hq.decus.ca>
+Subject: Yes, there are new Word Macro viruses, no, this isn't one of them 
+
+In: Risks-Forum Digest  Friday 19 April 1996  Volume 18 : Issue 05
+
+>From: Edupage Editors <educom@elanor.oit.unc.edu>
+>Subject: More Microsoft Viruses (Edupage, 16 Apr 1996)
+>First there was the Word virus -- now there's a Word Prank Macro Virus,
+
+Before Microsoft admitted it *was* a virus, their term for WordMacro.Concept
+(the "original"), was the Word Prank Macro.  This isn't new at all.
+
+>located in a document on ActiveVRML, Microsoft's software tool for
+>developing 3-D Web sites.  But what's worse, is that Microsoft had to inform
+>the programmers who attended its Professional Developers Conference last
+>month that one of the CD-ROMs it distributed was infected.  A cure is posted
+
+Concept is everywhere.  Of those who work in large corporations, the only
+ones who *don't* regale me with stories of massive infestations are those
+who do not know how to check for it.  Microsoft has been a repeat offender:
+we are constantly hearing of new disks and CD-ROMs from MS that contain
+infected documents.
+
+>on Microsoft's Web site < http://www.microsoft.com/ >  (*Investor's Business
+>Daily*, 15 Apr 1996, A8)
+
+Microsoft's anti-WordMacro/Prank/Concept package is a Word macro itself.  It
+takes a piecemeal approach, and has been updated several times as new macro
+viruses have been discovered.  The protection provided has holes: it is best
+not to rely on it.
+
+Edupage has had a large number of erroneous virus reports over the past year.
+No worse than the general press, of course (where their material is obtained),
+but somewhat disturbing in the technical community they distribute to.
+
+roberts@decus.ca         rslade@vcn.bc.ca         slade@freenet.victoria.bc.ca
+
+------------------------------
+
+Date: Fri, 19 Apr 96 16:03 EST
+From: "-Broomell, Russ" <MARKETING/MARKETING/RUSS%Konica_Imaging@mcimail.com>
+Subject: 888 Risks
+
+     I have spoken to several people who have signed up for the new
+toll-free US 888 numbers (addition to the older 800 numbers).  They are
+seeing a precursor to the year 2000 problem - many systems don't recognize
+888 numbers.
+     One story was told that a sales person called his 888 numbered voice
+mail system from his hotel room.  When he went to check out, he had a bill
+for over $60 in phone charges.  It seems that the local hotel did not
+recognize the prefix 888, and so assumed it was a long distance call and
+charged the highest toll rates.  Other stories tell of pay phones that will
+not accept calls using 888, car phones that reject calls dialed with 888, as
+well as a myriad of other system related glitches.
+     The change seems simple - just tell your system that 888 is a valid
+toll free prefix.  However, as with the Y2K problem, it seems that plenty of
+systems either were not ready for the change, or are incapable of accepting
+it.  If this is any indication of the Y2K RISK, I'm moving to a remote
+mountain top in 1999.
+
+------------------------------
+
+Date: Wed, 17 Apr 96 20:26 EST
+From: Robert Ellis Smith <0005101719@mcimail.com>
+Subject: Databases without SSNs and UIDs?
+
+Does someone have ideas and suggestions for alternatives to the Social
+Security number for large organizations with large databases - methodologies
+like Alpha Search or Soundex?  Are there other ways to manage huge databases
+without any use of SSNs or other numerical identifiers?
+
+Robert Ellis Smith, Privacy Journal, Providence RI 401/274-7861
+
+  [Respond to Bob, please, and let's see if he can summarize for RISKS.  PGN]
+
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.06 
+************************

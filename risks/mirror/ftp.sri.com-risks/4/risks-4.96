@@ -1,0 +1,568 @@
+ 6-Jun-87 16:21:10-PDT,29969;000000000000
+Mail-From: NEUMANN created at  6-Jun-87 16:20:10
+Date: Sat 6 Jun 87 16:20:10-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.96 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Saturday, 6 June 1987  Volume 4 : Issue 96
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Lightning Strikes Twice At NASA (Matthew P Wiener)
+  Iraqi cockpit navigation system placed Stark in exclusion zone? (Jon Jacky)
+  Run-time checks
+    (Howard Sturgis, Henry Spencer, James M. Bodwin, Alan Wexelblat)
+  Error Checking and Norton's Assembly Language Book (James H. Coombs)
+  Re: Risks of Compulsive Computer Use (Douglas Jones)
+  A reference on Information Overload; a Paradox of Software (Eugene Miya)
+  Computerholics (James H. Coombs)
+  Naval Warfare -- on possible non-detonation of missiles (Mike McLaughlin)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+Date: Sat, 6 Jun 87 04:22:40 PDT
+From: weemba@brahms.Berkeley.EDU (Matthew P Wiener)
+To: RISKS@csl.sri.com
+Subject: Lightning Strikes Twice At NASA
+
+The 22 May 87 issue of _Science_, p903, has an article about the rocket
+that was hit by lightning two months ago:
+
+    Jon Busse, chairman of NASA's inquiry into the accident, disclosed ...
+  that the Atlas-Centaur ... was launched in a heavily charged electrical
+  atmosphere on 26 March.  The rocket itself triggered a lightning bolt.  A
+  single bolt punched through the fiberglass nose cone, spread fingers of
+  electricity around the computerized brain [sic!] that commands the motors,
+  and changed one word of program language.  As a result, the motors sent the
+  rocket veering off course 51 seconds after lift-off, at the moment of peak
+  strain.  The $160-million package began to break up, and flight controllers
+  had no choice but to deliver the coup de grace.
+    ... If [shuttle launch criteria] had been applied, they would have
+  prevented the launch of the unmanned Atlas-Centaur this spring.  According
+  to one researcher, NASA has installed the ``most sophisticated lightning
+  monitoring system in the world''....  But its data were not used.
+    ... There was a failure of communication, Busse said, and a failure of
+  NASA to ``exercise awareness, judgment, and leadership.''
+  
+I find it interesting how this example is doubly appropriate for RISKS.
+We have both an accidental computer failure, and of the larger human
+failure to match existing data with actual procedures.
+  
+ucbvax!brahms!weemba        Matthew P Wiener/Brahms Gang/Berkeley CA 94720
+  
+------------------------------
+
+From: jon@june.cs.washington.edu (Jon Jacky)
+To: risks@csl.sri.com
+Subject: Iraqi cockpit navigation system placed Stark in exclusion zone?
+Date: Thu, 04 Jun 87 21:45:29 PDT
+
+The SEATTLE TIMES, Thurs June 4, 1987, p. A4 includes a story titled
+"Seconds to react, Pentagon report on Stark says," attributed to The 
+Washington Post and Newhouse News Service.  It includes the statements:
+
+"Iraq has claimed that the Stark was inside the "exclusion zone" of the 
+(Persian) Gulf where Iraq had warned ships would be subject to attack, the
+Pentagon said.  The U.S. government disputes the claim.
+
+The Iraqis base their claim on the navigation system in the fighter-plane
+cockpit, according to the Pentagon, which added "we are convinced Stark
+was 10 to 15 nautical miles outside" that zone.  The Pentagon said it had
+received a "wealth of position data" on the Stark from that ship, the AWACS
+plane that monitored the attack and two other ships in the area."
+
+- Jon Jacky, University of Washington
+
+       [It does little good after an autombile wreck to argue that your late
+       spouse had the right of way.  Unfortunately, this case is similar.  
+       Whether or not the Iraqi navigation system was in error, there were
+       quite a few human lapses that rendered technology useless.  PGN]
+
+------------------------------
+
+Date: Thu, 4 Jun 87 11:13:00 PDT
+From: sturgis.pa@Xerox.COM
+Subject: Run-time checks
+To: RISKS@CSL.SRI.COM
+
+Most of us in the Computer Science Laboratory at the Xerox Palo Alto
+Research Center have been using the programming language "Cedar" for several
+years.  Cedar has a "safe" subset which guarantees the "safe" behavior of
+compiled programs.  One has to use keywords like "LOOPHOLE" or "TRUSTED" in
+order to program outside the safe subset.  Unsafe behavior includes
+references outside the bounds of an array.  Programming in the safe subset
+causes the automatic insertion of run-time bounds checks, among other run
+time checks.  (It also involves extensive compile time checking as well.)
+
+In our workstation operating system, also called "Cedar", all programs run
+in a common multi-process address space.  This includes programs that are
+being debugged, as well as editors and the file system.  The operating
+system itself is written in Cedar, and a large part of that system is
+written in the safe subset.  (Some old parts of the system have not been
+converted to safe Cedar.  It is a matter of controversy how much could be
+converted.)  The screen managers, editors, compilers, and mail program are
+all mostly in the safe subset.  Thus, my day to day work is conducted using
+programs that involve extensive run-time checking.
+
+I rarely have a "crash" on my workstation that can be traced to a failure
+that could have been caught by a run-time check, such as a bounds check.
+That is, crashes in which the language abstraction is violated.  "Rarely"
+means on the order of significant fractions of a year between occurrences,
+probably more than a year.  I do have more frequent crashes than this.
+There are a few resources in our system that are consumed in a monotonic
+fashion, and under certain conditions one can run out of these resources
+during a day of work; this event requires a re-boot.  In addition, there are
+some lingering deadlocks in the window manager that strike infrequently.
+
+I have recently written a large compiler-compiler system.  Except for a few
+lines of code in the midst of a parser generator subsytem, it is written
+entirely in the safe subset.  This system generates Cedar source code, and
+generates this source code faster than the Cedar compiler can compile it.
+Thus, the cost of the run-time checks in this program is inconsequential.  I
+debugged this system on my workstation, running it concurrently with may
+day-to-day support tools, including the window manager, text editor,
+compiler, and mail-program.  This undebugged code never interfered with the
+execution of these support tools.
+
+All of the above is written to support the notion that one can work on a
+day-to-day basis in a system with extensive built in run-time checks.  I
+find it very comforting to work in this system.  I personally would find
+it very painful to go back to a world that was not "safe".
+
+Howard Sturgis
+
+------------------------------
+
+From: decvax!utzoo!henry@ucbvax.Berkeley.EDU
+Date: Sat, 6 Jun 87 02:54:42 edt
+To: ucbvax!CSL.SRI.COM!RISKS
+Subject: Run-time checks
+
+I should clarify a couple of points in my previous contribution.  Several
+people have pointed out IBM's internal PL.8 compiler, which does generally
+resemble what I was thinking of:  it works quite hard to determine whether
+run-time checks are really needed, and succeeds in eliminating most of them.
+It typically manages to bring the run-time-check overhead down to one or
+two percent, sometimes to zero.  (PL.8 has not been publicized much, but
+there are a couple of papers on it in the Sigplan 82 compiler symposium.)
+
+My notion was a little different, though:  the compiler should *never*
+generate a run-time check; if a run-time check is necessary anywhere, and
+the programmer has not explicitly overridden that particular check in that
+particular place, this should be considered a fatal error and code generation
+should be abandoned.
+
+The reasons behind this are two.  First, the occurrence of a run-time error
+is almost certainly a symptom of a bug; programs should be more careful.
+It seems better to flag such bugs at compile time, when it is convenient
+to do something about them.  Second, since the actual error will generally
+show up at some remove from the underlying bug that caused it, it is really
+very difficult to do anything intelligent about it after the fact, barring
+global recovery methods like recovery blocks.  (This is a major reason why
+programs should avoid generating such errors.)  Dying with a core dump is
+not acceptable for e.g. an air-traffic-control program.  It seems wise to
+head off such errors in advance.
+
+Clearly, it is not realistic to expect a compiler to eliminate all run-time
+checks from arbitrarily complex programs.  That's more a job for a theorem
+prover, which isn't practical as a routine programming tool for normal
+applications just yet.  But:  programmers do not write arbitrary programs.
+My conjecture -- which PL.8 strengthens but does not prove -- is that modest
+intelligence in the compiler, plus some willingness to clean up code to make
+it clearer, would reduce the "compiler can't be sure about this one" cases
+to an occasional annoyance that could be handled by manual overrides.
+
+				Henry Spencer @ U of Toronto Zoology
+				{allegra,ihnp4,decvax,pyramid}!utzoo!henry
+
+------------------------------
+
+Date: Thu, 4 Jun 87 15:49:24 EDT
+From: James_M._Bodwin@um.cc.umich.edu
+To: risks@CSL.SRI.COM
+Subject: Some experience with run-time checking
+
+I'm the author of a Pascal compiler that is compatible with the IBM
+Pascal/VS compiler.  Among other things, the compiler does a MUCH more
+complete job of detecting run-time errors than the IBM product does.  For
+instance, my compiler detects run-time uses of variables before they have
+been assigned to or otherwise initialized.  Since the compiler is completely
+compatible with the IBM product, one of the first things that people did
+when the compiler was released was to dust off existing Pascal/VS programs
+and run them through the new compiler.  The number of bugs that the new
+compiler found in these supposedly "fully debugged" programs was absolutely
+frightening.  I now regret that I did not have the foresight to keep
+statistics on this since it would have given some kind of indication of the
+effectiveness of the particular debugging techniques used.  Even more
+frightening was the number of programmers who refused to believe that this
+new compiler had actually found errors in production programs.  I've often
+thought that it would be an interesting experiment to have a group of
+programmers debug some programs with all compiler run-time checking off and
+then to turn the run-time checking on in order to see how many errors they
+missed.
+
+One risk of putting strong run-time checking into a compiler is that the
+programmers may assume that the compiler is doing more than it is.  For
+instance, the IBM Pascal/VS compiler does not detect integer overflows in
+EVERY circumstance (it isn't clear if this is a "bug" or a "feature").
+Thus, a few programmers were really surprised when the new compiler detected
+integer overflows in their programs.  They had not bothered to test for that
+themselves since they were convinced that the Pascal/VS compiler was doing
+the checking for them.
+                                          Jim Bodwin
+
+------------------------------
+
+Date: Thu, 4 Jun 87 12:37:04 CDT
+From: Alan Wexelblat <wex@MCC.COM>
+To: risks@csl.sri.com
+Subject: Bounds checking
+
+There's a risk associated with hardware bounds checking which continues to nab
+me.  After working for months on Burroughs hardware (in Modula2 and ALGOL)
+I became accustomed to having my occasional bounds errors caught by the
+compiler or the hardware.  Now I work in C on a UNIX box and occasionally am
+astonished when the first element of an array "miraculously" takes on a new
+value.  Makes debugging a lot harder, too.
+
+Alan Wexelblat 
+UUCP: {seismo, harvard, gatech, pyramid, &c.}!sally!im4u!milano!wex
+
+------------------------------
+
+Date:         Thu, 04 Jun 87 13:07:40 EDT
+From:         "James H. Coombs" <JAZBO%BROWNVM.BITNET@wiscvm.wisc.edu>
+Subject:      Error Checking and Norton's Assembly Language Book
+To:           RISKS@SRI-CSL.ARPA
+
+While working through *Peter Norton's Assembly Language Book for the IBM 
+PC*, I was struck again and again by it's "risky" approach to programming.  
+A few quotations:
+
+On error checking:
+
+         In this first version of READ_SECTOR we'll deliberately ignore
+         errors, such as having no disk in the disk drive.  This is not
+         good practice, but this isn't the final version of READ_SECTOR.
+         We won't be able to cover error-handling in this book, but you
+         will find error-handling procedures in the version of Dskpatch
+         on the disk that is available for this book (169).
+
+At another point that I could not locate just now, they (Norton and Socha)
+say that they will not check for X, since it is a programming error.
+
+One could interpret the ignoring of error-checking in a number of
+ways---perhaps it is so important that the reader should spend $24.95
+(for the diskette) to get some good examples; perhaps the authors are
+bored by it; perhaps it would make the book too large; etc.  In any case,
+the book does not make an effort to impress upon readers the importance of
+extensive and careful error checking.  Since they attempt to teach
+modular programming at basic levels, it would be appropriate for them to
+teach error checking at basic levels as well.  They do stress the importance
+of TESTING, especially boundary conditions, but they clearly believe that
+testing can replace most error checking.
+
+On completeness of programs:
+
+         Dskpatch won't be finished then, as we said, programs never
+         are; but the scope of our coverage in this book will be
+         complete (280).
+
+         "a program is never done . . . but there comes a time when it
+         has to be shipped to users" (295; quotation marks are in the
+         book, apparently to indicate that this is conventional wisdom).
+
+         Remember:  Programs are never complete, but we have to stop
+         somewhere (276; and then they kludge a routine that they admit
+         should be completely rewritten).
+
+This attitude explains why the book gradually gets sloppier and sloppier.  The
+first few chapters impressed me as award-winning material, wonderful tutorial,
+careful, thoughtful.... Then I found that care replaced more and more by an
+effort to sell the diskette and by haste to finish the book and get more
+dollars in their pockets.  In some ways, I appreciate the errors that I found
+in their programs, since that gave me a chance to try out my knowledge of
+assembly language, but that does not excuse their attitude and certainly does
+not excuse their teaching others to meet deadlines by handing programs over as
+is instead of completed.
+
+I would still recommend this book for experienced programmers who want a good
+tutorial on assembly language, but it would be a little dangerous for people
+who have not already absorbed some of the principles of risk reduction.
+
+In addition to this example of risky programming, I would like to offer some
+thoughts on the discussion of such built-in error checking as checking for
+the overflowing of array bounds.
+
+First, aren't the gains fairly limited?  If the error is captured in the
+hardware, it's still going to cause an abort, right?  It may be a little
+cleaner and may help the programmer locate the problem, but the program is
+still going to crash.  I certainly wouldn't want the hardware or even any
+compiler-generated code to attempt to correct such an error in my code.  I
+suppose that there may be some disagreement about the gains of terminating
+gracefully over just falling apart, but the point is that one still has to
+terminate, which is not much consolation to the user.  If the error condition
+could cause damage to the system, then the gains might be considerable.  Such
+damage is usually prevented at the systems level though.  On an IBM mainframe,
+one has such things as "operation exceptions."  What about other machines?
+In three years of program development, I have yet to damage an IBM PC.  In
+"critical" software---well, maybe there is something here---would built-in
+boundary checking prevent a robot from smashing someone's head?  From the
+user's point of view, that certainly would be consolation!
+
+Second, what is the overhead for such checking?  In an inner loop, the
+overhead might be substantial, especially if the loop consists of only a
+few lines, as in searching for a character in a string.  The programmer
+has to code some termination anyway, so error checking should be redundant
+here.  E.g.,
+
+   for (i = 0; i < BUFSIZE && buf[i]!=CHAR_X; i++);
+
+I suppose the programmer could slip and use BUFSIZE when it should be BUFSIZE2
+or something like that.  (For a real example of such an error in distributed
+code, see the public domain version of SED, "a freeware component of the GNU
+operating system"---in the incarnation in which I received it from a BBS, same
+version on Genie, I believe.)
+
+Finally, checking for array bounds is of little value in languages/programs
+that use pointers extensively.  The loop above is much more likely to be coded
+as follows:
+
+   for (s = buffer; *s && *s!=CHAR_X; s++);
+
+A superb compiler might be able to determine that this is an appropriate point
+to check for going past the bounds of 'buffer', which may not be properly
+terminated.  By such standards, however, today's compilers are Neanderthals,
+and most of our machines don't have the power to drive more intelligent
+compilers at reasonable speeds anyway.
+
+In conclusion, I don't believe that built-in error checking is worth the
+trouble for most environments.  First, the gains are limited.  Second, the
+overhead may be substantial and cannot be controlled by the programmer.
+Finally, compilers are not capable of interpreting the code well enough to
+determine just what sort of error checking should be performed (perhaps I
+should say compilers that I am familiar with on equipment that I am
+familiar with: PL/I on IBM mainframes; C86 and MSC on IBM PCs).
+
+James H. Coombs, Mellon Postdoctoral Fellow in English, Brown University
+
+------------------------------
+
+Date: Thu, 4 Jun 87 10:29:25 CDT
+From: Douglas Jones <jones%cs.uiowa.edu@RELAY.CS.NET>
+To: RISKS@CSL.SRI.COM
+Subject: Re: Risks of Compulsive Computer Use
+
+Steve Thompson wrote (Risks 4.94) "Need there be a Hackers-Anonymous."
+
+In 1972 or 73, while I was an undergraduate at Carnegie-Mellon, I made up
+a supply of flyers for 'Computer Nurds Anonymous' and posted them around
+campus.  (Note:  Nurd was the accepted spelling at CMU back then; we had
+not picked up on the MIT spelling, nor was the word 'hacker' used much at
+CMU at the time.)  Computer Nurds Anonymous offered a withdrawal plan that
+moved the nurd from interactive computing to a batch environment, and from
+there, in graduated steps, to hand cyphering.  I understand that some
+copies of the flyer ended up at other universities; I no longer have a
+copy.
+
+More seriously, while I was an undergraduate, I and another student did
+a term project for a personality theory course which involved what may well
+be one of the first serious psychological studies of hackers.  We came up
+with the following characterization:
+
+	This particular group of students uses the computer as a
+	social surrogate and as an object of their creative energies
+	because, being passive individuals, they prefer to deal with
+	the stable environment of the machine world.  As these people
+	are basically intelligent but introverted, they employ the
+	computer because it is intellectually stimulating without
+	allowing the trauma of social contact.
+
+We then identified a group of 28 students who had completed some course
+work in computer science, 6 of whom were identified by their peers as
+'computer nurds'.  We administered the Edwards Personal Preference Scales
+for change (Do they like familiar environments, or do they seek new
+environments?) and order (Do they like an orderly life?), and the Minnesota
+Multiphasic Personality Inventory social introversion scale.  We found
+no correlation between being a 'computer nurd' and desire for change,
+we found that, as expected, 'computer nurds' were more likely to be
+introverted than extroverted, but that this was true of the entire population
+tested also.  We found, contrary to our expectations, that 'computer nurds'
+were significantly more disorderly than others.  
+
+Charles Hedrick (who was then a PhD student at CMU) commented on our
+unexpected result on disorder that, while an orderly disposition was
+logically a prerequisite for a successful programmer, so-called 'computer
+nurds' are not terribly successful.  Nurds spend a great deal of time
+at the computer, but they operate it more as a toy than a learning
+tool; they are adept at performing tricks with a teletype but lack
+the orderliness required for true success.
+
+				Douglas W. Jones
+
+------------------------------
+
+To: risks@csl.sri.com
+Subject: A reference on Information Overload; a Paradox of Software
+Date: 04 Jun 87 11:13:28 PDT (Thu)
+From: eugene@ames-nas.arpa
+
+%A Spectrum Staff
+%T Too Much, Too Soon: Information Overload
+%J IEEE Spectrum
+%V 24
+%N 6
+%D June 1987
+%P 51-55
+%K IFF, human factors
+
+Jerry Saltzer's comment:  Ah, that's my "Paradox of Software" argument.  We
+want it fast (who would use a computer slower than a person?), yet we want
+it flexible, friendly and maintainable when it breaks down.  I wish I were
+doing more research in software, but I am surrounded by people who only want
+the computation done faster, almost at all costs.  E.g., would we prefer a
+single button on ALL keyboards which reads "HELP" (single button, very
+fast), or a more general, flexible keyboard which has 'H' 'E' 'L' 'P'?
+--eugene miya
+
+------------------------------
+
+Date:         Thu, 04 Jun 87 14:01:26 EDT
+From:         "James H. Coombs" <JAZBO%BROWNVM.BITNET@wiscvm.wisc.edu>
+Subject:      Computerholics
+To:           RISKS@SRI-CSL.ARPA
+
+Steve Thompson asks about people addicted to computing.  So far as I know, we
+don't have a definition of addiction; we have, at best, some criteria for
+determining when a person is addicted.  In fact, I believe that we have levels
+of addiction.  For example, we have "problem drinkers," and we have
+"alcoholics."  Do we also have "problem computors" and "compuholics"?
+
+First, I think we need a careful characterization of addiction, with respect
+to computing.  Until we have that characterization, I don't think we can
+profitably address Steve's questions.
+
+Just to start things off, I suggest that a person P is addicted to an activity
+A (which may include the taking of substances) iff (if and only if):
+
+1) A is being engaged in to an extent that is physically and/or mentally
+debilitating.
+
+2) A is such that the benefits of not engaging in it outweigh the benefits of
+engaging in it.
+
+3) P cannot cease A.
+
+Clause (1) is necessary to exclude such necessary activites as eating.  Clause
+(2) is necessary to account for such things as living, which is progressively
+debilitating; presumably, we don't want to say that people are addicted to
+living (and don't want to get into discussions of when people would be better
+off dead?).
+
+I'm not sure, but it seems in some ways right to add a clause specifying that P
+knows (1 and 2) or even (1, 2, and 3).  I hesitate to add this though, because 
+it also seems right to say that a person can be addicted to something without 
+having any idea that there is a problem.  This consideration threatens to bring
+up issues of social definitions, relativism, and all of that; but let's not.
+
+So, a preliminary result given this definition.  The benefits of being addicted
+to computing instead of to other activities are trivial, since the addiction
+leads to physical and/or mental disability.  Note that under certain
+circumstances, the disability may be justified, but this is covered by clause
+(2).  In a state of emergency, it may be appropriate to exploit the addict's
+computing abilities, just as it may be appropriate to ask the police to stop a
+killer in a shopping mall.  ON THE OTHER HAND, if a person is so addictive
+that he/she must be addicted to SOMETHING, then it would certainly be better
+to be addicted to computing than to some more damaging activity (such as
+drinking alcohol), and this is covered by clause (2).
+
+Theoretically, I think this definition takes us a long way.  Practically, it
+doesn't seem to offer us much.  How are we to determine whether or not, for
+example, a person is so addictive that he/she must be addicted to something?
+Are we to beat on that person until we teach him/her to live with no
+addictions?  Or is it better to let up at some point and say "this is good
+enough."  Also, we have the problem of levels of addiction, and this is not
+addressed in the definition.  If one is computing at a level that is only
+problematic, then is that better than being fully addicted to something that
+is less dangerous than the computing?
+
+Also, I see that I said in (3) that P CANNOT cease A. But, don't addicts often
+(with extensive help) cease their addictive activities?  Perhaps we should say
+in (3) that P cannot cease A on his/her own.  Then we might define a person
+who has a problem with A as someone who can cease A on his/her own but is
+having difficulty doing so.
+
+Then, it seems that we have to say that being problematic with respect to A is
+better than being addicted with respect to A' iff the costs of the full span of
+engaging in A are less than the costs of the full span of engaging in A' (add 
+after effects to each).  If being a problematic drinker ruins your liver, why 
+not be a computing addict instead?  But if addictive computing ruins your eyes 
+and causes skin cancer, but your liver problem is limited to a few spots, why 
+not damage the liver a little?  If addictive computing ruins your health over a
+twenty-year period but being more of a participant in normal social activities 
+would have infected you with AIDS, why not compute yourself into the grave?
+
+Finally, I would like to encourage people to quit worrying about other people
+being isolated.  Whenever someone doesn't want to join the circle, people have
+to figure out what his/her problem is.  To say that the person is addicted to
+computing (or to work) seems like an au courant easy answer.  Some people
+haven't an inkling of what happens in isolation, and many people seem to know
+little more than herd instinct and the word "normal" (not the concept, just
+the word).  To these people, isolation seems physically and/or mentally
+debilitating.  It would be much better if people would accept others a little
+more and give them credit for knowing their best interests instead of
+addressing their own doubts by stigmatizing what they don't understand.
+
+Ceteris paribus, then, I think we should drop "isolation" from our concerns
+about the risks of computing.  There is nothing absolutely bad about isolation,
+and some people can gain a lot by a week or so of solitude.  Of course, 
+prophets tend to go off for much longer than a week; forty days and forty 
+nights seems like a good healthy period for a prophet.  I think we should 
+allow at least that to computer gurus, even if their activities are less grand.
+
+James H. Coombs Mellon Postdoctoral Fellow in English Brown University
+
+------------------------------
+
+Date: Thu, 4 Jun 87 11:34:50 edt
+From: mikemcl@nrl-csr.arpa (Mike McLaughlin)
+To: Risks@sri-csl.arpa
+Subject: Naval Warfare -- on possible non-detonation of missiles
+
+In WWII, a Japanese battleship with HUGE (17" or 18") guns hit a U.S.
+destroyer with very nearly a full salvo... of armor piercing projectiles.
+The range was close, and the trajectory of the projectiles was close to the
+horizontal.  The projectiles passed completely through the target, without
+detonating - the destroyer was simply not there, as far as the fuzes were
+concerned.  The U.S. ship took a fair amount of injuries and damage, but was
+still able to sail on its own power back to a friendly port.  Just a couple
+of the projectiles exited below the waterline, and the crew was able to
+control the flooding and fire.
+ 
+PT boats, on the other hand, were sometimes destroyed by the water spouts of
+major caliber projectiles.  
+ 
+Not much relation to today's Risks in Computing - except for a little 
+perspective on the history of projectiles against ships.  Projectiles are
+just ballistic missiles without on-board guidance.  The larger projectiles
+have fuzes that used to be set mechanically just before firing.  If you 
+don't have time to set them right, they do not do what is desired.  Sounds
+like human error again... or perhaps, before.  
+
+	- Mike McLaughlin   <mikemcl@nrl-csr.arpa>
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

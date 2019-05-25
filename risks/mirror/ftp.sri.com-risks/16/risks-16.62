@@ -1,0 +1,684 @@
+Subject: RISKS DIGEST 16.62
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Weds 7 December 1994  Volume 16 : Issue 62
+
+         FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for information on RISKS (comp.risks), disclaimers *****
+*****  NOTE, SRI RISKS ARCHIVE SOURCE IS MOVING SOON TO ANOTHER HOST.  *****
+
+  Contents:
+Baby-proof keyboard handling needed (Amos Shapir)
+Network file race condition (Andrew Koenig)
+Power failure causes airline check-in chaos (Fernando Pereira)
+Pepsi promotion misfires - computer error (John Dalbey)
+Formal verification of the AAMP5 Microprocessor (John Rushby)
+Re: Formal methods and the Pentium FDIV (Mark Stalzer)
+Re: Formal verification of INMOS T800 (Patrick Campbell-Preston, Mathew Lodge)
+Re: Formal methods ... (Steve Kilbane, Mark Lomas)
+Re: Slade's review of Schneier's "Applied Cryptography" (Richard Schroeppel)
+Self-extracting emacs elisp code (David Blob)
+Virus time (Dwight Silverman, Zygo Blaxell, Reuven Lerner)
+Program Announcement - ISOC 1995 Symp. Netw. & Distr. Sys. Security
+  (David M. Balenson)
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+----------------------------------------------------------------------
+
+Date: Wed, 7 Dec 94 14:09:56 IST
+From: amos@nsof.co.il (Amos Shapir)
+Subject: Baby-proof keyboard handling needed
+
+We were having the whole family for a Hannukah party last week.
+Grandpa sat at a chair next to the PC (which was up and running
+Windows), holding six-month-old May in his arms.  Being a digital kid,
+she quickly reached for the keyboard.  By the time we noticed and
+managed to turn off the computer, half the system files were gone
+(which is what we discovered the next day, when the system started to
+behave strangely).
+
+Trying to figure out what had happened, it seems little May could only reach
+the bottom line of the keyboard -- but that's where the ALT, ENTER, DELETE
+and the arrow keys are!  In Windows 3.1, ALT puts the cursor into the
+command menu, ENTER activates the menu item it's on; in some menu, DEL
+deletes the marked files...
+
+Amos Shapir  nSOF Parallel Software, Ltd.  Givat-Hashlosha 49905, Israel
+amos@nsof.co.il  Tel: +972 3 9388551   Fax: +972 3 9388552   
+
+------------------------------
+
+Date: Wed, 7 Dec 94 10:58:06 EST
+From: ark@research.att.com
+Subject: Network file race condition
+
+A story with entertainment value, albeit no clear moral:
+
+A couple of nights ago I was working away at my workstation when the world
+(figuratively) collapsed: suddenly all my network connections had gone
+haywire.  A little investigation revealed that /etc/hosts, the file that
+lists names and IP addresses for the rest of the universe, had become
+corrupted: it had huge quantities of null characters in it and very little
+useful data.  How had that happened?
+
+After some poking around and much thought, I came to the following
+conclusion.  I've recently been setting up some machines for a few of my
+colleagues.  The most straightforward way of getting those machines into a
+sensible initial state, I thought, would be to restore the dump tapes from
+my own machine onto theirs.  After all, I keep my machine in pretty decent
+shape.
+
+Of course there was no need to restore my home directory on each machine.
+Instead, I told each of the other machines that my home directory was really
+a link to the mounted file system that contained my home directory on my
+`home' machine.  All pretty routine so far, but that turned out to be cause
+number 1.
+
+Cause number 2 was that when I cloned my machine, what I cloned included
+/usr/spool, the directory with all the spool files.  That directory includes
+files that tell cron, a program that starts background jobs at particular
+times, what jobs to start.  That meant that the `midnight' job that normally
+ran on my home machine now ran automatically on each of several machines.
+Because my home directory was mounted on each of these machines, that job
+did its thing simultaneously several times in the same directory.
+
+Cause number 3 was that my midnight job, among other things, extracts a
+complete new /etc/hosts file from one of our other servers and installs it.
+It checks that what it got is sane, to defend against /etc/hosts becoming
+empty when the server is down, but of course it doesn't defend against
+having several instances running at the same time.  So what must have
+happened is that two of those instances finally hit the same file at the
+same time, causing parts of it to overlay other parts and general chaos to
+ensue.
+
+Andrew Koenig  ark@research.att.com
+
+------------------------------
+
+Date: Tue, 6 Dec 1994 23:21:53 -0500
+From: Fernando Pereira <pereira@research.att.com>
+Subject: Power failure causes airline check-in chaos
+
+This Monday, 5 December 1994, I was traveling with a colleague from Denver
+Stapleton to Newark on United flight 302, supposed to leave at 6:06 PM. When
+we got to the airport at 3:30 (in plenty of time to beat threatened snow),
+the baggage check-in agents were not actually checking-in passengers but
+simply tagging bags by hand, because a power failure had brought down the
+check-in database servers. After the bags where checked in, we were directed
+to another agent that looked up the gate for flight 302 on a printout.
+Actual passenger seat assignment and check-in was to be done manually at the
+gate. Since we were early, we waited at the gate until 5 PM, not wanting to
+bug the overworked gate agents until near our scheduled departure. But when
+we talked to the gate agent soon after 5 PM, she told us that she had no
+information about flight 302; some other flight was due to leave that gate
+too close to 6:06 PM to allow time for flight 302, and she had no way of
+finding out where 302 was supposed to be. She finally told us to call the
+central 800 number for United reservations to check the gate info! My
+colleague is a United Premier member. He called the Premier help desk, who
+gave him another gate number for a supposedly on-time departure. He
+communicated that information to the original gate agent, who proceeded to
+announce it over the PA for other 302 passengers without further
+confirmation from any other authority.
+
+We went to the new gate, where we found neither plane nor gate agents.
+We asked the agent at the next gate for help. He knew nothing about
+302, and expected some other flight to use the empty gate. His paper
+notes indicated the original gate for 302. But he eventually called
+around, and found out yet another supposed gate for the flight.
+
+Third time lucky. That turned out to be the correct gate, although its
+electronic flight info display was showing a different flight.  All the
+departures monitors in the terminal were also showing outdated and scrambled
+information without any indication of its incorrectness. Enterprising gate
+agents were taping paper signs with correct flight numbers over the bogus
+electronic signs.
+
+But the problems were not over. The plane for flight 302 arrived, we
+boarded, and were supposed to leave just 20 or so minutes late. Except that
+the flight crew was delayed in an incoming flight, and that information,
+normally handled by the downed computer system, was not made available to
+the ground staff for assignment of an alternate crew. We ended leaving
+around 1 1/2 hour late.
+
+This all happened in a relatively light traffic non-holiday Monday, in
+pretty good weather (the snow didn't materialize). I can't imagine
+what the chaos would have been like around a major holiday. It was
+clear from all our interactions with all the gate agents that they
+were not operating according to a well-designed, well-drilled manual
+backup procedure. They behaved professionally for the most part in a
+difficult situation, but much of what they were doing seemed decided
+on the spot, from personal initiative, and without good phone access
+to an authoritative manual database of flights and gates, even though
+that information was obviously still available to the air-traffic and
+airport systems, given that flights were still landing and taking off.
+
+Fernando Pereira, 2D-447, AT&T Bell Laboratories, 600 Mountain Ave, PO Box 636
+Murray Hill, NJ 07974-0636  pereira@research.att.com
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 11:05:27 -0800 (PST)
+From: jdalbey@galaxy.csc.calpoly.edu (John Dalbey)
+Subject: Pepsi promotion misfires - computer error
+
+Time magazine (Aug 9) reports a computer error in a Pepsi promotional
+lottery in the Philippines.  The computer generated 800,000 winning numbers
+instead of 18.  Obviously, Pepsi didn't pay the $32 billion in prize money
+their mistake would have cost them.
+
+Pepsi has paid nearly $10 million in "appeasement" efforts ($20 "goodwill"
+prize), but this apparently didn't satisfy disgruntled "winners." Over
+22,000 people, each of whom believed they had won the $40,000 prize, have
+filed about 5,000 criminal and 700 civil suits.  The Philippine Senate Trade
+Committee faults the company for "gross negligence" and "misleading or
+deceptive advertising."
+
+If anyone knows any technical details about the nature of this
+"computer error," I would like to hear about them.
+
+John Dalbey, Computer Science Dept, Cal Poly, SLO, CA  jdalbey@calpoly.edu
+
+------------------------------
+
+Date: Wed 7 Dec 94 11:41:18-PST
+From: John Rushby <RUSHBY@csl.sri.com>
+Subject: Formal verification of the AAMP5 Microprocessor
+
+With messages in RISKS about formal verification (not) being applied to
+commercial processors, this might be a good time to mention the work that's
+going on across the hallway from PGN:
+
+ "Formal Verification of the AAMP5 Microprocessor: 
+  A Case Study in the Industrial Use of Formal Methods"
+
+  by Steven P. Miller (Collins Commercial Avionics) and Mandayam Srivas (SRI)
+
+  To be presented at WIFT '95: Workshop on Industrial-Strength Formal
+  Specification Techniques, April 5-8, 1995, Boca Raton, Florida USA.
+
+Available over the web through http://www.csl.sri.com/aamp5.html
+or by ftp from ftp.csl.sri.com/pub/reports/postscript/aamp5.ps.gz
+
+The AAMP5 doesn't have floating point, but it is a real processor with
+a pipeline, microcode, and 500,000 transistors (it's a derivative of
+the AAMP2, of which there are 30 on board each 747-400).
+
+John
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 09:22:40 +0800
+From: stalzer@macaw.hrl.hac.com (Mark Stalzer)
+Subject: Re: Formal methods and the Pentium FDIV (Lodge, RISKS-16.61)
+
+The NY Times (or was it LA?) a few days ago reported that the double
+precision fdiv problem in the Pentium is due to a table that was incorrectly
+copied from the 486 -- not an algorithmic bug.  Many formal approaches would
+not have caught this kind of error since it would have been natural to
+assume that the table was correct (I mean, after all, it was generated by
+computer!) Also, one of the floating point bugs in a previous x86 processor
+(I think it was the atan bug in the 486) was due to electrical difficulties
+-- the algorithm was correct, but the electrons had different ideas in a
+certain case. This is a class of errors that only testing or circuit
+simulation with accurate device models can catch.
+
+Mark Stalzer, mas@acm.org
+
+  [Also noted by "Jeffrey P. Bradford" <jbradfor@ecn.purdue.edu>, who added,
+     "We all know computers make mistakes, either HW or SW, and any results
+     from computers need to be compared against common sense."  PGN]
+  
+------------------------------
+
+Date: Wed, 07 Dec 1994 13:33:12 -0300 (BST)
+From: Patrick Campbell-Preston <PATRICKCP@shapel.ug.eds.com>
+Subject: Re: Formal verification of INMOS T800 (Lodge, RISKS-16.61)
+
+When the T800 came out, my then employers (FEGS Ltd) were working on a
+research project in collaboration with INMOS and several other partners.
+
+At one point INMOS told us they had had to halt production of T8's after
+a bug had been found in the floating-point microcode, resulting in the
+wrong result being given for some IEEE-defined special case (I think
+it was zero divided by zero giving the wrong flavour of NaN). I think 
+the bug was found by the formal verification process, of which they were
+certainly very proud.
+
+One more point is worth mentioning: the T800 is a very simple chip 
+architecture compared to something like the Pentium, and I would guess 
+formal verification of the latter would be a much larger task.
+
+Patrick
+
+------------------------------
+
+Date: Wed, 7 Dec 94 17:53:40 GMT
+From: Mathew Lodge <lodge@ferndown.ate.slb.com>
+Subject: Re: Formal verification of INMOS T800 (re Patrick Campbell-Preston)
+
+Perhaps this is a case of less RISK for RISCs! (sorry, couldn't resist)
+
+Inmos formally proved only the FPU: they didn't do it for the whole
+processor.  Does the Pentium implement so many more floating point
+operations that proof is intractable?
+
+Mathew Lodge, Software Engineer, Schlumberger Technologies, Ferndown,
+Dorset, UK, BH21 7PP  lodge@ferndown.ate.slb.com (+44) (0)202 893535 x404
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 08:56:00 +0000
+From: steve@cegelecproj.co.uk (Steve_Kilbane)
+Subject: Re: Formal methods ... (Lodge, RISKS-16.61)
+
+Proving that the algorithms used are correct is one thing, but getting a
+correct implementation of those algorithms in silicon is another, and that's
+where the testing comes in.
+
+Steve_Kilbane@cegelecproj.co.uk
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 18:08:02 GMT
+From: Mark.Lomas@cl.cam.ac.uk
+Subject: Re: Formal methods ... (Lodge, RISKS-16.61)
+
+Some staff from Inmos gave a talk here some time ago on their procedure for
+verifying a floating-point implementation.  Their experience was slightly
+more interesting than Mathew suggested.
+
+Apparently, in addition to their formal model they had a "known correct"
+implementation built by a competitor.  All tests were verified against
+this reference implementation.
+
+At one point during testing they found that their implementation disagreed
+with the reference implementation and spent quite some time trying to diagnose
+the fault.  It turned out that their implementation had been correct first
+time, but that they had discovered a bug in a competitor's product.
+
+No prizes for guessing who built the reference implementation
+
+	Mark
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 13:27:37 MST
+From: "Richard Schroeppel" <rcs@cs.arizona.edu>
+Subject: Rob Slade's review of Schneier's book "Applied Cryptography"
+
+Rob Slade's review of Schneier's book "Applied Cryptography" should have
+mentioned that the book contains a substantial number of typos, and that
+Schneier offers an errata sheet (schneier@chinet.com).  This will be
+especially important if you try to use the programs in the appendix.  I like
+the book.
+
+Rich Schroeppel   rcs@cs.arizona.edu
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 11:57:50 -0600
+From: blob@syl.dl.nec.com (David Blob)
+Subject: Self-extracting emacs elisp code
+
+With all this talk about self extracting mail "viruses", a friend showed me
+that in emacs (which I use to read mail, along with vm) has the ability to
+self-extract elisp code.  This feature seems to be turned on by default, and
+it not only applies to mail read with emacs, but rather every file visited
+(when the feature is on, of course).
+
+The way it works is by having a line which reads "Local Variables:" followed
+by the lisp variables you would like to set...well, it may seem petty, but
+you can execute programs, make connections and much more through cleverly
+written elisp code contained within.
+
+It's simple to turn off, at any rate...
+
+(setq enable-local-variables  f) ;; turns off feature  (in emacs 19)
+(setq enable-local-variables  1) ;; makes it ask first (in emacs 19)
+(setq inhibit-local-variables t) ;; turns off feature  (in emacs 18)
+
+Anyhow, I think the risks here speak for themselves...
+
+------------------------------
+
+Date: Tue, 6 Dec 1994 21:05:18 -0600 (CST)
+From: Dwight Silverman <Dwight.Silverman@chron.com>
+Subject: Virus time
+
+Shareware has a bad rap as a carrier of computer viruses. But one of the 
+commercial software industry's dirtier little secrets is that viruses 
+often get transmitted via shrink-wrapped boxes in stores. 
+
+Or, sometimes, viruses just get sent to computer writers.
+
+A California company called Bit Jugglers called me today to say a title 
+they'd sent me, Kids World, was infected with a virus. This only happened 
+to the copies sent to the press -- those folks who write about computer 
+software in magazines or newspapers. The virus did not make it into 
+copies shipped to stores.
+
+Bit Jugglers urged me to destroy my copy of Kids World. And if I'd 
+installed the software (I have not), they would have sent me the latest 
+version of McAfee's Scan, a virus detection program. A new, clean copy is 
+on its way to my desk.
+
+The moral of the story is obvious. Trust NO floppy -- you don't know where
+it's been. Scan everything.
+
+Dwight Silverman 
+
+The Houston Chronicle, Computer columnist  dwight.silverman@chron.com
+713-220-6873   Fax: 713-220-7273  Audiotext: 713-468-7866 ext. 1001
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 03:41:04 -0500
+From: zblaxell@miranda.uwaterloo.ca (Zygo Blaxell)
+Subject: Virus _IS_ virus alert (Berlinger, RISKS-16.61)
+
+> I have received it 4 times now from different sources.)
+
+Obviously, the alert itself _is_ the virus.  Watch:
+
+>>I have just received this message and been asked to take it seriously:
+
+This gets the virus scheduled on the CPU (note that it occurs at the
+beginning of execution).
+
+>>There is a virus on America Online being sent by E-Mail.  If you get
+
+This is the target architecture and operating system: AOL users.  Note that
+it also works on similar architectures with different operating systems.
+
+>>anything called "Good Times", DON'T read it or download it.  It is a
+>>virus that will erase your hard drive.  
+
+This is something that looks like a useful message to fool the user while
+the virus does its work.
+
+>>Forward this to all your friends.
+>>It may help them alot.
+
+...and this is the propagation code. ;-)
+
+Zygo Blaxell, Math student at the University of Waterloo.  
+System/network admin for the Computer Science Club and miranda.  
+
+------------------------------
+
+Date: Wed, 7 Dec 1994 09:51:05 -0500
+From: Reuven Lerner <reuven@hpwadck.wal.hp.com>
+Subject: Good Times
+
+I'm sure that I am not the only RISKS reader who has been bombarded by
+warnings regarding the supposed "Good Times" virus.  Just about all of
+the warnings I received were forwarded from two or three previous
+people, said that the virus was distributed from America On-Line, and
+claimed that if you were to download or read the message (which had a
+subject of "Good Times"), your hard disk could be reformatted.
+
+Each copy of the warning then suggested that people forward the
+warning to as many other users and mailing lists as possible, because
+of the severity of the problem.
+
+I've seen at least one announcement from CIAC (at least, I *think* it
+was from CIAC) telling people that there is indeed no virus, that most
+mail readers won't automatically execute programs sent via e-mail, and
+that people generally shouldn't worry.
+
+There seem to be several risks associated with this incident:
+
+(1) People don't understand what e-mail can and cannot do.  Most of
+    the people forwarding the warnings didn't understand the
+    difference between viewing a mail message and turning the contents
+    of that message into an executable program, let alone the fact
+    that different platforms work differently and thus would require
+    separate viruses.
+
+(2) Rumors spread quickly.  I was amazed to see just how fast this
+    rumor spread; within a 24-hour period, I saw a dozen or so copies
+    of the warning on five or six different mailing lists.  People
+    wanted to help their fellow users (a good thing), but passed the
+    warning on without verifying the rumor's validity (a bad thing).
+    You could probably make a good argument that the warning itself
+    was a virus!
+
+(3) Explanations spread slowly.  More than two days after I first saw
+    the virus warning, people continued to forward copies of it to
+    various mailing lists -- even after I and others told list members
+    that the virus announcement was probably a hoax.  It will probably
+    be another few days before the CIAC warning (along with assurances
+    from computer experts) reaches all of the people who are no longer
+    sure whether it is safe to read their e-mail.
+
+(4) Bugs do exist.  The fact is that there probably are holes in mail
+    readers that will do nasty things to people's files and accounts.
+    But now that people have been told not to worry, they'll take
+    future warnings less seriously.  Without a universally known and
+    trusted authority on these issues -- and let's face it, most users
+    would probably trust their friends more than CIAC or CERT -- this
+    may turn into the computer equivalent of the children's story,
+    "The Boy Who Cried Wolf."
+
+Reuven
+
+------------------------------
+
+Date: Wed, 07 Dec 1994 13:57:48 -0500
+From: "David M. Balenson" <balenson@tis.com>
+Subject: Program Announcement - ISOC 1995 Symp. Netw. & Distr. Sys. Security
+
+David M. Balenson, Program Co-Chair, ISOC '95 SNDSS
+Trusted Information Systems, 3060 Washington Rd., Glenwood, MD 21738 USA
+balenson@tis.com; tel 301.854.6889; fax 301.854.5363
+
+                    THE INTERNET SOCIETY SYMPOSIUM ON
+                 NETWORK AND DISTRIBUTED SYSTEM SECURITY
+                         16-17 FEBRUARY 1995
+                 CATAMARAN HOTEL - SAN DIEGO, CALIFORNIA
+
+The symposium will bring together people who are building software and/or
+hardware to provide network and distributed system security services.  The
+symposium is intended for those interested in the more practical aspects of
+network and distributed system security, focusing on actual system design
+and implementation, rather than in theory.  We hope to foster the exchange
+of technical information that will encourage and enable the Internet
+community to apply, deploy and advance the state of the available security
+technology.
+
+                 P R E L I M I N A R Y   P R O G R A M
+           [meals, breaks, registration info removed by PGN]
+
+WEDNESDAY, FEBRUARY 15
+
+6:00 P.M. - 8:00 P.M.
+REGISTRATION AND RECEPTION
+
+THURSDAY, FEBRUARY 16
+
+7:30 A.M.
+CONTINENTAL BREAKFAST
+
+8:30 A.M.
+OPENING REMARKS
+
+9:00 A.M.
+SESSION 1: DIVERSE APPROACHES TO SECURITY AT THE NETWORK LAYER
+Chair: Stephen T. Kent (Bolt, Beranek and Newman, USA)
+
+    Multicast-Specific Security Threats and Counter-Measures, Tony
+    Ballardie and Jon Crowcroft (University College London, United
+    Kingdom).
+
+    Design of a Key Agile Cryptographic System for OC-12c Rate ATM,
+    Daniel Stevenson, Nathan Hillery, Greg Byrd, and Dan Winkelstein
+    (Microelectronics Center of North Carolina - MCNC, USA).
+
+    IpAccess: An Internet Service Access System for Firewall
+    Installations, Steffen Stempel (University of Karlsruhe, Germany).
+
+11:00 A.M.
+SESSION 2: PANEL: SECURITY ARCHITECTURE FOR THE INTERNET INFRASTRUCTURE
+Chair: Robert W. Shirey (The MITRE Corporation, USA)
+
+    Security for the Internet Protocol (IP) and IP Next Generation,
+    Paul A. Lambert (Motorola, USA).
+
+    Security for the Internet Domain Name System, James M. Galvin
+    (Trusted Information Systems, USA).
+
+    Security of Routing Protocols in the Internet, Gary Scott Malkin
+    (Xylogics, USA).
+
+    Security Approaches to Routing in the Internet, Sandra L. Murphy
+    (Trusted Information Systems, USA).
+
+2:00 P.M.
+SESSION 3: OFF-LINE OBJECT DISTRIBUTION SECURITY
+Chair: Jeffrey I. Schiller (Massachusetts Institute of Technology, USA)
+
+    Trusted Distribution of Software Over the Internet, Aviel D. Rubin
+    (Bellcore, USA).
+
+    Location-Independent Information Object Security, John Lowry (Bolt
+    Beranek and Newman, USA).
+
+3:30 P.M.
+SESSION 4: INTERNET PAYMENTS
+Chair: Ravi Ganesan (Bell Atlantic, USA)
+
+    Electronic Cash on the Internet, Stefan Brands (Centrum voor
+    Wiskunde en informatica - CWI, The Netherlands).
+
+    PANEL: Internet Payment Mechanisms - Requirements and Architecture
+    Chair: Ravi Ganesan (Bell Atlantic, USA)
+    Panelists: B. Clifford Neuman (Information Sciences Institute, USA), 
+    David Crocker (Brandenburg Consulting, USA), and others TBD
+
+7:00 P.M. DINNER BANQUET
+
+FRIDAY, FEBRUARY 17
+
+8:30 A.M.
+SESSION 5: SECURITY MONITORING TOOLS - PRACTICE AND EXPERIENCE
+Chair: Michael St. Johns (Advanced Research Projects Agency, USA)
+
+    NERD: Network Event Recording Device: An Automated System for
+    Network Anomaly Detection and Notification, David G. Simmons and
+    Ronald Wilkins (Los Alamos National Laboratory, USA).
+
+    An Overview of SNIF: A Tool for Surveying Network Information Flow,
+    Jim Alves-Foss (University of Idaho, USA).
+
+    Distributed Audit Trail Analysis, Abdelaziz Mounji, Baudouin Le
+    Charlier, Denis Zampunieris and Naji Habra (Facultes Universitaires
+    de Namur - FUNDP, Belgium).
+
+10:30 A.M.
+SESSION 6: AUTHENTICATION AND AUTHORIZATION
+Chair: B. Clifford Neuman (Information Sciences Institute, USA)
+
+    SESAME V2 Public Key and Authorisation Extensions to Kerberos,
+    Piers McMahon (ICL, United Kingdom).
+
+    Yaksha: Augmenting Kerberos with Public Key Cryptography, 
+    Ravi Ganesan (Bell Atlantic, USA).
+
+    GSS-API Security for ONC RPC, Barry Jaspan (OpenVision
+    Technologies, USA).
+
+1:30 P.M.
+SESSION 7: MECHANISMS OF IDENTITY - THE CERTIFICATE INFRASTRUCTURE
+Chair: Hilarie Orman (University of Arizona, USA)
+
+    A Certificate Management System: Structure, Functions and
+    Protocols, Nada Kapidzic and Alan Davidson (Stockholm University &
+    Royal Institute of Technology, Sweden).
+
+    PEMToolKit: Building a Top-Down Certification Hierarchy for PEM
+    from the Bottom Up, Alireza Bahreman (Bellcore, USA).
+
+    A New Approach to the X.509 Framework: Allowing a Global
+    Authentication Infrastructure Without a Global Trust Model, Suzan
+    Mendes (TS-E3X - Research and Development Center, France) and Christian
+    Huitema (INRIA, France).
+
+3:30 P.M.
+SESSION 8: PANEL: SECURITY ISSUES FOR MOSAIC AND THE WORLD WIDE WEB
+Chair: Fred Avolio (Trusted Information Systems, USA)
+Panelists: Peter J. Churchyard (Trusted Information Systems, USA),
+  Allan M. Schiffman (Enterprise Integration Technologies, USA), and
+  Bill Cheswick (AT&T Bell Laboratories, USA)
+
+GENERAL CHAIR
+    James T. Ellis, CERT Coordination Center, Carnegie Mellon University
+
+PROGRAM CO-CHAIRS
+    David M. Balenson, Trusted Information Systems
+    Robert W. Shirey, The MITRE Corporation
+
+FOR MORE INFORMATION, contact Gloria Carrier by phone at (703)-883-4508 or
+via email to gcarrier@mitre.org.
+
+------------------------------
+
+Date: 23 November 1994 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  U.S.
+ users on .mil or .gov domains should contact <risks-request@pica.army.mil> 
+ (Dennis Rears <drears@pica.army.mil>).  UK subscribers please contact 
+ <Lindsay.Marshall@newcastle.ac.uk>.  Local redistribution services are 
+ provided at many other sites as well.  Check FIRST with your local system or 
+ netnews wizards.  If that does not work, THEN please send requests to 
+ <risks-request@csl.sri.com> (which is not yet automated).  SUBJECT: SUBSCRIBE
+ or UNSUBSCRIBE; text line (UN)SUBscribe RISKS [address to which RISKS is sent]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+ All other reuses of RISKS material should respect stated copyright notices,
+ and should cite the sources explicitly; as a courtesy, publications using
+ RISKS material should obtain permission from the contributors.  
+
+ ARCHIVES ARE MOVING SOON  (BEWARE: THE NEW SYSTEM IS CASE SENSITIVE):
+    ftp unix.sri.com
+    cd risks
+
+ CURRENT ARCHIVES: "ftp crvax.sri.com<CR>login anonymous<CR>YourName<CR> 
+ cd risks:<CR> or cwd risks:<CR>, depending on your particular FTP.
+ Issue j of volume 16 is in that directory: "get risks-16.j<CR>".  For issues
+ of earlier volumes, "get [.i]risks-i.j<CR>" (where i=1 to 15, j always TWO 
+ digits) for Vol i Issue j.  Vol i summaries in j=00, in both main directory
+ and [.i] subdirectory; "dir" (or "dir [.i]") lists (sub)directory; "bye<CR>" 
+ logs out.  CRVAX.SRI.COM = [128.18.30.65]; <CR>=CarriageReturn; FTPs may 
+ differ; UNIX prompts for username, password; bitftp@pucc.Princeton.EDU and
+ WAIS are alternative repositories.  See risks-15.75 for WAIS info.  
+   To search back issues with WAIS, use risks-digest.src.
+   With Mosaic, use http://www.wais.com/wais-dbs/risks-digest.html.
+
+ FAX: ONLY IF YOU CANNOT GET RISKS ON-LINE, you may be interested in receiving 
+ it via fax; phone +1 (818) 225-2800, or fax +1 (818) 225-7203 for info
+ regarding fax delivery.  PLEASE DO NOT USE THOSE NUMBERS FOR GENERAL 
+ RISKS COMMUNICATIONS; as a last resort you may try phone PGN at 
+ +1 (415) 859-2375 if you cannot E-mail risks-request@CSL.SRI.COM .
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.62 
+************************

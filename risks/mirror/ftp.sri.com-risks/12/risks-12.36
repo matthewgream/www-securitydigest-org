@@ -1,0 +1,630 @@
+Subject: RISKS DIGEST 12.36
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Wednesdy 18 Septembr 1991  Volume 12 : Issue 36
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+AT&T Phone Failure (Ed Andrews)
+Fly-by-wire without leaving the ground (JCF)
+World Bank virus (Ted Lee)
+SunOS SPARC Integer Division Vulnerability (CERT Advisory)
+The risks of a computer-based forum (Brian Holt Hawthorne)
+Descriptive terms [false positives and negatives] (Jon Krueger)
+Risks of mistreating programmers (Arun Welch)
+Re: Security Software Bug Locks Up System (Sanford Sherizen)
+RSA stuff (John Mount)
+Manipulation of digital images (Joe Morris)
+Re: +&*# (Richard Ristow, John Wichers, Gary Beckmann, Timothy Freeman,
+    Lynn R Grant, John F. Woods)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 12, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Wed, 18 Sep 91 9:34:13 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: AT&T phone failure downs three New York airports for four hours
+
+Operations at all three New York airports ground to a standstill from 5pm until
+9pm yesterday [17Sep91] when an AT&T internal power failure at a Manhattan
+4-ESS switching center knocked out long distance calls in and out of the city.
+Neighboring commercial power was unaffected.  The 4-ESS system is used to route
+calls between AT&T's long-distance network and the local companies.  The air
+traffic control centers use a network of radio towers linked by phone lines.
+
+   Although the precise origin of Tuesday's problems remained unclear, the
+   extent of the difficulties provided yet another example of how dependent
+   today's telephone networks are on a few pieces of equipment.
+   
+   In recent years, AT&T and other companies have gone to great lengths to
+   emphasize the back-up capacity and redundancy of their systems. Yet the
+   long-distance carrier was unable to reroute all traffic to other gateways
+   for several hours after the problems first became apparent.''
+
+Calls were redirected to the two remaining gateways, but those could not handle
+that much increased traffic.  [Quotes above are by Ed Andrews, whose article
+``AT&T Phone Failure'' appeared in the N.Y. Times, 18Sep91.]
+
+I just spoke with Ed Andrews, who is working on a story for tomorrow's NYTimes.
+The current theory seems to be that AT&T was trying to be helpful to ConEd in
+NY by cutting its usage of commercial power on a hot day by running on internal
+power, but somehow did not realize that their backup power generator was not
+properly linked in, and that they were actually running on batteries for 6
+hours until the batteries were drained!  As the details unfold, we may find out
+the extent to which the system diagnostics and alarms gave a true picture of
+what was really happening.  (Shades of the Three Mile Island crew trying to
+figure out what was happening?)  So, check Ed's article tomorrow for further
+details.
+
+Here we have another example of creative redundancy and supposedly conservative
+design (hardware reliability, fault tolerance, extra capacity, alternative
+routing, standby power, etc.) still not being good enough to prevent massive
+outages.  From the system level viewpoint, it seems that we should be learning
+something more from the repeated cases of telephone outages (AT&T and Sprint
+outages reported here in the past, due to software, cable cuts, etc.) and
+airport shutdowns resulting from extensive telephone outages -- e.g., last
+year's O`Hare disruptions due to the Chicago cable cut on 15Oct90 (R.I. Cook,
+RISKS-10.62, and ACM Software Engineering Notes 16 1, January 1991) and the
+three New York airport disruptions due to the fiber-optic cable cut in Newark
+NJ, also affecting various commodities exhanges and long-distance calling for 9
+hours on 4Jan91 (RISKS-10.75 and ACM Software Engineering Notes 16 1, January
+1991).  On one hand, RISKS readers know that no matter how carefully designed
+and operated a system is, it can still fail grotesquely.  On the other hand, we
+still have to try much harder to avoid those possibilities -- and indeed
+likelihoods.  You would like to think that airports and air traffic control
+could find ways of not being crunched by the outage of a single switch, but
+it keeps on happening!
+
+I hope some of you will come to the ACM SIGSOFT '91 (Software for Critical
+Systems) at the Fairmont Hotel in New Orleans, 4-6 December 1991, where some of
+the underlying problems and potential solutions will be discussed.  In
+particular, Michael Meyers of AT&T Bell Labs in Naperville will be giving an
+invited talk on "Reliable Software for the 4 ESS Switch".  Henry Petroski's
+talk on "Human Error in Design" is also relevant to this topic.  The
+preliminary program and other information appeared in RISKS-12.10.  The
+registration packet is contained in the September CACM (pp.112-113), and is
+also available on-line from Judith Burgess (Burgess@csl.sri.com).  I think the
+program will be of great interest to the software oriented seriously minded
+risks-aware community.  Peter
+
+------------------------------
+
+Date: Tue, 17 Sep 91 22:25 EDT
+From: fmsrl7!art-sy!chap@sharkey.cc.umich.edu
+Subject: Fly-by-wire without leaving the ground
+
+James Higgins, THE DETROIT NEWS, 15 September, page 1C: ...  Clemson engineers
+... have patented a new automobile camshaft/throttle control system they say
+can boost fuel economy by 20 percent in a gasoline engine-- more than that in a
+Diesel. ... Just by announcing the development (in a press release which, by
+the way, skated lightly over some serious concerns about the new system),
+Clemson has made it more likely that U.S., Japanese and German automakers will
+lose their fight against tough new fuel economy legislation in Washington.  ...
+A camshaft controls the action of the valves that let mixed fuel and air into
+an engine and allow burned gases to escape.  Usually it's set up so that the
+valves will open or close according to just one setting.  That setting is a
+compromise, not...optimal...for all engine speeds. ... In the Clemson system,
+the camshaft consists of two shafts, one of which rotates inside the other.  An
+infinite variety of valve settings is possible, theoretically allowing optimal
+valve action in every situation.
+
+In its announcement, the university said the Clemson Camshaft system "improves
+fuel economy by approximately 20 percent."  Detroit engineers object
+strenuously to this, saying optimal camshaft action can only boost fuel economy
+by about 5 percent.  [co-inventor] Nelson agrees.  But here's the nub--his
+system also includes a computer-controlled device that electronically allows
+the camshaft to act as the car's throttle--a revolutionary idea.  All cars
+today have a throttle plate that opens to allow air into the engine, and in
+every car on the road the throttle plate is mechanically connected to the gas
+pedal.
+
+The Clemson system substitutes [for] the mechanical connection...a computer
+control--a "fly by wire" device like those...on advanced aircraft.  When the
+engine doesn't have to labor against a partially closed throttle, significant
+fuel economy gains are possible, Nelson says.  This, together with the camshaft
+action, is the source of the 20 percent figure.  But it also raises a whole
+host of safety concerns--not to mention potential problems with cost,
+manufacturing complexity, durability and so forth.  Overall, though, it looks
+promising to this reporter.  And one hopes it will get a thorough investigation
+from the industry on its own merits, free from the nasty politics surrounding
+the fuel economy issue.
+
+[and thanks to the NEWS for a commendably objective report.  -JCF]
+
+------------------------------
+
+Date:  Wed, 18 Sep 91 12:16 EDT
+From: TMPLee@DOCKMASTER.NCSC.MIL
+Subject: World Bank virus
+
+The latest issue of Time (9/23) had the following on its "Grapevine" page. 
+Does anybody know any more about what it's referring to?  (I don't THINK I've
+missed any issues of RISKs.)
+
+HEY! LET'S SEND A COUPLE BILLION TO WOLFGANG
+
+     World Bank economists in Washington swallowed hard when the message
+suddenly flashed on their screens.  Identifying itself as "Traveller 1991," an
+invading computer virus announced, "Do not panic.  I am harmless."  Horrified
+bank officials, who use computers to transfer billions from developed countries
+to hard-pressed parts of the world, wondered at first if it was possible for
+some tiny nation to fill its coffers by tapping into their inner sanctum.  An
+international army of computer nerds and police experts soon tracked down the
+trespasser and pronounced it harmless.  But what about the next one?  Scotland
+Yard investigators, who traced the virus as far as eastern Germany, believe
+that disgruntled hackers there are still at work injecting disruptive
+electronic microbes into world financial networks.
+
+------------------------------
+
+Date: Wed, 18 Sep 91 11:38:38 EDT
+From: CERT Advisory <cert-advisory-request@cert.sei.cmu.edu>
+Subject: CERT Advisory - SunOS SPARC Integer Division Vulnerability
+
+    [We generally do not include the CERT Advisories in RISKS, because there
+    are so many normal channels.  But this one is absolutely fascinating as
+    an example of something that ostensibly should not have an impact on
+    security, so that at least the existence of the flaw should be widely
+    known.  PGN]
+
+CA-91:16                        CERT Advisory
+                              September 18, 1991
+                    SunOS SPARC Integer Division Vulnerability
+
+The Computer Emergency Response Team/Coordination Center (CERT/CC) has received
+information concerning a vulnerability in Sun Microsystems, Inc. (Sun) integer
+division on their SPARC architecture.  This vulnerability exists on all SPARC
+platforms (including sun4 and sun4c) for SunOS versions 4.1 and 4.1.1.
+
+Sun has provided patches for this vulnerability. They are available through
+your local Sun Answer Centers worldwide as well as through anonymous
+ftp from the ftp.uu.net system (in the sun-dist directory).  
+
+Fix                        Patch ID       Filename            Checksum
+/sys/sun{4,4c}/OBJ/crt.o   100376-01      100376-01.tar.Z     09989    11
+
+Please note that Sun Microsystems sometimes updates patch files.  If you find
+that the checksum is different please contact Sun Microsystems or us for
+verification.
+
+[Excerpted:]
+
+A security vulnerability exists in the integer division on the SPARC
+architecture that can be used to gain root privileges.  Any user logged into
+the system can gain root access.  [Fix info deleted.  Contact CERT.]
+The CERT/CC wishes to thank Gordon Irlam of the Department of Computer,
+University of Adelaide, Australia, for bringing this vulnerability to
+our attention and for his further assistance with the solution.  We
+also wish to thank Sun Microsystems for their prompt response to this 
+vulnerability.
+
+Computer Emergency Response Team/Coordination Center (CERT/CC)
+Software Engineering Institute, Carnegie Mellon University
+Pittsburgh, PA 15213-3890       Internet E-mail: cert@cert.sei.cmu.edu
+Telephone: 412-268-7090 24-hour hotline: CERT/CC 7:30a.m.-6:00p.m. EDT
+Past advisories and other computer security related information are available
+for anonymous ftp from the cert.sei.cmu.edu (192.88.209.5) system.
+
+------------------------------
+
+Date: Wed, 18 Sep 91 11:57:20 EDT
+From: brian@ima.isc.com (Brian Holt Hawthorne)
+Subject: The risks of a computer-based forum
+
+Many people seem to approach e-mail and submissions to forums like RISKS as
+informal conversation. Given the persistence of the typed word, however, it may
+often be more appropriate to consider these forums as un-refereed journals.
+
+Two recent examples from Volume 12, Issue 35:
+
+Although I greatly appreciate Jeremy Grodberg's intellectual integrity spending
+many hours researching the objections raised to his claims, and subsequent
+posting of a retraction of those claims, I find his lack of references
+disturbing. He has introduced new figures and new claims, backed up only by his
+assertion of having spent "6 hours in a medical library". It is clear to me
+that he may truly have found some additional sources, but it is puzzling why he
+is unwilling to share them with us.
+
+Clifford Johnson fails similarly in his diatribe against the misuse of the
+MMPI. After an excellent introduction to the nature of the test and its
+shortcomings, he berates "Minnesotan academics" for their "myopic" articles in
+prestigious journals. Is he merely being polite by not sharing with us the name
+of at least one of these journals, or a citation to at least on of these
+articles of "statistical nonsense"?
+
+While it is acceptable to make unsubstantiated statements such as these in
+casual conversation, let us remember that the RISKS forum is not only archived
+for posterity, but is often the subject of citations itself. 
+                                                                 brian
+
+------------------------------
+
+Date: Tue, 17 Sep 91 20:21:45 PDT
+From: jpk@ingres.com (Jon Krueger)
+Subject: Descriptive terms
+
+  [There are some people who prefer TYPE ONE ERRORS and
+  TYPE TWO ERRORS to False Positives and False Negatives.  PGN]
+
+How ugly!  And a retreat from clear, forceful, prose.
+
+Fortunately there are four perfectly good terms from signal detection theory:
+hit, miss, false alarm, and correct rejection.  Here is a grid that explains
+them:
+                 \
+           said   \   was (what was actually the case)
+      (what the    \
+     test reported) \      signal              noise
+                     +-----------------+-------------------+
+       signal (yes)  |        hit      |       false alarm |
+                     +-----------------+-------------------+
+       noise  (no)   |       miss      | correct rejection |
+                     +-----------------+-------------------+
+
+Unlike false positives or type one errors, false alarms conveys the error and
+its problems in vivid English.
+
+Unlike false negatives or type two errors, misses denotes the type of error and
+reminds us of outcomes.
+
+This terminology gives us a reasonable way to distinguish various leading and
+misleading statistics.  The chance of the test saying yes when the fact is yes
+is:
+                         hits
+                         ----
+                     hits + misses
+
+This can also be called hit rate on signal trials.
+
+The chance of the test saying no when the fact is yes is
+
+                         misses
+                         ------
+                      hits + misses
+
+This can also be called miss rate on signal trials.
+
+The chance of the fact being yes given the test said no is:
+
+                         misses
+                         ------
+               misses + correct rejections
+
+This can also be called miss rate on said no trials.
+
+And the chance of the fact being no given the test said yes is:
+
+                     false alarms
+                     ------------
+                  false alarms + hits 
+
+This can also be called false alarm rate on said no trails.
+
+And so on.  All of these may be distinguished from the overall hit rate:
+
+                         hits
+                         ----
+      hits + misses + correct rejections + false alarms
+
+The overall miss rate:
+                         misses
+                         ------
+      hits + misses + correct rejections + false alarms
+
+The a priori chance of the test saying no:
+
+               correct rejections + misses
+               ---------------------------
+      hits + misses + correct rejections + false alarms
+
+The a priori chance of the fact being no:
+
+            correct rejections + false alarms 
+            ---------------------------------
+      hits + misses + correct rejections + false alarms
+
+Clearly these are all derived numbers.  The numbers you want are the
+raw numbers in the grid, e.g.:
+
+                 \
+           said   \   was (what was actually the case)
+      (what the    \
+     test reported) \      signal              noise
+                     +-----------------+-------------------+
+       signal (yes)  |        50       |        10         |
+                     +-----------------+-------------------+
+       noise  (no)   |         5       |       100         |
+                     +-----------------+-------------------+
+
+Or more compactly, 50 hits, 10 false alarms, 5 misses, 100 correct
+rejections.  From this you can derive all the numbers you want to
+compare, make all the inferences the data can sustain, and make the
+wisest decisions based on the available information and your personal
+values.
+
+-- Jon Krueger
+
+------------------------------
+
+Date: Tue, 17 Sep 91 20:22:45 -0400
+From: Arun Welch <welch@cis.ohio-state.edu>
+Subject: Risks of mistreating programmers
+
+ One of our local public radio stations carries BBC news before the regular NPR
+news on weekdays, and I heard this on my way home. Pardon any errors in
+reporting, I was after all in a car and this is all from memory.
+
+ Apparently there's been a rash of new computer virus infections since the
+collapse of the Eastern Bloc, coming out mostly from Bulgaria.  Since the
+Bulgarian government couldn't buy western computers or software, they would get
+one copy illegally and then copy them freely. Since most software is
+copy-protected in some manner, they trained a number of programmers to find
+ways to defeat said protection. Because the programmers didn't like doing this,
+and since they didn't pay them very much money, the programmers also spent some
+time perfecting their skills at virus-writing. Now that it's easy to send
+software back and forth, these virus' (virii?) are now spreading through the
+rest of the world. The one quote I do remember is "There's one bulletin-board
+system in Sophia that's absolutely notorious for them, and people are uploading
+virus' to it all the time."
+
+Arun Welch, Lisp Hacker, Anzus Consulting
+
+------------------------------
+
+Date: Tue, 17 Sep 91 17:30 GMT
+From: Sanford Sherizen <0003965782@mcimail.com>
+Subject: Re: Security Software Bug Locks Up System (Re: RISKS-12.33)
+
+Dan_Swinehart (PARC@xerox.com) asked me to clarify my previous posting regarding
+the Tandem security software problem.  He wondered about the following: 
+
+>A faulty piece of code embedded in the Tandem Safeguard security
+>system interpreted 4:22 PM on August 27 as an impossible command.
+
+Here is all that I have available from the Computerworld article.  
+
+"A unique combinations of numbers generated by Tandem's "time stamp" facility
+thretened to stop ....computers at precisely 4:22 pm in each local time
+zone...'The time stamp took on a numerical value that would trigger incorrect
+computer logic,' one West Coast Tandem user explained.  'The security package
+would then lock up the system...' ...The culprit was a faulty piece of software
+code embedded in the Tandem Safeguard security system that interpreted the data
+and time numbers as an impossible command...The computers that felt the bug
+were Tandem VLX and Tandem Cyclone systems running the new C 20.2 release of
+the Safeguard security package along with Tandem's Guardian operating system."
+
+Hope that clarifies the posting.   Sandy
+Data Security Systems, Inc. ,5 Keane Terrace, Natick, MA 
+
+------------------------------
+
+Date: Wed, 18 Sep 91 09:42:54 -0400
+From: John Mount <John_Mount@GS6.SP.CS.CMU.edu>
+Subject: RSA stuff
+
+I have some problems with Jerry Leichter's summary on RSA (which is for the
+most part right on target).  For brevity I am only quoting the parts of his
+article I disagree with- but I want it known that all the points I deleted I
+think were stated well and agree with 100%.
+
+>		It is widely believed that factoring is, in fact, NP-complete.
+>		However, the same was believed of linear programming until
+>		Khachian's algorithm.
+
+No, factoring is in NP intersect coNP and it is widely believed that
+no problem in NP intersect coNP is NP complete (but who knows).  People do
+believe that factoring is hard though.  I also (vaguely) remember a theorem
+that any problem you can build a public key code out of is going to be
+in NP intersect coNP because you could verify both positive and negative
+instances of the problem by watching a party with the key information
+classify messages as legitimate or forgeries.
+
+>                                                        If P = NP, public
+>		key cryptography becomes impossible.  (However, private key
+>		cryptography can still be possible.)
+
+If P=NP then if the amount of information (entropy in Shannon's sense) in a
+series of messages exceeds the amount of information in the encryption key then
+you can learn something about the messages.  So if P=NP private key
+cryptography is still possible- but only with *large* keys (like one time
+pads).
+
+------------------------------
+
+Date: Wed, 18 Sep 91 11:07:15 -0400
+From: Joe Morris <jcmorris@mwunix.mitre.org>
+Subject: Manipulation of digital images
+
+The new (October 91) issue of _Publish_ has a well-written article on the
+ethical issues raised by the manipulation of photographic images by computer.
+It doesn't go into the legal implications of this manipulation (e.g., the
+issues of evidence in a court case) or similar consequences, but it does
+provide a nice summary of the situation.
+
+The article also has a subhead that sounds as if it came from one of the 
+asides that PGN sticks into RISKS postings:
+
+     "Reach Out and Retouch Someone"
+
+Recommended reading.   Joe 
+                                 [Spanked with an Electronic Airbrush?  PGN]
+
+------------------------------
+
+Date:         Mon, 16 Sep 91 17:37:29 EDT
+From: Richard Ristow <AP430001@brownvm.brown.edu>
+Subject: Re: +&*#$ (Clements, RISKS-12.33)
+
+For what it's worth, the diacritic in question is apparently also called the
+"caron", for example in ISO standard 8879-1986(E) and thence in documentation
+distributed with the University of Waterloo SCRIPT markup and formatting
+system.
+
+This caused several days of searching, E-mailing, and general handwringing on
+my own part, that of the SCRIPT maintenance person at Brown University, and the
+Brown University reference librarians when I innocently asked, where's the
+hacek?  and what is a "caron" good for?  Discussion on list ISO8859 raised and
+sort of answered the same point; apparently "caron" is a legitimate word for
+the diacritic, but so obscure that Slavic language specialists have rarely
+heard of it.  But it CAN be written in ASCII...
+
+Richard Ristow     AP430001@BROWNVM.BROWN.EDU    Bitnet: AP430001@BROWNVM
+
+------------------------------
+
+Date: Mon, 16 Sep 91 21:53:34 -0400
+From: wichers@husc.harvard.edu (JJJJJust JJJJJohn)
+Subject: Re: +&*#$ (Roberts)
+
+I would argue that Mike is simply taking a requirement (the unique id each
+motor vehicle must carry) and combining it with a chance to express his
+individuality. I strongly doubt that the vast majority of people who have 
+vanity plates would plaster the same message on the sides of their vehicles
+if they were not required to have plates.
+
+>Society allows people to advertise themselves by writing their name, slogan,
+>etc as big as they like on their vehicles - many elements of society do that
+>and the results can be seen driving down any road any day.
+
+Society also allows people to advertise themselves, within certain limits,
+by getting vanity plates. If it is such a detriment to society then it would
+have been legislated out of existence. Since that's not the case I don't see
+why Dave is upset about Mike and others who are well within the law in
+expressing themselves.
+
+>The society we live in takes money from each and every one of us to spend on
+>the common good.
+
+Mike pays taxes as well. He certainly should have the right to express
+himself. I don't agree with Plato's view of the ideal society as being an
+antlike colony in which individuality can't/shouldn't exist (or if it
+exists, can't mainfest itself).
+
+>PS. I think he also owes all the other John Does paying taxes for the time
+>of one cop and one car and one computer system for the wasted effort caused 
+>by his insistence on a misuse of vehicle number plates;  the RISK is loss
+>of availability of a cop who could be doing something useful instead.
+
+The problem with this argument is that Mike was *not* misusing his license
+plate. The problem, and the RISK, is that society allows people to have
+non-standard plates without properly dealing with the consequences. If anyone
+owes anything for the waste of the cop's time (and Mike's!), it should be the
+people who designed the computer system without taking into account all of the
+possible legitimate plates. Don't blame the effect for the cause.
+                                                                --John Wichers
+
+------------------------------
+
+Date: Tue, 17 Sep 91 15:45:28 EDT
+From: beckmann@das.harvard.edu (Gary Beckmann)
+Subject: re: ##$@*, !names, umlauts and other nonstandard print chars...
+
+H. Fuss comments regarding umlauts, etc. remind me that the German speaking
+Swiss do not use the es-zet anymore.  Though it is unclear to me when they
+stopped using it, I believe it must be before the wide spread use of computers
+since an aunt (from Austria) who went to school for a while in Switerland had
+the other children fascinated with her "funny" way of writing "double-s's".
+
+The use of an 'e' for the umlaut causes a problem if you finally get
+the hardware to print umlauts.  How do you update you database?  A
+global search-and-replace would cause you problems if you changed the
+poet Goethe's name.
+
+Did some one say computers were supposed to make our lives easier? 
+
+        			Gary Beckmann	beckmann@das.harvard.edu
+
+------------------------------
+
+Date: Tue, 17 Sep 91 12:25:36 -0400
+From: Timothy_Freeman@U.ERGO.CS.CMU.EDU
+Subject: Re: +&*#$ (Roberts)
+
+> PS. I think he also owes all the other John Does paying taxes ...
+   
+You are misplacing the blame here.  The bureaucracy that controls the license
+plates sells personalized plates for a fee.  They even advertise this (in the
+US, anyway).  If this bureaucracy is stupid enough to advertise an offer that
+causes them more trouble than it is worth, the blame belongs squarely on the
+shoulders of the bureaucracy, not on the person who accepted the offer.
+
+>  PPS. Whether traffic cops in patrol cars EVER do anything useful is
+   not a topic for this newsgroup - we all pay them so we all think
+   that they do! 
+
+The connection between opinion and governmental action is much more tenuous
+than you say.  People vote for legislators, not for policies, and a majority
+isn't a consensus.
+
+------------------------------
+
+Date:  Tue, 17 Sep 91 12:42 EDT
+From: Lynn R Grant <Grant@DOCKMASTER.NCSC.MIL>
+Subject:  Re: +&$ (Roberts, RISKS-12.34)
+
+Perhaps this is getting peripheral to the original discussion, but I cannot let
+Dave Roberts's characterization of ham radio license plates as a misuse of
+license plates go unchallenged.
+
+Ham radio plates are not a misuse of the system--they are sanctioned by it.
+For example, in two states where I have lived, Michigan and Illinois, hams pay
+a very small fee (about $2) or nothing at all for the privilege of having their
+call sign on their plates, while other who get personalized ("vanity") plates
+pay a substantial sum (about $75, if I remember correctly).
+
+There are a couple of reasons why the state governments do this.  Ham radio
+operators provide emergency communications during tornados, floods, and other
+disasters.  Frequently ham radio emergency groups will have operators stationed
+in the police departments and weather service offices, relaying information
+between the government networks and the ham radio emergency networks.  Being
+able to identify the vehicles of radio operators during an emergency is a
+useful thing.  Of course, not all hams are involved in emergency service, but
+there's a good chance that those at the site of an emergency are.
+
+Also, state governments issue the ham plates to comemorate the service
+of ham radio operators, just as they have (at least in Illinois) Armed
+Forces plates, and purple heart plates, and ex-POW plates, and the like.
+
+So, if the government of California issues ham plates, but can't find
+them in their computer, this is a standard computer data entry problem,
+not a misuse of the system by ham radio operators.
+
+Lynn Grant N8AF (Grant at Dockmaster.NCSC.MIL)
+
+------------------------------
+
+Date: Mon, 9 Sep 91 14:39:40 EDT
+From: jfw@ksr.com (John F. Woods)
+Subject: Re: +&*#$ (Moore, RISKS-12.27) 
+
+>... would not accept a license number of WA0DVD - ...
+
+Possibly he was reading the zero as an O.  Someone in rec.ham-radio some time
+ago mentioned that, in California, they once had some trouble during a traffic
+stop because of their plate: WB6OOO (oh oh oh).  The policeman was *sure* it
+was a bogus plate, because letter-letter-four-digits is the pattern used for
+commercial vans (I believe), which the passenger car in front of him plainly
+wasn't.  And sure enough, the computer had no record of "W-B-6-thousand".
+Fortunately he eventually was convinced to try W-B-6-oh-oh-oh, and after some
+gyration getting the person on the computer to type it in right, was rewarded
+with valid registration info.  Oh-Oh-Oh indeed.
+                                                     John Woods (WB7EEL)
+
+------------------------------
+
+End of RISKS-FORUM Digest 12.36
+************************

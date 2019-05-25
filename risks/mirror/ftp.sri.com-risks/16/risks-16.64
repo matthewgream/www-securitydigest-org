@@ -1,0 +1,519 @@
+Subject: RISKS DIGEST 16.64
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Sat 10 December 1994  Volume 16 : Issue 64
+
+         FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for information on RISKS (comp.risks), disclaimers *****
+*****  NOTE, SRI RISKS ARCHIVE SOURCE IS MOVING SOON TO ANOTHER HOST.  *****
+  ** Contents: [Responses.  Slow next week to undercompensate for last week.]
+Re: Interesting product claim (more Pentium stuff) (Paul N. Hilfinger)
+Re: Formal Methods ... Intel FDIV bug and verifying FPUs (Miriam Leeser)
+Re: Formal verification of the AAMP5 (Srivas)
+Re: Multicast backbone blunder (Derek Atkins)
+Re: Digital Cash (A. Padgett Peterson)
+Re: Cellular One roaming in NYC (Alan Clegg)
+Re: "Good Times" virus (Steve Summit, Susanne Forslev)
+Re: Fun with your phone company (Andy K)
+Re: Digital cash on the web (Hal Pomeranz)
+German Telecom: technical risks/crime (Klaus Brunnstein)
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+----------------------------------------------------------------------
+
+Date: Fri, 09 Dec 1994 16:31:47 -0800
+From: "Paul N. Hilfinger" <hilfingr@CS.Berkeley.EDU>
+Subject: Re: Interesting product claim (more Pentium stuff)
+
+Well, William Kahan informs me that 
+
+(1) Inmos used formal methods for the FP on the T800, but that they
+    got the specification wrong.
+
+(2) Intel actually had in its possession a test that Kahan had
+    designed that uncovers the flaw after about 2 minutes of testing.
+    The test (as I understand it) is sort of "gray box" in that it
+    makes certain assumptions about the class of algorithm used.
+
+These points notwithstanding, however, Kahan still agrees that there
+is no substitute for formal proof in these cases.
+
+Paul Hilfinger    
+
+------------------------------
+
+Date: Thu, 8 Dec 94 13:33:22 EST
+From: mel@ultrastar.EE.CORNELL.EDU (Miriam Leeser)
+Subject: Formal Methods ... Intel FDIV bug and verifying FPUs
+
+The Intel FDIV bug occurs both in single and in double precision
+divide.  It is NOT a double precision error.  The best source of
+information on this is the web site:  
+      http://www.mathworks.com/Pentium/README.html 
+
+The Pentium uses a subtractive division algorithm based on a radix-4
+Booth SRT algorithm.  Similar algorithms are used for square root and
+division in this and several other processors.  (We are in the process
+of working on a survey article of division and square root
+implementations in recent microprocessors.)
+
+The closest verification work I know of is a proof of 
+a radix 2 subtractive square root chip I did with some students here
+at Cornell.  The paper describing this proof
+appeared in the Conference on Theorem Provers in Circuit Design in
+September 1994.  We are working on a proof of a radix 2 subtractive
+division implementation.  The two proofs are very similar.
+
+The square root paper is available by anonymous ftp from 
+        tesla.ee.cornell.edu:~pub/hw-verify/sqrt-tpcd94.ps.Z
+
+Verification of radix 4 is somewhat more difficult, largely because
+the implementation depends on a lookup table to guess the next digit.
+I have heard rumors that the error is in the translation of a table
+used for digit selection, but no substantiation that this is the case.
+It is highly likely that the error is related to using the output of
+the carry-save adder. Since we have not done a proof of a radix 4
+algorithm, we do not consider the lookup table in our proof.
+
+Our proof shows that the basic algorithm does in fact perform a square
+root, and then relates this to the register-transfer level
+implementation of the hardware. We do not prove the correctness of the
+implementation of each of the blocks of hardware (adders, shifters, etc.)
+As several people have pointed out, errors occur at several different
+levels.  Formal verification is very useful at high levels, but will
+not preclude the need for lower level testing or simulation.
+
+Miriam Leeser  Cornell University  mel@ee.cornell.edu
+
+------------------------------
+
+Date: Fri, 9 Dec 94 13:07:00 -0800
+From: srivas <srivas@csl.sri.com>
+Subject: Re: Formal verification of the AAMP5 (Rushby, RISKS-16.62)
+
+   [John Rushby was incorrect when he said that the AAMP5 did not have
+   floating point.  The following message from the authors of the cited
+   report gives a more accurate summary of the project.  PGN]
+
+Recently, John Rushby sent a message to this forum giving a reference to a
+paper about an application of mechanized verification to a commercial
+microprocessor.  I am giving below a summary of the work reported in the
+paper.  For those interested in finding out more details about the project,
+the paper is available over the web through
+
+http://www.csl.sri.com/aamp5.html
+
+or by ftp from
+
+ftp.csl.sri.com/pub/reports/postscript/aamp5.ps.gz
+
+(Note that name of the ftp site has an "ftp" at its head.)
+
+      *************************************************
+	Formal Verification of AAMP5 Microprocessor:
+   A Case Study in the Industrial Use of Formal Methods
+
+Steve Miller 				Manadayam Srivas
+Collins Commercial Avionics		Computer Science Laboratory
+Rockwell International			SRI International		
+Cedar Rapids, Iowa 52498		Menlo Park, CA 94025		
+
+The AAMP5 verification was a project conducted to explore how formal
+techniques for specification and verification could be introduced into an
+industrial process. Sponsored by the Systems Validation Branch of NASA
+Langley and Collins Commercial Avionics, a division of Rockwell
+International, it was conducted by Collins and the Computer Science Research
+Lab at SRI International. The project consisted of specifying in the PVS
+language developed by SRI a portion of a Rockwell proprietary
+microprocessor, the AAMP5, at both the instruction set and register-transfer
+levels and using the PVS theorem prover to show the microcode correctly
+implemented the specified behavior for a representative subset of
+instructions. The formal verification was performed in parallel with the
+development of the AAMP5 and did not replace any production verification
+activities.
+
+The central result of this project was to demonstrate the feasibility of
+formally specifying a commercial microprocessor and the use of mechanical
+proofs of correctness to verify microcode. This is particularly significant
+since the AAMP5 was not designed for formal verification, but to provide a
+more than three-fold performance improvement while remaining object code
+compatible with the earlier AAMP2. As a consequence, the AAMP5 is one of the
+most complex microprocessors to which formal methods have been applied.  The
+AAMP architecture is specifically designed for use with block-structured,
+high level languages like Ada in real-time embedded applications.  It is
+based on a stack architecture and provides hardware support for many
+features normally provided by the compiler run-time environment, such as
+procedure state saving, parameter passage, return linkage, and reentrancy.
+AAMP5 supports floating point calculations implemented via microcode.
+
+Besides demonstrating the verification of a subset of AAMP5 microcode, an
+equally important accomplishment of the project was the development of an
+effective methodology that can be used by practicing engineers to apply
+formal verification technology to a complex microprocessor design.  This
+includes techniques for decomposing the complex microprocessor verification
+problem into a set of verification conditions that the engineers can
+formulate, and proof strategies to automate the proof of the verification
+conditions.
+
+This methodology was used to formally verify a core set of eleven AAMP5
+instructions representative of several instruction classes.  The core set
+did not include floating point instructions.  Although the number of
+instructions verified is small, the methodology and the formal machinery
+developed are adequate to cover most of the remaining AAMP5 microcode.  The
+success of this project has lead to a sequel in which the same methodology
+is being reused to verify another member of the AAMP family of processors.
+
+Another key result was the discovery of both actual and seeded errors. Two
+actual microcode errors were discovered during development of the formal
+specification, illustrating the value of simply creating a precise
+specification. Both errors were specific to the AAMP5 and corrected prior to
+first fabrication. Two additional errors seeded by Collins in the microcode
+were systematically uncovered by SRI while doing correctness proofs. One of
+these was an actual error that had been discovered by Collins during testing
+of an early prototype but left in the microcode provided to SRI. The other
+error was designed to be unlikely to be detected by walkthroughs, testing,
+or simulation.
+
+------------------------------
+
+Date: Fri, 9 Dec 94 16:05:31 EST
+From: warlord@MIT.EDU
+Subject: Re: Multicast backbone blunder (Clegg, 16.63)
+
+> The risk turns out to be that the newest version of the NV video 
+> transmission software allows you to transmit video across the mbone 
+> without a camera... any window or cursor-followed region will be happily 
+> transmitted to the world... It is not obvious in ANY way that you are 
+> actually transmitting any information...
+
+This is not true.  Having played with the latest version of nv last night,
+trying to get Multicast to work with Linux 1.1.72, I can attest to the fact
+that nv does provide you with a clue that it is transmitting.
+
+First, the button on the bottom of the nv window will change between "click
+to start sending" and "click to stop sending", depending on the current
+state.  Second, when you are transmitting, you should see your transmission
+in the nv session window, which displays all the video feeds currently in
+progress.
+
+Also, it is possible to configure everything such that nv will be started
+with the -recvOnly flag, in which case it wont even let you send video (our
+version of sd does this automatically).
+
+I don't think this is necessarily a program error or a program bug, although
+it is clearly an interface issue and possibly a clueless user not knowing
+what all these neat buttons do!
+
+-derek
+
+------------------------------
+
+Date: Fri, 9 Dec 94 15:27:15 -0500
+From: padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Re: Digital Cash (Wells, RISKS-16.63)
+
+Sounds a lot like some things I was discussing with some friends. Consider
+the following (going to use PGP for an example). A store sends out a
+catalogue via E-Mail at the start of the catalogue is the store's PGP public
+key (package obtained from ViaCrypt (plug) so legal for commercial use).
+
+The subscriber has a program that on choosing a selection from a menu is
+able to use the header to encrypt the selections, credit card number, and
+shipping instructions with the store's public key and sign it with the
+shopper's private key (Addison Fisher was discussing this sort of thing
+quite a few years ago, just now technology has (almost) caught up).
+
+The completed order is then sent to the store. Note that since the shopper
+just signed the message, it does not need the shopper's public key to 
+extract the order, just to authenticate it if repudiated later, but the 
+store's private key is needed to read it.
+
+Concerned that the header key is someone else's and the whole thing is a 
+scam ? Call this 800 number and press 9 to get a voice mail certificate
+number (eight hex digits and built into PGP now). And the "Home Shopping
+MIME" will flash it every thirty seconds on the bottom of the screen. Spice 
+will know the most popular by heart anyway.
+
+Of course this leads to the question of revoking a key that is compromised -
+obviously with the age-old tradition of a classified ad: "I will no longer
+be responsible for any debts incurred by..." - not so much a revocation as a
+divorce.
+		Padgett
+
+------------------------------
+
+Date: Thu, 8 Dec 1994 13:44:18 -0500 (EST)
+From: Alan Clegg <abc@black-ice.gateway.com>
+Subject: Re: Cellular One roaming in NYC
+
+Recently, pjd@cne.gmu.edu wrote about Cellular One turning off roaming in
+NYC.
+
+A friend of mine, after reading the article had this response:
+
+  Funny thing is the fact that the same people that are scanning the ESN 
+  are also getting that Credit Card number when you make the call.  :)
+
+Hummm... guess that does not burn the cellular company...  Caller Beware.
+
+- -abc [tuning out of NYC]
+
+------------------------------
+
+Date: Fri, 9 Dec 1994 14:56:10 -0800
+From: scs@eskimo.com (Steve Summit)
+Subject: "Good Times" virus (RISKS 16.62)
+
+I'm also not sure where the real virus is.  I have now received more copies
+of the "it's a hoax" message from well-meaning friends (and my own spouse)
+than the original "warning."
+
+We should also be careful about shouting too loudly that "There's no such
+thing as an e-mail virus!"  As RISKS readers know, there are several
+perfectly workable ways of wreaking mayhem via e-mail, and "active" e-mail
+is such a seductively attractive concept that sooner or later some
+misguideded person will actually implement it (with inadequate safeguards),
+and then the fun will really begin.  (Nat Borenstein has written a few
+papers about the idea of active e-mail, although his papers of course DO
+mention the glaring risks, and propose methods of implementing active e-mail
+reasonably safely, if anyone dared to.)
+
+Steve Summit  scs@eskimo.com
+
+------------------------------
+
+Date: Fri, 9 Dec 1994 16:57:30 -0600 (CST)
+From: Susanne Forslev <sforslev@mcs.net>
+Subject: AOL "Virus"
+
+After reading in RISKS about the supposed AOL virus, I logged on to my
+account to see if I had any mail.  I didn't and I was pleased to find a
+button on my opening screen for e-mail information.  I pushed it and found a
+very coherent explanation from the management of what can and cannot be done
+with e-mail and what to do if someone sends you a questionable file
+attachment.  Now I just hope people bother to push the button and read the
+message.  With luck, the AOL "Inoculation" has worked.
+
+Sue Forslev sforslev@mcs.com sforslev@well.com
+
+------------------------------
+
+Date: Fri, 09 Dec 1994 18:27:47 EST
+From: andyk@e-mail.com
+Subject: Re: Fun with your phone company
+
+A RISK uncovered here is the weakness of the underlying Data Model utilized
+by the phone company in question.  Phone companies, in general, seem to have
+insisted on a business rule that requires that the telephone number itself
+also be the customers account number.
+
+If one were to make an entity-relationship model of this enterprise there
+would be several entity-types that utilize the same identifier.
+CUSTOMER-ACCOUNT, CUSTOMER, SERVICE-ACCESS, FRAME-ASSIGNMENT, are each
+expected to be uniquely identifiable by the telephone number.
+Overwhelmingly this is the case, but there are enough exceptions - multiple
+lines for one customer, people moving, etc. that it weakens the data model
+(or increases its complexity unnecessarily) that the business processes
+begin to suffer.  What ought to be merely a change to a relationship between
+two entities, or perhaps a value change to an attribute, results in a change
+to the existence of the entity itself.
+
+I imagine, in the eyes of the Data Model, that when Russell Stewart moved -
+one CUSTOMER entity was deleted (or marked inactive) and another instance
+was created.  No wonder they couldn't allocate the money properly!  Each
+customer service rep probably has developed their own individual set of
+business rules to apply in the case of finding an appropriate instance of a
+CUSTOMER entity when the original one no longer exists.
+
+------------------------------
+
+Date: Fri, 9 Dec 1994 23:52:52 -0500
+From: hal@netmarket.com (Hal Pomeranz)
+Subject: Re: Digital cash on the web [Wells, RISKS-16.63]
+
+In RISKS-16.63, Justin Wells confuses two different methods of paying
+for goods and services over the Internet.
+
+First, he talks about submitting credit card information via the FORMS
+interface supported by most recent Web browsers.  Assuming both the
+client and server support some secure encryption mechanism, it is safe
+to transmit your credit card information over the Internet.  The
+NetMarket Company, for which I work, is the first company to do secure
+encrypted commercial transactions via the Web, though several other
+companies are also providing this functionality now.
+
+Note that this is distinct from "digital cash".  The scheme described
+above is simply a mechanism for transmitting your credit card
+information and is in fact not very different from simply calling a
+mail-order house on the phone and using your credit card.
+
+Okamoto and Ohta ["Universal Electronic Cash", Crypto '91] propose six
+properties for an "ideal" digital cash system.  Of these properties,
+credit card transactions are neither private (anonymous or
+untraceable), transferrable (a merchant can't pay somebody else with
+your "credit" without a bank doing arbitrage), nor divisible (you
+can't "make change" with credit).
+
+Note that there are several competing digital cash standards under
+development at this very moment.  Not all of these standards implement
+all of the features that Okamoto and Ohta outline in their paper.  I
+fervently hope that we will end up with an "ideal" digital cash
+standard, but I am not hopeful.
+
+Hal Pomeranz, Engineering Project Leader, The NetMarket Company
+
+------------------------------
+
+Date: Sat, 10 Dec 1994 13:33:11 +0100
+From: Klaus Brunnstein <brunnstein@rz.informatik.uni-hamburg.d400.de>
+Subject: German Telecom: technical risks/crime
+
+German media's awareness about Telecom related crimes was raised
+significantly when International Herald Tribune reported on its front page
+earlier this week that "several thousands of German Telecom employees" are
+suspected to have participated in criminal activities which damaged German
+Telecom in the order of 500 million DM. According to this report, telephone
+lines were switched to service providers in areas such as Netherlands
+Antillas where services such as astrologic reports (horoscopes) and taped
+sex conversations are regularly offered at high prices (up to 12 DM/minute);
+such services are usually announced in German boulevard newspapers on
+specific pages.
+
+Income from such telephone calls is usually divided between German Telecom
+which bills it's resp. international tariff, and the related PTT (e.g.
+NL-Antillas PTT) which subtracts its tariff from the amount sent and
+distributes the rest to the service provider. This trade between the PTTs is
+calculated by counting the *total volume of connect time* between related
+Telecoms. This implies that Telecom pays more to another PTT than it can
+charge to individual customers if some pirates succeed to generate
+communication between PTTs even when a real connection was NOT established,
+or with other criminal tricks. In cases reported by Herald Tribune, Telecom
+employees and service providers worked together to generate a significant
+volume of communication. Such procedures are a modern version of earning
+real money with "virtual communication" :-)
+
+As German media (with few exemptions) are not well informed about details of
+Telecom procedures and systems, much noise was generated, where some
+"experts" (e.g. a misinformed member of the Chaos Computer Club :-) said
+that hackers may have hacked Telecom computers (which is nonsense, both in
+the sense of telephone hacking=phreaking and computer hacking). While
+Telecom admitted that investigations were underway (one day later, 2 Telecom
+employees and 1 service provider were jailed, being accused with having
+damaged German Telecom in the order of 2 million DM), spokesmen immediately
+rejected that damage be in the order of 500 million DM. More cases are
+evidently underway (both in jailing and reporting :-).
+
+Since some time, public is growingly concerned about Telecom bills as
+steadily growing numbers of Telecom customers complain about unexpectedly
+high telephone bills. With estimated 600,000 customers (of 35 mio private
+customers) complaining this year, and a roughly estimated mean damage of
+1,000 DM (as many customers report too high figures over months, with single
+bills adding to over 200,000 DM!), the *overall damage for private
+customers* may sum up to about 600 million DM! Despite of some recent
+damages to enterprise switching systems, discussion concerning potential
+economic damage has not reached the media so far.
+
+Unfortunately, German telecom customers so far cannot control their bills
+amount and so argue whether they really connected to such service providers.
+Different from other technically advanced countries, German customers
+receive monthly bills with *sums of telephone units and the total price
+which they have to pay*. This is a relic from ancient technologies when
+units were counted in electromechanical counters whose actual figures were
+photographed for documentation purposes; the photos of a new and the last
+month were compared to calculate the difference as the basis of the new
+bill. Since some time, digital switching systems (esp. Siemens' EWSD and
+Alcatel' S12) are installed in most regional switching offices
+(Vermittlungsstellen), where a log-record is stored for each call containing
+all essential billing data. While German Telecom only recently offered to
+list details of each telephone call if customers apply for this service and
+pay a monthly price in the order of 10 DM), a federal parliament's
+commission (Petitionsausschuss) recently suggested to the ministry of
+Telecommunications that detailed bills should be given and that such service
+should be free of a fee (as e.g. in US and Canada).
+
+Presently, a growing number of customers are seeking legal help against such
+Telecom bills. In few cases, courts (assisted by technical expertises about
+potential faults and points-of-attacks) have sentenced the bills as
+irregular.  As in many cases of digital technologies, complexity of Telecom
+networks has grown so rapidly that new risks have appeared, e.g. in software
+and management of complex switching systems. In several cases, software bugs
+were not detected in Telecom's very detailed test process; in one case,
+billing records were store doubly, which was only detected "in the field".
+Management of such systems has never been analysed for any reasonable
+"quality" (even an ISO 9000-based analysis which is not very adequate would
+lead to improvements).
+
+In cases of growingly complex systems with growing bugs and management
+faults, more customer protection is needed. As customers are rarely able to
+relate overly high bills to technical problems of any kind, it should belong
+to the professional duties of related experts and their organisations
+(international as IFIP; national as ACM, BCS, GI/Germany, IEEE) to provide
+expertise for the public in cases such as Telecom criminality (from which
+side whatsoever). This may also help to produce better insight of public
+media about technologies.
+
+Klaus Brunnstein (Dec.10,1994)
+
+------------------------------
+
+Date: 9 December 1994 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  U.S.
+ users on .mil or .gov domains should contact <risks-request@pica.army.mil> 
+ (Dennis Rears <drears@pica.army.mil>).  UK subscribers please contact 
+ <Lindsay.Marshall@newcastle.ac.uk>.  Local redistribution services are 
+ provided at many other sites as well.  Check FIRST with your local system or 
+ netnews wizards.  If that does not work, THEN please send requests to 
+ <risks-request@csl.sri.com> (which is not yet automated).  SUBJECT: SUBSCRIBE
+ or UNSUBSCRIBE; text line (UN)SUBscribe RISKS [address to which RISKS is sent]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+ All other reuses of RISKS material should respect stated copyright notices,
+ and should cite the sources explicitly; as a courtesy, publications using
+ RISKS material should obtain permission from the contributors.  
+
+ ARCHIVES ARE MOVING SOON  (BEWARE: THE NEW SYSTEM IS CASE SENSITIVE):
+    ftp unix.sri.com
+    cd risks
+
+ CURRENT ARCHIVES: "ftp crvax.sri.com<CR>login anonymous<CR>YourName<CR> 
+ cd risks:<CR> or cwd risks:<CR>, depending on your particular FTP.
+ Issue j of volume 16 is in that directory: "get risks-16.j<CR>".  For issues
+ of earlier volumes, "get [.i]risks-i.j<CR>" (where i=1 to 15, j always TWO 
+ digits) for Vol i Issue j.  Vol i summaries in j=00, in both main directory
+ and [.i] subdirectory; "dir" (or "dir [.i]") lists (sub)directory; "bye<CR>" 
+ logs out.  CRVAX.SRI.COM = [128.18.30.65]; <CR>=CarriageReturn; FTPs may 
+ differ; UNIX prompts for username, password; bitftp@pucc.Princeton.EDU and
+ WAIS are alternative repositories.  See risks-15.75 for WAIS info.  
+   To search back issues with WAIS, use risks-digest.src.
+   With Mosaic, use http://www.wais.com/wais-dbs/risks-digest.html or 
+   http://all.net:8080 (the latter courtesy of Fred Cohen).  
+
+ FAX: ONLY IF YOU CANNOT GET RISKS ON-LINE, you may be interested in receiving 
+ it via fax; phone +1 (818) 225-2800, or fax +1 (818) 225-7203 for info
+ regarding fax delivery.  PLEASE DO NOT USE THOSE NUMBERS FOR GENERAL 
+ RISKS COMMUNICATIONS; as a last resort you may try phone PGN at 
+ +1 (415) 859-2375 if you cannot E-mail risks-request@CSL.SRI.COM .
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.64 
+************************

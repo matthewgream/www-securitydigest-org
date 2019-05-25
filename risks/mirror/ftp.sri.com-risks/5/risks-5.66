@@ -1,0 +1,391 @@
+RISKS-LIST: RISKS-FORUM Digest  Friday, 27 November 1987  Volume 5 : Issue 66
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Mariner I (Eric Roberts)
+  FORTRAN pitfalls (Jim Duncan)
+  PIN verification (Otto J. Makela)
+  Sudden acceleration revisited (Leslie Burkholder)
+  Re: CB radio and power (Maj. Doug Hardie)
+  An earlier train crash -- Farnley Junction (Clive D.W. Feather)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+Volume summaries for each i in max j: (i,j) = (1,46),(2,57),(3,92),(4,97).
+
+----------------------------------------------------------------------
+
+Date: Wed, 25 Nov 87 18:33:14 pst
+From: roberts@src.DEC.COM (Eric Roberts)
+To: risks@csl.sri.com
+Cc: roberts@src.DEC.COM, berlin@mit-xx.ARPA
+Subject: Mariner I
+
+When Steve Berlin and I were writing the chapter on SDI for the new CPSR
+book _Computers in Battle_ (Boston: Harcourt Brace Jovanovich, 1987), I
+tried to track down a more complete reference to the Mariner I story.
+The theory that this was due to the substitution of a period for a comma
+in a FORTRAN DO statement seems to stem initially from the following
+quote from G.J.Meyers, _Software Reliability: Principles and Practice_
+(New York: John Wiley, 1976):
+
+      In a FORTRAN program controlling the United States' first
+      mission to Venus, a programmer coded a DO statement in a
+      form similar to the following:
+
+                             DO 3 I = 1.3P
+
+      The mistake he made was coding a period instead of a comma.
+      However, the compiler treated this as an acceptable
+      assignment statement because FORTRAN has no reserved words,
+      blanks are ignored, and variables do not have to be
+      explicitly declared.  Although the statement is obviously an
+      invalid DO statement, the compiler interpreted it as setting
+      a new variable DO3I equal to 1.3.  This "trivial" error
+      resulted in the failure of the mission.  Of course, part of
+      the responsibility for this billion-dollar error falls on
+      the programmer and test personnel, but is not the design of
+      the FORTRAN language also partially to blame?
+
+Unfortunately, Meyers lists no references for this version of history.
+Some years ago, as part of the background work for the slide show
+_Reliability and Risk_, Steve Berlin had called to ask about sources for
+this story.  Meyers could not remember an exact source.
+
+Since this much tracing left me without a definitive source, I checked
+the _New York Times_ index and _Readers' Guide_ indices for 1962.  The
+most informative article appeared in the _New York Times_ of Saturday,
+July 28--six days after the aborted launch:
+
+                           For Want of Hyphen
+                          Venus Rocket Is Lost
+
+                            By GLADWIN HILL
+                     Special to the New York Times
+
+         LOS ANGELES, July 27--The omission of a hyphen in some
+      mathematical data caused the $18,500,000 failure of a
+      spacecraft launched toward Venus last Sunday, scientists
+      disclosed today.
+         The spacecraft, Mariner I, veered off course about four
+      minutes after its launching from Cape Canaveral, Fla., and
+      had to be blown up in the air.
+         The error was discovered here this week in analytical
+      conferences of scientists and engineers of the National
+      Aeronautics and Space Administration, the Air Force and the
+      California Institute of Technology Jet Propulsion
+      Laboratory, manager of the project for N.A.S.A.
+         Another launching will be attempted some time in August.
+      Plans had been suspended pending discovery of what went
+      wrong with the first firing.
+         The hyphen, a spokesman for the laboratory explained, was
+      a symbol that should have been fed into a computer, along
+      with a mass of other coded mathematical instructions.  The
+      first phase of the rocket's flight was controlled by radio
+      signals based on this computer's calculations.
+         The rocket started out perfectly on course, it was
+      stated.  But the inadvertent omission of the hyphen from the
+      computer's instructions caused the computer to transmit
+      incorrect signals to the spacecraft....
+
+The first paragraph makes it sound as if this might be a data entry
+error and not a coding error at all.  Later paragraphs, however,
+indicate that this was part of the "coded mathematical instructions."
+Other references to the Mariner I failure appear in the letters section
+of the _New York Times_ of August 2 (page 24) and in the August 6 issue
+of _Newsweek_ (page 75) and seem to corroborate the view that this was a
+programming error.
+
+This account agrees with the recent report from Henry Spencer (RISKS-5.64)
+who cites "Far Travellers" by Oran W. Nicks.  On the whole, this explanation
+seems to have more documentary evidence than the FORTRAN version of the story 
+presented by Meyers.  The existence of other overstatements in his account
+(in particular, $18,500,000 << $1,000,000,000) also reduces its credibility.
+
+Of course, the FORTRAN version of the story has received widespread
+distribution of late (it is, after all, a lovely story), including citations in
+
+   o  Jim Horning, "Note on Program Reliability," _Software
+      Engineering Notes_, 4:4, October 1979, p. 6.
+   o  Peter Neumann, "Letter from the Editor," _Software Engineering
+      Notes_, 8:5, October 1983, p. 4 (credited to David Smith of
+      CMU, who heard it from his instructor in 1970 or 1971).
+   o  H.S. Tropp, "Fortran Anecdotes," _Annals of the History of
+      Computing_, 6:1, January 1984, p. 61.
+   o  Peter Neumann, "Risks to the Public," _Software Engineering
+      Notes_, 11:5, October 1986, p. 17.
+
+However, unless there is more definitive evidence to support this, I
+think it must be regarded as apocryphal.
+
+My own solution in _Computers in Battle_ was to write:
+
+      Shortly after its launch on July 22, 1962, the Mariner I
+      Venus probe veered off course and had to be destroyed by
+      mission control officials.  The problem was later traced to
+      a single character error in the controlling software.
+
+This covers both explanations and seems to be on relatively safe ground.
+
+/Eric
+                                   [Yes, but it bugs the question.  PGN]
+
+------------------------------
+
+Date: Thu, 26 Nov 87 13:40:20 EST
+From: Jim Duncan <jim@xanth.cs.odu.edu>
+To: RISKS@KL.SRI.COM
+Subject: FORTRAN pitfalls (Re: RISKS-5.63)
+Organization: Old Dominion University, Norfolk Va.
+
+(Regarding the DO ... I=1.3 problem:)
+
+I too have heard this `story' many times, and each time the space vehicle took
+on a new name, and it was on its way to a different planet or mission.  The
+text I am reading for a course in principles of programming languages is the
+first place I have seen this incident documented.  The author is discussing
+the design of syntactic structures in FORTRAN and the unfortunate effects of
+adopting a lexical convention that caused blanks to be ignored everywhere:
+
+  "In FORTRAN, the statement
+
+	DIMENSION IN DATA (10000), RESULT (8000)
+
+  is exactly equivalent to
+
+	DIMENSIONINDATA(10000),RESULT(8000)
+
+  and, for that matter,
+
+	D I M E N S I O N IN DATA (10000), RESULT (8000)
+
+  While this may seem to be a harmless convenience, in fact it can cause
+  serious problems for both compilers and human readers.  Consider this legal
+  FORTRAN statement:
+
+	DO 20 I = 1.100
+
+  which looks remarkably like the DO-statement:
+
+	DO 20 I = 1,100
+
+  In fact, it is an assignment statement of the number 1.100 to a variable
+  called `DO20I', which we can see by rearranging the blanks:
+
+	DO20I = 1.100
+
+  You will probably say that no programmer would ever call a variable `DO20I',
+  and that is correct.  But suppose the programmer _intended_ to type the
+  DO-statement above but accidentally types a period instead of a comma (they
+  are next to each other on the keyboard).  The statement will have been
+  transformed into an assignment to `DO20I'.  The programmer will probably not
+  notice the error because `,' and `.' look so much alike.  In fact, there will
+  be no clue that an error has been made because, conveniently, the variable
+  `DO20I' will be automatically declared.  If you think things like this can't
+  happen, you will be surprised to learn that an American Viking Venus probe
+  was lost because of precisely this error."
+
+The above is from Bruce J. MacLennan, _Principles_of_Programming_Languages_
+(second edition), CBS College Publishing, 1987, pp. 89-90.  Mr. MacLennan goes
+on to elaborate on the principles of good language design violated by FORTRAN,
+such as Defense in Depth.
+
+To add my two-cents worth:  When I first heard the Viking story, I inferred
+that the offending DO-statement was in the code which either positioned the
+navigational motors, or did the navigation calculations.  I was told that the
+launch went perfectly and the probe reached the desired earth orbit.  When the
+probe fired its motors to leave earth orbit, however, it supposedly rolled
+over on its back, fired in the wrong direction, and promptly _disappeared_
+from all tracking systems.  No one knows where the hell it went....
+
+Jim Duncan, Computer Science Dept, Old Dominion Univ, Norfolk VA 23529-0162
+(804)440-3915     INET: jim@xanth.cs.odu.edu    UUCP: ...!sun!xanth!jim
+
+------------------------------
+
+Date:     Thu, 26 Nov 87 13:11 O
+From: <MAKELA_O%FINJYU.bitnet@csl.sri.com>
+Subject:  PIN verification
+To: RISKS@csl.sri.com
+
+In RISKS 5.61, John Pershing <PERSHNG@ibm.com> writes:
+  >I cannot speak for *all* ATM and POS systems, but the major banks
+  >generally know what they are doing with respect to PIN security.  The PIN
+  >number is *not* stored on your ATM card -- it is stored in your bank's
+  >database and, possibly, in one or more interbank clearinghouses.  This
+  >makes it possible to have your PIN changed without getting the card
+  >re-magnetized (assuming your bank has it's act together).  Note that your
+  >account number probably isn't even written on the card -- only a number
+  >that identifies that particular card. [...]
+  >John A. Pershing Jr., IBM, Yorktown Heights
+
+Well, it *would* seem that the Finnish banks use a different system.  Perhaps
+I should first describe the most common types of plastics we have here:
+
+* the autoteller cards, that can only be used in ATM's
+* the "Bank Cards", that work at ATM's and can be used for buying stuff;
+  using them is legally the same as writing out a cheque for the same amount
+* the VISA-combocard, that is a combined ATM/Bank Card/VISA-card; when you
+  use them for buying stuff you have to tell what you want it to be used as
+
+All the abovementioned cards DO have the attached account number on them.
+It is possible also to have SEVERAL accounts on them, but I'm not sure how
+this is accomplished.  This option is only offered by one bank, so it might
+be just their hack.
+
+Follows a paragraph from the official guide to implementing off-line
+POS terminals using magnetic card identification:
+
+        PIN-verification is done by the Security Unit, which is connected
+        to the POS terminal, according to the the PVV-number, which is read
+        off the magnetic stripe of the card.  The requirements for PIN-
+        verification are given separately in "POS terminal security standards".
+        Written requests for the distribution of these standards may be sent
+        to AIP-security Chief Lars Anrkil, SKOP (Kilo), PL 400, 00101
+        HELSINKI.
+
+[SKOP is a big Finnish banking group, more or less a "collection of competing
+fiefdoms", as David G. Grubbs <dgg@dandelion.CI.COM> put it in RISKS 5.61;
+it would seem that the Finnish Banking Association has given them the job of
+maintaining and distributing these security standards.]
+
+Here's a few arguments against the systems working by being on-line to the
+bank computer or some other similar system:
+
+* the guide was for OFF-LINE POS terminals.
+* the same PIN-numbers are used internationally, in VISA-card -based ATM-type
+  machines, where you use your VISA-combocard to get money that will be billed
+  in your next VISA bill.  I have difficulties believing that even in this
+  information age they would maintain a computer link from all over the world
+  to remote Finland :-)
+* I have several times went to an ATM that is used by several banks in co-
+  operation, inserted my card, typed in my PIN and received a message saying
+  "Your bank's computer is down".  The PIN was verified BEFORE the ATM tried
+  to contact my bank's computer.
+* I have asked several times if it is possible to change my card's PIN number
+  (just to know if it is possible), and have always received a reply stating
+  "no, it's not possible, it's derived from your card number".  This is very
+  weak, since bank people generally aren't that good on technical aspects...
+
+I think these taken together are pretty strong indications that the PIN
+verification CAN be done off-line, at least for the Finnish standard of cards.
+
+I dearly do hope that security in these systems is not maintained by secrecy
+ONLY!  However, I have had the company I work in part-time order the set of
+security standards, so as soon as we get them, I'll let you people know more...
+
+Otto J. Makela, U of Jyvaskyla
+Mail: Kauppakatu 1 B 18, SF-40100 Jyvaskyla, Finland
+Phone: +358 41 613 847
+BBS: +358 41 211 562 (V.22bis/V.22/Bell 212A/V.21)
+BitNet: MAKELA_OTTO_@FINJYU.bitnet
+
+------------------------------
+
+Date: Thu, 26 Nov 87 13:15:59 -0500 (EST)
+From: Leslie Burkholder <lb0q+%andrew.cmu.edu@ROME.UCI.EDU>
+To: risks%csl.sri.com@ROME.UCI.EDU
+Subject: Sudden acceleration revisited
+
+Honda motor company has offered replacements for the chip controlling
+acceleration in the 88 Civic. Some people have complained of problems with
+this chip in their Civics.
+
+------------------------------
+
+Date:  Wed, 25 Nov 87 11:44 EST
+From: "Maj. Doug Hardie" <Hardie@DOCKMASTER.ARPA>
+To: risks@csl.sri.com
+Subject: Re: CB radio and power (RISKS-5.64)
+
+[For the record.  Truth-in-harmonics department.]
+
+  > The second harmonic of 26-27 Mhz signals rounds out to 104-108 Mhz, 
+  > or the upper half of commercial FM radio.  [Jeffrey R Kell.  RISKS-5.64]
+
+According to my understanding of the new-new-math (I am a product of the new
+math), that would have to be the fourth harmonic.
+                                                         -- Doug
+
+               [I hope no one pleads the fifth.  130-135 would sound 
+               suspiciously like late Beethoven String Quartets.  
+               Gesunta-heit.  PGN]
+
+------------------------------
+
+To: comp-risks@ukc.ac.uk
+From: "Clive D.W. Feather" <mcvax!root.co.uk!cdwf@uunet.UU.NET>
+Subject: An earlier train crash -- Farnley Junction
+Date: 27 Nov 87 16:48:37 GMT
+Organization: Root Computers Ltd, London, England
+
+Not quite computers, but after the item in RISKS-5.64 about the Swedish
+train crash, readers might find this interesting.
+
+Summary of official report on accident at Farnley Junction (Yorkshire)
+in 1977, on British Railways.
+
+Farnley Junction is a few miles from Leeds Signal Box, and is remotely
+controlled from there. All safety interlocking logic is in the signal
+box itself (all signalling in this area is carried out by 12V relay
+logic). The distance is such that an intermediate repeater unit repeats
+all relay signals between the junction and the box.
+
+The physical layout is as follows:
+
+                    \
+        Little used  \
+        branch line   \
+                       \
+                        -------*-----|
+                     S          \
+      --->-----------------------*------*------------->--- Up line
+                                         \
+      ---<--------------------------------*-----------<--- Down line
+                                            S
+   * = points, S = signal
+
+Normal logic, e.g., for signals, is binary, but the controls and position
+detection of the up-to-down-line crossover happened to be trinary (line A
+positive = straight ahead, line B positive = cross over, neither positive
+= no command / not correctly set).
+
+On the day in question, a fault at the repeater unit was causing problems.
+Both signals were set to Danger by the signalman, and an engineering team
+then changed the rectifier in the power supply at the repeater unit.
+
+The loss of power caused the main signalling logic to believe the crossover
+was not correctly set (no repeat of the detection), and so it set the control
+lines to drive the crossover back to the stright ahead position (this will
+stay driven until the detection is correct - meantime, the signals are locked
+at Danger).
+
+Trains came to a halt at both signals.
+
+The engineers restored power to the repeater, but had wired in the rectifier
+the wrong way round. This had the effect of reversing the polarity of voltages
+repeated - not important for binary signals.The crossover took the incoming
+voltage as a command to move to the "crossover" position, and did so.
+The detection mechanism correctly reported "crossover" - this was reversed
+at the repeater, and the main signalling logic (correctly) took the incoming
+signal to mean that the points were locked in the "straight ahead" position.
+
+The signalman now set both signals to Proceed, and the signalling logic
+allowed him to do so. The train on the Up line started off immediately
+(the other driver was trying to figure out why the points were set the
+wrong way !), traversed the crossover, and collided with the train on the
+Down line, killing two people.
+
+I know this isn't computing, but there's a lesson in it, even so.
+
+         [Don't lessen the lesson by thinking this isn't computing.
+         Circuitry, programs, algorithms, and people have much in common.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

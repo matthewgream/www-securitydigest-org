@@ -1,0 +1,674 @@
+precedence: bulk
+Subject: Risks Digest 20.81
+
+RISKS-LIST: Risks-Forum Digest  Monday 21 February 2000  Volume 20 : Issue 81
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+****************** U.S. "President's Day" Holiday Extra! ********************
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.81.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Announcement of the ITS4 software security scanner (John Viega)
+Hacker posts phony press release (Doneel Edelson)
+Risks of untrusted provenance (Mich Kabay)
+Senate web site dies, Clinton stresses Net-reliability (Declan McCullagh)
+Windows 2000 leaves new court records system unreliable (Michael S. Keller)
+Revenge of Authenticode (Mark Seecof)
+Re: Distributed denial-of-service attacks (Giles D. Malet, Paul Oldham,
+    William Colburn, Dick Mills)
+Risks designed into the Internet (Charles J Wertz)
+Michigan puts Doubleclick on notice (NewsScan)
+Re: Microsoft responds (Tom Sheppard)
+Even more on risks with MS Outlook (John L Meissen)
+Two signatures (David E. Ross)
+Amazon password change practice (Thomas Roessler)
+Re: Risks of bouncing messages from closed e-mail lists (DeRobertis)
+Re: Risks of policies not thought out properly (Rumy Driver)
+Risks of mistaking a trademark for a generic word (Mich Kabay)
+A really clever privacy policy (Martin Minow)
+Re: Review of "Database Nation" (Dave Weingart)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 21 Feb 2000 10:35:00 -0800
+From: John Viega <John@list.org>
+Subject: Announcement of the ITS4 software security scanner
+
+  [This is a nifty piece of work, and presents one more argument for
+  open-source software -- although I suppose proprietary software purveyors
+  might prefer to apply it themselves to closed-source systems!  But it is
+  noteworthy that this analytic tool is itself open source.  PGN]
+
+I've put together a command-line tool for statically scanning C and C++
+source code for security vulnerabilities.  The tool is called ITS4.  ITS4
+scans through source code for potentially dangerous function calls that are
+stored in a database.  Anything that is in the database gets flagged.  ITS4
+tries to automate a lot of the grepping usually done by hand when performing
+security audits.
+
+The tool is available from: http://www.rstcorp.com/its4/
+Also on this site is a research paper on ITS4 submitted to this year's
+Usenix Security conference.
+
+ITS4 is open source software.  The license puts some minor restrictions on
+commercial use.  In essence, you can't use this tool to make money (such as
+by reselling it, or by using it in a consulting practice).  However, you are
+encouraged to run the tool on your own product in order to make it better.
+
+ITS4 does more than just grep-type work.  It allows for arbitrary handlers
+to refine the initial analysis.  This version of ITS4 comes with some simple
+handlers.  Some of these handlers check for uses of common string operations
+that often are not significant problems.  For example:
+
+  strcpy(buf, "\n");
+  sprintf(buf, "%d", i);
+
+In the first case, ITS4 will look at the second argument to a strcpy.  If it
+is a string constant, the severity of the problem site is reduced to the
+lowest possible level.  The tool will not output this kind of problem in its
+standard mode.  In the second case, a similar reduction in severity occurs,
+since the sprintf format string contains no %s's.
+
+The tool also has handlers that scan for file access race conditions,
+similar to the prototype tool discussed in [BD96].  We slightly improve on
+their tool by allowing for interprocedural and intermodular problems.
+
+There are some technical limitations to this tool, many of which we hope to
+improve in the future.  We'd like to have the help of the security
+community.  I'm personally dedicated to improving this tool, and Reliable
+Software Technologies is willing to put some resources towards doing so.
+Changes from the community will certainly be considered for inclusion in
+future ITS4 releases.
+
+Currently, the weakest area of ITS4, where the input of the security
+community is most important, is the vulnerability database, which was
+largely taken from some very preliminary work done by Tom O'Connor.  It's
+perhaps a good start, but far from complete.  Many new things could be
+added, and the entries that do exist can likely be improved substantially.
+For each database entry, we have a description, a default severity, and a
+recommended alternative.  Generally, the descriptions are pretty scant, and
+the severities are not overly well thought out.
+
+The next area for improvement is the handlers.  It would be great to see
+people writing some good handlers, or even suggesting good handlers, and
+then we could write them.
+
+Beyond that we're interested in the following:
+
+1) Flagging the allocation mechanism used on important variables
+  (i.e., stack-allocated buffers are usually easier to exploit than
+   heap-allocated buffers if there is an overflow).
+
+2) Performing much better static analysis.  We'd probably like to
+   start by building some sort of heuristic alias analysis, and then
+   doing something similar to the analysis done in [WF+00].
+
+We do have plans to ultimately do these things, but if other people want to
+code them up and contribute to the project, that's great.
+
+I've set up a mailing list for people who are interested in helping out in
+any capacity.  Hopefully we can get a good discussion going that will
+improve the vulnerability database, and make ITS4 a far more useful tool.
+The mailing list signup is available at:
+http://www.list.org/mailman/listinfo/its4.
+
+John Viega, Software Security Group Co-founder
+Reliable Software Technologies  
+viega@rstcorp.com
+
+References:
+
+[BD96] M. Bishop and M. Dilger.  Checking for  race conditions in file
+accesses.  Computing Systems, 9(2):131-152, Spring 1996.
+
+[WF+00] D. Wagner, J.  Foster, E. Brewer, and A.  Aiken.  A first step
+towards automated  detection   of buffer  overrun  vulnerabilities. In
+Proceedings of the Year 2000  Network and Distributed System  Security
+Symposium (NDSS), pages 3-17, San Diego, CA, 2000.
+
+------------------------------
+
+Date: Thu, 17 Feb 2000 18:57:26 -0500
+From: "Edelson, Doneel" <doneel.edelson@eulergroup.com>
+Subject: Hacker posts phony press release
+
+A fake press release announced a merger of Aastrom Biosciences Inc.  with
+Geron Inc., a California biopharmaceutical house.  Aastrom stock fell, while
+Geron rose.  Aastrom asserted that the message on their Website was totally
+bogus, and presumably the result of a penetration.  [Source: United Press
+International - 17 Feb 2000; PGN-ed]
+
+------------------------------
+
+Date: Fri, 18 Feb 2000 10:12:08 -0500
+From: Mich Kabay <mkabay@compuserve.com>
+Subject: Risks of untrusted provenance
+
+According to a 17 Feb 2000 AP item (18 Feb 2000 article in *The Washington
+Post* by David Ignatius, the US State Department has its shorts in a knot
+because they have just realized that a software package called the Mission
+Performance Plan that is running on embassy computers around the world was
+written by programmers from the former Soviet Union.  On 2 Feb 2000, the
+Department of State sent an urgent cable to 170 embassies ordering them to
+remove the package by the 7th while security specialists examine the code
+for trap doors, logic bombs and other cybernasties.
+
+  [Comment by MK: this incident reinforces the view that the trustability of
+  software writers is even more important than quality assurance where
+  security is concerned.  As many commentators have noted, it may be
+  impossible in practice to apply adequate quality assurance to untrusted
+  code.  I have frequently urged QA specialists to ensure that they use
+  code-coverage logging to ensure that every line of code is actually
+  executed during the SQA process; however, even total coverage does not
+  necessarily mean that a program is guaranteed safe, since variable sequence
+  of execution could result in different outcomes for the same subroutines
+  because of data dependencies.]
+
+M. E. Kabay, PhD, CISSP / Security Leader, INFOSEC Group / Adario, Inc.
+
+------------------------------
+
+Date: Tue, 15 Feb 2000 21:05:27 -0500
+From: Declan McCullagh <declan@well.com>
+Subject: Senate web site dies, Clinton stresses Net-reliability
+
+http://www.wired.com/news/politics/0,1283,34362,00.html
+
+The Crash of a Dot.Gov, by Declan McCullagh (declan@wired.com)
+
+Wired, 15 Feb 2000 
+
+As government aides were frantically preparing for the president's
+last-minute Internet-reliability summit with technology leaders, thousands
+of visitors couldn't reach the U.S. Senate's own Web site.  It was offline
+for over nine hours Monday, from early afternoon to after 11 p.m.  (EST) due
+to technical problems, Senate officials said.  The embarrassing site failure
+comes just as the U.S. government is telling private firms how important it
+is that they increase the reliability and security of their own networks.
+"Our administration has been working for years now to reduce vulnerabilities
+in government computers and to encourage the private sector to do more,"
+President Clinton said before Tuesday's one-hour meeting with corporate
+information officers, academics, and Cabinet members.
+
+From Declan's POLITECH, a moderated mailing list of politics and technology.
+To subscribe: send a message to majordomo@vorlon.mit.edu with this text:
+subscribe politech 
+More information is at http://www.well.com/~declan/politech/
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 14:07:51 -0600
+From: "Michael S. Keller" <mkeller@mail.wcg.net>
+Subject: Windows 2000 leaves new court records system unreliable
+
+The full article resides at
+http://search.tulsaworld.com/archivesearch/default.asp
+  ?WCI=DisplayStory&ID=000219_Ne_a10court
+<A
+HREF="http://search.tulsaworld.com/archivesearch/default.asp?WCI=DisplayStory&ID=000219_Ne_a10court"></A>
+
+A new state-run computer system for the Tulsa County Court Clerk's Office
+that was supposed to be the envy of the rest of the country is still
+malfunctioning, sometimes for days on end.  The new system was put in place
+just a few days before the end of 1999 in an effort to make the court
+records system Y2K compliant. Still, (Sally) Howe Smith said, the old days
+under the clunky mainframe are starting to look pretty good.  The new system
+has been down completely for at least a day twice in the last two weeks and
+regularly has system errors that hinder access to records for hours at a
+time, she said.  The court records system uses Windows 2000, and the new
+software was deployed early for the state system. (Website coordinator
+Gregg) Lambert said state technicians were hoping to confer with Microsoft
+officials about some of the system's problems.
+
+Michael S. Keller, Technical Solutions Consultant,
+Sprint Enterprise Network Services, Amateur Radio N5RDV
+
+------------------------------
+
+Date: Fri, 18 Feb 2000 09:59:43 -0800
+From: mseecof@seatimes.com
+Subject: Revenge of Authenticode (Re: RISKS-18.89)
+
+Microsoft (hereinafter MS) Windows 2000 has a kind of "immune system"
+feature which causes it to reject any driver or DLL update which has not
+been digitally signed by Microsoft.  The signature system looks to be
+similar to Authenticode.
+
+In RISKS-18.89, I suggested that the real utility of MS' Authenticode was to
+assist MS marketing.  I offered a test for my hypothesis: that an offer by
+MS to sign others' code (for a fee) would validate my theory.
+
+Well, if you want to supply a new device driver (say, for a variant
+peripheral) or library update (adding, say, some spiffy cryptographic
+features) for Windows 2000, you must give your code to MS for early review
+and pay MS a fee.  If you do these things, MS may sign your software.  If
+you do not, then no Windows 2000 machine will run your code (or at least,
+not without big trouble, too big for non-techies).
+
+As with Authenticode, MS' scheme is not unbreakable, nor does it even
+attempt to assure the quality (as opposed to the provenance) of signed code.
+(Oh, MS says their lab will review 3rd-party code for "compatibility," but
+they won't check for malware, and unlike, say, Java's sandbox, MS signature
+scheme has no inherent malware-inhibiting qualities).
+
+MS marketing will stop at nothing, Q.E.D..
+
+Mark Seecof
+
+------------------------------
+
+Date: 21 Feb 2000 10:16:53 -0500
+From: gdmalet@ist.uwaterloo.ca (Giles D. Malet - IST)
+Subject: Re: Distributed denial-of-service attacks (Cox, RISKS-20.79)
+
+> ...pronounce "DoS" to rhyme with "sauce" -- and sound just like "DOS".
+
+For those of us that don't speak American that sentence makes no sense at
+all.  The pronunciation of "DOS" comes nowhere near that of "sauce".  In
+English, they rhyme more with "moss" and "morse" (with a silent `r')
+respectively.  Risky assumptions about your readership?
+
+  [Webster of course gives a British spin on "doss" --
+     1. doss \'da:s\ vi [origin unknown] chiefly Brit : 
+       to sleep or bed down in any convenient place
+     2. doss n chiefly Brit : a crude or makeshift bed
+  Dictionaries and linguistic differences make strange bedfellows.
+  I presume the OED doss even better.  But phonetically auf deutsch, we have
+  "Dos ist gut, net?" (where "net" is regional dialect for "nicht").  PGN]
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 15:55 +0000 (GMT Standard Time)
+From: paul@the-hug.org (Paul Oldham)
+Subject: Re: Distributed denial-of-service attacks (Cox, RISKS-20.79)
+
+You say "tomato"?
+ 
+> I heard more than one reader pronounce "DoS" to rhyme with "sauce" [...]
+
+It took a few seconds for me make any sense at all of his comment: when did
+"DOS" ever rhyme with "sauce"?! And then I realised that Ken is probably an
+American-English speaker and that he had missed another risk: that all
+readers of english will pronounce words the same way.
+
+Let's call the whole thing off.
+
+Paul Oldham, Milton, Cambridge, England
+http://the-hug.org/paul/
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 08:10:30 -0700
+From: "Schlake ( William Colburn )" <schlake@nmt.edu>
+Subject: Re: Distributed denial-of-service attacks (Cox, RISKS-20.79)
+
+It could easily be argued that DOS is a DoS against the Intel processor
+family.
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 08:44:02 -0500
+From: Dick Mills <dmills@IASystems.com>
+Subject: Re: Distributed denial-of-service attacks (Cox, RISKS-20.79)
+
+This reminds me of a counter example.
+
+Three or four years ago the following joke made the rounds.  
+
+    "What do you get if you cross Lee Iacocca with a vampire?  
+
+        AUTOEXEC.BAT"
+
+I was astounded at how many people got it.  Even technophobes and Mac owners
+understood it and laughed.  Maybe Murray Hill NJ would be the only place on
+earth that it would flop. :)
+
+My point is that these things are less jargon-like than we might think.  
+They are at least slang and perhaps mainstream American English by now.
+
+------------------------------
+
+Date: Sat, 12 Feb 2000 12:18:15 -0500
+From: Charles J Wertz <wertzcj@buffalostate.edu>
+Subject: Risks designed into the Internet
+
+The recent flurry of discussions and warnings about cross site scripting is
+but one more reminder of the vulnerabilities that result from the basic
+design (?) of the internet, http, scripting languages, and most browsers.
+
+Meanwhile, we find that more and more sites refuse to function unless
+javascript and/or cookies are enabled. Some warn us of this. Some,
+www.anybirthday.com for example, just give misleading results. And of
+course, some Microsoft sites demand Internet Explorer with vbscript turned
+on.
+
+There seems to be a clear cut choice between "safe browsing" and access to a
+lot of the information that is available on the web. Web sites could be
+designed to work acceptably without client side scripting, but it is
+unlikely that many folks will decide to do so.
+
+So, I guess I'm just complaining. Does anyone have a better idea?
+
+------------------------------
+
+Date: Fri, 18 Feb 2000 09:44:23 -0700 
+From: "NewsScan" <newsscan@newsscan.com> 
+Subject: Michigan puts Doubleclick on notice
+
+The attorney general of Michigan has filed a "notice of intended action"
+against DoubleClick, charging the Web advertising firm with "failing to
+disclose to Internet users that DoubleClick is systematically implanting
+electronic 'cookies,' or electronic surveillance files, on hard drives of
+users' computers without their knowledge or consent." In addition, the
+notice criticizes DoubleClick's recent attempts to combine its tracking data
+with personal data such as names obtained through its acquisition of Abacus
+Direct last year. Michigan's filing, which is preliminary to a lawsuit, is
+the third action taken against DoubleClick this week -- the Federal Trade
+Commission and the New York attorney general earlier launched separate
+inquiries into the company's business practices.  [*Financial Times*, 18 Feb
+2000, http://www.ft.com/; NewsScan Daily, 18 Feb 2000]
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 12:41:26 -0500
+From: Tom Sheppard <TSheppard@home.com>
+Subject: Re: Microsoft responds (Allchin, RISKS-20.80)
+
+I find Jim Alchin's rebuttal in RISKS-20.80 dispelling the rumour of 
+63,000 defects in Windows 2000 hilarious.
+
+This statement got me laughing out loud, "We also have a special advanced
+source code analyzer that we use.  This tool generates a significant number
+of false positives (it thinks the code should be changed, but in fact it
+should not be)."
+
+This "advanced" analyzer generates "significant" false positives. I guess it
+must be as advanced as Windows 2000.  So how many defects are logged against
+the analyzer, Jim?
+
+Mr. Alchin goes on to state, "We love this tool."
+
+And we all love Windows, Jim. Truly we do.
+
+...Tom
+
+------------------------------
+
+Date: Wed, 16 Feb 2000 10:38:30 -0800
+From: "Meissen, John L" <john.l.meissen@intel.com>
+Subject: Even more on risks with MS Outlook (Clemson, RISKS-20.79)
+
+> The bug is with pine -- it returns multipart/alternative and 
+> should have returned multipart/mixed.  [...]
+
+This is the sort of "force the user to adapt to the software instead of
+vice-versa" attitude that seems to permeate PC software. I find it
+incredibly frustrating that I'm constantly fighting software because someone
+assumes their way is the ONLY way something should be done.
+
+Just because the client is HTML-aware doesn't mean it should hide the
+alternatives from you. My personal choice for e-mail (not what I'm forced to
+use at work) tells me there are alternate views available and lets me choose
+which one I would like to view. Sometimes I get e-mail which is all
+HTML. Having an HTML-aware client is handy in these cases. However, I don't
+like HTML, I don't want HTML, and given a choice I will view as non-HTML. A
+product which forces HTML on me is broken, IMHO.
+
+I agree that in this case there is a problem with Pine. However, while
+Outlook may be working as designed I would certainly argue that it is not
+working as it should!
+
+------------------------------
+
+Date: Sun, 20 Feb 2000 15:18:11 -0800
+From: "David E. Ross" <rossde@acm.org>
+Subject: Two signatures
+
+The situation:
+
+Because of high-speed processing of bank checks without any human
+intervention, banks (at least in California) will no longer honor requests
+by depositors that checks have two signatures.  Even when a check has
+imprinted on it "Two Signatures Required", banks will honor that check with
+only one signature.
+
+When establishing a new account or when changing signature authorizations on
+existing accounts, banks are requiring depositors to sign a waiver that
+releases the bank from any liability for paying a check with only one
+signature.  As long as the signature is in the bank's files, the loss will
+then fall on the depositor even if the signature card in the files or the
+check clearly indicates "Two Signatures Required".
+
+The risk:
+
+This can be a problem for non-profit organizations, many of which depend on
+amateur help -- unpaid volunteers -- to handle administrative tasks,
+including disbursing funds.  The California Attorney General -- who
+regulates charities through the state's Registry of Charitable Trusts --
+recognizes the risk of embezzlement or other losses and strongly urges all
+non-profits to require two signatures on all checks.  The use of a single
+authorized signature on a check has already proven insufficient.  Losses to
+PTAs, high school booster clubs, and other volunteer-run non-profits are far
+too common.
+
+Of course, businesses and other organizations are also at risk of loss
+without the safeguard of requiring two individuals to approve payments of
+funds.  For that reason, a company's independent auditors will often require
+the use of two signatures if they are to certify the adequacy of the
+company's internal fiscal controls.
+
+Some questions:  
+
+Automated pattern-recognition capabilities might not be sufficient to verify
+check signatures.  However, the technology has surely advanced to the point
+where at least the presence of two signatures could be verified.  It
+certainly can detect a preprinted "Two Signatures Required" on a check.  Why
+have the banks not incorporated this technology into their check-clearing
+systems?
+
+The banks claim they cannot stop the automated processing of checks and
+examine each check to ensure that it has the correct number of signatures.
+That is why they do not want to be held liable when a check marked "Two
+Signatures Required" is honored with only one signature.  However, they also
+cannot stop the automated processing of checks and examine each check to
+ensure that it has a valid, authorized signature.  Yet they remain liable if
+a check with an invalid signature is paid.  What is the difference?
+
+David E. Ross <http://www.vcnet.com/~rossde/>.  
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 13:18:58 +0100
+From: Thomas Roessler <roessler@guug.de>
+Subject: Amazon password change practice
+
+Amazon.de has a very simple scheme for changing your account's password in
+case you forget it: Just tell their server your e-mail address, the title or
+ISBN number of a book you have ordered with them, and the last five digits
+of a bank account or credit card number you have used to pay.  The server
+will happily permit you to change your password.
+
+The RISK?  The information to be supplied may be easily guessed.
+
+Bank account numbers are readily accessible to - almost - the public; it's
+even common to put them onto letterheads.  As opposed to credit card
+numbers, they aren't treated as secrets. Guessing what books have been
+ordered can frequently be easy, too - people tell about books, people write
+reviews, or you just know peoples' interests.  Trying best-sellers will work
+nicely as a large-scale attack.
+
+The one and only element of control you have is a confirmation message sent
+to your e-mail address.  While this may work if you are reading your e-mail
+regularly, a prolonged week-end vacation may be sufficient for an attacker
+to order a book, get it paid with your credit card (or from your bank
+account), and get it delivered to some empty building.
+
+------------------------------
+
+Date: Thu, 17 Feb 2000 01:12:26 -0500
+From: "DeRobertis" <derobert@erols.com>
+Subject: Re: Risks of bouncing messages from closed e-mail lists (RISKS-20.79)
+
+>However, there is a more serious vulnerability here: infinite loops between
+>two or more closed lists.   [Kabay]
+
+Bounces should honor the Received: line count and add an extra one. Not only
+does this prevent infinite loops, but it also makes spam more trackable.
+
+I'd think many already do something to prevent infinite looping; otherwise
+what happens if a from address is invalid? Bounce bounce bounce... until
+some sysadmin stops the flood?
+
+------------------------------
+
+Date: Mon, 21 Feb 2000 08:33:18 -0600
+From: Rumy Driver <rdriver@sybase.com>
+Subject: Re: Risks of policies not thought out properly
+
+I have to fly to California for training. As my wife has never been to CA, I
+did book her ticket on American Airlines (My company has an agreement with
+them).
+
+When I called after a couple of days to ask why I did not get a confirmation
+in the mail, I was informed that my credit-card processing was not complete
+as they had incorrect information about my ZIP code.  I did ask as to why I
+was not informed and they said they di try to do so - by sending me a post
+card!!!  YES, that's right - to inform me that they had an incorrect address
+on file they "mail" a post card.
+
+I did speak to a supervisor who informed that "this is the official policy".
+I did ask him how this could be implemented and how it would work - "this is
+official policy".
+
+The only way to inform Customer Relations is to call or send mail via the
+USPS.  They do not have an e-mail address.
+
+American Airlines
+Customer Relations MD 2400
+P.O. Box 619612
+DFW TX 75261
+(817)967-2000
+
+Rumy Driver, Sybase Technical Support
+
+  [By all means, write them and complain!  PGN]
+
+------------------------------
+
+Date: Thu, 17 Feb 2000 17:04:49 -0500
+From: Mich Kabay <mkabay@compuserve.com>
+Subject: Risks of mistaking a trademark for a generic word
+
+In connection with an item posted recently in RISKS on using automated
+rejection messages as a spam relay, I received the following correction from
+a list manager who asked to remain anonymous:
+
+> Therefore I recommend that at the very least, administrators
+> for closed e-mail lists prevent their listserv from sending ...
+
+
+LISTSERV is a registered trademark of L-Soft International.
+See:
+        http://www.l-soft.com/
+
+Unfortunately, like "Kleenex" and "Rollerblades", "LISTSERV" has come to be
+commonly used to refer to any mailing list management package (or worse, the
+mailing list itself).  Please pardon this one-man campaign to try and stop
+this practice. :-)
+
+I responded that I would henceforth use the phrase "list-server software."
+
+M. E. Kabay, PhD, CISSP / Security Leader
+INFOSEC Group / Adario, Inc.
+
+  [RISKS has being doing so for a long time.  PGN]
+
+------------------------------
+
+Date: Fri, 11 Feb 2000 23:31:36 -0800
+From: Martin Minow <minow@pobox.com>
+Subject: A really clever privacy policy
+
+Try reading the privacy policy of <http://www.foxkids.com> using Internet
+Explorer 4.5 on the Macintosh. Be sure to use a color monitor and enable the
+"allow page to specify fonts and colors" option. You will see tiny black
+text on a dark blue image background: i.e., essentially unreadable.
+
+If you turn off "show images," you get black text on a black background.
+
+On Netscape Communicator, you get white text on the blue image, which is
+readable, even though the size "0" text is tough going without a magnifying
+glass. It's about 8 pt on my display.
+
+The problem is that the page explicitly sets the page background color to
+"black" but does not set the default text color. The heading text "by using
+this site, you agree to the privacy policy of FK [Fox Kids] ..." is rendered
+in a HTML table element whose font is explicitly set "white", but the rest
+of the page, containing the policy itself, lacks an explicit font
+color. Netscape apparently continues to use the current font and text color
+until changed, while Internet Explorer reverts to the default color when the
+table element completes.
+
+The entire privacy document is over 3,000 words long, but that's another
+story.  
+
+Martin Minow <minow@pobox.com>
+
+  [Well, it is not a *short* story, but in 8-point type 
+  it's certainly a space saver rather than an eye saver!  
+  The art of fine print strikes again.  PGN]
+
+------------------------------
+
+Date: Wed, 16 Feb 2000 09:00:51 -0500
+From: Dave Weingart <dweingart@chi.com>
+Subject: Re: Review of "Database Nation" (Spafford, RISKS-20.79)
+
+>... Simson recounts that people are able to get their credit records or
+>medical records from MIB, but then doesn't provide any information on how to
+>get them or who to contact;  ...
+
+That's because anyone who is contacted by MIB gets a little light flashed
+in their eyes and forgets all about it.
+
+Dave Weingart, Randstad North America   dweingart@chi.com  1-516-682-1470
+
+------------------------------
+
+Date: 13 Dec 1999 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ Also, new AUSTRALIAN archives at http://mirror.aarnet.edu.au/risks/ and
+   http://the.wiretapped.net/security/textfiles/risks-digest/ .
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.81
+************************

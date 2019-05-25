@@ -1,0 +1,323 @@
+RISKS-LIST: RISKS-FORUM Digest  Friday 2 February 1990   Volume 9 : Issue 65
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  The C3 legacy, Part 2: a SAGE beginning (Les Earnest)
+  Sendmail Flaw (Geoffrey H. Cooper)
+  Filing 1040 Electronically (Bill Murray)
+  Predicting Problems (David desJardins)
+  Airbus crash (Dave Morton)
+  The Trojan horse named `AIDS' revisited (PGN)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: 01 Feb 90  2101 PST
+From: Les Earnest <LES@SAIL.Stanford.EDU>
+Subject: The C3 legacy, Part 2: a SAGE beginning
+
+Thanks to moraes@csri.toronto.edu for pinning down my half-remembered
+quotation in the preceding segment (RISKS 9.60):
+> The actual quote is "Those who cannot remember the past are condemned
+> to repeat it." from George Santayana's "The Life of Reason".
+
+The grandfather of all command-control-communication (C3) systems was an
+air defense system called SAGE, a rather tortured acronym for Semi-
+Automatic Ground Environment.  As I reported earlier in RISKS 8.74, some of
+the missles that operated under SAGE had a serious social problem:  they
+tended to have inadvertent erections at inappropriate times.  A more
+serious problem was that SAGE, as it was built, would have worked only in
+peacetime.  That seemed to suit the Air Force just fine.
+
+SAGE was designed in the mid to late 1950s, primary by MIT Lincoln Lab,
+with follow-up development by IBM and by nonprofits System Development
+Corp. and Mitre Corp.  The latter two were spun off from RAND and MIT,
+respectively, primarily for this task.
+
+SAGE was clearly a technological marvel for its time, employing digitized
+radar data, long distance data communications via land lines and
+ground-air radio links, the largest computer (physically) built before or
+since, a special-purpose nonstop timesharing system, and a large
+collection of interactive display terminals.  SAGE was necessarily
+designed top-down because there had been nothing like it before -- it was
+about 10 years ahead of general purpose timesharing systems and 20 years
+ahead of personal computers and workstations.
+
+While the designers did an outstanding job of solving a number of
+technical problems, SAGE would have been relatively useless as a defense
+system if a manned bomber attack had occurred for the following reasons.
+
+1. COUNTERMEASURES.  Each SAGE system was designed to automatically track
+   aircraft within a certain geographic area based on data from several
+   large radars.  While the system worked well under peacetime conditions,
+   an actual manned bomber attack would likely have employed active radar
+   jamming, radar decoys, and other countermeasures.  The jamming would
+   have effectively eliminated radar range information and would even have
+   made azimuth data imprecise, which meant that the aircraft tracking
+   programs would not have worked.  In other words, this was a air defense
+   system that was designed to work only in peacetime!
+   (Some "Band-aids" were later applied to the countermeasures vulnerability
+   problem, but a much simpler system would have worked better under expected
+   attack conditions.)
+
+2. HARDENING.  Whereas MIT had strongly recommended that the SAGE computers
+   and command centers be put in hardened, underground facilities so that
+   they could at least survive near misses, the "bean counters" in the Pentagon
+   decided that this would be too expensive.  Instead, they specified
+   above-ground concrete buildings without windows.  This was, of course,
+   well suited to peacetime use.
+
+3. PLACEMENT.  While the vulnerabilities designed into SAGE by MIT and the
+   Pentagon made it relatively ineffective as a defense system, the Air
+   Defense Command added a finishing blunder by siting most of the SAGE
+   computer facilities in such a way that they would be bonus targets!
+   This was an odd side effect of military politics and sociology, as
+   discussed below.
+
+In the 1950s, General Curtis Lemays's Strategic Air Command consistently
+had first draw on the financial resources of the Defense Department.  This
+was due to the ongoing national paranoia regarding Soviet aggression and
+some astute politicking by Lemay and his supporters.  One thing that Lemay
+insisted on for his elite SAC bases was that they have the best Officers
+Clubs around.
+
+MIT had recommended that the SAGE computer facilities be located remotely,
+away from both cities and military bases, so that they would not be bonus
+targets in the event of an attack.  When the Air Defense Command was
+called upon to select SAGE sites, however, they realized that their people
+would not enjoy being assigned to the boondocks, so they decided to put
+the SAGE centers at military bases instead.
+
+Following up on that choice, the Air Defense Command looked for military
+bases with the best facilities, especially good O-clubs.  Sure enough, SAC
+had the best facilities around, so they put many of the SAGE sites on SAC
+bases.  Given that SAC bases would be prime targets in any manned bomber
+attack, the SAGE centers thus became bonus targets that would be destroyed
+without extra effort.  Thus the peacetime lifestyle interests of the
+military were put ahead of their defense responsibilities.
+
+SAGE might be regarded as successful in the sense that no manned bomber
+attack occurred during its life and that it might have served as a
+deterrant to those considering an attack.  There were reports that the
+Soviet Union undertook a similar experimental development in the same time
+period, though that story may have been fabricated by Air Force
+intelligence units to help justify investment in SAGE.  In any case, the
+Russians didn't deploy such a system, either because they lacked the
+capability to build a computerized, centralized "air defense" system such
+as SAGE or had the good sense not to expend their resources on such a
+vulnerable kludge.
+
+(Next segment: command-control catches on.)
+
+	-Les Earnest (Les@Sail.Stanford.edu)
+
+------------------------------
+
+Date: Fri, 2 Feb 90 14:35:37 PST
+From: geof@aurora.com (Geoffrey H. Cooper)
+Subject: Sendmail Flaw
+
+The sendmail problem to which our moderator frequently refers is
+actually a design problem in the SMTP protocol (that sendmail
+implements) and so is well within the domain of RISKS discussions.
+Especially since the design problem has been recognized since at least
+1983, but SMTP is so entrenched that the problem has never been fixed.
+
+The way in which SMTP sends a message is, roughly:
+
+	1. Send message headers to server, etc. & get responses
+	2. Send DATA keyword to server & get affirmative response
+	3. Send entire message to server with no response
+	4. Send "." to Server
+	5. WAIT UNTIL SERVER HAS DELIVERED MESSAGE AND RESPONDS.
+
+[5] is the problem.  At any given time during [5], there are two
+possibilities.  Either the server has crashed and will never send an
+answer, or the server is still in the process of transmitting the mail. 
+
+There is NO WAY for the sender to tell the difference between these
+two possibilities.  This is because:
+
+	a. SMTP presumes that TCP is reliable, so it doesn't allow
+	   the sender to retransmit anything.  Hence, the sender can't
+	   send any data during the wait in [5] to find out if the
+	   server is still alive.
+
+	b. TCP, to be efficient for long lived connections, does
+	   not guarantee continual monitoring of the connection.  If
+	   TCP has no data to send, it never sends any data (except
+	   for the Berkeley-derived keep-alive option, which are not
+	   part of the TCP spec, but see below).
+
+	c. EVEN IF TCP did monitor the connection, the SMTP process
+	   could die or go into an infinite loop without resetting
+	   the TCP connection.  (You can't catch this
+	   case: Halting Problem).  I can vaguely remember
+	   hearing of this happening in 1983.
+
+I truly believe this problem is unsolvable, without changing SMTP.  The
+Programming Marines, who build and sell systems must solve it anyway.  Or
+alleviate it, anyway.
+
+The ad-hoc solution is to set a timeout; assume the message takes no more than
+time T to process by the server, so if the sender waits for 2T or so, the
+server must have crashed.  This helps, but it clearly doesn't solve the
+problem, since the sender has no metric by which to judge T except the length
+of the message.
+
+For example, a message transmitted to a Large, Risky Mailing List might take an
+order of magnitude longer to process than a simple user-to-user message.
+Hence, it is likely that messages to large mailing lists will tend to fail with
+the sender timing out and resetting the connection; this condition is noticed
+by the server AFTER transmitting at least part of the message.  The sender
+later retries, so you get multiple messages.  Very many messages, if you are
+unlucky, or its a Monday or you moderate a very large and risky mailing list.
+
+(BTW, it was decided in SMTP's design that it was better to have multiple
+messages than to have messages get lost, so it is not considered acceptable for
+the SMTP server to queue the message but not deliver it during the pause in
+[5]).
+
+The general problem: building functionality on top of a "reliable
+system" does not GUARANTEE that the result is reliable.  The
+reliability must, in some way, be verified by the topmost level.
+
+Hence, you balance your bank statement to make sure your checks (cheques.uk)
+were really cashed shortly after you sent them off, and you look for cancel
+checks if you get a red notice from a bill you sent off.
+
+Reference:
+J. Saltzer, D. Reed, D. Clark, "End-to-End Arguments in System Design",
+Proc. IEEE, April 1981.
+
+- Geof
+
+     [Well, on RISKS-9.64 I removed all of the offending addresses and 
+     I did not get any reports of multiples.  So, here goes RISKS-9.65.  PGN]
+
+------------------------------
+
+Date:  Fri, 2 Feb 90 17:47 EST
+From: WHMurray.Catwalk@DOCKMASTER.NCSC.MIL
+Subject:  Filing 1040 Electronically
+
+It is now possible for you to file your income tax return electronically.  Yes,
+you.  Of course the IRS will not accept it directly from you; they only deal
+with "tax preparers' like H&R Block, the owners of CompuServe.  Not to worry.
+There are value-added re-sellers who will accept your return from you, check it
+and forward it to the IRS.  I have seen ads now from two different such
+re-sellers: "Nelco" and "Nexus Direct."
+
+PGN's misgivings to the contrary notwithstanding, it is not likely to open up
+the IRS's computers to tampering by taxpayers.  From their point of view it is
+as safe as having you send it to them by snailmail and a lot cheaper than
+key-entering it themselves.
+
+From the taxpayers' point of view, it is a great deal safer than putting
+it in the snailmail and having it transcribed by a temp at the IRS.  Of
+course, a copy of your return can end up in the computers of the
+services.  On the other hand, that happens whenever you deal with a tax
+preparer.  That has only marginally impacted the success of H&RB.
+
+Incidentally, when you file with H&RB, or any number of other preparers,
+they offer to give you your refund on the spot.  It is really in the
+form of a loan, but the loan is re-paid directly to them by the IRS.
+The IRS likes this arrangement because they can pay the refund by
+EFT/EDI.  Not only do they not handle the paper return, but they do not
+have to prepare a check for the refund.   It is almost as if the IRS has
+opened thousands of offices across the country where they will prepare
+your return for you and give you your refund on the spot.  Of course,
+since it is for-profit, it may be a little more efficient.
+
+Who pays?  Well who always pays?  At least there are some choices.
+
+How about it H&RB?  How long will it be before I can "GO 1040" on
+CompuServe?
+
+William Hugh Murray, Fellow, Information System Security, Ernst & Young
+2000 National City Center Cleveland, Ohio 44114                          
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840                
+
+------------------------------
+
+Date: Fri, 2 Feb 90 01:05:48 EST
+From: desj%idacrd@Princeton.EDU (David desJardins)
+Subject: Predicting Problems
+
+Bob Munck <munck@community-chest.mitre.org> writes:
+>> While the software had been rigorously tested in laboratory
+>> environments before it was introduced, the unique combination of
+>> events that led to this problem   couldn't be   predicted.
+>
+> Don't they mean "wasn't"?  The rest of the report seems (to me) to
+> be reasonably detailed, well explained, and apparently honest, but
+> this one little dissemblance ruins the whole thing.  Is there any
+> justification for the assertion that the prediction was (and is)
+> _impossible_ in these circumstances?
+
+   I noticed this too.  On reflection, though, I'm sort of glad that they said
+it this way.  Of course this error could have been predicted.  Any particular
+error could be predicted, if the right person looked at it at the right time.
+But what *is* impossible is to predict all errors, all of the time, with
+probability 1.  So, if you interpret the above statement above as, "The event
+occurred randomly in a situation where the probability of such errors could not
+be reduced to zero," then I think it is a reasonable description of the truth.
+
+   Certainly it is a better reaction than the other common thing that one sees
+in these press statements, which is something like, "Steps are being taken to
+ensure that no similar outage can ever occur again."  This is an unrealistic
+and false reaction which would cause me, at least, far more concern than the
+AT&T reaction.  Of course they will try to prevent such problems.  But it is
+equally obvious that the probability of such events will remain positive.
+
+   -- David desJardins
+
+------------------------------
+
+Date: Fri, 2 Feb 90 09:22:30 +0100
+From: Dave Morton <dave@ecrcvax.UUCP>
+Subject: Airbus crash
+
+Coming back from London about a year ago I was seated next to a pilot
+from a Munich based company who flew 757s. He'd overshot his flying time
+and was heading back to Munich from Kenya over London. We talked about the
+Airbus crash and it seems that in pilot circles it was attributed to the
+fact that the older Airbus machines had Rolls-Royce engines. It seems that
+when given full power they reacted about 3 seconds faster that those on
+the A320. In his opinion these three seconds were vital. Needless to say,
+the A320 pilot was familiar with the older model(s) and this may have played
+a role in his judgement. On a side note the pilot also mentioned that the
+757, which also has the fly by wire system, sometimes "hangs". The only
+way to get the electronics to function again is to power cycle the lot.
+
+------------------------------
+
+Date: Fri, 2 Feb 90 15:58:21 EST 
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: The Trojan horse named `AIDS' revisited (RISKS-9.55)
+
+We reported earlier on the diskettes containing a destructive Trojan horse
+program.  Something like 20,000 disks were mailed from London around 11
+December 1989.  When executed, it trashed PCs in at least Britain, Norway,
+Sweden, Belgium, Denmark and California.
+
+Joseph W. Popp, 39, a zoologist from the Cleveland area, has been arrested in
+Ohio on a federal fugitive warrant, and charged by Scotland Yard in London with
+blackmail and extortion.  In court in Cleveland, Popp told U.S. Magistrate
+Joseph W. Bartunek he is under a psychiatrist's care and must take drugs for a
+mental condition.  The judge has scheduled psychiatric evaluation prior to any
+further hearing.  Popp apparently (has/had?) worked for the World Health
+Organization.
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.65
+************************

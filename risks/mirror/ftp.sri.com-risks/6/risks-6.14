@@ -1,0 +1,274 @@
+RISKS-LIST: RISKS-FORUM Digest  Monday, 25 January 1988  Volume 6 : Issue 14
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Safe programming languages (Bob Estell)
+  More about the technology transfer policy (Paul Smee)
+  A second Sun clock error: no sanity checking (John Bruner)
+  "Things That Go 'Beep'"  (Paul Fuqua)
+  High-voltages and Europe vs USA (Kee Hinckley)
+  I know why Ham Radio Operators die so often!!! (silly) (Eric Townsend)
+
+    [Sorry -- especially after my comment on the HEADLINE EDITOR -- for an
+    inadvertent duplication of Alan Wexelblat in RISKS-6.12 and 13.  PGN]
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+ > > > > > > > > > PLEASE LIST SUBJECT in SUBJECT: LINE. < < < < < < < < <
+  For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85).
+
+----------------------------------------------------------------------
+
+Date: 25 Jan 88 07:50:00 PDT
+From: "CL351::ESTELL" <estell%cl351.decnet@nwc.arpa>
+Subject: Safe programming languages
+
+About a decade ago, Lawrence Flon gave us the following axiom:
+
+ "There never has been, nor will there ever be, any programming language
+  in which it is the least bit difficult to write bad code."
+
+------------------------------
+
+Date: 25 Jan 88 11:41:42 EST
+From: John Pershing <PERSHNG@ibm.com>
+Re:   THE NULL PROGRAM
+
+You can't even necessarily write the null program without encountering
+problems...
+
+There is an apocryphal story about the large number of attempts that were
+required in order to produce a "correct" version of MVS's null program,
+IEFBR14 (this was done back in the days when MVS was still called OS).
+As with all MVS programs, IEFBR14 is called using the standard system
+calling conventions, and all it has to do is return successfully.
+
+The first version was something like this:
+
+         IEFBR14 START
+                 BR    14       Return addr in R14 -- branch at it
+                 END
+
+First bug:  A program indicates its successful completion by zeroing
+register 15 before returning; this version of the null program "failed"
+every time.  Try it again:
+
+         IEFBR14 START
+                 SR    15,15    Zero out register 15
+                 BR    14       Return addr in R14 -- branch at it
+                 END
+
+Much better.  However, this caused some-or-other problems with the linkage
+editor, since the END statement didn't specify the primary entry point
+of the routine.  Version three:
+
+         IEFBR14 START
+                 SR    15,15    Zero out register 15
+                 BR    14       Return addr in R14 -- branch at it
+                 END   IEFBR14
+
+At least now, the null program was functionally correct.  However, dump
+analysis was impeded because the program didn't include its own name in
+the source code, as an "eyecatcher" (this is a time-honored convention).
+Null program, mark four:
+
+         IEFBR14 START
+                 USING IEFBR14,15  Establish addressability
+                 BR    GO          Skip over our name
+                 DC    AL1(L'ID)   Length of name
+         ID      DC    C'IEFBR14'  Name itself
+                 DS    0H          Force alignment
+         GO      SR    15,15       Zero out register 15
+                 BR    14          Return addr in R14 -- branch at it
+                 END   IEFBR14
+
+The next change had something esoteric to do with save-area chaining
+conventions -- again, for the sake of conventions and to keep the dump
+analysis tools happy.
+
+Note that the "null program" has tripled in size:  both in terms of the
+number of source statements and in terms of the number of instructions
+executed!
+                                     -jp
+
+------------------------------
+
+Date:       Mon, 25 Jan 88 11:47 GMT
+From:       Paul Smee <Smee@AUCC.AC.UK>
+Subject:    More about the technology transfer policy
+
+Perhaps one of the lesser-known 'features' of the US technology transfer policy
+is the fact that the US government applies it internationally.  For example:
+
+If a British firm manufactures, say, a PC-XT clone, even using 100% British
+components (not likely, I'd admit, but for the sake of argument), and then
+sells it to one of the proscribed countries, the British manufacturer is deemed
+to have violated the US law.  This despite the fact that no British law may
+have been broken.  The manufacturer is now liable to be arrested and prosecuted
+if he ever visits the US in the future.  Further, in some cases, the US
+government will put pressure on the British government which leads the British
+government to 'blackball' the manufacturer.  Several small UK companies have
+been driven under in just this way.  Now, according to last week's news
+reports, the US is trying to convince the British government to extend the
+extradition treaties so that these people could be extradited to the US for
+prosecution.
+
+The record of the British government in protecting its nationals in this sort
+of case is appalling; typically, they will even refuse to assist in preparation
+of an appeal against the US trade restriction.  So, I see every reason to fear
+that they will give in to this latest idea.  And remember, the British
+nationals involved can end up in this situation without doing anything illegal
+under British law.  The attitude of the British government appears to be summed
+up as 'well, the Americans are our friends, and we wouldn't want to offend
+them'.  (Of course, we've got a different outlook on it when the other guys
+impose such conditions on their 'friends'.)
+
+There are other side effects of this US legislation.  The University of London
+had a great deal of trouble getting their second Cray (despite the fact that
+they had one).  The Cray was already in-country; they were buying it pre-owned
+from one of the national laboratories.  The problem?  The US Department of
+Commerce wanted them to sign a statement guaranteeing that only UK and US
+national students and staff would be allowed to use it.  (I'm not sure what
+conclusion was finally reached, but they did eventually get the machine.)  More
+recently, DEC pulled out of negotiations for selling a mainframe to one of the
+Scottish Universities, for similar reasons.
+
+Can this be sensible, I ask myself.  Just for clarification, let me add that I
+am a US citizen, though resident over here.  I think (and hope) that I (still)
+have the right to argue against what I see as misguided policies of my
+country's government.
+
+The risk?  Well, as I see it, a very great risk that in defending us against
+the enemy, the government will become as great an oppressor of freedom as (they
+say) the other guys are.
+
+Paul Smee, Senior Systems Programmer, University of Bristol
+Smee at UK.AC.AUCC via UKACRL.BITNET
+     at AUCC.AC.UC  iff you can find an ARPA host doing domain addressing,
+                    and which does not route thru UCL
+ pes!bath63!ukc!mcvax!...  on USENET (if you're lucky)
+
+------------------------------
+
+Date: Sun, 17 Jan 88 18:53:39 PST
+From: John Bruner <jdb@mordor.s1.gov>
+Subject: A second Sun clock error: no sanity checking
+
+The recent incident with the Sun leap-year clock problem illustrates
+a RISK which noone has mentioned yet: software which blindly trusts
+hardware without performing sanity checks on the data received therefrom.
+
+There were two coding errors in the Sun clock code.  The first was the
+use of a side effect in a macro argument, which caused the hardware
+time of day register (TODR) to be loaded with garbage.  The second error
+was the use of the contents of the TODR without any range checking.
+
+Classically, the time in UNIX has been maintained by software in
+response to interrupts from an interrupt source (line clock or
+programmable timer).  This is true on the Sun as well, except that
+every 30 seconds the Sun kernel also compares the software-maintained
+time to the contents of the hardware TODR.  If the two values differ,
+provisions are made to synchronize the software-maintained time to the
+hardware TODR.  The apparent assumption here is that the TODR will be
+more accurate, and usually that assumption is justified.
+
+The system call "settimeofday" changes both the software-maintained time and
+the TODR.  When the unfortunate leap-year bug manifested itself,
+"settimeofday" correctly changed the software-maintained time but trashed
+the TODR.  Within 30 seconds the kernel detected that the two values were
+different and starting trying to "correct" the software-maintained time to
+match the garbage in the TODR.  A simple range check applied to the
+difference between these two values could have detected that the TODR was
+trashed and suppressed this "feature."
+
+  John Bruner (S-1 Project, Lawrence Livermore National Laboratory)
+  jdb@mordor.s1.gov					(415) 423-4848
+
+------------------------------
+
+Date: Mon, 25 Jan 88 14:57:38 CST
+From: Paul Fuqua <pf%ti-csl.csc.ti.com@RELAY.CS.NET>
+Subject: "Things That Go 'Beep'"
+
+     To add another element to the discussion about risks related to normal
+house wiring, the Dallas Morning News on Jan 24 printed an article about an
+electric-company experiment in remote meter reading.
+     Their system broadcasts a "coded electrical signal" at 12500 Hz on top
+of the normal 60 Hz power to 5000 customers in the test area.  About 1000
+participants have a special meter that responds to the signal by reporting
+usage or, if so equipped, by turning off major appliances like air
+conditioners, water heaters, or furnaces.
+     The article contains all sorts of glowing comments from the utility
+about cost savings and other uses for the equipment (fire alarms, for
+example).  The focus of the article, though, is on one family that, although
+not participating in the experiment, can *hear* the signal as an intermittent
+one-second beep, and it's driving them crazy.
+
+     RISKS relevance:  First, it's a computerised system, and we all know
+what hazards there are -- I, for one, don't want my heating and cooling
+subject to the utility's direct orders.
+     Second, around 0.5% of customers in test areas around the country have
+complained about the noises.  Westinghouse (the manufacturer) is considering
+increasing the signal frequency to 19000 Hz.  Will it then annoy dogs or
+hamsters?
+     In closing, a quote from the article:
+
+Despite assurances that the signals won't harm electronic equipment, he [John
+Feagins, a member of the affected family and a college physics student at UT]
+said he wants the signal removed to protect his computer.
+
+"To me, that's like putting something in the water," Feagins said.  "I want
+pure, clean electricity for all my electronic equipment."
+                                                                pf
+
+Paul Fuqua, Texas Instruments Computer Science Center, Dallas, Texas
+CSNet:  pf@csc.ti.com or pf@ti-csl
+UUCP:   {smu, texsun, im4u, rice}!ti-csl!pf
+
+------------------------------
+
+From: Kee Hinckley <apollo!nazgul@EDDIE.MIT.EDU>
+Date: Tue, 12 Jan 88 19:02:46 EST
+Subject: High-voltages and Europe vs USA
+
+The European argument is clearly out, not only are most European currents not
+DC, most of them are running more than 110.  However I have heard concerns
+about this recently but I don't remember where.  In fact one of the issues
+I've read about concerns electric blankets.  The article claimed that there
+were statistically significant increases in the number of miscarriages from
+women who slept under electric blankets.  On the level of risk from standard
+household current there's an obvious testing problem.  Namely it's probably
+impossible to find any place where there isn't any current interference and
+yet all other factors remain equal.  Obviously if you live in a house without
+electricity there are bound to be other factors effecting your health.  It
+seems to me that you'd have to do a very long blind study involving new
+houses, some built with heavy shielding, some without.
+                                                              Kee Hinckley
+
+### {mit-erl,yale,uw-beaver}!apollo!nazgul ###   (Apple ][e ProLine BBS)    ###
+###      apollo!nazgul@eddie.mit.edu       ###    nazgul@pro-angmar.uucp    ###
+###           nazgul@apollo.uucp           ### (617) 641-3722 300/1200/2400 ###
+
+------------------------------
+
+From: flatline!erict@uunet.UU.NET (eric townsend)
+Subject: I know why Ham Radio Operators die so often!!! (silly)
+Date: 11 Jan 88 02:30:55 GMT
+Organization: flatline in Houston(Montrose, really), Tx.
+
+It has nothing to do with non-ionizing radiation or with building their
+own equipment and the things they get exposed to.
+
+It's very, very simple:  Have you ever watched what a Ham Op *eats*????
+Yech. :-) :-)
+
+J. Eric Townsend ->uunet!nuchat!flatline!erict smail:511Parker#2,Hstn,Tx,77007
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

@@ -1,0 +1,566 @@
+precedence: bulk
+Subject: RISKS DIGEST 19.49
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 9 December 1997  Volume 19 : Issue 49
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+What really happened on Mars Rover Pathfinder (Mike Jones)
+Potential software nightmare for International Space Station (Philip N. Gross)
+Mail from Microsoft Network Rejected by America Online (Edupage)
+Beware of HTML Mail (Tom Brazil, Navindra Umanee)
+Microsoft, CNET, BUGTRAQ and the 'land' attack (Geoffrey King)
+The ATM Debit Card Switcheroo (Lauren Weinstein)
+Reminder on Privacy Digests (PGN)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Sunday, December 07, 1997 6:47 PM
+From: Mike Jones <mbj@MICROSOFT.com>
+Subject: What really happened on Mars Rover Pathfinder
+
+The Mars Pathfinder mission was widely proclaimed as "flawless" in the early
+days after its July 4th, 1997 landing on the Martian surface.  Successes
+included its unconventional "landing" -- bouncing onto the Martian surface
+surrounded by airbags, deploying the Sojourner rover, and gathering and
+transmitting voluminous data back to Earth, including the panoramic pictures
+that were such a hit on the Web.  But a few days into the mission, not long
+after Pathfinder started gathering meteorological data, the spacecraft began
+experiencing total system resets, each resulting in losses of data.  The
+press reported these failures in terms such as "software glitches" and "the
+computer was trying to do too many things at once".
+
+This week at the IEEE Real-Time Systems Symposium I heard a fascinating
+keynote address by David Wilner, Chief Technical Officer of Wind River
+Systems.  Wind River makes VxWorks, the real-time embedded systems kernel
+that was used in the Mars Pathfinder mission.  In his talk, he explained in
+detail the actual software problems that caused the total system resets of
+the Pathfinder spacecraft, how they were diagnosed, and how they were
+solved.  I wanted to share his story with each of you.
+
+VxWorks provides preemptive priority scheduling of threads.  Tasks on the
+Pathfinder spacecraft were executed as threads with priorities that were
+assigned in the usual manner reflecting the relative urgency of these tasks.
+
+Pathfinder contained an "information bus", which you can think of as a
+shared memory area used for passing information between different components
+of the spacecraft.  A bus management task ran frequently with high priority
+to move certain kinds of data in and out of the information bus.  Access to
+the bus was synchronized with mutual exclusion locks (mutexes).
+
+The meteorological data gathering task ran as an infrequent, low priority
+thread, and used the information bus to publish its data.  When publishing
+its data, it would acquire a mutex, do writes to the bus, and release the
+mutex.  If an interrupt caused the information bus thread to be scheduled
+while this mutex was held, and if the information bus thread then attempted
+to acquire this same mutex in order to retrieve published data, this would
+cause it to block on the mutex, waiting until the meteorological thread
+released the mutex before it could continue.  The spacecraft also contained
+a communications task that ran with medium priority.
+
+Most of the time this combination worked fine.  However, very infrequently
+it was possible for an interrupt to occur that caused the (medium priority)
+communications task to be scheduled during the short interval while the
+(high priority) information bus thread was blocked waiting for the (low
+priority) meteorological data thread.  In this case, the long-running
+communications task, having higher priority than the meteorological task,
+would prevent it from running, consequently preventing the blocked
+information bus task from running.  After some time had passed, a watchdog
+timer would go off, notice that the data bus task had not been executed for
+some time, conclude that something had gone drastically wrong, and initiate
+a total system reset.
+
+This scenario is a classic case of priority inversion.
+
+HOW WAS THIS DEBUGGED?
+
+VxWorks can be run in a mode where it records a total trace of all
+interesting system events, including context switches, uses of
+synchronization objects, and interrupts.  After the failure, JPL engineers
+spent hours and hours running the system on the exact spacecraft replica in
+their lab with tracing turned on, attempting to replicate the precise
+conditions under which they believed that the reset occurred.  Early in the
+morning, after all but one engineer had gone home, the engineer finally
+reproduced a system reset on the replica.  Analysis of the trace revealed
+the priority inversion.
+
+HOW WAS THE PROBLEM CORRECTED?
+
+When created, a VxWorks mutex object accepts a boolean parameter that
+indicates whether priority inheritance should be performed by the mutex.
+The mutex in question had been initialized with the parameter off; had it
+been on, the low-priority meteorological thread would have inherited the
+priority of the high-priority data bus thread blocked on it while it held
+the mutex, causing it be scheduled with higher priority than the
+medium-priority communications task, thus preventing the priority inversion.
+Once diagnosed, it was clear to the JPL engineers that using priority
+inheritance would prevent the resets they were seeing.
+
+VxWorks contains a C language interpreter intended to allow developers to
+type in C expressions and functions to be executed on the fly during system
+debugging.  The JPL engineers fortuitously decided to launch the spacecraft
+with this feature still enabled.  By coding convention, the initialization
+parameter for the mutex in question (and those for two others which could
+have caused the same problem) were stored in global variables, whose
+addresses were in symbol tables also included in the launch software, and
+available to the C interpreter.  A short C program was uploaded to the
+spacecraft, which when interpreted, changed the values of these variables
+from FALSE to TRUE.  No more system resets occurred.
+
+ANALYSIS AND LESSONS
+
+First and foremost, diagnosing this problem as a black box would have been
+impossible.  Only detailed traces of actual system behavior enabled the
+faulty execution sequence to be captured and identified.
+
+Secondly, leaving the "debugging" facilities in the system saved the day.
+Without the ability to modify the system in the field, the problem could not
+have been corrected.
+
+Finally, the engineer's initial analysis that "the data bus task executes
+very frequently and is time-critical -- we shouldn't spend the extra time in
+it to perform priority inheritance" was exactly wrong.  It is precisely in
+such time critical and important situations where correctness is essential,
+even at some additional performance cost.
+
+HUMAN NATURE, DEADLINE PRESSURES
+
+David told us that the JPL engineers later confessed that one or two system
+resets had occurred in their months of pre-flight testing.  They had never
+been reproducible or explainable, and so the engineers, in a very
+human-nature response of denial, decided that they probably weren't
+important, using the rationale "it was probably caused by a hardware
+glitch".
+
+Part of it too was the engineers' focus.  They were extremely focused on
+ensuring the quality and flawless operation of the landing software.  Should
+it have failed, the mission would have been lost.  It is entirely
+understandable for the engineers to discount occasional glitches in the
+less-critical land-mission software, particularly given that a spacecraft
+reset was a viable recovery strategy at that phase of the mission.
+
+THE IMPORTANCE OF GOOD THEORY/ALGORITHMS
+
+David also said that some of the real heroes of the situation were some
+people from CMU who had published a paper he'd heard presented many years
+ago who first identified the priority inversion problem and proposed the
+solution.  He apologized for not remembering the precise details of the
+paper or who wrote it.  Bringing things full circle, it turns out that the
+three authors of this result were all in the room, and at the end of the
+talk were encouraged by the program chair to stand and be acknowledged.
+They were Lui Sha, John Lehoczky, and Raj Rajkumar.  When was the last time
+you saw a room of people cheer a group of computer science theorists for
+their significant practical contribution to advancing human knowledge? :-)
+It was quite a moment.
+
+POSTLUDE
+
+For the record, the paper was:
+
+L. Sha, R. Rajkumar, and J. P. Lehoczky. Priority Inheritance Protocols: An
+Approach to Real-Time Synchronization. In IEEE Transactions on Computers,
+vol. 39, pp. 1175-1185, Sep. 1990.
+
+------------------------------
+
+Date: Tue, 9 Dec 1997 22:25:43 +0100
+From: "Philip N. Gross" <philg@bart.nl>
+Subject: Potential software nightmare for International Space Station
+
+After reading the 8 Dec 1997 *Aviation Week and Space Technology* cover
+story <http://www.aviationweek.com/aviation/avi_stor.htm>, I have grave
+doubts about the software stability of the enormously complex International
+Space Station.  A few months of testing in a simulated environment and up
+goes 3.5 million lines of code, developed by independent teams dispersed
+worldwide.  The low-tech Mir with its straightforward computer failures may
+one day be day be remembered nostalgically.  [PGN Excerpting:]
+
+  The initial power-on testing of the U.S. Laboratory Module began at
+  Marshall in early November 1997 and is planned to last into early 1998.
+  Although the Lab Module is not to be launched until the fifth shuttle
+  assembly flight, set for May 1999, it has the potential of affecting ISS
+  launch scheduling much earlier because the Lab will be the electronic hub
+  of the station and its software must be tested at Kennedy in connection
+  with the two assembly flight payloads that precede it.  This critical
+  Multiple Element Integrated Test (MEIT), set between September-December
+  1998, will link the ISS software and hardware for shuttle assembly flights
+  3A, 4A and 5A, requiring that software be developed well in advance of
+  these tests.  The MEIT requirements, combined with training requirements
+  for the first ISS crew, are creating a "huge tidal wave of software" [...]
+
+* The hardware to be linked includes the Z-1 truss carrying electrical and
+  fluid systems; the massive U.S. Photovoltaic Module power system, and
+  simulated Node-1 avionics.
+
+* There are at least 3.5 million lines of code from multiple U.S., Russian,
+  European, Canadian and Japanese contractors, ``the most diverse software
+  of any aerospace program ever conceived.'' 
+
+* ``Everything is interrelated.  One thing affects the other and we have
+  some very complex integrated schedules.  Software clearly has the
+  potential for delaying the launch of the Laboratory Module and subsequent
+  flights.''
+
+------------------------------
+
+Date: Tue, 2 Dec 1997 11:23:58 -0500
+From: Edupage Editors <educom@educom.unc.edu>
+Subject: Mail from Microsoft Network Rejected by America Online 
+
+Mail sent to AOL users by MSN members using the latest version of the
+service (version 2.5) is being rejected by AOL for undetermined technical
+reasons.  Each company is convinced that the problem is at the other end,
+and both claim to be anxious to resolve the problem.  (News.Com 1 Dec 1997;
+Edupage, 2 Dec 1997)
+
+------------------------------
+
+Date: 28 Nov 1997 03:21:42 GMT
+From: "braz" <braz@mnw.net>
+Subject: Beware of HTML Mail
+
+I received a spam mail today that was rather sinister.  Many spams that I
+receive request that you click on the hyperlink to go to their site.  This
+one, however, was much different.  I am running IE4.0, and I simply
+highlighted the new message in my mailbox, and clicked on the subject to
+read it.  It immediately downloaded and initialized a java applet that took
+control of my browser, opened a session to their site as I sat in amazement.
+I then quickly (out of fear) stopped the connection to that site, went back
+to the mail message and viewed the source to see what was in it. Here is the
+first few lines of the mail - I numbered the lines so they won't be
+interpreted as HTML/E-mail here:
+
+1. <html>
+2. <head>
+3. <title>webtour</title>
+4. </head>
+5. <body>
+6. <applet
+ 7.    code=sitewalk.class
+ 8.    codebase=http://www.netinstrument.com/applet
+ 9.    name=sitewalk
+10.    width=2
+ 11.   height=2 >
+12. <param name="page1" value="jpg, , 300, 200, 4000, ,
+start-http://www.netinstrument.com/email2.htm, -, -, -, -, -, -, -, -, -, ">
+(line 12 repeated for various links at their site)
+
+I never really cared much about the spam I received, because it was really
+non-intrusive for the most part. This, however, was scary. It took control
+of my IE4 Browser, and forced me to their site. Who knows what the sites web
+pages do if you let it run its course.
+
+Net users, beware. The risks of simply receiving spam have just skyrocketed.
+Turn off auto-preview mode, and look at the *source* of the message prior to
+opening the mail item.  I never cared about this before, but I really feel
+violated in some weird electronic sense.
+
+Tom Brazil <braz@mnw.net>
+
+------------------------------
+
+Date: Sat, 29 Nov 1997 22:56:20 -0500
+From: Navindra Umanee <navindra@cs.mcgill.ca>
+Subject: Beware of HTML Mail
+
+I had a little chuckle when I first read Tom Brazil's little "incident"
+with HTML mail and Microsoft software.  Surely, such a silly thing could
+not possibly happen to *me* on my relatively secure Linux system.
+
+Unfortunately, the exact same thing *did* happen to me and it was quite a
+sobering experience. Like Tom, I killed Communicator and investigated the
+matter.
+
+My Mail User Agent on Linux is Mutt 0.76 but the *real* culprit was a neat
+little entry in my ~/.mailcap,
+
+text/html; netscape -remote 'openURL(%s)'
+
+This was triggered by my MUA on finding "Content-type: text/html" in the
+headers of the spam mail.
+
+Fortunately, the solution in Linux is simple: Remove all such dangerous
+entries from ~/.mailcap and /etc/mailcap (the latter, incidentally, is
+maintained automatically by my Debian GNU/Linux system and had the
+text-browser lynx as the entry for content-type text/html).
+
+The risk?  Feeling too secure and thinking that it could never happen to
+you...
+
+Navin
+
+---------------------------------------------------------------------
+
+Date: Sat, 6 Dec 1997 17:46:31 +1100
+From: Geoffrey King <geoff@austlii.edu.au>
+Subject: Microsoft, CNET, BUGTRAQ and the 'land' attack (Milunovic, R-19.48)
+
+I wish to point out the RISKS of relying on poorly researched media reports
+for information about security ...
+
+The previous issue of RISKS contained a report passed on from the CNET news
+service about the 'land' attack. The CNET report which appears at
+<http://www.news.com/News/Item/0%2C4%2C17009%2C00.html> carries a date of 4
+Dec 1997 at 5pm PST.
+
+For a start, the way in which the article was written indicates a general
+misunderstanding of the bug and the possible exploitation thereof.
+
+More seriously, the article also appears some 14 days after the first
+posting (including exploit code) of the 'land' vulnerability to the BUGTRAQ
+list. But todays "news" does coincide quite nicely with the announcement
+that Microsoft would release patches. And please also note that the
+statement of "Jason Grams, a product manager at Microsoft", that
+"[o]bviously, this isn't a Microsoft-only problem, it's a pretty big
+problem" is not entirely accurate. There are a number of operating systems
+which are not vulnerable to this attack, including current releases of
+Linux, Solaris, Irix, OS/2 and others ... other vendors, including CISCO,
+acted immediately to warn of and patch vulnerabilities in their products.
+
+Wired News published an excellent article as early as 21 Nov 1997.
+<http://www.wired.com/news/news/technology/story/8707.html>
+
+While I'm writing about this particular problem, I might also quote from a
+Microsoft executive asked recently about the possibility that the Internet
+Explorer 'res://' bug and the Pentium bug could be combined.
+
+    "It's not as simple as sitting down at an IE4 machine. We've
+    tried it on several [machines] and we get a crash but that's
+    it, which is certainly not a security hole," he said.
+
+    <http://www.wired.com/news/news/technology/story/8429.html>
+
+Is that really acceptable coming from a major OS vendor?
+
+A demonstration of the exploitation of the 'res://' Internet Explorer bug in
+combination with the recently discussed Pentium bug is available at
+<http://www.ee.surrey.ac.uk/Personal/L.Wood/IE4res/> [WARNING: this
+demonstration may crash your machine].
+
+And here's a quote from a Microsoft technical note about security risks in
+Windows95 file and print sharing:
+
+    "The SMBCLIENT Samba network client allows users to send illegal
+    networking commands over the network. At this time, the Samba
+    client is the only known SMBCLIENT that does not filter out such
+    illegal commands. SMBCLIENT users do not automatically gain access
+    to the Windows 95 drive; these users must know the exact steps to
+    send these illegal commands."
+
+    <http://premium.microsoft.com/support/kb/articles/q128/0/79.asp>
+
+    Glossary: Samba <http://samba.anu.edu.au/> is an implementation of
+              the SMB protocols to allow UNIX servers to be used in a
+              Microsoft environment, as both servers and clients.
+
+Does anybody here want to volunteer for a trip to Seattle to explain to the
+Microsoft 'engineers' that client-server security mechanisms probably
+shouldn't rely on the good behaviour of the clients ??
+
+It looks to me like it might be time to encourage a little more genetic
+diversity in operating systems ... let's not build the world around this sort
+of nonsense ...
+
+Hmmm ... and does anybody here still think todays "news" is news ??
+
+Geoffrey King <www.homosapiens.org>, Australasian Legal Information Institutea
+Faculty of Law, University of Technology, Sydney  +61(2) 9514 3176
+
+------------------------------
+
+Date: Thu, 20 Nov 97 21:44 PST
+From: privacy@vortex.com (PRIVACY Forum)
+Subject: The ATM Debit Card Switcheroo
+
+Reprinted from PRIVACY Forum Digest V06 #16 with permission
+
+PRIVACY Forum Digest      Thursday, 20 November 1997      Volume 06 : Issue 16
+
+            Moderated by Lauren Weinstein (lauren@vortex.com)         
+              Vortex Technology, Woodland Hills, CA, U.S.A.
+	                 http://www.vortex.com 
+
+Date:    Thu, 20 Nov 97 19:46 PST
+>From:    lauren@vortex.com (Lauren Weinstein; PRIVACY Forum Moderator)
+Subject: The ATM Debit Card Switcheroo
+
+Greetings.  Longtime readers of this digest know that I have rather mixed
+feelings about massive Wells Fargo Bank when it comes to security and
+privacy issues.  When they were among the first to institute user-selected
+passcodes to control telephone access to accounts, I publicly applauded.  On
+the other hand, I've condemned their moves to terminate neighborhood bank
+branches in favor of noisy, crowded, and privacy-unfriendly 
+"supermarket branches".  So it's been a mixed bag.
+
+Unfortunately, that bag just got substantially more moldy.  Wells is
+in the process at this time of the unsolicited replacing of apparently
+millions of current ATM cards with what they call "ATM and Check Cards".
+What these really are is combined ATM and *debit* cards (apparently
+Wells doesn't like using the word "debit"--it doesn't appear
+anywhere in the literature that accompanies the cards).
+
+These cards, which are branded with the MC credit card logo, replace
+customers' current ATM cards, which customers are informed will "expire
+shortly".  Customers need to call a toll-free number from their home phone
+(obviously for ANI phone number verification--which essentially is a
+non-blockable caller-ID) to activate their new cards.  Also buried in the
+pile of material accompanying the card, is a number to call if for some
+reason the customer would prefer to keep using their old non-debit ATM card
+instead.  (This second number is actually just the normal Wells toll-free
+customer service number--you need to work your way to an operator to
+"cancel" the new card.)
+
+Wells Fargo customers (and customers of other banks) might well want to
+consider refusing these sorts of debit cards--or making sure you never use
+them except in an ATM.  While the card seems to add convenience at first
+glance, in reality it is a big step *backwards* toward PIN-less access by
+others to your money, with a range of potential problems--it could actually
+be more dangerous than a conventional credit card!
+
+A debit card of the kind Wells is distributing is used like a credit card.
+Anywhere a MC would be accepted, the new card can be used.  The banks
+promote this as a major value of the card (along with some credit-card like
+"purchase protection" programs).  But just like with a real credit card, no
+PIN is needed for purchases, only a signature.  And not even the signature
+is required for telephone purchases, again, just like a conventional credit
+card.
+
+But unlike credit cards, the debit card doesn't result in a bill mailed to
+you later, rather, it draws money immediately from your checking account.
+Banks love this--it's like instant money with no float (the merchant pays
+the same percentage for accepting the debit card as he or she would for a
+normal credit card purchase).  But with a "real" credit card, you have a
+chance to go over your bill and search for erroneous purchases *before*
+paying.  Sure, it's a hassle if someone uses your credit card number for
+unauthorized purchases, but a debit card usable without a PIN opens up a
+whole new dimension.
+
+The problem of course is that since the debit card draws immediately from
+your checking account, without the protection of a PIN, anyone who has ever
+seen your debit card, and has the number and expiration date, could use it
+for purchases which will immediately draw down your checking account.  When
+you get your monthly checking statement, these purchases will be
+itemized--but the money has *already* long since been pulled from your
+checking account by the time you get the statement.  Folks who check their
+account status online every day will be in better shape, but most people
+don't do this and shouldn't need to.  
+
+Having your checking account suddenly go dropping down toward zero has an
+important side-effect.  The legitimate checks you've written can start
+merrily bouncing, unless you're fortunate enough to have plenty of money in
+an associated "overdraft" account of some sort.
+
+Wells suggests that there are protections built into their debit card
+system.  You're not responsible for purchases made by unauthorized parties
+if you notify Wells what's going on.  That's well and good, but hardly
+compensates for the hassle of bounced checks with potentially numerous
+entities that can result from misuse of your debit card numbers.  Wells also
+points out that there is a daily limit on debit card activity.  This is
+true, but as far as I can tell that limit has no obvious relationship to the
+amount of money in the checking account.  In cases I've seen myself, the
+assigned daily limit was up to 10 times the average account balance!
+
+PIN-less access of this sort to checking accounts is full of problems.  The
+account can be accessed without a physical check, without a PIN, and without
+your immediate knowledge.  For anyone who has "real" credit cards, ones
+which bill and are paid conventionally, there seems to be little benefit (for
+the customer!) to a debit card of this sort, at least compared with the
+negatives and potential hassles that could result.  Even persons without
+real credit cards might wish to think long and hard about the wisdom of
+using a card that could so easily result in their checking account being
+drained and their checks being bounced.
+
+The irony of all this is that at a time when what we really need is some
+form of PIN protection on conventional credit cards, the introduction
+(especially unsolicited) of a PIN-less financial instrument of this sort
+can only be viewed as a very bad idea.  The losses that are certain
+to accrue will no doubt be handled like the untold millions in credit
+card losses each year, via higher costs and bank fees for merchants and
+other customers alike.
+
+Lauren Weinstein, Moderator, PRIVACY Forum  http://www.vortex.com
+
+  [I called and cancelled mine immediately upon receipt.  
+  no point playing "PIN, the tale on the don('t)key.~  PGN]
+
+------------------------------
+
+Date: 17 Apr 1997
+From: RISKS moderator
+Subject: Reminder on Privacy Digests
+ 
+Periodically I remind you of TWO useful digests related to privacy, both of
+which are siphoning off some of the material that would otherwise appear in
+RISKS, but which should be read by those of you vitally interested in
+privacy problems.  RISKS will continue to carry general discussions in which
+risks to privacy are a concern.
+
+* The PRIVACY Forum is run by Lauren Weinstein.  It includes a digest (which
+  he moderates quite selectively), archive, and other features, such as
+  PRIVACY Forum Radio interviews.  It is somewhat akin to RISKS; it spans
+  the full range of both technological and nontechnological privacy-related
+  issues (with an emphasis on the former).  For information regarding the
+  PRIVACY Forum, please send the exact line:
+     information privacy
+  as the BODY of a message to "privacy-request@vortex.com"; you will receive
+  a response from an automated listserv system.  To submit contributions,
+  send to "privacy@vortex.com". 
+
+  PRIVACY Forum materials, including archive access/searching, additional
+  information, and all other facets, are available on the Web via:
+     http://www.vortex.com
+
+* The Computer PRIVACY Digest (CPD) (formerly the Telecom Privacy digest) is
+  run by Leonard P. Levine.  It is gatewayed to the USENET newsgroup
+  comp.society.privacy.  It is a relatively open (i.e., less tightly moderated)
+  forum, and was established to provide a forum for discussion on the
+  effect of technology on privacy.  All too often technology is way ahead of
+  the law and society as it presents us with new devices and applications.
+  Technology can enhance and detract from privacy.  Submissions should go to
+  comp-privacy@uwm.edu and administrative requests to
+  comp-privacy-request@uwm.edu.
+
+There is clearly much potential for overlap between the two digests,
+although contributions tend not to appear in both places.  If you are very
+short of time and can scan only one, you might want to try the former.  If
+you are interested in ongoing discussions, try the latter.  Otherwise, it
+may well be appropriate for you to read both, depending on the strength of
+your interests and time available.
+                                                  PGN
+
+------------------------------
+
+Date: 1 Apr 1997 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 18" for volume 18]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 19.49 
+************************

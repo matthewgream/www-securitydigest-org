@@ -1,0 +1,689 @@
+VIRUS-L Digest   Monday, 23 Sep 1991    Volume 4 : Issue 171
+
+Today's Topics:
+
+re: WARNING: Compuserve Virus Forum (PC)
+Re: F-prot, Clean, Joshi and DOS 2.0 (PC)
+re: Multiple Boot Sector Infections (PC)
+Various
+Re: Mutant viruses (PC)
+Re: Mutant viruses (PC)
+Re: Norton Anti-Virus 1.5 (PC)
+Perfect detectors
+Stoned Virus questions (PC)
+Re: Belch_Virus? (Mac)
+Re: FAT infection (PC)
+Re: Can a virus be LAGAL?! (PC)
+Comment
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 23 Sep 91 12:35:02 -0700
+>From:    karyn@cheetah.llnl.gov (Karyn Pichnarczyk)
+Subject: re: WARNING: Compuserve Virus Forum (PC)
+
+I've found out a few more things about the virus found on the
+Compuserve Virus Forum.
+
+It's known as: Taiwan 4 or Anticad, and some detectors call it a
+Jerusalem variant, or a Plastique variant.  This virus's trigger is
+when a program named "ACAD.EXE" (a popular CAD program) is executed,
+at which time this virus goes into action and the file ACAD.EXE gets
+overwritten and deleted. This virus is almost identical to the
+Plastique 2576 (aka Anticad 2576) virus, except that it's a little
+longer due to different verbage appearing when the virus activates.
+
+Karyn Pichnarczyk
+CIAC
+karyn@cheetah.llnl.gov
+510-422-1779
+
+------------------------------
+
+Date:    Fri, 20 Sep 91 19:49:32 +0300
+>From:    grdo@botik.yaroslavl.su (Gryaznov Dmitry O.)
+Subject: Re: F-prot, Clean, Joshi and DOS 2.0 (PC)
+
+George Svetlichny <USERGSVE@LNCC.BITNET> writes:
+
+>Last week I was asked to disinfect a 5 1/4 in. - 360K bootable floppy
+>with Print Shop installed and infected with Joshi. I was told that the
+>user had tried to remove the virus but was unable to do so. I started
+>with Fridrik's F2 (Part of FPROT 2.00) as in the past I've had the
+>most sucess with F-prot in removing Joshi. The program identified the
+>infection and reported removal, yet a repeated scan again reported the
+>presence of the virus. The disk would not boot, though I don't know if
+>it would have booted before I ran F2 on it as I didn't try to. Passing
+>on to McAfee's SCAN and CLEAN I had the same experience, the CLEAN
+>programm reporting removal, and a subsequent scan reporting continued
+>presence. Examining the boot sector I noticed that it was formated
+>with DOS 2.0, and the system files were DOS 2.0 also. Luckily enough I
+>
+>  ....
+>
+>old DOS version.  Could F2 and CLEAN have some problem with DOS 2.0?.
+>As there are probably still a lot of bootable floppies with old DOS
+>versions in action, such a situation would be at best an
+>inconvenience.
+
+It could be just a multiple infection with two slightly different
+versions of JOSHI virus. JOSHI virus hides an original BOOT sector and
+the rest of itself to the fixed location (on floppy it formats an
+additional track, on hard disk uses sectors starting with head 0, cyl.
+0, sec. 2). It checks whether the disk is already infected by
+comparing BOOT code with its own BOOT code. Suppose a disk was
+infected with one version of JOSHI (let's call it JOSHI-A). Then BOOT
+sector has been hidden to fixed location and JOSHI-A's BOOT is written
+to BOOT sector. Now suppose this disk was accessed on a PC infected
+with a slightly different version of JOSHI - JOSHI-B. JOSHI-B will
+decide that disk is not infected since both versions are not equal
+byte-to-byte. JOSHI-B will then reinfect the disk, overwriting the
+original hidden BOOT with a copy of JOSHI-A.  So, original non-virus
+BOOT will be lost and where both of JOSHIs (and anti-virus programs as
+well!) expect it to be in fact resides JOSHI-A. Such a disk becomes
+not bootable - an infinite loop will take place. When JOSHI-B is
+removed by this or that anti-virus JOSHI-A is restored to BOOT sector.
+This is a deadlock - removing JOSHI-A from the BOOT an anti-virus will
+restore it back from where an original BOOT is supposed to be. If an
+anti-virus program repeat scanning and removing until no (known)
+viruses are found, then it can either trap to an infinite loop (I know
+such programs) or understand that this disk cannot be repaired since
+it meats the same virus twice (this applies only to viruses, hiding
+BOOT to a FIXED location).
+
+So I think this problem has nothing to do with a version of DOS.
+- --
+Sincerely,
+        Dmitry O. Gryaznov
+E-mail:  grdo@botik.yaroslavl.su or grdo1@node.ias.msk.su
+Phones: office: (08535)-2-1731, (08535)-2-0715 home:(08535)-2-1465
+
+------------------------------
+
+Date:    Fri, 20 Sep 91 20:43:55 -0500
+>From:    Otto Stolz <RZOTTO@DKNKURZ1.BITNET>
+Subject: re: Multiple Boot Sector Infections (PC)
+
+On Mon, 16 Sep 91 15:37:13 -0400 A. Padgett Peterson said:
+>From:    "Rich Travsky 3668 (307) 766-3663/3668" <RTRAVSKY@corral.uwyo.edu>
+...
+>>What is the relationship (if any) between what's found in memory versus
+>>what's in the boot sectors when dealing with multiple boot sector
+>>infectors?
+
+Thank you, Padget, for the lucid and thorough explanation you have
+given on account of this question. However, one particular point is
+not entirely clear to me. You wrote
+
+> ... On a floppy it is better to copy the disk (being careful not to
+> reboot) and reformat it.
+
+When dealing with a boot sector virus (or multiple boot sector virus
+infections), you can copy **the files** from the disk (being careful
+not to reboot) and then reformat the old one. In MS-DOS, you can use
+one of the commands COPY and XCOPY, or one of several file copying
+utilities. It goes without saying (but cannot be stressed too often)
+that you have to obey what I have dubbed "The Golden Rule of the Trade":
+you have to boot from a clean system disk before you start. It would
+also be a good idea to format the target disk after you have booted
+cleanly, as the disks around that infected computer tend to have been
+infected, as well (or is it "as badly"? :-)
+
+Now for my doubts: What will happen if you copy **the disk** (your
+wording) via the DISKCOPY command? Will it copy the infected boot
+sector, or will it leave it behind? What will happen to the fake "bad"
+sectors, many boot sector viruses exploit? I had not the time to test
+it, and if I tested it, it would only be for one or two DOS versions.
+The DOS user manual is vague in that respect (as usual).
+
+As long as this is not answered, I'd recommend to use XCOPY in cases
+like this.
+
+> Sleep well
+Same to you and to everybody (its a quarter past 9 pm, here and now)
+                                                   Otto
+
+------------------------------
+
+Date:    Fri, 20 Sep 91 16:23:00 -0600
+>From:    Steven Klepzig <SKLEPZI@SSB1.SAFF.UTAH.EDU>
+Subject: Various
+
+Hello,
+
+As an interested but fairly un educated virus watcher and network
+supervisor I would like to thank all the virus researchers for their
+work.  There have been few virus outbreaks here on the Univ. of Utah
+campus so far, mostly in MAC's (so there).
+
+I've followed the topic of virus detection/disinfection/elimination
+software testing with interest.  I've been helping evaluate different
+virus software packages here but have been a little frustrated.  Ease
+of use, screen displays and all that are of interest but product
+functionality is more important.  The idea of a third party evaluation
+of the functions of the products is quite interesting.  I hope that
+something happens with that idea.
+
+A few messages back someone mentioned something about Novell servers
+using DOS interrupts.  In pre-386 versions of Netware DOS was
+replaced, interrupts and all, by Netware.  With the 386 versions DOS
+may be unloaded from the server after Netware is started with the
+SECURE CONSOLE command or from the RCONSOLE screen.  I don't know if
+that removes/replaces the DOS interrupts.  Since you can return to DOS
+after downing the server (assuming you didn't secure the console) I
+suspect it doesn't replace them.
+
+Thanks for your attention.
+
+- -- Steven
+========================================
+Steven R. Klepzig                      =
+University of Utah                     =
+135 Student Services Building          = Murphy's Law, v.1.7 "The time it
+Salt Lake City, Utah 84112             = takes to pinpoint a LAN problem is
+                                       = directly proportional to its
+Phone    -- 801-581-3437               = gravity."
+FAX      -- 801-585-3034               =
+InterNet -- sklepzi@ssb1.saff.utah.edu =
+========================================
+
+------------------------------
+
+Date:    Sat, 21 Sep 91 14:45:50 +0300
+>From:    grdo@botik.yaroslavl.su (Gryaznov Dmitry O.)
+Subject: Re: Mutant viruses (PC)
+
+Tapio Keih{nen <tapio@nic.funet.fi> writes:
+
+>>One mutant virus is STARSHIP - it contains encrypted string
+>>">STARSHIP_1<". It is both MBR and file infector. Uses 4th text video
+>>page - so it doesn't work on PCs with monochrome.  When an infected
+>>program is being executed the virus just infects BOOT and doesn't
+>>remain resident. It stays resident when an infected disk is booted.
+>>Infects .EXE and .COM files being copied to floppy.
+>
+>This way of infecting sounds quite similar as infection mechanism in
+>Tequila virus - maybe it is a modified variant of it?
+
+No, STARSHIP has nothing to do with TEQUILA. It uses quiet different
+algorithms.
+
+>>Another one is TEQUILA. Also MBR/file infector. Contains encrypted
+>
+>This one is known amongst the virus researchers. At least Scanv80+ and
+>F-Prot 2.00 detects it. If you have those scanners and they don't pick
+>this virus up, you probably have a new variant of it. If this is the
+>case, I suggest you send it to some well-known virus researchers. BTW,
+>the authors of Tequila are known to Swiss police and most likely
+>they've written the Flip virus too.
+
+There are several Soviet disinfectors (and my own one as well) which
+fight both of these viruses very well.
+
+- --
+Sincerely,
+     Dmitry O. Gryaznov                           | PSI AS USSR
+grdo@botik.yaroslavl.su or grdo1@node.ias.msk.su  | Pereslavl-Zalessky
+Phones: office: (08535)-2-0715 home:(08535)-2-1465| 152140 USSR
+
+------------------------------
+
+Date:    Sat, 21 Sep 91 15:26:53 +0300
+>From:    grdo@botik.yaroslavl.su (Gryaznov Dmitry O.)
+Subject: Re: Mutant viruses (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>> One mutant virus is STARSHIP - it contains encrypted string
+>> ...
+>
+>This one seems unknown... Could you provide an example to the VTC? It
+
+I can E-mail uuencoded PKZIP'ed infected program to you together
+with disassembled source. (I didn't participate in "Disassembler
+Info" discussion but I prefer DEBUG for myself.)
+
+>would be useful too to send a program that can identify most of the
+>Soviet viruses, so we could recognize them when (and if) they spread.
+>Is Lozinsky's program still the best one?
+
+AIDSTEST by Lozinsky is one of the best and, with no doubts, the most
+widespread. It is no longer free, though its price is just symbolic.
+Since there is still no law against software pirating in the USSR,
+almost all Soviet users have non-licensed copies of AIDSTEST. New
+versions of AIDSTEST are updated approximately twice in a month. The
+last - v152 - covers several hundreds of different viruses, including
+two or three dozens of Soviet beasties.
+
+Most of Soviet viruses are too poor written to be widespread.  It
+seems to be a common rule - if a virus is poor written it tends to
+cause a damage - delete files, destroy system areas on disks, format
+them etc. Such viruses are dangerous but queekly eliminated. And vice
+versa - if a virus is more or less well done then it usually wasn't
+designed to cause a damage. (Often it does due to a bugs or to a lack
+of author's knowledge). So, despite a large number of Soviet viruses,
+only a few of them are widespread in USSR.
+
+>> Another one is TEQUILA. Also MBR/file infector. Contains encrypted
+>
+>Oh, we know this one. It's really from Switzerland. It's mutating
+>technique is rather silly; far from the sophisticated tricks used by
+>V2P6... Is Tequla spread in the Soviet Union?
+
+I believe it is not spread, it's just known. I haven't heard of a
+single infection. There were several STARSHIP infections reported.
+- --
+Sincerely,
+     Dmitry O. Gryaznov                           | PSI AS USSR
+grdo@botik.yaroslavl.su or grdo1@node.ias.msk.su  | Pereslavl-Zalessky
+Phones: office: (08535)-2-0715 home:(08535)-2-1465| 152140 USSR
+
+------------------------------
+
+Date:    Sat, 21 Sep 91 15:49:16 +0300
+>From:    grdo@botik.yaroslavl.su (Gryaznov Dmitry O.)
+Subject: Re: Norton Anti-Virus 1.5 (PC)
+
+bob morales <7340P@NAVPGS.BITNET> writes:
+
+>      At the risk of sounding "virus illiterate" (of which I am trying
+>to emerge from), I have a question regarding my copy of NAV 1.5.
+>According to the programs Scan Options, I may set it to "Scan
+>Executable Files Only" (or words to that effect) which tells me that
+>virus programs can only be transferred via executable files only,
+>i.e., files ending in .COM, .EXE, or .SYS. My questions are: (1) is
+>this a safe bet? and (2) is my assumption correct?
+>      Help me get out of the dark ages. Show me the light!
+
+You see, executable files are not restricted only to having .COM, .EXE
+or .SYS extentions. These extentions are significant only for
+COMMAND.COM or other shell program. At the level of DOS executable
+files are loaded and executed according to their internal structure,
+no difference what name or extention they have. For example, many
+games execute .OVL or .OVR files, which are often not true overlays
+from the DOS's point of view but just a regular executable files.
+Picture Maker graph editor executes files having .PDR extention.  In
+fact, most (but not all) executables have .COM or .EXE extention.
+.SYS is usually applied for system data files (such as CONFIG.SYS or
+COUNTRY.SYS) or for system drivers which are loaded before COMMAND.COM
+via CONFIG.SYS.
+
+Most of resident viruses infect programs being executed, regardless on
+their extention. So, to check all possible infected files on a PC you
+must set your scanner's options to check all files, or files with
+certain extentions (to speed up the process) if you are sure that only
+files with these extentions are executed on your system.
+Nevertheless, for every day prophilctics it's usually enough to check
+.COM and .EXE files only - it'll save a lot of time - since if you
+have a virus it'll infect these files in any case. But when an
+infection is reported - spend some more time and check *ALL* the files
+on your PC.
+
+- --
+Sincerely,
+     Dmitry O. Gryaznov                           | PSI AS USSR
+grdo@botik.yaroslavl.su or grdo1@node.ias.msk.su  | Pereslavl-Zalessky
+Phones: office: (08535)-2-0715 home:(08535)-2-1465| 152140 USSR
+
+------------------------------
+
+Date:    22 Sep 91 16:59:49 +0000
+>From:    Ray.Mann@ofa123.fidonet.org (Ray Mann)
+Subject: Perfect detectors
+
+A posting by lunde@casbah.acns.nwu.edu (Albert Lunde) said:
+
+  "As prior threads have illustrated, a "perfect virus detector"
+  is in general impossible."
+
+     That's a reasonable corollary of the premise that 'software
+  cannot overcome software'..
+
+ " Virus scanners are not an elegant solution, but they are a
+   reasonable way of producing a "good enough" solution for
+   the current "state of the art" in virus writing and removal.
+   Short of a change in social norms that would drastically reduce
+   the rate of new virus production, there is no "light at the
+   end of the tunnel" for DOS or MAC OS users... "
+
+  However, there seems to be evidence that virus scanners are
+  not really diminishing the virus threat. Several people pointed
+  out that there's been a great =increase= in the total number of
+  infected machines, and in the number of infections per machine
+  since the scanners came out. Also, the total number of new viruses
+  has increased dramatically.
+
+  Are we seeing here a problem of social norms or another effect?
+
+  Social norms didn't change that much in a couple of years. The
+  most obvious variable seems to be the presence of antivirus
+  software.  It appears that viruses and antivirus utilities have
+  more or less encouraged one another in time.  What's especially
+  notable is that most known viruses started to appear  =after=
+  the initial appearance of scanners.
+
+     Anyone care to elaborate or make some comments on this?
+
+- --- Opus-CBCS 1.14
+ * Origin: Universal Electronics, Inc. [714 939-1041] (1:103/208.0)
+- --
+Ray Mann
+Internet: Ray.Mann@ofa123.fidonet.org
+Compuserve: >internet:Ray.Mann@ofa123.fidonet.org
+
+------------------------------
+
+Date:    23 Sep 91 11:18:38 -0400
+>From:    Larry Mateo <HSVLM@tjuvm.bitnet>
+Subject: Stoned Virus questions (PC)
+
+I have a couple of questions regarding the stoned virus that perhaps someone
+could answer:
+
+1. How does the virus infect a host system? That is, how does a PC's hard
+drive become infected?
+
+2. How is the virus then spread to floppy disks?
+
+Thank you.
+
+------------------------------
+
+Date:    Mon, 23 Sep 91 11:39:19 -0400
+>From:    Ed Maioriello <EMAIORIE@uga.cc.uga.edu>
+Subject: Re: Belch_Virus? (Mac)
+
+Shawn,
+
+Are you sure this is not the MacPuke init?  That sound similar.
+
+Ed Maioriello                                Bitnet:    EMAIORIE @ UGA
+University Computing & Networking Servs.     Internet:  emaiorie@uga.cc.uga.edu
+University of Georgia
+Athens, Ga. 30602                            (404)-542-5162
+                    Where are the Snowdens of yesteryear?
+
+------------------------------
+
+Date:    Mon, 23 Sep 91 12:29:43 +0300
+>From:    grdo@botik.yaroslavl.su (Gryaznov Dmitry O.)
+Subject: Re: FAT infection (PC)
+
+In VIRUS-L Digest Vol.4 Iss. 167 I wrote:
+
+>Such a virus shouldn't just save a copy of occupied FAT somewhere else
+>- - where? - this will cause the original problem of saving an original
+>BOOT. We decided virus would save it in FAT - and where to save the
+>FAT?  So a virus must show another, not occupied by it, copy of FAT
+>each time its FAT is required. (I hope our discussion will not serve
+
+And bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+suggested another method:
+
+>Now consider a boot sector virus, which overwrites the DOS boot sector
+>and places its second part, together with the original contents of the
+>disk over the first FAT copy. It the increases the number at offset
+>0Eh in the DPB (which indicates the number of reserved sectors before
+>the first FAT copy), so that it includes all the sectors which were
+>previously occupied by the first copy of the FAT (now part or all of
+>them are occupied by the virus). Then, the virus decreases the number
+>at offset 10h in the DPB, to indicate that there is ONE LESS FAT copy.
+>On most systems this will indicate that there is now only one FAT copy
+>(the one which was second before the infection).
+
+Agree, I missed this one. The only execuses are
+a) this method is also some kind of a stealth technique  and
+b) after such changes to BPB area, used by virus, is no longer
+a FAT.
+
+A couple of words about terminology. I use term BPB - BIOS Parameter
+Block - according to "DOS Technical Reference". Vesselin Bontchev
+calls it DPB - Disk Parameter Block. The latter is obviously closer to
+the matter of fact, but I follow the documentation.
+
+>The above scheme has only a small drawback - DOS usually dosn't use
+>that DPB structure when accessing floppy disks. For instance, the
+>Stoned virus overwrites this structure on the infected diskettes, but
+>they are strill perfectly readable, without the virus being stealth.
+>However, this can also be circumvented. It is sufficient to modify the
+>FAT media description byte (not the one that is in the DPB, since the
+>whole structure is not used, but the media description byte that is
+>contained at offset 0 in the FAT), to 0F8h, which will fool DOS that
+>the diskette is in fact... a hard disk. In this case, DOS will always
+>use the DPB structure.
+
+And if DOS does ignore BPB (DPB) than how it'll know where does a FAT
+start? How will it reach Media descriptor in 1st byte of a FAT and
+recognize it IS to use BPB (DPB)?
+
+In fact DOS (or rather its Disk driver) does not ignore *ALL* the data
+in BPB (DPB). It does so only if BPB seems to be invalid (as in case
+of Stoned virus or diskette been formatted under DOS 1.x).  In these
+cases a driver bases upon a Media decriptor from FAT, supposing FAT to
+be next to Boot sector.  There are several well-known programs such as
+800.COM which let to increase a capacity of a diskette by formatting
+additional tracks/sectors. Being formatted under these programs a
+diskette has a correct new value (>360Kb) of total sectors in BPB
+(DPB) and still has 0FDH Media descriptor both in BPB and 1st byte of
+FAT.
+
+My own program succedeed to format a diskette with 1 sector FAT, 1
+sector root and total capacity other than 360Kb - all parameters been
+placed in BPB. This diskette still had 0FDH Media descriptor both in
+BPB and FAT. I was only forced to install *TWO* copies of FAT (not
+*ONE*) to make DOS treat this diskette correctly.
+- --
+Sincerely,
+     Dmitry O. Gryaznov                           | PSI AS USSR
+grdo@botik.yaroslavl.su or grdo1@node.ias.msk.su  | Pereslavl-Zalessky
+Phones: office: (08535)-2-0715 home:(08535)-2-1465| 152140 USSR
+
+------------------------------
+
+Date:    Fri, 20 Sep 91 18:59:48 -0500
+>From:    Otto Stolz <RZOTTO@DKNKURZ1>
+Subject: Re: Can a virus be LAGAL?! (PC)
+
+On Mon, 02 Sep 91 10:58:16 -0500 David Rosenthal said:
+>Yaron Bloom writes:
+>
+>>... but I haven't heard of a law agains viruses, have you?
+>
+>Yes, I have. Here what's going on in Switzerland (Europe) in regard
+>of that:
+...
+>To my knowledge, there are similar penal codes in other european
+>countries (Germany, Austria ...). However, they are older: Viruses and
+>hacking probably has been an unknown subject (outside the computer
+>world) the time their code was created, resulting in those two matters
+>not beeing covered by law.
+
+Beware: I'm no lawyer. There may be unmarked :-) errors in the sequel.
+
+German penal law has been updated in 1986 to cover "damage to data".
+As our law defines "damage to property" in a way that only damage to
+physical objects is covered (no object-oriented programming recognized
+by law :-) ), that amendmend was needed. Also there have been
+amendmends on account of "Computer Fraud", because there has been a
+similar dif- ficulty, as you cannot defraud a machine, and on other
+issues.
+
+Like Switzerland (and opposed to England) we have a coded law, i.e.
+only if a penal rule governing the characteristics of the individual
+case was in effect at the date of the very act, it can be punished. In
+some cases, also the attempt will be punished (which has to be stated
+in the per- tinent rule, as well).
+
+In summary, I am aware of the following rules of our StGB (Penal Law).
+(Please allow for inaccuracies or wrong technical terms due to my
+limited knowledge of both German and English legal language.)
+
+263a : Computer Fraud
+       Intent:  illicit gain to property
+       Act:     influence the result of an EDP process
+       Penalty: imprisonment up to 5 years, or fine
+
+202a : Spying out Data
+       Act:     willingly and unauthorizedly
+                obtain data which are particularly secured
+                for himself/herself or for somebody else
+       Penalty: imprisonment up to 3 years, or fine
+
+269  : Falsifying Data that are Substantial as Evidence
+270  : Deceiving in Legal Action via EDP
+       Intent:  Deceiving in legal procedures
+       Act:     - change data that are substantial as evidence,
+                - store wrong data that are substantial as evidence,
+                - use wrong data that are substantial as evidence,
+                - influence EDP to yield wrong results that are ...
+                - or attempt one of these
+       Penalty: imprisonment up to 5 years, or fine
+
+303a : Changing of Data
+       Act:     willingly and unlawfully
+                erase, suppress, render unuseful, or change data,
+                or attempt to do so
+       Penalty: imprisonment up to 2 years, or fine
+
+303b : Computer Sabotage
+       Act:     willingly,
+                as an outsider,
+                (adversely) interfere with EDP that is of substantial
+                importance to a firm or enterprise or authority
+                - via changing of data
+                - or via damage to EDP systems or physical data media
+                or attempt to do so
+       Penalty: imprisonment up to 5 years, or fine
+
+A related rule can be found in the UWG (some code applying to commercial
+issues, I think UW means "unfair competition"; "G" always means "law").
+
+17   : Disclosure of Trade Secrets
+       Intent:  - personal profit
+                - in favour of a third party
+                - or to inflict losses on the proprietor
+       Act:     - as an employee
+                  disclose a trade secret to anybody
+                - or as an outsider
+                  obtain, provide for obtaining,
+                  make unauthorized use of,
+                  or disclose to anybody,
+                  a trade secret
+                - or attempt one of these.
+       Penalty: imprisonment up to 3 years, or fine;
+                in severe cases imprisonment up to 5 years, or fine
+
+In addition, there are many rules (even several whole codes) to protect
+people from improper use of person-related data, including penal rules.
+
+I think:
+
+- - Whoever releases any virus willingly to the public can be punished
+  under paragraf 303a StGB.
+
+- - If the virus adversely interferes with "substantial" EDP, paragraf 303
+  StGB applies, raising the possible punishment.
+
+- - In special cases (particularly designed action parts), any of the other
+  paragrafs I quoted may also apply. However, this is no particular virus
+  legacy; in those cases, a virus could be a possible vehicle to trans-
+  port the interfering code to the target system.
+
+- - Paragrafs 202a StGB and 17 UWG apply particularly to hacking.
+
+Conclusion: don't attempt it :-)
+
+Best wishes
+            Otto
+
+------------------------------
+
+Date:    22 Sep 91 17:01:10 +0000
+>From:    Ray.Mann@ofa123.fidonet.org (Ray Mann)
+Subject: Comment
+
+Writes bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+ regarding a number of subjects:
+ ......
+ > Indeed.
+ .....
+ > ...I really don't see what the discussion is all about.
+ ......
+ > Please don't restate...
+ .....
+ > OK, but I cannot see how this can be harmful.
+ ......
+ > ... maybe you just don't know a simple fact..
+ ....
+ > You obviously have little (or no) experience...
+ ....
+ > The above is just an unfounded flame.
+ ....
+ > Correct.
+ ...
+ > I strongly suggest you to read the papers...
+ .....
+ > ...stop this stupid discussion.
+ ....
+ > Once again, you missed the whole thing.
+ .....
+ > Correct.
+ .....
+ > Your words are unfounded.
+ .....
+ > OK, OK, I agree with that!
+ .....
+ ------------------------
+
+I hope I won't be considered out of line for asking to post this.
+Since the moderator has approved the postings, we must assume they
+meet his guidelines for suitable material. I'm just wondering if all
+that "judgmentarism" is really necessary. It detracts from the decorum
+of this professional newsgroup .
+
+I believe all issues in this discussion could be exhausted without the
+frequent injection of personality we are receiving from our European
+friend, who seems otherwise sincere and well-informed...  ...  :-)
+
+There's an excellent document which offers thoughtful guidelines on
+the use of newsgroups such as this one:
+
+     USENET Rules and Etiquette, by Matt Bishop, of
+     the R.I.A.C.S., NASA Ames Research Center,
+     (mab@riacs.ARPA, mab@riacs.UUCP):
+     [Ed. new address: Matt.Bishop@Dartmouth.edu]
+
+[Ed. The moderator strongly encourages polite, professional
+discussions and has indeed rejected many postings which were neither.
+Another good source of information on this topic can be found in the
+newsgroup news.announce.newusers.  In particular, take a look at Chuq
+Von Rospach's article, "A Primer on How to Work With the Usenet
+Community" and Brad Templeton's amusing (but very informative), "Dear
+Emily Postnews".]
+
+It contains some very good advise.
+
+- --- Opus-CBCS 1.14
+ * Origin: Universal Electronics, Inc. [714 939-1041] (1:103/208.0)
+- --
+Ray Mann
+Internet: Ray.Mann@ofa123.fidonet.org
+Compuserve: >internet:Ray.Mann@ofa123.fidonet.org
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 171]
+******************************************

@@ -1,0 +1,542 @@
+Subject: RISKS DIGEST 18.30
+
+RISKS-LIST: Risks-Forum Digest  Thursday 8 August 1996  Volume 18 : Issue 30
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+America Off-Line (PGN)
+AOL outage: risks of scaling inappropriately (Joel M Snyder)
+Trains fail to trigger computerized crossing gates (Mark Brader)
+The Crash Detectives: USAir Flight 427 (Jonathan Harr in the *New Yorker*)
+A bug in the zipcode-catalog (Martin Minow)
+Occam's Razor debunked (David Bruce via Peter M. Weiss)
+International Hacking Incident (Andrew Blyth)
+New system blamed for missed payments (David Kennedy)
+Kirk Enterprises: What's in a name? (Andrew Koenig)
+The increasing complexity of everyday life (Rene Shekerjian)
+Department of Motor Vehicle records available On-Line (Rich Ellermeier)
+"Anonymous" phone tips and Calling Number Identification (Michael Cook)
+Re: Where Wizards Stay Up Late (Danny Cohen)
+Re: IBM's Olympic Systems (Dave Wortman)
+Re: Computers causing power outages (Paul Peters)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 8 Aug 96 8:34:26 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: America Off-Line
+
+America Online's computer systems (near the Dulles Airport facility in
+Virginia) went down at 4am EDT on 7 Aug 1996.  Service was reportedly
+restored sporadically 19 hours later, around 11pm EDT.  The crash was caused
+by new software installed during a scheduled maintenance update.  The 6
+million people affected will apparently be given a free day of service
+(hopefully in addition to yesterday!).  (AOL noted that this problem was
+different from their one-hour outage on 19 June 1996.)
+
+  * ``It's another reminder of how close to the edge a lot of these 
+  systems are,'' said Richard Zwetchkenbaum (International Data Corp)...  
+  [No news to RISKS readers]
+
+According to David Einstein (*San Francisco Chronicle*, 8 Aug 1996, p.A1),
+AOL officials have bragged about the reliability of their system.  In fact,
+earlier this week one representative told The Chronicle that AOL computers
+are ``virtually immune'' to this kind of outage.  [Virtual immunity is no
+virtue?]
+
+  [CORRECTION IN ARCHIVE COPY: 
+     I fat-fingered the number of AOL subscribers.  
+     There are over 6 million.  FIXED ABOVE.  PGN]
+  [Outage also noted by David Kennedy <76702.3557@CompuServe.COM>.]
+
+------------------------------
+
+Date: Thu, 08 Aug 1996 08:33:30 -0700 (MST)
+From: "Joel M Snyder, Now Overwhelmed Again" <Joel_M_Snyder@Opus1.COM>
+Subject: AOL outage: risks of scaling inappropriately
+
+The repercussions of this were felt a long way away from AOL.  
+
+One of my clients is a public organization which sends out tens of
+thousands of messages a day advising people on the current status of
+pending legislation.  People are encouraged to subscribe to this free
+service to follow their favorite bills.
+
+Yesterday morning, I got a call because their mail system was backing
+up heavily.  It took a while to discover the cause, but it turned
+out to be AOL.  Because AOL's incoming mail from the Internet runs on
+relatively slow systems, and because they receive hundreds of thousands of
+Internet messages a day, they have 30 systems to receive incoming mail, all
+pointed at from the AOL.COM name.  That means that any mail system trying
+to send mail to AOL would have to individually try all 30 addresses before
+giving up.  Translate that to a 60 second (typical) wait for a connection
+timeout, and you've got a 30 minute time-in-queue for an AOL message.
+
+Well, this client was using multi-threaded mailers, but because of AOL's
+massive presence on the Internet & the large number of messages addressed
+to them, AOL messages ended up clogging up all of the outgoing queue spots. 
+Hundreds of them.  
+
+The solution, unfortunately, is to treat AOL mail separately from other
+Internet mail.  It now gets its own queue and is specifically segregated
+away from other mail so that this doesn't impact other users.  The downside
+of this is that ALL AOL mail is now operated (implicitly) at a lower
+priority than other Internet mail, which means that AOL users have
+effectively become second-class citizens.  
+
+The risk?  While growing so large (and having all your eggs in one basket)
+offers tremendous economies of scale, it has other exogenous effects.  We
+are already familiar with the implicit social reaction that AOL's marketing
+strategy has brought on all their users from some corners of the Internet:
+"oh you're from AOL, you must be clueless," a sort of techno-racism aimed at
+the profile of the typical AOL user.  Now, AOL's size may cause their users
+other discrimination of a more technical nature.
+
+Joel M Snyder, 1404 East Lind Road, Tucson, AZ, 85719  +1 520 324 0494 (voice)
++1 520 324 0495 (FAX) jms@Opus1.COM    http://www.opus1.com/jms    
+
+------------------------------
+
+Date: 	 Tue, 6 Aug 96 16:14:29 EDT
+From: msb@sq.com
+Subject: Trains fail to trigger computerized crossing gates
+
+A recent posting in misc.transport.urban-transit cites a 3 Aug 1996 article
+in *Newsday*, the major newspaper of Long Island, NY.
+
+The Long Island Rail Road, a commuter railway connecting New York to the
+Long Island suburbs, recently tested three level crossings after a train
+passed one of them and its driver noticed that the gates did not operate.
+The three crossings, all in a place called Sayville, each "use the same
+microprocessor" and are the only ones on the LIRR to do so.  The failure
+proved to be reproducible at two out of the three.
+
+This would make me wonder about the third one, not to mention level
+crossings on other railways where the same hardware may be in use.
+(For instance, if the problem is a bug in the programming, it might well
+be one that comes and goes quasi-randomly.  Of course, it might also be
+a failure any of several other sorts.)  As a short-term measure, the
+LIRR stationed their police at each of the three crossings.
+
+The LIRR also suffered similar problems last year, but says that the two
+cases are "apparently unconnected".
+
+I don't know why the crossing gate needs a microprocessor.  One possible
+reason would be if trains regularly travel on that part of the line at
+widely differing speeds; then the crossing gates could be lowered at the
+same time interval in front of a faster or a slower train.
+
+Mark Brader msb@sq.com  SoftQuad Inc., Toronto
+
+------------------------------
+
+Date: Fri, 2 Aug 96 16:21:47 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: The Crash Detectives: USAir Flight 427
+
+Jonathan Harr has a fascinating article (*The New Yorker*, 5 Aug 1996) on
+the process of trying to unravel the still unexplained crash of USAir flight
+427, a Boeing 737, on approach to Pittsburgh on 8 Sep 1994.  The discussion
+seems timely in the light of the recent TWA 800 disaster,
+
+------------------------------
+
+Date: Wed, 31 Jul 1996 17:00:22 -0700
+From: Martin Minow <minow@apple.com>
+Subject: A bug in the zipcode-catalog
+
+>From the Swedish newspaper, Svenska Dagbladet, 1 Aug 1996, reported
+by Nils-Olov Ollevik.
+
+http://www.svd.se/svd/ettan/X0002_Bugg.html
+
+An incorrect comma [Sweden uses commas to separate integer and fraction,
+where the USA uses a period] can cause problems, especially when dealing
+with billing and accounting. The other day, a businessman was about to
+send an invoice to one of its customers and, at the last minute, discovered
+that the computer wrote an invoice for 1.5 million kroner instead of the
+150,000 that he intended.
+
+The analysis determined that the CD version of the Swedish postnumber
+(zipcode) catalog contains a programming error -- a bug -- that can modify
+certain programs that are already loaded into the computer.  This affects
+the popular administrative programs from from Scandinavian PC Systems, SPCS,
+in Vaxjo [Sweden].
+
+"As far as I know, only the SPCS-programs are affected, but this is
+unacceptable no matter how large or small the problem is" according to
+product manager Jan Hultgren from the Swedish Post Office, who is
+responsible for the catalog.  ... The error is in the way the CD program
+handles installation in the Windows operating system. It would be strange if
+only our program was affected.
+
+According to Jonas Svensson of SPCS, the post office program automatically
+changes Windows installations, such as the placement of commas together with
+digits. "The error is easy to fix as long as you are aware of it," said
+Svensson.
+
+... The Post Office sold about 100,000 copies of the CD-catalog.
+
+Translated (quickly) by
+
+Martin Minow, minow@apple.com
+
+------------------------------
+
+Date:    Sat, 3 Aug 96 09:44 EDT
+From: "Peter M. Weiss +1 814 863 1843" <PMW1@PSUVM.PSU.EDU>
+Subject: Occam's Razor debunked
+
+QUADNET, 2 AUG 1996
+RAZOR THEORY LEFT IN SHREDS
+
+A Deakin University academic has cast new light on a basic philosophical and
+scientific problem that has been subject to debate for more than 2000 years.
+And this has thrown doubt on the accuracy of many data analysis techniques
+commonly used in business computing.
+
+"Occam's razor, a principle dating back at least as far as Aristotle,
+suggests that we should accept the simplest explanation consistent with all
+the known facts.  This previously untested principle is widely used in
+current scientific practice," said Dr Geoff Webb, of Deakin's School of
+Computing and Mathematics in Australia.
+
+Dr Webb has put this principle to the test, and found it wanting.
+
+Occam's razor is a guiding principle in computers known as machine learning
+systems, a form of artificial intelligence.  Tasks commonly employed in
+machine learning cover such diverse areas as medical diagnosis and
+identification of glass fragments collected at the scene of an accident.
+
+Dr Webb's research has found that when put into practice Occam's razor
+doesn't work. "The results are clear cut: Occam's razor is worse than blunt,
+it is truly disposable," he said.
+
+To test the theory, Dr Webb modified a widely used machine learning system
+that uses Occam's razor combined with a principle based on the assumption of
+similarity. The modified version of the system abandoned Occam's razor and
+relied solely on the principle of similarity.  The theories developed by the
+modified system were more accurate than the version that used Occam's razor.
+
+Among the many users of machine learning systems are a new wave of computer
+scientists calling themselves "data miners". These scientists use machine
+learning systems based on Occam's razor to extract information from vast
+quantities of data.
+
+Data miners are employed by retailers to identify new customers; the
+taxation office to identify tax fraud; by banks to help decide who should
+receive loans; by stock brokers to select investments; and recently by
+astronomers to identify 16 new quasars.
+
+"Data mining seeks to extract information from data.  By using Occam's
+razor, data miners are potentially missing much of the information in the
+data. That translates directly into missed business opportunities," Dr Webb
+warns.
+
+"Occam's razor guides the user to look for simple explanations.  But what
+good are simple explanations of a complex world?" he said.
+
+Dr Geoff Webb can be contacted on webb@deakin.edu.au
+
+Issued by:
+David Bruce, Media Manager, Deakin University, Australia
+Phone: 61 3 9244 5268  Email: db@deakin.edu.au
+
+David Bruce, Communications, Deakin University - 1995 University of the Year
+db@deakin.edu.au  (03) 9244 5268  (03) 9822 1379 fax
+
+------------------------------
+
+Date: Mon, 5 Aug 1996 13:37:32 +0000
+From: ajcblyth@glamorgan.ac.uk (Andrew Blyth)
+Subject: International Hacking Incident
+
+The following is taken from the *Sunday Times* (London, 4 Aug 1996):
+American Intelligence agents have hacked into the computers of the European
+parliament and European commission as part of an international espionage
+campaign aimed at stealing economic and political secrets. The commission
+has called in security expert to block further American government agents
+spying on its workings.
+
+Security officials have disclosed that they have discovered several
+instances in which its communications systems have been compromised by
+American hacking. The have also found evidence that the Americans have used
+information obtained by hacking to help in trade negotiations last year on
+the General Agreement on Tariffs and Trade (GATT).
+
+The CIA has already been accused by the Japanese and the French governments
+if hacking into their communications networks in an attempt to obtain
+confidential trade secrets.
+
+The European parliament computer network links together more that 5,000
+computers, and it is used to private medical, financial and official
+government documents.
+
+Dr Andrew Blyth, Department of Computer Studies, University of Glamorgan
+Pontypridd  Mid Glamorgan CF37 1DL, UK +44 1443 48 2245
+
+------------------------------
+
+Date: 31 Jul 96 15:27:10 EDT
+From: David Kennedy <76702.3557@CompuServe.COM>
+Subject: New system blamed for missed payments
+
+[Courtesy of Associated Press via CompuServe's Executive News Service,
+30 Jul 1996]
+
+Missed Payments (By Catherine O'Brien, Associated Press Writer)
+
+>>   WASHINGTON (AP) -- Rep. John Dingell says the rent on his
+>>district office was not paid one month. Rep. Ron Klink's phone service
+>>was nearly shut off because the bill was not paid by the House. 
+>>   They and other House Democrats said Tuesday they were embarrassed
+>>that the government has missed some payments to businesses in their
+>>districts. And in this election year, they insisted that when 
+>>Democrats were in charge the checks went out on time. 
+
+<< DMK: Partisan sniping from both sides deleted >>
+
+>>   In June, the House's chief administrative officer, Scott
+>>Faulkner, switched to a financial management system that
+>>included new computer software. Klink said the change was made
+>>despite a warning from Price Waterhouse that it would take two
+>>years or more to get the House up and running on the new system. 
+
+o	House members are each checking with their offices to see that various
+accounts have been paid or are outstanding.
+
+Dave Kennedy [CISSP] InfoSec Recon Team Chief, National Computer Security Assoc
+
+------------------------------
+
+Date: Mon, 5 Aug 1996 13:45:43 +0400
+From: Andrew Koenig <ark@research.att.com>
+Subject: Kirk Enterprises: What's in a name?
+
+There is a small company in Indiana, called Kirk Enterprises, that makes
+various kinds of gadgets for attaching cameras and lenses to tripods.  I was
+interested in information about one of their products, so I thought I'd see
+if they had a web page.
+
+I went to Lycos and did a search for `Kirk Enterprises.'  What came back was
+a flood of references to Star Trek.
+
+Andrew Koenig  ark@research.att.com
+
+  [For oldtimers, that would rate well on the Kirkman Laugh Meter.  PGN]
+
+------------------------------
+
+Date: Tue, 6 Aug 1996 09:47:52 -0400
+From: Rshek@aol.com
+Subject: The increasing complexity of everyday life
+
+One of my colleagues circulates Risks Digest here and I like to look through
+it. I was interested to read about the ever increasing complexity of life
+and the proliferation of remote controls, manuals, batteries, and the like.
+The risk here is not that the world will become overly complex and then
+fail, leaving us lost, blind, and bewildered. The risk, rather, is that we
+people will become overly dependent on external things and lose sight that
+what we require is inside us.
+
+BUT what if the electricity and telephones go kablooie at the SAME time??
+We can try any of the time honored activities of all human beings: we can
+tell stories, we can sing, we can dance, we can think, we can meditate, we
+can talk to the people who share our houses or apartments or dorms, we can
+light candles, we can build fires, and we can read books.  With so many new
+tools and technologies it is easy to think that without the latest or our
+favorite we can't thrive or succeed or have fun or be ambitious. But that is
+fallacy. The best use of technology is to blend it with our human powers.
+
+------------------------------
+
+Date: Wed, 7 Aug 1996 13:20:45 -0700
+From: "Rich Ellermeier" <richarde@pcx.ncd.com>
+Subject: Department of Motor Vehicle records available On-Line
+
+In the State of Oregon, it is legal to purchase Department of Motor Vehicle
+Records from the state (RISK 1).  These records have been purchased, placed
+on a CD and made available through a newspaper advertisement.  Now, on a
+local ISP, someone has made these records available publicly via a data 
+base search based on the license plate (RISK 2).  After looking at the data
+with some friends, we have found that some of the information is, in fact,
+wrong or out-of-date (RISK 3).
+
+RISK 1: The state of Oregon should NOT be allowed to make available this
+	  information.  Among the type of information that will be displayed:
+	  	vehicle type, make, model, year and style
+		vehicle Identification Number (VIN)
+		vehicle title number
+		Plate expiration date
+		Owner name, address and Driver's License number (For ALL owners)
+		Security interest holder and their address.
+
+RISK 2: The ease of access may cause this information to be used in a illegal
+	  manner.  By hanging out at the long-term parking lot of an airport,
+	  one would be able to identify the name and address a traveler making
+	  that traveler's home vulnerable to thieves.  This information could
+	  easily be used by stalkers and those who wish to have their privacy
+	  protected.  An unlisted phone number and address in the phone book
+	  is easily circumvented when that information is easily accessible
+	  with just a license plate number.
+
+Risk 3: A friend sold a car five months ago, yet in this database, he is 
+	  still identified as the owner.  Should the new owner do something
+	  on the road that provokes "road rage" in another driver, a quick 
+	  search of the data via license plate number will find that my 
+	  friend is the owner and the potential for him becoming a "road 
+	  rage" victim increases,  through no fault of his own.
+
+It strikes me that there are multiple parts of the problem that need to be
+fixed.  The DMV should, by law, not be able to sell this information.  
+However, the one issue that I believe the internet/web has not come to 
+terms with yet is the one that has always plagued a free society--the limits
+of that freedom.  While it may be legal to make this information available
+in this manner, the moral and ethical implications of doing so need to be
+carefully considered.
+		
+--rich <richarde@pcx.ncd.com>
+
+------------------------------
+
+Date: Thu, 8 Aug 1996 09:26:44 -0500
+From: mlc@iberia.cca.rockwell.com (Michael Cook)
+Subject: "Anonymous" phone tips and Calling Number Identification
+
+I thought I'd pass along something that has recently happened at my company.
+This summer, we had a new phone system installed, with fancy phone features
+of various kinds, voice-mail for each phone, callback, conference calls,
+etc.
+
+One of the features is Calling-Number Identification.  When a call is
+received, the incoming phone number is display on our phones.  If the call
+is from a company extension, that person's name (or some group function
+name) is also displayed.  (So, the usual Caller-ID good/bad points are
+raised.)
+
+For some time, our company has had an anonymous Ombudsman phone number for
+reporting suspected company ethics violations or other business policy
+misconduct.  But with the new phone system, the Ombudsman phone had CNID!
+Not-so-anonymous reporting.
+
+To its credit, the company has installed a new phone line.  
+
+"Since the installation of the new ... telephone system, concern has been
+expressed that employees can no longer make an anonymous report of a
+violation or suspected violation.  A new phone line has been installed that
+cannot display phone numbers of incoming calls.  Those wishing to remain
+anonymous may call ..."
+
+I haven't checked yet whether it is possible on our system to block CNID on
+selected phone calls.
+
+Michael Cook  MLCOOK@CCA.ROCKWELL.COM
+
+------------------------------
+
+Date: Thu, 01 Aug 96 14:30:45 PDT
+From: Danny Cohen <cohen@rand.org>
+Subject: Re: Where Wizards Stay Up Late (RISKS-18.29)
+
+... and why the service was so bad across the country, why both dropped 40%?
+
+> Perhaps the real problem is that the wizards are no longer staying up late
+> enough, or that the new quasiwizards are not familiar enough with history
+> and the sense of accomplishment that prevailed in the ARPAnet days.  [PGN]
+
+The reason is not lack of sense of history.  My first computer/computer
+communication project was done in summer 1967 for Larry as he moved from LL
+to ARPA.  I can relate to your concern about that "lack of sense of
+history").
+
+The reason is that now someone must pay for the packets to travel.  It was
+nice in the old days when Larry and Bob willingly paid for all our packets.
+Now they don't.  No wonder that the existing charging mechanism pushes the
+demand beyond the supply.  Larry, Bob, Vint, and others (in ARPA, NSF, DoE,
+and NASA) took it upon themselves to always provide excess supply (at least
+they tried to).
+
+Most users believe that they have a constitutional right for free network
+services since most scholars would agree that packet communication falls
+under "the pursuit of happiness".  The present charging scheme encourages
+exponential growth of the demand, limited only by the frustration caused by
+the insufficient supply.  If you were willing to pay the real cost of that
+Telnetting, the packet would have gone through.  This is what many
+corporations do.  Phone calls go through because we (or someone else) pay
+for each.  We, who are used to practically free rides suffer.
+
+If you really want to help solve the problem you better introduce the
+subject of "RISKS of not paying for what you get".  Sigh.
+
+    It used to be so nice when they paid for us...  Danny
+
+------------------------------ 
+
+Date: 	Fri, 2 Aug 1996 10:27:44 -0400
+From: Dave Wortman <dw@pdp1.sys.toronto.edu>
+Subject: Re: IBM's Olympic Systems
+
+Since there's been a lot of discussion of the IBM Computer Systems
+deployed at the Atlanta Olympic games, some might be interested
+in IBM's description of the system at:
+
+	http://www.olympic.ibm.com/o_tech/index.html
+
+The link
+
+  "Everything else you'd like to know about IBM's 1996 Olympic Games Activity"
+
+leads to fairly comprehensive documentation.
+
+  [Incidentally, I am happy to hear from various sources reports that things
+  have settled down since the early problems of these Olympic Games.  PGN]
+
+------------------------------
+
+Date: Fri, 2 Aug 96 12:37 EDT
+From: Paul Peters <PPeters@DOCKMASTER.NCSC.MIL>
+Subject: re: Computers causing power outages (Sessions, RISKS-18.29)
+
+In the subject posting, D.C. Sessions states that "Constant-power loads
+exhibit negative resistance".  While they present a non-linear load, there
+is no reasonable way to describe them as negative resistance.  He further
+confounds his thesis by using the electric light as an example of constant
+impedance.  The incandescent lamp is a highly non-linear impedance and more
+closely resembles a constant-power load than it does a constant impedance
+load.  
+
+Paul E. Peters
+
+------------------------------
+
+Date: 19 July 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use BITNET LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ The INFO file (guidelines, submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  All 
+ contributors are assumed to have read the full info file.  
+ ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.30 
+************************

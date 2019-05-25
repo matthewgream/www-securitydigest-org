@@ -1,0 +1,400 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday 21 September 1989   Volume 9 : Issue 27
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Re: Brian Randell's commentary on safety analysis (Nancy Leveson)
+  Re: Risks of Distributed Systems (Charles Shub)
+  Re: Hospital problems due to software bug (Will Martin)
+  Mailer Bug moves to MCI? (Jerry Durand)
+  Loose wires, master clocks and satellites (Peter Jones, PGN)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Wed, 20 Sep 89 17:54:03 -0700
+From: Nancy Leveson <nancy@ICS.UCI.EDU>
+Subject: Re: Brian Randell's commentary on safety analysis
+
+In Risks 9.21, Brian Randell asks for the reactions to his comments from 
+people who have tried applying conventional risk assessment and management 
+techniques to systems involving "really complex software."  I have had 
+experience applying such techniques to many real systems involving software, 
+although I am not sure what Brian means by his qualification "really complex."
+My arguments in this forum have always stressed the need to eliminate 
+unnecessary complexity in safety-critical systems, and I usually refuse to be 
+involved in the analysis of overly complex systems until they have been 
+simplified.  Brian writes:
+
+  >Ideally, deployment of any potentially risky computer-based system will be
+  >preceded by the sort of careful assessment of the risks involved that is
+  >typical in a number of engineering disciplines. There are a number of
+  >well-established techniques for such risk assessment, such as Failure Modes 
+  >and Effects Analysis, Event Tree Analysis, and Fault Tree Analysis. As I 
+  >understand it, all of these involve enumeration and consideration of 
+  >possibilities, and identification of dependencies, which are then  
+  >represented in some sort of graph structure, but none of the ensuing 
+  >analyses take account of the possibility that this graph structure will 
+  >be incorrect. To my mind, this makes these techniques of limited value 
+  >for systems employing computers running large suites of software.
+
+Any type of analysis can be wrong, whether applied to hardware or software.
+In some respects, safety analysis applied to software may actually be less
+prone to error than that applied to hardware.  Software represents the
+logical structure in itself and, therefore, the analysis is performed on
+the actual thing that is being analyzed.  For systems involving hardware and
+physical devices, abstract models must be formed first on which the analysis 
+is applied.  This extra step (building the logical representation of the 
+hardware) adds an additional possibility of introducing error.  In my 
+experience, safety analysis on software is no more error-prone than that 
+performed on complex hardware systems.  For example, I have found that it is 
+much easier to build correct software fault trees than system fault trees.
+
+It has also been my experience that the system safety analyses and control 
+devices do take into account the possibility of errors in particular analyses 
+and failure of safety protective devices.
+
+By the way, not all risk assessment techniques involve graph structures.
+Of the three mentioned, FMEA records information in the form of tables and 
+does not include identification of dependencies.  Event Tree Analysis is 
+equivalent to reachability analysis in computer science models and does 
+represents reachable states in the form of a tree or graph structure.  Fault 
+Tree Analysis uses a tree in a very different way -- the tree is just a 
+convenient notation for representing a boolean expression that records the 
+relationship between states or events.  It could easily be replaced (and often
+is) by formal logic expressions.
+
+  >In making this statement, I have three characteristics of such systems in 
+  >mind: (i) their great logical complexity, and hence the danger of their 
+  >harbouring potentially risky design faults, (ii) the largely discrete 
+  >nature of their behaviour, which means that concepts such as "stress", 
+  >"failure region", "safety factor", which are basic to conventional risk 
+  >mangement have little meaning, 
+
+As I understand it, safety factors are built into hardware systems because 
+of the possible inaccuracies of calculations on continuous models, the
+limitations of these models in representing real systems, and the possibility 
+that the basic assumptions of the models are incorrect for the actual physical 
+systems that the models represent.   
+
+Because software can be analyzed using discrete mathematics and logic,
+some of the need for safety factors in the analysis are eliminated.
+It is, of course, always possible for the underlying assumptions (e.g., that
+the computer hardware does not experience failures) of software analyses
+to be violated.  Brian is correct that safety margins may not useful to 
+protect against this.  However, run-time checks on basic assumptions (using 
+built-in test, assertions, TMR, etc.) can be used in computer systems to
+provide the same function as safety margins in continuous systems.  Failure
+regions and safety envelopes are easily applied to software. Furthermore,
+many, if not most, of the safety devices used in conventional risk management 
+are applicable to discrete systems.
+
+  >and (iii) the almost ethereal nature of software, which makes it much
+  >more difficult to identify appropriate components and to understand their
+  >interactions (both planned and accidental) than with many physical systems.
+
+I don't know what is meant by the "ethereal" nature of software here.  Floyd,
+Hoare, and others who have followed them have demonstrated that the formal
+semantics of software can be specified and that software can be treated
+as a mathematical object.  Admittedly, analysis on semantically complex 
+software is difficult.  This is why the argument has been made that the 
+semantic complexity of the software used in safety-critical systems must
+be limited as long as our analysis techniques are limited.   However, I have 
+rarely found that this limitation is not possible, even when the system of 
+which the computer is a component appears quite complex at the system level.  
+(This goes back to my recent discussion with Dave Parnas in Risks).
+
+I think it is a mistake to underestimate the complexity and difficulty of
+identifying unplanned interactions in physical systems.  Perrow's book
+on "Normal Accidents" argues that such interactions (stemming from complexity 
+and coupling) are inherently not possible to identify and control in complex 
+physical systems, and he provides many examples of accidents that have 
+occurred as a result.  Again, given that at least the software can be thought 
+of and analyzed as a model of itself, in the future we may find that it is 
+actually easier to identify and control such interactions in software than in 
+physical systems.
+
+  >It is of course good practice to design software with a highly modular
+  >structure, and to try to isolate critical parts of the software in as small 
+  >and simple a subsystem as possible. However with a really complex system such
+  >structuring is again essentially ethereal and by no means simple. There will
+  >therefore remain a significant and unquantifiable likelihood that such
+  >modularisation and isolation is itself faulty.
+
+Again, I do not understand the use of the word "ethereal" with respect to
+software structure.  Of course, modularization and isolation may be faulty
+in software.  It may also be faulty in hardware.  Engineers also use 
+analysis techniques, e.g., Sneak Circuit Analysis, to attempt to identify
+unplanned interactions in electronic systems.  Unfortunately, this type of
+fault is as unquantifiable for hardware as it is for software.
+
+John Shore in the Sachertorte Algorithm has argued that physical systems 
+often have simpler interfaces because of the inherent difficulty of building 
+complex interfaces in such physical systems versus the simplicity of making
+complex interfaces in software.  But that does not mean that it is not 
+possible for software engineers to exercise discipline in order to control 
+and limit the complexity of the software interfaces to that which we can
+analyze with some degree of confidence.  Modularization, information hiding, 
+and isolation applied to software are essentially the same procedures that 
+are used to control complexity in hardware.  
+
+  >I thus believe that the graph structure which purports to represent, at any
+  >significant level of detail, the internals of (especially the software in) a
+  >complex computing system, is likely to be wrong, in that it will not 
+  >represent any residual design faults properly, so that such faults will 
+  >remain an (unquantified) contributor to overall system risks.
+
+I am not sure what Prof. Randell here means by a "graph structure" representing
+the "internals" of software.  For example, a Software Fault Tree represents a 
+boolean expression of events that can lead to a hazardous condition.  It does 
+not represent residual design faults (although the process of building the tree
+may identify some critical ones) or the structure of the software.
+
+I agree that all design faults cannot be identified with high confidence for 
+software.  But safety analysis does not require this.  In my experience in 
+using software fault tree analysis on real software systems, the most useful 
+aspect of the technique may lie in its ability to identify hazardous states 
+that need to be detected at runtime (perhaps by assertions or acceptance 
+tests) regardless of the actual design faults (or underlying computer hardware 
+faults) that caused them.  
+
+I should add that most safety analysis techniques on physical systems are 
+not able to quantify the contribution of residual hardware design faults
+on system risks either.  They basically quantify only risks based on physical
+failures, not design errors.
+
+  >The question of whether we will ever able either to guarantee that a complex
+  >computing system is entirely free of design faults, or alternatively able to
+  >quantify the likely impact of residual design faults is moot. 
+  >The point I am trying to make here is that in present circumstances, I 
+  >see no current alternative to basing the assessment of the risks of the 
+  >overall system on a worst case scenario for the behaviour of the computing 
+  >system, based on the physical capabilities of the its interfaces to the 
+  >outside world, rather than on mere hopes about its internal activities - and   >to taking appropriate precautions externally to the computing system. Yet, 
+  >unfortunately, one sees these days the opposite trend: namely the increasing
+  > use of computing systems in situations where there is little or no ability 
+  >of some surrounding system to mask the failures of the computing system.
+
+I agree with this conclusion.  It is something I have preached for a long time,
+and, in fact, it is exactly this worst case scenario analysis that is involved 
+in the application of safety assessment and management techniques to software 
+and to systems containing computers.  For example, it is what I was suggesting 
+in my discussion in Risks with Bev Littlewood about using a probability of "1" 
+for software failure in system fault trees.  Unfortunately, it is not 
+sufficient, and "taking appropriate precautions externally to the computing
+system" often requires the same type of system level safety analysis including
+the internal design of the software that Brian seems to be arguing above is
+not possible.
+
+In particular, risk assessment and management techniques for physical systems 
+may be no less error prone than that applied to software.  The hardware backup
+systems that Brian (and I) suggest may themselves fail or contain design 
+faults.  This does not mean that they should not be used; it merely means 
+that multiple "levels of defense" (a term common in the nuclear industry) 
+are necessary including both hardware and software safeguards and analysis.
+We should not rely entirely on hardware safety devices.  Risk assessment
+and management at the system level that excludes the behavior of the
+software in the analysis and in the design of the software is incomplete
+and thus potentially dangerous.
+
+Furthermore, it is not always possible to design physical devices to mask 
+completely or with high confidence the failures and errors of the computing 
+subsystem.  One reason this is true is that the software is usually controlling
+the other components of the overall system, and it is difficult to build 
+physical devices that are able to identify and mask control errors (versus 
+total failures) before a hazardous system state is reached.  When it can, this 
+should obviously be done.  But what will we do about other very desirable 
+systems (e.g., medical systems that could in themselves save lives) where 
+this is not possible?
+
+------------------------------
+
+Date: Wed, 20 Sep 89 12:17:56 MDT
+From: Charles Shub <cdash@boulder.Colorado.EDU>
+Subject: Re: Risks of Distributed Systems (RISKS-9.26)
+
+>...  Using Ada gives a standardized mechanism for introducing issues such
+>     as exceptions and (concurrent) tasks.
+
+Ah yes, Ada* has a standardized mechanism for (concurrent) tasks, but Ada*
+unfortunately does not have a good (IMHO) model for concurrent activities to
+communicate. Their rendezvous is as bad as the "remote procedure call"
+technology. We also need to discuss asynchronous IPC which is done at even
+fewer places. This message is an example of asynchronous inter process
+communication. I can guarantee you that i'm doing other things until you
+respond or acknowledge (or this message gets dropped in a bit bucket somewhere)
+and neither RPC nor the rendezvous allows that. So please don't tout Ada* as
+the cure-all for concurrency. We all know that
+		"dod created ada and it was good."
+
+* Ada (and nuclear annihilation for that matter) are trademarks of the
+  Department of Defense.
+
+------------------------------
+
+Date:     Wed, 20 Sep 89 13:05:16 CDT
+From: Will Martin <wmartin@STL-06SIMA.ARMY.MIL>
+Subject:  Re: Hospital problems due to software bug (RISKS-9.26)
+
+>Due to a fault in the aging software, the machines were unable to accept as
+>valid the date September 19, 1989, ...
+>One computer specialist described the problem as a "birth defect", ...
+
+Just what we need -- more jargon for the media to splash around. "Birth defect"
+instead of just simple "error" or the traditional "bug".
+
+Does anyone know if this was one of the built-in magic-number date breakdowns
+that have previously been mentioned on RISKS? That is, the ones where the
+system date/time is maintained in a field containing the number of seconds
+since some arbitrary start-date in the past, and which will fill up and trip
+back to 0 at some predictable future date (at which time all applications using
+that OS or system will trash their date processing and mangle any data based on
+dates... :-( ).
+
+I was hoping that someone out there has kept track of and will post a note
+listing those magic dates for various OS's and systems. It will be a useful
+reference for all of us.
+
+Regards, Will Martin
+
+------------------------------
+
+Date: Wed, 20-Sep-89 19:02:35 PDT
+From: JDurand@cup.portal.com
+Subject: Mailer Bug moves to MCI
+
+I received the following notice today from MCI, it sounds like your MAILER
+bug (RISKS-9.22, 23) is contagious!
+                   			 Jerry Durand, Durand Interstellar
+
+Date:     Wed Sep 20, 1989  6:45 am  PDT
+From:     FAX Help / MCI ID: 369-3746
+TO:     * Durand Interstellar / MCI ID: 114-9128
+Subject:  Multiple Fax Messages
+
+Dear Customer,
+
+   According to our records you sent a Fax Dispatch message Tuesday,
+afternoon September 19, 1989.  Due to a temporary software bug in the 
+system, it is possible that MCI Mail attempted to deliver your message 
+numerous times. Therefore, you may receive several message confirmations
+or cancellation notices.
+
+   This problem, which only affected Fax Dispatch has been corrected.
+MCI Mail has also taken the necessary steps to insure that you are not 
+billed for any extra messages.
+ 
+   We regret any inconvenience this may have caused you, and will do our 
+utmost to avoid a recurrence of this situation.
+
+Sincerely,
+
+MCI Mail Customer Support
+
+------------------------------
+
+Date: 	Thu, 21 Sep 89 10:57:17 EDT
+From: Peter Jones <MAINT@UQAM.bitnet>
+Subject:  Loose wires, master clocks and satellites
+
+Two articles in RISKS 9.26, namely "Man-Machine Failure at 1989 World Rowing
+Championships", and "An Interesting Answer to the Distributed Time Problem"
+reminded me of a certain performance of Beethoven's Ninth Symphony on December
+12, 1988, in which I sang in the tenor section offstage in Montreal. The
+National Film Board of Canada has just released a video documentary about
+this event, entitled "Satellite Symphony --- One Woman's Dream".
+
+The dream in question was to conduct an orchestra in Montreal, with choirs in
+San Mateo, Geneva and Moscow. Unfortunately, as the links between these places
+were via satellite, there were perceptible delays in satellite transmission,
+making it difficult to get everyone in sync.
+
+One solution tried was to send a cue to the remote choirs ahead of the conductor
+in Montreal, so that their sound would come back in time with the orchestra.
+This proved to be unworkable, for the delay required was in terms of
+milliseconds, and not in terms of beats and fractions thereof. Also the
+response times of the remote choir conductors and their singers was difficult to
+assess, and the main conductor might not be at the same tempo from one
+performance to another.
+
+The solution that was finally adopted was to transmit a recording of the dress
+rehearsal of the previous evening to the remote choirs, ahead of the live sound.
+With the aid of an earphone, the conductor in Montreal would hear and follow
+the same recording, with a delay to compensate for the two-way satellite
+transmission of her cues and the choirs' singing in response. (I'm glossing over
+the technicality that number of satellite "hops", hence the delay, was different
+for each choir.)
+
+So far, we have seen the master-clocking difficulties. What happened on concert
+night? Yes, a proverbial loose wire. The conductor's earphone malfunctioned,
+although the choirs heard the recorded sound by satellite! After a 45-second
+wait, and a fruitless call for assistance (she couldn't get a reply on the
+defective earphone without leaving the podium, or having someone come out on
+stage), she decided to start anyway. Radio Canada technicians sent the live
+sound to the remote choirs. The end result was that the choirs missed their
+first entry. Fortunately, the Montreal Symphony's choir was on hand backstage
+in Montreal as a backup, providing the illusion to the audience that the other
+choirs had indeed come in. The rest of the choirs managed to come in further
+on, more or less on time. The resulting sound was, as Spock of Star Trek would
+say, "Fascinating".
+                         Peter Jones     MAINT@UQAM     (514)-987-3542
+
+------------------------------
+
+Date: Thu, 21 Sep 1989 13:22:01 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject:  Re: Loose wires, master clocks and satellites
+
+Following Hollywood hi-tech practice, and minimizing the real-time risks, next
+time you might try videotaping the orchestral dress rehearsal in Montreal --
+with the option of the local backstage chorus being heard only on ear-phones by
+the conductor and players, and recorded on a separate audio track -- then
+letting San Mateo, Geneva and Moscow dub their contributions independently
+(while each watched the videotaped conductor and heard the dress rehearsal
+orchestra audio), and finally mixing the whole thing together in a `live'
+performance.  That way the conductor would not have to rely on ear-phones --
+she would be mimicking herself on the tape monitor while the sound of taped
+choruses and the prerecorded orchestra filled the hall.  The Montreal orchestra
+folks could synch their playing (especially the wind players, who would indeed
+be lip-synching) to the recording -- or simply fake it altogether!  With a
+little computer processing you could even do real-time resynchronization to
+compensate for recording machines that were slightly off speed.  However, the
+whole thing seems somewhat silly because the conductor could not influence the
+performance in progress, which was presumably her original intent.  And the
+results had to be MURKY!  With the transmission delays, you cannot really
+afford to let anyone hear another group anyway unless recorded; because the
+time delay from `ictus' (low-point of the beat) to sound attack generally
+varies with the tempo, and because it is very difficult to anticipate
+adequately from auditory cues alone, the visual cues are much more important --
+even if tape delayed.  Furthermore, if there is no live playing or singing
+except maybe locally, you can afford to run everything tape delayed with
+variable delays in the premix.  (I hope they weren't singing in English, French
+and Russian!  But I am reminded of two high-school bands getting together
+unrehearsed in 1949 for the Star Spangled Banner, with one playing in Bb, the
+other in Ab.)
+
+Perhaps I got parODied away.  It happens every now and then.  But this is
+really a marvelous real-time synchronization problem, and the risks in pulling
+it off are considerable.  On the other hand, if you lose one chorus completely,
+probably nobody in the audience would ever know -- except that the Russian
+accent in German might suddenly disappear.
+
+Freud would have been amused with the aural fixation.
+
+     ``Freude, Freude, got 'er, 'funken,     {as in RundFunk = broadcast}
+       Sighed, `umschlungen, millionen'!''   {THAT's a lot of singers.}  
+                                             Owed to Joy.  Schiller.
+
+     ``... achoired a certain measure of reknown ...''       Tom Lehrer.
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.27
+************************

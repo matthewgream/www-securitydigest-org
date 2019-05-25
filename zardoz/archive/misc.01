@@ -1,0 +1,386 @@
+
+Date: Fri, 23 Mar 90 02:38:49 MST
+Subject: Two sendmail security holes +FIXes
+
+
+The unix security mailing list is by invitation only and contains
+sensitive material which SHOULD NOT BE REVEALED to non-members.
+DO NOT PUT ANY LIST CONTENTS IN LOCATIONS ACCESSABLE TO NON-MEMBERS.
+If you must keep copies on-line, please encrypt them at the very least.
+
+Subject: Two sendmail security holes +FIXes
+Index:  usr.lib/sendmail/src 4.3BSD
+
+Description:
+
+	1) A user can run programs with root's group privileges by
+	   getting root to send them mail (e.g. by using calendar).
+	2) A user can run programs as any other (non-root) user by
+	   getting the other user to send them mail.
+
+	N.B. The do-it-yourself hacker can also fake a letter from
+	the target user eliminating the need to elicit a response.
+
+	These holes exist in sendmail 5.61 and apparently all previous
+	versions, as well as every vendors' sendmail release that I
+	have come across.  So, now that I have your attention...  :-)
+
+	The first hole is easiest to explain.  When delivering to
+	files and programs, sendmail does not do an initgroups(3)
+	after forking on final delivery.  As a result, the sender's
+	group list remains in effect throughout this stage.  This is
+	particularly serious when root is sending the mail since a
+	program executed out of a ".forward" file gains interesting
+	privileges like "wheel" and "kmem".
+
+	The second hole is more complicated, and before I go into
+	the gnarly details (i.e. before I lose your attention and
+	you skip to the "Repeat-By:" part :-)), I have to mention
+	that this one was first reported/fixed by Larry Parmelee
+	<parmelee@wayback.cs.cornell.edu> one year ago this month.
+	I came across this hole in testing my fix to the first.
+	The fix that follows is the result of a joint effort by the
+	two of us.
+
+	The second hole can be broken down into a "problem" and an
+	"aggravation".  The "problem" is that queued local mail no
+	longer has the original recipient's uid associated with it.
+	Control files only store a list of exploded recipients (i.e.
+	users, files and programs) -- one per line -- each prefaced
+	with an `R'.  So, after an address resolves to the local
+	machine and has undergone alias and ".forward" expansion, if
+	the letter happen to get queued, on the succeeding queue
+	run sendmail doesnt know who to run the final delivery as.
+
+	The "aggravation" is that, when doing this final delivery
+	of queued local mail, sendmail will setuid() itself to the
+	*sender's* uid if it is available; in general, the sender's
+	uid will be used when the sender is on the local machine.
+	As a result, a user can run a program as anyone who sends
+	them mail from the local machine.
+
+	There is also an added "complication" which was not fixed
+	in Larry's original set of patches; the default uid and gid
+	are also set to the sender when delivering mail!  Since the
+	default uid and gid are only used when calling setuid() and
+	setgid() (to reset the uid/gid before doing final delivery),
+	these variables should never be set to the sender.
+
+Repeat-By:
+
+	Save the following program as "sploit.c" changing MYUID to your
+	user id.  Compile "sploit.c" producing the executable "sploit"
+	in your home directory.  Create a ".forward" file containing:
+
+		\<user>, "|<path>/sploit"
+
+	[change <user> to your username so you dont lose mail (unless,
+	of course, you'd rather lose mail) and set <path> to your home
+	directory path (where sploit lives)]
+
+	Now, as another user, send yourself some mail.  Note that the
+	sploit program defers delivery the first time thru; check out
+	"/tmp/whoami" to see that sploit ran as you.  Now, run your
+	mail queue (or open a beer and wait for sendmail to run it).
+	After the queue run, note that the sploit accepted the letter
+	and returned a successful exit status; check out "/tmp/whoami"
+	again to see that this time, sploit ran as the sender!
+
+	You can also use "sploit.c" to test for the root initgroups()
+	hole by checking the group list when "sploit" was first called.
+
+---------------------------------------------------------------------------
+/*
+ * sploit.c     JEF     2/24/90
+ *
+ * compile: cc sploit.c -o sploit
+ */
+
+#include <sys/param.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <sysexits.h>
+#include <pwd.h>
+#include <grp.h>
+
+#define MYUID   438     /* your uid (i.e. your ".forward" invokes this) */
+
+#define getuser(uid)    getpwuid(uid)->pw_name  /* assume valid uid */
+#define getgrp(gid)     getgrgid(gid)->gr_name  /* assume valid gid */
+
+main()
+{
+	FILE *fp;
+	uid_t myuid;
+	int i, rval, ngrps, grplst[NGROUPS];
+
+	if ((myuid = getuid()) == MYUID)
+		rval = EX_TEMPFAIL;
+	else
+		rval = EX_OK;
+
+	if ((fp = fopen("/tmp/whoami", "a")) != NULL) {
+
+		/* real user/group ids */
+		fprintf(fp, "%susr:%s grp:%s",
+			(rval == EX_OK)? "": "Def> ",
+			getuser(myuid), getgrp(getgid()));
+
+		/* effective user/group ids */
+		fprintf(fp, " eusr:%s egrp:%s",
+			getuser(geteuid()), getgrp(getegid()));
+
+		/* group list */
+		if ((ngrps = getgroups(NGROUPS, grplst)) > 0) {
+			fprintf(fp, " grps:");
+			for (i = 0; i < ngrps; i++)
+				fprintf(fp, " %s", getgrp(grplst[i]));
+		}
+		fprintf(fp, "\n");
+
+		(void) fclose(fp);
+	}
+
+	exit(rval);
+}
+---------------------------------------------------------------------------
+
+Fix:
+	To fix the first hole, I simply call initgroups(3) when doing
+	final delevery of mail.  One minor point is that initgroups(3)
+	takes a user name (as opposed to a uid).  Since determining
+	the username for the "default uid" on each non-local delivery
+	would be a waste of time, I added a `DefUser' global variable
+	which simply tracks changes to the `DefUid' global variable.
+
+	The `DefUid' and `DefGid' variables used to be set to the
+	*sender* of the mail.  This code has been safely removed,
+	except for the special case which allows the sender to write
+	a "dead.letter" file in their directory.  As a result of this
+	change, a delivery agent is more likely to run as the default
+	DefUid/DefGid (as spec'd in the config file) and I recommend
+	that this be changed from `daemon' to an unprivileged user
+	like `nobody'.
+
+	Since mailers will no longer run as the sender, you should
+	check your sendmail configuration file for any mailers that
+	used to depend on this "feature".  Specifically, if your
+	local mailer is "/bin/mail", be sure to add a "-r $f" to the
+	argv spec (A=) and remove the "r" from the flag spec (F=).
+	This will result in a "-r <user>" argument on each invocation
+	of "/bin/mail", rather than only on "network forward opers".
+	You may need a similar change if you use the "f" mailer flag.
+	For example, if your "Mlocal" definition looks like:
+
+	   Mlocal, P=/bin/mail, F=rlsDFMmn, S=10, R=20, A=mail -d $u
+
+	Change it to:
+
+	   Mlocal, P=/bin/mail, F=lsDFMmn, S=10, R=20, A=mail -r $f -d $u
+
+	so that /bin/mail doesnt choose the default username for its
+	"From " line when delivering local mail.
+
+	To fix the second hole, I used the fact that the definition
+	of the `R' and `E' lines in the queue control file state that
+	only one address can be associated with each line.  This,
+	coupled with the fact that `R' (and `E') lines are sent thru
+	parseaddr() before and after their stay in the queue file, made
+	a backward compatible, nice looking fix possible.  I put the
+	original target user name inside a comment field, "()", at the
+	front of each `R' (and `E') line.  When de-queueing these
+	addresses, I check for this comment field and, if it exists,
+	set the *new* "q_ruser" field in the ADDRESS struct to the
+	"real" target user (i.e. who to execute final delivery as).
+	Older sendmails will strip this info off and deliver normally.
+
+	The rest of the fix centers on how this "real" target user
+	gets integrated back into the address list.  In sendtolist(),
+	there is a loop which calls recipient() for "everyone on the
+	local send list".  We added a call to setctladdr() with each
+	address, however this call will have no effect unless `CtlUser'
+	(a static variable toward the end of "queue.c") is set to a
+	controlling user name, and the address setctladdr() was passed
+	does not yet have a controlling user.  The call to sendtolist()
+	for the `R' and `E' queue file commands now looks like:
+
+		sendtolist(setctluser(&buf[1]), [...]);
+		clrctluser();
+
+	So the `CtlUser' is only set for this short period of time.
+	It is not possible to longjmp() during this time, so `CtlUser'
+	will never be incorrectly set.  We believe there is no "clean"
+	way to handle this (other than some major rewriting) and this
+	was as close as Larry and I could get.
+
+	Now say for example, I have a ".forward" that reads:
+
+		forys@cs, guest1, guest2, guest3, /tmp/XX
+
+	Where each guest account's ".forward" file sends its account a
+	copy of the letter, and also executes "sploit" (as coded above).
+	What you will initially see in the mailq is:
+
+		AA23150*      23 Mon Feb 26 12:13 forys
+					  (forys) /tmp/XX
+					  (guest3) "|/u/guest3/sploit"
+					  \guest3
+					  (guest2) "|/u/guest2/sploit"
+					  \guest2
+					  (guest1) "|/u/guest1/sploit"
+					  \guest1
+					  forys@cs
+
+	And later, after everything gets delivered, what remains is:
+
+		AA23150       23 Mon Feb 26 12:13 forys
+			 (Deferred)
+				  (guest3) "|/u/guest3/sploit"
+				  (guest2) "|/u/guest2/sploit"
+				  (guest1) "|/u/guest1/sploit"
+
+	The above should be read as, "in trying to exec /u/guestX/sploit
+	as guestX, sendmail got a temporary failure and will try again
+	later".  If it isnt obvious from the above example, this will
+	*only* affect queued, local mail.
+
+	Finally, if someone had an account named "(xxx)" and you wanted
+	to send them mail, you would have to use "\(xxx\)" to prevent
+	crackaddr() from stripping off the paren.  I checked this, and
+	in the queue command file, an address of this form looks like:
+
+		R\(xxx\)
+
+	which is easily distinguished from:
+
+		R(xxx) ...
+
+	which I claim, can never occur.  However, since one can never
+	be sure about sendmail, I added a sanity (or security) check to
+	prevent a bogus controlling address from being written out to
+	the queue command file.
+
+	As a footnote, Larry's original fix introduced a `C' command to
+	the control file to do the same thing as the parenthesis; while
+	this could be added very easily, as Larry said, it does create
+	a backward compatibility problem with existing queued "cf" files
+	which this fix avoids.  The `C' command also introduced an order
+	on commands in the queue file which didnt seem to be in keeping
+	with the way the command file format was designed.
+
+	We have been running most of these changes for nearly a month on
+	our machines.  Please read this entire report so you understand
+	what these patches are doing; there is a reason behind each one
+	of them.  Also, be sure to check the mailer definitions in your
+	config file (as described above).  If you have any questions or
+	find a problem with this fix, send me mail (forys@cs.utah.edu);
+	I'll respond as time permits.
+
+-----------------------------------------------------------------------------
+*** /tmp/,RCSt1016453   Sun Mar 18 01:47:17 1990
+--- sendmail.h  Sun Feb 25 01:52:42 1990
+***************
+*** 88,93 ****
+--- 88,94 ----
+  {
+	char            *q_paddr;       /* the printname for the address */
+	char            *q_user;        /* user name */
++       char            *q_ruser;       /* real user name, or NULL if q_user */
+	char            *q_host;        /* host name */
+	struct mailer   *q_mailer;      /* mailer to use */
+	u_short         q_flags;        /* status flags, see below */
+***************
+*** 499,504 ****
+--- 500,506 ----
+  EXTERN int    RealUid;        /* when Daemon, real uid of caller */
+  EXTERN int    RealGid;        /* when Daemon, real gid of caller */
+  EXTERN int    DefUid;         /* default uid to run as */
++ EXTERN char   *DefUser;       /* default user to run as (from DefUid) */
+  EXTERN int    DefGid;         /* default gid to run as */
+  EXTERN int    OldUmask;       /* umask when sendmail starts up */
+  EXTERN int    Errors;         /* set if errors (local to single pass) */
+*** /tmp/,RCSt1016458   Sun Mar 18 01:47:19 1990
+--- conf.c      Sun Mar 18 01:38:25 1990
+***************
+*** 153,159 ****
+--- 153,178 ----
+	FileMode = 0644;
+	DefUid = 1;
+	DefGid = 1;
++       setdefuser();
+  }
++
++
++ /*
++ **  SETDEFUSER -- set/reset DefUser using DefUid (for initgroups())
++ */
++
++ setdefuser()
++ {
++       struct passwd *defpwent;
++
++       if (DefUser != NULL)
++               free(DefUser);
++       if ((defpwent = getpwuid(DefUid)) != NULL)
++               DefUser = newstr(defpwent->pw_name);
++       else
++               DefUser = newstr("nobody");
++ }
++
+
+  /*
+  **  GETRUID -- get real user id (V7)
+*** /tmp/,RCSt1016463   Sun Mar 18 01:47:20 1990
+--- deliver.c   Sun Mar 18 01:28:50 1990
+***************
+*** 372,379 ****
+	**      If we are running SMTP, we just need to clean up.
+	*/
+
+-       if (ctladdr == NULL)
+-               ctladdr = &e->e_from;
+  #ifdef NAMED_BIND
+  #ifndef FULLY_QUALIFY
+	/*
+--- 372,377 ----
+***************
+*** 895,905 ****
+--- 893,907 ----
+			if (ctladdr == NULL || ctladdr->q_uid == 0)
+			{
+				(void) setgid(DefGid);
++                               (void) initgroups(DefUser, DefGid);
+				(void) setuid(DefUid);
+			}
+			else
+			{
+				(void) setgid(ctladdr->q_gid);
++                               (void) initgroups(ctladdr->q_ruser?
++                                       ctladdr->q_ruser: ctladdr->q_user,
++                                       ctladdr->q_gid);
+				(void) setuid(ctladdr->q_uid);
+			}
+		}
+***************
+*** 1259,1268 ****
+			ctladdr = &CurEnv->e_from;
+		if (!bitset(S_ISGID, stb.st_mode) || setgid(stb.st_gid) < 0)
+		{
+!                       if (ctladdr->q_uid == 0)
+				(void) setgid(DefGid);
+!                       else
+				(void) setgid(ctladdr->q_gid);
+		}
+		if (!bitset(S_ISUID, stb.st_mode) || setuid(stb.st_uid) < 0)
+		{
+--- 1261,1275 ----
+			ctladdr = &CurEnv->e_from;
+		if (!bitset(S_ISGID, stb.st_mode) || setgid(stb.st_gid) < 0)
+		{
+!                       if (ctladdr->q_uid == 0) {
+				(void) setgid(DefGid);
+!                               (void) initgroups(DefUser, DefGid);
+!                       } else {
+				(void) setgid(ctladdr->q_gid);
++                               (void) initgroups(ctladdr->q_ruser?
++                                       ctladdr->q_ruser: ctladdr->q_user,

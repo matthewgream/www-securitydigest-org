@@ -1,0 +1,553 @@
+VIRUS-L Digest   Monday, 22 Apr 1991    Volume 4 : Issue 67
+
+Today's Topics:
+
+Administrivia - Happy Birthday V-L
+Need help with LAN protection (PC)
+Re: HyperCard anti-virus script bad (Mac)
+Re: HyperCard anti-virus script bad (Mac)
+Re: AF/91 and April Foolism in general
+Re: Trying to find a good anti-viral software (PC)
+Re: Viraphobia (Re: AF/91 and April Foolism in general)
+Re: Error in F-PROT 1.15 (PC)
+Viruses in LANs
+DOS Virus (PC)
+VIRUS-L logs-backissues
+12-Tricks Trojan (PC)
+Cascade attacks UK police; press errors re computers
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 22 Apr 91 09:19:13 -0400
+>From:    Kenneth R. van Wyk <krvw@cert.sei.cmu.edu>
+Subject: Administrivia - Happy Birthday V-L
+
+As of today, 22 April 1991, VIRUS-L is 3 years old.  My sincere thanks
+to all of you who have helped make it happen!
+
+Cheers,
+
+Ken
+
+------------------------------
+
+Date:    Fri, 19 Apr 91 06:50:00 -0800
+>From:    "CONNIE WARREN (KAMAN INSTRUMENTATION)" <WARREN@MDCBBS.COM>
+Subject: Need help with LAN protection (PC)
+
+I'd like to solicit your expertise on how best to protect the
+following LAN froviruses, etc...  It is a Novell Barcode LAN 3 of the
+terminals are accessible by anyone.  The remaining terminals are
+located in a secure area.  We'd like to protect the whole LAN,
+including the mainframe host.  What type of solution will give us
+adequate protection without loss of performance?
+
+Thanks,
+Connie
+(Email please)
+
+------------------------------
+
+Date:    Fri, 19 Apr 91 10:01:34 +0800
+>From:    bcarter@claven.idbsu.edu
+Subject: Re: HyperCard anti-virus script bad (Mac)
+
+Greetings,
+
+>You know, I've been doubting my own infallibility for the past few
+>days since Bruce posted the "sorry, but it won't work", so I tried to
+>send set and the params directly to HC, only it isn't happening, guys.
+>Now I really would like to put this whole thing to rest, so try it:
+>Try to send the set command directly to HC and change the script of a
+>stack.  I have yet to be able to do it.  In other words, the theory
+>is, of course correct, but it ain't working in practice, and I'm out
+>of ideas, so please, all ye doubters, try it and then send me your
+>scripts because all I'm getting are error messages with no results.
+>Don't send me your ideas, I want working, syntactically correct
+>scripts.  If they work for me I'll withdraw my previous comments.
+>Until then, please prove me wrong.
+>
+>Mikey.
+>Mac Admin
+>WSOM CSG
+>CWRU
+>mike@pyrite.som.cwru.edu
+
+Ah, here is your problem, using the params with set doesn't work.  In
+fact, if you check "the paramCount" for set you'll find out that it is
+0.  This has never worked in a way that I consider correct in any
+version of HyperCard.  What you're proving is that using set with the
+params doesn't work, not that the set handler in the Home stack is
+catching things.  You have to send an explicit message (which is what
+a virus would be doing anyway).
+
+Do the following in a button:
+
+on mouseUp
+  send "set the script of this stack to Virus!" to HyperCard
+end mouseUp
+
+This will bypass your set handler and zero the script of the current
+stack (make sure it is one you don't care about, or copy the stack
+script somewhere first) and put the single word "Virus!" in its place.
+You could just as easily set it to the contents of a variable or field
+which actually contained a virus.  To show how set doesn't work right
+with the params, try the following to intercept set commands:
+
+on set
+  answer the paramCount
+  answer "Set params are:" && the params
+end set
+
+The paramCount will be 0 and the params will contain only the set
+command itself.
+
+Apple explains all this with some comments about the difference
+between commands and keywords.  Personally, I think it is a bug, or at
+least an anomoly.
+
+Bruce Carter, Courseware Development Coordinator            Lab: (208) 385-1859
+Faculty Development Lab - Room 213                       Office: (208) 385-1250
+Simplot/Micron Technology Center                       CompuServe ID: 76666,511
+Boise State University                            CREN (BITNET): duscarte@idbsu
+1910 University Drive                        Internet: duscarte@idbsu.idbsu.edu
+Boise, ID  83725                        --> Preferred: bcarter@claven.idbsu.edu
+===============================================================================
+
+------------------------------
+
+Date:    Fri, 19 Apr 91 09:19:09 -0900
+>From:    "Jo Knox - UAF Academic Computing" <FXJWK@ALASKA.BITNET>
+Subject: Re: HyperCard anti-virus script bad (Mac)
+
+mike@pyrite.SOM.CWRU.Edu (Michael Kerner) writes:
+> Try to send the set command directly to HC and change the script of a
+> stack.  I have yet to be able to do it.  In other words, the theory
+> is, of course correct, but it ain't working in practice, and I'm out
+> of ideas, so please, all ye doubters, try it and then send me your
+> scripts because all I'm getting are error messages with no results.
+> Don't send me your ideas, I want working, syntactically correct
+> scripts.  If they work for me I'll withdraw my previous comments.
+> Until then, please prove me wrong.
+
+Here ya go;
+I did test before calling you wrong; I have your script included as
+script for my Home stack, with the addition of an Else/Pass Set for
+conditions the script doesn't care about (sets other than script).  In
+another stack, I have something which sets the stack script:
+
+on mouseUp
+  put -,  --just pretend the "-," is a continuation character (option l)
+  "on idle" & return & "show message" & return & "end idle" & return -,
+  into it
+  set the script of this stack to it
+  send "set the script of this stack to it" to HyperCard
+end mouseUp
+
+Your script in the Home stack certainly does catch the first, but not
+the second....  (in HyperCard 1.2.5...)
+jo
+
+------------------------------
+
+Date:    19 Apr 91 19:15:33 +0000
+>From:    dank@stealth.usc.edu (Dan King)
+Subject: Re: AF/91 and April Foolism in general
+
+jkp@cs.HUT.FI (Jyrki Kuoppala) writes:
+|> [ someone writes lots of babbling about lawsuits and such for an april
+|> fools joke ]
+|>
+|> If people lack knowledge about the things they're reading and in
+|> general take everything they read from newspapers as the Truth without
+|> checking it first with someone competent enough to know what's it all
+|> about, in my opinion they deserve all what they get.
+
+I agree, this is perhaps the most important point that needs to be
+made here.  If you read an article in a newspaper (even a normally
+reputable one) about a new bullet the military had invented that flew
+around corners and waited in dark alleys before striking its target,
+you might want to do a little followup before getting upset.  More so
+if the article ran on April 1st.
+
+|> You're in much more trouble than some lost time if you blindly believe
+|> anything you happen to read in a publication.
+
+Exactly.
+
+|> It seems to me that especially in the computer virus field the lack of
+|> knowledge about computer security in general is often exploited by
+|> various venturers.  Sure, there's nothing inherently wrong with
+|> wasting your money spending it on various virus detection programs,
+|> populist books and such.
+
+Now I began to question Mr (? I may be mistaken, my apologies if you
+are actually Ms) Kuoppala.
+
+|> Computer viruses in themselves are not a big problem.  The big problem
+|> is persons with no knowledge of the risks involved and no proper
+|> training and/or usage policies using computer systems with nil (or
+|> worse, security-by-obscurity ones) operating system and application
+|> program access controls, with the programs often written by persons
+|> with equal lack of knowlegde.  Add to that the lack of source code and
+|> then even if the users were competent enough they couldn't find or fix
+|> the holes and lacks of controls.
+
+Hold it.  Wrong.  Dead wrong.  Computer viruses are a HUGE problem for
+anyone who is even remotely connected with the maintenance of a
+significant number of computers.  Ask someone who's home system has
+just had its HD partition destroyed by a virus.  Ask someone who is
+ready to go back to a typewriter because their new, spiffy Mac IIci
+crashes at application launches due to WDEF.
+
+Sure, if everyone was a super-hacker then viruses would have a much
+harder time spreading.  Of course, viruses would probably be much
+better at hiding themselves.  Proper "usage policies"?  Pray tell,
+what are these?  We could set up fascist-like user rooms where users
+can only submit batch jobs and never touch the computers, but we'd get
+less accomplished that way.
+
+Including source code with every program would help eliminate viruses,
+but forgive me if I only pay attention to realistic options.  Likewise
+running only programs not written by "persons with an equal lack of
+knowledge".  Whatever that means.
+
+Viruses are a problem.  A big one.  Are they're going to get worse.
+Come on, don't pick on the users.  Attack, instead, the virus authors.
+If these people would write useful code instead of malignant code,
+then life would be grand.
+
+Time to get off my soapbox, I guess.
+
+|> //Jyrki
+dank
+
+------------------------------
+
+Date:    Fri, 19 Apr 91 14:54:00 +0000
+>From:    Jim Schenk <JIMS@SERVAX.BITNET>
+Subject: Re: Trying to find a good anti-viral software (PC)
+
+> FROM: "Sant." <SSIRCAR@ecs.umass.edu>
+
+> Can someone please help with the following problem?  I would like
+> to know which of the following virus protection programs are the
+> most reliable:
+>    McAfee's SCAN/VSHIELD/CLEAN
+>    Norton's Anti-Viral program
+>    Virex-PC
+
+In my experience, F-PROT is more reliable (and easier to use) than
+McAfee's or Norton's products (I haven't looked at Virex-PC.)  The
+latest version (1.15) is available via anonymous ftp from
+beach.gal.utexas.edu.
+
+> Registering for the three McAfee's programs would be more
+> expensive than buying Norton's program.  I recently missed a sale
+> pricing Norton at $50.  If Norton is not as good, then I'd rather
+> pay more for the better protection.
+
+F-PROT is less expensive than both.
+
+> Is there something similar to MAC's SAM?  I like how the program
+> automatically checks any removable disks which has been inserted
+> into the drive.  Is there a PC version of this software which
+> does the same thing?
+
+There is nothing similar to SAM for the PC.  The PC's hardware
+prevents the type of floppy disk checking that SAM uses on the Mac.
+
+Jim Schenk
+University Computer Services
+Florida International University
+
+Bitnet:         jims@servax
+Internet:       jims@servax.fiu.edu
+
+------------------------------
+
+Date:    19 Apr 91 15:20:01
+>From:    keir@vms.macc.wisc.edu (Rick Keir, MACC)
+Subject: Re: Viraphobia (Re: AF/91 and April Foolism in general)
+
+Viruses are indeed a problem.  We had our 100+ student open computer
+lab hit with Scores & nVIR several years ago, and we've had viruses
+here ever since.  The PCs have had Brain, Joshi, Ping, and others.  So
+the AF/91 joke didn't bother us at all.  You HAVE to be vigilant
+because there are many REAL viruses out there.  You don't have to be
+obsessive because someone announces one more virus (in an article that
+was clearly a joke for anything other than the extremely casual hasty
+reader; anyone who reads things that poorly should not operate
+computers in any case, as there are far more deadly surprises waiting
+for them than an April Fool's joke).
+
+Look, if someone announces a new sexually transmitted disease, and
+they turn out to be wrong, are you hurt by practicing safe sex?  No
+- --- only a fool believes that things are safe now in any case.
+
+------------------------------
+
+Date:    20 Apr 91 02:38:38 +0000
+>From:    billj@uop.uop.edu (Snugglupagus)
+Subject: Re: Error in F-PROT 1.15 (PC)
+
+frisk@rhi.hi.is (Fridrik Skulason) writes:
+
+>Fix:      Either just give the command
+
+>		F-UNLOCK F-TEST.COM
+
+tried it, but it didn't work.  now i run f-test only to get the
+following message:
+
+program infected with the f-test- virus.
+access denied.
+
+or something like that.
+
+>	  or replace the F-TEST.COM with the following program.
+
+>begin 755 f-test.com
+>hY70u1U4o0QoVi+-AnG349IFGGJN3IW-dQm-iPrEUOKtnR43gP4JY64xm64tj
+>BR0-rPr7fOKtb6Eo87034
+>+
+>end
+
+well, this is all we got at this site.  obviously, it's not the whole
+thing.  if someone could email me a copy or tell me what the above
+error message means, it would be appreciated.
+
+btw, i am using a 286/10 compatible running ms-dos 3.3 and 4dos 3.02.
+
+snugglupagus
+- --
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  "Steppin' on toes is a common routine    |  Send email/flames to:
+   Sneakin' up from behind                 |     billj@uop.edu
+   You won't get anywhere                  |-----------------------------------
+   Dancin' out of time" - Deborah Gibson   |  Disclaimer:  It's all mine!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+------------------------------
+
+Date:    Sat, 20 Apr 91 12:36:00 -0400
+>From:    WHMurray@DOCKMASTER.NCSC.MIL
+Subject: Viruses in LANs
+
+Copyright (c) 1991
+
+Part 1 of N.
+
+Our gentle moderator notes that:
+
+>Also, privileged users can bypass file protections.  If a privileged
+>user executes an infected file, the LAN may become infected - again
+>without the virus having any knowledge that it is infecting a LAN.
+
+This is a good point that deserves elaboration.
+
+First, what privileges are we talking about?  In order for a user to
+infect a program on a LAN, he must be privileged to write to the
+program and the program must be writeable.  That is, he must have
+WRITE "rights" ("rights" are the privileges in the language used with
+many LAN servers) to the program or he can not infect it.  He need not
+be a "privileged" user in the sense of having SUPERVISOR privileges,
+though that will clearly work.
+
+If he has WRITE privileges to the program, he still may not be able to
+WRITE to the program if it has an "attribute" of READ ONLY or EXECUTE
+ONLY set on.  Thus two conditions must be met in order for the user to
+be able to infect a program.  The manager of the LAN server can make
+it resistant to infection by granting WRITE privileges sparingly and
+using READ ONLY and EXECUTE ONLY generously.
+
+One other privilege is relevant, i.e., MODIFY rights.  Some viruses
+simply set all attributes on a target off before trying to write to
+it.  In DOS, attributes can be reset by any user.  However, in order
+to set an attribute on an object stored on a LAN server, the user
+program must have MODIFY rights to the object.  Thus, the manager of
+the LAN server may defeat his broad use of READ ONLY or EXECUTE ONLY
+by granting MODIFY.
+
+So, no action of a workstation user can result in the infection of a
+program stored on the LAN server as long as that program is READ ONLY
+or EXECUTE ONLY and he does not have the right to MODIFY those
+attributes.  No action of his can result in the infection of a program
+stored on the LAN server if he does not have WRITE privileges (rights)
+to that program.  If the workstation user has no WRITE access to any
+program objects stored on the LAN server, then no action of his can
+cause the infection of anything on the LAN server and it cannot serve
+as a vector to move the virus to any other workstation on the LAN.
+
+The ability of a user to infect a program stored on the server is
+necessary but not sufficient for the server to act as a vector.  In
+addition to the program being infected by one user, it must be
+executed by another.  Thus, if a workstation user cannot write to an
+object stored on the LAN server that can be read by any other user,
+then he cannot spread the virus to another user.  Thus, if the manager
+of the LAN server does not grant one user READ access to any object to
+which he grants another user WRITE access, he will make his server
+resistant to spreading viruses.
+
+Thus, it is possible to configure and manage a LAN server so as to
+make it very resistant to spreading viruses.  However, I am sure that
+most of you understand the limitations inherent in these statements.
+Many users will have some WRITE access to programs which can be read
+by others.  Any such can be a vector.  One obvious vector is the
+\SHARE directory with which many LAN servers are configured.
+
+N.B., a virus need not know anything about the LAN in order for the
+LAN to serve as a vector.  It need only treat all targets the same,
+wtihout regard to where they are stored.  None of the common viruses
+do know anything about LANs.
+
+Note also, the virus need not defeat or bypass any of the security
+features of the LAN in order for the server to act as a vector.  It
+need only exploit the privileges of the user.  Neither does it have to
+execute on the server or infect any program that will execute on the
+server.
+
+Finally, notice that if a user signs on to a workstation that is
+already infected by a virus, then the virus will act with his server
+privileges.  If the SUPERVISOR signs on from an infected user
+workstation, then his privileges will be used by the virus to infect
+programs stored on the LAN server.  Since the boot sector or partition
+table of the workstation may be infected, a privileged user should
+never sign on to the server except when he has initialized the
+workstation from a (personal) trusted copy of DOS.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+Date:    Sat, 20 Apr 91 22:28:17 +0000
+>From:    infmx!billd@uunet.UU.NET (William Daul)
+Subject: DOS Virus (PC)
+
+I don't have much experience with "viruses" so forgive me.
+
+Are there many problems with DOS viruses?  I have only noticed UNIX
+and MAC problems.  A friend had his DOS machine fail...don't ask me
+for the detail...not sure at this point.  He was out visiting
+University of Arizona last week and had his application's diskette
+with him.  He had copied something onto it.  It lost all sense of the
+fact it had COM ports.
+
+I wanted some generic info on DOS viruses.  Is there a good source of
+information as to what is out there and what effect one should look
+for?  Are there any good DOS Vaccines around?
+
+Thanks,  --Bi((
+
+------------------------------
+
+Date:    20 Apr 91 23:58:09 -0400
+>From:    MARTIN.A.L@p9955.wlu.edu
+Subject: VIRUS-L logs-backissues
+
+Hi: I am new to the Virus-l list and ive been reading past issues of
+the logs starting from the first one.  The info is interesting reading
+to say the least. I have enjjjoyed reading these and plan to continue
+to gather the older logs for the info thanks for saving them for the
+enjoyment of us new ones.
+
+1 question: A friend of mine asked me if there was any way to get a
+copy <dissambled> of one or two viruses to look at?  If the answer is
+no, this will be fine also
+
+Thanks again till next time
+Andrew Martin
+
+------------------------------
+
+Date:    Mon, 22 Apr 91 07:33:51 -0500
+>From:    "Dr. Martin Erdelen" <HRZ090@DE0HRZ1A.BITNET>
+Subject: 12-Tricks Trojan (PC)
+
+Hello antiviralists,
+
+it seems that the Twelve Tricks Trojan (or has it upgraded to virus by
+now?)  has reached our university. At least, a user reports that a
+certain ANTIVIR (which one?) reports an infection.  I have not yet
+looked at the respective hard disks myself, so this is all a bit
+vague.
+
+Now, I am experiencing difficulties to retrieve relevant information
+for 12-tricks. For instance, I cannot find an entry in Pat Hoffman's
+VSUM9010 (I know it's not the latest one...). Am I missing a synonym
+for 12-tricks?
+
+The only info I could find up to now is the (first) warning, on
+VALERT-L, by Christoph Fischer, issued on February 12, 1990.  I have
+also done a database search on the VIRUS-L archives, but have not yet
+retrieved the relevant issues (Is there a way to extract only *part*
+of the digests? They're all several hundred lines long, and I have to
+get them across the Big Pond... And I really need only the
+12-trick-relevant bits.)
+
+Would anybody point me to more recent information on the subject,
+please?  Has this developped into a major epidemic or is it still
+rare?
+
+Thanks in advance for any help.
+MArtin
+
+    (~  , ,
+   (___/__/__-_
+Dr. Martin Erdelen     EARN/BITNET: HRZ090 at DE0HRZ1A
+- -Computing Centre-
+University of Essen    +----------------------------------------------+
+ Schuetzenbahn 70      |                                              |
+  D-4300 Essen 1       |             No witty remark.                 |
+      Germany          |                                              |
+                       +----------------------------------------------+
+Acknowledge-To: <HRZ090@DE0HRZ1A>
+
+------------------------------
+
+Date:    Mon, 22 Apr 91 08:21:00 +0100
+>From:    Anthony Appleyard <XPUM04@prime-a.central-services.umist.ac.uk>
+Subject: Cascade attacks UK police; press errors re computers
+
+>From UK newspaper 'Sunday Telegraph', 21 April 1991:-
+[NEWS ROUND-UP] [Fraud Office is hit by computer virus]
+
+The mainframe computer used at the Serious Fraud Office in London has  been
+invaded  by  a  rogue  program  "virus".  (writes CHRISTOPHER ELLIOTT.) The
+virus, known as cascade because the letters on the screen  appear  to  fall
+off  and form a sort of alphabet soup at the foot, was discovered last week
+at the Elm Street [in London?] headquarters  of  the  SFO.  Officials  were
+immediately   concerned  for  the  details  of  cases  under  investigation
+involving tens of millions of pounds, which are  stored  on  the  computer.
+Experts  were  called  to  tackle the virus, which first appeared in Europe
+about 18 months ago and has rampaged across computer screens ever since  It
+is  one  of  400 types which have caused havoc in research at hospitals and
+universities around the world. Although the virus now has  been  eliminated
+SFO  officials  still  do  not know how it weas introduced into the system.
+.............................................................
+[A.Appleyard: Note the word 'mainframe' although Cascade is a PC  virus.  I
+take  it  that the affected computer is their "main (= chief) computer" and
+the newspaper's "scientific  reporter",  who  is  likely  a  "jack  of  all
+(scientific)  trades  and a master of none", muisunderstood; or a newspaper
+subeditor mishandled the article after him.
+{A.Appleyard} (email: APPLEYARD@UK.AC.UMIST), Mon, 22 Apr 91 08:07:44 BST
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 67]
+*****************************************

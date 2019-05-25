@@ -1,0 +1,576 @@
+precedence: bulk
+Subject: Risks Digest 21.79
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 27 November 2001  Volume 21 : Issue 79
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/21.79.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Harry Potter related risks (Richard Akerman)
+Phone banking hiccups (Geoffrey Brent)
+Risks of the space character in Unix filenames (Diomidis Spinellis)
+FBI: home-grown terrorists (Scrounger)
+Misdirected criticism of Google (Chris Adams, Gary McGraw)
+Re: Mobile phone jamming (Markus Kuhn)
+Re: Stupid virus filters (Leonard Erickson)
+Re: Let's get really paranoid about e-mail and spam (Skip La Fetra)
+REVIEW: "The CISSP Study Guide", Ronald L. Krutz/Russell Dean Vines 
+  (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Fri, 23 Nov 2001 19:51:14 -0400
+From: Richard Akerman <rakerman@bigfoot.com>
+Subject: Harry Potter related risks
+
+I went to see the Harry Potter movie.  There was a long line at the box
+office, but none for the self-serve machines, so I went ahead and used the
+self-service (which I prefer anyway).  No problem, I got to the final screen
+showing the price, it asked me to swipe my credit card and I did.  Then I
+waited... and waited.  The screen stayed up and the card reading device just
+kept saying "WELCOME / BONJOUR" over and over again.  Eventually an employee
+came up and told me that the machines weren't working - in fact their entire
+computer system was down - the long line at the box office was because no
+one could purchase tickets.
+
+ * Risk 1: Kiosks that let you get to final purchase stage even though
+   purchasing is not possible.
+ * Risk 2: Employees who don't move to prevent access to such kiosks quickly
+   enough.
+ * Risk 3: A ticket office that shuts down completely when the computers are
+   down
+
+However, the end result, while risk-full, was actually handled quite
+gracefully.  After waiting in line for a while, I went back to check on the
+kiosk, and a different employee said a ticket had printed out when the
+computers came back up, and he had given it to the manager.  I showed my
+credit card to the manager and he gave me my ticket.
+
+Risk 4: A kiosk that stores a transaction and then completes it many minutes
+later when the main computer system/network comes back up!
+
+However, kudos to the quick-thinking second employee, who handled the
+situation of an unexpected ticket coming out of the kiosk fairly well.
+
+  [Sort of a rushin' roulette-like situation?  Perhaps a Pottery-wheel?  PGN]
+
+------------------------------
+
+Date: Tue, 27 Nov 2001 14:22:36 +1100
+From: Geoffrey Brent <g.brent@student.unsw.edu.au>
+Subject: Phone banking hiccups
+
+On 5 Nov 2001, I tried to use the National Australia Bank's phone banking
+system to transfer money from my cheque account to pay off my credit card.
+
+As prompted by the automated menu system, I entered my user number and PIN,
+and requested this transfer. Only after I'd confirmed the transfer was I
+told "phone banking is unavailable at this time, your transaction could not
+be processed." I called back later in the day, this time successfully
+completing the desired transfer.
+
+Some weeks later I received my latest credit-card statement... and
+discovered that *both* transactions had in fact been processed, despite the
+message I received first time around.
+
+Besides the obvious annoyance value and possible inconvenience of
+transferring more money than I'd intended, this behaviour strikes me as a
+security weakness. From the user end, a system that requests password data
+but is unable to provide the services that password should access looks
+suspiciously like a password- grabber. A system that accepts a password and
+tells the user that no transaction has been made, while debiting their
+account, looks even more suspicious.
+
+Legitimate software should, wherever possible, avoid resembling malware --
+even in its failure modes. Training users to accept suspicious behaviour as
+the norm makes the system much more vulnerable to deliberate abuse.
+
+Geoffrey Brent
+
+------------------------------
+
+Date: Thu, 22 Nov 2001 23:50:39 +0300
+From: Diomidis Spinellis <dds@aueb.gr>
+Subject: Risks of the space character in Unix filenames
+
+The root of the problem reported in the "Glitch in iTunes Deletes Drives
+(Solomon, RISKS-21.74)" article is the default way the Unix shell handles
+filenames with embedded spaces.  Although a space can legally appear in a
+Unix filename, such an occurrence is not usual; Unix filenames tend to be
+terse, often even shorter than a single word, (e.g. "src", "doc", "etc",
+"bin") so they can be swiftly typed.  A number of more recent and supposedly
+user-friendly operating systems like the Microsoft Windows family, and, I
+understand, the MacOS, use longer and more descriptive file names
+("Documents and Settings", "Program Files").  Many of these filenames
+contain spaces; the ones I listed are by default used by Windows 2000 as the
+location to store user data and application files (the equivalent of
+/home/username and /bin under Unix).
+
+As Unix-style tools and relevant applications are increasingly ported to run
+under Windows (see for example [1, 2, 3] and my Windows outwit tool suite
+described in [4]) or natively run under Mac OS X, problems and associated
+Risks arise.  The main reason is that some often-used Unix shell constructs
+fail when applied to filenames containing a space character.  Unfortunately,
+these constructs appear in many existing programs, and even in the writings
+of the original system developers, who, in all fairness, could not have
+foreseen how their tools would have been used 25 years after their
+conception.
+
+Technically, the problem manifests itself when field splitting (the process
+by which the shell splits input into words) is naively applied on the output
+of an expansion that generates filenames with embedded spaces.  Consider the
+following example, appearing on page 95 of one of the classic texts on Unix
+programming [5]:
+  for i in ch2.*
+    echo $i:
+    diff -b old/$i $i
+    echo
+  done
+
+The above code will compare all files matching the ch2.* pattern in the
+current directory with copies presumably stored in the directory called
+"old".  Consider what will happen when the code is applied to a file called
+"ch2.figure 3.dot" (notice the space between the word figure and the "3").
+The shell variable i will be set to the correct filename, but then the shell
+will execute the "diff" command with the following argument list
+(customarily passed to C programs in the argv array):
+  argv[0] = "diff"
+  argv[1] = "-b"
+  argv[2] = "old/ch2.figure"
+  argv[3] = "3.dot"
+  argv[4] = "ch2.figure"
+  argv[5] = "3.dot"
+
+and diff will complain
+  diff: extra operand
+as more than two filenames were passed as arguments.  This happens,
+because words are expanded by most Unix shells in the following order:
+  1. Parameter (including variable) expansion, command substitution.
+  2. Field splitting.
+As a result, the variable $i is first expanded into "ch2.figure 3" and
+then the result is split into fields for further processing or for
+passing them as arguments to a command. 
+
+The most common dangerous constructs that can appear in step 1 are variable
+references (e.g. $PATH, $word) and commands inside backquotes (e.g. `find
+. -type f -name 'ch2.*'`).  These dangerous constructs are quite common,
+appearing among other places in the original article describing the Bourne
+shell [6] (for i in * do if test -d $d/$i [...]), in other scripts in the
+reference of the original example [5 p. 141, 143], and even in quite recent
+work by the same authors [7, p. 149].  It is also prevalent in existing
+operating system tools; I counted 43 occurrences of one suspicious pattern
+("$*") in a NetBSD source tree, 8 in a FreeBSD command path, and 49 in the
+shell scripts of a Mandrake Linux distribution.  The Unix world is
+definitely not ready to deal with filenames containing the space character.
+
+Avoiding this problem is not trivial.  A radical solution would be to change
+the value of the shell's "internal field separator" (IFS) variable.  This
+variable contains the characters that shell uses to split words.  Its
+default value is "<space><tab><newline">.  This solution however would break
+more things than it would fix, since most scripts expect words to be
+separated by spaces.  As an example the construct "A='ls -l';$A" would not
+work.  The most practical solution is to manually enclose variables inside
+double quotes when using them in contexts where only a single word is
+normally expected.  The shell will still expand the variable inside the
+quotes, but will treat the result as a single word.  Thus the offending part
+in the original example should have been written as:
+  diff -b "old/$i" "$i"
+In addition, whenever a shell script uses the variable $* to obtain the
+values of all parameters passed to a script, the $* variable should be
+replaced by the variable $@, again inside double quotes.  Thus the
+common code pattern
+  for arg in $*
+should be written as
+  for arg in "$@"
+Interestingly, Kernighan and Pike were aware of the $* problem and the above
+solution since 1984; they aptly characterize the "$@" solution as "almost
+black magic" [5 p. 161].
+
+Still, these changes will not correctly handle filenames with embedded
+whitespace returned from a command substitution.  In this case, temporarily
+changing the IFS variable before executing a command may be the only
+feasible solution.  The following example illustrates this approach:
+  # Save original IFS
+  OFS="$IFS"
+  # Set IFS to newline
+  IFS='
+  '
+  # The find command might output filenames with spaces
+  wc -l `find . -type f`
+  # Restore original IFS
+  IFS="$OFS"
+
+By searching existing shell scripts for the patterns I described and
+applying the suggested changes most problems can be solved.  Other scripting
+languages like Tcl and, to a lesser extend, Perl may also have problems
+dealing with filenames with spaces.  Similar approaches (appropriate quoting
+in Perl "eval" blocks and use of the "list" command in Tcl) can be used to
+avoid these problems.
+
+References
+
+[1] David G. Korn. Porting Unix to Windows NT. In Proceedings of the
+USENIX 1997 Annual Technical Conference, Anaheim, CA, USA, January 1997.
+Usenix Association.
+[2] Geoffrey J. Noer. Cygwin32: A free Win32 porting layer for UNIX
+applications. In Proceedings of the 2nd USENIX Windows NT Symposium,
+Seattle, WA, USA, August 1998. Usenix Association.
+[3] Stephen R. Walli. OPENNT: UNIX application portability to Windows NT
+via an alternative environment subsystem. In Proceedings of the USENIX
+Windows NT Symposium, Seattle, WA, USA, August 1997. Usenix Association.
+[4] Diomidis Spinellis. Outwit: Unix tool-based programming meets the
+Windows world. In USENIX 2000 Technical Conference Proceedings, pages
+149-158, San Diego, CA, USA, June 2000. Usenix Association.
+<http://www.dmst.aueb.gr/dds/pubs/conf/2000-Usenix-outwit/html/utool.html>
+[5] Brian W. Kernighan and Rob Pike. The UNIX Programming Environment.
+Prentice-Hall, 1984.
+[6] S. R. Bourne. The UNIX shell. Bell System Technical Journal,
+57(6):65-84 July/August 1978.  (Also appears in volume 2 of the Unix
+Programmer's Manual and in AT & T, UNIX System Readings and
+Applications, volume I. Prentice-Hall, 1987.)
+[7] Brian W. Kernighan and Rob Pike. The Practice of Programming.
+Addison-Wesley, 1999.
+
+Diomidis Spinellis - http://www.dmst.aueb.gr/dds/
+Athens University of Economics and Business (AUEB)
+
+------------------------------
+
+Date: Wed, 21 Nov 2001 22:14:30 -0800
+From: Scrounger <scroungr@nightfall.forlorn.net>
+Subject: FBI: Home-grown terrorists
+
+RISKS-21.77 remarks on the FBI installing a program that logs keystrokes on
+a suspect's computer "FBI targets suspects' PCs with spy virus", which I'm
+sure most would agree damages it.  Of course, RISKS-21.76, in "Re: Kids'
+learning game site becomes porn site (Smith, RISKS-21.74)" includes a link
+to the US PATRIOT Act
+  <http://www.zdnet.co.uk/itweek/columns/2001/42/bingley.html>, 
+which defines such damage as terrorism.  So the FBI is a terrorist
+organization...  Who knew?
+
+------------------------------
+
+Date: Tue, 27 Nov 2001 01:20:36 -0800
+From: Chris Adams <chris@improbable.org>
+Subject: Misdirected criticism of Google (Re: RISKS-21.75)
+
+http://news.cnet.com/news/0-1005-202-7946411.html
+
+Google keeps improving and people are starting to find sensitive information
+they put online isn't as private as they thought - they had relied on the
+traditional opacity of proprietary formats to keep it out of search engines,
+if they thought of it at all. The solution? Blame Google.
+
+As if it wasn't bad enough that many normal users don't understand that
+putting information online makes it available to the public, consider the
+expert authority CNET quoted:
+
+> "We have a problem, and that is that people don't design software to 
+> behave itself," said Gary McGraw, chief technology officer of software 
+> risk-management company Cigital, and author of a new book on writing 
+> secure software.
+>
+> "The guys at Google thought, 'How cool that we can offer this to our 
+> users,' without thinking about security. If you want to do this right, 
+> you have to think about security from the beginning and have a very 
+> solid approach to software design and software development that is 
+> based on what bad guys might possibly do to cause your program grief."
+
+McGraw doesn't seem to understand the rule he's parroting. That maxim is
+correct - people don't spend enough time considering unusual or hostile
+behaviour when designing software - but he's completely wrong about the
+guilty party: access control is the responsibility of the publisher, not the
+indexer. Basic information theory teaches that someone can use data in any
+way they choose if they can get it in any usable form - the only way to
+prevent this is to keep them from getting it in the first place.  (I'm
+reminded of Bruce Schneier's observation that trying to prevent this is like
+trying to prevent water from being wet.)
+
+The risks?
+ - Attacking companies like Google will hinder innovation while 
+   doing nothing to improve actual security.
+
+ - Misdirected blame may lead to misguided legislation like the 
+   proposed SSSCA, mistakes which will be enormously expensive to correct.
+
+ - Companies will continue to rely on security experts who don't understand
+   the theories behind the guidelines they repeat. Watching the server logs
+   while clients were being audited by certain large firms has convinced me
+   that there's almost no value in such certifications.
+
+------------------------------
+
+Date: Tue, 27 Nov 2001 17:48:29 -0500
+From: Gary McGraw <gem@cigital.com>
+Subject: Misdirected criticism of Google (Adams, RISKS-21.79)
+
+I completely agree with Chris.  In fact, I have long been a proponent of the
+rule that I have been accused of "parroting" (as many of you guys know).
+And I certainly hope I understand at least some of the theories behind the
+guidelines.  I invite Chris to see for himself by reading "Building Secure
+Software" (Addison-Wesley 2001).
+
+I actually made a number of similar points during the long interview, but
+the reporter seems to have latched on to a twisted version of what I meant.
+Alas, this happens all the time.  It's one of the classic RISKS of talking
+to the press!
+
+Nevertheless, the RISK that Chris pointed out (misdirecting blame) is a
+valid one and deserves some airplay here on RISKS.  I rest my case.
+
+------------------------------
+
+Date: 24 Nov 2001 21:42:34 GMT
+From: mgk25@cl.cam.ac.uk (Markus Kuhn)
+Subject: Re: Mobile phone jamming (Stewart, RISKS-21.78)
+
+>... Now, as I understand it, hospitals' no-cellphone policy is based on
+>the fear that the phones' radio transmissions might interfere with hospital
+>equipment.
+
+The above is a common misconception about how mobile phone jammers work.
+They attempt to suppress reception of the base station transmitter signal by
+the mobile unit receiver, as this requires orders of magnitude less energy
+than jamming the other way round. The jammer only has to be slightly
+stronger than the nearest base station (which is usually hundreds of meters
+away and outdoors) and if properly designed and installed will not increase
+ambient field levels significantly. In particular, a jammer does not have to
+be anywhere near as strong as a nearby handset!
+
+Mobile phone jammers for GSM and other standards have been on the market
+for many years and the users of the handheld variants enjoy a much
+longer battery lifetime than their nearby victims. The simplest GSM
+jammers just wobble a carrier across the 935-960 MHz band to disrupt
+the base station signal, whereas the mobile phones transmit much
+stronger in the 890-915 MHz range.
+
+The no-cellphone policies in hospitals are today mostly based on the fear
+that clueless phone users might operate phones in the immediate vicinity
+(with a couple of centimeters) of critical equipment. As soon as the mobile
+phone is a few meters away, field strength will drop well bejond the 3 V/m
+levels against which medical equipment has to be EMC immunity tested by the
+manufacturers (EN 50082, IEC 601-1-2).
+
+Markus G. Kuhn, Computer Laboratory, University of Cambridge, UK
+mkuhn at acm.org,  WWW: <http://www.cl.cam.ac.uk/~mgk25/>
+
+------------------------------
+
+Date: Fri, 23 Nov 2001 16:02:27 PST
+From: shadow@krypton.rain.com (Leonard Erickson)
+Subject: Re: Stupid virus filters (Re: RISKS-21.77)
+
+> ... Overzealous filtering is rapidly becoming a bad joke.
+
+I had a message to some friends bouncing as containing "bad data" in the
+message body or some such uninformative diagnostic.  I finally contacted my
+uucp feed about it, and found that the problem was just such a filter.  But
+rather than being in the *body*, the problem was in the *header*.
+
+He was filtering for a subject of "Gunny" or "Funny joke" (I forget which)
+because "too many viruses/trojans are using that subject".
+
+Argh!
+
+Leonard Erickson (aka shadow{G})   shadow@krypton.rain.com
+
+------------------------------
+
+Date: Sun, 25 Nov 2001 12:13:01 -0500
+From: "LAFETRA,SKIP (HP-SantaClara,ex3)" <skip_lafetra@hp.com>
+Subject: Re: Let's get really paranoid about e-mail and spam (Hurst, R 21.78)
+
+In RISKS-21.78, Allan Hurst relates how he opened e-mail accounts used only
+for testing, and within a month started to receive SPAM.
+
+I can confirm his story.  A few months ago I opened a HOTMAIL account which
+was NEVER used for ANY purpose, and whose existence was not told to ANYBODY.
+(For the curious, I intended to do some Passport testing which I never got
+around to performing).
+
+Within two weeks, this HOTMAIL account (with an unusual name -- 5 characters
+with an embedded numeral [the really curious can look up my "ham" radio
+callsign and send me mail] was receiving pornographic SPAM.
+
+In all of history, I have sent ONE message from this account -- to
+abuse@hotmail.com -- after the SPAM started.  At the present time, this
+account receives roughly a half-dozen SPAM (about 90% sexual) per day.  This
+account has also receive three (3) messages from HOTMAIL administration
+advertising extended features (which I class as legitimate mail).
+
+I have had friends speculate that spammers "accidentally" found this account
+through a random search.  Frankly, I don't believe them, and think that it
+is more likely that an "information leak" within the hosting organization
+has provided this address to spammers, or that some form of packet sniffing
+has found my (occasional -- about every-other-week) logins to see what has
+arrived at the account.  Like Mr. Hurst, I took great pains to exclude this
+account from any directories or "send me mail from affiliate" selections.
+Unlike Mr. Hurst, my account has NEVER been used or communicated for any
+purpose.
+
+Skip La Fetra (Skip@LaFetra.com)
+
+------------------------------
+
+Date: Thu, 22 Nov 2001 08:00:13 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "The CISSP Study Guide", Ronald L. Krutz/Russell Dean Vines
+
+BKCISPPG.RVW   20010924
+
+"The CISSP Study Guide", Ronald L. Krutz/Russell Dean Vines, 2001,
+0-471-41356-9, U$69.99
+%A   Ronald L. Krutz
+%A   Russell Dean Vines
+%C   5353 Dundas Street West, 4th Floor, Etobicoke, ON   M9B 6H8
+%D   2001
+%G   0-471-41356-9
+%I   John Wiley & Sons, Inc.
+%O   U$69.99 416-236-4433 fax: 416-236-4448
+%P   556 p.
+%T   "The CISSP Study Guide: Mastering the Ten Domains of Computer Security"
+
+Of late there has been a significant increase in interest in the CISSP
+(Certified Information Systems Security Professional) exam and designation
+produced by the (ISC)^2 (International Information Systems Security
+Certification Consortium).  The CISSP exam is based on the Common Body of
+Knowledge (CBK) which, as the name implies, is that information assumed to
+be customarily known by those qualified or experienced in the field of
+computer security.  Since the (ISC)^2 also runs courses based on the CBK,
+many people seem to feel that there is some trick or secret to passing the
+exam.
+
+Krutz and Vines appear to want to foster this myth, since the first sentence
+of the introduction states that this book holds the "key to unlocking the
+secrets of the world of information systems security."  If true, this
+assertion would make a mockery of the (ISC)^2 requirement for three years'
+work experience, and the insistence that no one book holds the entire CBK.
+
+The introduction also states that this work is intended as a preparatory
+guide for CISSP students, a reference for students of other information
+security courses, and a manual in security basics and emerging technologies
+for security professionals.  That's a rather tall order.
+
+For those who have seen the (ISC)^2 CBK course materials, it is immediately
+obvious where the structure of the book, and most of the content,
+originates.  Much of the text is in point form, following the slides used in
+the CBK, with only minor expansion to explain the elements.  Discussion of
+concepts is limited, and some of the detail provided is of questionable
+value.  In addition, while the CBK is a substantial and useful work, the
+(ISC)^2 course structure does suffer, over time, as areas are added or
+amended, and the strict adherence to that order, which can be smoothed over
+in a seminar, makes the book very jumpy in places.  Security management
+practices, in chapter one, is rather choppy, and access control, in chapter
+two, is even worse in this regard.
+
+Each chapter covers one of the ten domains of the CBK.  These topics tend to
+overlap in places, but there is little attempt to explain, reconcile, or
+reference duplicated material.  Both chapter two and telecommunications and
+network security, in chapter three, address intrusion detection systems, but
+neither section refers to the other.  (Telecom and networks is a large
+topic, and would have benefitted from some attempt at reorganization.)
+
+Chapter four describes many details of cryptography.  While the particulars
+provided are correct, the lack of background reduces the value of the text.
+Security architecture and models, in chapter five, defines most of the
+terms, but does not give a complete picture of the topic.  Operations
+security generally involves the coordination of a number of individually
+simple aspects, so chapter six deals with the topic adequately.  The same
+minimalist denotation of points does not work as well for applications and
+systems development, in chapter seven.  (In addition, it is disturbing to
+see that discussion of viruses has been completely excluded, particularly in
+view of the fact that the subject has greater representation in the CISSP
+exam than in the CBK course itself.)  Again, business continuity and
+disaster recovery planning involve a number of basic operations, so chapter
+eight provides reasonable coverage.  Chapter nine's review of law,
+investigation, and ethics is terse, but not out of line with the
+requirements of the exam.  Physical security, in chapter ten, is covered
+better than most other areas.
+
+There are a number of appendices.  A glossary is taken from the old (1985)
+US government glossary, with a few additions.  There is an overview of the
+old "Rainbow" series of security manuals.  An essay on using the Capability
+Maturity Model (CMM) with the Health Information Portability and
+Accountability Act (HIPAA) will possibly be of interest to a very select
+group.  There is an overview of the National Security Agency (NSA) Infosec
+Assessment Methodology, a simplistic look at penetration testing, and a
+ludicrously brief list of the contents of British Standard 7799.  The
+examination of the Common Criteria is slightly better, but not sufficient to
+address the needs of the CISSP exam.  A list of references for further study
+is basically taken from the (ISC)^2 resource list with some added URLs, and
+is not annotated.
+
+Oddly, the illustrations are not copied from the CBK course, and table and
+section headings relate very poorly to the surrounding text.
+
+Practice with sample questions can be important in preparing for the CISSP
+exam.  Those provided by the CBK course, and even the independent
+www.cccure.org site, are very similar in tone, style, and difficulty, to
+those on the exam.  The specimen questions in this book, however, are not.
+The quizzes are simplistic reading checks and definition queries, with none
+of the complexity of the exam, and requiring little in the way of judgment.
+The full list of questions is given again in appendix C, with answers: the
+solutions are sometimes explained, but often are not.
+
+For those studying for the CISSP exam, this book does provide a guide to the
+topics to be covered.  If you are confident that you know more than the book
+at every point, you should be in good shape to sit the exam: if not, you
+will have to get help somewhere else.  If you are studying for another
+security course, or are a security professional, this work will not have
+much to offer you.
+
+copyright Robert M. Slade, 2001   BKCISPPG.RVW   20010924
+rslade@vcn.bc.ca  rslade@sprint.ca  slade@victoria.tc.ca p1@canada.com
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: 12 Feb 2001 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.  Alternatively, via majordomo,
+ send e-mail requests to <risks-request@csl.sri.com> with one-line body
+   subscribe [OR unsubscribe]
+ which requires your ANSWERing confirmation to majordomo@CSL.sri.com .
+ [If E-mail address differs from FROM:  subscribe "other-address <x@y>" ;
+ this requires PGN's intervention -- but hinders spamming subscriptions, etc.]
+ Lower-case only in address may get around a confirmation match glitch.
+   INFO     [for unabridged version of RISKS information]
+ There seems to be an occasional glitch in the confirmation process, in which
+ case send mail to RISKS with a suitable SUBJECT and we'll do it manually.
+   .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+   .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 20" for volume 20]
+ http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+   Lindsay Marshall has also added to the Newcastle catless site a
+   palmtop version of the most recent RISKS issue and a WAP version that
+   works for many but not all telephones: http://catless.ncl.ac.uk/w/r
+ http://the.wiretapped.net/security/info/textfiles/risks-digest/ .
+ http://www.planetmirror.com/pub/risks/ ftp://ftp.planetmirror.com/pub/risks/
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    http://www.csl.sri.com/illustrative.html for browsing,
+    http://www.csl.sri.com/illustrative.pdf or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 21.79
+************************

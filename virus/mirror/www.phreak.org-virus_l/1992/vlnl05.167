@@ -1,0 +1,884 @@
+VIRUS-L Digest   Monday, 26 Oct 1992    Volume 5 : Issue 167
+
+Today's Topics:
+
+re: VIRSCAN and Joshi virus (PC)
+Stacker problems (PC)
+Re: How to tell if CPAV is infected? (PC)
+Re: antiviral code for an .EXE (PC)
+Re: Windows 3.1 virus detection (PC)
+N_shift virus (PC)
+"LARRY ON A SCREEN" Virus (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: Flip (PC)
+MBR infections and problems CLEANing (PC)
+Re: KEY Press virus & McAfee v97 (PC)
+Re: KEY Press virus & McAfee v97 (PC)
+Re: Oliver virus ... (PC)
+Re: Request info on FORM (PC)
+FAR-TRIEVE w/ Michelangelo (PC)
+FDISK /MBR and Boot Sector Viruses (PC)
+Re: Could FORM infect OS/2's BOOT.DOS file (OS/2)
+re: DOK-V 1.00 Alpha-A test engine ready to FTP.
+Greeting from Roger Riordan
+Programs available via mail-server (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Tue, 20 Oct 92 09:01:36 -0400
+From:    "David M. Chess" <chess@watson.ibm.com>
+Subject: re: VIRSCAN and Joshi virus (PC)
+
+>From:    LKHGC%CUNYVM.BITNET@mitvma.mit.edu
+>
+>Can the 1992 version of VIRSCAN detect the Joshi virus?
+
+If you mean IBM's VIRSCAN, yes definitely.  It's been detecting the
+Joshi since sometime in 1990.  The Joshi is, of course, stealthed, so
+if the virus is active in memory it will only be detected in memory,
+not on disks.
+
+DC
+
+------------------------------
+
+Date:    Tue, 20 Oct 92 09:25:35 -0400
+From:    OB77665@IBMH1.ORL.MMC.COM
+Subject: Stacker problems (PC)
+
+  The last few months I've observed a lot of discussion on
+  the automatic write protection of stacker drives as a result
+  of allocation errors.
+  I had this unfortunate experience this weekend as a result
+  I dialed into the stacker BBS which was listed in the manual.
+  They have several nice utilities and text files that you can d/l
+  for troubles and updates.
+  Below I have included the text file I d/l on how to get out of
+  the write-protected problem.
+
+                     Bruce
+
+- ------------------------------------------------------------------------
+STACKER NOTE                            Stac Electronics Technical Note
+
+SUBJECT: Write Protected Stacker Drives.
+
+Tec035 - 6/10/92
+- ------------------------------------------------------------------------
+
+When file corruption such as a damaged temp file is detected, Stacker
+will write protect the drive as a means of safeguarding data.  This
+forces the user to run Stacker's SCHECK /F, to repair logical data
+structures before anything else can be written to the drive.  Stacker
+will also write protect a mounted drive if it has not been "padded" to
+its full size.  The fix for this condition involves the SCREATE
+program and is discussed in greater detail in section III.
+
+I. Fixing Errors with SCHECK /F:
+
+SCHECK is similar to the DOS CHKDSK program in that it checks for and
+repairs allocation unit errors.  Unlike CHKDSK's work at the DOS
+cluster level, SCHECK will diagnose and repair at the sector level.
+Stacker's ability to store on a sector by sector basis makes this a
+necessity.  Because SCHECK only repairs sector allocation errors, it
+will recommend using CHKDSK to fix any DOS cluster allocation errors
+that it has detected.  Sometimes SCHECK will offer to delete damaged
+files.  It is able to do this even though the drive is write
+protected.  If it offers to do this, make a backup copy of the file
+and let SCHECK delete it.  After SCHECK has made its repairs, the
+write protection may then be removed by rebooting or by unmounting
+then re-mounting the drive.
+
+II. Forcing SCHECK to remove the write protection:
+
+DOS errors can be repaired by CHKDSK or another disk repair utility
+such as Norton Disk Doctor or PCTOOLS Diskfix.  Because SCHECK will
+not repair all DOS errors, it may be necessary to force SCHECK to
+remove the write protection before one of these utilities may be used.
+This should ONLY be done AFTER SCHECK /F has repaired any Stacker
+errors.  Remove the write protection by typing: SCHECK /=w d: where d:
+is the write protected drive.  NOTE: DO NOT use this option if the
+Stacker drive has been mounted as (SIZE MISMATCH) (Write Protected).
+See section III.
+
+Scheck /=w will return the following message.  Follow its advice.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+The read only status of drive D has been cleared so that you may
+delete those files which contain errors.  However, the damage to drive
+D has not yet been repaired!"
+
+        DO NOT ATTEMPT TO WRITE OR CHANGE ANY DATA ON DRIVE D UNTIL
+        YOU HAVE COMPLETED ALL OF THE FOLLOWING STEPS:
+
+        1) DELETE THE FILES CONTAINING THE ERRORS
+        2) REBOOT YOUR COMPUTER
+        3) RUN SCHECK /F D:
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Restart the system after step 3 to reset the status of the Stacker
+drive.
+
+III. Repairing a (Size Mismatched), (Write Protected) Drive.
+
+Stacking a drive is a three step process.  First, construction of the
+Stacker drive companion file (STACVOL.DSK) begins as compressed files
+are copied into it.  After all the files have been added, Norton
+Speedisk is run to defragment this file and optimize the host drive.
+The last step is to "pad" the file (add the free space).  If the
+process halts for some reason, such as Speedisk discovering a bad
+sector or someone tripping over the power cord, the Stacvol file will
+be undersized.  Upon reboot, as the drive is mounted, the message
+(Size Mismatched) (Write Protected) will be displayed.  In order to
+continue where Speedisk left off and pad the file, it is necessary to
+use the Screate program as follows:
+
+    Note: insert the Stacker program diskette and issue these commands from
+          the floppy drive prompt.
+
+        1. Unmount the Stacker drive by typing:  Stacker -c:
+                c: is the letter of the drive you wish to unmount.
+
+        2. Run SCREATE d: /P
+                where d: is the letter of the host drive containing the
+                Stacvol file.
+
+        3. After receiving the message  "volume created successfully" ,
+           reboot to mount the drive.
+
+- -----------------------------------------------------------------------------
+1992 STAC ELECTRONICS
+
+------------------------------
+
+Date:    20 Oct 92 18:17:07 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: How to tell if CPAV is infected? (PC)
+
+A.APPLEYARD@fs1.mt.umist.ac.uk writes:
+
+>It is well known that CPAV gives many false positives due to its
+>contained unencrypted search strings. How then can a user tell if the
+>(file(s) that he keeps his copy of CPAV on) are actually infected?
+
+answer 1:  If the virus scanner reporting the false positive does at least
+   some minimal checking, it would report the file not as infected, but as
+   containing a new variant, ask you to send a copy to the producer or
+   something like that.  So, in that case, you will at least know that it
+   is not just a regular, infected file.  Better yet - get a "second opinion"
+   and run another scanner.
+
+answer 2: If you have a virus infection at all, it is usually all over the
+   machine.  So, if an anti-virus reports only a small set of related files
+   (or ever just one file) as infected, and if you have benn using the
+   "infected" file for a reasonably long time it is quite likely that this is
+   a false alarm - if it was a real virus it would have spread.
+
+- -frisk
+
+------------------------------
+
+Date:    20 Oct 92 18:19:29 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: antiviral code for an .EXE (PC)
+
+kodiak@matt.ksu.ksu.edu (Bryan D. Nehl) writes:
+
+>I remember hearing of C code that you could add to your program that
+>wouldn't let it run if it detected that it had been changed. 
+
+Forget it.  The published C code is useless against stealth viruses.
+If you want to do it properly you have to use something else.
+
+- -frisk
+
+------------------------------
+
+Date:    Tue, 20 Oct 92 22:47:49 +0000
+From:    reinstat@byron.u.washington.edu (Robert Reinstatler)
+Subject: Re: Windows 3.1 virus detection (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+>Having been forcably converted from DesqView (and DVX) to Windows,
+>some sandbox time was spent over the weekend with surprising results.
+>
+>
+>Of course, if such programs are present before Windows is installed,
+>then it will not select 32 bit as evidenced by the line
+>"32BitDiskAccess=off" in SYSTEM.INI, however the majority of modern
+
+ ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^According to the Resource Kit, on 
+installation of Windows, 32 Bit access is set to off even if the control-
+ler is capable of 32 bit access.  It is explained that this is done because
+some controllers appear to the setup program to be capable of 32 bit access
+but in actuality are not capable.  The problem is indicated by the book as
+occuring most often in portables with disk power management.  The book goes
+on to say that it is up to the user to determine if 32bit access works
+reliably.
+
+The Resouce Kit is a copyrighted product of Microsoft.
+
+Bob Reinstatler    reinstat@u.washington.edu
+
+
+------------------------------
+
+Date:    21 Oct 92 04:33:28 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: N_shift virus (PC)
+
+We received a copy of this virus, which is believed to have been 
+found recently in Australia, 0n Oct 14th.  The following notes are 
+based on a preliminary analysis, and many parts have not been 
+analysed in detail. 
+
+The virus is an alternating .EXE and Master Boot Record infector, 
+and will only run on ATs and PCs with an 80286 or later 
+microprocessor.  It is a complex virus, and analysis has been made 
+more difficult by the inclusion of many 80286 specific instructions.  
+It has a number of unusual features, and several nasty tricks which 
+will cause the user serious inconvenience.  It claims to be 
+destructive, but this appears to be bluff.
+
+When an infected file is run the virus looks for the "AT" flag in 
+the BIOS (FC at address FFFF:000Eh).  If this is found (and the 
+MBR is not already infected) the virus overwrites the original MBR, 
+without saving it, and writes 12 more sectors to track zero, head 
+zero, starting at sector three.  It also writes zeroes to bytes 
+34 & 35 in the CMOS RAM.  These two bytes are subsequently used 
+as an elapsed time counter, which determines when the various 
+nasty tricks come into play.  These bytes are defined as "Reserved", 
+and apparently are normally unused.  
+
+The virus then disinfects the original file (whether or not it 
+infected the hard disk) and writes the clean version back to the 
+original disk.  It then loads the original program and permits 
+it to run normally.
+
+When a PC with an infected hard disk is booted the virus goes 
+resident, reserving 7K at the top of memory, and traps Ints 8, 
+9, 11, 17 & 21.  Int 8 (timer tick) is used to increment the 
+counter in CMOS RAM each minute.  This enables various nasty 
+tricks after different delays. 
+
+The Int 21 handler looks for functions 30 (Get version no), 4b 
+(Load & execute), and 4e (Find first).  It appears that the 
+virus only infects files returned by 4e (Find First) and only 
+if they are .EXE files between 8000 & 327,680 bytes in length.  
+If this is correct it is a very ineffective infection procedure.  
+We certainly had trouble getting infected samples.  When a file 
+is infected the length is increased by (decimal) 6672 bytes.  
+
+The other interrupts are used to harrass the user.  After the 
+virus has been present for 10 days and 10 hours the Int 9 
+(keyboard) handler will occasionally randomly either ignore 
+keystrokes, or trigger a RESET.  
+
+After 13 days and 13 hours Int 21, function 4b (Load & execute 
+a program) will sometimes cause a message stating that the 
+hard disk is being formatted to appear. Meanwhile random 
+sectors are read, so that the disk light remains on, but 
+it appears that no damage is actually done. 
+
+After 15 days & 15 hours Int 21, function 30 (Get DOS version) 
+will always return version 2.0, and this will cause many 
+programs to abort.
+
+VET 7.06 can detect this virus, and restore infected files.  
+It cannot safely disable the virus, so it will ask the user 
+to reboot from a clean disk if the virus is detected in memory.  
+If the Master Boot Record is infected, and VET has been 
+previously installed for the PC, VETHDFIX can put back the 
+saved copy of the MBR.  Otherwise VET can replace it with a 
+"Plain Vanilla" boot sector.  This will normally work 
+perfectly, but we cannot guarantee it will work on all PCs.
+
+Roger Riordan.  CYBEC Pty Ltd              Ph: +61 3 521 0655
+PO Box 205, Hampton. Vic 3188  AUSTRALIA   Fax +61 3 521 0727
+
+------------------------------
+
+Date:    21 Oct 92 04:34:33 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: "LARRY ON A SCREEN" Virus (PC)
+
+This virus was first reported (to our knowledge) by Brian Mariott,
+Dept of Computer Science, University of Tasmania, on Virus L, on 7th
+Oct.  They received it from a computer shop, which had found it on a
+PC brought in by a customer.  We received a sample on Oct 20th.
+
+It is a resident .COM & .EXE infector, adding 491 & 507 bytes 
+respectively.  Like Troi2, recently reported, it hides in the 2nd 
+half of the interrupt table, overwriting interrupts 80 to FF, and, 
+like Troi 2, it frequently crashed in our tests, again presumably 
+because it overloads the system stack.  It has one most unusual 
+bug; it gives a "Write protect error writing drive .." message 
+(and usually hangs), if you run a program from a write protected 
+disk - even if the file is already infected!
+
+The virus uses the word 'GM' (474dh) as the signature.  This is 
+found at offset 4 in .COM files, and at offset 12h (the checksum 
+field) in the .EXE header.  The message below can be seen almost 
+at the end of infected files.  
+
+It includes a counter (set to 19 in our sample) which is 
+decremented each time a program is infected.  When the counter 
+reaches zero the message 
+
+                          Larry on a Screen
+
+is displayed instead of running the program.
+
+This virus does not pose a serious threat, as it does no 
+deliberate damage, and is so unreliable that most users will 
+realise something is wrong, even before they get the message.
+
+VET 7.06 will detect this virus, and restore infected files.  
+It will also detect and repair files infected with Shifter 
+(also recently found in Australia), and will detect a number
+of viruses recently discovered overseas.
+
+
+Roger Riordan.  CYBEC Pty Ltd              Ph: +61 3 521 0655
+PO Box 205, Hampton. Vic 3188  AUSTRALIA   Fax +61 3 521 0727
+
+
+------------------------------
+
+Date:    Wed, 21 Oct 92 04:49:33 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Hello Vesselin,
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>I was preparing an updated review of the ability of the popular
+>scanners to detect the MtE-based viruses. The tests are not finished
+>yet, but the very preliminary results showed that VIRUSCAN version 95b
+>from McAfee Associates NEVER detects EXE files infected with these
+>viruses. ALL of the generated 4,000 infected EXE files were missed!
+
+VIRUSCAN Version 97 was released on the evening of Friday, October 16,
+so your preliminary testing of VIRUSCAN did not involve the most
+latest version of SCAN available.  Version 95-B was released on August
+19 (my birthday, btw *<:-), which was before we received any
+.EXE-infecting viruses based on the Dark Avenger Mutation Engine.
+Naturally, it is included in the current release of SCAN.
+
+I can understand your desire to provide the readers of comp.virus with
+timely, accurate information about the efficacy of different anti-viral
+packages, however, posting one message decrying the deficiencies of
+one brand of software with an endnote about other packages sounds less
+like a genuine attempt at impartial research and more like alarmist scare
+tactics, or even worse, marketing :-)  I note that several other anti-viral
+packages such as NAV, CPAV, Untouchable, Novi are not mentioned at all.
+
+In any case, I would strongly suggest that you complete your research in 
+the future before posting incomplete results.  
+
+Cordially,
+
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Tue, 13 Oct 92 21:11:00 -0000
+From:    Ron_V.d.rest@f307.n310.z9.virnet.bad.se (Ron V.d.rest)
+Subject: Re: Flip (PC)
+
+ -=> Quoting Carlos Baptista to All <=-
+
+ CB> Hi!
+
+ CB> Can anyone tell me if the Flip Virus, is such inofensive as he
+ CB> appears?
+ CB> My computer was infected by it, and in a 2 hours I get free of it
+ CB> with no special effort thant of running SCAN after a boot...
+
+ CB> CPAV and Scan v.89 doesnt' detect anything, but I'm afraid that the
+ CB> problem is still here... it was so easy...
+
+ CB> * OLX 2.1 TD * Carlos Batista * Blaster BBS Co-SysOp * 351-1-3878640
+
+
+ CB> -!- Squish v1.01
+ CB>  ! Origin: CATS - The biggest BBS in Portugal  (9:351/0)
+
+Hi Carlos,
+After FLIP becomes resident,any COM or EXE files executed will come infected
+If a program is executed which uses an overlay file,the overlay file will
+also infected.
+Systems infected FLIP may experience file allocation errors resulting in
+file linkage error.Some data files may become corrupted.
+
+On the second of any month,systems wich were booted from an infected harddisk
+and have an EGA or VGA capable display adapter may experience the display on
+the system monitor being horizontally "flipped" between 16.00 and 16.59
+
+GTX............Ron
+                                     CU
+... Not tonight, dear.  I have a modem.
+- --- GEcho 1.00/beta
+ * Origin: -=(MicroTel BBS Holland  +31-78-512204[V32])=- (9:311/5014.0)
+
+------------------------------
+
+Date:    Wed, 21 Oct 92 22:11:29 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: MBR infections and problems CLEANing (PC)
+
+I am somewhat surprised that people are having trouble removing such
+common problems particularly since these viruses are about the easiest
+possible to eradicate: much easier than most .COM and .EXE infectors.
+
+Actually, they call into two categories, those which leave the disk able
+to boot from a floppy and those which do not.
+
+First, to reiterate some basics: on a DOS disk the MBR consists of two
+parts, the MBR code which is executable code used only when booting from
+the fixed disk, and the partition table which is needed whether booting 
+from floppy or the hard disk.
+
+The partition table is the most important since it must follow a very 
+strict protocol defined (for one source) in the DOS Technical Reference
+manual published by IBM. The one I use most is for DOS 3.3 simply because
+it is close at hand.
+
+If the partition table is missing or corrupt, one of two things will happen:
+ether the machine will fail to boot at all, or, if booting from floppy
+disk, DOS will fail to recognise the hard disk(s). Reguardless of what
+DOS thinks, a BIOS approach can *always* repair the system (including
+"unbootable" ones as reported recently).
+
+In the case of those infections that leave the system able to boot from 
+floppy, repair is easy since the partition table may be found in sector
+one and further, those values may be quickly and easily checked against
+the information stored both in the BIOS and on the disk itself.
+
+Given a good partition table, repair is *usually* accomplishable by just
+replacing the MBR code with a valid program. This is the approach I take
+with FixMBR and FixFBR, I do not try to find the original code (unless
+instructed to), I just replace it with my own.
+
+In the case of the FreeWare SafeMBR code this also adds non-resident BIOS
+level integrity checking. I am gratified to see that at least one other
+anti-viral product, the Dr. Panda Utilities, have also picked up on this
+technique. Also note that this technique can be used with any system that
+does not require a "special" MBR, I have used it on OS/2 and a Novell 3.11
+server without problem. (BIOS is BIOS)
+
+On the other hand, those few viruses that leave the disk unbootable 
+generally store the original sector 1 in one of the other "hidden sectors".
+In the case of STONED and MICHELANGELO this is sector 7. JOSHI leaves it
+in sector 9 (note - these particular ones do not leave the disk unbootable
+(quiet Vess 8*) rather they are common examples for the technique). In this
+case it is still a simple matter to "walk the disk" looking for a valid
+(see above) partition table. Once this is found, then the program may
+proceed as above.
+
+However, these viruses spread poorly since people are usually quick to 
+notice a system that cannot be booted from floppy.
+
+I believe that the problem with certain virus removers is that they either
+accidently pick up a sector that does not contain a valid P-table without
+performing proper checks, or try to get fancy with it. KISS works (people 
+complaining about loss of partitions after using NDD *please* do not 
+contact me).
+
+Further, this technique could care less about viruses, it ignores them 
+completely - the only suggestion is to boot from a clean floppy first. 
+This is the basic difference between integrity management and anti-virus
+programs, a philosophy which finally seems to be starting to catch on.
+
+				Warmly,
+					Padgett
+
+ps for those of you interested in my DiskSecure project, a major step 
+   forward was accomplished two days ago: a Novell 3.11 server sucessfully
+   transitioned from DOS to NetWare with DS II resident. (and they said it
+   couldn't be done). RSN
+
+------------------------------
+
+Date:    Wed, 21 Oct 92 22:34:37 -0400
+From:    739chan1@gw.wmich.edu (LEMMING)
+Subject: Re: KEY Press virus & McAfee v97 (PC)
+
+10666281@eng2.eng.monash.edu.au (KEVIN PRATER) writes:
+> 	Currently I'm using McAfee ScanV97 and clean95c.  My computer
+> got infected with simple keypress virus so I cleaned it with clean95c.
+> I then scanned with scan95 and got the message that no virus was
+> present. Got scan97 and rescanned the disk to find the virus reported
+> present. Clean 95 won't find or remove [key] for the one infected file
+> so;
+> 
+> 	Is this a false alarm report of the virus?
+> 	or
+> 	Is the virus a strain of [key] that clean95 doesn't remove?
+
+  I am also getting some discrepencies about the Keypress virus.
+Running Scan97 on a sample of the virus, it reported that the file was
+infected 3 times. (i.e. The message "Found Keypress Virus..." appeared
+3 times.) This was reported again on a variant as well as some other
+files I tested with the same virus. I know that the files have been
+infected only once.
+
+________________________________________________________________________
+Chan Lee Meng             \  "Give me one good reason for using Windows?" 
+739chan1@gw.wmich.edu      \   "Flying Toasters." 
+Western Michigan University \
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 03:13:53 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: KEY Press virus & McAfee v97 (PC)
+
+Hello Kevin,
+
+10666281@eng2.eng.monash.edu.au (KEVIN PRATER) writes:
+>
+>	Currently I'm using McAfee ScanV97 and clean95c.  My computer
+
+The latest version of CLEAN-UP is Version 97.
+
+>got infected with simple keypress virus so I cleaned it with clean95c.
+
+When you ran CLEAN-UP (CLEAN.EXE) did you use the /A switch to tell it
+to check all files on the disk.  By default, CLEAN will only check
+files with the extensions .COM, .EXE, and some of the more common
+overlay extensions.  It could be that you have an infected file with
+an uncommon extension that CLEAN did not check when you ran it
+initially.  Try running it by typing:
+
+		CLEAN C: [KEY] /A
+
+and pressing enter from the DOS command line.  That will allow it to look
+for the virus in all files and remove it, if found.
+
+>I then scanned with scan95 and got the message that no virus was
+>present. Got scan97 and rescanned the disk to find the virus reported
+
+Were you using different options with SCAN V95 and SCAN V97?  The /NOMEM
+switch, for example, would turn off scanning memory for viruses entirely.  
+Before using either, did you power down the PC and boot it from a clean 
+(that is, virus-free) DOS boot disk?  You may have had the virus in memory,
+or loaded an infected SCAN.EXE file (did SCAN warn you that it had been
+damaged when you ran it?).
+
+>present. Clean 95 won't find or remove [key] for the one infected file
+>so;
+
+See comments about the /A switch.
+
+>
+>	Is this a false alarm report of the virus?
+
+It's possible that a fragment of the virus exists somewhere, stuck at the
+end of a file, which is causing a false alarm.  This can usually be fixed
+by defragmenting the hard disk with a disk optimizing program after 
+disinfection.
+
+>	or
+>	Is the virus a strain of [key] that clean95 doesn't remove?
+
+Unknown at this point.  It would be a good idea to run CLEAN again with
+the /A switch.  If problems persist, try Version 97 (also with the /A
+switch).  If problems persist, please contact me.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+>
+>Any reply welcomed,
+de nada
+>Kevin Prater
+>DownUnderInOz
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 07:53:25 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Oliver virus ... (PC)
+
+Hello *8),
+
+Earlier this month (Oct. 12th, perhaps), a television station in
+Philadelphia, Pennsylvania started broadcasting news items about a
+virus named "Oliver" that was supposed to 'wipe out hard disks whilst
+displaying politically incorrect messages.'
+
+The limited description of the virus bears more than a passing
+resemblance to a fictional virus written on a Banana computer by
+superhacker Oliver Wendell Jones in the cartoon "Outland" drawn by
+Berkeley Breathed of "Bloom County" fame.  Interestingly enough, if
+you look on page 60 "Toons For Our Times" (an anthology of "Bloom
+County" cartoons) [Little Brown & Co., 1984.  ISBN 0-316-10709-3]
+you'll find that the computer is also identified as an "IBM 6000"
+whatever that is. :-) But I digress.
+
+The TV station apparently got the story from a computer consultancy in
+Chestnut Hill, PA (?) named Cyber-something-or-other Associates.  They
+ran segments on the virus for two days on the morning news, reporting
+on both days that the virus was going to activate on the following
+day.  Nothing happened, and the last I heard, the TV station was
+considering legal action against the consultant.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+PS: While no 'Oliver' virus exists in the U.S. (I believe Vesselin
+mentioned a hack of the Dark Avenger virus), I would not be surprised
+if this tempts some would-be virus-writers into creating one--a
+possibility given the prevalence of build-a-virus programs.  :-( Of
+course, with the existing VCL kits I've seen, they probably won't
+work! :-) AG
+
+/IN REPLY TO/
+chess@watson.ibm.com (David M. Chess) writes:
+>>From:    lubkt@synergy.CC.Lehigh.EDU (Binod Taterway)
+>>
+>>Has anyone heard of Oliver virus? Apparantly, Channel 10 news (Philly,
+>>I guess) had a story on this...
+>
+>I'd be very interested if anyone knows anything about this!  We've had
+>some anxious calls.  The only connection I can think of is with the
+>completely fictional virus of that name done by the little-kid
+>computer-genius in the Outland comic strip awhile back.  But surely no
+>news organization would report something like that as fact!  *8) DC
+
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 06:07:34 -0400
+From:    G J Scobie <gscobie@castle.edinburgh.ac.uk>
+Subject: Re: Request info on FORM (PC)
+
+> From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+> schilligl@iccgcc.decnet.ab.com writes:
+> 
+> >  HI, Does anyone Know what the FORM virus can do to a system?
+> 
+> 3) OK, I give up, here's the answer: On 24th of every month the virus
+> makes the keys on the keyboard to "click" when you press them.
+
+We have had the FORM virus in a big way around the University this
+year.  I have no idea why this virus should become so widespread but
+there have been previous reports on this board concerned with an
+apparent increase in the number of sightings this year.
+
+The version we have here triggers on the 18th of the month.  Students
+have reported corrupt files on their floppies though this only seems
+to happen if the disk was nearly full before the infection took place.
+For a hard disk, a clean boot and the DOS SYS command is enough.
+There are of course any number of anti-virus programs which will do
+the job.
+
+Cheers
+
+Garry Scobie
+EUCS LAN Support Officer
+EAdinburgh University Computing Services
+Edinburgh
+Scotland
+e-mail: g.j.scobie@uk.ac.ed
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 06:07:51 -0400
+From:    "Ludwig (Lu) Schumacher ->" <lschumac@mainz-emh2.army.mil>
+Subject: FAR-TRIEVE w/ Michelangelo (PC)
+
+Update #48 for DOS Version 3.0B was recently received with the
+instalation diskette (1.2M) infected w/ Michelangelo.
+
+The company, CACI, INC-Federal, P.O. Box 3950, Merrifield, VA
+22116-3950, has been notified.  We were advised telephonically that
+Mr. Doug Wilson is aware and notification has been forwarded to all
+FAR-TRIEVE users.
+
+The virus was reported by F-Prot 2.04 / 2.05.
+
+POC.  Lu Schumacher (lschumac@mainz-emh2.army.mil)
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 06:11:15 -0400
+From:    G J Scobie <gscobie@castle.edinburgh.ac.uk>
+Subject: FDISK /MBR and Boot Sector Viruses (PC)
+
+Is there a list of which boot sector viruses can be disinfected from a
+hard disk using FDISK /MBR?
+
+Will FDISK /MBR work for them all or are there any interesting "gotchas"
+using this method?
+
+As always thanks in advance
+
+Garry Scobie
+EUCS LAN Support Officer
+Edinburgh University Computing Services
+Edinburgh UNiversity
+Scotland
+e-mail: g.j.scobie@uk.ac.ed
+
+------------------------------
+
+Date:    22 Oct 92 11:01:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Could FORM infect OS/2's BOOT.DOS file (OS/2)
+
+chess@watson.ibm.com (David M. Chess) writes:
+
+> the machine.  To clean this up, you need to get a valid BOOT.DOS file,
+> with a valid copy of the system boot record.  One way to do this is to
+> "BOOT DOS", then run an anti-virus program that can remove the virus
+> from the system boot record, then "BOOT OS2" again.  The resulting
+> BOOT.DOS file *should* contain a valid uninfected DOS system boot
+> record, put there by the anti-virus program.  Something like that...
+
+But the anti-virus program should be able to run with the virus active
+in memory - because it will be there after the BOOT DOS command,
+right? The program should de-activate the virus and then disinfect the
+boot sector...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 20 Oct 92 09:12:31 -0400
+From:    "David M. Chess" <chess@watson.ibm.com>
+Subject: re: DOK-V 1.00 Alpha-A test engine ready to FTP.
+
+>From:    MCHLG%CUNYVM.BITNET@mitvma.mit.edu
+
+>            DOK-V  DATABASE OF KNOWN VIRUSES -- PC EDITION
+>                   VERSION 1.00000A1  ALPHA - LEVEL A
+>                   Copyright (c) 1992 Bits-N-Bytes Computer Services
+>                   All Rights Reserved
+
+>as a side note, I've been trying to set DOK-V so that I could
+>upload it to an FTP site but I've had no luck.  Could someone
+>help me out set up my virus database program DOK-V so that I
+>could upload it to an FTP site.
+
+On the technical point, it sounds like you just need a good copy
+of uuencode, or you need to talk to some local guru who can observe
+and see what went wrong in more detail.
+
+On another note, though: your "All Rights Reserved" there conflicts
+sharply with your desire to make it available to lots of people for
+review via FTP.  As long as your copyright notice says that you've
+reserved all rights to yourself, no one who works for a company that
+has lawyers is going to be able to make a copy of it (via FTP, for
+instance) for himself...
+
+DC
+
+------------------------------
+
+Date:    21 Oct 92 04:32:01 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: Greeting from Roger Riordan
+
+Greetings to ALL!!
+
+If all has gone according to plan I have an official mail box at last.
+My address is
+
+      riordan.cybec@tmx.mhs.oz.au
+
+I hope this will enable me to take a more active part in proceedings
+from now on.
+
+Roger Riordan.  CYBEC Pty Ltd              Ph: +61 3 521 0655
+PO Box 205, Hampton. Vic 3188  AUSTRALIA   Fax +61 3 521 0727
+
+------------------------------
+
+Date:    Thu, 22 Oct 92 02:28:26 -0400
+From:    Jon Freivald <jaflrn!jaf@uunet.UU.NET>
+Subject: Programs available via mail-server (PC)
+
+The following files have been posted to my mailserver:
+
+/public/dos/virus/scan97.zip
+/public/dos/virus/clean97.zip
+/public/dos/virus/netsc97.zip
+/public/dos/virus/vshld97.zip
+/public/dos/virus/wscan97.zip
+
+To retrieve a uuencoded copy of these files, send mail to:
+   mail-server@jaflrn.uucp
+with the body of the message containing the text:
+   get filename
+where "filename" is the above name of the file you want.  For multiple
+files, use multiple "get" lines.
+
+Jon
+
+=============================================================================
+		   Jon Freivald ( jaflrn!jaf@uunet.UU.NET )
+	 Nothing is impossible for the man who doesn't have to do it.
+=============================================================================
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 167]
+******************************************
+
+

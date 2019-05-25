@@ -1,0 +1,467 @@
+RISKS-LIST: RISKS-FORUM Digest  Sunday 24 September 1989   Volume 9 : Issue 28
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  USAir 737-400 crash at LaGuardia (PGN)
+  Re: Hospital problems due to software bug (Steve VanDevender + Amos Shapir)
+  Computers, Planning, and Common Sense (John (J.G.) Mainwaring)
+  Synchronizing Clocks (Earl Boebert)
+  Re: Risks of Distributed Systems (Sung Kwon Chung)
+  Master clocks, etc. (Eddie Caplan)
+  ISO 9001 accreditation (Martyn Thomas)
+  Toxic Spill at the Department of Education [long] (Joe Pujals)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Fri, 22 Sep 1989 16:21:29 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: USAir 737-400 crash at LaGuardia 
+
+At the very end of an article in the 22 Sep 89 San Francisco Chronicle from the
+NY Times ("Cause of Accident a Mystery; Probers Can't Find Pilots in USAir
+Crash") is this:
+
+  ``Aviation experts said the controls of the 737-400, a modified and
+  modernized version of a plane that has been one of the most reliable in
+  commercial aviation for many years, are unusual in that they are integrated
+  with computers.  Instead of pushing a throttle to accelerate, a pilot uses a
+  computer-like keyboard to enter in a set of commands that set the power of
+  the engines on takeoff.  It is possible, experts said, that an erroneous set
+  of numbers was entered and that this accoutned for the insufficient power on
+  takeoff."
+
+Earlier in the article was this:
+
+  ``... the pilot had flown the planes for only two months, and the co-pilot
+  was said to have been in a 737 cockpit for the first time. ... initial
+  reports indicated that the co-pilot was at the controls during the take-off
+  ...  the co-pilot told the Port Authority police shortly after the crash that
+  the pilot had been "mumbling" and "acting irrationally" just before
+  takeoff.''
+
+    [Saturday's and Sunday's papers stated that officials had indicated that a 
+    wrong button had been pushed, although Sunday's paper suggested that there
+    might have been mechanical failure as well...  The pilot and copilot have
+    been suspended for disappearing afterwards.]
+
+------------------------------
+
+Date: Fri, 22 Sep 89 12:43:09 PDT
+From: stevev@chemstor.uoregon.edu
+Subject: Re: Hospital problems due to software bug (RISKS-9.26)
+
+In RISKS-DIGEST 9.27, Will Martin asks:
+>Does anyone know if this was one of the built-in magic-number
+>date breakdowns that have previously been mentioned on RISKS? ...
+
+I'm sure that many people will respond to Will Martin's question.  My lucky
+guess was that September 19, 1989 was 32767 days past a certain magic date, and
+I was off by one: September 19, 1989 is 32768 days past January 1, 1900.  I'm
+shocked that the programmers for this system didn't think it would be used all
+the way into 1989, or even worse didn't consider how long it would be used at
+all.
+
+The only other date limit that I know of is the UNIX time() limit of Januray
+19, 2038 at 3:14:08 AM, when the value returned by time() will become negative
+if you treat it as a long.  If we start treating the value returned by time()
+as an unsigned long, we push the magic moment back to February 7, 2106 at
+6:28:16 AM.
+
+All calculations were performed on my trusty HP-41CV with its time module,
+which stores alarm times as the number of seconds past midnight, January 1,
+1900.  Therefore, it can only represent times up to November 20, 2216, 5:46:39
+PM.  However, the programmers put in a software limitation of December 31, 2199
+on times.  This means that my HP-41CV clock will work longer than UNIX clocks
+without modification; not bad for a handheld computer that's showing its age
+even now.
+                                 Steve VanDevender
+
+    [Also noted by Amos Shapir (amos@taux01.nsc.com), who added:
+    The risk of using 16-bit integers raises its ugly head again!  (I wonder
+    how many of these are still left lurking in old code...)  Amos]
+
+------------------------------
+
+Date: 	Fri, 22 Sep 89 10:57:00 EDT
+From: John (J.G.) Mainwaring <CRM312A@BNR.CA>
+Subject:  Computers, Planning, and Common Sense
+
+I've recently seen reports of the proposed new Canadian goods and services tax
+which raise some disturbing questions.  It appears that a major part of the
+proposal is to levy the tax on essentially all occasions when goods or services
+are sold, and hence to make tax collectors of small businesses such as piano
+teachers and people who do house cleaning.  Of course, such people are already
+expected to pay income tax. The new proposal seems to be that they should also
+collect 9% off the top and send that to the friendly feds without waiting for
+April.
+
+I somehow doubt if the visionary stupidity necessary to develop such a proposal
+to the point of law could have existed unaided by computers.  I have no inside
+contacts in the Canadian finance department, but I envisage beaurocrats working
+over spreadsheets projecting total annual cash flows, no doubt consolidating
+all the char ladies in the country into one cell, and eagerly taking the
+results to weekly 5 minute sessions with the minister, refining all the guesses
+until the spreadsheet projects exactly what the minister wants to hear.
+
+The beauty of a spreadsheet is that it doesn't require any common sense to
+operate.  I'm sure that if it occurred to anyone to question the validity of
+lumping all the char ladies into one cell, he kept it to himself if he valued
+his career.  After all, it should be easy enough for the char ladies to change
+the accounting packages on their PCs to deal with the new tax, and surely they
+would have no trouble delivering their collections by electronic funds transfer
+at essentially no cost to anyone - in fact, surely, time spent thinking about
+the char ladies at all was time wasted?
+
+I'm not sure what one can hope to do about this sort of thing.  I suppose
+ethics and social responsibility courses at university might help, but it may
+be too much to hope that government officials would concern themselves with
+such issues, even if we could get them into computer science curricula.
+Perhaps all we can hope is that our universities will find ways of increasing
+the small minority of all their graduates in whom they have developed the habit
+of occasionally thinking about what they think.
+
+It should be obvious that these views do not represent those of my employer, or
+probably even myself on a sunnier day.
+
+------------------------------
+
+Date:  Fri, 22 Sep 89 12:35 EDT
+From: Boebert.Grapevine@DOCKMASTER.NCSC.MIL
+Subject:  Synchronizing Clocks
+
+I cannot resist adding a note of industrial archeology to this discussion.
+People interested in how grandpa solved these problems should look into the
+design of the Synchronome clock, invented in the 1920's by one F.  Hope-Jones.
+This consisted of a master pendulum unit (accurate to a second a year or so)
+electrically driving any number of slave dials.  One ran as a siderial clock at
+Greenwich from 1926 to 1935 without failure, a total of 284 million swings of
+the pendulum.  Plans and instructions for making one of these magnificent
+beasts can be found in the old Scientific American "Amateur Telescope Making"
+series, Book Two, pp 427-446.
+
+Gears and casting sets used to be available to amateurs from the (presumably)
+long-gone supplier.  [The Synchronome Co., Alperton, Wembley, Middlesex,
+England is given as the 1935 address, in case any of our British Correspondents
+wish to go hunting for the site.] Today you would have to gain access to gear
+cutting machinery; the castings (mainly brackets) could be built up from bar
+stock using modern adhesives.
+
+------------------------------
+
+Date: Thu, 21 Sep 89 20:35:00 -0700
+From: sung@june.cs.washington.edu (Sung Kwon Chung)
+Subject: Re: Risks of Distributed Systems (RISKS-9.26)
+
+>..... This message is an example of asynchronous inter process
+>communication. I can guarantee you that i'm doing other things until you
+>respond or acknowledge (or this message gets dropped in a bit bucket somewhere)
+>and neither RPC nor the rendezvous allows that. ....
+
+This is a rather common misunderstanding (at least) of RPC.  With the RPC
+model, the idea is to separate concurrency from communication mechanism.  If
+there are concurrent activities (e.g., sending-message-receiving-reply and
+doing-other-work), each of them can be encapsulated in a concurrency unit
+(process or thread) while communication is done synchronously by RPCs.  In
+fact, it's the very synchronous nature which makes a lot of things simple in
+such a situation.  So please don't tout RPC is bad because of its
+synchronousness.
+
+------------------------------
+
+Date: Fri, 22 Sep 89 15:49:39 EDT
+From: eddie.caplan@H.GP.CS.CMU.EDU
+Subject: Master clocks, etc.
+
+In RISKS 9.27, the Peters Jones and Neumann suggested ways of faking a
+distributed performance of Beethoven's 9th so that it would appear to be
+synchronized.
+
+Film-music recording has a virtually identical problem.  Here, it is critical
+that the music is precisely synchronized with the action onscreen.  Rather than
+depending on the conductor for cues, each musician has her own headphone and
+listens to a click track: one electronic click for each musical "beat".  The
+film-music conductor's job is then reduced to course-grain musical issues, such
+as volume balancing.
+
+(This itself is an exaggeration of the traditional conductor/performer
+relationship, wherein the performer takes care of the fine-grain details of her
+particular instrument while the conductor concerns herself with the orchestral
+sound as a whole.)
+
+For the Beethoven example, you would need <n> copies of a common click track
+which a local conductor would have the responsibility of following.  Now the
+problem has been reduced to starting the performances "together".  I quote
+"together" because to make the final performance sound synchronized, the click
+tracks startup would have to be staggered to overcome the satellite delays.
+
+Finally, I think that this sort of synchronization has a lot of precedent in
+human endeavors.  Consider trapeze artists who get synchronized at the
+beginning of a complicated stunt and must then rely on their own "internal
+clock" to be at the right place at the right time.  Same for well-tuned sports
+teams.
+
+------------------------------
+
+Date: Fri, 22 Sep 89 10:36:17 BST
+From: Martyn Thomas <mct@praxis.UUCP>
+Subject: ISO 9001 accreditation
+
+Jon Jacky asks for UK input on the ISO 9000 accreditation system.
+
+ISO 9000 is the international standard for quality management systems. It
+does not define a system, it defines what a system must contain. ISO 9000 is
+actually a series of standards, and ISO 9001 covers all of design,
+manufacture, test and maintenance.
+
+ISO 9001 is not specific to software - it is generic, and needs to be
+interpreted for each industry (or "economic sector"). It is based on British
+Standard BS 5750. The EC (European Commission) has directed that each sector
+should introduce a "sector certification scheme" to certify compliance with
+ISO 9000/9001. In the UK the software sector certification scheme will be
+called TickIT. [ just the tickit ... getting your tickit ... ...]
+
+In the UK the BSI (British Standards Institute) has run a Registered Firms
+Scheme since 1979. To get BSI accreditation you have to have in place a
+quality management system which complies with BS5750 (now ISO 9001), and BSI
+audit you to ensure that throughout your organisation, every project and
+activity complies with your quality management standards in every respect.
+It's fairly tough to get.
+
+To retain your registered firm status, you have to agree that BSI auditors
+can come in to the company without notice (we get 24 hours, usually) up to
+four times a year (we have had three each year) and repeat the spot audit.
+Typically they may ask what projects are active, and inspect the current
+list; choose a project and look at the latest status report; select a recent
+deliverable and look at the review reports; select an identified defect and
+demand evidence that the defect was corrected before delivery.  Or they may
+pick a standard and look at how it has been applied on several current
+projects across the company.  If they find discrepancies they insist that
+they are corrected, and they may withdraw accreditation.
+
+It's good consultancy - ISO 9001 is a *process* standard, and the Praxis
+quality management system is heavily based round formal reviewing, so it
+seems right that the application of the quality standards should themselves
+be subject to formal independent review.
+
+Some clients take comfort from the accreditation and do not themselves audit
+our standards; some make BS 5750 mandatory in requests for tender. The EC
+will mandate iso 9001 compliance in all public procurement at some point in
+the future.
+
+And yes, before someone else points it out, it is Praxis that advertises as
+"the first systems house to achieve BS 5750 (ISO 9001) certification for all
+software development". We believe in formal QA as an essential component of
+software engineering, so we built a company round it.
+
+If anyone wants more details, email me for some article reprints.
+--
+Martyn Thomas, Praxis plc, 20 Manvers Street, Bath BA1 1PX UK.
+Tel:	+44-225-444700.   Email:   ...!uunet!mcvax!ukc!praxis!mct 
+
+------------------------------
+
+Date: Fri, 22 Sep 89 15:20:40 pdt 
+From: joep@caldwr.ucdavis.edu (Joe Pujals)
+Subject: Toxic Spill at the Department of Education 
+ 
+The following is a description of a toxic spill that came close to having
+disastrous consequences for the California Department of Education.  The State
+learned a lot form this experience and I thought others might find it
+interesting.
+ 
+   Joe Pujals, State Information Security Manager, Office of Information
+   Technology, 915 L Street, Sixth Floor, Sacramento, CA 95814, (916) 445-1777,
+   ...UCBVAX!UCDAVIA!CALDWR!JOEP
+ 
+THE EVENT
+ 
+At 3:02 AM, Tuesday, February 21, an electrical switch located in a vault in
+the garage of the California Department of Education arced.  The resulting
+explosion spewed 10 gallons of coolant oil containing polychlorinated biphenyl
+(PCB) through the electrical equipment vault.  The loss of the switch and
+associated transformer was immediately noted in the control room of the
+Sacramento Municipal Utility District (SMUD) and a repair crew was dispatched
+to the trouble area.
+ 
+Three minutes later, at 3:05 AM, heat and smoke sensors located in a computer
+room on the third floor of the building activated.  The fire detection system
+sounded an alarm at the office of the California State Police.  Following
+procedure in responding to the alarm, State Police called the fire department.
+In addition they called two Department of Education Supervisors, telling them
+that the fire detection system in the computer room had alarmed and requesting
+that they send personnel with appropriate keys to the building immediately.  A
+passing taxi cab driver, hearing the explosion and seeing the smoke, also
+reported the incident to his dispatcher who in turn called the fire department.
+ 
+By the time Department of Education employees arrived, approximately 40 minutes
+later, the smoke had cleared and locks to the garage and electrical vault had
+been cut.  Fireman and SMUD crews had determined that there was no immediate
+danger from fire or loose electrical wiring.
+ 
+The switch and transformer involved in the incident also provided power to the
+State Office Building one (Jesse Unruh Building) located one block away.  The
+loss of power forced closure of that building until approximately 1:00 PM that
+afternoon.  The California State Treasurer, Department of General Services and
+several other agencies were affected by the power outage.
+ 
+The fire department had cordoned off the building to keep all but emergency
+personnel away.  Education personnel gave fire department personnel their keys
+to the 3rd floor computer room and requested that they check for a fire in that
+area since the fire detection system had sounded.  Firemen dressed in
+protective clothing went to the computer room.  On entering, they did not see
+any smoke and they noted that the room temperature was normal.
+ 
+The computer at the department of education consists of a TANDEM EXT25
+computer, printers and terminals.  The computer is used as a remote processor
+and print driver.  Data files are maintained and computer processing is done at
+one of the State's two major computing centers located a few miles away.  The
+department has approximately 475 personal computers in the building that are
+mainly used as productivity enhancement tools.  The department spokesman
+indicated that some production jobs were done on microcomputers but were not
+sure how many applications or what they were.  However, they did feel that the
+impact to the department, if they should be lost, would be minor.
+ 
+Within hours, SMUD called the American Environment Management Co. to begin the
+cleanup and PCB decontamination process of the electrical vault and garage
+area.
+ 
+Because this was an industrial accident CAL-OSHA was called.  CAL-OSHA
+recognized that there could be additional problems associated with the PCB
+spill.  PCB produces the carcinogens, dioxin (polychlorinated dibenzo dioxins)
+and furan (polychlorinated dibenzo furan), when subjected to high heat.  At
+this time, it was unknown if the heat generated by the arcing and subsequent
+explosion was sufficient to generate dioxin.  One other nagging question raised
+concerns: what had set off the fire detection system in the computer room?  Was
+it toxic material or had the sensors been activated accidentally?  At the time
+of the explosion, the air conditioning system in the computer room and in
+another computer support area had been operating.  Had toxic material been
+sucked into the return air intake and contaminated other parts of the building?
+ 
+SMUD representatives at first believed that the toxic material had been
+contained in the electrical vault but could not explain the coincidental
+activation of the fire detection system.  Examination of the vault revealed
+that there was space between holes cut in the vault for conduit and the conduit
+which carried the electrical cables.  It was possible for toxic material to
+have escaped through the gap.  The conduit lead into switching equipment in an
+adjoining room.  After passing through the switching equipment power was
+transferred to the electrical closets located on each of the five floors
+directly above the switching equipment room.
+ 
+Toxic experts from the Department of Health Services were called for advice.  A
+consensus was reached that extensive tests would have to be conducted to insure
+that the building was safe before employees could be allowed to return.  Tests
+were started immediately.  Test material was taken from around the holes cut
+into the electrical vault and from various areas throughout the building,
+including the computer room.  The tests conducted were extensive and would not
+be completed before Saturday, February 25th, five days following the toxic
+spill.
+ 
+MANAGEMENT'S RESPONSE
+ 
+Within a few hours of the incident, it was recognized that normal operations of
+the Department of Education's staff housed in the affected building could not
+resume that day.  The decision was made to inform employees to remain at home.
+Critical management staff were told to report to another location of the
+Department of Education, some blocks away, to begin the recovery planning
+process.
+ 
+Space was cleared at the new location for the director and executive staff.
+Training rooms and additional space in the same building were obtained from the
+building owners and from a local University to house the essential displaced
+staff.
+ 
+A public information office established a media information center in order to
+provide accurate and timely information to radio, television and newspaper
+reporters.  One of the first and most important steps was to enlist the aid of
+the radio and television stations to make announcements requesting people to
+stay at home.  The announcements also contained a special telephone number for
+emergency information.  The special number was for a voice mail system.
+ 
+The voice mail system proved to be one of the most valuable tools in providing
+staff with information.  The voice mail system, capable of handling 50 incoming
+calls at a time, handled approximately 2500 during a seven hour period.  This
+is considered to be a volume of calls handled in 53 hours of normal operation.
+ 
+As is normal in an emergency, the situation is not always clear, information is
+not always timely and new problems always seem to appear from nowhere.  The
+possible release of carcinogenic toxic substances, such as PCB or much more
+dangerous dioxin and furan, in a public building was considered by the various
+emergency response offices to be a unique event.  As a result, there was not
+much past experience to guide the authorities in their actions.  Because of the
+many unknowns concerning the toxic spill, the decision was reached to be
+cautious in the reestablishment of normal operations in the building.
+Extensive testing would be required, and that would take time.  If the tests
+proved to be positive, that is, if toxic elements were found in other parts of
+the building, a relocation of personnel to a new site would be necessary.
+ 
+The Space Management Office of the Department of General Services was alerted
+to the problem and was asked to begin the process of finding space for
+approximately 650 people.  Potentially usable space was found, but lease
+negotiations were held off until the results of the tests were determined.
+ 
+The immediate problem was what to do with 590 people until normal operations
+could be reestablished. Of the 590 staff, 150 people were on business trips
+throughout the State and would not represent a placement problem until they
+returned.  The department examined travel plans and attempted to reschedule
+planned business where it was reasonable.  Others were asked to take scheduled
+vacations.  Where it was practical, staff were directed to do their normal
+office work at alternate sites within the department or other agencies.  The
+remaining employees were simply put on administrative leave.  Since the
+decisions affected both professional staff as well as nonprofessional staff,
+the department included the California State Employees Association when
+bargaining unit staff were involved.
+ 
+By the end of the second day, the department was reasonably sure that toxic
+substances had been contained but could not be certain until more definitive
+tests were concluded. If the toxic material had not been contained as it
+appeared, but had indeed spread to the rest of the building then there would be
+a number of new questions to be answered.  For example, could the tons of
+documents, paper files, magnetic tapes and floppy diskettes be decontaminated
+or would they simply be buried?  Could the hundreds of microcomputers,
+terminals, typewriters and other pieces of office equipment be decontaminated
+or would they have to be replaced.  How do you, or should you, replace
+information contained in the paper files?  These and many more questions would
+have to be answered in the next few days if any test came back positive.
+ 
+On Saturday afternoon the results of the tests came in; they were negative.
+Employees could reenter the building on Monday.
+ 
+The cost of this disaster probably will not be known for a few weeks.  It will
+take time to calculate the cost of lost time.
+ 
+It is interesting to note that in the course of the week the process of cleanup
+and recovery had involved the Sacramento Municipal Utility District, the
+American Environment Management Co., the Sacramento Fire Department, the Toxic
+Substances Control Division and Hazardous Materials Laboratories of the
+Department of Health Services, CAL-OSHA, Sacramento County, the State
+Architect, the divisions of Buildings and Grounds, and Space Management from
+the Department of General Services, and the California State Employees
+Association.  If toxic tests had been positive, there would have been many more
+organizations involved and many more very difficult decisions to be made before
+recovery could have been completed.
+ 
+CLOSING COMMENTS
+ 
+PCB, dioxin, and furan were found in the switch equipment room and in the
+electrical closets on the floor above.  But no trace of the toxic material was
+found outside of the electrical closets.  Since the conduit passed through all
+six floors, SMUD has been asked to decontaminate the electrical closets on each
+floor.
+ 
+The reason that the fire detection system activated will probably never be
+known. It is assumed that the system was activated as a result of fluctuations
+in the electrical power.
+ 
+------------------------------
+
+End of RISKS-FORUM Digest 9.28
+************************

@@ -1,0 +1,391 @@
+RISKS-LIST: RISKS-FORUM Digest   Friday 8 July 1988   Volume 7 : Issue 18
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:      [NVP + odds and ends]
+  N-Version Programming (Jim Valerio, Nancy Leveson)
+  Physical hazards (Henry Spencer)
+  Accu-Scan inaccuracies (Robert Steven Glickstein)
+  The Eyes Have It (Don Watrous, Evelyn C. Leeper)
+  Lockpicking (Geoff Kuenning, Henry Schaffer, Lee Hounshell)
+  Another "silent fault tolerance" example: DWIM (Mike O'Brien)
+  ATM receipts (Joe Beckenbach)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+  For Vol i issue j  /  ftp kl.sri.com  /  get stripe:<risks>risks-i.j ... .
+  Volume summaries in (i, max j) = (1,46),(2,57),(3,92),(4,97),(5,85),(6,95).
+
+----------------------------------------------------------------------
+
+Date: Thu, 07 Jul 88 18:04:34 PDT
+From: jimv%omepd.intel.com@RELAY.CS.NET
+Subject: N-Version Programming
+Organization: Radix MicroSystems, Beaverton
+
+Nancy, your mention of n-version programming in "Clarifications on the A320
+Design" (recent RISKS) reminds me of an n-version failure I experienced last
+year.
+
+In the design of the Intel's 80960 microprocessor, we generated two simulators
+for the instruction set.  The first emulated the programs at the instruction
+level, and the second emulated programs at the logic/register-transfer level.
+These two simulators were developed independently from a detailed architecture
+specification.  A third group wrote an automatic test generator, used for
+validating the hardware and simulators, which created self-checking programs
+with "interesting" random operands and results.
+
+All three implementations, both simulators and test generator, made the
+same mistake with the modulo instruction.  The remainder instruction was
+implemented correctly, but the modulo instruction did an extra subtraction
+when the dividend and divisor had opposite signs and the dividend was an
+exact multiple of the divisor.  (For example, 4 mod -4 returned 4, not 0.)
+The test generator tested for these cases, but wrongly computed the
+expected result in such a way that both the hardware logic and the test
+generator produced exactly the same results.
+
+This mistake was discovered well after a year of software development on
+the processor by a user who was debugging an "impossible" condition.
+
+Although this is the only explicit n-version failure we had, and even
+though the n-version approach found on the order of ten thousand design
+errors (estimated) over the course of the 5 year effort, this one failure
+was a striking experience.  There were several more bugs that the
+n-version programming probably didn't find, but they're more forgivable
+because there even any tests generated for those sets of conditions.
+
+For me, n-version programming is a valuable tool, but I wouldn't want
+to rely entirely on it.
+
+Jim Valerio	jimv%radix@omepd.intel.com, {verdix,omepd}!radix!jimv
+
+------------------------------
+
+Date: Fri, 08 Jul 88 06:07:20 -0700
+From: Nancy Leveson <nancy@commerce.ICS.UCI.EDU>
+Subject: Re: N-Version Programming  [response to Jim Valerio]
+
+That is very interesting.  It would, of course, also be interesting to
+determine whether the number of mistakes found by a different type of testing
+technique would have been less, as, or more effective.  It is also possible
+that more "common mode" failures exist, but that noone has discovered them yet
+(the one you speak of was discovered, it sounds, by accident).
+
+My student, Tim Shimeall, is just completing a dissertation in which one of the
+topics is a comparison of back-to-back testing (n-version testing) vs. regular
+testing.  Eight versions of a specification were written independently and then
+the programs subjected to both back-to-back testing and regular testing.  Even
+though the testers were undergraduate students and unskilled at testing (not
+something usually taught to undergrads), the back-to-back testing was not
+terribly effective in comparison to the other test methods used (structured
+walkthroughs, automated static analysis, functional testing).  The problem is
+that voting is not a very good test oracle -- even on the same test cases,
+voting did not find the same errors as standard testing techniques.  One of the
+reasons is that voting could compare final results only and not look at
+intermediate computations.  Often, the testing methods that could thoroughly
+instrument a program detected errors that did not, for those particular input
+cases, actually result in wrong answers.  Voting on intermediate results would
+not have solved the problem.  The errors did not exist at the abstract function
+level, but at a much finer level of granularity.  Any attempts to vote at this
+level would have required that the specification include the exact algorithms
+and variables to be used, thus defeating the whole purpose of writing multiple
+versions and just moving the errors to the common specification.
+
+We did find that the back-to-back testing detected errors that were not
+detected by testing.  However, we cannot conclude much here because of the
+inexperience of the students doing the standard testing.  We gave them a little
+instruction, but none had ever used these test methods before.  This same type
+of comparison should perhaps be done with more experienced testers.
+
+Almost all n-version experiments are either done in isolation (without
+comparing it to the alternatives in a controlled fashion) or have so many other
+methods applied to the programs in conjunction with the n-version programming
+that it is not possible to separate the effect of one method from the others.
+The important question is not whether one method of detecting errors finds
+some, but whether the alternatives that could have been used would have been
+better, the same, or worse at finding errors and whether they find the same
+errors or different ones (i.e., are alternative or complementary techniques).
+There are obviously costs associated with all these error-detection techniques
+and almost always a finite and limited amount of resources and time to apply
+them.  The real question is how should these limited resources be spent.
+
+No one has yet (including us) compared formal verification techniques with
+some of these other approaches.  I just heard John Cullyer speak on the
+VIPER development and proof and was very impressed.  My bias is to believe 
+that formal techniques would be superior to many of these other techniques, 
+but this needs to be confirmed using carefully controlled experimental 
+comparison.  In lieu of this, it will be interesting to see if the VIPER 
+turns out to have fewer design and other errors than similar microprocessors 
+developed using non-formal techniques.
+
+The only small piece of evidence that I know of was obtained during an 
+experiment by Brunelle and Eckhardt in which they had two more versions
+of the SIFT operating system (written at SRI using formal specification and
+verification techniques although not, in the end, completely verified to
+the code level) written by graduate students.  When the three versions
+were run together as an n-version voting system, no errors were found in
+SIFT but there were instances of the two unverified versions outvoting the
+correct SIFT version.  The programmers may, however, have had vastly different
+backgrounds and experience from the SRI programmer, so no real conclusions 
+can be reached here.  But it is interesting.  Harlan Mills is also claiming
+very substantial gains from the use of formal development procedures on real
+projects at IBM.
+
+------------------------------
+
+Date: Wed, 6 Jul 88 16:32:02 EDT
+From: mnetor!utzoo!henry@uunet.UU.NET
+Subject: Physical hazards
+
+> CCI also cleverly placed the "reboot" switch, an up/down toggle, on the
+> front of the cabinet, not recessed, and at knee level...
+
+Some years ago, when I was with CSRI here, we had an analogous problem.
+The machine room was relatively long and narrow, and we had two multi-
+rack systems facing each other with consoles in the space in between.
+The beat-up old swivel chair that we used as a console chair had a rubber
+bumper strip high on its back so it wouldn't mar a wall (or whatever) if
+you leaned back against one.  Turned out that the bumper was at exactly the
+height of the control switches on one of the RK05 disk drives.  Oops...
+We changed console chairs.
+
+Henry Spencer @ U of Toronto Zoology  {ihnp4,decvax,uunet!mnetor}!utzoo!henry
+
+                       [This was not a case of "Chair and chair alike."  PGN]
+
+------------------------------
+
+Date: Fri, 24 Jun 88 14:52:23 -0400 (EDT)
+From: Robert Steven Glickstein <bobg+@andrew.cmu.edu>
+Forwarded-to RISKS-by: Robert Steven Glickstein <bobg+@andrew.cmu.edu>
+To: bb-opinion@pt.cs.cmu.edu
+Subject: Accu-Scan inaccuracies
+
+I once bought a little container of Minced Garlic at the Food Gallery on
+Centre Ave., Shadyside.  The shelf price was something like $1.89, I don't
+really know.  The scanned price, however, was $5287.44.
+
+I was with a bunch of my friends, all of whom were very very amused by this.
+Unfortunately, the checkout clerk and the manager were both fairly humorless,
+and didn't appreciate our comments.
+
+  "Bad garlic crop this year?"
+  "Gee, I better really enjoy this garlic bread tonight."
+  "Do you take the American Express Gold Card?"
+  "Only fifty-two hundred?  I'll take two."
+  "Reaganomics."
+  "Do you have change for a ten thousand?"
+  "Hmm.  Garlic bread tonight, or a new car?"
+
+-Bob Glickstein
+
+------------------------------
+
+Date: Wed, 6 Jul 88 21:04:52 EDT
+From: watrous@aramis.rutgers.edu (Don Watrous)
+Subject: Re: The Eyes Have It (RISKS DIGEST 7.16)
+
+All the original information for the last 5 digits of the NJ Drivers License
+is correct (MMYYE) except for the omitted fact that 50 is added to the month
+(MM) field for female drivers.  I used to think that this was to make it a
+less recognizable date (for women, who tend to conceal their age sometimes),
+but now guess it's just adding in a coding for sex also.
+
+I can confirm that all the Watrouses I know have the same initial letter and
+4 digits.  I'm curious as to how the middle 5 digits are arrived at.
+
+Don
+
+------------------------------
+
+Date: 6 Jul 88 13:34:45 GMT
+From: ecl@mtgzy.att.com (Evelyn C. Leeper)
+Subject:  The Eyes Have It (Re: RISKS-7.14)
+Organization: AT&T Information Systems, Middletown NJ
+
+    [... also noted the +50 encoding... ]
+
+Even with all this, I have a driver's license that lists me as male!  (Well,
+Mark and I both filed for a change of address on our licenses and I requested a
+change of name to add my middle initial, and they apparently added all the
+stuff together and sent me a temporary license with Mark's decsription!)
+
+Evelyn C. Leeper  201-957-2070  UUCP:	att!mtgzy!ecl or ecl@mtgzy.att.com
+
+------------------------------
+
+Date: Fri, 8 Jul 88 04:23:00 EDT
+From: ames!desint!geoff@uunet
+Subject: Re: Lockpicking, The Eyes Have It (RISKS-7.16)
+Organization: Interrupt Technology Corp., Manhattan Beach, CA
+
+Randy D. Miller writes:
+
+>      If it's so easy to pick open locks, why do burglars resort to harder and
+> messier ways of entering buildings, desks, cabinets, etc.?  Are most burglars
+> incapable of learning such a skill, or does it just not occur to them?
+
+In the first place, the great majority of burglars are low-ambition,
+low-intelligence people.  In general, they are looking for a quick, easy hit
+-- if they were interested in learning in a new skill, they'd most likely
+get a safer, higher-paying job.  In the second place, why pick a lock when
+you can kick a door in, smash a window, or try the neighbor's house with the
+unlocked door?  
+
+In the same digest, Tracey Baker writes:
+
+>   It also makes me wonder about the NJ DMV...
+
+I have a pretty low opinion of ANY organization that generates a
+supposedly-unique identification number from non-unique personal
+characteristics.  What's wrong with assignments from a sequence, as
+with license plates and Social Security Numbers?  The whole purpose is
+disambiguation;  the current NJ system is, in a pithy analogy I heard
+yesterday, playing Russian Roulette using a clip-loading gun.
+
+	Geoff Kuenning   geoff@ITcorp.com   {uunet,trwrb}!desint!geoff
+
+     [Please let's not reiterate the many previous discussions on the
+     use of an SSN.  PGN]
+
+------------------------------
+
+Date: Thu, 7 Jul 88 15:55:09 edt
+From: Henry Schaffer <hes@uncecs.edu>
+Subject: re: lockpicking
+
+  Randy Miller discussed the delights of lockpicking, and then raised some
+questions.  He raised his chances of success by using inexpensive new locks.
+The lower the precision of the lock, the less the chance of quick picking.
+The BEST (brand) of locks is of standard construction (with regard to the
+pins and cylinder) but is very well made, and is quite difficult to pick.
+Then there are locks with specially designed pins (the Medeco brand is
+particularly well known) which make sucessful picking unlikely.
+Old/corroded locks are often difficult to work with.
+
+  Most of his questions also apply to physical security of computing
+facilities, and the concepts are even more general.
+
+  Most locks (e.g., in homes) are not extremely pick resistant, and there
+are perfectly good reasons why they are not.  It is a principle of security
+that you should reinforce the weaknesses - and not waste time strengthening
+the already strong areas.  (This also applies to computer security.)  Since
+most (wood frame) doors, windows, desks, etc. are less resistant to force
+than their locks are to picking, it would be a waste of money to buy better
+quality locks.  (This principle also applies to computer security.)
+
+>     I called some city and state offices, and one local locksmith, to see
+>if there are any laws regulating the possession and use of lockpicks in
+>Arizona.  No one I talked to seemed to know anything about any regulations!
+
+  There is a "risk" of asking the wrong question! Ask again about possession
+of "burglar's tools"! (Yes, the definition of "burglar's tools" is context
+dependent.)  It is not a good idea to have a lock pick in your pocket when
+you are in or around someplace which has been burglarized!
+
+>     If it's so easy to pick open locks, why do burglars resort to harder and
+>messier ways of entering buildings, desks, cabinets, etc.?  Are most burglars
+>incapable of learning such a skill, or does it just not occur to them?
+
+  It isn't so easy (you, a technical person, spent quite a bit of time
+learning/practicing this.)  A 2' crowbar or strong screwdriver will usually
+work faster, and with less practice needed - and who cares about "messier"?
+
+>Should I spend a fortune replacing the locks on my house, or are the risks
+>low that a burglar will pick the locks?
+
+  If the easiest way to get into your house is by picking the lock(s), then
+you probably should replace them.  Spring latch locks can also be defeated
+by use of a piece of flexible plastic or metal - do you have dead bolts?
+
+--henry schaffer  n c state univ
+
+------------------------------
+
+From: tlh@pbhyf.PacBell.COM (Lee Hounshell)
+Subject: Lockpicking (Re: RISKS-7.16)
+Date: 7 Jul 88 16:33:13 GMT
+
+>[Randy D. Miller writes..
+>     If it's so easy to pick open locks, why do burglars resort to harder and
+>messier ways of entering buildings, desks, cabinets, etc.?  Are most burglars
+>incapable of learning such a skill, or does it just not occur to them?
+>Should I spend a fortune replacing the locks on my house, or are the risks
+>low that a burglar will pick the locks?]
+
+Picking a lock takes time, and sometimes even locksmiths can't do it quickly.
+I remember being locked out of a condo at Lake Tahoe last year, and the
+locksmith who was called out to open the place up spent 2 hours trying to
+pick the lock.  Finally, he gave up and took out a hammer and chisel.  Just
+two hits on the deadbolt were all that was needed to completely demolish it.
+The door was open in about 10 seconds.  What really amazed me was how quickly
+*anyone* can get into someone's home, just with a hammer and chisel.  Locks
+only keep out honest people.
+
+Lee Hounshell
+
+------------------------------
+
+Date: Fri, 01 Jul 88 12:50:43 -0700
+Subject: Another "silent fault tolerance" example: DWIM
+From: obrien@aerospace.aero.org
+
+	I can provide a more modern example of "too silent" error
+recovery.  A couple of years ago I was programming in Berkeley Smalltalk:
+the implementation of Smalltalk on a Sun.  I was surprised at how slow
+the graphics of the system was, and went in to tweak the virtual machine.
+First, I "batched" the bitmap operations.
+
+	Nothing happened.
+
+	I put in a few print statements to see what was going on in there.
+
+	Nothing happened.
+
+	In desperation I put print statements all over the place.
+
+	Finally, something happened - but not much.  The virtual machine
+operation was returning an error immediately (this was "drawLoopXY" for
+the curious).  Interpreted Smalltalk code was then taking control and
+doing the drawing using more primitive calls.  In all its history,
+Berkeley Smalltalk virtual machine had never actually drawn any lines!
+The Smalltalk code was silently doing it all, at far less speed.
+
+	I had thought this experience unique, until I saw the message
+about DWIM.  I wonder how many of our "high-level programming environments"
+are running much, much more slowly than they need to?
+
+Mike O'Brien
+The Aerospace Corporation
+
+------------------------------
+
+Date: Tue, 5 Jul 88 23:23:15 PDT
+From: beckenba@csvax.caltech.edu (Joe Beckenbach)
+Subject: ATM receipts
+
+	One of the RISKS readers wrote in to register his surprise at the
+concept of receipts for withdrawals and also for deposits, taking the more
+traditional legal "exchange money for receipt" view.
+	The ATMs here in Los Angelos give "receipts" for deposits,
+withdrawals, transfers, and user-selected balance checks. The receipt for
+deposits is the traditional legal-style notice that money has been received.
+The "receipt" for the other transactions are hard-copy of the transaction,
+and therefore not a receipt in the strictest sense. For instance, I find it
+very worthwhile keepng the withdrawal 'receipts' from my checking account
+ATM withdrawals: balanced checkbooks are happy checkbooks. Hardcopy balance
+statements are handy for trying to figure out when checks cleared to contest
+a bounced check, and an ATM transfer of funds needs a record just as much as
+any other deposit does.
+	And a deposit accepted without a receipt is a donation. No joking.
+Even most organized charities give receipts for donations accepted.
+
+	Rather "receipts" than mute ATMs!	Joe Beckenbach
+
+------------------------------
+
+End of RISKS-FORUM Digest 7.18
+************************

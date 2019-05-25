@@ -1,0 +1,557 @@
+VIRUS-L Digest   Thursday, 16 Nov 1989    Volume 2 : Issue 240
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Re: Sophisticated viruses
+Ohio vs. Den Zuk (PC)
+VACSINA infects more than EXE and COM files (PC)
+Re: Pull plug before cleaning
+Macintosh Virus List
+Need software to detect PC virus (PC)
+Another Virus? (PC)
+Undecidability of virus detection
+Virus removal programs for use on MAC 128K
+Another virus... Marijuana virus (PC)
+Virus eliminators above reproach.
+Sunday virus (PC)
+Lisbon virus (PC)
+Ralf Burger's book
+
+---------------------------------------------------------------------------
+
+Date:    Mon, 13 Nov 89 12:12:46 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Sophisticated viruses
+
+jim frost writes:
+> Fridrik Skulason writes:
+> >jim frost writes:
+> >>Given the limited resources of PC environments, it's
+> >>unlikely that you'll get a very sophisticated virus.
+>
+> >I must disagree.
+>
+> No, it's harder.
+
+The disagreement results from our different understanding of the words
+"very sophisticated virus." I understood them in a relative sense,
+meaning that a "very sophisticated virus" in the PC environment does
+not have to be nearly as complicated or large as a "very sophisticated
+virus" in the UNIX environment, and therefore much easier to write.
+So, we really do not disagree regarding the fact that
+
+> MS-DOS systems are so trivial that it's difficult to build a good virus
+> detector and there are no inherent security systems.  Viruses don't need to
+> be sophisticated.
+
+> >"Bypass protection programs and jump directly to the hardware, DOS or
+> >BIOS routines."
+>
+> I didn't add that because that's not usually one of the "survival"
+> traits, but rather is used in propagation and/or infection.
+
+No, because a part of the "survival" is to avoid detection. Many
+protection program simply hook interrupts, and any virus that bypasses
+the interrupt table has a good chance of avoiding them altogether.
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 13 Nov 89 11:54:52 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Ohio vs. Den Zuk (PC)
+
+It is obvious that the "Den Zuk" and "Ohio" viruses are somehow related,
+but the nature of their relationship has not been determined yet. "Ohio"
+was reported later, but there is a possibility that it is older than
+"Den Zuk".
+
+I said in an earlier note that a diskette infected with Ohio would be
+immune to infections by Brain and Den Zuk. This is not entirely
+correct. The diskette will be immune to infections by Brain, but when
+Den Zuk finds a "Ohio"-infected diskette, it will remove the virus and
+put a copy of itself there instead.
+
+As I have mentioned before, the "Ohio" virus contains the signature of
+the "Den Zuk", but it also contains some interesting text strings:
+
+                      V  I  R  U  S
+                           b y
+                       The Hackers
+                       Y C 1 E R P
+                      D E N Z U K O
+                      Bandung 40254
+                        Indonesia
+
+                (C) 1988, The Hackers Team....
+
+Remember that Den Zuk puts the volume label Y.C.1.E.R.P on
+Brain-infected diskettes, when it removes the infection.
+
+(And yes, by the way, both viruses only infect diskettes, not hard
+disks).
+
+The "Den Zuk" virus contains the following text strings:
+
+                        Welcome to the
+                           C l u b
+                        --The HackerS--
+                            Hackin'
+                         All The Time
+
+                         The HackerS
+
+On a more technical level, the viruses are very close. Both store the main
+part of the virus on track 40, starting at sector 33. (Remember that normal
+360K diskettes have only tracks numbered 0..39 and sectors 1..9) They also
+hook INT 9, take action when Ctrl-Alt-Del is pressed and in both cases
+a true reboot can be produced by pressing Ctrl-Alt-F5.
+
+And of course - the "Ohio" virus has the same "bug" as "Den Zuk" - it can
+not infect other types of diskettes than 360K properly.
+
+A part of the "Den Zuk" virus may explain the relationship. The following
+code fragment is used to determine if a diskette should be infected or not.
+
+    CMP    [SIGN1],537CH        ; Is current diskette infected
+                    ; with this version of Den Zuk ?
+    JE    BP0300            ; Yes, do not infect.
+    CMP    [SIGN2],0FAFAH        ; No, but is it infected with
+                    ; (probably) an older version ?
+    JE    BP0280            ; Yes, update the virus.
+    CMP    [SIGN3],1234H        ; No, but is it infected with Brain ?
+    JNE    BP0290            ; Yes, remove it.
+                    ; No, just infect.
+
+"Ohio" contains the signature FAFA in the specified location.
+
+My theory is that the "Ohio" virus is the missing "older version" of
+"Den Zuk", that it was written by the same authors as "Den Zuk", but
+earlier. The authors of Ohio released it to fight the Brain virus, but
+since it contained a number of bugs, the "Den Zuk" virus was later
+released to track it down.
+
+One final question. I understand that a variant of Dutch is spoken in
+some parts of Indonesia - do the words "Den Zuk" mean anything over
+there ?
+
+- -frisk
+
+------------------------------
+
+Date:    Mon, 13 Nov 89 13:41:09 -0500
+From:    Christoph Fischer <RY15%DKAUNI11.BITNET@IBM1.CC.Lehigh.Edu>
+Subject: VACSINA infects more than EXE and COM files (PC)
+
+Hi,
+VACSINA infects any file that is loaded and executed via the INT 21H(4BH)
+function. So additionally to COM and EXE files other files like OVL or
+APP are infected as long as they start with E9H (jump) or 'MZ' (EXE header).
+We have written a program that detects VACSINA and removes it from those
+files. Also we have an immuniser that prevents VACSINA from installing its
+memory resident copy.
+
+Christoph and Torsten
+
+*****************************************************************
+* Torsten Boerstler and Christoph Fischer and Rainer Stober     *
+* Micro-BIT Virus Team / University of Karlsruhe / West-Germany *
+* D-7500 Karlsruhe 1, Zirkel 2, Tel.: (0)721-608-4041 or 2067   *
+* E-Mail: RY15 at DKAUNI11.BITNET or RY12 at DKAUNI11.BITNET    *
+*****************************************************************
+
+------------------------------
+
+Date:    13 Nov 89 00:00:00 +0000
+From:    "David.M..Chess" <CHESS@YKTVMV.BITNET>
+Subject: Re: future viruses on a PC; Pull plug before cleaning
+
+> Sorry again turning off power will stop the current execution of the
+> virus...  but... unless you are perfect in your safe computing habits
+> and your tools are up to snuff and you give your harddisk an
+> engineering prep as you power up and ALL your software is clean.. you
+> can still be hit upon power up...
+
+The usual idea is that you boot from a known-safe *diskette* when
+you want to get the system into a clean state for checking.  With
+enough effort, it's possible to get a diskette whose possibility
+of being infected is as small as you like; if you boot from that,
+you can check your hard disk without having to assume that it's
+clean already (when a machine boots from a properly-prepared
+diskette, as you know, no code from the hard disk is executed).
+That was, I think, what was being suggested in the item
+you're replying to...              DC
+
+------------------------------
+
+Date:    Mon, 13 Nov 89 11:35:30 -0500
+From:    "Gregory E. Gilbert" <C0195%UNIVSCVM.BITNET@VMA.CC.CMU.EDU>
+Subject: Macintosh Virus List
+
+After much scrutinization I ahave ammended the earlier Macintosh virus list
+and came up with the following.  Hope this helps.
+
+Macintosh Viruses
+- -----------------
+
+There are about six Macintosh viruses known at present (a list
+of viruses and the years in which they first appeared can be seen
+in the following table).
+- -----------------------------------------------------------------
+Virus                         Strains       Clones
+- ------                        --------      --------
+MacMag(December 1987)**
+Dukakis(Early 1988?)****
+nVir(Early 1988)
+                              nVir A(?)
+                              nVir B(?)
+                                            Hpat(Late 1988)
+                                            AIDS(Late 1988)
+                                            MEV#(March 1989)
+                                            nFLU(August 1989)
+Scores(Spring 1988)***
+INIT 29(Late 1988)*
+ANTI(Early 1989)
+- -----------------------------------------------------------------
+   * - also known as the Drew Virus, Brandow Virus, and the
+       Peace Virus
+  ** - also known as the NASA virus
+ *** - also known as the San Jose Flu
+**** - can only infect HYPERCARD Stacks!
+
+Gregory E. Gilbert
+Computer Services Division
+University of South Carolina
+Columbia, South Carolina   USA   29208
+(803) 777-6015
+Acknowledge-To: <C0195@UNIVSCVM>
+
+------------------------------
+
+Date:    Mon, 13 Nov 89 18:11:00 -0500
+From:    DOUG%HUGIN%NORWICH.BITNET@VMA.CC.CMU.EDU
+Subject: Need software to detect PC virus (PC)
+
+I need to find software to detect and purge viruses from DOS-PC
+software.  I have seen vaccine software in magazines and catalogs
+but no description of how it functions (whether it automatically
+destroys the virus and the software attached, or if it can be a
+bit selective).  Can any one elaborate a bit on the value of the
+following vaccines or suggest software with which they are familiar.
+
+Compugard Anti-Virus
+Flu-Shot+
+Flushot(1225)
+Mace Vaccine
+Virus Killer
+
+Any Discussion would be helpful.  Send replies to:
+
+DOUG@NORWICH.BITNET
+Doug Johnson
+Computer Users Services
+Norwich University
+Northfield, VT 05663
+
+------------------------------
+
+Date:    Mon, 13 Nov 89 18:45:00 -0500
+From:    IA96000 <IA96%PACE.BITNET@VMA.CC.CMU.EDU>
+Subject: Another Virus? (PC)
+
+Over the weekend a file named EAGLE.EXE was uploaded to my BBS.
+My system run extensive tests on ALL new files before they are
+released for general use and downloading. I checked the log and
+NO reports of anything you may consider improper were found after
+checking the uploads.
+
+EAGLE.EXE is said to produce a VGA animation of an EAGLE flying
+in the sky. For those interested in VGA animations it would appear
+to be of interest.
+
+I ran EAGLE.EXE and all that happened is the program produced the
+following line on the screen:
+
+Kiss an Eagle Today!
+
+Being of suspicious nature, I immediately started to check the file
+using SCANV48 and other utilities. No indication of a virus was
+detected or reported.
+
+HOWEVER,running certain files after running EAGLE.EXE caused them to
+grow in size. Okay, cold booted and ran SCAN and other utilities again.
+Same result, no report of infection. But as soon as you run EAGLE.EXE
+again, files start to get larger.
+
+There has been NO apparent FAT TABLE damage, and no files have
+suddenly disappeared. Other than files growing in size, there appears
+to be nothing else happening yet!
+
+The file EAGLE.EXE probably has been or will be uploaded to Homebase
+by the time you read this message. If not, it will transfered tonight
+as soon as we can get through.
+
+NOTE:    SOURCER  reveals code similar to other viruses in existance,
+but I will defer to experts and let them decide what exactly is
+contained in the EAGLE.EXE file. In all likelihood this IS NOT a
+new virus, just a modification on an old one, however again I will
+defer to the experts!
+
+SUSPECT FILE NAME: EAGLE.EXE
+     DESCRIPTION : Supposedly a VGA animation of an EAGLE.
+
+
+DISCLAIMER:
+
+    This virus (or whatever you want to call it) HAS NOT affected
+any computers or files at this University. It was discovered on a BBS
+run by a student who attends this University.
+
+------------------------------
+
+Date:    Sat, 11 Nov 89 12:25:00 -0500
+From:    crocker@TIS.COM
+Subject: Undecidability of virus detection
+
+In VIRUS-L Digest   Thursday,  9 Nov 1989    Volume 2 : Issue 237,
+Peter Day writes
+
+    `A note to the virus-l digest of 6-Nov-89 said that "the virus
+    problem (at least detection anyway) is undecidable."  Does
+    anyone know if there are any papers where this result is
+    proved? Or where the problem is shown to not be NP complete?
+    Or even where the problem is stated precisely?'
+
+There are two parts to this question.  First, precisely what is a
+virus and second, how hard is it computationally to determine whether
+a candidate program contains a virus.  Precise specification of
+viruses is an open-ended discussion, but almost any reasonable
+definition will lead to the same conclusion.  For the sake of this
+discussion, let's agree that a virus modifies something it shouldn't.
+(A program which makes undesired modifications does not necessarily
+contain a virus, but all viruses make undesired modifications.)
+
+Determining whether a program makes undesired modifications is
+equivalent to determining whether it ever computes a particular
+result, which is equivalent to the halting problem.  Hence
+determination of the presence of a virus is undecidable.  This is not
+a formal proof, of course, but a student in a first course in formal
+systems ought to be able to supply the necessary framework and details.
+
+
+Undecidability is unfortunate, but not the end of the world.
+Approximate virus detectors are entirely feasible.  The undecidability
+result simply guarantees that any detector must err sometimes.  It may
+err by failing to find some viruses, or it may err by falsely finding
+viruses where they aren't.  (Or it can hang up in a loop and never
+terminate.)  Most virus-finding programs in use today err on the side
+of missing some viruses.  Maria Pozzo and I are conducting research
+along the alternate line.  (See our paper in the 1989 IEEE Symposium
+on Security and Privacy, Oakland, CA, if you want further details.)
+
+Steve Crocker
+
+------------------------------
+
+Date:    14 Nov 89 07:03:23 +0000
+From:    kulp@cs.nps.navy.mil (jeff kulp x2174)
+Subject: Virus removal programs for use on MAC 128K
+
+
+   I have a friend with a MAC 128K that got a bad case of nVIR A
+from another MAC.  His MAC is running system 4.1 and has a 20MEG harddisk.
+Are there any Virus removal programs that will run on this machine.  The
+programs that I have found (Disinfectant, VirusRx, Interferon, etc) all
+require at least 220K of RAM.  Any help would be appreciated.
+
+
+
+------------------------------
+
+Date: 14 Nov 89 17:07:04 GMT
+From: Bill.Weston@f12.n376.z1.FIDONET.ORG (Bill Weston)
+Subject: Another virus... Marijuana virus (PC)
+
+ A program called XTREE.EXE is suspect in spreading a very annoying
+virus.  A friend used this program and was consequently infected.  The
+first time he ran the program the computer simply locked up.  He then
+re-booted and got the following message - YOUR PC IS STONED !
+LEGALIZE MARIJUANA!
+
+ I have not been able to examine the infected disks personally so the
+information that I have is just what I have been told.  The Virus
+causes many READ/WRITE errors and does spread to floppies.  It has
+apparently infected COMMAND.COM and the BOOT area of the disk,
+
+ The real nasty part is that the chap who has been hit is pretty new
+to MS-DOS machines.  In fact he barely has the system set up at all.
+
+ If anyone has had experience with this VIRUS I would thank you for any
+advise.
+
+Bill Weston == ...!usceast!uscacm!12!Bill.Weston
+
+------------------------------
+
+Date:    Tue, 14 Nov 89 15:06:28 -0600
+From:    MITCH COTTRELL <C2852@UMRVMB.UMR.EDU>
+Subject: Virus eliminators above reproach.
+
+I AGREE....  All virus elimination programs MUST be seen and BE above
+reproach this includes software from public sources.  I have already
+see a "elimination" program for Juruselem that says all is fine, But
+the scan program still says t hat it is infected.  Which is right.
+Both came from the same source.  (McAffee Associates)
+
+I am not perfect in my software, But two programs that test for the
+same thing would be assumed to give the same result.  If they don't,
+one is not working ri ght.  Can you afford to gamble and GUESS which
+one is wrong??? It may cost more than you think........
+Acknowledge-To: <C2852@UMRVMB>
+
+------------------------------
+
+Date:    Tue, 14 Nov 89 22:44:50 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Sunday virus (PC)
+
+The "Sunday" virus reported here recently seems to be little more than a
+variant of the Israeli/Jerusalem virus.
+
+There are some differences - the length of Israeli/Jerusalem is 1808 bytes,
+but "Sunday" is only 1631 bytes long. Jerusalem defines INT 21 subfunction
+E0 to check if it is installed, but Sunday uses subfunction FF.
+
+It is, however, so similar to the original virus, that the only modification
+I had to make to my virus removal program to cover "Sunday" was to change
+one line in the "remove_israeli_or_fu_manchu" procedure:
+
+        if (virlen == 1808)
+to
+        if (virlen == 1808 || virlen == 1631)
+
+No other changes needed, not even new signature strings.
+
+This means that we only have 39 different viruses to worry about, not 40. :-)
+
+Anyhow - it is always getting harder and harder to determine what is a new
+virus and what is just a variant. Viruses Like "Ghost" and "Mix1" that
+combine parts of two viruses are not making that job easier...!
+
+- -frisk
+
+------------------------------
+
+Date:    Tue, 14 Nov 89 23:55:44 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Lisbon virus (PC)
+
+The "Lisbon" virus reported recently is nothing but a variant of the
+Vienna virus. The major difference is that the virus seems to have been
+created from the disassembly in Ralf Burger's book "Computer Viruses..."
+and assembled using a different assembler than the one used to create the
+original virus.
+
+The "Lisbon" virus contains the patches added in the book to make the
+virus a little less harmful than the original, just like the "Ghost"
+virus I reported recently.
+
+The reason I say that the virus has been created using a different assembler
+is that in many cases different forms of the same instructions are used.
+It is a rather little known fact that many x86 instructions have two
+different forms, in particular the XOR instructions. For example, the
+"XOR AX,AX" instruction can both be represented as
+
+        31 C0   or   33 C0
+
+The Microsoft assembler will generate one of the forms, but DEBUG the
+other one. I don't know about TASM and other assemblers, I use MASM
+and DEBUG for everything :-)
+
+Since Lisbon contains the form not used by the original virus, it was
+obviously not created by patching of Vienna. Still, this small difference
+was enough to confuse both the scanning programs from IBM and McAfee,
+but not my own....... :-)
+
+There are a few differences in the code, but they are trivial.
+
+- -frisk
+
+------------------------------
+
+Date:    Wed, 15 Nov 89 01:02:11 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Ralf Burger's book
+
+I spent a part of last evening reading the book "Computer Viruses, a
+high-tech disease".  This book has been mentioned here several times
+before, in most cases because it contains a (slightly crippled)
+disassembly of the Vienna virus.
+
+This disassembly, and other that have been (and will be) made
+generally available will become a major source of problems in the
+future. The reason is quite simple. It takes a GOOD assembly language
+programmer at least a couple of days to write and debug an original
+virus. Given a disassembly to start from, he can complete the job in a
+few hours instead. A novice may spend a bit longer time creating a new
+virus built on a disassembly, but it will be MUCH harder for him to
+write a new virus from scratch. It takes no genius to write a virus,
+only an experienced assembly language programmer, but since the
+novices outnumber the experienced ones, the availability of a virus
+disassembly will result in a far greater number of people being able
+to write viruses with less effort.
+
+My opinion of the book is very simple.
+
+I can not recommend it. This is not due to the fact that it contains
+listings of "real" viruses, but rather that the information in the
+book is inaccurate and out of date.
+
+Consider for example the different virus types described. They are:
+
+        Overwriting viruses.
+    Non-overwriting viruses.
+    Memory-resident viruses.
+    Calling viruses.
+    Hardware viruses.
+    Buffered viruses.
+    "Live and Die" viruses.
+    "Hide and Seek" viruses.
+
+Boot sector viruses are not mentioned in this list, or anywhere else
+in the book. This is of course because they only appeared in 1988, but
+the book was written in 1987. Some of the virus types mentioned are
+unknown and VERY unlikely to appear at all.
+
+Some time is spent on the subject of "Randomly occurring viruses"...
+
+    "who can say that his software cannot be turned into a virus by
+     changing a single bit ?".
+
+... and that sort of stuff.
+
+Still, this book is l lot better than the two other books I saw here
+at the university bookstore. I guess we will never get a "good" book
+on viruses, since they will probably have become obsolete by the time
+they appear.
+
+But who needs a book when we have VIRUS-L and comp/virus ?  :-)
+
+- -frisk
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

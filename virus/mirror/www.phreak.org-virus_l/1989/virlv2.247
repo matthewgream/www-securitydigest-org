@@ -1,0 +1,617 @@
+VIRUS-L Digest   Wednesday, 22 Nov 1989    Volume 2 : Issue 247
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Re: Sophisticated Viruses (Mac)
+Anti-Virals (Mac)
+Anti Virals, cont'd (Mac)
+Re: Ohio vs. Den Zuk (PC)
+Using Relay for real time conference
+Comprehensive Virus Tools (PC)
+Virus Attributes Listing
+Any volunteers ? (PC)
+High Level Language viruses
+Corrections and new details on DataCrime (PC)
+RE: Potential Virus? (Mac)
+Self-modifying applications (Mac)
+Re: Internet worm impact (UNIX & Internet)
+
+---------------------------------------------------------------------------
+
+Date:    21 Nov 89 18:26:07 +0000
+From:    ut-emx!chrisj@cs.utexas.edu (Chris Johnson)
+Subject: Re: Sophisticated Viruses (Mac)
+
+christer@cs.umu.se (Christer Ericson) writes:
+
+>First, restoring the traps to their original values isn't that
+>difficult. These are initialized by the ROM, then there must be a
+>table from where all initial values are fetched from, right? As I
+>haven't been writing any viruses lately, I'm not sure if this table is
+>moving around from ROM version to ROM version, but attaining the start
+>address of this table for each and every ROM version isn't too
+>difficult. Also, the virus would of course restore the trap vector
+>after it's done, so why would there be crashes? Actually, it wouldn't
+
+There would be crashes because it's very common for software that
+patches traps to have interdependencies between its patches, i.e. one
+patch depends on data discovered and stored for later use by another
+patch.  Removing only a portion of such patches will be likely to kill
+the machine sooner or later.  Even if you remove *all* patches, the
+machine is still in grave danger since the INIT (or whatever did the
+patching) may have changed some key characteristics of the machine
+already - characteristics that it's patches would have isolated other
+software from while they were installed and operating.
+
+Further, restoring traps to their original values is going to remove
+all of the patches put in place by the System itself - the patches
+that keep that machine running inspite of bugs in the ROMs, etc.
+Also, whole portions of the OS and Toolbox will be removed by
+restoring traps to their initial values (as taken from the ROM) - this
+will kill the machine for sure.  And even if you were to take the
+status of the trap table at some point early in the boot phase (after
+the key System patches had been made) and restore it much later (just
+before the first application is loaded, say) you would still be
+removing portions of the OS since the portions related to MultiFinder
+are added *after* (not before) all the INITs are loaded.  Again, the
+machine dies for sure.
+
+Even if these changes to the trap table are temporary, the same
+problems inhere - portions of the OS are fully installed and operating
+while other portions have been partially or completely lobotomized by
+restoring their trap table entries to some initial value.  Provided
+there were no inter- dependencies between routines in the OS (not to
+mention the Toolbox) this might not kill the machine immediately (but
+it would likely kill it event- ually), but since there *are* such
+interdependencies (often matched only in their importance by their
+subtlety), the machine is going to die very quickly.
+
+Writing well behaved patches is a black art on the best of days -
+writing the sort of un-patching patches discussed here would make that
+"black art" look like a carefree romp in the sunlit countryside.  I
+don't think such patches could be implemented safely, and I don't
+think anyone clever enough to do so would be wasting his time working
+on viruses in the first place.
+
+>even have to change the trap vectors, it could call the ROM directly,
+>but I left that to your imagination to figure out (a fruitless
+>attempt, obviously) since I didn't want to give away freebies to
+>aspirant virus writers. Some things they'll have to figure out
+>themselves.
+>
+>/Christer
+
+All in all, I don't think the techniques dealt with in this discussion
+are significant simply because there are too many reliability and
+compatibility problems intrinsically linked to them.
+
+For what it's worth,
+- ----Chris (Johnson)
+- ----Author of Gatekeeper
+- ----chrisj@emx.utexas.edu
+
+------------------------------
+
+Date:    Tue, 21 Nov 89 16:13:38 -0500
+From:    Kim Dyer <3C257F7@CMUVM.BITNET>
+Subject: Anti-Virals (Mac)
+
+a Mac Antiviral list:
+
+Antipan
+Disinfectant 1.2
+Gatekeeper  1.111
+Interferon 3.1
+Killscores
+Killvirus-nvir
+Repair 1.5
+Rwatcher
+Vaccine 1.01
+Virus detective 3.01
+Virus rx 1.4a2
+
+All the above are available from the Info-Mac archives or various users
+groups.  There are also several informational postings.
+
+------------------------------
+
+Date:    Tue, 21 Nov 89 16:30:52 -0500
+From:    Kim Dyer <3C257F7%CMUVM.BITNET@vma.cc.cmu.edu>
+Subject: Anti Virals, cont'd (Mac)
+
+I found more information on Mac Anti-Virals
+
+There is a good write-up on 20 different Macintosh Antivirals in the
+documentation for Disinfectant. I don't want to type it all in without
+getting the author's permission.
+
+I'm very pleased with Disinfectant.  Available from INFO-MAC archives
+many users groups or the author.
+
+     John Norstad
+     Academic Computing and Network Services
+     Northwestern University
+     2129 Sheridan Road
+     Evanston, IL  60208 - USA
+
+     Bitnet JLN @ NUACC
+     Internet JLN at ACNS.MWU.EDU
+     Applelink A0173
+
+------------------------------
+
+Date:    22 Nov 89 00:36:26 +0000
+From:    munnari!stcns3.stc.oz.AU!dave@uunet.UU.NET (Dave Horsfall)
+Subject: Re: Ohio vs. Den Zuk (PC)
+
+frisk@rhi.hi.is (Fridrik Skulason) writes:
+
+| As I have mentioned before, the "Ohio" virus contains the signature of
+| the "Den Zuk", but it also contains some interesting text strings:
+|
+|                       V  I  R  U  S
+|                            b y
+|                        The Hackers
+|                        Y C 1 E R P
+|                       D E N Z U K O
+|                       Bandung 40254
+|                         Indonesia
+|
+|                 (C) 1988, The Hackers Team....
+|
+| Remember that Den Zuk puts the volume label Y.C.1.E.R.P on
+| Brain-infected diskettes, when it removes the infection.
+
+Just a long shot, but "YC1ERP" happens to be a legitimate Amateur
+Radio (ham radio) callsign allocated to Indonesia...
+
+I don't have access to an International Callbook just now.
+Perhaps someone would like to check this out!
+
+Dave Horsfall (VK2KFU),  Alcatel STC Australia,  dave@stcns3.stc.oz.AU
+dave%stcns3.stc.oz.AU@uunet.UU.NET,  ...munnari!stcns3.stc.oz.AU!dave
+
+------------------------------
+
+Date:    Tue, 21 Nov 89 19:40:00 -0500
+From:    IA96000 <IA96@PACE.BITNET>
+Subject: Using Relay for real time conference
+
+Has anyone ever considered setting up a real time conference using
+the Bitnet RELAY system?
+
+I for one think it would be very interesting and educational for
+everyone interested in viruses to get together and chat!
+
+Well, the door is now open....Let's see if anyone enters.
+
+------------------------------
+
+Date:    Wed, 22 Nov 89 01:39:46 -0500
+From:    "Eric Rowan" <ca6726@siucvmb.bitnet>
+Subject: Comprehensive Virus Tools (PC)
+
+     I'm looking for comprehensive virus tools for the PC.  Frankly,
+I'm looking for the PC world's analogy of the Mac virus
+detector/disinfector Disinfectant as well as the analogy for a
+preventative aid like Vaccine and GateKeeper....Hopefully these
+analogies exist.  Please send any info, opinions and/or other comments
+directly to me: CA6726@SIUCVMB.BITNET Also, please include relevant
+info like software availability (ie. shareware?) and the wheres and
+hows on obtaining the software (eg. ftp addresses).  Thank you VERY
+much.
+
+Virtually,
+
+Eric Rowan
+Southern Illinois University at Carbondale
+Computing Affairs
+Computer Learning Center 1, Faner 1027
+Carbondale, IL  62901
+(618) 453-6213
+
+------------------------------
+
+Date:    22 Nov 89 09:33:51 +0000
+From:    wetmore@iris.ucdavis.edu (Bradford Rice Wetmore)
+Subject: Virus Attributes Listing
+
+Hi,
+I am just getting back into the virus game, and there are quite a few
+new ones (and variations).  Is there a quick overview someone has
+put together listing some of the common viruses (attributes,
+methods of attack, etc.)?  If there was something posted earlier,
+I would sure appreciate it if someone could send me a copy.
+
+Thanks much,
+Brad Wetmore
+Grad Student-UC Davis
+
+No funky signatures, just this:  wetmore@iris.ucdavis.edu
+
+------------------------------
+
+Date:    Wed, 22 Nov 89 11:19:03 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Any volunteers ? (PC)
+
+For the past four months I have been working on a comprehensive
+anti-virus package, capable of detecting/stopping and removing all PC
+viruses known.
+
+Well, it is finally finished.
+
+The package will be posted on comp.sys.ibm.pc and made available on
+SIMTEL and various anti-virus archives.
+
+Right now I am looking for a few volunteers. The package itself has
+been thoroughly tested (I estimate that it is running on 5-6% of the
+computers here in Iceland), but I need a bit of help with....
+
+          ... checking that the programs do indeed disinfect all infected
+          programs and diskettes. I have verified that it will "cure"
+          all the samples I have of the following viruses:
+
+                 Alameda (Yale)
+                 Brain
+                 Den Zuk/Ohio
+                 New-Zealand (Stoned)
+                 Pentagon
+                 Ping-Pong/Typo
+                 Swap (Israeli Boot)
+         Alabama
+                 April 1.
+                 Cascade
+                 Dark Avenger
+                 DataCrime
+         DataCrime II
+         dBase
+         Do-Nothing
+                 405
+         Fumble
+                 Fu Manchu
+         Ghost
+                 Icelandic/Icelandic II/Saratoga/Mix1
+                 Jerusalem/Sunday
+                 Lehigh
+                 South African "Friday 13."
+                 SysLock
+                 Traceback/2930
+         Vacsina
+                 Vienna/Lisbon
+         Yankee Doodle
+         Zero Bug
+
+             but there may be variants floating around that I do not have a
+         copy of. If you have a collection of viruses, I would appreciate
+         if you could test this.
+
+    ...  Another problem is the manual. It consists of several text files,
+         around 65K in size. Since English is not my primary language,
+         (and not even my second language, for that matter), I am sure
+         there are some serious spelling and grammar errors in the
+         documentation. Anybody willing to take a look at that ?
+
+- -frisk
+
+------------------------------
+
+Date:    Wed, 22 Nov 89 12:19:35 +0000
+From:    frisk%rhi.hi.is@vma.cc.cmu.edu (Fridrik Skulason)
+Subject: High Level Language viruses
+
+Most of the viruses we have seen to date seem to be written in
+assembly language. However, it is possible to write viruses in a High
+Level Language (HLL), and a few such viruses have been reported. The
+AIDS virus, written in TURBO Pascal is probably the best known one.
+
+Compared to an assembly language virus, a HLL virus will have the following
+"features":
+
+    * It is bigger. The AIDS virus, for example, is around 12K,
+      which makes it the biggest virus known.
+
+    * It is more difficult to select good signature strings, since
+      most of the code produced by the compiler is probably also
+      present in a number of other (legitimate) programs. This makes
+      the job of detecting HLL viruses a bit harder.
+
+    * Is is much harder to write a good .EXE file infector in Pascal
+      or C than a .COM infector.
+
+    * Just about any programmer could write an usable .COM infector in
+      C or Pascal in less than an hour. (I mention C and Pascal because
+      they are the most popular languages, but a virus could just as
+      easily be written in other languages, Forth, Basic or even APL
+      or Cobol. Can anybody imagine what a Cobol or APL virus would
+      look like...    ;-)
+
+Comments ...?
+
+- -frisk
+
+------------------------------
+
+Date:    Tue, 21 Nov 89 18:41:50 +0200
+From:    Y. Radai <RADAI1@HBUNOS.BITNET>
+Subject: Corrections and new details on DataCrime (PC)
+
+  Last month I wrote that whereas the original DataCrime virus per-
+forms its damage from Oct 13 to Dec 31, DataCrime II does it from Jan
+1 to Oct 12.  David Chess and Alan Solomon both replied that in their
+copies of DC II, the dates were the same as for DC I: Oct 13 - Dec 31.
+That left two possibilities: either there's a mutation with the date
+range modified, or my sources were mistaken.
+  One source for the Jan 1 - Oct 12 range was the July/August issue of
+the Computer Security Newsletter.  I did not at the time accept this
+as necessarily correct.  But when I saw a similar statement in the Sep
+issue of the Virus Bulletin by Joe Hirst, who does independent disas-
+semblies and who always seemed very accurate and reliable in the past,
+I became convinced that this was correct.
+  After the differences of opinion, however, Joe admitted that he had
+been mistaken and that the date range for DC II was the same as for DC
+I even on his copy.  Since there apparently haven't been any further
+claims for the pre-Oct 12 dates, I tend to believe that the CSN was
+also mistaken.  Of course, one *could* easily modify DC II to activate
+on Jan 1 - Oct 12 (or on any other date range), but it makes more
+sense for the infection period to be long than for the damage period
+to be long.
+  Joe also wrote originally that Sundays are excluded from damage by
+DC II.  This also turned out to be incorrect, although in this case
+the correct behavior is different than for DC I: Mondays are excluded.
+Following is the relevant part of the code for each virus (I have
+translated the disassembly into a pseudo high-level language; the
+variable Hdflag contains 0 if there is no hard disk, 1 if there is):
+
+             DataCrime I
+  If current date > Oct 12 then go to Hard-disk test;
+  Go to Infection routine;
+Hard-disk test:
+  If Hdflag not 0 then go to Damage routine;
+
+             DataCrime II
+  If current date > Oct 12 then go to Day-of-week test;
+  Go to infection routine;
+Day-of-week test:
+  If day-of-week (0 for Sunday, 1 for Monday, etc.) not = Hdflag
+         then go to Hard-disk test;
+  Go to Infection routine;
+Hard-disk test:
+  If Hdflag not 0 then go to Damage routine;
+
+Thus in DC II the damage will be performed only if there is a hard
+disk and the date is after Oct 12 *and the day is not a Monday*.
+
+  To summarize, there are (at least) six differences between DC I and
+DC II:
+                               DataCrime I       DataCrime II
+Type of files infected:        COM               COM/EXE
+Size increase:                 1168 or 1280      1514
+Days excluded from damage:     None              Mondays
+Encrypted?                     No                Yes
+Files excluded from infection: 7th letter = D    2nd letter = B
+Message:                       DATACRIME VIRUS   DATACRIME II VIRUS
+
+  So much for corrections.  Now for some new info on these viruses.
+Both of them contain code which low-level formats Track 0 on all heads
+from 0 to 8.  The pseudo-code looks like this:
+
+  H := 0;
+Loop:
+  Format Track 0, Head H;
+  If error go to Continue;
+  H := H+1;
+  If H not = 9 then go to Loop;
+Continue:
+
+But what happens in the case of disks having less than 9 heads?  Pre-
+viously, it was assumed by many that this would result in an error, so
+that the extra heads would be ignored, i.e. the virus would format
+only Cylinder 0.  But Joe has discovered by experimentation that in
+most cases the number of tracks formatted is actually 9, even if this
+goes beyond Cylinder 0.  The explanation is that most BIOSes convert
+an invalid head number into the valid equivalent. On a 17-sector/track
+disk, this will wipe out 153 sectors, which on most hard disks contain
+the partition record, boot sector, both copies of the FAT, the root
+directory, and possibly some files.
+
+  Fridrik Skulason reported in Virus-L that he was able to recover
+from an attack of DC II by using the Norton Disk Doctor.  This might
+seem to contradict the above findings.  However, he rebooted before
+the virus had a chance to format very much of the disk.  It seems
+likely that if he had not done this, all of Norton's horses wouldn't
+have been able to put his disk together again.
+
+  There is a package available from Simtel20, called COLUMBUS, which
+is supposed to be of use against the "Columbus Day" [i.e. DC] virus.
+It consists of two simple programs, ST0 and RT0.  ST0 saves the con-
+tent of a certain portion of the hard disk on a diskette file, and RT0
+restores it in case of damage by the virus.  Just which portion is
+saved is not very clear from the documentation.  In one place it says
+"Track 0", while in another place it says "cylinder zero".  Experiment
+shows that ST0 saves Track 0 on Head 0 only, which is of little use
+against the DC viruses.  A look at the source code shows that the
+author left the possibility of saving all of Cylinder 0 by defining a
+certain symbol at compile time, but as we now know, even that isn't
+enough.  However, the source code can presumably be modified to save
+all 9 tracks damaged by a DC virus by simply replacing "maxhead=0" by
+"maxhead=8" in both ST0.C and RT0.C.
+
+  Joe Hirst has written a small resident program to prevent damage by
+the DC viruses, or more generally, to halt any program which attempts
+to low-level format any part of a hard disk by a call to Int 13h func-
+tions 5-7.  It (along with the above clarifications on the extent and
+dates of the damage) appears in the Nov issue of the Virus Bulletin.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI1@HBUNOS.BITNET
+
+------------------------------
+
+Date:    Wed, 22 Nov 89 08:30:02 -0500
+From:    m20280@mwvm.mitre.org (Jason D. Blue)
+Subject: RE: Potential Virus? (Mac)
+
+In VIRUS-L V2 #246, Joel Glickman writes:
+
+>I have just recently noticed a problem on my Mac. After using Cricket
+>Graph I checked the last modified date and the program had just been
+>modified.  After noting this, I began checking other programs and
+>found that my copy of Versaterm Pro was also being modified every time
+>I ran it. It was at that point that I checked these programs on other
+>people's Macs in the office and saw that these programs were not being
+>modified on some, while they were being modified on others.. I am
+>running Gatekeeper and Vaccine and have checked these programs with
+>Disinfectant and they report no trouble.
+
+I have noticed the same problem, with a number of applications (among
+them are TinCan and Mac286).  I use SAM Intercept from Symantec, and
+it alerts me from time to time that an application is trying to change
+itself.  I checked for viruses, using a number of packages (Virex,
+Sam, Disinfectant and Virus detective), but found none.
+
+I don't think this is a virus, but I find it disturbing because, like
+Joel mentions, this happens even when I only start an application and
+then quit out of it, without changing preferences or options that
+might need to be saved to disk.
+Jason
+                                    User Services
+/~~~ Jason D. Blue                The MITRE Corporation
+|o|o|  (703) 883-7999               7525 Colshire Drive MS W130
+v_/  jblue@mdf.mitre.org          McLean, VA 22102-3481
+
+------------------------------
+
+Date:    Wed, 22 Nov 89 09:30:00 -0500
+From:    I Like Hike! <ACSCDS%SEMASSU.BITNET@vma.cc.cmu.edu>
+Subject: Self-modifying applications (Mac)
+
+In issue #246, Joel Glickman writes...
+
+>From:    joel_glickman@MTS.RPI.EDU
+>Subject: Potential Virus? (Mac)
+>I have just recently noticed a problem on my Mac. After using Cricket
+>Graph I checked the last modified date and the program had just been
+>modified.  After noting this, I began checking other programs and
+>found that my copy of Versaterm Pro was also being modified every time
+>I ran it. It was at that point that I checked these programs on other
+>people's Macs in the office and saw that these programs were not being
+>modified on some, while they were being modified on others.. I am
+>running Gatekeeper and Vaccine and have checked these programs with
+>Disinfectant and they report no trouble.
+>My question is: Should these programs modify themselves when I just
+>run them.  All I do is run them and quit immediately and they are
+>modified??? Do you think I have a virus problem???
+>Joel Glickman
+>Rensselaer Polytechnic Institute.
+
+Some programs DO modify themselves while running, the important thing
+to remember is that these modifications are usually made to the data
+fork of the application.  Most virus detectors look only for attempts
+to write to resource forks.  (I don't know about Gatekeeper, perhaps
+its author could let us know?)  It still seems strange that other
+people were not experiencing the same problems as you, but that
+doesn't necessarily mean a virus.  To quote Douglas Adams "DON'T
+PANIC", as many others do.  Here are some things you can check:
+
+        1.      The other people you are working with may have locked their
+                copies of CG or Versaterm Pro, preventing them from being
+                modified.
+
+        2.      Make sure Vaccine is running, look in your control panel and
+                see that the protection is turned on (incidentally, when you
+                alter the preferences for Vaccine, the size of the file
+                changes, since Vaccine has no "preferences" file)
+
+        3.      Try replacing your cricket graph with someone else's, see if
+                the problem persists.  Likewise for Pro.
+
+        4.      Try reinstalling your system, use the same release as those
+                coworkers of yours who are not experiencing this phenomenon,
+                again, see if the problem persists.
+
+        These are just ideas, they're not carved in stone, but they may
+provide some insights...  good luck!
+
+                                        -- Chuck Seggelin
+                                           Academic Computing Services
+                                           SMU
+ACSCDS@SEMASSU.BITNET           "Opinions expressed are MINE alone!!!!"
+
+------------------------------
+
+Date:    22 Nov 89 15:11:04 +0000
+From:    spaf@cs.purdue.edu (Gene Spafford)
+Subject: Re: Internet worm impact (UNIX & Internet)
+
+We'll never have exact figures, of course.  Here are some ballpack
+figures that represent my estimates based on site accounts from over
+100 sites, plus some additional information I've gathered elsewhere.
+
+I believe that between 3000 and 6000 machines were infected by the
+virus, at perhaps 500 sites maximum.
+
+Many more 1000s of machine were affected by network disruption or
+preventative action, however, but those machines were not
+directly infected.
+
+
+Many of these machines were "down" for only 6 to 12 hours.  Few of the
+infected machines are used 24 hours per day, so most were not
+discovered to be infected until Thursday morning. Within 24 hours of
+the infection starting, folks at Berkeley had distributed source code
+patches to stop its spread, and folks at Purdue had developed and
+publicized an innoculation that would prevent infection.  Thus, most
+machines were affected for less than a single business day.
+
+Most admins discovered early on that rebooting all their machines at
+once cleared them of the Worm.  Once this occurred, reinfection from
+outside often failed to happen -- other machines were also being
+cleared, and bugs (probably) in the Worm code caused it to spread more
+slowly than many people think it did.  The massive infection that
+occurred happened only because it had overnight on lightly-loaded
+machines to probe across the net.  Once sites started to go down and
+disconnect, the rate of infection dropped significantly.
+
+A very large percentage of the infected machines were single-use Sun
+workstations, or small Vaxen.  Thus, the number of users prevented
+access was much less than the 20 people per machine quoted in one of
+the preceding articles.  3-5 per machine might be better averages.
+
+Many of the affected users were students.  Their time can hardly be
+valued at $27 per hour.  On the other hand, many machines belonged to
+faculty or research engineers.  Their time is usually valued a bit
+more than $27 per hour.
+
+Lost time is very difficult to value.  I'd guess that based on
+everything I've heard and the information I've gathered, I'd estimate
+the "loss" as between $30million and $50million.  McAfee's estimate of
+$96million was, at best, badly estimated, and at worst self-serving
+and irresponsible.  Numbers greater than $75million cannot be
+supported in the face of critical analysis.
+
+5% of the machines on a known-to-be-insecure network of loosely
+administered machines were infected.  This is noteworthy, but it
+was not the crisis some people have claimed it to be.
+- --
+Gene Spafford
+NSF/Purdue/U of Florida  Software Engineering Research Center,
+Dept. of Computer Sciences, Purdue University, W. Lafayette IN 47907-2004
+Internet:  spaf@cs.purdue.edu   uucp:   ...!{decwrl,gatech,ucbvax}!purdue!spaf
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

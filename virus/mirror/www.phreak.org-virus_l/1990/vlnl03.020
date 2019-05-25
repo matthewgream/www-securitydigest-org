@@ -1,0 +1,507 @@
+VIRUS-L Digest   Wednesday, 24 Jan 1990    Volume 3 : Issue 20
+
+Today's Topics:
+
+Re: Universal virus scan.
+Re: theoretical virus scanning
+Morris hacking Incidents...
+Innocent until....
+Re: Shrink-Wrapped Software
+re: Requests/Questions (PC)
+Re: WDEF at University of Oregon (Mac)
+The STONED Virus (PC)
+Re. Universal virus scans
+Re: Eradicat'Em 1.0. Is is safe?? (Mac)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    24 Jan 90 08:34:00 EST
+From:    krvw@sei.cmu.edu (Kenneth R. van Wyk)
+Subject: Editor's note/thanks
+
+This digest (or group of Usenet postings) was edited in the public
+access terminal room graciously provided at the Usenix conference.
+Thanks to the Usenix folks who provided this wonderful service!
+
+Ken
+
+------------------------------
+
+Date:    23 Jan 90 17:03:32 +0000
+From:    russ@Alliant.COM (Russell McFatter)
+Subject: Re: Universal virus scan.
+
+Before proceeding further with the discussion on "disprovable" antiviral
+tools, I think we should clear up some misconceptions about the analogy
+with the halting problem.  Namely:
+
+(1)  The "halting problem" proof does not apply to finite-state machines
+     (proof of this in a moment).  Every machine that we have today IS a
+     finite-state machine.  The "halting problem" proof works only on a
+     "theoretical" machine with an unlimited number of different states
+     (unlimited memory).
+
+     We CAN write a program to determine if a given FINITE machine will halt.
+     To do this, we trace the execution on the target machine, and record
+     the state of the machine.  If we have seen this state before, the target
+     program will never halt (we are in a loop).  If the target machine halts
+     first, then the program will halt.  Since the target machine is finite,
+     exactly one of these MUST happen eventually.  (no mention of
+     performance issues here: this is only a proof!)
+
+     This implies, of course, that the system performing the test is
+     substantially larger than the machine (program) being tested.  For this
+     reason, the "halting problem" proof cannot be used here.
+
+(2)  Application of the proof to virus detection doesn't make straightforward
+     sense.  The purpose of a virus detector is not to determine if a
+     particular program will infect others in one particular instance, but
+     if it will EVER (under any circumstances) exhibit viruslike behavior.
+     All things considered, we can actually write a program that, given
+     a questionable bit of code, can give one of the following results:
+
+     OK:  this program is safe and will not infect other applications.
+     BAD:  the target program could, under some unknown circumstances,
+           modify other applications.
+     INCONCLUSIVE:  The target program either modifies executable code or
+          executes variable data.
+
+     Applying the "halting-" proof here doesn't work.  If we modify the
+     virus-checker so that the "OK" result causes the virus-checker to act
+     like a virus, and then apply the virus-checker to itself, it should
+     return "BAD" every time.  If we encrypt the virus code, the result should
+     read "INCONCLUSIVE".  (I'm ignoring the action of the virus itself here).
+     All we care is that the viral-infection code exists, whether or not it
+     actually gets executed.  We treat any conditional as if execution
+     might proceed down either branch, and complain if the code changes
+     itself, or attempts a "write" that we have decided is privileged.
+     We do not "strictly" trace execution (i.e. we "prune" branches to
+     code we have already examined).
+
+Note that the condition of "modifying other applications" is merely one
+of many that could theoretically be implemented with a similar strategy.
+Such a program could also find things like trojan horses.  It cannot
+prove that a given application contains a virus, or that it is harmful.
+Certain programs (the OS itself) would certainly give false "BAD" warnings.
+It would allow us to "prove", however, that a given application cannot
+cause (certain types of) harm in particular ways; and we should be able to
+expect that most normal software is "OK".  We can insist (and it's probably
+a good idea!) that applications that we buy do not use self-modifying
+code (thus avoiding the INCONCLUSIVE result, which could hide a virus).
+
+Obviously there are other complications, such as handling of overlays,
+interrupts, memory, and system calls, but that's more of a technical
+issue.
+
+- --- Russell McFatter  [russ@alliant.Alliant.COM]
+std. disclaimer applies.
+
+------------------------------
+
+Date:    23 Jan 90 20:33:43 +0000
+From:    huuskonen@hylka.Helsinki.FI
+Subject: Re: theoretical virus scanning
+
+
+In article <0010.9001221224.AA17520@ge.sei.cmu.edu>,
+kelly@uts.amdahl.com (Kelly Goen) writes:
+> [stuff deleted]
+> ....I for one am not going to give up and claim its
+> impossible to detect all viruses..... flames >/dev/null
+>      cheers
+>      kelly
+> p.s. when your conclusions appear to be in error check your premises...
+
+I think there are two related questions which are improperly treated as
+one, thereby leading to apparent disagreement.
+
+1. Is there an algorithm which tells if a program is a virus or not?
+
+Formally, is there a computable function which returns the value True
+if the argument is a program which will infect other programs,
+AND FALSE OTHERWISE?
+
+The answer is no, as seen by the informal proof in a previous article.
+
+2. Is there an algorithm which detects all viruses?
+
+Formally, is there a computable function which returns the value True
+if the argument is a program which will infect other programs,
+AND MAY RETURN THE VALUE TRUE IN SOME OTHER CASES?
+
+The answer is yes; the function that returns True for all arguments
+is an example of an algorithm which detects all viruses.
+
+Of course, a "virus detector" that reports every program as infected
+is downright silly, but it seems plausible that a totally virus-proof
+system could be built, at least in principle, by carefully designing
+both hardware and software.  (In priciple, a totally bug-free operating
+system could be created, yes...)  An inevitable drawback of such a system
+would be that some perfectly innocent programs would not run under it.
+For example, a program which used as temporary storage the file which
+contains the memory-resident portion of the operating system, then
+copied its original contents from memory to disk, might be unusable ;-)
+
+Yes, practical virus fighting is possible, and the formal undecidability
+proofs do not contradict that.
+
+Taneli Huuskonen                Huuskonen@CC.Helsinki.Fi
+Dept of Mathematics
+University of Helsinki          I think myself, therefore I disclaim
+Hallituskatu 15
+SF-00100  Helsinki
+FINLAND
+
+If you disagree about the answers, check the questions as well.
+
+------------------------------
+
+Date:    Tue, 23 Jan 90 14:36:08 -0500
+From:    FASTEDDY@AMARNA.GSFC.NASA.GOV (John McMahon )
+Subject: Morris hacking Incidents...
+
+Just to clarify...
+
+***> From:    rickc@eleazar.dartmouth.edu (Frederick L. Crabbe)
+***>
+***> Just a note: I found out from a rather reliable source that our friend
+***> Morris infected the AT&T Bell Labs system when he was a high school
+***> student.  They responded by hiring him for the summer.  So much for one
+***> attempt of rehabilitation.
+
+The following is quoted (without permission) from John Markoff's article
+in the New York Times on 1/22/90.
+
+"In testimony last week Mr. Morris said he has long been engaged in
+research on computer security.  While he was in high school, he said, he
+was hired as a summer intern at Bell Laboratories; that was after he
+broke into the computers at the research center.
+
+Mr. Morris said the incident has taught him a lesson.  Since then he
+has..."
+
+/------------------------------------+----------------------------------------\
+|John "Fast Eddie" McMahon           |    Span: SDCDCL::FASTEDDY (Node 6.9)   |
+|Advanced Data Flow Technology Office|Internet: FASTEDDY@DFTNIC.GSFC.NASA.GOV |
+|Code 630.4 - Building 28/W255       |  Bitnet: FASTEDDY@DFTBIT               |
+|NASA Goddard Space Flight Center    |GSFCmail: JMCMAHON                      |
+|Greenbelt, Maryland 20771           |   Phone: 301-286-2045 (FTS: 888-2045)  |
++------------------------------------+----------------------------------------+
+|X.400 Telenet:(C=USA,ADMD=TELEMAIL,PRMD=GSFC,O=GSFCMAIL,S=MCMAHON,G=JOHN,I=J)|
+|GSFC XNS (3+Mail):              {FASTEDDY@DFTNIC.GSFC.NASA.GOV}:INTERNET:GSFC|
++-----------------------------------------------------------------------------+
+|"Living a 9600 Baud Lifestyle in a 1200 Baud World" - R.A.J.                 |
+\-----------------------------------------------------------------------------/
+
+------------------------------
+
+Date:    Tue, 23 Jan 90 14:40:00 -0500
+From:    <COFER@UTKVX3.BITNET>
+Subject: Innocent until....
+
+>> I would remind you that he _allegedly_ unleashed the Internet Worm.
+>> Innocent before proven otherwise and all that stuff, you know...
+
+> Not so.  It is a finding of fact that he released the worm.  It
+> is alleged that that was a criminal act.  He is guilty of
+> releasing the worm.  He is innocent of a crime until it is proven
+> that the act was criminal.
+
+As of the time of your posting, what judicial process has concluded with a
+finding of fact that he released the worm?
+
+John Cofer
+COFER@UTKVX.BITNET
+
+------------------------------
+
+Date:    Tue, 23 Jan 90 20:40:36 +0000
+From:    morrison@ficc.uu.net (Brad Morrison)
+Subject: Re: Shrink-Wrapped Software
+
+cosell@BBN.COM (Bernie Cosell) writes:
+>ensys.ensys.com!silvlis.com!msm@sgi.sgi.com (Michael S. Maiten) writes:
+
+>}WHMurray@DOCKMASTER.ARPA writes:
+
+>}>   Users can protect themselves
+>}>   and discourage this risky practice by refusing to deal with retailers
+>}>   that offer them the right to return.
+
+That's WEIRD.  Viruses or not, I can't imagine that anyone in their
+right mind would really adhere to this sort of practice, much less
+advocate it!  "Don't deal with them unless you're stuck with what you
+buy" ???  Not a Real World Solution (tm).
+
+>}Stores that offer return policies are exactly the ones with whom I do
+>}deal, since it is almost impossible to see if the software will meet
+>}my needs by reading the box or trying out the store demonstration
+>}copy.
+
+This sounds closer to the pulse of the average consumer.  Not that
+retail software companies are consciously trying to rip us off, but I
+think that buyers need some avenue of exchange besides writing to the
+manufacturer.
+
+>}What they should do is to be more careful when accepting the
+>}returned items (check for missing materials, and check for infection
+>}of the disks) before returning the person's money.
+
+Yes, they should.  The burden of checking should be on the seller
+(retail outlet *or* anyone else in the chain), not the consumer.
+Unfortunately, it seems to be one of those cases where the people in
+that critical position of software sales clerk are just not
+knowledgeable enough on the whole to know how to check, much less how
+important it is to check.  What's the difference between a computer
+salesman and a used-car salesman?  The used-car salesman *knows* when
+he's lying.
+
+>Actually, isn't [checking returned software] almost totally trivial for
+>the store --- all they need
+>to [do] is, before they re-shrink-wrap, do a sector-by-sector, byte-
+>by-byte
+>comparsion of the *entire* disk(s) that were returned against a master
+>set
+>the store keeps.  It doesn't seem hard, and surely cannot take long,
+>and [as] far
+>as I can tell totally elminates [(sic)] the problems.
+
+Sadly, the only hardware that many major software retailers have on
+their premises besides their cash register is a shrink-wrapping machine.
+I was in a well-known store the other day, and overheard a salesman tell
+a customer, "No, we don't carry that [popular software package].  They
+require a system on-site for "live" demonstrations, and we don't keep a
+system here."
+
+"What about the demos running in the front of the store?", inquired the
+customer.
+
+"Oh, that.  That's just a video."
+
+Okay, so they have a cash register, a shrink-wrapper, and a VCR.  :-)
+- --
+Brad Morrison                (713) 274-5449 | My MEATLOAF is RUINED--because
+Ferranti International Controls Corporation | my kitchen lacks a FULL STREAMS
+morrison@ficc.uu.net                        | IMPLEMENTATION!!!
+morrison@ficc.lonestar.org                  |            -- Zippy the UNIXhead
+
+------------------------------
+
+Date:    23 Jan 90 00:00:00 +0000
+From:    "David.M..Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Requests/Questions (PC)
+
+frisk@rhi.hi.is (Fridrik Skulason):
+
+> 2) The "Palette" virus has been reported to be 1538 bytes long. Can anybody
+>    confirm that ?  The reported identification string matches my copy of
+>    "Zero Bug" which has an infective length of 1536 bytes. Either we have
+>    two variants or the "1538" may just be an error. Besides - 1536 is a much
+>    nicer number - it turns out as 11000000000 in binary.... :-)
+
+The only virus I've heard referred to as "Palette" is the "Zero Bug"
+or "1536" virus, which is 1536 (hex 600) bytes long.   I have, for
+instance, one text file which begins "Description of the 'Palette
+Virus' or 'Zero Bug Virus'" and goes on to describe the 1536.  My
+sample of the 1536/Zero-Bug definitely contains a virus 1536 bytes
+long.  No evidence of a different virus, two bytes longer, here!
+Probably just a typo on someone's part?
+
+DC
+
+------------------------------
+
+Date:    23 Jan 90 15:34:12 +0000
+From:    jsaker@zeus.unl.edu ( Jamie Saker -- Student, UNO)
+Subject: Re: WDEF at University of Oregon (Mac)
+
+
+HALLEN@oregon.uoregon.edu (Hervey Allen) writes:
+> Since people seem to be reporting occurrences of the WDEF virus, hopefully
+> to track its spread, I will throw in my two cents worth.
+
+I'll add my two cents worth too.  At the Univ. Nebraska Omaha, on 16 January,
+we had an outbreak of WDEF virus on 10 machines (SEs).  After installing
+anti WDEF software (all servers also have Disinfectant eliminate infected
+disks) the probablem has been eliminated.
+
+So now we only have occasional Scores problems to worry about:)
+
+_____________________________________________________________________________
+/     Jamie Saker  Editor-in-Chief   Monitor Month   jsaker@zeus.unl.edu    \
+
+------------------------------
+
+Date:    23 Jan 90 17:37:11 -0500
+From:    Dave Loveless <CCSDWL@UWOCC1.UWO.CA>
+Subject: The STONED Virus (PC)
+
+   We just been hit with the STONED virus. We're not sure how much the virus
+has spread and we need to know what the impact of the virus is? We know
+the virus has corrupted the boot record but we don't know what it really does?
+What does it REALLY do? If you know the answer to these questions - please
+send me an E-mail message or if you prefer respond via VIRUS-L.
+- -----------------------------------------------------------------------
+*********************************
+*                               * David W. Loveless
+* Today's Question?             * Technical Support Analyst
+*                               * The University of Western Ontario
+* What is the impact, if your   * Computing and Communications Services
+* PC gets "STONED"?             * Administrative Systems Support
+*                               * Room #16, Stevenson-Lawson Building
+********************************* London, Ontario
+E-Mail:                           CANADA N6A 5B8
+     CCSDWL@UWOCC1.UWO.CA         PHONE: (519) 661-2111  EXT: 5993
+
+------------------------------
+
+Date:    Tue, 23 Jan 90 23:07:54 -0400
+From:    GEORGE SVETLICHNY <USERGSVE@LNCC.BITNET>
+Subject: Re. Universal virus scans
+
+ Concerning the theoretical proof of the impossibility of a universal
+ virus scan, kelly@uts.amdahl.com (Kelly Goen) writes (Virus-l V3 Issue
+ 17):
+
+ ><<deleted>> ... it is possible with memory
+ >protection architectures to defend totally(well at least 99% of the
+ >time) against intrusion by infectious processes...<<deleted>>
+ >
+ >..<<implied explicative deleted>>..
+ >the remaining 1 % are easily caught by an informed and
+ >knowledgable user....<<deleted>>
+
+Thesis:
+
+ There are two interesting points about Vesselin's
+ (T762102@DM0LRZ01.BITNET) program P1 (Virus-L V3 Issue 13). In the first
+ place, it's self-referential since it scans itself. This is interesting
+ and important (a lot of such impossibility proofs are based on
+ self-reference) but not germain at the moment. The other is that its
+ effectiveness is due to its *knowing* what the alleged defence is. Well,
+ this isn't all that profound either since obviously, knowledge of a
+ defence helps you penetrate it (and in the ideal theoretical case it
+ actually gets you through), but this is precisely the situation at hand.
+ Any virus hacker worth his salt knows what the current defenses are and
+ will try to program around them. And it might even be advantageous to
+ mimic P1's structure and play dumb if scanned positive hoping for a
+ false-alarm verdict and survival to strike elsewhere.
+
+ I would venture to say: 99 % of the time, protected by proper memory
+ architecture, 0.9 % of the time easily cought by an informed and
+ knowledgable user, and 0.1 % of the time it gits you.
+
+Antithesis:
+
+ Kelly of course has a very valid point. On the practical side, the non
+ existence theorem doesn't mean we should give up trying to catch all
+ viruses, it just means we should not try for a purely *algorithmic*
+ solution. Actually, for any given real machine, a theoretical universal
+ virus detector *does* exits. Since the memory is finite there are only a
+ finite number of programs, and any finite problem is decidable (just list
+ the guilty programs). This of course again is totally useless as a
+ practical solution. We are left then with intellegence as our ultimate
+ weapon, which is Kelly's point.
+
+Synthesis:
+
+ For certain infinite subclasses of programs (back to the infinite
+ memory Turing case) the virus problem could be decidable, and here is a
+ legitimate place for scanners. Present-day scanners are probably good
+ stabs at resolving these types of subclass problems and a bit more of
+ theory could be useful here.
+
+Here and There:
+
+ Clearing the air of the emotional aura surrounding "virus" or the
+ scholarly aura sorrounding "halting problem" one sees that (still in the
+ Turing case) it's undecidable to say if a program does almost anything
+ that one can think of. It's undecidable if a program prints "Whoopie!" on
+ the screen, or if it will beep. Just make appropriate and obvious
+ modifications to Vesselin's construct. This means that the virus case is
+ not really all that special.
+
+ cheers (In russian: "Nice Driveway!")
+
+ ----------------------------------------------------------------------
+ George Svetlichny                 |
+ Department of Mathematics         | It's impossible to decide if a
+ Pontificia Universidade Catolica  | program will flame you.
+ Rio de Janeiro, Brasil            |
+                                   |
+ usergsve@lncc.bitnet              |
+ ----------------------------------------------------------------------
+
+------------------------------
+
+Date:    Tue, 23 Jan 90 18:19:17 -0800
+From:    <dplatt@coherent.com>
+Subject: Re: Eradicat'Em 1.0. Is is safe?? (Mac)
+
+> I remember, dimly, seeing warnings right after WDEF surfaced about the
+> Eradicat'Em Init, mainly that it was unstable.  Now that I have that init
+> and am responsible for protecting two public Macs, I can't find those
+> articles, of course.  So, with apologies for bringing it up again, is
+> Eradicat'Em 1.0 a safe, stable, and effective way to combat WDEF?  Please
+> e-mail versus cluttering the board with old news.  Thank you much in
+> advance.
+
+You're probably remembering John Norstad's posting of, and subsequent
+warning note about version 1.0 of the Eradicator! INIT.  Eradicator!
+1.0 was indeed unstable, and should not be used... it can cause
+crashes.
+
+Eradicator! has been updated several times;  the current version (as
+far as I'm aware) is 1.52.  I haven't used any version more recent than
+1.2.  The release-notes for 1.52 indicate that a number of problems
+have been fixed, but that the authors aren't planning continued
+support now that commercial anti-viral programs are capable of coping
+with the WDEF virus.
+
+Eradicat'Em is based in part on Eradicator!, but its "innards" were
+almost completely reworked.  It patches an entirely different set of
+traps, and avoids certain techniques which got Eradicator! into
+trouble.  For all practical purposes, it's an entirely different INIT.
+
+Eradicat'Em 1.0 is quite stable.  It has been tested on everything from
+a Mac 512ke (System 4.2) up through the Mac IIci and Mac Portable
+(System 6.0.4).  It was even tested, successfully, on an Atari running
+a Spectre Mac-emulator package.  John Norstad's tests indicate that
+it's entirely effective at identifying and removing WDEF on his
+machines.
+
+The only problem-report I've seen concerning Eradicat'Em 1.0 involves
+a three-way interaction between Eradicat'Em 1.0, the Virtual INIT,
+and the INIT-loader for "The Debugger".  If all three of these INITs
+are installed, the machine crashes at boot time;  remove any one, and
+everything's fine.  Gatekeeper is also affected... it's not compatible
+with the Virtual/Debugger combination.  We don't know why.
+
+Aside from this one rather exotic incompatibility, I believe that
+Eradicat'Em is both safe and reliable.  I run a LOT of INITs (a full
+screen-strip and then some, on an AppleColor monitor), and I haven't
+encountered any problems on my machines.
+
+Disclaimer:  I'm biased, as I wrote Eradicat'Em.
+
+- --
+Dave Platt                                             VOICE: (415) 493-8805
+  UUCP: ...!{ames,apple,uunet}!coherent!dplatt   DOMAIN: dplatt@coherent.com
+  INTERNET:       coherent!dplatt@ames.arpa,  ...@uunet.uu.net
+  USNAIL: Coherent Thought Inc.  3350 West Bayshore #205  Palo Alto CA 94303
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

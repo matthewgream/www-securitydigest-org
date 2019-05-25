@@ -1,0 +1,545 @@
+VIRUS-L Digest   Wednesday,  6 Feb 1991    Volume 4 : Issue 22
+
+Today's Topics:
+
+Re: Preventing boot infectors (PC)
+Re: Text in MLTI Virus (PC)
+Stoned in Three Hills (PC)
+SIGN.TXT Update available on BEACH (PC)
+FPROT114 & SORT conflicting (PC)
+Hard Disks (PC)
+Re: Word Perfect and change checkers (PC?)
+Low-Level Protection (PC)
+Virex 3.0 INIT problem (Mac)
+WP and change checkers, it goes on (PC)
+Compressors
+Re: Hardware damage?
+Easy way to write protect 3.5" disks
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Thu, 31 Jan 91 12:13:00 +0100
+>From:    "Nick FitzGerald" <CCTR132@csc.canterbury.ac.nz>
+Subject: Re: Preventing boot infectors (PC)
+
+In V4 #17 (28 Jan 91) gt1546c@prism.gatech.edu (Gatliff, William A.) wrote:
+
+>Pardon my input into something I know very little about, but I
+>have a question/comment:
+>I have observed that, according to a lot of the posts in this
+>newsgroup, many of these viri infect the boot sector of a disk.
+>
+>To help combat this, what would be the possibility of 'delibrately'
+>infecting ones boot-sector with a piece of code that would display
+>some kind of 'ok' message if it hadn't been tampered with?
+>
+>For example, as the computer goes to boot, it loads the boot sector
+>and prints something like 'All is ok as of ...<maybe insert a date
+>here.> as instructed by the program that lies there (the one I *put*
+>there.)  Ok.  Now, if the user doesn't see that message when he boots,
+>he can suspect that all is not ok.  Maybe this piece of code would run
+>some kind of check on itself to be sure it hadn't been relocated or
+>something...
+
+If you did this and the "All is OK" didn't come up you could well
+suspect a boot sector infection, but I'm afraid this isn't a good
+diagnostic.  Many boot sector infectors make a copy of the original
+boot sector and store it somewhere "safe" on the infected disk/ette.
+What happens at boot-up is that the virus code is loaded *as if* it
+were a "proper" boot sector (the BIOS program that does this is very
+"dumb" as regards the contents of the boot sector).  The viral code is
+then executed as the boot sector code would be and it does whatever
+(with STONED, for example, it installs itself at the top of memory and
+reduces the ammount of available memory, looks for an uninfected hard
+disk to infect and so on).  The virus then loads the original boot
+sector from its hiding place and passes control to the boot sector
+code.  The machine then continues to boot "as normal".
+
+If a virus such as STONED infected a machine with a cherry "All is OK"
+message in the boot sector, you would continue to see this now
+terribly misleading message after the STONED code loaded and passed
+control to the original boot sector.
+
+If the "All is OK" boot sector did a check of the actual (physical)
+boot sector then it wouldn't give an erroneous message if the disk was
+infected with STONED or similar boot sector infectors, but it would
+still give a misleading report if a stealth boot sector infector
+struck, as the virus would intercept the attempt to read the boot
+sector and return the contents of the original from its hiding place.
+(This seems to be a lot of extra code to jam into a single sector, so
+to do this an "All is OK" boot program may have to deal with loading
+in extra sectors of code, etc remembering that you don't yet have
+access to the DOS file handling calls to readily locate that code.)
+
+- ---------------------------------------------------------------------------
+ Nick FitzGerald, PC Applications Consultant, CSC, Uni of Canterbury, N.Z.
+ Internet: n.fitzgerald@csc.canterbury.ac.nz        Phone: (64)(3) 642-337
+
+------------------------------
+
+Date:    31 Jan 91 15:15:47 +0000
+>From:    lev@suned2.Nswses.Navy.Mil (Lloyd E Vancil)
+Subject: Re: Text in MLTI Virus (PC)
+
+DGB@BNOS.BLDRDOC.GOV writes:
+>Regarding the discussion about "Eddie," I have always associated the
+>phrase,
+>  "Eddie die somewhere in time"
+>along with the action of randomly picking a location to kill with the
+>book Slaughterhouse 5 by Kurt Vonnegut Jr, where the hero has become
+>unstuck in time.
+>
+>Am I alone?
+
+I am new to this group but I would associate Eddie and "Crazy Eddie"
+with "The Mote in God's Eye" -I forget the author's name- But to go
+"Crazy Eddie" was to discard the accepted meme's and conventions of
+society and do something out of racial character.  As I think more
+about it, I think the Author was Niven/Pournell.  Seems to me those
+who write viri are "Crazy Eddie"
+
+- --
+      *      suned1!lev@elroy.JPL.Nasa.Gov sun!suntzu!suned1!lev
+          .                lev@suned1.nswses.navy.mil        +      .
+    +          *       S.T.A.R.S.! The revolution has begun!   *
+      My employer has no opinions.  These are mine!
+
+------------------------------
+
+Date:    Mon, 04 Feb 91 11:10:31 -0800
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Stoned in Three Hills (PC)
+
+The following messages are crossposted from the SUZY network, in the
+Religion/INspiration section.  The original infection was at a Bible
+school in Three Hills, Alberta, which managed to get the "Stoned" virus
+onto a network of computers in teh Library.  The response of the school
+was to ship all the computers to Calgary to be reformatted.  All data
+entered on the system to that point had to be re-entered manually ...
+
+> GrapeVine > Computers in Ministry > Slade, Greg ======
+
+  Subject: Nobody is safe
+
+  The January 8th issue of ChristianWeek carries a news item from
+  Wesern Report that Prairie Bible Institute in Three Hills,
+  Alberta, was hit by the "Stoned" virus this winter.  I find this
+  story doubly frustrating: not only is it added evidence that
+  churches and other Christian organizations need to pay more
+  attention to issues of computer security (see INtegrity for the
+  tools you need), it is a glaring example of the failure of
+  Christians to communicate with one another.  I have been trying
+  for 3 years now to give Christian computer users they need to do
+  their tasks effectively through various channels (Christian Info,
+  CAMsoc, Church Bytes, CITC_NET, and Suzy), including warnings
+  about computer viri, yet despite my best efforts, an institution
+  which I visited *last Spring* gets hit by a virus, and spends way
+  too much time and money dealing with it.  When are we
+  Christians going to learn to network?
+
+
+Date: 28 Jan 91 20:55
+>From: Lyle Smith on 7501/0  Unlisted node
+  To: Greg Slade on 7501/132  Unlisted node
+
+Hi Greg:
+        I regret to inform you that I will be pulling the plug on
+Prairie BBS as of Jan.31/91.  I hope its not too late to cancel my
+listing in the article you were preparing.  One of the key reasons for
+going down is lack of usership.  Although Three Hills is a small town by
+city standards it probably has as high a computer user ratio per capita
+as anywhere due to the college. A significant number of those do not
+have modems but a good number do have modems.  However not enough were
+interested in the messaging capabilities of the computer medium.  On an
+average week I saw maybe 4 or 5 users.  A busy week might bring 8 or 10.
+Yes, that's per week!!!  No messages were ever sent out (other than my
+own) and the main interest among those who did use the BBS clearly was
+downloading files.  When my video card fried itself recently, which I
+believe was due to the wear and tear of continuous running (heat
+mainly), I decided it wasn't worth the expense.
+
+        I noted with some chuckles your note in the missions echo re:
+the stone virus at Prairie.  I have modemed for 5 years and never caught
+a virus until I gave a disk to the computer department to format and on
+which to store some student scan tron scores.  They passed the virus
+along to me on that disk but I didn't use it right away and so when I
+heard there was a possible virus I ran McAfee's SCAN checker on the disk
+and it picked it up instantly and told me exactly what variety virus it
+was.  When I suggested, after the incident, that they need a security
+system and in addition to virus checkers they should limit user access
+to some terminals I was told by one individual: "We can't stop trusting
+people." To their credit they now have purchased some virus checking
+programmes but I am not so sure they have implemented any further
+precautions re: users to their terminals. All of this is part and parcel
+of the frustration I have struggled with of getting people interested in
+the computer/modem communication medium.  If people took the time to
+avail themselves of what is so easily available to us we likely would
+not, as you pointed out, have borne the expense of this incident.  The
+sad part, from my perspective, is that I cannot say for sure that the
+lesson has yet been learned.
+=================
+
+
+Vancouver          p1@arkham.wimsey.bc.ca           _n_
+Insitute for       Robert_Slade@mtsg.sfu.ca          H
+Research into      (SUZY) INtegrity                 /
+User               Canada V7K 2G6                O=C\
+Security                            Radical Dude   | O- /\_
+                                             /-----+---/ \_\
+                                            / |    `  ||/
+"A ship in a harbour is safe, but that     /  ||`----'||
+is not what ships are built for."             ||      ||
+                     - John Parks             ``      ``
+
+------------------------------
+
+Date:    Mon, 04 Feb 91 13:18:00 -0500
+>From:    John Perry KG5RG <PERRY@UTMBEACH.BITNET>
+Subject: SIGN.TXT Update available on BEACH (PC)
+
+FYI,
+
+        The new signature file update for Fridrik Skulason's F-PROT114
+is available by anonymous FTP at beach.gal.utexas.edu (129.109.1.207).
+It is in the anonymous/pub/virus/pc directory and is entitled
+VIRUS.NEW. If you have any questions you can contact me at the
+following addresses.  --
+
+                              John Perry KG5RG
+                              University of Texas Medical Branch
+                              Galveston, Texas  77550-2772
+
+You can send mail to me at any of the following addresses:
+
+DECnet   : BEACH::PERRY
+THEnet   : BEACH::PERRY
+Internet : perry@beach.gal.utexas.edu
+Internet : john.perry@f365.n106.z1.fidonet.org
+BITNET   : PERRY@UTMBEACH
+SPAN     : UTSPAN::UTADNX::BEACH::PERRY
+FIDOnet  : 1:106/365.0
+
+------------------------------
+
+Date:    05 Feb 91 14:17:55 +0000
+>From:    icking@gmdzi.uucp (Werner Icking)
+Subject: FPROT114 & SORT conflicting (PC)
+
+After installing DEVICE = C:\QEMM\LOADHI.SYS /R:2 C:\DOSPRV\F-DRIVER.SYS
+                                                            ^^^^^^^^^^^^
+from FPROT114.ZIP I cannot use SORT.EXE. If I call SORT the PC hangs. If I
+call it under MS-WINDOWS 3.0 I'm able to switch to the programm-manager. If
+I call then DOS once more I get a message about SHARING violation.
+
+SORT.EXE belongs to MS-DOS 4.01 Rel 1.02. I do not use COMMAND.COM but 4DOS.
+
+Is this problem reproducible? Any help, any explanation?
+
+- --
+Werner Icking          icking@gmdzi.gmd.de          (+49 2241) 14-2443
+Gesellschaft fuer Mathematik und Datenverarbeitung mbH (GMD)
+Schloss Birlinghoven, P.O.Box 1240, D-5205 Sankt Augustin 1, FRGermany
+                                  "Der Dativ ist dem Genitiv sein Tod."
+
+
+------------------------------
+
+Date:    4 Febuary, 1991
+>From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc.com>
+Subject: Hard Disks (PC)
+
+rfink@eng.umd.edu (Russell A. Fink) writes
+>On two IBM PC's, one, a PS/2 Model 50; the other, an AT (circa '86), I
+>notice that 'chkdsk' on the hard drives result in there being an
+>identical number (and memory cost) of 'bad sectors' reported for both
+>machines.
+
+	This is not surprising if the disks are similar and would
+depend on the disk configuration and "bad tracks". Very simply, it is
+not unusual a hard disk to have a few "bad tracks" reported. This
+usually appears on a sheet supplied with the drive and on a label
+attached to the drive. At one time, most drives I saw had zero while
+today 2-4 is not unusual. If a 40 Mb drive had over 5 I would become
+concerned though I once saw a 33 Mb EDSI drive with over 100
+(really!).
+
+	Normally, the label will report "bad" tracks by cyl and head
+e.g. cyl 307 hd 5 and this should be entered into the "defects list"
+when a low-level format is done such as by DISKMANAGER.
+
+	Now on an MFM drive, there are typically 17 sectors per
+cyl/head so when a "track" is marked bad, this represents 17 x 512
+bytes or 8704 bytes.  However, when the disk is formatted, DOS
+allocates in "clusters" made up of 2, 4, 8, or 16 sectors. Since if
+any part of a cluster touches the bad track, DOS marks it "bad" in the
+FAT so the real loss depends on the cluster size (Norton's DiskInfo or
+any of a number of utilities can give you this information) so for
+each bad track, DOS reports "bad sectors" as follows:
+
+Cluster Size     Sectors Lost "Bad"     DOS Lost Bytes/"Bad" Track
+     2                 18                    9,216
+     4                 20                   10,240
+     8                 24                   12,288
+    16                 32                   16,384
+
+Thus for 4 sectors / cluster, each "track" marked bad will have CHKDSK
+report a loss of 10,240 bytes, if four heads are reported on the "bad
+track" list, CHKDSK will report a loss of 40,960 bytes. This would not
+be unusual and could be verified by examination of the disk or use of
+a non-destructive disk analysis utility such as Steve Gibson's
+SPINRITE. What would be unusual would be the loss of a different
+sector quanta such as 2 - 4 sector clusters or 4096 bytes.
+
+Note: If you use DEBUG to look at the boot sector (-L 100 2 0 1), the
+      cluster size may be found at offset 0Dh (debug command -e10d). If you
+      see a 10, remember this is hex (16).
+						Padgett
+
+            ps: my partition table replacement is now in beta.
+
+------------------------------
+
+Date:    Tue, 05 Feb 91 14:46:03 +0000
+>From:    ballerup@diku.dk (Per Goetterup)
+Subject: Re: Word Perfect and change checkers (PC?)
+
+hampster@wyatt.ksu.ksu.edu (Kip J Mussatt) writes:
+
+=>If I am understanding you correctly, WP 4.2 and later versions should
+=>be virus proof?
+
+Not true! - We've had an Invader infection here on DIKU (Dept. of
+Computer Science, University of Copenhagen) and it infected both
+WP.EXE and PTR.EXE of version 5.1 without problems, and both programs
+did run after infection!
+
+It did ask if another copy of WP was running, but otherwise nothing.
+
+	Happy (virus)hunting!
+
+		Per.
+- --
+| Per Gotterup                        | "The most merciful thing in the    |
+| Student, DIKU (Dept. of Comp. Sci.) | world, I think, is the inability   |
+| University of Copenhagen, Denmark   | of the human mind to correlate all |
+| Internet: ballerup@freja.diku.dk    | its contents."  - H.P. Lovecraft - |
+
+------------------------------
+
+Date:    04 Feb 91 00:00:00
+>From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc.com>
+Subject: Low-Level Protection (PC)
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes concerning "boot sector
+protection":
+>It would not, unfortunately, deal with "stealth" boot viri like Joshi, and I
+>can see virus writers getting around it in other ways as well.
+
+	I must disagree though the boot sector is a difficult place to
+put it and all sorts of housekeeping would be required. The partition
+table on the other hand is a nice place. The "stealth" viruses (JOSHI
+et al) operate by redirecting low-level interrupts to return only
+uninfected code.  To do so, they must go resident in RAM. Once the OS
+loads, this is very difficult to detect since each OS does its own
+redirection. Prior to the OS load however, only the bare BIOS or ROM
+extension interrupts are available and these can be verified very
+easily and are sufficient to detect such attacks immediately.
+
+						Padgett
+
+------------------------------
+
+Date:    Tue, 05 Feb 91 20:37:30 +0000
+>From:    patel@mwunix.mitre.org (Anup C. Patel)
+Subject: Virex 3.0 INIT problem (Mac)
+
+There have been reports from users of Virex 3.0 and Moire screen saver
+conflicting.  Specifically, when the Diagnose Disk when Mounted option
+is set to ask for user permission, Moire does not show the dialog box
+if it is active.  Moreover, the disk does not even show up on the
+desktop.
+
+Doing the <Command><Shift><1> does eject the disk however.  Anyone
+else have this problem??
+
+Thanks.
+
+------------------------------
+
+Date:    Tue, 05 Feb 91 22:26:45 +0700
+>From:    "J.C." Kohler <csw76@seq1.keele.ac.uk>
+Subject: WP and change checkers, it goes on (PC)
+
+Rob Slade writes:
+
+>>All versions of Word Perfect (at least since 4.2) have had a self
+>>testing module on them.  Neither F-XLOCK nor SCAN /AV nor any other
+>>slef checker that adds code to the program can be used on it, since
+>>the added code invalidates the internal self test.
+
+Kip J Mussatt writes
+
+>If I am understanding you correctly, WP 4.2 and later versions should
+>be virus proof?  If this is your assumption then why did we have an
+>epidemic of the Jeru II virus that infected almost every wp 4.2, 5.0,
+>and 5.1 at work?  Again, if I am misunderstanding what you are saying
+>about WP product, then please clarify.  If not, then could you please
+>shed some light on my question. Thanx
+
+Here comes the reply I got from Mr. Skulason himself
+
+>Date:    30 Jan 91 11:55:51 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+>Subject: Re: Problem with F-Prot 1.14 (PC)
+
+>This problem is a side-effect of the correction of another problem.
+>Here is what happened:
+
+>The "length" of EXE files can be defined in two ways - the actual (physical)
+>length of the file, and the length according to the header.  Case in point:
+
+>Turbo C++ is an 800K file, but according to the header it is only 165K long.
+>When it is executed, only 165K are loaded into memory, but the program may
+>later load parts of itself as necessary.
+
+>Using F-XLOCK (to add automatic detection of infection of unknown viruses)
+>involves adding a small module to the end of the file.  If Turbo C++ was
+>F-XLOCKed in this way, it would not run, as the resulting length of the file
+>was 800K (according to the header), and the file just could not be loaded
+>into memory.
+
+Altough I received two mail messages saying that it was because of the
+self checker in wp, I would say Mr. Skulason is right. I also heard of
+viri infecting wp, Jerusalem and PingPong. Isn't it easy to build a
+self-checker into a program ( as suggested WP has done )? I could
+imagine that you just check the .exe when it is running, you could
+play around with some XOR's to create a check. You could even put the
+value in a seperate file, as long as your checking algorithm is
+complexe enough.
+
+Christian
+
+[J.] Christian Kohler
+Keele university, United Kingdom
+JANET    : csw76@uk.ac.keele.seq1
+INTERNET : csw76%keele.ac.uk@nsfnet-relay.ac.uk
+BITNET   : csw76%keele.ac.uk@ukacrl
+UUCP     : ..!ukc!keele!csw76
+
+------------------------------
+
+Date:    Wed, 06 Feb 91 01:55:05 -0500
+>From:    jguo@cs.NYU.EDU (Jun Guo)
+Subject: Compressors
+
+Hi,
+
+   We know that signature based scanner will not search into compressed
+EXE/COM file. So if we have decompressors we should decompress the file
+and then apply virus scanner on it.
+
+   The following is a list of EXE/COM compressors I heard of:
+   compressor:                    decompressor:
+      LZEXE                         UNLZEXE
+      PKlite                        PKlite -x
+      Diet 1.0                      Diet -r
+      LEXEM
+      TinyProg
+      EXEPACK                       UPACKEXE
+      AXE
+      Shrink
+      SCRNCH
+      ICE                           ICE breaker
+      CRUNCH
+
+   I'd like to hear from you of other compressors and decompressors.
+
+   And one more thing: how are device drivers loaded? Can they be
+compressed also? If yes, how can we decompress that?
+
+   Many thanks.
+
+Jun
+
+P.S.: I just heard of there is ICE breaker. But never seen that.
+
+------------------------------
+
+Date:    Wed, 06 Feb 91 09:58:04 +0000
+>From:    n8541751@unicorn.cc.wwu.edu (Where there is darkness, light)
+Subject: Re: Hardware damage?
+
+hagins@gamecock.rtp.dg.com (Jody Hagins) writes:
+
+>Please forgive my ignorance on this subject...
+
+>Is it possible for a virus, etc to cripple physical hardware
+>components?  I ask as I have recently experienced an abrupt halt of my
+>system, frying my power supply.  This occurred after aquiring a piece
+>of software from a supposedly very reliable source.  Just wondering if
+>this is related, or a coincidence.
+
+>Thanks for any help!
+
+I have a book on assembly language programming of the PC video
+hardware which includes a caution against certain programming mistakes
+to avoid when setting up the video controller.
+
+It claims that you can actually physically damage a monitor from
+within software.  Needless to say I haven't tried it to see if it's
+really true.
+
+I don't know about other components.
+
+Kris.
+- --
+Kriston M. Bruland          |    . .         . .      . . .      .       . .
+n8541751@unicorn.cc.wwu.edu |    .   .     . .        .        . .       .   .
+8541751@nessie.cc.wwu.edu   |    .             .         .     .   .     .
+
+------------------------------
+
+Date:    05 Feb 91 17:12:44
+>From:    keir@vms.macc.wisc.edu (Rick Keir, MACC)
+Subject: Easy way to write protect 3.5" disks
+
+I've seen several references to prying out the write protect
+tabs of a 3.5" disk to render it permanently read-only.
+
+This is a lot of work, especially as some disks are not real
+well heat-sealed;  the entire case has a tendency to split
+(while the write tab stays stubbornly in place).  Any
+kind of styrene cement will work just fine for gluing
+them in the "open" position.
+
+Personally, I like Testor's tube cement;  this is basically a
+version of the liquid stuff with a lot of plastic already
+dissolved into it, so that (1) it flows slower, (2) it acts
+less rapidly, and (3) it doesn't kick as much junk into the
+air when it is setting.  The smell might put some people
+off (I stick 'em shut in my office, then leave them to dry
+while I'm elsewhere);  if you've ever built models you probably
+won't mind it.
+
+By the way, if you do want to remove the tab permanently, just
+use a generous amount of the liquid version:  this will dissolve
+the entire corner of the disk case and the tab may easily be
+removed.  I know this works from (unintentional) experiment :).
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 22]
+*****************************************

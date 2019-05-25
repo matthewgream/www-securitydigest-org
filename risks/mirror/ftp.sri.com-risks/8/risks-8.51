@@ -1,0 +1,458 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday 6 April 1989   Volume 8 : Issue 51
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Valdez Autopilot (Glenn Lea)
+  The National Weather Service automation vs. aviation (Randal L. Schwartz)
+  Authenticating Internet mail (Jon Rochlis)
+  Mechanical horse racing (Brad Hutchings)
+  Re: Airbus A320 article (Dan Swinehart, Robert Dorsett, PGN)
+  More on 1983 Air Canada near-disaster (Rich Wales)
+  ATM loss - no one believes the customer. (jrl)
+  BMW Risks (Peter Kendell)
+  BMW Road Warmers (Dennis Vadura)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j / ftp KL.sri.com / login anonymous (ANY NONNULL PASSWORD) /
+  get stripe:<risks>risks-i.j ... (OR TRY cd stripe:<risks> / get risks-i.j ...
+  Volume summaries in (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99).
+
+----------------------------------------------------------------------
+
+Date: Thu, 6 Apr 89 10:51:07 EDT
+From: lea@compass.com (Glenn Lea)
+Subject: Valdez Autopilot
+
+from Boston Globe, Apr 6, 1989, front page story:
+
+   Use of autopilot tied to Alaskan oil spill
+
+   A computer operated autopilot aboard the Exxon Valdez may have been
+   set by Capt. Joseph Hazelwood for a course that headed his ship toward
+   a reef, overriding commands by the third mate and leading to the
+   nation's worse oil spill, according to an Alaskan newspaper.
+
+   The report in today's Anchorage Times was based on comments by the
+   Coast Guard's chief marine investigator, Mark DeLozier.
+   According to the report, neither the third mate who was in charge on
+   the bridge nor the helmsman who was steering the ship was aware that
+   manual turns of the wheel had no effect on the rudder or the course
+   of the ship because the automatic pilot had been set.
+
+   If confirmed, the report would explain how the outbound tanker - even
+   under the hands of an unlicensed mate - veered 1 1/2 miles across an
+   inbound vessel traffic lane and tore open eight cargo tanks on Bligh
+   Reef 25 miles outside the Valdez oil terminal."
+
+[Remainder of article concerns the cleanup and captain's arraignment.]
+
+Was there no "AUTOPILOT" indicator?                           Glenn Lea
+
+------------------------------
+
+Date: Thu, 06 Apr 89 09:11:47 PDT
+From: Randal L. Schwartz <merlyn@intelob.intel.com>
+Subject: The National Weather Service automation vs. aviation
+
+[quotes are from Insight/April 10, 1989; typos from me :-)]
+
+	_Weather Agency Maps More Efficient Service_
+
+	The National Weather Service will be a leaner and much more
+	automated operation in the 1990s.  Under a modernization plan
+	submitted to Congress, the National Association of Atmospheric
+	Administration will establish a national network of 115
+	forecasting offices equipped with high-technology sensing,
+	processing, and communication system.  Currently, the service
+	relies on nearly 300 local offices to collect and disseminate
+	weather data.
+
+	Improved satellites, a national network of sophisticated
+	Doppler radars (which allow forecasters to see inside storms)
+	and a 1000-unit Automated Surface Observation System that
+	collects temperature, wind speed, air pressure, and other
+	atmospheric data will enable the service to phase out 800
+	jobs, reducing agency staff to some 3900.  The new
+	technological systems should allow for "earlier detection and
+	permit the short-range prediction of destructive, violent,
+	local storms and floods, thereby mitigating a glaring
+	shortfall in current warning services," according to the
+	service's plan.
+
+As a pilot, I've been following the NWS transition from human observers to ASOS
+machines in the last year very carefully.  While these machines report
+objective things (temperature, dewpoint, precip over last N hours) rather
+accurately (barring mechanical breakdown, etc etc), they do very poorly at
+cloud cover and current precipitation.  For cloud cover, an ASOS reports what
+is *overhead* (possibly modified by some recent history information, I'm not
+sure).  This is very different from what the human observers report, which is
+generally a function of weather for about 5 miles around.  This means one
+little stationary puffy at 1000 feet directly over the ASOS can be confused
+with a 1000 foot overcast.... quite a different situation.  Humans can also
+include "rain ended at 24 minutes past the hour" or "frontal passage [a wind
+shift] at 18 minutes past the hour", which I believe the ASOS cannot do.  (This
+is very useful to decide where the front will be farther downwind at a later
+time.)  And how do you come up with a sensor that recognizes "blowing snow"
+contrasted with "blowing dust" (quite a different thing :-)?
+
+The talk in the aviation community been rather specific on the resulting
+decrease in aviation safety because of the *reduced* information available to
+pilots.  What gets me is that this article touts the *advantages* of
+automation.  Notice the reduction in personnel: this will probably be all the
+human observers replaced with ASOS machines.  The Doppler radars are mostly in
+place; the new satellites would have been there anyway; so all we are really
+doing is losing the "human touch".
+
+On a local (for us Oregonians...) note: one of the human observations cut was a
+mountain-top observation station in the Cascades near Eugene (or Medford... I
+forget).  This cut made headlines because the local meterologists were apalled;
+the station had been making continuous observations since the early part of
+this century, and served as a baseline for very long range weather trend
+information.  Although other stations in the area provide similar information
+(which is reportedly why the station was cut), they have not been reporting for
+nearly as long, thus destroying their long-term-trend usefulness.
+
+Randal L. Schwartz, Stonehenge Consulting Services
+
+------------------------------
+
+Date: Wed, 5 Apr 89 22:54:31 EDT
+From: Jon Rochlis <jon@ATHENA.MIT.EDU>
+Subject: Authenticating Internet mail (RISKS-8.50)
+
+   Date: Mon, 27 Mar 89 10:33:35 PST
+   From: Peter Scott <PJS@grouch.JPL.NASA.GOV>
+
+   if you're prepared to assume that the mail
+   software at the actual host claimed in the message is trustworthy, and
+   if you assume no perversions of the network short of line-tapping.
+
+Both of these assumptions do not hold and probably never will.  (Not only is
+line-tapping trivial and widespread, ala Ethernet sniffers, but
+modification, protocol and hardware address spoofing and the like is easy,
+if not trivial.)
+
+		-- Jon
+
+------------------------------
+
+Date: Thu, 6 Apr 89 09:09:10 -0600
+From: hutching@cs.utah.edu (Brad Hutchings)
+Subject: mechanical horse racing (Michael Trout, RISKS-8.50)
+
+There was a story a few weeks ago in the Wall Street Journal discussing
+this new concept in horse racing. The horses are *not* mechanical. The
+horses are of a smaller breed that was used to pull small carriages
+around the turn of the century. The jockeys *are* mechanical. They
+consist of a small piece of telerobotic hardware that can control
+the speed and direction of the horse. This controll is achieved using
+conventional reigns and a loudspeaker. These jockeys are controlled
+remotely by a radio control similar to that used for R/C airplanes and such.
+
+The main reason for using the hardware-based jockeys is weight.  Even the
+lightest human (wetware-based :-) ) jockey would slow these minature horses
+down to a very unexciting pace. The robot-jockeys weigh only 22 pounds and in
+the illustration they looked like a small tin man with arms, a racing derby and
+no legs. The original prototypes were developed for patrolling the perimeter of
+a very large ranch. To protect the rancher from thieves, the ranch perimeter
+was constantly patrolled by several men on horseback. In an effort to cut
+costs, the inventors thought of mounting a TV camera on a horse with some
+method of control, hence the robot-sentry/jockey was born.
+
+The military anti-jamming technology mentioned involves the standard
+practice of encoding the control signals on many frequencies simultaneously
+(perhaps 10-100 different frequencies) to improve the odds of transmitting
+a signal in the presence of a jamming signal and/or noise.
+
+As far as RISKS go, it doesn't take a leap of the imagination to conceive of
+this technology being used in battlefield environments. One of the most
+difficult problems currently facing robotics researchers is navigation and
+locomotion in unstructured environments. By coupling current robotic technology
+to biologically-based locomotion systems, this problem may be overcome for the
+time being. A variety of scenarios is possible for any animal that can be
+trained to respond to the commands of some robot. Perhaps the day may come when
+robots and animals will fight the actual battle while we humans sit back,
+joystick and beer in hand, safely directing the battle while remotely viewing
+the results on a CRT monitor (1/2 :-) ). Sounds like a new idea for a video
+game.  (full :-) ).
+                                        Brad L. Hutchings
+
+------------------------------
+
+Date: Wed, 05 Apr 89 21:58:24 PDT
+From: Swinehart.pa@Xerox.COM
+Subject: Re: Airbus A320 article plus some comments (Leveson, RISKS-8.49)
+
+With respect to the fly-by-wire issue, I think it's important to separate
+two concepts:
+
+   (1) Whether cables, hydraulic lines, or electrical signals, sensors,
+computers, and actuators translate the pilot's actions to the control surfaces
+(the A320 article stated "FBW replaces the conventional stick and rudder
+controls with a series of computers and miles of electronic cables", as if
+similar amounts of cables or the equivalent were not required to accomplish the
+conventional method).
+   (2) How much additional "intelligence" is placed between the pilot and the
+control surfaces.
+
+It may well make sense to replace mechanical cables by electrical or
+fiber-optic ones, for reasons of reducing cost, weight, and complexity, or of
+improving redundancy.  I am confident that a system whose only function was to
+make this substitution could be made robust enough to equal or exceed the
+reliability of existing systems, especially in damage situations.  For example,
+one could arrange to use multiple battery-powered actuators, with a radio link
+as a final backup even, to reduce the chances that an engine falling off would
+disrupt the control signals, as it did in the Chicago DC-10 accident.  I
+believe many of the space shuttle controls include this direct mapping as a
+fallback.
+
+Most of the FBW systems discussed in this forum apparently add significant
+processing stages between pilot input and control output, sometimes of
+necessity, since these aircraft are sometimes not inherently stable.
+Ultimately, that seems like a good idea, too, but it's a lot more complicated,
+since essentially it means that the computer is flying the plane.  Clearly this
+approach deserves at least as much scrutiny as it is receiving, here and
+elsewhere.
+
+------------------------------
+
+Date: Wed, 5 Apr 89 18:25:20 CDT
+From: mentat@louie.cc.utexas.edu (Robert Dorsett)
+Subject: Comment on commented Washington Post A320 report
+
+>   [NGL:  It is interesting that the pilot was never believed about the
+>   altimeter although there is [now] plenty of evidence to back up his story.
+
+There is also substantial evidence to discredit him: the voice transcripts
+indicated a highly unprofessional preflight and takeoff.  Normal checklist
+procedures were not used, and the atmosphere was too relaxed and casual.  The
+French government leaked this data very early in the investigation, which
+undoubtably influenced where the general direction of the investigation was to
+go.  As someone who has spent a substantial amount of time in airliner
+cockpits, I can say that the transcripts were quite horrifying in their lack of
+professionalism.
+
+On the specific issue of the altimeter making a difference, the airplane was
+flying approximately 50 feet off the ground.  At that altitude, the pilots'
+eyes should not be in the cockpit; the airplane's approximate altitude (or,
+more importantly, its relation to the trees and ground) could have been 
+established at a glance.  There's a simple rule of thumb in such cases: if 
+an obstacle is above the horizon, you're going to run into it.  This alone 
+seems to suggest poor judgement, perhaps accentuated by the informal 
+atmosphere in the cockpit and the "weekend fair" mentality of the proceedings.
+
+I don't think the Mulhouse-Habsheim crash can be used to condemn functional
+aspects of the A320--at least, judging from the information I've seen on it.
+The crash is much more vulnerable to questions regarding the human-factors
+design of the A320 cockpit, and the validity work workload-saving automation
+and display formats.  Considering how senior (each pilot had just over ten
+thousand hours, and the captain, at the time, was the head of the A320 program
+for Air France, with more time in type than anyone else) the crew was, one must
+at least consider the possibility that the cockpit design may have encouraged
+the atmosphere which led to the poor decisions which led to the crash.
+
+Robert Dorsett                UUCP: ...cs.utexas.edu!walt.cc.utexas.edu!mentat
+
+------------------------------
+
+Date: Thu, 6 Apr 1989 9:24:41 PDT
+From: Peter Neumann <neumann@csl.sri.com>
+Subject: Re: "not plenty of evidence to back up his story" (Leveson, RISKS-8.49)
+
+In Nancy Leveson's Airbus commentary,
+
+  "not plenty of evidence to back up his story"  should have been 
+  "now plenty of evidence to back up his story".
+
+[I corrected it in Robert Dorsett's quote of it, in the previous message.]
+
+Boston's Logan Airport was fogged in on Tuesday evening, and Nancy took the
+train back from Washington DC.  Evidently her train of thought was dominated by
+her thought of train.
+
+------------------------------
+
+Date: Wed, 5 Apr 89 23:15:34 PDT
+From:  Rich Wales <wales@CS.UCLA.EDU>
+Subject: More on 1983 Air Canada near-disaster
+
+Having gone out and bought the book, I now have some additional details
+about the 1983 incident in which an Air Canada Boeing 767 ran out of
+fuel while on a flight from Ottawa to Edmonton.
+
+The book is _Freefall_, by William Hoffer and Marilyn Mona Hoffer;
+St. Martin's Press (New York), 1989; ISBN 0-312-02919-5; US$17.95.
+
+To recap, the plane's electronic fuel sensor system failed.  The "fuel
+quantity processor" on the Boeing 767 in question used two separate,
+independent operating channels for redundancy.  If one channel failed,
+the processor would ignore it and use the other.  In this case, however,
+a cold solder joint in an inductor caused one channel to fail in an
+unanticipated way:  instead of cutting off completely, this channel gen-
+erated a reduced -- but nonzero -- signal.  The fuel quantity processor
+was not designed to deal with such a situation, and so failed entirely.
+
+The night before the fateful flight, a maintenance technician in Edmon-
+ton, Alberta tried unsuccessfully to find this problem.  No replacement
+fuel quantity processor was available, but he discovered that by turn-
+ing off the circuit breaker for the faulty sensor channel, he could get
+the fuel gauges to work.  He marked the breaker with yellow maintenance
+tape and made a note in the plane's log book.  However, his log notes
+seemed to make no sense and were misunderstood by the maintenance crew
+at Dorval Airport in Montreal; a technician there reset the breaker
+despite the tape over it, without noticing that he had thereby disabled
+the fuel gauges again.
+
+Since the plane had left Edmonton the previous night with only one fuel
+sensor operational, the manual required a "drip" test with mechanical
+dipstick-like devices to double-check the fuel (kerosene) level.  The
+fuel truck's gauges measured fuel *volume* (in litres) -- but this had
+to be translated into fuel *mass* as part of the "drip" test.  The
+mechanics knew how much fuel the plane needed, in kilograms; but when
+they went to figure out how much fuel (in litres) to pump into the
+tanks, they mistakenly tried to convert from *pounds* to litres.  This
+error was made all the easier by the fact that the conversion factor was
+labelled in the mechanics' reference books as "specific gravity"; the
+fact that the number also embodied a volume-mass conversion was com-
+pletely glossed over.  As I mentioned in my earlier message, the Boeing
+767 in question was one of the first "metricized" airplanes in the Air
+Canada fleet; other planes still measured fuel in pounds, not kilos.
+
+After the plane was refuelled, the pilot noticed that the fuel gauges
+were now blank.  On this basis, he asserted to the maintenance people
+that the plane was not legal to fly according to the manuals.  However,
+the mechanics insisted that Maintenance Control had cleared the plane
+and that it was OK to fly.  In such a situation, the pilot could theo-
+retically have stuck to his guns and refused to allow the plane to go
+-- but it was well known that "an overly cautious pilot who grounds too
+many flights for what others perceive as trivial reasons is likely to
+find himself grounded."  Further, the written guidelines or "Minimum
+Equipment List" for the 767 had already been revised agains and again
+-- and, in fact, there were three versions of the MEL book at this time
+(one for pilots, one for mechanics, and one for airport Maintenance
+Control).  So, given that Maintenance Control had cleared the plane for
+takeoff on the basis of the fuel "drip" test, the pilot would have put
+himself in a potentially indefensible situation by challenging their
+decision on the basis of *his* copy of the MEL regulations.
+
+The above details can be found in Chapter 13 of the book, starting on page 89.
+
+So, to summarize, the mishap resulted in part from:
+
+(1) Inadequate design of the redundancy systems in the fuel quantity
+    processor; it failed entirely in the face of an unanticipated
+    *partial* failure of one of the two sensors.
+
+(2) Miscommunication between mechanics at airports in Edmonton and
+    Montreal, resulting in the first mechanic's fortuitous "kludge" fix
+    to the problem being unknowingly undone by the second mechanic.
+
+(3) Metric conversion woes in conjunction with the refuelling of the
+    plane -- compounded by the fact that a key mathematical factor in
+    the calculation was labelled in such a way as to conceal its true
+    role as a unit conversion factor between mass and volume.
+
+(4) Ambiguous rules for minimum equipment and line of responsibility in
+    determining whether the airplane was flight-worthy.
+
+Rich Wales // UCLA Computer Science Department // +1 (213) 825-5683
+   3531 Boelter Hall // Los Angeles, California 90024-1596 // USA
+
+------------------------------
+
+Date: Wed, 5 Apr  18:28:43 1989
+From: jrl%mvuxr@att.att.com
+Subject: ATM loss - no one believes the customer.
+
+I recently had a "normal" bad experience with an ATM:  (bank name withheld
+to protect the guilty - but it's a HUGE bank in Massachusetts). The machine
+gave me half the money I asked for, but the receipt read that it had given
+me the full amount. Of course, I immediately called the "help" line (which
+should perhaps be called the "I can't help" line), and reported the
+incident. I requested that they shut down the machine until they could audit
+it.  To my surprise, they responded that, according to their carefully
+thought out policy, they could not shut down the machine on the basis of a
+single customer complaint.
+
+Note, however, that if the MACHINE detects an operational irregularity, it
+shuts ITSELF down immediately, often without returning your card. I find it
+not only odd, but downright >risky< that the complaint from a customer is
+given less weight than the machine's "perception" of a possible problem.  On
+the one hand, some software or hardware system has determined that there MAY
+be a problem - and this is acted on at once.  On the other hand, I report an
+ACTUAL problem - and I find myself being ignored. This says volumes about
+the propensity to believe the computer at all costs: the customer "couldn't
+be right - the computer says so."
+
+------------------------------
+
+Date: 5 Apr 89 09:43:53 GMT (Wed)
+From: Peter Kendell <mcvax!tcom.stc.co.uk!pete@uunet.UU.NET>
+Subject: BMW Risks (Re: RISKS-8.48)
+
+	You're quite right, Brian. BMW seem to specialise in providing
+	RISKy technology. A few years back I bought a BMW316i on the
+	basis of an ad in the Guardian describing its ionically-bound
+	detergent-containing paint. You remember that it claimed to be
+	self-washing. Well, imagine my surprise when returning to my
+	new car after a particularly heavy thunderstorm I found that
+	*all the paint* had washed off! 
+
+	This is not to mention the self-inflating tyres that blew themselves
+	up so much that the car lost half a ton in weight, requiring
+	me to spend 300 pounds (BMW prices!) on a larger spoiler just
+	to keep the car on the road.
+
+	I note that the previous representative, Herr Uve Behnaad, has
+	been replaced by a new man, Mr Phelfrett. It seems, however,
+	that BMW policy has *not* changed and that the motoring public
+	continues to be put at RISK by poorly-tested new technology.
+
+  [Comments also from Frank Wales <mcvax!zen.co.uk!frank@uunet.UU.NET>,
+  who also noted Road Warmers, which follows.  Gullible's Travels?  PGN]
+
+------------------------------
+
+Date: Wed, 5 Apr 89 16:32:46 EDT
+From: Dennis Vadura <dvadura@watdragon.waterloo.edu>
+Subject: Re: BMW Introduces It's Newest Innovation:  ROAD WARMERS
+
+		BMW INTRODUCES ITS NEWEST INNOVATION:
+			   ROAD WARMERS
+
+Having spent the last twenty years perfecting the sports sedan, BMW has now
+taken up the ultimate challenge - perfecting the road.
+Road Warmers are the result of twenty years of German engineering.  And
+represent perhaps the single most important contribution to the automotive
+industry in the past decade.
+
+Road Warmers employ laser technology to ensure constant road conditions.  The
+way in which they operate is simple.  Underneath the car, four pivoting convex
+lasers are mounted in front of each wheel.  The lasers are aimed at the
+pavement directly in front of the tread stance.  They work in tandem with
+five-speed turbo fans.  So not only do they manage to melt snow and ice, they
+also dry the road of excess moisture.  And virtually eliminate the need to
+clear your driveway during winter.  Inside the car, the driver is continually
+apprised of the climatic conditions through BMW's onboard computer and Active
+Check Control.  This enables the driver to set the road to a temperature that
+best suits their level of performance.  The result is a road that never
+changes.  Four seasons become one.  And performace is assured like never
+before.  Eventually Road Warmers will be standard on all new BMW's.  But as
+part of a special offer, your dealer will install them on your present car free
+of charge.
+
+But you should hurry.  Our offer is only available April 1st, so you would be a
+fool to miss this one.
+
+[reprinted from an add in Toronto's Globe and Mail, April 1st.
+
+------------------------------
+
+End of RISKS-FORUM Digest 8.51
+************************

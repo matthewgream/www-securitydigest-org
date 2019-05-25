@@ -1,0 +1,988 @@
+VIRUS-L Digest   Tuesday, 26 May 1992    Volume 5 : Issue 109
+
+Today's Topics:
+
+**]] WOLFENSTEIN 3-D TROJAN ALERT [[** (PC)
+Zipped Viruses (PC)
+different viruses causing 2k loss in memory (PC)
+changed virus names in scan (PC)
+Zipped Viruses (PC)
+Re: Can a virus survive being pkzipped or otherwise compressed (PC)
+Re: Virus? Vlad The Inhaler (PC)
+Re: a small misunderstanding :-) (PC)
+Re: clock ram resident virus (PC)
+Re: Joe's Demise (PC)
+Detecting the MtE (PC)
+Re: Clarifications... part 2 (PC)
+DOS Viruses and OS/2 2.0 (PC) (OS/2)
+Re: PC\MS DOS based Viruses & OS\2 2.0 (PC) (OS/2)
+Re: COPS for Novell? (PC) (Novell)
+virus about novell (PC) (Novell)
+Re: Virus hides in printer (again) and other hardware
+Re: (Primative ?) Question
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 25 May 92 15:59:20 +0000
+From:    alex%bilver@peora.sdc.ccur.com (Alex Matulich)
+Subject: **]] WOLFENSTEIN 3-D TROJAN ALERT [[** (PC)
+
+The following was posted by a fido sysop in our local sysop echo:
+
+====================================================================
+
+There is a disk trasher making the rounds as a file called:
+
+        WLFCHEAT.ZIP/ARC
+
+that supposedly gives you access to special info within the recently
+released Apogee game, Wolfenstein-3D.  This 'cheat' program TSRs
+upon activation, grabs a bunch of interrupts andthen wipes your FAT.
+
+It is not a virus. it's just a FAT destroyer.
+
+If you see it or anything that sounds like it, DON'T use it! get rid
+of it.  The FAT you save could be your own. [grin]
+
+TTFN.
+Chris
+
+* Origin: Rights On! -Florida Sysops are Best!- Titusville_FL_USA(1:374/14)
+
+====================================================================
+
+I've seen a few people posting articles asking about this in
+comp.sys.ibm.pc.games.  Now you know.  You have been warned.
+
+- --
+ _ |__  Alex Matulich
+ /(+__>  Unicorn Research Corp, 4621 N Landmark Dr, Orlando, FL 32817
+//| \     UUCP:  alex@bilver.uucp   {peora|ge-dab|uunet!tous}!bilver!alex
+///__)     Internet:  alex%bilver@peora.sdc.ccur.com
+
+------------------------------
+
+Date:    Thu, 21 May 92 03:20:44 -0400
+From:    David_Conrad@MTS.cc.Wayne.edu
+Subject: Zipped Viruses (PC)
+
+(There was a report that viruses cannot survive the compression/archiving
+of PKZIP, zoo, Arj, Arc, LHA, etc.)
+
+No!  Almost all viruses can survive being zipped or otherwise compressed,
+archived, or tarred.
+
+Once the virus attaches itself to a program, it becomes part of the file
+which contains the program.  If the archiver (PKZIP or any other) does
+its job correctly, the file which eventually gets un-archived is exactly
+the same as the one which was put in -- virus and all!
+
+Now, there are a few exceptions to this, and this columnist must have
+either been referring to these, or falsely assumed that all viruses work
+like these few.  The viruses which don't survive being archived are
+so called stealth viruses, particularly fast infectors.
+
+First let me explain what 'stealth' and 'fast infector' mean.  Imagine
+a virus which is attached to program files, and when they run it becomes
+memory resident.  It takes over certain interrupts, so that it gets
+notified when certain events happen; specifically, it gets control of the
+computer whenever you try to read, write, or execute a program.
+
+Whenever you write or execute a program, the virus infects that program.
+But when you read a program from the disk, the virus actually removes
+itself from the program -- effectively disinfecting it!  However, it does
+this in a clever way.  It only removes itself from the copy of the file
+which has been read into the computer (in memory), not the actual file
+on the disk.  Also, such a virus will infect a program file when you
+read it if it isn't already infected, although the copy being read in
+will still be disinfected.
+
+I started by asking you to imagine this, but such viruses do exist!
+
+Now, notice two things: if you were to go through every directory and
+open every program file for reading, every single program on the hard
+drive would become infected.  This is what is meant by a 'fast infector'!
+
+And secondly, every file that you read, although it is infected, appears
+not to be AS LONG AS THE VIRUS IS RESIDENT IN MEMORY.  If a program is
+infected, and you run it, the virus loads itself just like a TSR.  Then,
+if you run a virus scanner and scan the program, the copy of the file in
+memory which the scanner actually scans gets disinfected by the virus,
+and the scanner finds nothing.  This is what is meant by 'stealth'!
+
+But it gets more complicated.  First, notice that if a program is infected,
+but is never run, then the virus isn't in memory, and scanning will work
+as usual.  But how can you be sure that the virus isn't in memory?  What
+if COMMAND.COM is infected, or some program which is run from AUTOEXEC.BAT?
+This is why you're always told to boot from a write-protected DOS floppy.
+
+A few more twists: if the virus is in memory, and you copy a program: the
+memory image of the program gets cleaned as it is read, so the copy program
+has a clean copy to work from; but when the copy program goes to write it
+back to a file, the virus re-infects it!  (Remember, it infects when
+writing program files.)
+
+If the virus is in memory and you "COPY INFECTED.EXE INFECTED.TXT" then
+the .EXE gets disinfected during the read, and the .TXT doesn't get re-
+infected because the virus doesn't think it's a program!  Then, if you
+were to reboot with a clean floppy so that the virus wasn't in memory,
+you could "COPY INFECTED.TXT INFECTED.EXE", and despite its name the
+.EXE file would be fine because it can't get re-infected if the virus
+is *not* in memory.
+
+Similarly, if you "PKZIP -A ZIPFILE INFECTED.EXE" when the virus is in
+memory, PKZIP sees a clean version (in memory) and the virus doesn't
+re-infect as it's written to the archive because it doesn't think the
+compressed .ZIP file is a program any more than it thought the .TXT file
+was a program.  (Plus it would be fantastically difficult to infect a
+compressed file, but that's beside the point.)
+
+So could you just compress all your programs, killing the virus, then
+restore them all?  There are three problems:
+
+   1. If the virus isn't in memory when you create the archive from the
+      infected programs then it doesn't get a chance to disinfect them,
+      so the programs in the archive *will* be infected.
+
+   2. If the virus is still active in memory when you uncompress the
+      archive, then the extracted programs will get re-infected
+      regardless.
+
+   3. None of this applies to non-stealth viruses, so this solution
+      only works in a limited domain.
+
+Some things to think about: What if COMMAND.COM is infected?  What if
+your archiver is infected?  What if your virus scanner is infected?
+
+Because that last case is so dangerous, I'm going to spell it out.
+
+Here's what happens: Your virus scanner is infected with a stealth,
+fast infecting virus.  It isn't currently active.  You run the scanner,
+telling it to scan your entire hard drive.  First the virus gets control:
+It goes resident, takes over, then runs the scanner.  Now the scanner
+attempts to perform a self-check on its file.  This detects nothing,
+because the virus disinfects the file as it reads it.  Now your scanner
+goes through your entire hard drive, reading all programs.  Not only
+does it have no chance of catching the virus in any program, but every
+program (even ones which weren't infected before) will get infected!!!
+
+Sorry this is so long.  It started out as a quick reply to a specific
+question, and turned into a general primer on the subject in the manner
+of Robert Slade's documents, although not nearly so good.
+
+Regards,
+David R. Conrad
+David_Conrad@mts.cc.wayne.edu
+
+------------------------------
+
+Date:    Thu, 21 May 92 11:41:04 +1000
+From:    Cem S. Sutcu <ISKAR5@TRMARUNV.BITNET>
+Subject: different viruses causing 2k loss in memory (PC)
+
+Hi,
+Here in our univ's computer labs, we have a virus (or more?) causing 2k loss
+in conventional memory.
+We have found out it by using chkdsk. It showed 653K instead of 655360 bytes.
+Scanv89b has alerted no suspicious finding. Neither CPAV 1.1 did.
+Some people say this virus is sigalit, and some say it is cocain virus and fina
+lly some say it is cansu virus (a turkish name - probably the first turkish vir
+us|). As they say each of them causes the same problem : 2k loss.
+My questions : 1. might they be the same virus?
+( I've learned that cansu has 3 variants. I'll list their codes)
+cansu 1 : 8ED08ED88EC04889C430E4CD13
+cansu 2 : C606460004EB5F
+CANSU 3 : 8E064E00BBD60026813F7698
+
+2. Is there an antivirus package that can clean either of them?
+thanks
+
+        //////   ///////  /////     ///// ///////////////////////////////
+      ///   //  ///   //  /////   / /// Cem S. Sutcu (M.A.) ////////////
+     ///       ///       /// // /  /// Marmara University, ISKAR //////
+    ///       //////    ///  //   /// E-MAIL: ISKAR5ETRMARUNV.BITNET /
+   ///       ///       ///       /// TEL : 91 347 1944 //////////////
+  ///   /   ///   /   ///       /// FAX : 91 338 1224 //////////////
+  //////   ///////  ////       //// ///////////////////////////////
+
+------------------------------
+
+Date:    Thu, 21 May 92 13:37:46 +0000
+From:    Martin Zejma <8326442@AWIWUW11.BITNET>
+Subject: changed virus names in scan (PC)
+
+Recently I got a floppy containing a sample of the Ghostball Virus,
+named so by an austrian anti-virus program.  When I SCANed it , Scan V
+89b told me it was contanimated with the Lisbon Virus. So I took it
+home, compared it with other samples and voila it was exactly the same
+as the old Vienna Dos 62 Virus. So I digged through my ancient Scan
+versions, and ran each against the same sample :
+
+Scan Vrs    0- 60 "Vienna (DOS 62) Version A "
+           62- 72 "Vienna (DOS 62) Version B " ( very interesting...)
+           75- 84 " Vienna / Violator Virus "
+           85     " Lisbon Virus " & "VHP Related Virus" (twice found)
+           86b    " Lisbon Virus "
+           89b    " Lisbon Virus " & "Generic Virus" ( twice again)
+
+ So I tried other scanners , too ( only newest versions )
+ Virex detects "Vienna 2 - 1", Htscan using the Virscan signatures detects
+"Vienna Related" (fits always :), and Fprot says "Vienna (Reboot)".
+
+Only using one scanner, you can get up to 6 different versions of a virus
+without changing a single bit.
+
+BTW, the sample was different in one point from all other different samples
+of the Vienna Virus:
+When destroying a program , the begin is being overwritten with
+'EA 0FFF00 F0' , resulting in a warmboot when the program gets started.
+And in the new sample the 'EA' is replaced with '20' resulting in junk code
+which hangs the computer. Fprot detects this as 'Vienna - D', all others
+don't seem to care about that byte.So is this a 'official' variant or
+has someone viewing the code just scrambled that piece ?
+
+                                                 Regards, Martin
+
+
++-----------------------------------------------------------------------+
+| Martin Zejma                                8326442 @ AWIWUW11.BITNET |
+|                                                                       |
+| Wirtschaftsuniversitaet Wien  ---   Univ. of Economics Vienna/Austria |
++-----------------------------------------------------------------------+
+
+------------------------------
+
+Date:    Thu, 21 May 92 08:16:14 -0400
+From:    padgett@hobbes.dnet.mmc.com (A. Padgett Peterson)
+Subject: Zipped Viruses (PC)
+
+>From:    kjb@calmasd.prime.com (Ken Brucker)
+>Subject: Can a virus survive being pkzipped or otherwise compressed? (PC)
+
+>A columnist in a local computer magazine (Computer Edge for those in
+>the San Diego area) mentioned that viruses can't survive or at least
+>typically don't survive compression into zip files and other archives.
+
+Sounds like a relative of Arlan Levitan (see the June Computer Shopper).
+
+I do not know of any virus that is infectious while ZIPped, but this is
+a result of *nothing* being executable while ZIPped, once unZIPped both the
+infected program and the virus will work as before.
+
+The same holds true for ARC, ZOO, SEA and other archivals as well as
+XXENCODE, UUENCODE, & TEKHEX used for binary transmission through filters.
+(people often send me code to examine as a UUENCODED ZIP file - for that
+matter, this is how I send out the FixUtils).
+
+Of course self-extracting compressed files will work "as is" - examples
+are files compressed with PK-Lite, LZEXE, or MicroSoft's own PACK - this
+is why scanners must uncompress these files before checking.
+
+And then of course we have the new order: compressed disks e.g. SuperStor &
+Stacker. These work just fine since what a scanner "sees" is the uncompressed
+code so don't really count. (IMHO this is going to put individual file
+compression out of use since you can only compress once effectively - recently
+saw an advt for "something" that purported to compress 2:1 on each pass & 8
+passes would give 16:1 compression. Not only is something wrong with the math
+(linear not exponential ?) but exact compression doesn't work that way -
+(don't you love nested parenthetical expressions ?) limiting individual file
+compression use to file transmission.
+
+But then, I can take a group of files & create a SuperStor container that is
+almost as small as if I had zipped it
+
+Enough ?
+					Warmly,
+						Padgett
+
+------------------------------
+
+Date:    Thu, 21 May 92 17:55:09 +0000
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Re: Can a virus survive being pkzipped or otherwise compressed? (PC)
+
+kjb@calmasd.prime.com (Ken Brucker) writes:
+>A columnist in a local computer magazine (Computer Edge for those in
+>the San Diego area) mentioned that viruses can't survive or at least
+>typically don't survive compression into zip files and other archives.
+
+A virus can and will survive being ZIPped, ARCed, ARJed, LZHed,
+UUENCODEd, Binhexed or otherwise encrypted, decoded or compressed.
+
+A virus, like any other program, will not run in archived form.  But
+it will survive.
+
+(I will, of course, be immediately flamed regarding "compressed
+executibles".  Yes, I agree that programs which are infected and then
+compressed should run and be infectious.  The question, however, seems
+to be restricted to archived, ie. non-executable, files.)
+
+Encryption has been used as a means of antiviral protection.  It has
+not enjoyed significant success.
+
+==============
+Vancouver      ROBERTS@decus.ca         | "A ship in a harbour
+Institute for  Robert_Slade@sfu.ca      |  is safe, but that is
+Research into  rslade@cue.bc.ca         |  not what ships are
+User           CyberStore Dpac 85301030 |  built for."
+Security       Canada V7K 2G6           |           John Parks
+
+------------------------------
+
+Date:    21 May 92 13:24:33 -0500
+From:    rfs0838@summa.tamu.edu (SCHAFFTER, RODNEY FRANK, JR)
+Subject: Re: Virus? Vlad The Inhaler (PC)
+
+mhuxo!rjg@att.att.com writes...
+>Has anyone heard of a PC Virus called Vlad The Inhaler?  I received a
+>report from someone saying when they went to hot key between
+>applications in Windows, a message flashed on the screen
+>"VladTheInhaler".
+
+	This is a routine in Norton Desktop for Windows-some
+programmer had a sense of humor.
+
+Rod Schaffter
+Laboratory for Molecular Structure and Bonding	|Who cares if windows is or
+Texas A&M University Dept. of Chemistry		|isn't an opperating system-
+Bitnet:   SCHAFFTER@TAMLMSB			|it barely operates at all!
+INTERNET: SCHAFFTER@LMSBVX.TAMU.EDU		|
+	"Standard Disclaimer, etc."		|An OOPerating system, maybe?
+
+------------------------------
+
+Date:    21 May 92 20:56:54 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: a small misunderstanding :-) (PC)
+
+seborg@csrc.ncsl.nist.gov (Brian Seborg) writes:
+
+> description of an EEPROM-based scanner deleted]
+> >> if not a red light.  Since the flash EPROMs function as the boot
+> >> device, there is no possibility of boot sector infection, or infection
+> >> of any kind by any infected disks.
+
+> While I agree with the statement that the device I describe cannot catch
+> all viruses since it does use just a simple scanner, I still state that
+> infection of any kind by infected disks of the EPROMS (i.e., the DOS
+
+Ah, you meant that the infection of any kind of the program in the
+EEPROMs is impossible? I agree with this; I thought that you meant the
+whole computer...
+
+> it is no more accurate than the scanner.  Perhaps Bontchev misunderstood to
+> what I was referring with my statement.  Hopefully this clears it up.
+
+Yes.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    21 May 92 21:01:56 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: clock ram resident virus (PC)
+
+amjad@ecst.csuchico.edu (A.J.) writes:
+
+> type of viruses and procedures on removing them ... thankx ps. please
+> give names and complete discriptions of the viruses you know of and
+> how to remove them. (amiga,mac or pc) that infect the clock cmos ??
+
+This is in the FAQ list. A virus cannot reside entirely in the CMOS
+RAM, since it is not addressable and executable. At most, the virus
+can store a small piece of code there (e.g., the destruction payload),
+which it must retrieve using IN and OUT instructions. It also -must-
+have a part which resides in the normal RAM or on the disk. No known
+PC virus does what I described - probably because there's not much
+sense to do it.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    21 May 92 21:31:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Joe's Demise (PC)
+
+TYETISER@ssw02.ab.umd.edu (Tarkan Yetiser) writes:
+
+>   during disk access. The virus uses "standard", handle-oriented file
+>   access, and therefore may very well infect improperly setup LAN server
+>   software.
+
+However, it uses a weird "are you there?" call - function 0B3h of INT
+21h. Wouldn't that cause problems to some LANs, just in the way the
+Jerusalem virus does? I don't know Novell well; wasn't there a similar
+function (0B5h?) used by it? How about Banyan Vines?
+
+>   The virus Int 21h handler contains an internal counter. It is checked
+>   during File Open requests to see if it reached 6.
+
+Indeed; if you open several files simultaneously, without closing
+them, the virus will infect only the first 6.
+
+>  21h. The way virus installs itself looks legitimate enough to fool such
+>   sophisticated memory resident scanners as UTRES easily. The virus
+
+I disagree. The virus does nothing to prevent the scanners that search
+the memory for scan strings from detecting it.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    21 May 92 22:11:43 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Detecting the MtE (PC)
+
+Almost half an year has passed since the Dark Avenger's Mutating
+Engine (MtE) has been made available to the anti-virus researchers.
+Currently several scanners claim to detect it with "100 %
+reliability". Do they really succeed however?
+
+We decided to run some tests at the VTC. The tests are preliminary and
+were performed by Morton Swimmer. The Fear virus was used (a minor
+Dedicated patch) to generate 9,471 infected files. The files were
+generated by the natural infection process - the reason was to also
+test the randomness of the random number generator supplied with the
+MtE. Of those 9,471 infected examples 3 turned out to be duplicates,
+which yelded to 9,468 different instances of the virus. It also means
+that the random number generator is rather good...
+
+Those examples filled a 40 Mb disk (which didn't permit us to generate
+10,000 different examples, as we wished initially). We wanted to keep
+them all, in order to be able to reproduce the tests.
+
+The three scanners were run on those virus samples. The scanners were
+the three that showed best detection rate on our collection, merely
+Dr. Solomon's FindVirus (version 4.15 with drivers from May 15, 1992),
+Fridrik Skulason's F-Prot 2.03a, and McAfee's SCAN 89-B.
+
+All the three scanners failed the test, each in a different way.
+
+FindVirus showed the worst results. It did not detect 744 virus
+samples (7.86 %). F-Prot did not detect 13 examples (0.14 %). SCAN did
+not detect 4 examples (0.04 %). SCAN shows the best detection rate in
+the case of MtE, but we also got a report for one false positive.
+
+For the average users the above rates might appear to be high enough.
+What are 4 undetected infected files when almost 10,000 infected ones
+have been properly detected? Well, it does matter. When you are
+looking for a particular known virus, anything below 100 % detection
+means that your program fails to detect it reliably. Rmember that a
+single not detected file may re-start the epidemy.
+
+There is another thing to be concerned about. The MtE uses a 128-byte
+random number generator, which means that theoretically it can exist
+in 2^512 different variants. And 0.04 % of this is still quite a
+lot... Suppose that some virus writer runs the same tests (or even
+more elaborate ones) and determines for which values of the random
+number generator the virus is not detected. Then he can create a new
+random number generator (the MtE provides the possibility for
+user-supplied random number generators to be plugged in), which
+generates -only- those values... Such a virus will not vary a lot, but
+it will still mutate and -all- its mutations will escape that
+particular scanner...
+
+As I mentioned in the beginning, those were only preliminary tests. We
+intend to modify the random number generator so that it will generate
+consecutive (instead of random) numbers and to create a few hundreds
+thousands mutations by keeping only those which a particular scanner
+does NOT detect. We'll then re-run the tests for random ranges of
+consecutive mutations. All we can say now is that neither of the three
+scanners mentioned above is able to detect MtE-based viruses with 100
+% reliability.
+
+Currently I am aware of the existence of at least three other scanners
+which claim 100 % detection of the MtE. One comes with the new version
+of V-Analyst III, the second has been designed by IBM, and the third
+is Dutch scanner. As soon as we get them we'll re-run the tests.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    20 May 92 16:46:17 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Clarifications... part 2 (PC)
+
+> > Because there are too many of them and I don't have them neatly
+> > described in one paper... Promised, I'll do so in the near future, but
+> > the paper will be for internal use only, since it's obviously
+> > dangerous to publish sich thing.
+
+>    Looking forward to it. I'm sure we shall all learn from it.
+
+Yes, and that's the real problem... I am thinking about such a paper
+since about an year and this is exactly the reason I have not written
+it yet... Because a lot of virus writers will learn a lot from it too.
+Therefore, I certainly won't make it publicly available.
+
+> > I certainly won't spend the time to test all the viruses we have on
+> > your product. It doesn't worth the effort. Besides, even if it does
+
+>   Then you should adjust your claims on the capabilities of VDS. IMHO, you
+> are making too many assumptions.
+
+My claims are based on my knowledge about the internals of DOS and the
+PC and on my knowledge of what some viruses can do, which I gained by
+disassembling hundreds of viruses... I still claim that it is not
+possible to stop all the possible stealth viruses, even if we restrict
+ourselves to only the currently existing stealth/tunneling -techniques-
+(not viruses!).
+
+> > detect all the known viruses, this does not mean anything - most good
+> > scanners do the same. In order to prove that it fails to protect
+
+>    Let's get serious. Scanners do the same? It takes a minor hack to
+> outdate the niftiest one. We are concentrating on large scale/long term
+> solutions. Remember Cohen's cost formulas?
+
+Yes, I remember Cohen's cost formulas. I have studied most of his
+publications very carefully. And you should read more carefully what I
+am saying. I say that "detects all known viruses" is nothing more than
+what the currently existing good scanner do. And "minor hack" means
+that you are creating a new virus, which falls outside the above claim
+(which is aimed only towards the -already- existing viruses).
+
+> > construct a virus which uses them - something that I'll never do
+> > anyway. What I might do in the future is a set of programs that
+
+>   Hope, you do not mean to create a virus just to break a certain scheme.
+
+I think I was clear enough in saying that I won't construct a virus,
+even for the purpose of demonstrating that a particular security
+scheme is weak.
+
+> > BTW, there's a kind of virus that will defeat -any- anti-virus system,
+> > which is based on integrity checking -only-. This is the Darth Vader
+> > virus. I know, you'll argue that it spreads so slowly that it's
+> > unlikely to be successful in the wild...
+
+>    In the bigger scheme of things, it is trivial as far as the threat it
+> might pose is concerned. Exceptions again.
+
+I fail to understand your objection. I just plainly said that a virus
+which uses Darth Vader's idea for infection strategy will evade the
+integrity checkers. Do you object to that? Or shall I explain you how
+to write a much better spreading virus than Darth Vader, using the
+same idea and still evading the integrity checkers? I already
+explained this privately to Yisrael Radai, I hope that he can confirm
+what I am claiming...
+
+>    Good. You read Cohen's paper :-)
+
+As I already said, I am following his publications very carefully. My
+own experience shows me that he's usually right in what he says and
+that ignoring what he says might have bad consequences.
+
+>    No, Vesselin, no. We operate quite differently. I'll describe it in
+> private if you are interested.
+
+Please, do so. I hope to be able to show you what a virus can do in
+order to bypass your program and this is not for public discussion.
+
+> > isn't mainly because it tries to bypass stealth viruses - something
+> > which is a priori impossible without memory protection. Therefore why
+
+>    This is not correct.
+
+Isn't is correct that the stealth bypassing feature is what prevents
+your program from working on compressed disks and other disks that are
+controlled by installable device drivers?
+
+> Memory protection is a different issue, and it
+> would allow us to accomplish many other things, but the implementation
+> overhead is too much.
+
+The implementation is trivial, since this is already supported by the
+'286 and '386 hardware. Implementation is not the problem. The problem
+is that implementing it will break a lot of currently existing
+applications and this is not acceptable for most people.
+
+> Anyway, it seems that we mean something different
+> when we say "bypassing stealth viruses". I cannot discuss this here to
+> protect the innocent :-)
+
+Maybe me are misunderstanding each other. You are wellcome to contact
+me privately in order to discuss the techniques.
+
+>    More compatible? Yes, this is needed. VDS 2.10 is a lot more flexible.
+
+Good! Is is available?
+
+> > more secure?
+
+>    Pretty good as is, but will surely improve.
+
+Try to do something about the PATH-companions and the DOS file
+fragmentation attack.
+
+> > As to UT, it -will- detect any stealth virus, if installed on a clean
+> > system and used according to the manual. Something that cannot be said
+> > about VDS...
+
+>    Any stealth virus? Well, you are contradicting yourself in principle. So
+
+And you fail to read carefully what I'm saying. I said that it is able
+to do so IF installed on a clean system AND used according to the
+manual.
+
+> what is that magic quality that makes UT catch all stealth viruses? I
+
+Ensuring that no such virus is in memory. I.e., booting from a clean
+floppy. At least from time to time.
+
+> have reports from people who forgot to activate the memory resident
+> component of UT and ended up infecting most of their programs as the
+
+Had they used the safe check, it wouldn't happen.
+
+> integrity checker component did its miracle. BTW, this was not a stealth
+> virus, just a hacked version of Datalock. Of course, UT told her each
+
+Yup, it will happen with any fast infector (like Dark Avenger), if the
+virus is already active. The trick is to prevent it from being active.
+
+> infected program failed the check (after causing infection)! It seems that
+> they should have combined at least some of the robust features of the
+> resident component into the integrity checker.
+
+Yup, a resident integrity checker (an integrity shell) addition to the
+product will be really nice. BTW, the developpers told me that the new
+version that they have produced has some anti-stealth features. I just
+hope that their marketing people won't boast "Now the program is able
+to bypass any stealth virus!"... And, besides of the anti-stealth
+techniques, their program is still compatible with all kinds of
+systems, since they know when to turn the anti-stealth techniques off.
+Oh, BTW, the product is called UT only in the USA. To the rest of the
+world it is known as V-Analyst III.
+
+> "That's not how the manual
+> wants you to use it" approach is not sufficient. I have not seen their
+
+But it is at least fair and informative. While "the program is able to
+bypass all stealth viruses" approach isn't.
+
+> latest release, maybe they rectified this deficiency. If you want to
+> maximize compatibility at the cost of less security, Integrity Master is a
+> better choice at a fraction of the cost. Similar flaws, but better
+> implemented, not as sharp-looking. Just my personal opinion.
+
+IM is good indeed, but it doesn't have "similar flaws" with UT. It is
+less secure. I would like very much to see it aware of the same kind
+of attacks that UT is. Then it will be a really serious competitor of
+UT, especially considering the major drawback of the latter - its high
+price.
+
+(to be continued...)
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 21 May 92 16:16:15 -0400
+From:    Kevin_Haney@NIHCR31.BITNET
+Subject: DOS Viruses and OS/2 2.0 (PC) (OS/2)
+
+<MCHLG%CUNYVM.BITNET@mitvma.mit.edu> asks a number of
+questions, to which I have tried to supply answers, based on
+research that I have done. (Ken, I think these are good FAQ
+candidates.)
+
+>1. Is it possible for a DOS based Virus to survive & thrive on a system
+>   running OS\2 2.0 using the (HPFS file system) instead of the
+>   (FAT system)?
+
+        Yes, both file-infecting and boot sector viruses can infect HPFS
+        partitions.  File-infecting viruses function normally and
+        can activate and do their dirty deeds, and boot sector viruses
+        can prevent OS/2 from booting, if the primary bootable
+        partition is infected. Viruses that try to directly address
+        disk sectors cannot function because OS/2 prevents this
+        activity.
+
+>2. Since IBM claims that OS\2 2.0 can run multiple dos sessions In virtual
+>   PC windows, if I opened up 5 windows and one of them crashed as
+>   a result of trying to load a DOS program that was infected by a
+>   1571 Virus would OS\2 come completely crashing down?
+
+        I don't know what kind of virus 1571 is, but OS/2 can
+        usually recover from a crashed DOS session, whatever the
+        reason for the crash.  In practice, OS/2 does hang up
+        completely on occassion.  Since the DOS compatibility of OS/2
+        2.0 is so good, however, most all DOS file-infecting viruses
+        will function as their authors intended.  The only time they
+        would have a problem is if they tried to infect an OS/2 system
+        file that was open and locked by OS/2. They would be unable to
+        do this, with unpredictable results.
+
+>3. What happens to OS\2 if while using the DOS compatibility box in full
+>   screen a partition table virus like the Jerusalem-b or Michaelangelo
+>   infect the system and alter the system?
+
+        The Jerusalem virus is a file-infecting virus (see above).  If a
+        diskette with a partition table virus like Michelangelo were in
+        your drive and you rebooted, your system would become infected
+        and may or may not be able to boot up afterwards.  This is the only
+        way that most partition table viruses can be activated (except for
+        the so-called "flip-flop" viruses).
+
+>4. If I loaded DOS, Windows3.0, WIndows 3.1, & OS\2 programs in seperate
+>   windows, and one of my Win3.0 programs get infected by a ping-pong
+>   virus will the other DOS sessions and the OS\2 session all become
+>   infected by this virus?
+
+        Each DOS program is run in a separate Virtual DOS Machine  (V THei
+        memory spaces are kept separated by OS/2.  However, any
+        DOS program has almost complete access to the files and disks so
+        infection can occur if the virus infects files.
+
+>5. How do Fat killers, boot sector viruses, and partition table viruses
+>   deal with the HPFS system?
+
+        All of the abovementioned types of viruses can infect an
+        HPFS partition, but since it has no FAT, corruption of the disk
+        can occur if a virus attempts to directly manipulate the absent
+        FAT (or the absent root directory). As I said before, partition
+        table viruses can infect a HPFS system since HPFS partitions have
+        a boot sector in the usual place.  OS/2 may or may not be able to
+        boot up afterwards.  If it does boot, the virus is not active in
+        memory since OS/2 overwrites all of the memory (including the
+        interupt vector table) where such viruses normally install themselves.
+
+------------------------------
+
+Date:    21 May 92 21:50:47 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: PC\MS DOS based Viruses & OS\2 2.0 (PC) (OS/2)
+
+MCHLG%CUNYVM.BITNET@mitvma.mit.edu writes:
+
+> I have a few questions for Ken, Vesselin, and the other GURU's as well as any
+> one who is knowledgable enough about PC\MS-DOS, Viruses, & OS\2 2.0.
+
+Unfortunately, my knowledge about OS/2 2.0 is near to nothing, but
+let's see...
+
+>1. Is it possible for a DOS based Virus to survive & thrive on a system running
+>    OS\2 2.0 using the (HPFS file system) instead of the (FAT system)?
+
+To infect files - certainly not. Even some of the existing scanners
+cannot access the HPFS partitions. About a boot/master boot sector
+infector - I don't know.
+
+> 2. Since IBM claims that OS\2 2.0 can run multiple dos sessions In virtual PC
+>    windows, if I opened up 5 windows and one of them crashed as a result of
+>    trying to load a DOS program that was infected by a 1571 Virus would OS\2
+>    come completely crashing down?
+
+No. You should be able to kill the crashed session (which will also
+deactivate the virus). Also, the current stealth technology is useless
+under OS/2, since you can just switch to another DOS session (which
+does not contain the virus) and view the files without the virus
+subverting your requests...
+
+Note that I do not claim that OS/2 viruses are not possible or even
+that stealth OS/2 viruses are not possible... Some aspects of OS/2 are
+pretty useful to the virus writer - if he knows how to exploat them.
+
+>3. What happens to OS\2 if while using the DOS compatibility box in full screen
+>    a partition table virus like the Jerusalem-b or Michaelangelo infect the
+>    system and alter the system?
+
+Jerusalem is not a "partition table virus", it's a file infector. As
+to yout question - I don't know. A MBR-infector like Michelangelo will
+certainly infect the hard disk. I don't know whether it will be able
+to install itself in memory and to spread, but if you happen to boot
+your disk on March 6, the virus will overwrite it, regardless of the
+file system - HPFS, Unix, or whatever. It works on BIOS level, before
+the operating system gets control (or even loaded).
+
+> 4. If I loaded DOS, Windows3.0, WIndows 3.1, & OS\2 programs in seperate
+>    windows, and one of my Win3.0 programs get infected by a ping-pong virus
+>    will the other DOS sessions and the OS\2 session all become infected by
+> this virus? (I know the ping-pong is more of an annoying virus than a
+>    destroying virus)
+
+Ping Pong infects boot sectors, not files. But essentially the answer
+to your question is: no. The different processes under OS/2 are
+protected from each other.
+
+> 5. How do Fat killers, boot sector viruses, and partition table viruses deal
+>    with the HPFS system? What if you have more than one type of operating
+>    system on your hard disk? (ex. DOS, OS2, Unix***, Novell)
+
+MBR infectors which cause destruction before the OS is loaded (like
+Michelangelo) will continue to be dangerous. If they try to access the
+disk after OS/2 has been loaded, they will probably fail - I don't
+know.
+
+> The reason I asked these questions is because I've been thinking about adding
+> it(OS\2) to my hard drive when I get by system back intoworking condition.
+
+I hope that you have a laaarge hard drive... :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    21 May 92 21:06:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: COPS for Novell? (PC) (Novell)
+
+TYETISER@ssw02.ab.umd.edu (Tarkan Yetiser) writes:
+
+> > Is anybody aware of a Novell NetWare-oriented program to check the
+> > security of a Novell LAN? Like the usage of obvious passwords, shared
+> > directories left writable by several people, possible virus infection
+> > paths, etc.? Something like COPS does for Unix? And, if there is no
+> > such thing yet, don't you think that it's more than the time to create
+
+>    I think this should go to FAQ. Anyone familiar with Netware knows that
+> it comes with a standard utility called SECURITY that does such checks. It
+
+Yes, several people mentioned this program. Thanks to everybody.
+However, it does NOT do everything I described. For instance, it does
+not try to break the passwords using a dictionary attack, like COPS or
+Crack. Also, it does not investigate the possible infection paths that
+can be used by a virus to spread.
+
+For instance, if user A has write access to a directory executable by
+user B, and if user B has write access to a directory executable by
+user C, this means that a virus which infects A will be able to spread
+to C's files. A program which analyzes and reports such infection
+paths would be pretty useful, IMHO...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 21 May 92 15:40:23 -0800
+From:    u7942002@dec.mis.nsysu.edu.tw (Snoopy)
+Subject: virus about novell (PC) (Novell)
+
+       Does anybody have any idea or good way to protect the Novell
+networt from virus ?
+       Please echo me to : u7942002@dec.mis.nsysu.edu.tw
+                           yuan@dec.mis.nsysu.edu.tw
+                                                     Thank a lot !!
+
+------------------------------
+
+Date:    Thu, 21 May 92 17:33:57 +0000
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Re: Virus hides in printer (again) and other hardware
+
+The myth of viral programs damaging hardware is one of the most
+enduring ... with the least backing.
+
+In *some* limited cases, hardware design leaves the machinery
+susceptible to damage from software commands.  On this flimsiest of
+bases, the myth has endured and built for many years.
+
+While it is true that such software commands could be added to a viral
+program, the systems which *could* be damaged are extremely limited.
+(The "monitor burning" program was only effective on two very old
+graphics cards.  It is unlikely that many of them are still in use.)
+In addition, the ability to damage a machine would often depend upon
+the stupidity of the owner: such as staring at a glaring dot in the
+middle of a monitor for several hours ...
+
+==============
+Vancouver      ROBERTS@decus.ca         | "If you do buy a
+Institute for  Robert_Slade@sfu.ca      |  computer, don't
+Research into  rslade@cue.bc.ca         |  turn it on."
+User           CyberStore Dpac 85301030 | Richards' 2nd Law
+Security       Canada V7K 2G6           | of Data Security
+
+------------------------------
+
+Date:    21 May 92 22:03:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: (Primative ?) Question
+
+duck@frcs.Alt.ZA (Paul Ducklin) writes:
+
+> >I don't know about the future, but currently all solution oscillate
+> >around the idea of self-check for modifications, which is flawed by
+> >definition, since no secure channel can be established between the
+> >program that runs the check and the code being checked.
+
+> Well, for DOS PCs, one can create a "fairly secure channel" by the
+> tried-and-tested expedient of a clean boot. One of the delights of
+
+Don't forget that we are speaking about self-checking programs. If
+such program gets infected, the clean boot doesn't help a lot, since
+you must execute it in order to activate the self-checking code. And
+once you execute it, the virus will get control -before- the
+self-checking code. From that point on it can do just -anything- with
+the self-checking code - disable it, remove it, circumvent it, etc.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 109]
+******************************************

@@ -1,0 +1,414 @@
+24-May-87 12:00:54-PDT,18372;000000000000
+Mail-From: NEUMANN created at 24-May-87 12:00:02
+Date: Sun 24 May 87 12:00:02-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.89 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Sunday, 24 May 1987  Volume 4 : Issue 89
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Factory Robots Killing Humans, Japan Reports (PGN)
+  Mysterious BART power outage (PGN)
+  More on the Master Password attack (PGN)
+  Measures, countermeasures, and under-the-countermeasures (PGN)
+  Phalanx (Scott Dorsey, Henry Spencer)
+  rhosts (Anthony A. Datri)
+  Computer Bill of Rights (Eugene Miya)
+  Credit Information Access (Ron Heiby)
+  Open meeting laws (Jonathan Handel)
+  Privacy and Email - The Law Takes Notice (Jerry Leichter)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+Date: Fri 22 May 87 17:18:46-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Factory Robots Killing Humans, Japan Reports
+To: RISKS@CSL.SRI.COM
+
+A series of mysterious deaths in which industrial robots suddenly attacked
+and killed humans is being investigated in Japan, news reports said
+yesterday.  Ten people have been killed by robots in the last eight years.
+In four cases, operating errors were blamed.  In the other accidents, the
+robots suddenly started working for unexplained reasons, according to
+reports.  Witnesses listed a number of cases in which the robot suddenly
+stretched out its mechanical arms, killing its victim.  Experts plan to test
+a theory that electromagnetic waves in factories have been responsible for
+setting off the sensitive computer mechanisms in the robots.
+
+SF Chronicle 22 May 87, from Deutsche Presse-Agentur.
+
+         [We had previously documented the 1981 Kawasaki case, and noted
+         reports of at least four more (and possibly as many as 19) 
+         robot-related deaths.  If we have any readers in the far East who
+         can tell us what is really happening, please ...  PGN]
+
+------------------------------
+
+Date: Sun 24 May 87 11:24:24-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Mysterious BART power outage
+To: RISKS@CSL.SRI.COM
+
+The San Francisco Bay Area Rapid Transit had an unexplained power failure on
+17 May 1987, unprecedented in their 15-year history.  17 switches (which act
+like breakers and shut off power when a short circuit or overload occurs)
+kicked open in the rush to get runners to the Bay-to-Breakers race (no pun
+intended), with still no cause having been identified.  A train stalled in a
+tunnel beneath 7th Street in Oakland, and 150 passengers had to walk for 20
+minutes to get out.  Engineers were unable to restore power in the
+computer-controlled system.  5 hours later the switches suddenly closed
+again, just as mysteriously as they had opened.
+
+------------------------------
+
+Date: Fri 22 May 87 09:56:13-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: More on the Master Password attack
+To: RISKS@CSL.SRI.COM
+
+I received a message questioning my apparent coyness in not divulging the
+name of a system that had a reported serious flaw.  In general I always try
+to opt for openness, except when I am explicitly not at liberty to divulge
+something.  In the case of the master password bug, it was found long ago in
+UNIX Version 6 by some colleagues who never disclosed it.  The published
+version that just appeared, and to which I referred, chose not to associate
+the name of the system with the story.  Here are the details.
+
+[Following is my own adaptation of Young and McHugh's presentation, with
+notation changed to avoid an amazing quadruple overloading of the letter
+"c"..., and triple overloading of "a" and "b".  PGN]
+
+     "Constructive" Password Attack: Master-password-generation algorithm 
+ = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+Young and McHugh (Coding for a Believable Specification to Implementation
+Mapping), pp. 141-142, Proc. IEEE Symp. Security and  Privacy, April 1987.
+
+      Data structure
+ = = = = = = = = = = = = = = =
+a. User login name
+b. User typed password
+c. Stored encrypted password
+d. Encrypted typed password
+
+
+The Password Checking Algorithm
+ = = = = = = = = = = = = = = = = 
+1. User typed login name --> a.
+2. Stored encrypted PW --> c. 
+3. User typed password --> b.
+4. Encrypt user typed PW --> d.
+5. Compare c and d.
+
+Step 1.     3.       2.       4.
+
+  Login | Typed | Stored | Encryp
+  Name  | PW    | Encryp | Typed 
+        |       | PW     | PW    
+= = = = = = = = = = = = = = = = =
+| a     | b     | c      | d    |
+= = = = = = = = = = = = = = = = =
+Step 5 compares c and d.    
+
+
+The Master Password Attack
+= = = = = = = = = = = = = = = = =
+Choose any string, "rst"
+Encrypt it, obtaining "xyz"
+Enter ANY legitimate user name.
+Type password "rstxyz"
+
+
+The Password Algorithm Overwhelmed
+      --------------------
+      |  a   | b | c | d |
+      --------------------
+    1.|Name  |   |   |   |
+    2.|Name  |   |uvw|   |
+    3.|Name  |rst|xyz|   |
+    4.|Name  |rst|xyz|xyz|
+
+    5.            xyz=xyz
+
+The design was more or less sound sound (apart from the intrinsic password
+problems that we have been discussing in RISKS).  However, the
+implementation was seriously flawed by the absence of bounds checking.
+Thanks to Young and McHugh for publishing this one.
+
+------------------------------
+
+Date: Sat 23 May 87 11:50:31-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Measures, countermeasures, and under-the-counter-measures
+To: RISKS@CSL.SRI.COM
+
+On page 9 of the SF Chron, 23 May 87, there is a small item on the Speaker
+of the Iranian Parliament.  He claimed that the Iranians electronically
+countermanded the missiles (an Exocet [which did not explode] and the other
+still unidentified missile, possibly an AS-30 laser-guided missile) AWAY
+FROM one of their tankers.  If that is true, would the Iraqis have realized
+what happened? (Were any countermeasure devices included in the arms sales
+to the Iranis?)
+
+Reports persist (with an official denial) that computer systems on the Stark
+had not been working, and that they were waiting for spare parts.
+Investigation continues.
+
+------------------------------
+
+Date: Fri, 22 May 87 13:07:50 edt
+From: kludge@gitpyr (Scott Dorsey)
+To: RISKS@csl.sri.com
+Subject: Phalanx (RISKS 4.88)
+
+  >What does appear to be wrong is that there was only one, to cover the
+  >stern of the ship. The bow was not protected by a Phalanx system and
+  >that is where the (two?) Exocet missiles hit. 
+
+   The standard configuration on guided missile carriers (I regret to say
+that I have not seen a frigate with the things yet), is to have one port,
+one starboard, about 2/3 of the way from the stern.  This way, the bow
+is well protected.  The Phalanx is a very short-range system, which is to
+be used only if everything else fails and the long-range defenses are
+penetrated.  The system was not designed to be rapidly armed.  It is expected
+that the long-range defenses will be able to hold off fire until the
+Phalanx is available.
+
+  >... frigates are not really expected to provide their own air defense.
+  >And this one was operating under the assumption that Iraq aircraft were
+  >friendly, so it did not shoot down the aircraft when it could have.
+
+    If you shoot at friendly aircraft, they will cease to be friendly.
+If you don't shoot them, you have to trust them.  And sometimes trust is
+not always justified.  The risks involved here are not if you can trust
+your own systems, but if you can trust your allies' systems.
+
+Scott Dorsey   Kaptain_Kludge
+ICS Programming Lab (Where old terminals go to die),  Rich 110,
+    Georgia Institute of Technology, Box 36681, Atlanta, Georgia 30332
+    ...!{akgua,allegra,amd,hplabs,ihnp4,seismo,ut-ngp}!gatech!gitpyr!kludge
+
+     [Once again, you can't shoot down everything that flies near you.
+     But you can try to shoot down missiles.  One report in this morning's
+     paper noted that the Phalanx gets aout 8 out of 10...  PGN]
+
+------------------------------
+
+From: decvax!utzoo!henry@ucbvax.Berkeley.EDU
+Date: Sat, 23 May 87 22:18:25 edt
+To: ucbvax!CSL.SRI.COM!RISKS
+Subject: Re: Phalanx
+
+> If the defense weapons were not reliable enough to keep on all of the time...
+
+There are actually a couple of issues here.  One is the question of wear and
+tear on continuously-operating mechanical hardware (the Phalanx radar is
+mechanically scanned, I believe).  More significantly, though, *any* such
+defensive system has some small probability of shooting down a friendly
+aircraft.  Note that this problem is *not* restricted to automated systems!
+Experienced combat pilots tend to consider "friendly" gunners to be almost as
+big a threat as "hostile" ones, with good reason.  "Own goal" hits are common 
+in real fighting; there were several in the Falklands War, on both sides.
+
+One reason for having different levels of alert is simply to minimize the
+chances of shooting down the wrong thing at a time when there is little real
+danger.  The problem is particularly touchy when operating in a known war zone
+with the intent of remaining uninvolved.
+      				          Henry Spencer @ U of Toronto Zoology
+
+------------------------------
+
+Date: Fri, 22 May 87 11:26:20 PDT
+From: Eugene Miya <eugene@ames-nas.arpa>
+To: risks@csl.sri.com
+Subject: Computer Bill of Rights
+
+I recall 20 years ago (not that I was doing computers then) someone wrote a
+computer Bill of Rights (for people).  Could anyone send me a copy of that?
+If need be, I will make the document ftp'able on one of our machines here.
+
+--eugene miya, NASA Ames
+
+------------------------------
+
+To: RISKS@csl.sri.com
+Subject: Credit Information Access
+Date: 22 May 87 14:51:32 CDT (Fri)
+From: mcdchg!heiby@seismo.CSS.GOV
+
+The following appeared on page 48 of the May 18, 1987 issue of Insight
+magazine.  It seems relevant to many issues discussed recently.
+
+			Credit Report Access
+
+Car loans, mortgages and credit card applications are approved based on
+information found in an individual's credit history, but most consumers have
+never seen their computerized credit profile.  Now consumers can get the
+same easy access to their credit report that banks and other lenders have
+had for years.
+
+TRW Inc., one of the nation's largest credit reporting agencies with files
+on some 140 million people, is launching Credentials, the first credit and
+financial information service sold directly to consumers.  For an annual fee
+of $35, a member gets unlimited access to the credit report supplied to
+lenders, notification when any lender reads the file and a credit
+application that is kept on file and can be electronically sent to lenders
+with the member's consent.
+
+More than 250,000 became members last year during a pilot program in
+California.  The service is now expanding nationwide.
+
+"Credentials offers consumers greater control over their credit profiles
+by ensuring their accuracy." says Mel Wellerstein, a vice president at TRW.
+"Furthermore, with full knowledge of their credit history, consumers are
+less likely to be taken advantage of or be intimidated by lenders."
+
+Ron Heiby, heiby@mcdchg.UUCP	Moderator: comp.newprod & comp.unix
+Motorola Microcomputer Division (MCD), Schaumburg, IL
+
+------------------------------
+
+Date: Fri, 22 May 87 20:01 EST
+From: jlh%acorn@oak.lcs.mit.edu
+To: RISKS@CSL.SRI.COM
+Subject: Open meeting laws
+Reply-to: jlh%acorn@live-oak.lcs.mit.edu (Jonathan Handel)
+
+    From: parnas%QUCIS.BITNET@wiscvm.wisc.edu
+    Subject: Open meeting laws (RISKS 4.87)
+
+    Do open meeting laws prevent public representatives from
+    conversing in a bar or a park or at a theatre?  Do they
+    prevent telephone calls?  If not, why should they prevent
+    electronic mail conversations?         Dave
+
+I'm the chair of the Cambridge Human Rights Commission, a local agency that
+is covered by the Massachusetts open meeting law.  That law applies to
+deliberate meetings of a quorum of members for the purpose of taking actions, 
+or discussing actions that the board or commission might take.  Any such
+meetings must be public and announced in advance, minutes must be taken, etc.
+
+With such a law, a phone call or meeting in a bar is okay, so long as
+there's not a quorum present, or if the meeting was by chance, or serves a
+social function (rather than the discussion of business).
+
+On the other hand, a computer conferencing system or e-mail, like a
+conference telephone call or meeting in a bar, is not okay if used for
+discussions and negotiations among the members of the commission or board,
+at least not if a quorum of members participate.  So the legal advice given
+by the Gresham City Attorney seems sound to me, assuming the Oregon law is
+similar to ours.
+
+Roughly speaking, it might be okay to use e-mail or computer conferencing
+the way you'd use a postal (USPS) mailing list:  to send out information
+unidirectionally.  But using it for two-way, back-and-forth interaction is
+using it as a substitute for a meeting, and that's precisely what's
+disallowed, because the public doesn't have access.  (Even if the computer
+system were open to the public, you'd be on shaky ground, because most
+people don't own modems or know how to use e-mail.  They'd have as much
+"access" as if the meeting were held a thousand miles away.)
+
+From a techno standpoint, that's too bad; computer conferencing has some
+advantages over meetings (among them, potentially, the existence of a
+written record).  But it's good public policy.  As it is, people have
+difficulty understanding and participating in their government; apathy,
+bureaucracy, bad public transportation, and the grinding difficulty of
+9-to-5 existence are among the culprits.  Let's not add computers to the
+list until we have systems that are truly accessible to lay people from all
+walks of life.
+                                -Jonathan Handel
+
+PS:  I'm not an attorney, so my reasoning is certainly far from definitive.
+Also, I don't have a copy of the Mass. law in front of me, so this is based
+on my best recollections.  And of course, open meeting laws vary by state,
+so the issues will vary by state as well.
+
+                 [Bruce Baker wondered how I could have avoided making a pun
+                 on Gresham's Law in RISKS-4.88.  I thought this issue was
+                 more like Gresham Slaw, carrying Coles to New Facile.  In
+                 this case, the bad votes drive out the good?  PGN]
+
+------------------------------
+
+Date: 22 MAY 1987 12:52:33 EST
+From: <LEICHTER-JERRY@YALE.ARPA>
+To: risks@csl.sri.com
+Subject:  Privacy and Email - The Law Takes Notice
+
+(Forwarded (ultimately) from a UDEL NEWS bboard.)           Jerry
+ 
+	This is a copy of a letter published in MIT Tech Talk. Anyone who
+did not read that memo should look read it. Be sure to note that
+operators of electronic communication systems now have legal
+responsibilities for the privacy of data. 
+
+
+MEMORANDUM
+
+To:         The MIT Community
+From:       James D.Bruce, Vice President for Information Systems
+Re:         The Electronic Communications Privacy Act
+
+	The Electronic Communications Privacy Act of 1986 was enacted by
+the United States Congress in October of last year to protect the
+privacy of users of wire and electronic communications.
+
+	Legal counsel has advised MIT that its computer network and the
+files stored on its computers are covered by the law's provisions.
+Specifically, individuals who access electronic files without
+appropriate authorization could find themselves subject to criminal
+penalties under this new law.
+
+	At this time, we can only make broad generalizations about the
+impact of the Act on MIT's computing environment.  Its actual scope
+will develop as federal actions are brought against individuals who
+are charged with inappropriate access to electronic mail and other
+electronic files.
+
+	It is clear, however, that under the Act, an individual who,
+without authorization, accesses an electronic mail queue is liable and
+may be subject to a fine of $5,000 and up to six months in prison, if
+charged and convicted.  Penalties are higher if the objective is
+malicious destruction or damage of information, or private gain.
+
+	The law also bars unauthorized disclosure of information within an
+electronic mail system by the provider of the service.  This bars MIT
+(and other providers) from disclosing information from an individual's
+electronic data files without authorization from the individual.
+
+	MIT students and staff should be aware that it is against
+Institute policy and federal law to access the private files of others
+without authorization.  MIT employees should also note that they are
+personally liable under the Act if they exceed their authorization to
+access electronic files.
+
+------------------------------
+
+Date: Fri, 22 May 87 10:33:05 edt
+From: aad#@andrew.cmu.edu (Anthony A. Datri)
+To: risks@csl.sri.com
+Subject: rhosts
+
+I believe that a year or two ago someone did indeed use rhosts files to cause
+a lot of trouble at berkeley.  Here at CMU we're in the middle of developing
+a terribly trendy distributed system of sun2/3's, uvaxes, and ibm rt's (ugh).
+The problems of console access have been causing major headaches, to the
+point where there now exists an authentication scheme that I admit that I
+don't understand.   
+                        anthony a datri, carnegie-mellon univer$ity
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

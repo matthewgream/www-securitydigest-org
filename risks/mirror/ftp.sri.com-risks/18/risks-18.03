@@ -1,0 +1,650 @@
+Subject: RISKS DIGEST 18.03
+
+RISKS-LIST: Risks-Forum Digest  Wednesday 10 April 1996  Volume 18 : Issue 03
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Intel shutdown by power company software bug (Bruce E. Wampler)
+Daylight Savings Time problem (Bruce E. Wampler)
+Re: De facto Daylight Savings (Dik T. Winter)
+Don't go it alone -- the Risks of poor design decisions (Russ Broomell)
+Warning! My [...] let me [dangerous/confidence-breaking act] (Rob Bailey)
+Signing binaries (Bennet Yee)
+Re: Jury Duty (D.C. Sessions)
+Secure authentication falling back to insecure (Tim Kolar)
+Re: Notes on e-mail: Use diaeresis (Jim Rees)
+Re: Microsoft Exchange helpfully misdirects e-mail (Anthony Atkielski, 
+    Steve Sapovits)
+COMPASS '96 Advance Program (Connie Heitmeyer)
+The Second USENIX Workshop on Electronic Commerce: cfp (Bennet Yee)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Wed, 10 Apr 1996 11:50:05 -0600 (MDT)
+From: wampler@cs.unm.edu
+Subject: Intel shutdown by power company software bug
+
+>From April 9, 1996 Albuquerque Tribune:
+
+  Computer-chip-manufacturing operations at Intel Corp.'s Rio Rancho plant
+were back to normal today after a five-hour power failure, the company said.
+Intel Corp. spokesman Richard Draper said today that Monday's power failure,
+which ruined an undisclosed number of chips, including some of the plant's
+Pentium microprocessors, was caused by a malfunction of Public Service
+Company of New Mexico software.  "For business reasons, we're not going to
+provide exact numbers as to the product loss from the shutdown," Draper
+said. "However, the power outage won't have significant impact on Intel or
+its earnings. It's expensive, but again, it's not a significant impact on
+our bottom line."  Draper said the power failure occurred about 9 a.m.
+Monday; full power was restored about 2 p.m. Monday.
+  Intel evacuated about 600 workers during the outage because of dark and
+potentially unsafe working conditions.  "The PNM people told us it was a
+glitch in a switching system," Draper said. "The original glitch lasted a
+few seconds, but we waited to start operations because we were uncertain
+about what happened and wanted to make sure we could restore full power."
+Draper said PNM's apparent software error is believed to have caused the
+wrong circuit breaker to open at a substation, incapacitating three of six
+transformers.
+ Karin Stangl, a Public Service Company of New Mexico spokeswoman, said
+power was restored after about a minute, and she could not explain the
+longer problem at Intel.  Stangl said PNM and Intel are investigating.
+
+  [I find Intel's conservative response, both in evacuation, and
+  waiting to be sure the power was back, interesting. 
+  Maybe the software was running on a non-Intel processor trying
+  to get even with the Pentiums...  BEW-are]
+
+Bruce E. Wampler, Ph.D., Adjunct Professor, Department of Computer Science,
+University of New Mexico   wampler@cs.unm.edu  http://www.cs.unm.edu/~wampler
+
+------------------------------
+
+Date: Wed, 10 Apr 1996 11:31:07 -0600 (MDT)
+From: wampler@cs.unm.edu
+Subject: Daylight Savings Time problem
+
+I was hit by a daylight savings time problem Monday, the day after the time
+changed here. My machine is running four different operating systems:
+Windows 95, Windows NT, OS/2, and Linux. Since I'd doing cross platform
+development, I usually boot at least two different OS's a day.
+
+Monday, I booted Windows 95 first. At startup, I was greeted by a polite
+messages asking if the time should be changed to DST.  Fine. Time changed
+and correct.
+
+Later in the day, after booting both NT and Linux, I noticed the time was
+yet another hour ahead. Either NT or Linux (and I suspect NT, but can't
+confirm that) had also, but invisibly, changed to DST.
+
+After some thought, and a class discussion in the software engineering class
+I teach, I've concluded this is not an easy problem to solve. In this case,
+there were two basic contributing factors I can figure out. First, PCs keep
+the internal clock in local time. Not a good idea -- it should be Universal
+Time -- but reality. The problem is then that NT or Linux made the assumption
+it was the only OS on the machine, and was free to update the time. Unlike
+Win95, which could be polite about the change because it is normally a
+single user system, NT and Linux both could reasonably assume they don't
+normally get shut down each evening, and thus the silent time update (I'm
+guessing). It would be unreasonable to expect confirmation from an operator.
+
+In this case, however, the time update did come at boot time. It seems to me
+a better update policy for NT/Linux would be to silently update the time if
+the change happened while running, and require a confirmation if it happens
+at boot time. Not perfect, but better. I tried OS/2, also, and it just
+ignored the time change.
+
+Bruce E. Wampler, Ph.D., Adjunct Professor, Department of Computer Science,
+University of New Mexico   wampler@cs.unm.edu  http://www.cs.unm.edu/~wampler
+
+------------------------------
+
+Date: Tue, 9 Apr 1996 22:08:02 GMT
+From: Dik.Winter@cwi.nl (Dik T. Winter)
+Subject: Re: De facto Daylight Savings
+
+ > At http://www.timing.se/Daylight.html there is a brief discussion
+ > of the rules for Daylight Savings Time changeovers for central Europe
+ > and the UK. At the end of the page it says:
+...
+ > > The rule is a "de facto standard," not a law.
+...
+ > With all of our scrambling about to deal with the Year 2000 problem,
+ > shouldn't we be just as concerned with this inconsistency that arises
+ > yearly (especially if there are no 'hard and fast' laws/standards to dictate
+ > DST changeovers)?
+
+But there *are* 'hard and fast' laws that dictate DST changeovers.  There is
+however *not* a law that dictates this far into the future but only for a
+few coming years.  (Note that these laws, EU directives, are made up far in
+advance.  It was already known a few years ago that the EU would change the
+rule this year.)  It appears not to be very advisable to cast changeover
+dates in concrete.  It is up to the software to deal with this flexibility
+and Andrew Olson's timezone package deals very well with it.  (And some
+software does not handle it well at all.  Most annoying was a bug in SGI's
+software which thought the last Sunday in September last year was October 1,
+and so switched out of DST one week late.  Exactly the same bug stroke again
+this time when the software thought that the last Sunday of March was March
+24, and so switched into DST one week early.  Surprising that the bug was
+not fixed in that half year.)
+
+dik t. winter, cwi, kruislaan 413, 1098 sj  amsterdam, nederland, +31205924098
+home: bovenover 215, 1025 jn  amsterdam, nederland; http://www.cwi.nl/~dik/
+
+------------------------------
+
+Date: Wed, 10 Apr 96 15:21 EST
+From: "-Broomell, Russ" <MARKETING/MARKETING/RUSS%Konica_Imaging@mcimail.com>
+Subject: Don't go it alone -- the Risks of poor design decisions
+
+     I have read posts recently about several risks that all boil down to
+one thing -- the Risk of making poor information system design decisions.
+ Poor security systems, employees selling data, even the CDA are all at
+least partly the result of poor technical decisions.  Unfortunately, this
+often happens in low-bidder-gets-the-job situations.
+     Konica, the company I work for, has come up with a partial solution to
+this problem.  We formed a group called the Information Partners, a
+cross-functional group of technical people, managers, and end users from
+across our company.  This group steers our corporate information and
+technology resources.  We serve as an interface between programmers, users
+and upper management, and frequently call in outside help to get the best
+systems at reasonable prices.
+
+NOTE: I am not representing Konica as good, bad or otherwise, just stating
+how one group met a Risk.
+
+     Our solution has its own Risks, but we help to highlight the importance
+of technology in a business environment.  This usually gets us away from the
+lowest-bidder reasoning.  The key to success seems to lie in not getting
+bogged down in the committee mentality, but rather contributing where we can
+add something.  Is a committee the answer to every problem?  Certainly not,
+but where computers and systems are concerned, more input can mean a better
+result.
+
+------------------------------
+
+Date: Wed, 10 Apr 1996 02:18:50 -0400
+From: wm8s@citynet.net
+Subject: Warning! My [...] let me [dangerous/confidence-breaking act]
+
+I've seen hundreds of stories here and elsewhere about software, hardware, 
+hybrid and other systems that get blamed for dangerous actions, actions which 
+compromise security or confidential information, etc., and then always end 
+with the standard "risks are obvious" caveat. So I though I'd relate a 
+description of a tremendous danger I just discovered right here in my own 
+residential neighborhood.
+
+There's a partly computer-controlled / partly operator-controlled mechanical 
+system near my house that must weight a couple of thousand pounds and has what 
+I consider to be an unacceptably dangerous user interface.
+
+Today, I noticed that the operator had the ability to operate the system in a 
+manner that was in violation of numerous laws -- local, state and federal -- 
+without any type of lockout mechanism built in, that there were essentially NO 
+facets of the user interface that were designed to preclude (or even hamper) 
+the operator from exceeding the system's absolute maximum operating parameters 
+(leading quickly to a complete, catastrophic and dangerous failure of the 
+system), and that the system could be easily operated in a manner which very 
+seriously jeopardized the safety of the operator and anyone else within a mile 
+or two (easily fatally), all without even the slightest intervention by the 
+control system's software or hardware.
+
+Of course... it's my car. My point is that, yeh... your software can make it 
+*easier* for you to send a confidential memo to your lover and dirty pictures 
+to your boss, or a Man-Machine Interface can make it *easier* to land a plane 
+down with the landing gear up, or an engineer can crash a locomotive into the 
+station *quicker* because the signals weren't triple-redundant and both 
+warning lights had burned out...
+
+But *YOU'RE* the one that didn't carefully review the address list on that 
+memo before you clicked [SEND], and *YOU'RE* the one that didn't religiously 
+observe the standard landing checklist, and *YOU'RE* the one that should have 
+realized that you shouldn't be going 65 MPH 100 yards from Grand Central.
+
+I'm not trying to defend my profession; I've cursed up and down many a poorly 
+designed system. But I wonder: are we trying to build better MMI's or just 
+encouraging dumber operators to distance themselves from responsibility for 
+their own actions?
+
+Rob Bailey, Bailey Computer Systems  Kanawha / Charleston
+WM8S (wm8s@citynet.net) Radio Amateur Civil Emergency Service
+
+------------------------------
+
+Date: Sat, 6 Apr 1996 14:58:35 -0800
+From: Bennet Yee <bsy@Play.UCSD.Edu>
+Subject: Signing binaries (Palme, RISKS-17.95)
+
+In RISKS-17.95, Jacob Palme suggested the use of peer-review to filter out
+malicious software.  While potentially useful, there are a wide variety of
+attacks such a strategy would likely miss.  For example, suppose a virus /
+alternative-model-Java applet author specifically targetted machines which
+were in a particular domain.  Such a form of malicious software is much less
+likely to be detected by however large a user pool.  (And a virus targetting
+a single company has been found ``in the wild'' before, I believe.)  It is
+risky to believe that our past experiences with malicious software is a
+completely accurate predictor of the future; riskier still not to consider
+the entire collective past experience.
+
+The idea of signing software is not new.  Bellcore's Betsi system uses PGP
+to have the author sign their software, and the idea has certainly been
+bounced around the security community before that was implemented.  The
+effect of CAPI signatures is to make governmental agencies happy so that the
+API may be exported.  I doubt that Microsoft cares very much whether the
+cryptographic service provider code written by third parties are bug free.
+In the CAPI signing model, it is a central authority doing the signing.
+Certainly there might be liability issues if MS -- or Sun/Netscape/... for
+centrally signed Java applets -- says anything about having looked
+cross-eyed at the third party code (risks of deep pockets?).
+
+With author-signed code, the picture wouldn't be entirely rosy either.
+Given the number of potential individual coders on the 'net, the
+process of knowing who writes good code and who writes buggy code (and
+potentially cause security problems) is rather daunting.
+
+------------------------------
+
+Date: Tue, 02 Apr 1996 12:18:08 -0800
+From: "D.C. Sessions" <dc.sessions@tempe.vlsi.com>
+Subject: Re: Jury Duty
+
+Governments aren't the only organizations that make stupid database-key
+decisions.  Our prescription-drug plan has limitations on how much of a
+given drug a patient can get at a time -- generally one month's supply.  A
+reasonable restriction, all in all, and especially so with Federally
+controlled substances such as Ritalin and Dexedrine.
+
+The trouble is, their computer systems check this by keeping a history of
+each patient's prescription fills.  The primary database key is the plan
+number (basically the primary beneficiary's SSN) and the secondary key, to
+distinguish family members, is the individual's birthdate.  (Anybody see the
+problem here?)
+
+We have identical twins.  Both are on similar long-term medications for
+asthma and ADD, which routinely sends the pharmacy nuts because they can't
+get approval for the second set.  (A related problem would be if both
+parents were covered, thus having different primary keys.  Why do I suspect
+that THAT problem was resolved early?)
+
+The RISK here is in programming for the 95% case without any provision for
+not-all-that-rare exceptions.
+
+D. C. Sessions  dc.sessions@tempe.vlsi.com
+
+------------------------------
+
+Date: Wed, 10 Apr 1996 09:27:55 -0700 (PDT)
+From: Tim Kolar <tkolar@cisco.com>
+Subject: Secure authentication falling back to insecure (RISKS-18.02)
+
+In RISKS-18.02, eggenste@noether.informatik.uni-dortmund.de wrote to explain
+security problems with Compuserve's new client.  One of the major ones was
+that, although they had switched the primary authentication to do a
+challenge handshake, the client would still happily accept a request for
+plaintext authentication.
+
+This actually turns out to be a relatively common problem with PPP client
+implementations.  There are a number of public domain and commercial clients
+that will accept a PAP negotiation even if configured only for CHAP.
+Security nightmare.
+
+It seems to me that this mistake flows very naturally out of the PPP
+specification as a whole.  A good PPP implementation will attempt to
+negotiate just about anything -- Ask for X, if they refuse, ask for Y, if
+they refuse ask for Z -- and that same implementation will be as generous as
+possible in accepting options -- Sorry, we don't do X.  You want to do Y?
+Okay.
+
+This mindset is great for interoperability, but it's a very bad failing when
+it comes to security.
+
+-Tim Kolar  cisco Systems
+
+------------------------------
+
+Date: Wed, 10 Apr 1996 19:13:50 -0400
+From: Jim Rees <rees@umich.edu>
+Subject: Re: Notes on e-mail: Use diaeresis (Pierce, RISKS-18.02)
+
+ > Though many machines on Usenet are eight-bit clean, NNTP is defined to be
+ > seven-bit.  There's no guarantee that the use of raw characters in
+ > ISO-Latin-1 will come out unharmed on the other end.
+
+NNTP says nothing about character set in the text of an article.  In fact,
+it says, "No attempt shall be made by the server to filter characters, fold
+or limit lines, or otherwise process incoming text" [rfc977].  I take this
+to mean it is intended to be 8-bit clean when used over an 8-bit clean
+transport, such as TCP.
+
+USENET messages are not explicitly limited to 7-bit, but "all USENET news
+articles must be formatted as valid ARPANET mail messages, according to the
+ARPANET standard RFC 822" [rfc850].  Read literally, this excludes all
+non-encoded non-ascii text.
+
+Current practice varies from one newsgroup to the next, and even within
+newsgroups.  Some use 8-bit characters, others use some sort of 7-bit
+encoding, and there is usually nothing in the headers or the body to
+indicate what the encoding and character set are.
+
+------------------------------
+
+Date: 10 Apr 96 13:35:01 EDT
+From: Anthony Atkielski <73064.2766@CompuServe.COM>
+Subject: Re: Microsoft Exchange helpfully misdirects e-mail (Hoffman, R-18.02)
+
+In RISKS-18.02, John Hoffman (<john@netweave.com>) describes risks that he
+felt were associated with the methods used by the Microsoft Exchange e-mail
+client to resolve partial addresses in outgoing messages.
+
+As it happens, there are two features of Exchange that can help to avoid or
+eliminate these risks: the Check Names feature, and an option in the client
+that controls the query order for address providers.
+
+The first feature (activated by a toolbar button or Alt-K on the keyboard)
+resolves all partial addresses in a message header before the message is
+actually sent; the user may then verify that the selections made by Exchange
+actually correspond to the recipients he has in mind.
+
+The second feature (found on the Tools | Options | Addressing property
+sheet) lets the user change the order in which address providers are
+queried.  By placing the Global Address List ahead of the Personal Address
+Book (the opposite of the default) in this way, Exchange can be forced to
+look for a match within the user's organization before checking any
+(possibly external) addresses in his Personal Address Book.  (As John has
+correctly surmised, Exchange stops at the first address book that contains
+one or more matches for a partial address.)
+
+I use both of these features, and I rarely encounter any problems with
+incorrect resolution of ambiguous partial addresses.  If I have any doubt, I
+do a quick double-click on the resolved name in order to verify that it is
+really pointing to the recipient I have in mind.  I do try to use display
+names in my Personal Address Book that do not match anything in the Global
+Address List, so that I can spot incorrect resolution of an address at a
+glance (e.g., the display name for my own CompuServe address in my Personal
+Address Book is slightly different from the display name of my internal
+address on the Global Address List).
+
+Anthony Atkielski
+
+------------------------------
+
+Date: Wed, 10 Apr 1996 14:28:07 -0400 (EDT)
+From: Steve Sapovits <steves@telebase.com>
+Subject: Re: Microsoft Exchange helpfully misdirects e-mail (Hoffman, R-18.02)
+
+I haven't used this particular mailer, but maybe part of the risk is in the
+design of the mailer.  The free UNIX mailer I use allows a long name to be
+assigned to an alias (e.g., the person's real full name).  When I enter an
+alias, that name immediately appears on the "To:" line in front of me.
+That's saved me from embarrassment more than once.  Being extra paranoid, I
+almost always also use a feature of the mailer that lets me see all the
+headers before I send a message (and change them if I've goofed).  Silent
+mapping of aliases is not something I would want.
+
+Steve Sapovits  Telebase Systems steves@telebase.com  http://www.telebase.com
+
+------------------------------
+
+Date: Tue, 9 Apr 1996 18:00:15 -0400 (EDT)
+From: heitmeye@itd.nrl.navy.mil (Connie Heitmeyer)
+Subject: COMPASS '96 Advance Program
+
+                             COMPASS '96
+                 11th Annual Conference on Computer Assurance
+      National Institute of Standards and Technology, Gaithersburg, MD
+                           June 17-21, 1996
+                  ADVANCE PROGRAM [abridged for RISKS]
+
+Monday, June 17 (Tutorials)
+
+Safety Case Construction and Management
+  by John A. McDermid (University of York, UK) -- FULL DAY
+Automatic Formal Analysis of Cryptographic Protocols
+  by Stephen Brackin (ARCA Systems, Inc., USA) -- HALF DAY
+Impact and Design of the Human-Machine Interface
+  by Michael Harrison (University of York, UK) --  HALF DAY)
+
+
+Tuesday, June 18  (Tutorials)
+
+ACL2, An Extended Reimplemented Version of Nqthm Logic
+  Theorem Prover by J Strother Moore and William D. Young
+  (Computational Logic, Inc., USA) -- FULL DAY
+A Framework for Reasoning About Assurance
+  by Jeffrey R. Williams (ARCA Systems, Inc.,USA) -- HALF DAY
+
+
+Wednesday, June 19 
+
+8:45 am--Welcome and Keynote
+Welcoming Remarks:  Karen Ferraiolo, General Chair
+                    Stuart Faulk and Connie Heitmeyer, Program Chairs
+
+Keynote Address I
+
+"The FAST Process (Family-Oriented Abstraction, Specification and 
+ Translation)--A Study in Successful Technology Transfer"
+ David Weiss  (Lucent Technologies, Bell Laboratories, USA)
+
+10am--Formal Specification and Analysis I
+
+"Table Transformation Tools: Why and How"
+ H. Shen, J. Zucker, D.L. Parnas (McMaster University, Canada)
+
+"Simulation vs. Verification: Getting the Best of Both Worlds"
+ Aloysius K. Mok and Douglas Stuart (University of Texas, USA)
+
+11:30 am--Applying Mechanical Theorem Provers
+
+"ACL2: An Industrial Strength Version of Nqthm"
+ Matt Kaufmann and J Strother Moore (Computational Logic, Inc., USA)
+
+"Comparing Verification Systems: Interactive Consistency in ACL2" 
+ William D. Young (Computational Logic, Inc., USA)
+
+"Mechanical Verification of Object Code Against Source Code"
+ Sakthi Subramanian and Jeffery V. Cook (Trusted Information Systems, USA)
+
+2 pm--Practical Applications of Formal Methods
+
+"Industrial Usage of Formal Development Methods:
+ The VSE-Tool Applied in Pilot Projects"
+ Frank Koob, Markus Ullmann, and Stefan Wittmann 
+ (Bundesamt fuer Sicherheit in der Informationstechnik, Germany)
+
+"Specifying, Validating and Testing a Semaphore System 
+ in the TRIO Environment" 
+ Angelo Gargantini, Lilia Liberati, Angelo Morzenti (Politecnico
+ di Milano), and Cristiano Zacchetti (ATM-Azienda Trasporti Municipale, Italy)
+
+"Feasibility of Model Checking Software Requirements"
+ Tirumale Sreemani and Joanne M. Atlee (University of Waterloo, Canada)
+
+4 pm--Panel: From Theory to Practice---Bridging the Gap
+             Chair -- John Rushby (SRI Intern., USA)
+
+Thursday, June 20
+
+9 am--Keynote Talk
+
+"Ontario Hydro's Experience with New Methods for Engineering Safety-Critical 
+ Software", Mike Viola (Ontario Hydro, Canada)
+
+10am--Program Verification
+
+"Developing a Translator from C Programs to Data Flow
+ Graphs Using RAISE"
+ Anne Elizabeth Haxthausen (Technical University of Denmark, Denmark)
+
+"Verification of Consistency between Concurrent Program
+ Designs and their Requirements"
+ Marsha Chechik and John Gannon (University of Maryland, USA)
+
+11:30 am--Formal Specification and Verification II
+
+"Verifying SOS Specifications" 
+ Bard Bloom, Allan Cheng, and Ashvin Dsouza (Cornell University)
+
+"A Correctness Proof of a Cache Coherence Protocol"
+ Amy Felty and Frank Stomp (Bell Laboratories, USA)
+
+"The Specification of an Asynchronous Router"
+ Faron Moller (Kungl Tekniska Hogskolan, Sweden)
+
+2 pm--Software Safety
+
+"Safety Analysis Tools for Requirements Specifications"
+Vivek Ratan, Kurt Partridge, Jon Reese, and Nancy Leveson (Univ. of Wash., USA)
+
+"Impact and the Design of the Human-Machine Interface"
+A. M. Dearden and M. D. Harrison (University of York, UK)
+
+"Object-Oriented - No Panacea for Safety"
+Reginald Meeson (Institute for Defense Analyses, USA)
+
+4 pm--Panel on High Assurance Computing
+      Chair -- Richard Gerber (University of Maryland, USA)
+
+6:30  Banquet
+      Guest Speaker:  Nancy Leveson (University of Washington, USA)
+
+
+Friday, June 21
+
+9 am--Computer Security
+
+"An Empirical Model of the Security Intrusion Process"
+ Erland Jonsson and Tomas Olovsson (Chalmers University of Technology, Sweden)
+
+"Increasing Assurance Through Literate Programming Techniques"
+ Andrew Moore (Naval Research Laboratory) and 
+   Charles Payne (Secure Computing Corp., USA)
+
+"A Framework for Composition"
+ Todd Fine (Secure Computing Corporation)
+
+"Composition of a secure system based on trusted components"
+ Ulf Lindqvist, Tomas Olovsson, Erland Jonsson 
+   (Chalmers University of Technology, Sweden)
+
+11:30 am--Testing
+
+"Detecting Equivalent Mutants and the Possible Path Problem"
+A. Jefferson Offut (George Mason University) and Jie Pan (PRC, Inc., USA)
+
+"T-VEC: A Tool for Developing Critical Systems"
+Mark R. Blackburn (Software Productivity Consortium) and 
+   Robert D. Busser (Motorola, USA)
+
+"Defining an Adaptive Software Security Metric From a Dynamic 
+ Software Fault -Tolerance Measure"
+J. Voas, A. Ghosh, G. McGraw, F. Charron (Reliable Software Technologies) and 
+   K. Miller (University of Illinois Springfield, USA)
+
+1 pm--Conference ends [Breaks, lunches omitted above.  PGN]
+
+  TOOLS FAIR
+  8 am--5:30 pm on Wed. and Thurs., 8 am--11:30 pm on Fri.
+  See demonstrations of NRL's requirements toolset SCR*,
+  CLInc's ACL2 theorem prover, two model checkers, and more...
+
+  FOR MORE INFORMATION, VIST OUR WEB SITE at  
+  http://www.itd.nrl.navy.mil/conf/compass96  or contact
+  Karen Ferraiolo, General Chair (ferraiolo@md.arca.com)
+  Stuart Faulk, Program Cochair (faulk@itd.nrl.navy.mil)
+  Connie Heitmeyer, Program Cochair (heitmeyer@itd.nrl.navy.mil)
+
+------------------------------
+
+Date: Sat, 6 Apr 1996 14:58:35 -0800
+From: Bennet Yee <bsy@Play.UCSD.Edu>
+Subject: The Second USENIX Workshop on Electronic Commerce: cfp
+
+See <URL:http://www.usenix.org/ec.html> for full details.
+Or you can send e-mail to our mailserver at info@usenix.org. Your message
+should contain the line: send catalog.  A catalog will be returned to you.
+
+Announcement and Call for Papers [abridged for RISKS]
+
+The Second USENIX Workshop on Electronic Commerce
+November 18-20, 1996, Claremont Hotel & Resort, Oakland, CA
+
+Sponsored by the USENIX Association
+Co-Sponsored by Fisher Center for Information Technology Management, UC
+Berkeley, and the School of Information Management and Systems, UC Berkeley
+Extended abstracts due: July 16, 1996
+
+The Second USENIX Workshop on Electronic Commerce will provide a major
+opportunity for researchers, experimenters, and practitioners in this
+rapidly self-defining field to exchange ideas and present results of their
+work. This meeting will set the technical agenda for work in the area of
+Electronic Commerce by examining urgent questions, discovering directions in
+which answers might be pursued, and revealing cross-connections that
+otherwise might go unnoticed.
+
+Doug Tygar (program chair)
+Computer Science Dept, CMU
+5000 Forbes Ave
+Pittsburgh, PA 15213-3891
+tygar@cs.cmu.edu
+Fax: +1-412-268-5576
+
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.03 
+************************

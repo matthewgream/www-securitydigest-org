@@ -1,0 +1,385 @@
+ 
+ 
+VIRUS-L Digest             Tuesday, 30 May 1989        Volume 2 : Issue 121
+ 
+Today's Topics:
+boot sector vaccine (PC)
+RE: blown floppy disk (PC)
+New virus? (PC)
+Virus writing - crime?
+Comp.virus Submission
+Potential nVIR infection (Virus-L v2 i120) (Mac)
+Macintosh Virus forum now on FIDOnet...
+Summary of problem posted to VALERT-L (5/19) (Mac)
+Virus Maker (PC)
+New Virus for the PC
+Stop a BOOT virus at BOOT time (PC)
+ 
+[Ed. The moderator is in.  Anyone out there considering a vacation -
+consider the Virgin Islands (imho).]
+ 
+---------------------------------------------------------------------------
+ 
+Date:    Fri, 19 May 89 16:16:01 CDT
+From:    "Rich Winkel    UMC Math Department" <MATHRICH@UMCVMB.BITNET>
+Subject: boot sector vaccine (PC)
+ 
+I liked Mr. Fragakis' idea of filling memory with CLI and HLT
+instructions, but the offsets in the boot sector which he mentioned
+seem to be occupied by active code on my DOS 3.3 disk, so I wrote my
+own patch for 3.3.  I used a different method though: when the boot
+sector gets control, the only other active code in the machine should
+be ROM code, so ALL the active interrupt vectors should be pointing
+into ROM.  (As far as I can see, INTs are the only way for a boot
+virus to get periodic, transparent control of the machine, right?)  So
+what the patch does is scan interrupt vectors in the range 0H to 1CH,
+and 40H, which point to addresses between 0 and C8000.  (If such a
+vector exists when the boot sector gets control, the machine is
+infected) If it finds such a vector, it prints the message VIRUS
+ALERT!! and halts the machine.  I had to rearrange some strings in the
+sector to get things to fit.  This has been run on two true blue IBM
+XT's and seems to work fine.  I'd be interested in reports from other
+machines, particularly the IBM AT, where the bios might set up the
+vector table differently at bootup.  Run the following batch file with
+a dos 3.3 boot disk in drive A:
+- --------------------
+rem This will patch the boot sector of a dos 3.3 disk to detect
+rem interrupt redirection for interrupts 0H through 1CH, and 40H.
+pause Be sure you have an IBM DOS 3.3 bootable diskette in A: and ...
+ 
+debug < %0.bat >nul
+goto end
+ 
+L 7C00 0 0 1
+A 7C00
+JMP 7DC0                ; JUMP TO VECTOR CHECK ROUTINE FIRST
+ 
+A 7C6C
+JB 7CC2                 ; REDIRECT 'BOOT FAILURE' TO 'DISK BOOT ERR'
+ 
+A 7D0D
+JB 7CC2                 ; DITTO
+ 
+A 7CB5
+JMP 7CDA                ; BYPASS CHECK FOR 'IBMDOS COM'
+ 
+A 7CAB
+MOV CX,6                ; REDUCE SCAN FROM 'IBMBIO COM' TO 'IBMBIO'
+ 
+A 7CAE
+MOV SI,7DBA             ; ADJUST POINTER TO NEW POSITION OF 'IBMBIO'
+ 
+E 7D77 'Disk boot error' D A 'Replace and strike a key when ready' 0
+E 7DAC 'VIRUS ALERT!!' 0 'IBMBIO'
+A 7DC0
+CLD                     ; SCAN FORWARD
+XOR SI,SI
+MOV DS,SI               ; DS:SI = START OF VECTOR TABLE
+MOV CX,1D               ; CHECK FIRST 1DH VECTORS (0H THROUGH 1CH)
+LODSW                   ; GET OFFSET
+MOV BX,AX               ; SAVE IT IN BX
+LODSW                   ; GET SEGMENT INTO AX
+OR BX,AX                ; ARE THEY BOTH 0?
+JZ 7DD5                 ; IF 0, GET NEXT ONE
+CMP AX,C800             ; CHECK SEGMENT, IS IT <C800?
+JB 7DEA                 ; IF <C800, IT'S BAD. PRINT MSG & LOCK UP
+LOOP 7DC8               ; BACK TO FIRST 'LODSW'
+MOV SI,100              ; POINT TO INT 40H
+LODSW                   ; GET OFFSET
+MOV BX,AX               ; SAVE IT IN BX
+LODSW                   ; GET SEGMENT INTO AX
+OR BX,AX                ; BOTH 0?
+JZ 7DE7                 ; IF 0, ALL'S WELL, CONTINUE WITH BOOT
+CMP AX,C800             ; NOT 0, IS SEGMENT <C800?
+JB 7DEA                 ; YES, IT'S BAD. PRINT MSG & LOCK UP
+JMP 7C36                ; ALL'S WELL, CONTINUE WITH BOOT
+MOV SI,7DAC             ; POINT TO 'VIRUS ALERT!!' WARNING AND
+CALL 7D32               ; PRINT IT OUT
+CLI                     ; HANG IT UP!
+HLT
+ 
+W 7C00 0 0 1
+Q
+ 
+:end
+- -----------------------------------
+Rich
+ 
+------------------------------
+ 
+Date:    Sat, 20 May 1989 13:54:11  +0200
+From:    "UBMJS2::RMEYER"  <U0018@DGOGWDG5.BITNET>
+Subject: RE: blown floppy disk (PC)
+ 
+>     I have a 5-1/4" floppy disk under examination for possible virus
+>damage, and have run into an interesting problem. The disk acts like
+>it is totally unformatted; neither CHKDSK, RECOVER, the Norton stuff,
+>or anything else seems to be able to access it. The result of this is
+>that I cannot see anything about what has happened to the disk. What I
+>need is a good pd or shareware sector editor that can get at the
+>absolute sectors w/o trying to read the directory (or else a
+>reasonably cheap commercial one), although I am not sure that will do
+>any good, since I cannot write to the disk (no, it is not write
+>protected) either.
+ 
+The same happens to some of our students every year. If this happens
+here, it's no virus! The students don't listen to us, if we tell them
+how to use floppy disks. Everytime someone comes to me with an
+unreadable floppy, I look (with my eyes) at it and find a fingerprint
+of the user on the floppy.  Maybe you have the same problem
+ 
+Reinhold Meyer
+Abt. Forstliche Biometrie u. Informatik
+Buesgenweg 5
+D-3400 Goettingen
+BITNET: U0018@DGOGWDG5
+ 
+------------------------------
+ 
+Date:    Sat, 20 May 89 18:00:28 +0300
+From:    "Yuval Tal (972)-8-474592" <NYYUVAL@WEIZMANN.BITNET>
+Subject: New virus? (PC)
+ 
+I have worked with a program that uses the graphic mode of my EGA.
+After some time the picture started to move to all the directions...
+Did anyone have heared about this virus (if it is one...)?
+ 
+Yuval
+ 
+- -------------------------------------------------------------------------
+Yuval Tal                             Home phone: +972-8-474592
+The Weizmann Institute Of Science
+Rehovot, Israel                       "Only fools are quoted" - Anonymous
+- -------------------------------------------------------------------------
+Acknowledge-To: <NYYUVAL@WEIZMANN>
+ 
+------------------------------
+ 
+Date:    Sat, 20 May 89 18:06:35 +0300
+From:    Nir Zuk <NYZUK@WEIZMANN.BITNET>
+Subject: Virus writing - crime?
+ 
+I am new on this discussion and i think that the topic that i am
+discussing have probly discussed before.
+ 
+My question is if virus writing is a crime. I have thought of this
+question a lot. At the begining i thought that it must be a crime
+because people write this program in order to erase data to other
+people but then i thought that if you do not copy diskettes you do not
+have viruses. Diskette copying is a crime, ofcourse, so virus writing
+is not a crime because people wouldn't had them unless they copy
+diskettes.
+ 
+Does any one know the law aspects about this matter?
+ 
+Feel free to answer!
+ 
+------------------------------
+ 
+Date:    Mon, 22 May 89 08:50:05 EDT
+From:    kweeder@sun.soe.clarkson.edu
+Subject: Comp.virus Submission
+ 
+Call For Discussion:  The Usenet Virus Handbook  (With apologies to the
+                                             mailing list people, please
+                                             feel free to join in.)
+ 
+With the advent of comp.virus and the establishment of virus tool
+archives, I think it appropriate to organize a Handbook from
+information available from the network.  The goal I have in mind is to
+provide a *one-stop* source on what a virus (or trojan horse, etc.)
+is, how they work and spread, and what can be done to prevent
+infection and/or cure infections.  I don't have the virus guru's who
+read this group in mind, but rather the average user who needs to be
+educated if virii and other nasties are ever to be snuffed out.
+ 
+Much of the information to accomplish this is already out there
+(pointing to the info that Norstad et al. supplies with Disinfectant
+and the virus 101 series as examples).  Thus, what I propose is to
+form an editor *staff* to accumulate and organize the information and
+keep it upto date.  My current concept is to have a general guide
+(which sticks to general information) and then a number of supplements
+each covering a different computing system.  This way, an interested
+party can get the general guide and the particular supplement he/she
+desires.  This information can then be carried in archives for easy
+access.
+ 
+The get the ball rolling, here are some discussion questions (besides
+the obvious this is a good/bad idea one):
+ 
+(1) How much information should be provided in the general guide?
+Many users haven't the slightest idea what is a boot sector or what
+use is ResEdit.  Perhaps the general section should have three
+chapters: Beginner, Advanced, and a Secret chapter distributed only to
+trusted individuals (although I suspect the latter one already
+exists!).
+ 
+(2) How best do we handle duplicate effort?  I would like any person
+who can contribute to participate and I wouldn't want to put anyone in
+the position of having to decide that X is preferable over Y.  We'll
+need an equitable way to deal deserving people into the action.
+ 
+(3) How do we assemble the editor staff?  Certainly, some of the
+people who are now writing/collection things are natural choices (but
+it's not my place to volunteer their time).  I think we should take
+volunteers and then settle any races preferably by discussion or by
+vote.
+ 
+(4) How much staff do we need?  One or two for each supplement? One
+for each general chapter? Should we have a chief editor or two to
+oversee the whole effort and help to assure that project goals are
+being met?  How about a temporary peer review group to evaluate each
+section as the guide is being built for the first time?
+ 
+(5) How about a different name for the effort?
+ 
+Since a moderated group isn't the most convienent for this discussion,
+can anyone suggest a group we could use (invade) to hash-out these
+details to assemble a formal proposal?
+ 
+I would appreciate some feedback (if you want to comment on my genetic
+or moral backgroud, fine but please use e-mail :-) ).
+ 
+Jim Kweeder
+kweeder@sun.soe.clarkson.edu
+ 
+------------------------------
+ 
+Date:    Mon, 22 May 89 11:52:50 EDT
+From:    dmg@mwunix.mitre.org
+Subject: Potential nVIR infection (Virus-L v2 i120) (Mac)
+ 
+Sounds more like the disk dropped a few bits rather than a virus
+infection Gregg.
+ 
+(not =)VIR is a resource added to a Desktop file by Woodhead's
+Interferon application.  It is nothing to worry about.
+ 
+David Gursky
+Member of the Technical Staff, W-143
+Special Projects Department
+The MITRE Corporation
+ 
+------------------------------
+ 
+Date:    Mon, 22 May 89 15:28:22 EDT
+From:    dmg@mwunix.mitre.org
+Subject: Macintosh Virus forum now on FIDOnet...
+ 
+Garner Miller has started a Macintosh Virus forum over FIDOnet called
+"MacVIR".  If you use a FIDOnet BBS, you may wish to ask the Sysop to
+pick up this conference (I do not believe it is on the FIDO backbone
+yet; if enough people ask for it though, the backbone will pick it up
+though).
+ 
+This does not constitute an endorsement of anything or anyone.
+ 
+------------------------------
+ 
+From:    gateh@conncoll.bitnet
+Date:    Fri, 26 May 89 13:23:39 edt
+Subject: Summary of problem posted to VALERT-L (5/19) (Mac)
+ 
+I posted to VALERT-L on Friday, May 19, concerning a possible Mac virus
+problem.
+ 
+First I'd like to thank all those who responded - your suggestions
+were helpful.  At this point I think it is safe to say that my problem
+was generated by a legitimate disk error, and that there was no virus
+activity involved.  While I still do not understand the events fully,
+I cannot reproduce any of the activity, and so it would appear that
+they were isolated and not the result of execution of code.  I will,
+however, keep a close eye on these machines for any indication of
+unusual activity.
+ 
+If anyone is interested in a more detailed description of my problems,
+please feel free to write.  Once again, thanks for the help.  - Gregg
+ 
+*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+Gregg TeHennepe                  | Academic Computing and User Services
+Minicomputer Specialist          | Box 5482
+BITNET:  gateh@conncoll          | Connecticut College
+Phone:   (203) 447-7681          | New London, CT   06320
+ 
+------------------------------
+ 
+Date:         Sat, 27 May 89 15:31:03 +0300
+From:         "Yuval Tal (972)-8-474592" <NYYUVAL@WEIZMANN.BITNET>
+Subject:      Virus Maker (PC)
+ 
+I was shocked when a friend of mine gave me a diskette for the IBM PC
+which contains a Virus Maker! I examined the program and this is what
+it does: It knows four types of viruses and then, it asks you to
+insert a diskette and it will put one of the viruses (the one you
+tells her), on you diskette.
+ 
+Did anyone see this kind of program before?? I didn't!
+ 
+Yuval Tal
+ 
+- -------------------------------------------------------------------------
+Yuval Tal                             Home phone: +972-8-474592
+The Weizmann Institute Of Science
+Rehovot, Israel                       "Only fools are quoted" - Anonymous
+- -------------------------------------------------------------------------
+Acknowledge-To: <NYYUVAL@WEIZMANN>
+ 
+------------------------------
+ 
+Date:    Sat, 27 May 89 15:35:37 +0300
+From:    "Yuval Tal (972)-8-474592" <NYYUVAL@WEIZMANN.BITNET>
+Subject: New Virus for the PC
+ 
+Another new virus....
+ 
+This time as far as i understand it doesn't upload it self on a hard disk
+but it does load it-self on floppy disks.
+ 
+The thing that you see on the screen it simple....when you work in
+text mode, every 5 seconds (something like that), one letter falls
+from the screen and a blank character it written instead of her.
+ 
+I made a small research about this virus and it turned out that the
+boot record of the diskette with the virus on it, was chnged. The
+first JMP command in the boot-record was changed to something else.
+This virus marks track 39 sector 8 as bad (it stores the virus there).
+ 
+Has any-one ever seen or heard of this virus?
+ 
+Yuval Tal
+ 
+- -------------------------------------------------------------------------
+Yuval Tal                             Home phone: +972-8-474592
+The Weizmann Institute Of Science
+Rehovot, Israel                       "Only fools are quoted" - Anonymous
+- -------------------------------------------------------------------------
+Acknowledge-To: <NYYUVAL@WEIZMANN>
+ 
+------------------------------
+ 
+Date:    Tue, 30 May 1989 00:39:44 EDT
+From:    Steve <XRAYSROK@SBCCVM.BITNET>
+Subject: Stop a BOOT virus at BOOT time (PC)
+ 
+I just want to correct my recent comments concerning Stanley
+Fragakis's alteration of the boot program to stop a boot virus at boot
+time by overwriting everything in RAM (except the boot program
+itself).  I have actually tried the alterations on a couple floppies
+and they seem to work fine (i.e. they do not interfere with normal
+operation of the computer).  If the floppy is not a system disk and
+you try to boot from it, the computer does not die and you do get the
+standard error message, contrary to my previous comment.  Also, the
+alterations should work fine with system disks (The boot program
+overwrites memory prior to loading the operating system into memory,
+so there is no problem).
+ 
+Steven C. Woronick     | Disclaimer:  These are my own opinions.
+Physics Dept.          |              Check it out for yourself!
+SUNY at Stony Brook    |
+Stony Brook, NY  11794 |
+Acknowledge-To: <XRAYSROK@SBCCVM>
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

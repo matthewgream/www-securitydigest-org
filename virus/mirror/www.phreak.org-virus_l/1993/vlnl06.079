@@ -1,0 +1,747 @@
+VIRUS-L Digest   Tuesday, 18 May 1993    Volume 6 : Issue 79
+
+Today's Topics:
+
+A non-errant magazine article
+Re: Write Protecting Harddrives (add on HW/SW)
+Re: Should viral tricks be publicized?
+Integrity Check
+Dr. Popp Convicted
+Write Protecting Harddrives (add on HW/SW)
+Scanners getting bigger and slower
+Can a virus infect a hard drive that one cannot access ? (PC)
+F-Prot 2.08 and 2.07 with CP/DOS6 VSAFE (PC)
+Can a write protected floppy be infected? (PC)
+Where to get CPAV virus signature updates (PC)
+Bug With Virstop 2.08a & DOS6 Memmaker? (PC)
+McAffe v 104 bugs (PC)
+A virus that deletes autoexec.bat (PC)
+Re: Viruses that cost $$$ (PC)
+New Virus ? ABC10201 (PC)
+Copyright of Virus Signatures (PC)
+Experimental tracing disinfectors (PC)
+On the merits of VSUM (PC)
+I-M143.ZIP - Integrity Master data integrity/anti-virus system (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.org or upon request.) Please sign submissions with your
+real name.  Send contributions to VIRUS-L@LEHIGH.EDU.  Information on
+accessing anti-virus, documentation, and back-issue archives is
+distributed periodically on the list.  A FAQ (Frequently Asked
+Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@FIRST.ORG>.
+
+   Ken van Wyk, krvw@first.org
+
+----------------------------------------------------------------------
+
+Date:    Thu, 13 May 93 10:04:38 -0400
+From:    pc@jido.b30.ingr.com (Speaker to Bittyboxen)
+Subject: A non-errant magazine article
+
+May 1993 _IEEE Spectrum_ has a cover article on computer viruses, and
+_surprise_ it's something solid and worthwhile:
+
+J. O. Kephart, S. R. White, and D. M. Chess, "Epidemiology of Computer
+Viruses", _IEEE Spectrum_ v 30 n 5 (May 1993) pp. 20-26.
+
+I haven't finished reading it yet, but you will all find it
+interesting.
+
+I have left a message for my librarian to find out if we can order
+offprints -- otherwise I will have her track down a color copier and
+pay IEEE the $3.00 for a few copies. It would be a shame to turn such
+a well-produced article into grayscale.
+
+- --  *************************-><-*************************
+    ** Craig "Interferon" Presson pc@jido.b11.ingr.com  **
+    *************************-><-*************************
+
+------------------------------
+
+Date:    Wed, 12 May 93 22:54:11 -0400
+From:    trimm@netcom.com (Trimm Industries)
+Subject: Re: Write Protecting Harddrives (add on HW/SW)
+
+mark@CS.MsState.EDU (Mark Rauschkolb) writes:
+>
+>     I have been asked to investigate the "state of the art" in 
+>write protecting old harddrives (ones without a write protect switch).
+>
+>I know that a software only solution isa not perfect, but is there
+>something that is better than most?
+
+( a recent fido post of mine... )
+
+I apologise to all for the busy nature of this message, but it is one
+that I think is important.
+ 
+Here is how you can virus-proof a pc that has MFM or RLL disk drives
+(st-506).  Basically, you can add a write protect switch for one of the
+two disks (I recommend C:) and put all your executables on it, along
+with dos.  It's very simple, almost anyone can do it.  This is it:
+                           _                                           _
+ =============|           | |                                         | |
+ Controller   |===========| |=========================================| |
+              |           | |           .XX   cut wire 6   XX.        | |
+             1|===========|1|===========|====================|========|1|
+ =============|   /^\     |_|           |                    |        |_|
+                   |    Drive D:        |                    |    Drive C:
+34 Pin Hard Disk   |     Conn.          |                    |     Conn.
+Ribbon Cable  _____|                    |                    |
+                                        |__________o/o_______|
+                                                 Switch
+                                                 Open=Protected
+                                                 Closed=Unsafe
+ 
+Okay, here's what's going on.  We have interrupted pin 6, which is
+writegate.  Leave the terminator resistors in on both drives, and make
+sure both sets are in or you will blow the data on drive C:.  What I
+suggest is you use the keyboard lock key switch on the front of most
+pc's.  The little lock icon is correct.  With the switch in the lock
+position, all writes to C: will be ignored, without any error or warning
+message.  With the switch in the unlock position, the system will behave
+normally.  You must look at the motherboard and jumper the connector
+that the switch used to go to, usually this can be done with a 0.1"
+shunt like is used to set unit ID on many disk drives.
+ 
+Or if you wish, you can drill a hole in your case and install a switch
+or key interlock or whatever.  You could also use the turbo switch.  I
+like the key switch because it's more idiot resistant.
+ 
+Wire 1 on the ribbon cable has a red stripe on it, and you just count
+wires to wire 6.  You obviously need to solder extension wires to reach
+the switch.  Don't make them over 2 feet long, though.  The shorter the
+better.
+ 
+With the switch in the locked position, you are completely immune to
+boot sector viruses, and file infectors who try to infect executables on
+drive c:.  Since this solution is 100% hardware, there is no way that a
+present or future virus can get past it.
+ 
+This technique is ideally suited to virus researchers, and university
+"data slut" computing center machines.  This way, the dos, networking
+code, compilers, and word processing software could stay intact on a
+machine.  The students would be directed to place their data on drive D:
+Only the facility director would have the unlock key.
+ 
+For the techie: it doesn't hurt to doubly terminate the st506 control
+bus.  The margins are sufficient to make it reliable.  If it bugs you,
+use an ohmmeter to figure out which terminator pin is wire 6 on the
+34 pin cable, and clip off all other terminator pins on drive C:.
+ 
+If you need help, I am available to help within reason.
+ 
+(Someone onced asked me for more techie detail, so here was my 
+reply:)
+
+Okay, here's the scoop.  The WrtGate- signal is a negative-true open
+collector signal that is asserted by the disk controller when it wants
+the data signal written on the disk.  The line is pulled to about 3
+volts by a terminator resistor pack usually positioned on the last disk
+drive (in reality, most people leave the pack in on both drives).  3
+volts is higher than the TTL threshold for low signals, thus when it is
+hanging around at 3 volts, the signal is de-aserted, ie, we are not
+writing to the disk.  The disk controller activates its open collector
+driver on WrtGate- when it desires a write to take place, which drives
+the signal below the TTL threshold of 0.8 volts, which is a logic low,
+which means that the term is asserted.
+ 
+Now, my idea is to interrupt the WrtGate- signal.  It is important that
+(a) the WrtGate- signal works on the non-protected drive and (b) the
+WrtGate- signal remains de-asserted on the protected drive.  If we fail
+to have the terminator on the non-protected drive, the WrtGate- signal
+will not be reliably pulled up to a logic high, and might oscillate,
+causing sporatic data to be written (scribbled) on the disk.  Similarly,
+no terminator on the protected drive will cause scribbles on it, which,
+by the way, will blow the low level format.
+ 
+By the book, the correct way to do this is to put the terminators on the
+protected drive, and put in only a single terminator pin on the WrtGate-
+signal on the non-protected drive.  However, doubly terminating these
+signals doesn't hurt anything.  I have proven this using special test
+fixtures.  I figured that most people do not have the hardware
+background to determine, on their particular hard disk, which pin on
+which terminator is WrtGate-, remembering that one must clip off the
+other pins except for power and ground.  There are too many chances for
+error here, unless one does this kind of thing for a living.  Thus, its
+simpler and safer just to leave both terminators in.
+ 
+
+I have heard a reasonable objection that many programs build temporary
+swapper files in the directory that the program was executed from, and
+this would be a disaster if the drive was protected.  I understand that
+ms-dos pipe commands do this as well (haven't verified this.)
+Poorly behaved programs would have to be exiled to the permanently
+unprotected disk, as punishment for their sins.  We then track down the
+offending programmers and kill them.  Like lawyers, the world has too
+many programmers anyway.  A few dozen, more or less, surely wouldn't be
+missed!
+ 
+Gary Watson
+Electronic Engineer
+Trimm Industries
+North Hollywood, CA
+(800) 423-2024
+trimm@netcom.com
+
+------------------------------
+
+Date:    Thu, 13 May 93 21:25:25 -0000
+From:    phil@wearbay.demon.co.uk (Philip Coull)
+Subject: Re: Should viral tricks be publicized?
+
+RADAI@vms.huji.ac.il (Y. Radai) writes:
+> .......
+>  Let me put it this way: Would *you* think of posting an article of
+>the type which he wrote (which includes code) in a public forum?  More
+>important, would you be proud of being "ON BOTH SIDES", as Inbar
+>describes himself??  When you say that you're defending Inbar, is that
+>really the type of person or position you want to defend?
+
+I get the sense that this thing is getting blown out of proportion,
+(a storm in a tea cup, as we English would say).
+
+To get things in proportion:
+At your (Radia's) "recommendation", I obtained the 80xxx forum snippets
+(80x0393.zip), which includes Inbar's article.
+
+As you are probably aware, but have omitted to mention, there is another
+file called antianti.txt by Michael Forrest. One by one, it takes apart
+Inbar's techniques, and literally "shoots them down" as being of no use
+whatsoever for any modern debugger, that is, all but one, which he then
+gives details on defeating.
+
+If Inbar is guilty of anything, it is maybe of a slightly inflated ego
+(something we are all guilty of, from time to time), which I'm sure was
+slightly more inflated by your "accusations"!
+
+
+- ---------------------------------------------------------------
+Phil Coull g3xvy     phil@wearbay.demon.co.uk     CI$ 76046,332
+
+
+------------------------------
+
+Date:    Thu, 13 May 93 18:51:43 -0400
+From:    yue@numbat.cs.rmit.OZ.AU (Paul Yue)
+Subject: Integrity Check
+
+I am currently writing my master's thesis and am doing something about an
+integrity check for computer viruses. If anyone has any information about
+this subject I would appreciate it if they could e-mail it to me. Any
+information whatsoever would be of great help and thank you in anticipation
+for your submissions.
+
+Paul Yue
+yue@numbat.cs.au.oz
+
+------------------------------
+
+Date:    Fri, 14 May 93 06:39:39 -0400
+From:    Stefano Toria <MC0170@mclink.it>
+Subject: Dr. Popp Convicted
+
+Hello everyone.
+
+Some of you may have missed the news about the conviction of Dr Popp.
+The acknowledged perpetrator of the AIDS diskette scam was convicted
+of extortion few weeks ago by a court in Rome, Italy. He was tried under
+the charge of attempted extortion, and was sentenced two-and-a-half
+year arrest. He has not shown up at the trial, though; as far as
+I know he is presently living in Lake Jackson, Texas, blissfully
+oblivious of the consequences of his act.
+
+There are approximately fifty more cases against Popp that have been
+filed at several local courts. As for the Rome sentence, the deadline for
+appeal has almost elapsed; should Dr Popp fail to appeal, a request for
+an international warrant will be filed with Interpol by the Italian
+Police, as Mr. Maurizio Vallone of the "Nucleo Centrale per la
+Criminalita'
+Informatica" (the Italian Computer Crime Unit) has stated.
+
+Some good news, sometimes.
+
+______________________________________________________________________
+Stefano Toria        | voice +39(6)85300779     |           C.S.I. srl
+C.S.I. srl           | fax   +39(6)8413057      |          The Italian
+Via Rovereto, 6      | e-mail mc0170@mclink.it  |    Computer Security
+00198 Rome, Italy    | CompuServe 70142,1104    |          Specialists
+______________________________________________________________________
+
+
+------------------------------
+
+Date:    Fri, 14 May 93 07:25:34 -0400
+From:    "Roger Riordan" <riordan@tmxmelb.mhs.oz.au>
+Subject: Write Protecting Harddrives (add on HW/SW)
+
+mark@CS.MsState.EDU (Mark Rauschkolb) asks
+
+>     I have been asked to investigate the "state of the art" in 
+>write protecting old harddrives (ones without a write protect switch).
+
+How old is "old"?  If you mean slightly old, like IDE drives, 
+then hardware protection is complex.  None of the hardware cards 
+meets my needs, as you can't just switche write protect off or on 
+at will.  
+
+However if you mean really old, as in ST605(?) it's easy; just 
+get a DPDT (double pole double throw) toggle switch, carefully 
+cut lines 6 & 12 (Write & Error) in the drive cable, and connect 
+as shown below.  You need a soldering iron, a steady hand & some 
+experience, so ask your technician if lacking these.  
+
+Most clones sense the error so you get a critical error message 
+when anything tries to write to  drive C.  (Many viruses don't 
+think a write error is possible on drive C, so don't trap crit 
+errors when they try to infect BS, command.com, etc.)  Hoever 
+early IBM XTs & exact copies don't check the error line, so you 
+can happily write to drive C, unaware that nothing is being 
+written.  We have this problem, & frequently panick when someone 
+tries to install VET with drive write protected, & it appears to 
+crash, or we clean up an infected BS, & reboot, only to have the 
+virus reappear.
+
+
+             6 ------o   o------->    
+                       \
+    From controller      o--     to ST605 drive
+                            |
+            12 ------o   o--|---->
+                       \    |        Switch:  Up   Normal
+                         o--                  Down Wrt prot
+
+
+Roger Riordan                 Author of the VET Anti-Viral Software.
+riordan.cybec@tmxmelb.mhs.oz.au
+
+CYBEC Pty Ltd.                                 Tel: +613 521 0655
+PO Box 205, Hampton Vic 3188   AUSTRALIA       Fax: +613 521 0727
+
+
+------------------------------
+
+Date:    Mon, 10 May 93 15:29:15 +0200
+From:    Malte_Eppert@f6051.n491.z9.virnet.bad.se (Malte Eppert)
+Subject: Scanners getting bigger and slower
+
+Hi Pete!
+
+ > If you have a regular expression describing each viral signature
+ > (which is what the signatures I have seen here seem to be) then it
+ > need take no more time to scan for 1 virus or for 1000 viruses -
+
+You are talking about _hashing_, right?
+
+ > Why would any virus scanner NOT do this? Is it to make it easy
+ > to check the signatures for attack before running?
+
+That technique needs a lot of memory. A hash table for > 2000 signatures may 
+not be too small in order to fit them in without too many collisions. So we 
+may have to use EMS/XMS utilizing scanners next time.
+
+cu!
+eppi
+
+- --- GEcho 1.00
+ * Origin: No Point for Viruses - Eppi's Point (9:491/6051)
+
+------------------------------
+
+Date:    Thu, 13 May 93 10:37:24 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. PADGETT PETERSON)
+Subject: Can a virus infect a hard drive that one cannot access ? (PC)
+
+>From:    yh1@Isis.MsState.Edu (Yi Hong)
+
+>	If I had a hard drive in my computer, but I reconfigured
+>the ROM set up and put that there is no hard drive, and i boot
+>from a floppy, so that i won't be able to access the C: drive. 
+
+So long as the BIOS controls disk access, this seems to be true on the 
+machines that I have tested. However some devices (like hardcards)
+have their own BIOS extenders. On a Zenith with a +4 hardcard you set the
+CMOS to "no hard disk" but the controller still finds it. However this
+is a quibble.
+
+>Can a virus affect the C: drive if there is no partition to link
+>to it?  I don't think so, but I am justing trying to make sure..
+
+Viruses that act at the BIOS level (commonly called MBR infectors such
+as STONED) affect the physical disk (80) not the logical one (C:). Without
+a partition to define the logical drives, C: will not exist.
+
+					Warmly,
+						Padgett
+
+------------------------------
+
+Date:    Thu, 13 May 93 05:15:42 -0400
+From:    S.M.Baines@sheffield.ac.uk
+Subject: F-Prot 2.08 and 2.07 with CP/DOS6 VSAFE (PC)
+
+Dear Fridrik,
+
+I sent to you yesterday by snail mail 2 problems. One of which was not
+possible for me to solve, the second I have now done so.
+
+VSAFE when loaded in one configuration will trigger F-Prot 2.07 and
+2.08 to say that the Stoned virus is in the memory when it is run. It
+all depends on how VSAFE is loaded into memory as to whether it
+triggers F-Prot. On loading F-Prot (not Virstop) the memory scan
+"finds" it.
+
+To trigger the false alarm you need the following lines in a
+config.sys file:
+
+    Device=himem.sys
+    Device=emm386 noems
+
+And in the autoexec bat file, a simple:
+
+    vsafe
+
+This loads vsafe in two portions, 23k in conventional memory, and 23k
+in xms. Other combinations (7k conventional, 33k EMS, or even 46k in
+conventional memory) do *NOT* trigger the false alarm. It has been
+tested with 5 computers, running DOS 5 and DOS 6. Vsafe that comes
+with DOS 6 does trigger it, as does the VSAFE that comes with PC
+Tools.
+
+I have not had chance to check F-Prot 2.08a yet, though I would guess
+the problem is still there.
+
+We tried every combination of device drivers and memory settings to
+solve the mystery, and that is the combination of switches and
+drivers I use for windows.
+
+I hope this is of help. I will send a copy of this to Virus-L. If lots
+of people are loading up DOS 6 and getting the message, I'd guess you
+might be quite busy. Yours is not the only scanner to display a
+similar message, Bates Anti Virus does too, though it at random
+chooses from Beijing, Swedish Disaster, Telefonica and others.
+
+Yours,
+
+Stephen Baines
+
+------------------------------
+
+Date:    Wed, 12 May 93 20:51:56 -0400
+From:    cjkuo@symantec.com (Jimmy Kuo)
+Subject: Can a write protected floppy be infected? (PC)
+
+(was: Can I get infected by just doing a DIR?)
+Amir Netiv (Amir_Netiv@f120.n9721.z9.virnet.bad.se) writes:
+
+>> Do you know how common is the question: "Can a write
+>> protected floppy be infected ?"
+
+>Yes, I do. (Why is it not in the FAQ, BTW? Maybe we've thought that
+>the answer is so well known that there's no need to include this
+>question... Maybe we should re-consider...)
+
+>> what do you think ?
+
+>That it cannot, of course. And don't tell me about old drives, faulty
+>controllers, weird write-protection tabs, light-colored diskettes,
+>malicious users plugging the hole of the 3.5" diskettes or doctoring
+>their drives to write to write protected floppies, etc. - I know all
+>that too. It all goes with the detailled answer of the question. But
+>an answer like "sometimes viruses are able to infect write-protected
+>floppies" is NOT a valid answer, because it only spreads a false
+>rumor.
+
+I don't know if Amir is trying to trap you but...
+
+Vesselin, be careful how you answer this question.  "Infected" is an
+adjective.  The answer you provide relates to: "Can I infect a write
+protected floppy?"  However, that's a different question.  The answer
+to the question as stated above is, "Yes."
+
+The proof is, I infect a floppy, write-protect it, hand it to you.  So
+"can a write protected floppy be infected?"  Sure!  You'd be holding one.
+
+Jimmy Kuo                                       cjkuo@symantec.com
+Norton AntiVirus Research
+
+
+------------------------------
+
+Date:    Thu, 13 May 93 18:18:52 +0000
+From:    ee1ckb@sunlab1.bath.ac.uk (C K Boon)
+Subject: Where to get CPAV virus signature updates (PC)
+
+
+Hello all,
+Can anyone tell me where can I download Central Point Anti-virus
+latest virus signature files please? Thankx mega lot.
+
+Cheers,
+
+------------------------------
+
+Date:    Thu, 13 May 93 17:15:04 -0400
+From:    "Rich Travsky 3668 (307) 766-3663/3668" <RTRAVSKY@corral.uwyo.edu>
+Subject: Bug With Virstop 2.08a & DOS6 Memmaker? (PC)
+
+I have encountered an odd interaction between virstop.exe version
+2.08a and dos 6's memmaker. Specifically, having virstop running 
+(either in conventional or high memory) will hang the pc when using
+memmaker. This means then that to run memmaker you have to comment 
+it out of whichever startup file you have it in.
+
+At the moment I only have one pc to try this on, so if anyone else 
+would care to try and duplicate this, I'd be interested in knowing 
+how it turned out.
+
+Richard Travsky
+Division of Information Technology     RTRAVSKY @ UWYO.EDU
+University of Wyoming              (307) 766 - 3663 / 3668
+	Usenet Shampoo: Blather. Rinse. Repeat.
+
+------------------------------
+
+Date:    Thu, 13 May 93 17:10:13 -0400
+From:    Sue Forslev <sforslev@well.sf.ca.us>
+Subject: McAffe v 104 bugs (PC)
+
+I now regret my previous mailing on how great the new McAffe software is.
+Here's what I posted to comp.sys.novell yesterday:
+
+I've had worse bugs with NetShield v104 than have been reported yet.
+I ran ok all day yesterday with the new version loaded on one server.
+Late in the afternoon, I upgraded the 8 other servers on our network.
+Within minutes, 3 servfDs had crashed with the console message:
+ 
+Abend:  Free called with a memory block that has an invalid resource tag
+        Running Process Netshield Threadv Process
+ 
+Another one crashed with the same message, except it cited the Streams Q
+Runner Process             
+ 
+Since it worked OK on one server, I suspect that whatever automatically
+checks for current vir.dat files on all servers is the culprit.  This is
+a new "feature" that I would like to do without.  It's probably colliding
+with Name Services.
+ 
+Today we hit the max on Alloc Short Term Memory on one server that didn't
+crash yesterday.  It seems that when you unload Netshield, it doesn't 
+release the memory like a good NLM should.  
+ 
+So, beware people with more than one server.  Obviously McAffe has skimped
+on their testing equipment.
+ 
+Sue
+sforslev@well.sf.ca.us
+ 
+*************************************************************************
+Newcomb's Law of the Info Center:  If you're nice to them, they'll
+                                   just call back!
+*************************************************************************
+
+Today (5/13/93), the Alloc Short term memory problem is so bad that we're
+going to down all the servers tonight to clear it out.  This has worked
+before (all the crashed servers are ok) but it is a real pain.  No
+answer from either McAfee or anyone on the comp.sys.novell forum on why
+this happened.
+
+------------------------------
+
+Date:    Thu, 13 May 93 14:30:57 -0400
+From:    chet@retix.com (Chet Mazur)
+Subject: A virus that deletes autoexec.bat (PC)
+
+does this beast sound familiar, this guy is having problems that virus
+checkers are not finding it... maybe he has some bad sectors or a
+flakey disk... pls. reply by mail as I don't follow this group.
+
+thanks...
+- -- 
+
+Chet Mazur (chet-mazur@retix.com)
+Lambda Consulting
+
+------------------------------
+
+Date:    Thu, 13 May 93 19:38:19 -0400
+From:    (Jamie Lawrence)
+Subject: Re: Viruses that cost $$$ (PC)
+
+FESQUIVE@ucrvm2.bitnet (Fabio Esquivel) writes:
+> Hi Vesselin,
+> >Jeroen.Donkers@mi.rulimburg.nl writes:
+> >
+> >> I remember to have destroyed a EGA Color monitor by installing MS-DOS
+> >> version 4.0 on a Sperry HT (a XT from 1986). (I was able to repeat it
+> >> with another machine of the same type, but managed to switch it off
+> >> quick enough...)
+> >
+> >No, the example you gave means only that hardware can be really buggy
+> >- - just like software... :-)
+> >
+> >I've seen several other messages of the form "once something like that
+> >happened to me" or "I've been told that it's possible to do it that
+> >way". Sorry, but I don't believe that. Just as I don't believe that a
+> >particular virus exists until I have a copy of it, I won't believe
+> >that it is possible to destroy hardware (I mean a contemporary,
+> >working hardware, not ancient buggy one) in software. If anybody wants
+> >to convince me in the opposite, they must send me a particular program
+> >that does it. We have enough test systems here, so we'll be able to
+> >try it. Until I see such a program (and that it actually works), I'll
+> >continue to claim that hardware damage in software is not possible.
+> 
+> I wrote a little assembly routine some time ago that switched the
+> monitor from text mode to graphics mode and switch back to text mode
+> in a very fast loop with CX = 0FFFFh.  Some monitors support such a
+> quality proof, but some others not.  Those of less quality will
+> eventually burn out.
+> 
+> The program is very little and if you are interested I can send you it
+> via e-mail, but it is as simple as you imagine and maybe you can
+> program it.
+> 
+> Hope your monitors support fast graphic-text switching 8^),
+> ;- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+I am a mac user, and esp. with some of the newer machines, there are a number
+of possibilities.  I don't program well, so couldn't write any of these if I 
+wanted to, but imagine  a virus that patches calls to the power manager on
+a powerbook- keeps the warnings from coming up, does not execute the power
+dimming code, and lets the battery run completely dead while the machine is 
+in use.  No gauranteed damage, but... wouldn't want it to happen to me. Ant
+think of the possiblities for the duos and docs.  Way to complicated. Basically
+any time you have software an hardware interfaciong, there is a hole open for 
+some bad problems.
+
+JAmie
+- ----
+I speak for me and only me
+
+------------------------------
+
+Date:    13 May 93 22:03:28 -0600
+From:    pasc1226@altair.selu.edu
+Subject: New Virus ? ABC10201 (PC)
+
+To all,
+
+	I seem to have a problem. I have found a directory that I have not
+made. It's name is ABC10201. It is found on my c:\. At first I thought
+it could have been a trash directory that I made one night, but here is
+why I doubt it. I have tried to to run sca v2 and scanv102. sorry but cannot
+remember exactly the names. But I scanv102 and It says no viruses detected.
+Now here is the real kicker, If I use the old version of scan, it gets to
+the above directory c:\abc10201. Now scan starts it search and the search 
+path goes one directory deeper. example c:\abc1020\\ pm.Pag
+Note that it has found this file  pm.Pag. also note that it has upper and lower
+case and has a space like this inserted into it ^pm.Pag. Every time that I run
+scan v2 it continues to go deeper into that darn abc10201 directory, until
+the scan program stops. I have not count the directory sub layer but it's
+a whole bunch. I have also noted that the abc10201 directory is attributed
+as a system directory. 
+Help ? It has not appeared to harm the system, but you guys never know ?
+My system has dos 5.0 and 4 meg of memory, what would you suggest ?
+Do you think a complete re-format would squash the sucker ? 
+Troy Lee Nall : PASC1226@altair.selu.edu
+
+------------------------------
+
+Date:    Mon, 10 May 93 14:56:12 +0200
+From:    Malte_Eppert@f6051.n491.z9.virnet.bad.se (Malte Eppert)
+Subject: Copyright of Virus Signatures (PC)
+
+Hi Luke!
+
+ > Obviously, most virus writers dont want to do this. However, if
+ > sometime did extract a piece of code (signature) from the virus,
+ > and include it in their virus scanner, and recieved a fanancial
+ > advantage from this inclusion, and the author came forth to claim
+ > copyright, would such a case be legal?
+
+ > Please remember I am no lawyer..:)
+
+Me not, too... but it's ridiculous to grant copyrights to code which is 
+designed to propagate by itself :-)
+
+cu!
+eppi
+
+- --- GEcho 1.00
+ * Origin: No Point for Viruses - Eppi's Point (9:491/6051)
+
+------------------------------
+
+Date:    Mon, 10 May 93 15:21:13 +0200
+From:    Malte_Eppert@f6051.n491.z9.virnet.bad.se (Malte Eppert)
+Subject: Experimental tracing disinfectors (PC)
+
+Hi Frisk!
+
+You wrote that emulating/singlestepping disinfectors are still in the 
+experimental stage.
+The program TBCLEAN from the TBAV package is such a heuristic cleaner which, 
+in most cases, works great. You can, for example, disinfect the TREMOR virus 
+with it, which is common in Germany. F-PROT 2.07 has been partially able to 
+detect it, that cleaner killed it right from the start, without any 
+information about the file when starting to emulate. I wouldn't call that 
+experimental :-).
+
+BTW: Do you plan to implement the removing of TREMOR into your next version of 
+F-PROT?
+
+cu!
+eppi
+
+- --- GEcho 1.00
+ * Origin: No Point for Viruses - Eppi's Point (9:491/6051)
+
+------------------------------
+
+Date:    Mon, 10 May 93 15:23:14 +0200
+From:    Malte_Eppert@f6051.n491.z9.virnet.bad.se (Malte Eppert)
+Subject: On the merits of VSUM (PC)
+
+Hi Frisk!
+
+ > outrageously silly in other cases....I haven't looked at VSUM
+ > for a long time.. does it still include the RAM "virus", for example ?
+
+Yes :-) what's so strange about that one? Doesn't it ever exist?
+
+cu!
+eppi
+
+- --- GEcho 1.00
+ * Origin: No Point for Viruses - Eppi's Point (9:491/6051)
+
+------------------------------
+
+Date:    Fri, 14 May 93 01:20:13 -0400
+From:    krvw@agarne.ims.disa.mil (Kenneth R. van Wyk)
+Subject: I-M143.ZIP - Integrity Master data integrity/anti-virus system (PC)
+
+I just received a new disk in the mail from Wolfgang Stiller, containing
+the new version (v1.43c) of his Integrity Master package.  I have uploaded
+to WSMR-SIMTEL20.Army.Mil and OAK.Oakland.Edu:
+
+pd1:<msdos.virus>
+I-M143.ZIP      Integrity Master data integrity/anti-virus sys
+
+Ken
+- - -
+Kenneth R. van Wyk
+krvw@agarne.ims.disa.mil
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 79]
+*****************************************
+

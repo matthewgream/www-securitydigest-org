@@ -1,0 +1,613 @@
+Subject: RISKS DIGEST 16.57
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 22 November 1994  Volume 16 : Issue 57
+
+         FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for information on RISKS (comp.risks), disclaimers *****
+
+  Contents: [Huge backlog.  I was away.]
+Cell-phone ergonomics side-effect (Robert Stanley)
+Pentium FDIV bug (Bill Broadley)
+All's Well that Orwells? (Peter Wayner)
+Spell Checker Goes Beserk; Editorial Maimed (Robert Bane)
+Security is not privacy (Phil Agre)
+Authorities Still Investigating Software Theft (Edupage 15 Nov 1994)
+Beware the Calendars (Pertti Malo)
+Re: Parental Responsibility (Daniel P. Johnson)
+Clarifying answers to TEN QUESTIONS PARENTS SHOULD ASK THEIR CHILDREN
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+----------------------------------------------------------------------
+
+Date: Wed, 16 Nov 94 16:52:30 EST
+From: rstanley@sybase.com (Robert Stanley)
+Subject: Cell-phone ergonomics side-effect
+
+Yesterday evening I returned home from work and, as usual, checked the
+answering machine on my normal voice telephone.  Much to my surprise,
+I heard a somewhat muffled background conversation that I soon identified
+as that afternoon's conference in the office.  This filled the tape to
+the end, and had caused several later calls to be rejected.
+
+  [aside #1: I hate these damn micro-cassette systems that only allow
+             ten or fifteen minutes of message time, but they have become
+	     ubiquitous!]
+
+Two aspects of this message puzzled me: how had it found its way to my
+answering machine, and why was it so muffled?  The office has just completed
+installing a high-tech AT&T digital phone system with all sorts of fancy
+features, but I know that the trunk-to-trunk transfer features have all been
+disabled for security reasons.  It is therefore not possible for our
+conference call link to another office to have been forwarded to my home
+phone.  The only possible way for my phone to have been included in the
+conference would have been for it to have initiated the call (and then
+worked its way through a set of control codes.)
+
+  [aside #2: my former answering machine, which used real C-90 cassettes,
+             did have the unfortunate habit of occasionally calling back
+	     the last number to have dialed it!  Another story, and one
+	     which can wait for a rainier day to tell.]
+
+  [aside #3: the idea of disabling trunk-to-trunk switching to prevent
+             improper (read: malicious cracker) usage really demonstrates
+	     the lack of thought that goes into much of what today passes
+	     for the design process.  Hey, just compile it and debug it,
+	     that way you'll be *doing* something...]
+
+Investigation at the office yielded disbelief followed by stunned surprise.
+No one had forwarded the phone, and my home phone number was not programmed
+onto any button in the system.  However, we all rush to the documentation
+to check into just how the remote monitor feature works, and try to recall
+whether any visible telltales had been lit to indicate monitoring.
+
+Finally, light dawns.  A colleague's tiny Nokia cell-phone in his shirt
+breast pocket.  He had called me at home earlier, and the phone has a last
+number redial button.  The phone, non-folding, slipped into his shirt pocket
+with the controls outermost, had somehow had that button tripped, and had
+happily held the line open to my answering machine.  The muffled broadcast
+was entirely attributable to the small microphone and the cotton pocket
+between it and our conference table.
+
+However, it is an extraordinarily sobering experience to hear a sensitive
+work discussion issuing hours later from the speaker of your home voice
+messaging system.
+
+A number of risks here, but the predominant one seems to be the conflict
+between added function and reduced footprint of portable cell-phones leading
+to the creation of unergonomic control systems.  This is exacerbated by the
+novel situations to which the diminished footprint can give rise.  This is
+surely the first generation of cell-phones that are sufficiently small (a)
+to be droppable into a toilet, and (b) actually flushed out of reach...
+
+Robert Stanley - robert.stanley@sybase.com
+
+------------------------------
+
+Date: Mon, 21 Nov 1994 15:20:58 -0800 (PST)
+From: broadley@turing.ucdavis.edu (Bill Broadley)
+Subject: Pentium FDIV bug
+
+As this below tiny program from Thomas Koenig demonstrates the pentium
+sometimes only returns single precision when dividing floating point doubles.
+
+#include <stdio.h>
+int main()
+{ double x,y,z;
+    x = 4195835.0; y = 3145727.0;
+    z = x - (x / y) * y;
+    printf("%f\n",z);
+    return 0;
+}
+
+It will return 256 if you have the fdiv bug, and zero if you don't.
+
+I've written 3 similar programs:
+	1 like the above, but more resistent to compiler optimization
+	1 that searches randomly for the bug (no special seeds)
+	1 that searches linearly for the bug.
+
+I'll leave it to the reader to interpret the risks of a cpu that
+silently returns 1/2 the precision that you expect.
+
+BTW in my test it happens about about 1 in 10^9 divisions or about
+once every 21 minutes with a sequential search.  I.e. if your running 
+flat out divisions and multiplies (to check the divs).
+
+It can be MUCH higher, up to once a second, with biased random numbers.  
+
+I'll make havebug.c rndsearchbug.c and linsearchbug.c available
+for anonymous ftp at math.ucdavis.edu
+
+For further references read comp.sys.intel under the fdiv bug thread.
+
+Bill Broadley, UCD Math Sys-Admin Broadley@math.ucdavis.edu
+http://ucdmath.ucdavis.edu/~broadley            
+
+------------------------------
+
+Date: Tue, 15 Nov 1994 09:12:21 -0500
+From: pcw@access.digex.net (Peter Wayner)
+Subject: All's Well that Orwells?
+
+I got a recent net leaflet that proclaimed that the US Geological Survey
+would cease printing their National Water Conditions Report in January 1995
+to save money. The information would only be available on-line. This will
+supposedly save them plenty of liquid capital. 
+
+Normally, I would be happy when they go with the flow of technology. But the
+lack of a printed record seems like an invitation for adding Orwellian
+changes to the report in the future. What if you want to go into the past
+and use the report as a basis for some legal procedure? For instance, you
+might want to sue someone about cyanide levels in the water down stream from
+the gold mine. Suddenly two different versions of the report end up before
+the judge. One gives the stream a clear bill of health while the other cites
+the danger. Which one will the judge and jury believe? How do we know that
+the archive in Washington is secure? No need to shred documents or stuff
+them in your underwear when a strong magnet will do the job.
+
+Anyone who wants to jump into the deep end of paperless publishing should
+use both digital signatures and digital time stamps to ensure accountability.
+
+------------------------------
+
+Date: Wed, 16 Nov 1994 14:32:07 -0500
+From: bane@gst.gsfc.nasa.gov (Robert Bane)
+Subject: Spell Checker Goes Beserk; Editorial Maimed
+
+The following sentence was taken from Richard Cohen's column on page A19 of
+the November 15, 1994 Washington Post:
+
+"GOP national chairman Haley Barbour instantly announced that New York City
+was no longer in the running for the Republican National Convention, and,
+more ominous, Sen. Alfonse D'Amato, the state's leading Republican and
+Pataki's Disk Operating System (DOS), said he would not seek revenge on
+Giuliani."
+
+The only explanation I can come up with (other than Sen. D'Amato really
+being a copy of DOS) is that Cohen typed 'doss' instead of 'boss', and the
+spelling checker not only corrected it to DOS, but spelled the acronym out
+since it's the first appearance of it in a non-computer-related news story.
+
+Bob Bane, Global Science & Technology, Inc.,  6411 Ivy Lane, Suite 610, 
+Greenbelt MD 20770   bane@gst.gsfc.nasa.gov, 301-474-9696
+
+   [I think David Letterman's phonetic spellchecker came up with 
+   Pootaki Sauce ... on Ghouliani.  PGN]
+
+------------------------------
+
+Date: Tue, 15 Nov 1994 12:04:08 -0800
+From: Phil Agre <pagre@weber.ucsd.edu>
+Subject: security is not privacy
+
+*The New York Times* has an article about an attempt by tobacco company
+lawyers to subpoena reporters' travel and telephone records in an indirect
+attempt to identify their sources for stories asserting that the companies
+deliberately added nicotine to their cigarettes.
+
+  William Glaberson, A libel suit raises questions about the ability of
+  journalists to protect sources in the electronic age, *The New York Times*,
+  14 November 1994, page C10. 
+
+Many readers of RISKS probably remember other attempted strategic uses of
+the discovery process by tobacco companies, including at least one attempt
+to subpoena raw survey data from smoking researchers and an attempt to
+obtain an electronic mailing list of anti-smoking activists.  (Actually, the
+article doesn't explicitly say that the companies want the subpoenas issued
+as part of the discovery phase of the trial, just that they want them and
+the major press organizations are trying to stop them.)
+
+In any event, this case is an excellent example of why data security, while
+obviously important, does not guarantee privacy.  I am sure that those
+travel and telephone records are as secure as they need to be, but that may
+not provide enough protection against the legal strategies of tobacco
+companies.  Maybe this point is obvious to Risks readers, but it is
+certainly not obvious to many others, including many of the politicians who
+make laws about such things.  So remember to let these folks know:
+
+  Security is not privacy.
+
+The only guarantee of privacy is anonymity.  Fortunately, technologies such
+as digital cash to implement anonymity are on their way.  Insist that they
+be used in any new system that gets developed near you.  And spread the
+word, because once privacy-invasive systems get standardized and installed
+they're hard to regulate and even harder to change.
+
+Phil Agre, UCSD
+
+------------------------------
+
+Date: Tue, 15 Nov 1994 19:46:58 -0500
+From: info@ivory.educom.edu (Edupage)
+Subject: AUTHORITIES STILL INVESTIGATING SOFTWARE THEFT (Edupage 15 Nov 1994)
+
+A surge of outside computers connecting to the National High Magnetic Field
+Laboratory's public information computer was the first sign something was
+amiss, with many of the suspect connections coming from a computer in the
+Center for Educational Technology, two miles away at Florida State
+University. "Hackers were using it so much it wasn't responsive to
+legitimate users," says the director of the magnet lab's computer center.
+The computers have now been cleaned of pirated software and electronic
+burglary tools, but even as the crackers were scurrying to cover their
+tracks, all related data was copied onto a back-up tape and turned over to
+the Computer Emergency Response Team for further investigation. "I think
+it's time to slap these little buggers upside the head," says the CEO of
+DeScribe, one of the companies whose software was posted. (Miami Herald
+11/14/94 1A)
+
+  Edupage, a summary of news items on information technology, is provided
+  three times each week as a service by Educom -- a Washington, D.C.-based
+  consortium of leading colleges and universities seeking to transform
+  education through the use of information technology.  To subscribe to 
+  Edupage: send a message to: listproc@educom.edu and in the BODY of the
+  message type: subscribe edupage Mick Jagger (assuming that your name is
+  Mick Jagger; if it isn't, substitute your own name) ... To cancel
+  subscription to Edupage: send a message to: listproc@educom.edu and in the
+  BODY of the message type: unsubscribe edupage.  [Edupage is also available
+  in Portuguese and Spanish; to subscribe, send mail to edunews@nc-rj.rnp.br.]
+
+------------------------------
+
+Date: Sun, 13 Nov 94 00:51:29 AES
+From: pertti@tmxbris.mhs.oz.au (Pertti Malo)
+Subject: Beware the Calendars (Ravin, RISKS-16.53)
+
+In Australia, my wife brought home a calendar from the uni.  There was an
+error in it.  Magnetic calendars you get from schools, politicians, plumbers
+and others sometimes have errors as well.
+
+In Finland, as a way to reduce RISKS caused by incorrect calendars the
+publishing of Finnish-language calendars has long been a monopoly that the
+government gives to one printer for a number of years. As a result some
+other printers, institutions, shops, and tradespeople now publish their
+unofficial calendars in other languages, mostly in English.
+  
+Pertti Malo <pertti@tmxbris.mhs.oz.au>
+
+------------------------------
+
+Date: Thu, 10 Nov 94 09:34:44 CST
+From: drdan@src.honeywell.com (Dr. Daniel P. Johnson)
+Subject: Re: Parental Responsibility
+
+"Mich Kabay [NCSA Sys_Op]" <75300.3232@compuserve.com> wrote:
+>What about
+>        "That parents should spend time with their children discussing
+>        their (both parents'; and children's) interests and activities
+>        and exchanging views in a mutually respectful atmosphere?"
+
+It is important to include the children's age in these discussions. For
+teenagers the view above is indeed a proper statement of parental
+responsibility. But that is not true for younger children, nor is it even
+true for many younger teenagers who are not maturing at the same schedule
+as some of their peers. They may know the values but not be able to judge
+the situation. I shudder to think of my third-grader son trying to deal
+with the e-mail response he would get if he posted to
+alt.barney.dinosaur.die.die.die for example. It's hard enough for him to
+cope with the taunts of a smug middle-schooler.
+
+When a parent takes a child to see 'Jurassic Park' because the child wants
+to and the child has nightmares for the next several weeks, that was the
+parent's mistake, not the child's. The parental responsibility to say 'no'
+for the child does not go away after a discussion about scary movies. The
+child cannot yet judge what 'too scary' means. My most shameful moments as
+a parent have come when I have made the wrong choice. My most wonderful
+moments have come when I have made the right choice.
+
+My son could thrive in a 'safe' on-line environment, asking children of
+France what their weather is, or looking up the Space Shuttle schedule, or
+monitoring the bombardment of Jupiter. But he can't act as his own censor
+or ignore ill-judged email responses, he doesn't have the judgment and the
+on-line services are not a controlled situation.
+
+The proper analogy is the shopping mall versus the school. My son isn't old
+enough to go to the mall without a parent. He can go to an elementary
+school without a parent. He's not even close to being able to cope with the
+environment of life in a high-school.
+
+Similarly, he isn't old enough to go on the infobahn by himself. Perhaps
+someone will develop a 'schoolnet' that he can navigate by himself. Until
+then, I will have to be at his shoulder.
+
+Daniel P. Johnson, Honeywell Technology Center, 3660 Technology Drive, 
+Minneapolis, MN  55418 drdan@src.honeywell.com  612-951-7427
+
+------------------------------
+ 
+Date: Tue, 15 Nov 1994 12:12:15  (xST)
+From: [A well-known but suitably anonymized contributor]
+Subject: Clarifying answers to TEN QUESTIONS PARENTS SHOULD ASK THEIR CHILDREN
+
+Where are the manuals, boxes, license agreements for the programs
+you have or use?
+	They don't have manuals or boxes.  Should I not use them?
+
+Where did you get that game? (program?, floppy?, software?)
+	Usually over the net - how do I tell if it's legitimate?
+
+When programs first start running on your computer, whose name
+comes on the screen as the "owner" or "licensed-to."
+	Very few have this feature.
+
+Did you write/create/author what you're passing off as your own work?
+	I resent the use of 'passing off'.  Almost all modern works are
+	collaborative in nature - the selection of citations is not a
+	trivial issue.  Where did you get these questions?  Are you
+	passing off some of it as your work when in fact others first
+	came up with some of these ideas?  Where are your citations?
+
+Where did you get the text and images you're using?
+	Many of them come from on-line sources.  Does that make them
+	legitimate or illegitimate?
+
+If you copied text and images from another source, did you have permission?
+	Rarely - in most cases, fair use allows you to use them without
+	getting formal permission.  Kind of like these questions of yours.
+
+If you didn't need permission from the "owners" of the information
+you're using, did you credit them for the material? 
+	Only if I republish it. I have lots of on-line information
+	without citations attached to it.  But I see the author of this
+	questionnaire thinks it's legitimate to do this without citation.
+	I guess I should stop giving as much credit where due as I do.
+
+3.  Do you ever use other people's computer, disk-space or processing
+capability, or look at or copy their files or information, without their
+knowledge or permission?
+	I almost never get permission to look at each file I view.
+	I go under the assumption that I may view anything that
+	allows read access by me without going outside of the
+	normal methods in use to read files.  If it is interesting,
+	I copy it for future reference.  I hope they do not know any
+	details about my use.  After all, I want to retain my privacy
+	and they should not be watching what I do.
+
+4. Do you have any prank programs, computer viruses, worms, trojan
+horse programs, bombs, or other malicious software?
+	Several thousand of them.  What's wrong with that?  Don't you
+	have some too?
+
+Do you use bulletin boards or systems that contain these things, or have
+friends or acquaintances who do?
+	Certainly.  The Internet has lots of these things, and I use it.
+	The telephone system is used for abusive phone calls and I use
+	it too.  I don't really know what my friends do when they use
+	computers.  They have privacy rights too, and we rarely talk about
+	what information service we use.
+
+Do you write or create any software like this or deal with people who do?
+	All the time.  I deal with Microsoft, Lotus, and many other
+	companies that have widely distributed this sort of thing.
+	I also know and deal with individuals who have done this, and
+	I do it all the time.  Is there something wrong with that?
+
+Are they things you would be comfortable showing me? Showing your
+grandmother?
+	I would not show either you or my grandmother my files, but it
+	has nothing to do with embarrassment.  It is called privacy.
+
+Do you have any pictures, video clips, sound clips, articles, text, or
+other software or files which contain pornography, violence, dangerous
+instructions other distasteful material?
+	Lots of them.  It this wrong for some reason?
+
+Do you access or view any of these kinds of things when using the net?
+	All the time.  In fact, if you know of any, I would be happy
+	if you would forward information on them to me.
+
+6.  Do you have any newsletters, plans, guidelines, or "how-to"
+documents or files that you would not be comfortable showing to your
+mother?
+	Same answer as above.  I value my privacy.
+
+Making Bombs, breaking into systems, stealing telephone access, stealing
+computer access, stealing passwords, pornographic or violent text,
+guides, descriptions, ......  Do you create, contribute to or receive
+anything like this?
+	All the time.  In fact, the Risks Forum is one of my best
+	sources for this information.  Should you stop making it
+	available to me?
+
+7.  Do you ever connect your computer to a telephone, use a modem, or
+otherwise use a network?
+	All the time.
+
+8. Who do you associate with when you use the Net?
+	Lots of different people.  How do I know who they really are
+	anyway?  If you claimed to be John Smith at the West Hannover
+	Institute, how could I tell this was true, and why would I
+	bother?
+
+... so should you attempt to discern the character of their cyber-friends
+	How?  We have congress-people that seem to lie all the time,
+	and yet the majority of voters vote for them and they have a lot of
+	power, are on TV all the time, and are supposed to be highly
+	respected.  Does this mean that lying is good or bad?  Judge
+	not - lest you shall be judged!  Who shall cast the first stone?
+	Do you attempt to discern the character of everyone on the net
+	you communicate with?  How about the thousands who read your
+	postings to Risks?  The nature of the net is that it provides
+	anonymity and open forums for discussion.  Why would I want to
+	stifle free speech by asking character questions.  The
+	statements people make should stand on their own regardless of
+	who states them. That is the best feature of the nets.  A high
+	school kid can shine and a Ph.D. can look like an idiot - based
+	on what they say, not who they are.
+
+9. Do you ever use an assumed name, a handle, or an alias  instead
+of your real name?  
+	Sure.  I have asked this posting to be made anonymously in
+	order to allow it to be judged based on its content rather
+	than it's source.  It's kind of like the referee process is
+	supposed to be on professional papers.  Maybe we would all be
+	better off if all postings were anonymous (with a return
+	address that permits response without identity).
+
+Do supply a false information about yourself when using a bulletin
+board, a news group, a message group, or forum, any part of the net, or
+when using e-mail or when otherwise communicating?
+	At times.  Especially when bbs systems ask extensive questions
+	about who I am, my SSN, credit information, or other information
+	that I don't think they have a right to have.  I have also lied
+	when connecting to hacker BBS systems because I don't think they
+	have a right to know who I am when they all use handles instead
+	of names anyway.  I have also used telnet (25) into SMTP sites
+	to forge e-mail as if I were Captain Kirk from the enterprise in
+	order to have fun when communicating with friends.  Is there
+	something wrong with having fun in this way, or is the Internet
+	only for serious work and not for having fun or playing around.
+	If so, why are there thousands of fun and games forums in the
+	Internet?
+
+Do you use your real age & sex when communicating with your computer?
+	I rarely use either.  Nobody has ever asked my sex (my name
+	is probably a giveaway on that one) or my age.  Besides, I
+	think that discrimination based on age and sex are wrong, are
+	against the law, and that forging a sex or age in order to
+	have equal access is fair, reasonable, and appropriate in the
+	network environment.
+
+Do you use any false information like addresses, or phone numbers or use
+someone else's credit card number when using your computer?
+	Yes, yes, and no respectively.  Theft (by deception) is very
+	different than not telling someone where you live or what
+	your phone number is.  These are privacy issues, and privacy
+	is a very important thing to have.  Privacy through deception
+	is not wrong.  Even becoming someone's friend by lying to them
+	about having something in common is not particularly wrong.
+	Certainly giving a salesperson a polite wrong number and address
+	is a reasonable privacy precaution against getting on mailing
+	lists.  It is probably even good to lie if you think someone
+	is stalking you over the net.  I think we have a right to lie,
+	perhaps even a social responsibility to do so under certain
+	circumstances. 
+
+Do you ever send messages or e-mail in such a way that the recipient
+cannot tell that you sent it?
+	In what sense?  I have certainly sent e-mail that never got
+	through - the intended recipient didn't know I sent it.
+	I have sent e-mail from group accounts where the individual
+	was not identified, but the group was.  This is quite common
+	in customer support.  I have also forged e-mail addresses so
+	that I could remain anonymous.  Is that supposed to be wrong?
+	Why?  If I sent you a seasons greeting card from a false identity
+	would you be upset and try to find me and have me arrested?
+	There is a difference between malice and fun.
+
+Have you ever modified data, text, messages, or other computer
+information so that it looks like someone other than you created it or
+made the changes?
+	Certainly.  I had to make a change to the TeX sources once
+	to get them to compile right, and I used the TeX user ID to
+	do so in order to allow the compilation to work right.  This
+	is often called for in systems administration.
+
+What are you trying to hide by not using your real name?
+	My identity. It's called privacy and anonymity.  It's one of
+	the basic principles of a free society - that's why we have
+	anonymous voting - to protect anonymity and be certain that
+	I can think and do what I feel are right without someone like
+	you being able to seek retribution.  I believe that a free
+	society requires privacy and anonymity.  Otherwise, someone like
+	you who perhaps thinks that these ideas are too radical might
+	try to black ball me.  Anonymity in pre-war Germany could have
+	saved millions of lives.  Many in the US are trying to eliminate
+	anonymity by such practices as federal ID cards, and I think that
+	is very dangerous.
+
+Are you trying to pretend you are something or someone you are not?
+	I have a right to be whatever I want to be.  If I claim to
+	be an expert in business consulting, you use my services, and
+	I do a good job, what does it matter that I don't even have
+	a high school diploma.  If you hire an MBA and they do a bad
+	job, does that make it OK?  There is nothing wrong with
+	pretending, as long as you don't lie in order to take advantage
+	of someone else.  Theft by deception requires theft.  If I knock
+	on your door and claim to be a Jehova's witness when I am not,
+	why should that offend you more than if I were a real one?
+
+10.  Do use telephone, video, cable-TV, computer network, bulletin
+board, or other network services without paying for them?
+	All the time.  When I am at a friend's house and I make a phone
+	call, I don't pay for it.  I don't pay for Internet access, it is
+	given to me.  I use Freenets and other bulletin boards without
+	paying for them too.  I have even used friend's accounts to
+	access the network on occasions when I didn't have any local
+	access.  I also used free compu-serv, America-Online, and Delphi
+	services when they had free offers.  The vast majority of people
+	using the Internet until only a few years ago did not pay for
+	their usage either.  Their company, the federal government, or
+	someone else paid for their usage.
+
+The bottom line: Are these things also true for my children? Yes, I think
+they are.  I hope that they learn how to do the same things I have learned
+how to do in order to protect themselves from the tyranny of the majority -
+or is it the vocal minority? I hope they keep things private from me when
+appropriate, and if they look at some dirty pictures once in a while, it
+won't greatly offend me.
+
+Please consider that most issues of right and wrong are matters of degree
+and circumstance.  Given more choice and less control, I think more people
+will make better decisions.  Illegalize dirty pictures, and you will have a
+much larger audience.  That's why so many motion pictures add nudity or
+violence if they don't get an R rating with the first cut.  After all, an R
+picture on average sells a lot more tickets than a PG picture.
+
+------------------------------
+
+Date: 20 October 1994 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  U.S.
+ users on .mil or .gov domains should contact <risks-request@pica.army.mil> 
+ (Dennis Rears <drears@pica.army.mil>).  UK subscribers please contact 
+ <Lindsay.Marshall@newcastle.ac.uk>.  Local redistribution services are 
+ provided at many other sites as well.  Check FIRST with your local system or 
+ netnews wizards.  If that does not work, THEN please send requests to 
+ <risks-request@csl.sri.com> (which is not automated).  
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+ All other reuses of RISKS material should respect stated copyright notices,
+ and should cite the sources explicitly; as a courtesy, publications using
+ RISKS material should obtain permission from the contributors.  
+
+ ARCHIVES: "ftp crvax.sri.com<CR>login anonymous<CR>YourName<CR> cd risks:<CR>
+ or cwd risks:<CR>, depending on your particular FTP.
+ Issue j of volume 16 is in that directory: "get risks-16.j<CR>".  For issues
+ of earlier volumes, "get [.i]risks-i.j<CR>" (where i=1 to 15, j always TWO 
+ digits) for Vol i Issue j.  Vol i summaries in j=00, in both main directory
+ and [.i] subdirectory; "dir" (or "dir [.i]") lists (sub)directory; "bye<CR>" 
+ logs out.  CRVAX.SRI.COM = [128.18.30.65]; <CR>=CarriageReturn; FTPs may 
+ differ; UNIX prompts for username, password; bitftp@pucc.Princeton.EDU and
+ WAIS are alternative repositories.  See risks-15.75 for WAIS info.  
+   To search back issues with WAIS, use risks-digest.src.
+   With Mosaic, use http://www.wais.com/wais-dbs/risks-digest.html.
+
+ FAX: ONLY IF YOU CANNOT GET RISKS ON-LINE, you may be interested in receiving 
+ it via fax; phone +1 (818) 225-2800, or fax +1 (818) 225-7203 for info
+ regarding fax delivery.  PLEASE DO NOT USE THOSE NUMBERS FOR GENERAL 
+ RISKS COMMUNICATIONS; as a last resort you may try phone PGN at 
+ +1 (415) 859-2375 if you cannot E-mail risks-request@CSL.SRI.COM .
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.57 
+************************

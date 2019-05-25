@@ -1,0 +1,181 @@
+VIRUS-L Digest              Friday, 11 Nov 1988          Volume 1 : Issue 5
+
+Today's Topics:
+More on Worm from RISKS
+digesting
+Media coverage of the worm.
+Re:  (long) report on the Internet Worm.
+Additional Virus Information Wanted
+
+---------------------------------------------------------------------------
+
+Date: Fri, 11 Nov 1988 8:56:23 EST
+From: Ken van Wyk <luken@spot.CC.Lehigh.EDU>
+Subject: More on Worm from RISKS
+
+Date:         Thu, 10 Nov 88 11:35:38 PST
+Reply-To:     RISKS@CSL.SRI.COM
+Sender:       Risks List <RISKS@UBVM>      [Ed. this is the BITNET LISTSERV
+From:         RISKS FORUM <RISKS@KL.SRI.COM>       where I'm subscribed.]
+Subject:      RISKS DIGEST 7.74
+
+RISKS-FORUM Digest  Thursday 10 November 1988   Volume 7 : Issue 74
+
+Date: Wed, 9 Nov 88 23:01:29 EST
+From: smb@research.att.com <Steven Bellovin> <hector!smb>
+Subject: The worm and the debug option
+Cc: manis@grads.cs.ubc.ca
+
+Sorry -- in both Berkeley's and Sun's standard distribution, debugging
+comes enabled.  That's perhaps defensible from Berkeley; they're
+distributing a research system, to customers prone to tinker, and
+sendmail is certainly complex enough to need lot's of debugging.  Nor
+can I necessarily criticize it from Sun; it's often useful to be able
+to trace such a program.  The flaw is not that debug mode was
+possible; rather, that sendmail's debug mode (a) was accessible
+remotely; and (b) expanded the range of inputs accepted by the
+program, rather than just providing extra trace data.  What's even
+more amazing is the statement Eric Allman (the author of sendmail) was
+quoted in the N.Y. Times as making: that he added that code to get
+around restrictive management policies.  That is, it was a deliberate
+back door, albeit one with a nominally-limited intended scope.
+10-Nov-88
+
+
+Date: Thu 10 Nov EST 1988 03:13:37
+From: geoff@utstat.UUCP
+Subject: Risks of unchecked input in C programs
+
+A security bug in the 4.2BSD Unix finger daemon, which permitted its
+invoker to obtain a shell with super-user privileges, was exposed
+during the recent Internet worm discussion.  The bug was caused by use
+of the C standard I/O routine "gets" which is a bug waiting to happen
+and which should be stamped out.  (I have deleted gets from my
+standard I/O implementation, and the folks at Bell Labs Research have
+deleted gets from their C library.)  The bug was that the finger
+daemon used gets to read a line of input from its network connection,
+and gets is unable to check that the input line fits within the buffer
+handed to gets, so a suitably-constructed line of input to the finger
+daemon steps on other variables, confusing the finger daemon.
+
+gets, as part of standard I/O, is a decade-old backward-compatibility
+hack for compatibility with the Sixth Edition UNIX Portable I/O
+Library, which was utterly replaced by standard I/O no later than
+1979.  gets takes one parameter, the input buffer into which a line of
+input from the standard input stream is to be stored, and deletes any
+trailing newline from the buffer.  Standard I/O contains an
+alternative to gets, called fgets, which takes three parameters: an
+input buffer, its size in bytes, and the stream to be read.  fgets
+does not strip trailing newlines.  Converting programs from using gets
+to fgets is largely mechanical, and stripping trailing newlines is
+trivial to code yourself.  gets is inherently unsafe due to its
+inability to check for overrun of the buffer provided to it.  There is
+no reason to use gets, and there are good reasons to avoid gets.
+
+Geoff Collyer    utzoo!utstat!geoff, geoff@utstat.toronto.edu
+
+
+------------------------------
+
+Date:         Fri, 11 Nov 88 11:29:21 CST
+From:         Steven McClure <SNMCCL@LSUVM>
+Subject:      digesting
+
+digesting the list is in my opinion an idea whose time has come, but
+it creates a problem.  For some reason, all my mail messages are truncated
+at 200 lines.  Is there any way around this problem??
+
+
+[Ed. The BITNET limit on filesize (as stated in the BITNET Usage
+Guidelines) is 300,000 characters; the VIRUS-L digests are nowhere
+near that large.  Also, the digests are being sent out in full.
+Perhaps some mailer between here and there (even yours, perhaps?) is
+truncating for you.  If so, it *certainly* shouldn't be!  Has anyone
+else experienced the same problem?]
+
+------------------------------
+
+Date: Fri, 11 Nov 1988 13:39:43 EST
+From: Ken van Wyk <luken@spot.CC.Lehigh.EDU>
+Subject: Media coverage of the worm.
+
+Here's a message found on comp.protocols.tcp-ip regarding media
+coverage of the Internet worm.
+
+From: romkey@asylum.UUCP (John Romkey)
+Newsgroups: comp.protocols.tcp-ip
+Subject: various virus (wondrous worm?) quotes
+Date: 8 Nov 88 08:59:52 GMT
+Reply-To: romkey@asylum.sf.ca.us
+
+Thot you all might enjoy some excerpts from some of the more vacuous
+articles about the recent infection.
+
+These quotes do not make any more sense in full context. Honest.
+
+Both excerpts are reprinted without permission.
+
+ComputerWorld, Nov 7, p157: "MIS reacts"
+
+"...Polaroid Corp. in Cambridge, Mass., told users to minimize their
+exposure to the virus by temporarily avoiding use of databases
+established by neighbor and virus victim MIT.
+
+"'We always insist that our people don't replicate software or
+otherwise violate copyright laws,' said Al Hyland, director of
+world-wide systems at Polaroid...
+
+"...Carl Conger, manager of client services at Texas Utilities Co. in
+Dallas said, 'Most of our corporate communications is on leased
+lines.'"
+
+
+PC Week, Nov7, p8: "'Worm' Attacks National Network"
+
+"...No data was destroyed, however, leading computer experts to state
+that it was a worm, not a virus. A software worm differs from a virus
+in that it is a program that installs itself in a system and takes
+total control of a computer's resources, while a virus consists of
+code that is installed in a program and, when invoked, can spread
+throughout a system and destroy data."
+
+			- john romkey
+UUCP: romkey@asylum.uucp		ARPA: romkey@xx.lcs.mit.edu
+ ...!ames!oli-stl!asylum!romkey		Telephone: (415) 594-9268
+Immanentize the Eschaton: Vote BUSH in '88.
+
+------------------------------
+
+Date: Fri, 11 Nov 88 13:36:49 PST
+From: crocker@tis-w.arpa (Stephen D. Crocker)
+Subject: Re:  (long) report on the Internet Worm.
+
+Even Bob Page's attempt to write carefully has an obvious flaw.  Robert
+Morris Sr. is not the "head of the head of the National Computer Security
+Center."  He is the chief scientist of that organization.  Pat Gallagher
+is the director (head) and Paul Peters is the deputy director.  As chief
+scientist, Bob Morris has a staff position and reports to the director.
+
+------------------------------
+
+Date:         Fri, 11 Nov 88 16:29:42 EST
+From:         Ron Dawson <053330@UOTTAWA>
+Subject:      Additional Virus Information Wanted
+
+Hello All,
+
+Could anyone help me find a good source of information (In addition to
+this list) on viruses, worms, trojan horses and the like?  Any
+recommended readings or publications?  Thanks in advance.
+
+
+  - Ron Dawson
+    Systems Science
+    University of Ottawa
+
+    053330 @ UOTTAWA
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

@@ -1,0 +1,799 @@
+VIRUS-L Digest   Thursday, 21 Nov 1991    Volume 4 : Issue 224
+
+Today's Topics:
+
+ANSI BOMBS (PC) (general)
+re: NIST Naming Proposal
+Re: Taxonomy
+Re: Disk Compression (PC) (for now)
+Virus Verification and Removal
+Re: Bug in VSHIELD? (PC)
+Re: Efforts
+Hard disk problem (PC)
+Trial of author of the AIDS trojan (PC)
+Re: A couple questions (Mac) (Commodore)
+Re: Computer virus report from Bulgaria
+Re: Bug in VSHIELD? (PC)
+Re: DIR-2 found in USA (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 20 Nov 91 09:18:02 -0800
+>From:    Eric_Florack.Wbst311@xerox.com
+Subject: ANSI BOMBS (PC) (general)
+
+>>In V4,#221,ontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) says:
+
+>>The usal target of ansi-bombs, btw, are
+> BBS's, where bombs left inside an e-mail msg can do a lot of damage (e.g.
+> refformatting the hd, creating enough files to fill the hd, etc).
+
+Hmm none of the mailer programs for BBSes that I have used was able to
+interpret the keyboard redefinition codes in the ANSI bombs. This is
+not a danger. <<
+"
+Indeed, this is the case, for me, as well. None of the mailers I know of for
+FIDO, in particular, will allow high order chrs,  or any ANSI sequences. All 7
+bit stuff. GT network allows ANSI, but only in specific echoes, and even there,
+the GT TERMINAL has it's own ANSI driver, which is somewhat limited it what it
+will allow. Leave the term, and that layer of ANSI redefs are gone. Same with
+most of the readers around that work with GT.
+
+>>The danger is if somebody puts an ANSI bomb in an
+archive's comment or in a README file, so that if you view it later
+(in DOS mode, not using your communication software)<<
+
+In the case of the ZIP comment, this is no problem, for the most part, since
+this ANSI inclusiuon, far as I know, only works with  REGISTERED versions of
+PKZ, and therefore it's fairly easy to trace a 'bugged' file to it's source.
+
+>>Anyway, I always
+disable the keyboard reprogramming feature of my ANSI driver, there is
+no real need for it - at least for me.<<
+
+I went to a re-write of ANSI that doesn't allow redefs, and as such was a lot
+smaller. Saved me a few K in space, and disabled any ANSI bombs in the process.
+Good trade off, I think.
+
+R,
+E
+"How stupid you are depends on exactly where you're standing at any given
+moment."
+
+------------------------------
+
+Date:    20 Nov 91 12:09:26 -0500
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: NIST Naming Proposal
+
+> From:    Tim Polk <polk@csmes.ncsl.nist.gov>
+
+Looks rather nice!  Gratified to see NIST's incorporated our
+suggestions on the earlier draft (and no doubt those of others).
+Appendix B would be quite valuable; are you actively working on
+preparing it?  (Appendix B is labelled "Sample names cross-indexed
+against several common naming sets".)
+
+The convention that we're currently working with at HICL is similar to
+NIST's: ours is essentially just "family-strain", as in "Vienna-Ira".
+The addition of ";number" seems like a reasonable idea off the top of
+my head; avoids wasting a whole new name on the fifth tiny variant of
+the Sunday, or whatever.  We currently do something like this with
+multiple layers of hyphens (as in "Vienna-Viola-B4").  I know Alan
+Solomon uses dots (as in Anticad.4B).  If we can get it to the point
+where the major disagreement in the community, as far as naming, is
+about what punctuation marks to use, we'll be in pretty good shape!
+*8)
+
+Does anyone know of, or use, a radically different naming convention
+(other than the ones mentioned and decided against in the NIST
+documents)?
+
+DC
+
+------------------------------
+
+Date:    Wed, 20 Nov 91 17:28:57 +0700
+>From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Taxonomy
+
+I have received a number of questions by E-mail regarding virus
+taxonomy, in response to my earlier posting.
+
+May of the replies dealt with one and the same subject - how to
+determine the relationship between two viruses.
+
+In an attempt to clarify my opinions, I will therefore describe the
+system I use.
+
+Problem: Given an ever-growing set of viruses for the same hardware platform,
+         how does one classify them into a hierarchy.
+
+It is possible to design a function-based classification scheme, which
+would take into account features such as what the virus infects,
+stealth/non-stealth, resident/non-resident, how it allocates memory,
+but personally I see too many problems with this approach.
+
+I am in favour of system based on the relationship between viruses - a
+system which gives three levels of classification, where I try to
+classify viruses so that:
+
+    ...non-related viruses belong to separate families
+
+    ...related, but different viruses that can be disinfected in exactly
+       the same way are sub-variants of the same variant.
+
+So, given two viruses A and B, there are three possibilities:
+
+    1) A and B belong to different families
+    2) A and B are different variants of the same family.
+    3) A and B are different sub-variants of the same variant.
+
+Besides, this matches the NIST proposal quite nicely....
+
+Rule #1  If A or B are encrypted, decrypt and only consider the decrypted
+         viruses in the following steps.  If a virus uses self-modifying
+         encryption, do not consider the variable part when comparing the
+         viruses.
+
+Rule #2  If there are fundamental structural differences in how A and B
+         infect the same program, for example if one virus adds its code
+         to the front of infected files, but the other virus appends the
+         code to the file, the viruses belong to different families.
+         Note that this rule for example permits a COM and a COM/EXE virus
+         to belong to the same family.
+
+Rule #3  If the following holds true
+
+                Related(A,B)
+
+         then A and B belong to the same family.
+         The function Related(x,y) is defined below.
+
+Rule #4  If there exists a virus X where the following holds true:
+
+                Related(A, X) = TRUE
+                Related(B, X) = TRUE
+
+         then A and B belong to the same family as X.
+
+Rule #5  If there exist viruses A' and B' where the following holds true:
+
+                A' and B' are known to belong to the same family.
+                Related(A, A') = TRUE
+                Related(B, B') = TRUE
+
+         then A and B belong to the same family (same as A' and B'), otherwise
+	 they belong to different families.
+
+Rule #6  If A and B belong to the same family, but have different lengths, or
+         if they cannot be disinfected in exactly the same way, then they are
+         considered to be separate variants.
+
+Rule #7  If A and B belong to the same variant, but if there is so much as a
+         one-bit difference in the program code, or any static data, including
+         non-referenced text strings within the virus, then A and B are
+         considered to be separate sub-variants.
+
+The function Related(X,Y) compares two blocks of code, and returns TRUE if
+Virus X has significant amount of code in common with virus Y.
+
+This function can be implemented in several ways - for example by comparing
+the histograms of the various bytes found within the code, but I currently
+use the following:
+
+     Compute the average of
+
+        The number of all substrings of X of length N, found within Y
+        -----------------------------------------------------------------
+                     length(Y) - N + 1
+
+      and
+
+        The number of all substrings of Y of length N, found within X
+        -----------------------------------------------------------------
+                     length(X) - N + 1
+
+
+The resulting number is between 0.0 and 1.0, and gives an indication of
+the similarity of X and Y.
+
+Return TRUE if the number is above a certain maximum, and FALSE if it is below
+a certain minimum.  "Uncertain" cases will be settled by a committee.... :-)
+
+So far the method works fine, and if a N of 12-16 is used it will usually
+give a relationship index of 0.6 or higher for viruses known before to be
+related, but non-related viruses usually get an index around 0.05.
+
+- -frisk
+
+------------------------------
+
+Date:    Wed, 20 Nov 91 12:52:13 -0500
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Re: Disk Compression (PC) (for now)
+
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+
+>First about the difficulties. Currently no compression system or
+>readonly driver could be installed -beneath- DOS.
+                 ^^^^^
+Disagree: DiskSecure can make part or all of a partition readonly (and
+does) and it loads beneath DOS. With respect to compression, it can
+only protect the entire area (and easily too since compressed
+partitions are a fixed size just like real ones. Also, as we have
+discussed (BYPASS), such a protection element can be controlled from
+something above DOS.
+
+>However, you probably mean that they should be installed as a device driver,
+>that is, -beneath- the DOS file managing level, but -above- the DOS sector
+>managing level. Even such a solution presents problems, since (as I
+>mentioned in a pervious posting), I currently don't know a way to
+>install both compression, disk locking and a separate INT 13h handling
+>program on the same volume.
+
+You are correct from a single element concept, but a two part system,
+with one at the BIOS level and the other at the DOS device driver
+level (like most compression routines) that handshake with each other
+would be very manageable. Though not as global as we are describing, I
+know of at least one access control program (Enigma-Logic's PC-SAFE -
+plug, one of the few I couldn't break quickly) that functions both
+above and below DOS.
+
+>As to the security problems, note that a virus does not have to
+>circumvent a protection in order to spread. The fact that most
+>Messy-DOS viruses do is because there is virtually no protection on
+>Messy-DOS and any tries to achive one are just doomed patches which
+>can be circumvented easily - which tempts the virus writers to do so.
+
+I take a more optomistic view: DOS is just a program and when properly
+understood can be both controlled and trusted. The hard part is
+designing a mechanism that is applicable to 60+ (or whatever) million
+existing platforms, installs automatically & seamlessly, is compatable
+with all known applications, and uses no memory.
+
+Given a known system, BIOS, and O/S, the task is considerably easier
+than finding something that is truely "generic".
+
+>Suppose that a virus does not try to circumvent the multi-layer
+>protection scheme that you proposed above. Say, it just writes to
+>files when the user does so, that is, when they are copied, compiled,
+>deleted or whatever.
+
+Agree, however by definition a virus spreads to other files else it is
+not a virus. Besides the actions described are harmless (well, for the
+moment) malicious software must be *executed* to have effect and this
+can be detected or blocked once you accept that certain functions
+(copy, modify, delete) can be permitted in some directories or
+partitions and not in others (why viruses do not spread well in
+mainframes without help). The full philosophy would fill a book (maybe
+someday) but just because DOS *doesn't* does not mean it *can't*.
+
+(Wonder if a "Secure DOS" would sell...)
+
+>Next, consider a virus of the Dir II type (-not- the Dir II itself,
+>since it won't infect volumes driven by device drivers), which infects
+>the directory entries information. Since DOS often updates this
+>information (when you copy, delete, rename, etc. a file), the
+>modification of this information must be permitted, if you need
+>something more useful than a write-protected disk. And since the virus
+>does its I/O via calling the DOS device drivers directly, for any
+>monitoring/compressing/etc. software, the write requests will seem to
+>come from DOS itself...
+
+Again, this indicates single thread thinking. On my home PC, the 120
+MB of (apparent) disk storage is separated into an 80 MB piece that
+does not permit writing/deletion/modification without authorization &
+anything that tries gets flagged. This is at the BIOS level and works
+nicely with Windows & SuperStor (both have other problems not related
+to this element) The other 40 MB chunk is used for text and
+development and I can write etc freely as can any application.
+
+When I boot the PC, it comes up in D: and I rarely have to directly
+access C: at all, executables run via PATH & APPEND. My biggest gripe
+is with the 128 byte PATH limit so am forced to resort to ASSIGN. (fix
+is somewhere in the RSN queue but for the moment am swamped with VAXes
+& Unix platforms).
+
+The major difficulty is that it took me considerable manual tweaking
+to create this system on my PC so is Not Ready for Prime Time but the
+problem is one of development and not one of theory.
+
+							Padgett
+
+disclaimer: all of the above is my personal opinion and while it may be
+            occationally shared, my employer has nothing to do with it.
+
+------------------------------
+
+Date:    20 Nov 91 13:55:48 -0500
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Virus Verification and Removal
+
+The November 1991 issue of Virus Bulletin has a paper by me on the
+above subject.  It talks in general about verifying the identity of a
+virus (why and how), and attempting to remove viruses from infected
+objects (why, why not, and how); and it talks about the prototype
+program that we have to do these things.  The program is basically a
+little interpreter for a high-level language that describes viruses
+for verification and removal purposes.  I know various other folks
+have done similar things, and we hope that this paper will stimulate
+discussion (and/or bragging!) on the subject.
+
+At the time the paper was originally written, we hadn't actually
+implemented the removal part of the language yet.  We now have, and of
+course the language underwent considerable changes during
+implementation.  To keep things current, I've updated the paper, and
+Ken has kindly agreed to make it available in the VIRUS-L archives.  A
+flat text version of the paper is available for FTP on
+cert.sei.cmu.edu, as "pub/virus-l/docs/verify.remove.chess.txt".
+There's also a PostScript version, but it's not quite working yet (the
+version I sent Ken seems to assume that your PostScript printer has an
+EBCDIC character set, hehe!).
+
+Feedback and discussion very welcome...
+
+DC
+
+[Ed. Thanks for contributing the paper to our archives, Dave!  If
+anyone wants a PostScript copy of this paper, please be patient; Dave
+and I are working on the details...  The ASCII text file is now on
+cert.sei.cmu.edu (192.88.209.5), however, as Dave points out.]
+
+------------------------------
+
+Date:    Wed, 20 Nov 91 23:29:12 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Bug in VSHIELD? (PC)
+
+DMCGRAW1@UA1VM.UA.EDU (Brian McGraw) writes:
+>Hi everyone.
+Hello Brian,
+
+>I was wondering if anyone else has found a bug with Vshield v.84.  It
+>seems that when installed, a regular Ctrl-Alt-Del which usually causes
+>a warm reboot, doesn't work the same.  Instead, it does a cold boot,
+>causing my drives to spin atrociously, and a memory check at the
+>startup.  When I removed Vshield from my UMB's, everything worked
+>fine.
+
+VSHIELD is designed to intercept "warm boots" (Ctrl Alt Del's) and
+then check the boot drives (A: and C:) for a boot sector or partition
+table virus before allowing the reboot to continue.  VSHIELD then does
+a "cold boot" to clear anything out of memory.  If you want to disable
+feathis then add "/NB" to the VSHIELD command line in your
+AUTOEXEC.BAT file.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - - -
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com  (business)
+4423 Cheeney Street	 | FAX   (408) 970-9727	| aryehg@darkside.com(personal)
+Santa Clara, California	 | BBS   (408) 988-4004	|
+95054-0253  USA		 | v.32  (408) 988-5190	| CompuServe ID: 76702,1714
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | or GO VIRUSFORUM
+
+------------------------------
+
+Date:    Wed, 20 Nov 91 21:24:55 -0300
+>From:    brubli@purodha.GUN.de (Bruno Blissenbach)
+Subject: Re: Efforts
+
+Writes padgett%tccslr.dnet@mmc.com (A. Padgett Peterson):
+
+ > the effort required to breach a software defense is greater
+ > than that required to erect it. This comes about because the
+ > defender has the advantage of being on home ground & has a
+ > "world view" of the system.
+
+Writes turtle@darkside.com (Fred Waller):
+
+> As said earlier, virus-writing is not a cost-conscious activity,
+> while antivirus protection most definitely is.
+
+I agree with one exception, that I witnessed myself. There has been
+indeed at least one attempt of a software professional writing a virus
+program under "normal business" contract. (I'll give you the story few
+lines later)
+
+> And it's not true that defenders are "on home ground" while
+> the attacker is not. Some virus writers seem definitely better
+> acquainted with PC hardware and software than any antivirus
+> publisher I know.
+
+Well, can we not say there are good and less perfect experts on
+anything on either side?
+
+> Anyway, the proof of the pudding is that, until now, the antivirus
+> publishers have been reacting to attack, and usually unable to keep
+> up.
+
+Almost true, but, how could they? The IBM "cheap hardware" designers
+and "open architecture marketers" did not leave them much of a
+chance, did they?
+
+> To this day, the antivirus publishers have been unable to take
+> the initiative in the virus/antivirus contest.
+
+Again, how could they? They are certainly unable to guarantee
+detection of every virus possible, although there are good chances
+to catch few, if not many *know* worms and virus, so you have to
+know (analyze) them first, before you can protect against them,
+leave alone getting rid of them, once you got them.
+
+I do agree that relying entirely on so-called desinfection is not an
+option alone, but you *sometimes* have to. Certainly always, one
+or several of the following "sins" have been comitted before the
+necessity arouse:
+ - insufficient backup
+ - careless behaviour (causing the virus infection)
+ - obtaining program(s) from questionable source(s)
+ - insufficient access control/restriction to computer/system
+ - insufficient monitoring/administration
+ - use of insufficient hardware / operatnig system software
+
+The latter is most certainly a cause of all PC virus infections.
+I remember quite well how shockesd I was when I got my first
+original IBM pc (BIIIG thing with 128 Kb RAM!) back in '82 or '83
+and looked for the diskette write protect switch and found none!
+
+IBM being IBM, they learned nothing from my protest letter & forgot
+to spend the pennies on a disk write enable switch for their PC/XT
+to come later ... not to talk about MESS DOS.  I have never seen a
+disk drive w/o write enable switch, before I got a PC.
+
+Says Fred Waller:
+
+> Software cannot ever provide a permanent defense against software.
+
+True, but with little hardware assistance, imho, it can.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Ok, here comes the promised story:
+There was a small starting enterprise, pretty low budget, and a big
+well established company that offered to take it over. The funders
+of the former declined, and got some rather threatening personal
+words as a response from the manager of the multinational.
+
+The three persons running that small enterprise had all their money
+and plenty of time & much more invested in it, and were afraid to
+see it go down the drain. In fact, one of them had already lost 10
+years of his life worth of labor in such an incident.
+
+There was a fair upcoming that should be some starting point for
+getting really off the ground, and they had good reasons to fear,
+that someone could come and steal their software from their stand
+at the fair.  So they convinced their chief (and almost only)
+software writer to implant "some sort of computer virus" in it, so
+that nobody could make any use of a copy of it.  (Not exactly a good
+protection, IMO)  Well, the software guy did try to convince them
+that this was immoral & generally not helpful, and he was extremely
+discouraging with that, to no avail, he was ordered based on his
+work-contract, and had to.  (He consulted a lawyer, who, after
+hours having the issue explained, gave advice to write the damn
+code and said there was little hope that a court might have
+accepted such immoral order as an acceptable reason to prematurely
+quit the job, etc.
+
+So this virus was written under the usual unhealthy circumstances
+and economical and time deadlines. It was ready one or two days
+before the fair began, but unfortunately could not be used there.
+During the last test session the virus proved that it worked as
+intended by formatting a hard disk, thus erasing both itself and all
+of its sources.  8-()  No Backups.  Accidentally, the virus programmer
+quit the job as soon as his contract permitted.  Yes, I know him
+personally, he's a friend.
+
+B.Blissenbach
+
+- - Domain:  brubli@purodha.GUN.de   GeoNet: MBK1:B.Blissenbach   OshoNet:
+ 49/52.
+- -- X.400:  G=Bruno; S=Blissenbach; O=B.Blissenbach; PRM=GeoNet; ADM=DBP;
+ CO=DE.
+- --- Expressed opinions are mine, unrelated with employer's & usual
+ disclaimers,
+- ---- but it's my (C) Copyright B.Blissenbach and )C(Copyleft as well :-)
+- ----- end of posting.
+			? I'm a friendly .signature virus.
+			   Copy me to your .signature !
+				Help me to live !!
+
+------------------------------
+
+Date:    Thu, 21 Nov 91 08:27:03 -0500
+>From:    d246@uni05.larc.nasa.gov (Glen Braden)
+Subject: Hard disk problem (PC)
+
+Greetings,
+
+   I have a question, concerning my brother's PC. I installed a new
+(40m) hard disk into his 286 PC UNLIMITED(?) after his original hard
+disk got trashed. I have sinced moved out of state, (Mass).  He called
+me a couple of months ago reporting that his hard disk wasn't working,
+similar to the previous problems, (where the machine wouldn't
+recognised the hard disk). I told him that since the disk was still
+under warrenty, he need to call the numbers on the card to see if they
+knew what was going on. (He has been scanning clean but the scan he
+has is scanv72).
+    He never followed up, but recently moved the PC into another room
+and after plugging in and turning the machine on, the system install
+disk for the hard drive was requested. He called the business I bought
+the drive from, they walked him through the procedure and he was up
+and away, except, the drive doesnt boot up, He needs to go through
+these procedures every time he wants to use the PC. Is there anything
+overlooked. I am pretty sure that his problem is hardware, but if
+anyone has experienced this or knows what is wrong, I am all ears...
+
+                                  Thanks in advance
+                                   Glen Braden
+                                    d246@uni05.larc.nasa.gov
+
+------------------------------
+
+Date:    21 Nov 91 13:16:33 +0000
+>From:    coa44@seq1.keele.ac.uk (Mark Scase)
+Subject: Trial of author of the AIDS trojan (PC)
+
+Here is a copy of an article from the UK newspaper The Guardian
+of Tuesday 19 Nov 1991 concerning the trial of the author of the
+Aids trojan.
+
+- --begin quote--
+
+Boffin "plotted Aids blackmail"
+
+A scientist obsessed with Aids hatched a blackmail plot that
+threatened to destroy much of the world's research into the
+disease, Southwark crown court, London, heard yesterday.
+Dr Joseph Popp, aged 41, a health and computer consultant
+with the World Health Organisation, send 20,000 disks containing
+a computer virus to medical research institutes around the
+world after being rejected for a new job and suffering a chronic
+mental breakdown.  He then demanded 6 million pounds for a
+remedy.
+Judge Geoffrey Rivlin stayed proceedings against Dr Popp after
+hearing he was too ill to plead.  Dr Popp is expected to return
+to America, having been extradited to Britain to face 10 charges
+of blackmail and criminal damage.
+
+- --end quote--
+
+- --
+Mark Scase,                 |    JANET: coa44@uk.ac.keele
+Dept of Communication,      |   BITNET: coa44%keele.ac.uk@ukacrl
+University of Keele, Keele, | Internet: coa44%keele.ac.uk@nsfnet-relay.ac.uk
+Staffordshire, ST5 5BG, UK. |    Other: coa44@keele.ac.uk
+(Phone: +44 782 621111)     |     UUCP: ..!ukc!keele!coa44
+
+------------------------------
+
+Date:    Thu, 21 Nov 91 16:56:42 +0000
+>From:    notarus@ux1.cso.uiuc.edu (Mark Notarus)
+Subject: Re: A couple questions (Mac) (Commodore)
+
+alexis@panix.com (Alexis Rosen) writes:
+>>I also own a Commodore 128. Strangely, over the 6 years I have had it
+>>I have never once had a single virus in it. Recently a few trojan
+>>horses appeared, but they were easy to spot.
+
+>>Another reason why my Commodore can't be infected is that it has its
+>>DOS in ROM not in a modifyable DISK which is then loaded into RAM.
+>>Both are loaded into RAM, but on the Commodore, it cannot be changed
+>>with software.
+
+  this isnt quite true.  The Commie 128 often has it's rom-based OS
+mapped into the C000 block of it's memory...when you stop using a
+program that doesnt automatically force you to reboot, then this
+ram-based system is used...allowing virusi to spread easily...not even
+NEEDING the trojan horse.
+ *shrug* I'm an IBM'er now, so....the point it moot.
+:)
+	MArk
+- --
+ Farfignoogan          Snoozignoogan
+ Boozignoogan          Becuase it IS a volkswagon World. :>
+ Razorbone-oogan..     Emailignoogan razorbone@uiuc.edu
+
+------------------------------
+
+Date:    21 Nov 91 18:21:03 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Computer virus report from Bulgaria
+
+frisk@complex.is (Fridrik Skulason) writes:
+
+> >have been discovered, all of them of Bulgarian origin. These are
+> >Damage 1.1 and 1.3 (which, according to a string in them are made in
+> >Plovdiv),
+
+> I would rather suggest that they should be called "Plovdiv 1.1" and
+> "Plovdiv 1.3", rather than "Bulgarian Damage".  "Damage" is already in
+> use - for a couple of Italian Diamond (V1024) derived viruses, and as
+> "Diamond" is of Bulgarian origin, it might be somewhat misleading.
+
+OK, I agree with your proposition.
+
+> > a new version of Murphy, a new version of Terror,
+
+> Neither of which seems to work properly....
+
+Sigh... They have been caught in the wild, nevertheless, so I guess
+they do work in Bulgaria... Have you tried PC-DOS 3.30?
+
+> >a new virus, called Brainy
+
+> Which appears related to a sample named "Warrier" (not "Warrior").  I have
+> not been able to get "Warrier" to infect anything, but "Brainy works without
+> problems.
+
+Oh, does it? Hmm, maybe just some of the scan string that you're using
+for the Warrior family happen to be pressent? Did you examine the
+structure of the virus?
+
+> A quite interesting little virus, by the way - It may insert itself into
+> the middle of a .COM program, without changing the beginning of the file -
+> a trick which is only used by one other virus so far.
+
+At least two viruses do not change the file entry point. Leapfrog
+(516) modifies the instruction the initial JMP points to (for COM
+files) and Voronezh-1600 places a Far CALL to its body at the EXE
+files entry point.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Thu, 21 Nov 91 12:07:34 -0600
+>From:    mkbaird@wheaton.UUCP (marcus k baird)
+Subject: Re: Bug in VSHIELD? (PC)
+
+>I was wondering if anyone else has found a bug with Vshield v.84.  It
+>seems that when installed, a regular Ctrl-Alt-Del which usually causes
+>a warm reboot, doesn't work the same.  Instead, it does a cold boot,
+>causing my drives to spin atrociously, and a memory check at the
+>startup.  When I removed Vshield from my UMB's, everything worked
+>fine.
+>
+>  Brian McGraw
+>  DMCGRAW1@UA1VM.BITNET
+
+Check the doc on the program. I thought that you could not do a warm
+boot w/VSHEILD.
+
+------------------------------
+
+Date:    21 Nov 91 18:58:59 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: DIR-2 found in USA (PC)
+
+medici@dorm.rutgers.edu (Mark Medici) writes:
+
+> 1.  Dir-2 (a.k.a. FAT) is a fast moving virus.  In addition to the lab
+>     Mike reported, we had infections at two other labs at nearly 100%.
+>     All this happened in a matter of days from the time we suspect the
+>     first infection occurred.
+
+Yep, it really flies... Damn, from what you describe, I'm convinced
+now that this virus has really been introduced in the USA. (The three
+other reports that I received turned out to be false alerts.) Since
+you seem to have let "escape" the infection (in the initial report I
+heard only about 40 infected files, which sirprized me a lot), it's
+almost certain that it won't be possible to erradicate the epidemic
+and the virus will spread widely in the States... :-((( It does not
+work under MS-DOS 5.0, but just a few minutes ago I received a phone
+call from the Lab of Computer Virology in Sofia and they told me that
+an improved version of the virus, working perfectly under DOS 5.0 has
+been reported... :-(
+
+> 4.  Microcom's VIRx version 1.8 and Fridrik Skulason's F-PROT version
+>     2.01 also correctly identify the virus.  I have not checked with
+>     Central Point or Symantec about updates.
+
+> 5.  McAfee's CLEAN version 84 successfully removes the virus with no
+>     after effects.  I am not aware of any other programs that
+>     currently do the same, though a back-up and restore of the infect-
+>     ed disk may also be a means of recovery (read on).
+
+Also Dr. Solomon's Anti-virus Toolkit, version 5.13 and above, is able
+to detect the virus. Not to eradicate it, however. The only three
+methods for removing this virus which are currently availble, are
+CLEAN 84, my program DIR2CLR, and using the REN method, described by
+Andrzej Kadlof (similar to your backup method, but much easier and
+faster).
+
+> 6.  The virus cannot infect NetWare volumes, as there is no DOS FAT
+>     available for them to modify.  I don't know if this holds true for
+>     other networks, but would expect that they, too, would prohibit
+>     anything from attempting to modify the FAT on shared volumes.
+
+You are right, but not for the reason you suggest. This virus does not
+try to infect anything on volumes, which are accessed by loadable
+device drivers. This includes any LANs (not only Novel), DiskManager,
+Stacker, SuperStor, or DiskReet volumes.
+
+> 8.  With the exception of some copy protection schemes failing (our
+>     first clue to the virus) and un-explained (though infrequent)
+>     system crashes, (especially in MS-Windows), the virus is invisible
+>     while active.
+
+:-). Yeah, MS-Windows is an excellent anti-virus tool... As soon as
+you get infected, it crashes... sometimes even before... :-)
+
+> 9.  If the system is booted from a clean DOS diskette, a DOS CHKDSK
+>     will report cross-linked files.  This is because the virus changes
+>     the FAT so that all entries for executables point to the virus,
+>     which then redirects to the actual file while after the virus
+>     itself executes.  CHKDSK will report no problems if the virus is
+>     active.
+
+True, with one exception. If you have a file, which has used the last
+cluster of the disk before the disk has become infected, the virus
+will damage the file, by overwriting this cluster. It will also
+"shorten" the disk, so that the cluster(s) with its body will be no
+long reachable. If they happen to belong to a file and you run CHKDSK
+even with a virus active in memory, CHKDSK will report that the
+damaged file contains an "invalid cluster number".
+
+> 11. Though not fully tested, it seems that using a DOS BACKUP of the
+>     infected disk will yield the original, uninfected executables.
+>     At least this is what I found, and it makes sense when you under-
+>     stand how the Dir-2 virus works.  This allows another method of
+>     recovery from the virus:  Back-up the entire system while the
+>     virus is active, reboot from a clean DOS disk, reformat the
+>     infected disk, and restore the backup.  This did work for me the
+>     3 times I tried it.
+
+You have to mention explicitely that the virus -MUST- be active while
+you're performing the backup. Also, a much easier method, suing only
+REName commands has been presented here by the Polish anti-virus
+researcher Andrzej Kadlof.
+
+In general, this virus is somewhat similar to the WDEF virus for the
+Mac world - fast, stealth, and easy to erradicate. I'm afraid that it
+will spread just as widely... :-(
+
+> This is all I know about the virus at this time.  Once detected,
+> recovery is simple with McAfee's CLEAN v84.  If you elect to use the
+> backup/restore method of recovery, make certain to either low-level
+> format your disk or use a utility that will overwrite all data in all
+> clusters before the restore (e.g., Norton's WipeDisk or WipeInfo, or
+> PC Tools Compress with the "Clear Unused Clusters" option turned on),
+> and do another complete scan to make sure the virus hasn't somehow
+> been restored as well.
+
+Oh, to use these tools against this virus means "to use a microscope
+for braking nuts", as we say in Bulgaria... :-) The REN method is much
+easier and does not require any additional programs...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 224]
+******************************************

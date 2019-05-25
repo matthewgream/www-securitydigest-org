@@ -1,0 +1,627 @@
+Subject: RISKS DIGEST 16.39
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 6 September 1994  Volume 16 : Issue 39
+
+         FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for information on RISKS (comp.risks) *****
+
+  Contents:
+PKZIP encryption broken (known plaintext attack) (Paul Carl Kocher)
+Some privacy notes (Phil Agre) 
+Database Marketing (privacy in *Business Week*) (Mark Stalzer)
+Backspace Problems (John Vilkaitis)
+Backspace Failure (John Vilkaitis)
+Re: Millenium goes to prison (Jim Hiller)
+_Modern_ risks of call by reference (Mike Albaugh)
+Some comments on the A330 accident (Peter Ladkin)
+ESORICS 94 Program (Yves Deswarte)
+Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+----------------------------------------------------------------------
+
+Date: Sun, 4 Sep 1994 17:31:28 -0700
+From: Paul Carl Kocher <kocherp@leland.Stanford.EDU>
+Subject: PKZIP encryption broken (known plaintext attack)
+
+I finally found time to take a closer look at the encryption algorithm
+by Roger Schlafly that is used in PKZIP and have developed a practical
+known plaintext attack that can find the entire 96-bit internal state.
+
+The basic encryption algorithm has four steps, two of which are based on
+linear shift registers, one is like a linear congruential, and the final
+converts the contents of an internal state register into an 8-bit value to XOR
+onto a plaintext byte.  A complete description of the algorithm is included in
+the file APPNOTE.TXT, which is included with PKZIP version 1.1 (check Archie
+for "pkz110.exe").
+
+Although the algorithm is substantially better than the toy ciphers used in
+many products, I have developed a practical known plaintext attack that finds
+the 96 bit internal state.  Unlike the ZipCrack program I released a couple
+years ago, this attack finds the internal state registers directly and does
+not involve a brute-force attack on the password.  If adequate known plaintext
+is available, my attack will find the state, regardless of the password's size
+or content.
+
+My attack is an improvement on a known plaintext attack described in a paper
+by Biham (unpublished work) that takes 2^38+ operations.  My improvements
+reduce the amount of work required by approximately a factor of 1500 with 200
+bytes of plaintext.  With less plaintext the attack will take somewhat more
+time, but just 40 bytes should be enough to be practical.  I've written code
+for all steps of the attack; a version written in C with a few optimizations
+in inline assembly runs in less than a day on my '486.  The attack will work
+with versions 1.1 or 2.xx of PKZIP and other programs using the same
+algorithm.
+
+A more in-depth description of the attack will be made available soon, but I
+wanted to let people using PKZIP (and any other programs that use the same
+algorithm) know immediately about the weakness.
+
+Paul C. Kocher  kocherp@leland.stanford.edu  Independent data security 
+  consultant/contractor.  415-323-7634  [Disclaimers removed.  PGN]
+
+------------------------------
+
+Date: Mon, 5 Sep 1994 18:37:31 -0700
+From: Phil Agre <pagre@weber.ucsd.edu>
+Subject: Some privacy notes
+
+The September issue of *Smithsonian* magazine includes a long article on
+"ubiquitous computing" research at Xerox, with some attention to the moral
+issues relating to tracking and monitoring.
+
+The 5 Sep 1994 issue of *Business Week* has a cover story on database
+marketing.  Like most *Business Week* cover stories it's a superficial rehash
+of items you might have seen elsewhere.  But it might be useful as a summary.
+
+Finally, here is a wonderful quotation from a much longer article by Edwin
+McDowell, ``The scrambling is on for off-season tourism'' (*The New York
+Times*, 5 Sep 1994, business section, pp. 17-18) on off-season tourism
+marketing:
+
+  "Another reason for the growing success of off-season strategies is that
+  "states have become a lot more sophisticated with their data bases", said
+  James V. Cammisa Jr., a travel industry consultant in Miami.  "They know
+  where the peaks and valleys in their tourism operations are, and they know
+  how to market the off-season effectively.
+
+  "Kentucky's data base showed that only 350,000 of the 2.5 million Canadians
+  who drove through the state last year stayed overnight.
+
+  "Our research showed that 83 percent of them come from January to 
+  June, headed for Florida, South Carolina and the beaches of Alabama and
+  Mississippi", said Robert Stewart, the Commissioner of Travel Development
+  for Kentucky.  To entice more of them, Kentucky officials will soon hold 
+  a press conference in Toronto and Canadians will be offered a card giving
+  them discounts at hotels, restaurants and attractions along three of
+  Kentucky's interstate highways.
+
+  "Also for the first time, Kentucky is using direct mail to bolster anemic
+  winter occupancy rates in its 15 resort parks that offer overnight
+  accommodations year-round."  (page 18)
+
+This kind of database marketing is worth thinking about in the context of
+rapidly advancing proposals for thoroughgoing instrumentation of cars and
+roads under the rubric of "intelligent vehicle-highway systems", particularly
+given that most of the marketing organizations mentioned in the article are in
+fact government agencies using commercial methods for the benefit of private
+businesses.  
+
+Phil Agre, UCSD
+
+------------------------------
+
+Date: Tue, 6 Sep 1994 13:44:22 +0800
+From: stalzer@macaw.hrl.hac.com
+Subject: Database Marketing
+
+The cover story of the current issue of Business Week (5 Sep 1994), a
+conservative business magazine (sorry, Phil), is on Database Marketing.  The
+goal of Database Marketing is to build detailed customer profiles so that a
+company can target advertisements to specific customers for products and
+services. This approach is highly successful: response rates are double digit
+as opposed to 2%--3% for junk mail.
+
+The data collection process starts with a customer's past purchases.  Other
+sources include surveys, rebate requests, and warranty cards.  American
+Express scans a customer's individual transactions to find patterns and to
+suggest local places that take the card.  Many hospitals sell the names and
+addresses of families with newborns.  The data is then combined with public
+records, such as drivers' licenses, auto registrations, and property tax
+rolls.  Ohio sold its drivers' license and car registration lists for $375,000
+to TRW.  What results is a detailed profile of each customer.
+
+The computing technology used to mine a database for prospects includes
+parallel processing and neural networks. Neural nets are trained to look for
+people likely to buy a product or service given the parameters in the
+database, e.g.,
+
+  what combination of income level, investment activity, and credit-card
+  spending is most likely to be seen among people who are in the market for 
+  mortgages?
+
+The net is applied against each profile in a process called "drilling down."
+This is a compute intensive operation and companies are starting to resort to
+parallel processing or workstation clusters.  Indeed, it's estimated that a
+large portion of the projected growth in commercial parallel processing, from
+$400M today to $5B in 98, will be for database marketing applications.
+
+When asked about the privacy issues, one marketer responded that the loss of
+privacy is offset by the convenience to the customer of highly selective
+advertising. I'll forgo the commentary and simply refer the interested reader
+to the original source for more details and anecdotes.
+
+Mark Stalzer, mas@acm.org
+
+------------------------------
+
+Date: Sat, 3 Sep 1994 04:28:10 -0700 (PDT)
+From: javilk@netcom.com (Javilk)
+Subject: Backspace Problems
+
+I subscribe to the NETCOM Internet service provider.  Although new to UNIX, I
+have been using computers for over 25 years, and had once worked for one of
+the largest timesharing service providers in the world.  I currently work as a
+consultant in the areas of software development on PC's and mainframes.
+
+On a number of occasions while writing E-mail using NETCOM's MAIL utility, I
+was chagrined to discover that my backspace/DEL key has been disabled,
+yielding a "^?" rather than deleting the previous character.  This problem
+also occurs at the UNIX command level, yet utilities, such as the PICO editor
+and slower to use ELM E-mail utility interpret the backspace/DEL key
+correctly. (Except for the subject line!)
+
+Further investigation suggests the once this failure occurs on a server, it
+remains till corrected by the staff.  Reloading my telecom package changes
+nothing, getting another server does; but there is no means of selecting which
+server will answer my call.  My E-mail complaints to NETCOM yielded various
+responses from a rather insistent and unfriendly person regarding a "^H" in
+the text, and flaming me as incompetent when I tried to point out that I
+neither typed a "^H" in the E-mail, nor see it on my screen, and do not find
+it consistent across servers; to several more gentle statements by other
+persons to the effect that there are some differences between servers but that
+is "Not a Problem", "not a bug" -- if you see a "^H", go fix your terminal
+program.  I have even had one E-mail me that if I was not satisfied, I should
+change to another internet service company.
+
+     (For the last time, I see a "^?", NOT a "^H"!  And not on every
+server!  If it is MY problem, how is it that their staff fixes it on
+their end every once in a while -- even when I don't complain?)
+
+The RISK of not reading E-mailed complaints is finding it in RISKS.
+
+The RISK at command level is entering unintended ambiguities when attempting
+to correct parameters.
+
+The RISK is sending out correspondence with garbage characters and unmeant
+words.  (As in earlier correspondence with the Moderator.)
+
+And as a person who started in the field on a help desk in 1970, the GAIN in
+LISTENING to what customers say, ESPECIALY when everyone else is telling them
+to go away, is making good friends.  Their problems usualy turn out to be Very
+Simple!
+
+-JVV- (javilk@netcom.com)  John V. Vilkaitis, Senior Consultant
+Software General Corp.   Field Office: 408-983-0518 (Voice/Fax)
+
+------------------------------
+
+Date: Sat, 3 Sep 1994 04:53:00 -0700 (PDT)
+From: javilk@netcom.com (Javilk)
+Subject: Backspace Failure
+
+This problem reminds me of another problem I had as a student working on the
+old IBM 360, where I would occasionaly see this error on my ONLINE-OS 2250(?)
+video terminal:
+
+   (IBM-ese number) ILLEGAL ERROR. 
+
+whereupon my partitioned data set would be trashed.  There would be NO
+hardcopy of the message.  The center staff would tell me, with varying degrees
+of politeness, that I was "working too hard" or "staying up too late".
+
+   Finally, after months of occasional problems, I spent one night looking
+through A LOT of manuals to find the explanation that the error routine had
+found an illegal pointer in the traceback chain, and thus it was the error
+information that was "illegal".
+
+   The first step in solving a problem, is listening to the person having 
+the problem.   How can you solve a problem, when you don't know what it is?
+
+-JVV- Javilk@netcom.com  John V. Vilkaitis, Senior Consultant
+Software General Corp.  Field Office: 408-983-0518 (Voice/FAX)
+
+------------------------------
+
+Date: Tue, 6 Sep 1994 21:05:48 -0400 (EDT)
+From: JHILLER@lancer.afit.af.mil
+Subject: Re: Millenium goes to prison (RISKS-16.37) 
+
+I have to wonder whether there was any intended marketing connection
+between the name chosen for the above-referenced communication system
+(Millenium Inmate System) and the resulting acronym...
+
+One can derive a lot of humor envisioning a Millenium press release
+extolling the virtues of the system, but using only the acronym, and
+then applying the discussion out of context in a community of automators!
+
+The RISK here isn't entirely intuitive, but smells something like the
+risk of choosing a product name without regard for semantics that might
+be invoked by a segment of the product's potential market...
+
+Jim Hiller
+
+   [Something is aMISs?  In this case, a MIS is as good as a smile
+   (from a .MIL source, at that!).  PGN]
+
+------------------------------
+
+Date: Tue, 6 Sep 1994 10:16:53 -0700 (pdt)
+From: albaugh@agames.com (Mike Albaugh)
+Subject: _Modern_ risks of call by reference
+
+	I realize you are probably sick to death of the "3=4" thread,
+but the thing that struck me was that all the contributions were of
+the "When I was a kid we had to walk ten miles through the snow and
+use a compiler that could bung up its constants" form. What saddens
+me is that the introduction of the "reference" operator in C++ indicates
+that computer science has apparently _not_ learned the lesson taught
+by the earlier and very well documented problems. It is simply not
+advisable to have a single character buried in a 1000+ line "include"
+file radically change the behavior of:
+
+{
+	double my_angle,result1,result2;
+
+	/* we can't make my_angle const, because it needs to be
+	 * "tweaked" on a per-run basis, so neither prototypes
+	 * nor MMU's can save us...
+	 */
+	my_angle = get_current_operating_assumptions();
+
+	result1 = some_library_function(1,my_angle);
+	result2 = some_library_function(2,my_angle);
+}
+
+	In C, one can be confident that no matter what else mat be
+wrong with some_library_function(), it will _NOT_ damage my_angle.
+In C++, the addition of a single '&' character destroys the basis
+of that confidence. I can forgive Backus for "changeable constants",
+but Stroustrup should have known better :-)
+
+	The average sailor will not spit into the wind a second time. The
+average computer scientist does not, apparently, learn from experience.
+
+Mike Albaugh, Atari Games Corp (Arcade Games, soon Time Warner Interactive)
+675 Sycamore Dr. Milpitas, CA 95035   (408)434-1709   albaugh@agames.com
+
+------------------------------
+
+Date: Sat, 27 Aug 1994 19:02:00 +0200
+From: Peter Ladkin <Peter.Ladkin@loria.fr>
+Subject: Some comments on the A330 accident
+
+There are a few points worth emphasising which follow from the Air et Cosmos
+issue 1482 summary of the A330 accident preliminary report, along with the
+1480/1 AeC summary of the preliminary-preliminary findings from the telemetry
+data.
+
+The A330 preliminary accident report singles out lack of pitch
+protection with the autopilot in ALT* mode as a determining factor.
+
+According to the report by Casamayou in Air et Cosmos 1480 (11-16 July), the
+copilot rotated to 28deg to hold 150kts of speed (the airplane actually went
+to 29deg), and the autopilot was engaged by Warner, who also retarded the left
+engine and cut the left hydraulic pump to simulate an engine failure: `As
+planned, the pitch of the aircraft started to diminish and passed from 29deg
+to 25deg, the [pitch] limit authorised by the [flight] envelope protection
+system FMGES (flight management guidance and envelope system).'
+
+It is presumed that the pilots were expecting that the autopilot was to remain
+in SRS mode (`Speed Reference System') under which there is automatic pitch
+protection.  However, because the altitude was set too low (2000ft) in the
+flight director (FCU), the autopilot reverted almost immediately to ALT* mode,
+under which there is no pitch protection.  However, it was non-obvious for the
+pilots to know they were in ALT* mode since it wasn't displayed on the PFD
+under those flight conditions - mode info disappears from the PFD at 25deg,
+**the same point to which pitch is protected by the FMGES**.
+
+The preliminary report noted the lack of PFD display of mode as a contributing
+factor, but not a cause.  Bernard Ziegler, technical director of Airbus,
+singled out in interviews the action of achieving 25deg of pitch as one of his
+main contributing factors [RISKS-16.35, also the specific figure of 25deg, a
+`particularly high pitch angle' is found in Flight International, 17-23 Aug
+1994, p4]. (The other two factors mentioned in the Speigel interview were the
+2000ft altitude setting and that the pilots waited too long to recover.)
+
+However, if you want to test pitch protection it follows you have to put the
+airplane into more than 25deg of pitch, which is what the pilots did.  But
+this is a flight condition such that you can't tell on the PFD what AP mode
+you're in, and hence whether pitch is actually protected!  This info might be
+available, but it is not displayed on the PFD.
+
+Contributory factors that were also noted by the report: the full-aft center
+of gravity, and the TOGA thrust on the engines. However, the airplane may be
+legally loaded to full-aft CG, and if a go-around is needed on an automatic
+landing, that's what TOGA thrust is for. TOGA conditions are statistically the
+most likely conditions under which there is an engine failure.
+
+All of the above is a matter of record, or of common knowledge.  I'd like to
+add a few comments and questions of my own.
+
+Firstly, the report implies that autopilot mode confusion played a role in the
+late reaction of the pilots to the flight condition. They were expecting SRS
+mode and got ALT* (for whatever reason) - they were expecting pitch protection
+when there was none - they were waiting for something that wouldn't happen,
+and they couldn't tell from the PFD.  Pete Mellor, in his article `CAD:
+Computer Aided Disaster' and Robert Dorsett have noted that mode- or
+control-law-confusion seems to have played a role in many of the A320
+accidents as well.
+
+Secondly, this airplane was loaded to within legal limits and was using thrust
+appropriate to a go-around situation. There are US airports at which
+commercial flights take place at which the missed-approach procedure requires
+one to climb-and-maintain altitudes in the region of 2000ft. So, one might
+consider the possibility that these three of the identified `causes' of the
+accident were plausible, although maybe unusual, operating conditions.  The
+airplane was pitched up by the copilot to 28 deg, in order (I would surmise)
+to activate the automatic pitch protection mechanism, under conditions of
+engine failure. Under these conditions, under autopilot control, the airplane
+flew itself into an flight condition from which an experienced test pilot was
+unable to recover in time. I wonder why more attention is not paid to this
+feature of the accident?
+
+The trim setting was singled out as a cause, but the report also says that the
+accelerated rotation caused by this was controlled by the copilot, so I don't
+see how it figures as a cause, unless it was seen as one-task-too-many.
+
+For comparison and discussion in RISKS, I'd like to mention a possible point
+of view different from that provided by Airbus [Ziegler interviews, Der
+Speigel 15.8.94, RISKS-16.35, and Flight International, 17-23 Auf 1994, p4].
+Namely: if the airplane had not crashed, seven more people would be alive -
+but we also wouldn't have known that an A330 with full aft CofG is unable to
+fly itself out of an engine-out-during-go-around situation if the
+altitude-select on the AP is set at or near 2000ft and the pitch is slightly
+above its 25deg limit of protection.
+
+Is this computer-related?  I'm sure the A330 software will be changed.
+If only because the Commission of Inquiry recommended it.
+
+Peter Ladkin
+
+------------------------------
+
+Date: Tue, 6 Sep 1994 14:17:01 +0100
+From: deswarte@laas.fr (Yves Deswarte)
+Subject: ESORICS 94 Program
+
+THE INSTITUTE OF MATHEMATICS AND ITS APPLICATIONS
+Catherine Richards House, 16 Nelson Street, Southend-on-Sea, Essex, SS1 1EF.
+Tel: (0702) 354020     Fax (0702) 354111
+EMAIL: IMACRH@V-E.ANGLIA.AC.UK
+
+
+                 PROVISIONAL PROGRAM   ESORICS-94
+         (European Sympoisum on Research in Computer Security)
+
+THE OLD SHIP HOTEL, BRIGHTON, UK0
+7TH - 9TH NOVEMBER, 1994
+
+ESORICS-94 is organised by the IMA in co-operation with AFCET (creator),
+BCS Computer Security Specialist Group, CERT-ONERA, AICA and GI
+
+                              ESORICS-94
+                         Provisional Program
+
+Monday, 7th November, 1994
+
+ 9.15 -  9.30 a.m.      Introduction - Roger Needham and Gerard Eizenberg
+
+ 9.30 - 10.30 a.m.      Session 1 - Measures (Chair: Dieter Gollmann)
+
+                        Valuation of Trust in Open Networks 
+                        T. Beth, M. Borcherding, B. Klein
+
+                        Performance Requirements in Data Communication Systems 
+                        V. Zorkadis
+
+11.00 - 12.30 p.m.      Session 2 - High Assurance Software 
+                        (Chair: John McLean)
+
+                        Non-interference through Determinism
+                        A.W. Roscoe, J.C.P. Woodcock, L. Wulf
+                        
+                        Mechanical Proof of Security Properties 
+                        J.P. Banatre, C. Bryce, D. Le Metayer
+
+                        Security through Types 
+                        C. O'Halloran, C.T. Sennett
+
+ 2.00 -  3.00 p.m.      Session 3 - Key Management I (Chair: Einar Snekkenes)
+
+                        Designing Secure Key Exchange Protocols
+                        C. Boyd
+
+                        Robust and Secure Password and Key Change Method 
+                        R. Hauser, P. Jansson, R. Molva, G. Tsudik,
+                        E. Van Herreweghen
+
+ 3.30 -  5.00 p.m.      Session 4 - Authentication (Chair: Emilio Montolivo)
+
+                        Beacon Based Authentication 
+                        A. Jiwa, J. Seberry, Y.L. Zheng
+                        
+                        Authentication via Multi-Service Tickets in the 
+                        Kuperee Server 
+                        T. Hardjono, J. Seberry
+
+                        Oblivious Signatures 
+                        L. Chen
+
+                        POSTERS
+
+Tuesday, 8th November, 1994
+
+ 9.00 - 10.00 a.m.      Session 5 - Key Management II (Chair: Chris Mitchell)
+
+                        A Model for Establishing Secure Channels in Open 
+                        Networks 
+                        U.M. Maurer, P.E. Schmid
+                        
+                        On Strengthening Authentication Protocols to Foil 
+                        Cryptanalysis 
+                        W. Mao, C. Boyd
+
+10.00 - 10.30 a.m.      Session 6 - Invited Talk (presented by Chris Mitchell)
+
+                        Security Research for the Financial Sector 
+                        H. Beker 
+
+11.00 - 12.30 p.m.      Session 7 - Digital Payment 
+                        (Chair: Jean-Jacques Quisquater)
+
+                        Efficient Electronic Payment Systems Protecting Privacy
+                        J.L. Camenisch, J.M. Piveteau, M.A. Stadler
+                        
+                        The ESPRIT Project CAFE - High Security Digital 
+                        Payment Systems 
+                        J.P. Boly, A. Bosselaers, R. Cramer, R. Michelsen, 
+                        S. Mjolsnes, F. Muller, T. Pedersen, B. Pfitzmann, 
+                        P. de Rooj, B. Schoenmakers, M. Schunter, L. Vallee, 
+                        M. Waidner
+
+                        Liability and Computer Security: Nine Principles 
+                        R.J. Anderson
+
+ 2.00 -  3.15 p.m.      Session 8 - Distributed Systems 
+                        (Chair: Peter Bottomley)
+
+                        Implementing Secure Dependencies over a Network by 
+                        Designing a Distributed Secure SubSystem 
+                        B. d'Ausbourg
+
+                        A Secure Medium Access Control Protocol: 
+                        Security vs Performances 
+                        P. Siron, B. d'Ausbourg
+
+                        Distributed File Systems over a Multilevel Secure 
+                        Architecture, Problems and Solutions 
+                        C. Calas
+
+ 3.45 -  5.15 p.m.      Session 9 - Panel Session (Chair: Helmut Kurth)
+
+                        Security Evaluation in Practice
+
+                        POSTERS
+
+Wednesday, 9th November, 1994
+
+ 9.00 - 10.30 a.m.      Session 10 - Access Controls 
+                        (Chair: Vijay Varadharajan)
+
+                        On the Expressive Power of the Unary Transformation 
+                        Model 
+                        R.S. Sandhu, S. Ganta
+
+                        Privilege Graph: an Extension to the Typed Access 
+                        Matrix Model 
+                        M. Dacier, Y. Deswarte
+
+                        A Consideration of the Modes of Operation for Secure 
+                        Systems
+                        C. Robinson, S.R. Wiseman
+
+11.00 - 12.30 p.m.      Session 11 - Database I (Chair: Catherine Meadows)
+
+                        Mark-and-Sweep Garbage Collection in Multilevel Secure 
+                        Object-Oriented Database System
+                        A. Ciampichetti, L. Mancini, E. Bertino
+                        
+                        Decomposition of Multi-level Objects in an 
+                        Object-Oriented Database 
+                        N. Boulahia-Cuppens, F. Cuppens, A. Gabillon, 
+                        K. Yazdanian
+
+                        Supporting Object-based High-assurance Write-up in 
+                        Multilevel Databases for Replicated Architecture 
+                        R. Thomas, R.S. Sandhu
+
+ 2.00 -  3.00 p.m.      Session 12 - Database II (Chair: Joachim Biskup)
+
+                        Aggregation in Relational Databases: 
+                        Controlled Disclosure of Sensitive Information  
+                        A. Motro, D.G. Marks, S. Jajodia
+
+                        Information Flow Controls vs Interference Controls: 
+                        An Integrated Approach 
+                        F. Cuppens, G. Trouessin
+
+ 3.00 -  3.15 p.m.      Conclusion - Roger Needham
+
+GENERAL CHAIR: Roger Needham (University of Cambridge).
+
+REQUEST REGISTRATION INFORMATION FROM
+Miss Pamela Irving, The Conference Officer, The Institute of Mathematics 
+and its Applications, Catherine Richards House, 16 Nelson Street, 
+Southend-on-Sea, Essex, SS1 1EF.  Tel. (0702) 354020.  Fax. (0702) 354111.
+EMAIL: IMACRH@V-E.ANGLIA.AC.UK
+
+::::: Yves Deswarte - LAAS-CNRS & INRIA - 31077 Toulouse (France) :::::
+:::: E-mail:deswarte@laas.fr - Tel:+33/61336288 - Fax:+33/61336411 ::::
+
+------------------------------
+
+Date: 31 May 1994 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Info on RISKS (comp.risks), contributions, subscriptions, FTP, etc.  
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ Undigestifiers are available throughout the Internet, but not from RISKS.  
+
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  U.S.
+ users on .mil or .gov domains should contact <risks-request@pica.army.mil> 
+ (Dennis Rears <drears@pica.army.mil>).  UK subscribers please contact 
+ <Lindsay.Marshall@newcastle.ac.uk>.  Local redistribution services are 
+ provided at many other sites as well.  Check FIRST with your local system or 
+ netnews wizards.  If that does not work, THEN please send requests to 
+ <risks-request@csl.sri.com> (which is not automated).  
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is 
+ welcome, but not personal attacks.  PLEASE DO NOT INCLUDE ENTIRE PREVIOUS
+ MESSAGES in responses to them.  Contributions will not be ACKed; the load is 
+ too great.  **PLEASE** include your name & legitimate Internet FROM: address,
+ especially from .UUCP and .BITNET folks.  Anonymized mail is not accepted.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+ All other reuses of RISKS material should respect stated copyright notices,
+ and should cite the sources explicitly; as a courtesy, publications using
+ RISKS material should obtain permission from the contributors.  
+
+ ARCHIVES: "ftp crvax.sri.com<CR>login anonymous<CR>YourName<CR> cd risks:<CR>
+ Issue j of volume 16 is in that directory: "get risks-16.j<CR>".  For issues
+ of earlier volumes, "get [.i]risks-i.j<CR>" (where i=1 to 15, j always TWO 
+ digits) for Vol i Issue j.  Vol i summaries in j=00, in both main directory
+ and [.i] subdirectory; "dir" (or "dir [.i]") lists (sub)directory; "bye<CR>" 
+ logs out.  CRVAX.SRI.COM = [128.18.30.65]; <CR>=CarriageReturn; FTPs may 
+ differ; UNIX prompts for username, password; bitftp@pucc.Princeton.EDU and
+ WAIS are alternative repositories.  See risks-15.75 for WAIS info.  
+   To search back issues with WAIS, use risks-digest.src.
+   With Mosaic, use http://www.wais.com/wais-dbs/risks-digest.html.
+
+ FAX: ONLY IF YOU CANNOT GET RISKS ON-LINE, you may be interested in receiving 
+ it via fax; phone +1 (818) 225-2800, or fax +1 (818) 225-7203 for info
+ regarding fax delivery.  PLEASE DO NOT USE THOSE NUMBERS FOR GENERAL 
+ RISKS COMMUNICATIONS; as a last resort you may try phone PGN at 
+ +1 (415) 859-2375 if you cannot E-mail risks-request@CSL.SRI.COM .
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.39 
+************************

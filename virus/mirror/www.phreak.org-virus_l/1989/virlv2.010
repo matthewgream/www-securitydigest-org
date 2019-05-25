@@ -1,0 +1,270 @@
+VIRUS-L Digest            Wednesday, 11 Jan 1989        Volume 2 : Issue 10
+
+Today's Topics:
+oops, editorial typo
+"False Sense of Security"
+PC Boot sequencez
+Boot sequence (PC)
+Request for information
+
+---------------------------------------------------------------------------
+
+Date: Tue, 10 Jan 89 16:47:37 est
+From: ubu!luken@lehi3b15.csee.lehigh.edu
+Subject: oops, editorial typo
+
+From my own editorial comment:
+> I suppose the appropriate caveat here is that we have to take *any*
+> report of a virus until it can be verified.
+
+Oops, saw this just as the digest was leaving my screen for the
+LISTSERV...  That was *supposed* to say that we have to take any
+report of a virus with a grain of salt until it can be verified.
+                  ^^^^^^^^^^^^^^^^^^^^
+The point being - don't trust a virus report until you've gotten
+verification from a reputable source.  E-mail, in general, may not be
+a reputable source.  It's important to follow up a virus report via
+some other form of media, like a phonecall to the author of the
+report.
+
+Apologies for the typo, I got a bit carried away with the editor...
+
+Ken
+
+------------------------------
+
+Date:  Tue, 10 Jan 89 21:41 EST
+From:  WHMurray@DOCKMASTER.ARPA
+Subject:  "False Sense of Security"
+
+Y. Radai writes:
+
+>  I don't agree that such programs provide very little protection.  I
+>think that the viruses (and worms and Trojans) against which they do
+>afford protection (they may be "amateurish" but they're not
+>necessarily benign!) are still in the majority (at least among those
+>viruses which have become widespread).  And I think that it is well
+>worth protecting oneself against them, even if more sophisticated
+>viruses exist as well and will become more prevalent in the future.
+
+I think that another useful distinction can be made here.  I suggest
+that such software, to the extent that it makes the machine on which
+it exists different from the population at large, goes a long way to
+making that machine immune to viruses.  It is less effective in
+protecting it against Trojan Horse attacks which are specifically
+aimed at it.
+
+Viruses exploit the similarities among systems.  Its success is
+independent of its ability to infect any particular machine.  Indeed
+it is naive to anticipate viruses that can account for any and all
+arbitrary differences among machines.  To quote a famous hacker "why
+would anyone do that?"
+
+One of the problems with viruses is that they can be successful even
+in a population in which many of the targets are partially, or even
+totally, immune.  (Note that the Internet Worm was extremely
+successful, and very disruptive, in a population in which the majority
+of the machines were not suited to it.  It was also disruptive to
+machines in which it could not execute.  It interfered with their
+normal traffic and it sent them attack traffic.  Nonetheless, the
+vulnerability to viruses arises, in part, because there exists a large
+population of similar machines.  In a world in which no two machines
+had any predictable similarity, then, while we might still have Trojan
+Horses, we would have no viruses.
+
+[Flame on.]
+
+William Hugh Murray, Fellow, Information System Security, Ernst & Whinney
+2000 National City Center Cleveland, Ohio 44114
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+
+------------------------------
+
+Date:         Tue, 10 Jan 1989 22:01 CST
+From:         John Ladwig <JLADWIG@UMINN1.BITNET>
+Subject:      PC Boot sequence
+
+An anecdote regarding messages returned when booting non-system
+diskettes.
+
+In "Brain and the boot sequence (PC)" (VIRUS-L v2 #5), Dimitri
+Vulis writes:
+
+[The boot process...]
+> reads in the beginning of the directory and checks that
+> the first 2 files are IBMBIO.COM and IBMDOS.COM (for PC-DOS) or IO.SYS
+> and MSDOS.SYS (for generic MS-DOS). If they are not, it displays (via
+> INT 10) the message: `Non-system disk or disk error, replace, strike
+> any key when ready', waits for a keystroke and does INT 19 again. Of
+> course, it's trivial to replace this message by anything you like,
+> including a German one, and ROM BIOS has nothing to do with this.
+
+Diskettes formatted using the SideKick Plus 'File Manager'
+display the following message if the are booted without being
+SYSed:
+
+       Hand crafted by the SideKick Plus File Manager
+
+       Gavaskar, Bradman, Grace, Compton, Richards, Khan,
+       Knott, Hadlee, Trueman, Lillee, and Holding.
+
+       Remove the disk from the drive and press any key
+       to restart the system.
+
+The text is found in the boot sector, starting at offset 52 (decimal).
+The text "SKDOS1.0" appears at offset 4.
+
+I must say that I was a bit surprised when I discovered this by
+accident.  (Goes to show that you should read the manual thoroughly
+:-))
+
+------------------------------
+
+Date:     Wed, 11 Jan 89 01:05 EST
+From:     Dimitri Vulis <DLV@CUNYVMS1.BITNET>
+Subject:  Boot sequence (PC)
+
+(Please excuse the long quotes)
+
+>  The other point:  In V2 #5, Dimitri wrote:
+>>       ... it reads in the beginning of the directory and checks that
+>>and MSDOS.SYS (for generic MS-DOS). ....
+>>If these files are there, it reads (using INT 13) the first one (DOS
+>>low-level routines, _not_ BIOS---BIOS is in ROM!) into memory, usually
+>>at 70:0, and jumps there. IBMBIO.COM then loads the rest of DOS.
+>  The clause "it reads ... the first one [i.e. IBMBIO.COM or IO.SYS]
+>into memory" is not quite accurate.  It seems that what actually
+>happens is that the disk bootstrap routine loads a certain number of
+>sectors, starting from the beginning of the data area, into RAM, under
+>the *assumption* that these contain IBMBIO.COM/IO.SYS.  Depending on
+>the implementation, it may also do the same with the following sectors
+>on the assumption that they contain IBMDOS.COM/MSDOS.SYS, or else the
+>former program may load the latter.  But if the disk has been tampered
+>with, it is not necessarily these two files which will get loaded.
+>                                           Y. Radai
+
+I stand by what I said. The SYS command does a lot of elaborate
+checking to make sure that IBMBIO.COM fits contigiously into the first
+data sectors on disk. FORMAT/S just writes the file into the first
+data sectors. The boot code has to make certain assumptions---there's
+not enough room for the logic to read the FAT and compute the
+sector/track for each cluster to simulate a file call.  So, it assumes
+that if the disk has IBMBIO.COM and IBMDOS.COM as the first files in
+the directory, (and finding that takes room too) and if they are
+hidden/system, then the code assumes that the disk is OK and
+IBMBIO.COM is indeed in the first data sectors. It computes the
+sector/track for these sectors and (ordinarily) reads in the file
+using INT 13 (note the wording).  Certainly, one can mess around with
+a disk and create one that won't boot, because IBMBIO.SYS is not at
+the beginnig. This would require some (a little) conscious effort and
+cannot easily be done with just FORMAT/S or SYS. I was describing a
+successful boot, in which the file is read into memory.
+
+Regarding the other point (Trojan-protection software):
+
+That's a matter of opinion. FSP 1.4 is the only such program that I'm
+familiar with that is marginally acceptable to me. The previous
+versions of it did more harm than good. Most other programs of this
+type (that intersept INT 13 and report suspicious activity) are
+useless. What good is a program that indiscriminately reports _every_
+disk access? It is unconscienable(sp?) that some crooks charge money
+for such programs and use cheap scare tactics to induce dumb ignorant
+people to pay for them. By the way, I don't even use FSP 1.4, and
+here's the reason: some time ago (years) I called Ross Greenberg's
+BBS, and there was a message from him saying that over 50% of uploads
+to his board turn out to be Trojans. I'm not implying that the guy is
+unstable, but I'd rather see the source code for a program that
+intercepts disk access and can potentially do very nasty things
+(remember NOTROJ?).
+
+Also, by the way, last semester I wrote a short (COM file) virus for
+my cryptography class that _infected_ FSP 1.4.
+
+>  The only argument which Dimitri gives for his statement is that one
+>might be lulled into using less discretion in deciding what to run on
+>his machine.  Now I would understand this argument in a situation
+>where anti-viral software is sold to naive customers under the false
+>pretense that it will prevent all types of infection.  But are we so
+>naive?  To give the impression, as Dimitri does, that it is worse to
+>use such software than not to use it, is certainly not correct in
+>general.  He doesn't explain just what his notion of discretion
+>consists of, but whatever it may be, why can't we use *both*
+>anti-viral software *and* discretion ....??
+
+What do I mean by discretion? Well, I don't download software from
+BBS's anymore (too bad), I back up everything I've done at the end of
+the day (have been for many years), and I don't have stuff (executable
+and other) online that I don't need. I don't happen to use a
+floppy-based machine, but if I did, I'd make sure I reboot from a
+write-protected floppy I can trust.
+
+If you look at the ads in US computer magazines, that's exactly what's
+said/implied: 1) _everyone_ needs such programs, 2) they offer 100%
+protection.  I'm willing to believe that Israeli users are smarter
+than American users. In this country even complete idiots (pardon my
+French) use PCs---just read some of the recent messages in this very
+digest. When you place a very stupid and ignorant individual in front
+of a PC without giving him/her adequate instruction, you open a
+Pandora's box of problems, one of which is this Virus/Trojan thing.
+How many of your users can say whether this is true or false (for an
+IBM PC; Mac is something else yet):
+
+(1) Virus software can override write-protect tabs
+
+(2) Viruses can spread via e-mail messages
+
+(3) Viruses are the most common type of Trojan horse programs
+
+(4) A virus can spread from a PC to VAX or VM and vice versa
+
+Such a misinformed individual will typically pay some gonef $$$ for a
+piece of code that TSRs and checks for INT 13 functions `write',
+`format', `format fancy', `format fancy with twist', etc, without
+analysing where they came from; it will produce too much output and
+s/he will habitually turn it off; nevertheless, s/he will feel fully
+protected and will promiscuously load all kinds of suspect software
+and will never take a backup. (We have, by the way, a gay fellow, a
+good mathematician, who does not believe that AIDS is caused by a
+virus, or, for that matter, is spread sexually; and he's still alive!)
+
+------------------------------
+
+Date:    Wed, 11 Jan 89 02:32:12 EST
+From: <Xc60039@PORTLAND.BITNET> (Douglas Howell)
+Subject: Request for information
+
+  Hello.  I am wondering if any of you might be able to help
+me.  I'm doing a study on viruses and would like to get any
+information available on them.  Particularly I would like to
+ask anyone who has a virus which has been disected with
+accompaning documentation to send it to me. I am new to this
+list so I have not had much time to read through past issues
+yet.  I shall do that when classes resume.
+    Could anyone explain to me how to construct a virus.
+Just the basics will do nicely.  I'll gladly accept any
+information that is sent to me no matter it's length.  I'll
+also be needing information on how to deactivate the
+'common' virus.
+    I realize that this is a lot to ask, but I'm hoping that
+many of you will respond and help me out.
+I wish to state right here and now that I am not requesting a
+living or active virus or trojan horse.  This is my third
+revision and yet the clarity of my request still remains in
+question.  I relize the severity of what I ask for, and for
+all intensions I see no harm in it.  Please contact me directly
+if there are any questions.
+
+                    Douglas Howell
+                    (xc60039@Portland)
+
+[Ed. Doug has revised this message a few times, and each time I sent
+it back because he was requesting a copy of a virus; something which I
+will not promote here on VIRUS-L.  I believe that it is a bad idea to
+send copies of viruses to others, particularly when requested only via
+e-mail.  I trust that anyone responding to such a request will
+exercise due caution.]
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

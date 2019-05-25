@@ -1,0 +1,534 @@
+VIRUS-L Digest   Monday, 30 Jul 1990    Volume 3 : Issue 133
+
+Today's Topics:
+
+Diskettes w/o DOS Executable Files (PC)
+Netserver/Checksums/Stoned (PC)
+Mac Network virus checking (Mac)
+Re: We have been hit!!! (Help) (4096) (PC)
+Re: Removing the Stoned virus (PC)
+Re: other ways for viral injection ?
+Re: LaserWriter virus?
+Re: Stoned Virus Clear (PC)
+Re: New mac virus? (Mac)
+New Boot Sector Virus (PC)
+Re: Removal of Stoned Virus (PC)
+Re: Stoned Virus Clear (PC)
+RE: NetWare and Virus (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    27 Jul 90 13:37:10 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Diskettes w/o DOS Executable Files (PC)
+
+Steve Albrecht <70033.1271@CompuServe.COM> asks if a diskette with no
+*.EXE, *.COM, *.SYS or *.BAT files can spread a virus infection in any
+way except by having a boot-sector virus and being booted from, having
+an executable file that is present under another name and is later
+renamed and run, or having a virus in a word-processor or spreadsheet
+macro.
+
+There are a few other ways that those categories may or may not cover.
+If the diskette is infected with a boot-sector virus, but does not
+contain a copy of the operating system, booting the machine with that
+diskette in the drive can infect the system, even though the computer
+"does not boot" (the "non-system disk or disk error" message appears).
+If the diskette contains any files that any program treats as code,
+they may be infected; this includes EXE, COM, BAT, and SYS files and
+application macros, but also *.BAS files (interpreted by a BASIC
+interpreter), files intended for interpretation by REXX or LISP
+interpreters, and so on, and even (although we don't know of any such
+viruses at the moment) source code (*.PAS, *.C, etc).  It also
+includes any overlays or auxiliary-code files which some other program
+will load via the DOS load/execute function; these are sometimes named
+*.OVL, but they may be called anything at all.  The 1813 virus, for
+instance, will infect such files, and we have seen 1813-infected files
+with extensions of "DAT" and "BIN" and "BSP".
+
+  Basically, there are all -sorts- of things that are "executable"
+enough that a virus could be written to spread between them, and are
+therefore probably worth protecting in critical applications.  DC
+
+------------------------------
+
+Date:    27 July, 1990
+From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc>
+Subject: Netserver/Checksums/Stoned (PC)
+
+	On the Netserver issue: it would seem that we are missing one
+important distinction: is the server itself becoming infected or is
+it files stored on the server ? I have seen files on a server become
+infected (Sunday) but not the server itself (of course, being a VAX
+it would have been very difficult). We need a more explicit
+description of the experiment to be able to determine risk, particularly
+having seen several instances where privileged operation resulted in
+an infection that could not have been spread by other means.
+
+	Generally, write permission is something that is either granted or
+not, and while spoofing & hole exploitation are means of getting around this,
+I have not yet seen a PC virus that attempts it.
+
+	On CheckSumming: in order to know the algorithm in place (assuming
+it is more than a trivial summation), the detection/authentication package
+in use must be determined. Given knowlege of the package, it is far easier
+to subvert the package itself (always pass) than to try to match its checksums.
+This is the same reason that mainframe viruses are rare: it is easier to
+accomplish the same ends using a worm rather than a virus.
+
+	ANY protection package can be subverted given enough knowlege and
+effort. Luckily a virus must operate under certain constraints as to size
+and complexity. The most devious MS-DOS virus currently requires a 4k addition
+to files to operate and becomes evident through its size though it is often
+lost in hard disk quantum space. Even so, it still attempts to hide from
+detection packages rather than to subvert them.
+
+	The key is that many detection packages still rely on mutable MS-DOS
+interrupts for operation while the current crop of viruses have progressed
+spoofing BIOS interrupts and using DMA & direct I/O to bypass/subvert MS-DOS
+entirely. An effective detection package must use or at least be able to
+detect changes in these to be effective. For the last few years, the relatively
+easily detected viruses have been handleable by equally simple responses
+(my statement that ALL of the common viruses with the possible exception of
+the 4096 can be detected by examining just three bytes still goes). Now we
+are reaching the point where more sophisticated schemes are going to be
+necessary. Developments such as shadow ROM, multi-tasking software, and CMOS
+setups provide vulnerabilities that are not currently being covered.
+
+	Enough philosophy. Concerning the STONED virus, a full low level
+repartitioning and reformat of a hard disk is not really necessary for
+recovery. Since the virus stores the original partition table (I believe it
+is in physical sector 7), someone who knows what they are doing can recover
+through restoration of sector 0. With only slightly more difficulty, if the
+original partition sizes and bad block table is known, a good technician can
+restore the partition table from scratch. The code is not particlularly
+complex and the table itself is well documented. While it is not something
+I would choose for a Saturday afternoon, it can be done. Of course if a full
+backup is available, re-partitioning/re-formatting/reloading is a mindless
+exercise. My point is just that if irreplaceable data is on the disk, it may
+recovered.
+
+	As an exercise for the student, it should take not more than an hour
+using DEBUG to write a routine that will save the partition table,
+boot sector, both FATs, and the root directory to a floppy and allow selective
+restoration of any part thereof.
+
+------------------------------
+
+Date:    Fri, 27 Jul 90 14:13:22 -0500
+From:    martha rapp <IMER400@INDYCMS.BITNET>
+Subject: Mac Network virus checking (Mac)
+
+   We will be developing 2 new Macintosh public computer clusters this Fall
+at IUPUI (University of Indiana - Purdue University at Indianapolis).  The
+MACs will be SE 30s with harddrives and will run off an IBM Mod 80 server
+which will connect the MACs to Mainframes and in turn connect any MAC to any
+other micro computer on our campus.
+   Does any other school/organization represented on this list have a similar
+configuration?  If so, what virus checking routines do you use?  Is There a MAC
+network specific virus checker?  Thanks
+                               Martha Rapp
+                               Computing Services
+                               IUPUI
+
+------------------------------
+
+Date:    27 Jul 90 16:09:01 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Re: We have been hit!!! (Help) (4096) (PC)
+
+David de Leeuw <DAVID@BGUVM.BITNET>:
+
+> 2. The boot-sector does get attacked by 4096.
+
+Interesting!  What have you seen the 4096 do to the boot sector?  The
+only boot-sector effect that I know of so far is that some of the
+broken/garbled/not_working code seems to be designed to write the
+"Frodo Lives!" display program to (some) boot sector.  But I've never
+seen a 4096 sample in which enough of that code was intact to even
+figure out just what it was supposed to do.  Any more information you
+have would be very nice!
+
+> 3. All executables and coms get infected, my suspision is that a file checker
+> which is infected spreads the virus to all files, even those not run.
+
+Yep; if the virus is active in memory, executables get infected when
+they are opened/closed.  Since virus checkers open/close just about
+all executables, running a checker that does not scan memory for
+4096-like viruses before scanning files can cause the infection to
+spread in a hurry.  It's best to scan only after cold booting from a
+known-clean floppy (so you know the virus isn't in memory), with a
+known-clean scanner.  That's not always feasible, of course...
+
+DC
+IBM T. J. Watson Research Center
+
+------------------------------
+
+Date:    Fri, 27 Jul 90 20:03:00 -0500
+From:    A10DAG1@NIU.BITNET
+Subject: Re: Removing the Stoned virus (PC)
+
+In Virus-L v3 #123, Steve Albrecht details his company's method
+of removing the Stoned virus in an effort to help Yavuz...
+
+Steve,
+   While your method will certainly remove the stoned virus from a
+hard-disk, it seems to me to be like hunting squirrels with a
+bazooka. We had a rampant infection of Stoned here, and it was
+easily removed by McAfee's CleanUp. No data loss, no need to have
+a current backup (though you should always have one!), no problems.
+
+Yavuz,
+   Just boot the infected machine from a clean, write protected
+diskette. Once it is up and running from the diskette, you can
+run CleanUp and reboot (from the hard drive). The whole procedure
+takes about two minutes. Of course, you should also run scan
+and CleanUp on all of your floppies to prevent re-infection.
+
+
+                      => David <=
+
+------------------------------
+
+Date:    Fri, 27 Jul 90 14:56:16 +0000
+From:    peter@ficc.ferranti.com (Peter da Silva)
+Subject: Re: other ways for viral injection ?
+
+lath@geocub.greco-prog.fr (Laurent Lathieyre) writes:
+> 	Alike, did some Trojan horses be discovered in some
+> operating systems ? I wonder if operating systems shouldn't
+> preferably be delivered in source form rather than in
+> compiled form...
+
+(a) You need *some* executable code to get it up the first time.
+
+(b) There is no theoretical reason you can't put a virus in source code.
+    I first brought this point up in a "hoax" posting a few weeks before
+    the Internet Worm showed up (and when lots of people were saying that
+    you couldn't do a UNIX virus). It's been reposted on virus-l, and I'm
+    sure it's in the archives.
+- --
+Peter da Silva.   `-_-'
++1 713 274 5180.   'U`
+<peter@ficc.ferranti.com>
+
+------------------------------
+
+Date:    Sat, 28 Jul 90 05:54:02 +0000
+From:    dwal@midway.uchicago.edu (David Walton)
+Subject: Re: LaserWriter virus?
+
+woody@chinacat.Unicom.COM (Woody Baker @ Eagle Signal) writes:
+>swsh@midway.uchicago.edu (Janet M. Swisher) writes:
+>> I have heard in several places that this LaserWriter nasty is a Trojan
+>> horse.  If so, that would seem to restrict it to being a Mac problem.
+>> However, nothing that I have seen mentions the name that this Trojan
+>> goes under, so I don't know what to look out for.  Could someone with
+>> actual experience with the problem confirm/deny/specify?
+>
+>Well, since Postscript printers are intellegent, (they understand a
+>very complex and rich general purpose programming language,) and every
+>thing sent to them is in actuality a program, the problem knows no boundries.
+
+[Lots of very useful information removed]
+
+Janet's point was that the program that actually sent the PostScript
+to the printer was a Macintosh trojan horse, so that the PostScript
+would be downloaded only from a Macintosh.  (At least I think that's
+what she meant.  Since we share an office, I suppose I could ask her
+:-).  Granted, once the PostScript is actually in the printer, it's
+a problem for any computer (Mac, IBM, UNIX box) that wants to contact
+the printer.  But that actual trojan horse itself is a Macintosh
+application, so other systems wouldn't be able to spread the infection
+(unless the author has been kind enough to provide the trojan on
+multiple systems, which of course is entirely possible).
+
+Sigh.  I love irresponsible hackers.  Really, I do.  Heavens, what
+would I do with my time if I couldn't spend it fighting viruses?
+
+
+>Woody Baker
+>Rt.1 Box I
+>Manor, Tx. 78653
+
+- --
+David Walton		Internet: dwal@midway.uchicago.edu
+University of Chicago   {  Any opinions found herein are mine, not  }
+Computing Organizations {  those of my employers (or anybody else). }
+
+------------------------------
+
+Date:    Sat, 28 Jul 90 07:56:00 -0400
+From:    <SANTO@SENECA.BITNET>
+Subject: Re: Stoned Virus Clear (PC)
+
+If you're going to use the Norton Advanced Utilities you may as well remove
+the Stoned virus while you're there.
+
+Hard Disk Infection:
+        - copy Side 0 Cylinder 0 Sector 7 to Side 0 Cylinder 0 Sector 1.
+        - 007 is where your original partition table has been moved.
+
+Floppy Diskette Infection:
+        - copy Side 1 Cylinder 0 Sector 3 to Side 0 Cylinder 0 Sector 1.
+        - 103 is where your original boot sector has been moved.
+
+This may not work for all variations of the Stoned virus but it probably will.
+
+Good Luck.
+- -------------------------------------------------------------------------------
+Santo Nucifora                 :    Address: SANTO@SENECA.BITNET
+Seneca College of              :
+Applied Arts and Technology    : Disclaimer: What's a disclaimer?!?
+- -------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Thu, 26 Jul 90 13:49:36 -0700
+From:    cos@lclark.BITNET
+Subject: Re: New mac virus? (Mac)
+
+I've been doing general disk repairs and virus work around here, and
+I've come across a problem with one of the disks.  Following standard
+procedure, I bit-copied it onto another (blank) disk, and worked from
+that disk.  As a result: My MacII bombed three times and the hard disk
+started skipping like a bad record (This could be a problem with the
+hard disk, and unrelated to viruses).  The disturbing part is the copy
+which I was working on.  Although it has been scanned by Disinfectant
+2.0, Virex Init v. 1.7, SAM virus clinic, and Virex 2.7.1, none of
+them has detected either viruses or trojan horses or any sort of foul
+play.  The catcher is this: although the disk is physically unlocked,
+it is marked "locked" under the info box, and cannot be modified or
+unlocked.  So far, the only program which has made a difference has
+been Mactools, which registered the disk as unlocked.  I'm going to
+work on it from there, but I would greatly appreciate any comments or
+suggestions.
+
+Thanks.
+
+John Costello
+cos@lclark.uucp
+Academic Computing Services
+Lewis and Clark College
+Portland, OR  97219
+
+My opinions have been backed up onto disk and stored in the bottom of
+a closet in the basement of my friends house, which just burned down .
+. . .  and do not reflect the opinions (if they exist) of this college
+(if it exists)..
+
+------------------------------
+
+Date:    Sun, 29 Jul 90 12:49:40 -0700
+From:    Alan_J_Roberts@cup.portal.com
+Subject: New Boot Sector Virus (PC)
+
+This is a forward from Aryeh Goretsky of the Computer Virus
+Industry Association:
+================================================================
+
+	John McAfee has authorized me to begin posting selected CVIA
+Membership Alerts to VIRUS-L/VALERT-L.  Ken van Wyk has asked John if
+he would provide more information to VIRUS-L subscribers about
+infection occurences by new virus strains.  Membership Alerts appear
+to be the best way to do this.  All Alerts will be posted to Virus-l
+provided the report originator does not specify membership restricted
+distribution.  Accordingly, the following Alert is submitted:
+
+July 27, 1990
+CVIA Membership Alert
+Originating Member: Microsoft Corporation
+Alert Type: New Virus in Public Domain
+Library Entry: AIRCOP
+Entry Type: Boot Sector Virus
+
+	CVIA member Microsoft Corporation has reported a public domain
+U.S. infection by a new boot sector virus.  The virus has been
+submitted to the library and is currently under analysis.  The
+virus replicates in the normal boot sector fashion by booting from
+an infected floppy.  Non-write-protected diskettes that are
+inserted into an infected system become infected at the time that
+the diskette is first referenced.
+	The virus randomly displays the following message:
+
+		Red State, Germ Offensive.
+		AIRCOP
+
+	Potential data damage has not yet been determined.  Early
+analysis, however, indicates some small similarity to both the
+Joshi and Marti Brothers boot viruses that have been reported at
+multiple sites in the U.S.
+	A detector will be made available to liaison staff on Monday,
+July 30.
+
+John McAfee
+
+------------------------------
+
+Date:    Sun, 29 Jul 90 05:37:02 +0000
+From:    plains!umn-cs!LOCAL!aslakson@uunet.UU.NET (Brian Aslakson)
+Subject: Re: Removal of Stoned Virus (PC)
+
+70033.1271@CompuServe.COM (Steve Albrecht) writes:
+>>  From:    Yavuz Selim KOMUR <OP@TRAKDEN.BITNET>
+>>    We have Stoned virus in PC. How I clear virus it from partion
+>>    table.   I tried to format hard disk two times, but I couldn't
+>>    successfull.  Thank for your comments.
+
+>...
+>USE DISK MANAGER TO LOW-LEVEL FORMAT, RE-PARTITION, AND HIGH-LEVEL
+>FORMAT THE HARD DISK.  Low-level formatting the hard disk and re-
+>...
+
+WRONG!!!!  DON'T do this!!  It is unecessarily complicated/roundabout/
+unnecessary.  The following is what worked for me to disinfect several
+harddrives and floppys that were infected with the Stoned virus (and
+some with Jerusalem B):
+
+1.  Make backups.  The ones I worked on has a complete set up stored
+on a server, and data files were the users responsibility (made it easier).
+I like the idea of using Fastback, like Steve mentions.  I'd only back up
+data files, though, and use the original, write protected floppys to put
+the programs back on.
+
+2.  Get SCAN.EXE from an ftp site or get it from McAfee's BBS.  (ftp
+is probably the better choice, hey?)  I think that mibsrv.mib.eng.ua.edu
+and rascal.ics.utexas.edu (134.82.1.1) have the latest version (SCANV64.ZIP,
+I think).  Also get CLEAN.EXE (archived as (I think) CLEANV64.ZIP).
+Download it to a clean machine (Boot from a clean, write protected system disk,
+and don't use any executables off the hard drive, only off an original
+write prote....)  At worst, the SCAN program would get infected, but would
+probably still work.  Read the documentation.
+
+3.  Read the manual.  Use SCAN.
+
+4.  Boot from a clean write protected floppy, and use CLEAN.EXE to clean
+up the infection. (of course, read the manual for it!)
+
+4.5  There are other products out there, I just know and respect SCAN.
+Check out the ftp site's archives, and get what looks good.  Have backups,
+and read the manual!
+
+5.  The way I heard it, sometimes ya lose it.  On floppies, if there are
+subdirectories, you end up with everything in the root dir.  If this happens,
+go back and pretend your drive is brand new, and start fresh.  From low-level.
+
+6.  I had NO NO NO trouble, and things worked fine after that.
+
+7.  I have a buddy who prefers the FPROT set.  I don't know it, but whatever
+works best for you.
+
+8.  If you get saved money, (time, hair pulling), it might be worth it
+to send in a shareware registration to whoever wrote the anti-virus product
+you use.  (I still haven't, but I will, really!).
+
+9.  Let me know what happens (especially when you SCAN'd, did you find
+other viruses?).
+
+10.  I have a clone of my own (always clean so far!!), in spite of the
+.signature (I can't afford a Mac).
+- --
+Macintosh related:  mac-admin@cs.umn.edu
+All else:  aslakson@cs.umn.edu
+
+------------------------------
+
+Date:    Mon, 30 Jul 90 11:18:46 +0200
+From:    dnlunx!frank@relay.EU.net (Mulder F.J.M.)
+Subject: Re: Stoned Virus Clear (PC)
+
+Dear Yavuz,
+
+I had a similar case recently, and the method used to destroy the virus
+in the partition table was as follows:
+
+- - Boot the machine from a write protected, non infected system disk,
+so that the virus does not become resident and infects the system
+immediately after you removed it.
+
+- - Find a PC of the same brand as the infected one, with the same
+harddisk and the same partition of the harddisk.
+
+- - Use Norton Utility (advanced edition) to make a copy of the
+partition table of the non-infected harddisk (use absolute sector
+0 0 1 write to file as described in the booklet that came with
+your Norton utilities)
+
+- - Again use the Norton utility to write this file on the infected
+system to absolute sector 0 0 1.
+
+- - if all went well, you should now have a clean harddisk and you can
+continu to clean all infected diskettes, by copying them to clean
+diskettes followed by a format.
+
+Note: depending on your harddisk it might either be nessecary to
+copy only the very first physical sector, or the whole first
+track. You can find out by using the partition table editor to see
+where the first logical sector starts.
+
+If you have any questions, you can contact me at FJ_Mulder@pttrnl.nl
+
+------------------------------
+
+Date:    Mon, 30 Jul 90 10:39:07 +0100
+From:    MALCOLM@tower-vax.city-poly.ac.uk
+Subject: RE: NetWare and Virus (PC)
+
+In VIRUS-L digest V3 #132, William Hugh Murray writes:
+
+> Well, we seem to have a problem here.
+>
+> The posting by Jon David suggests that the virus executes on the
+> workstation, has no WRITE privilege to the server, but infects
+> programs on the server.  By private email to me, Jon confirms that
+> that is what he intended to say.  He describes to me the test that he
+> conducted; it sounds convincing.  He asserts that Novell
+> representatives have seen the demonstration.
+>
+> On the other hand, the posting to this list by Novell clearly states
+> that the the workstation must have rights to write and modify the
+> file.
+
+Just a thought: during the test, is a user with supervisor rights
+active on the network?  It would be *theoretically* possible for code
+to put the LAN adaptor into promiscuous mode (on adaptors which
+support this) and listen for a supervisor login request going past.
+Equipped with this information it could then masquerade as supervisor.
+It *may* also be possible for it to achieve the same end without
+gleaning the username/password, by recognising a privileged connection
+and then forging whatever the server uses to identify that connection
+(though there'd doubtless be problems here with MAC-level addressing).
+
+Either of these approaches is unlikely in a compact virus, though.
+
+Disclaimer: I know very little about Novell protocols.  *Don't* take
+this as an authoritative statement that they're insecure.  Hopefully a
+genuine guru will tell me why it can't be done this way.
+
+Regards,
+Malcolm
+- --
+Malcolm Ray
+City of London Poly Computer Service, 100 The Minories, London EC3N 1JY ENGLAND
+JANET:			M.Ray@uk.ac.clp
+Internet/BitNet/EARN:	M.Ray@clp.ac.uk
+uucp:			...!ukc!clp.ac.uk!M.Ray
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 133]
+******************************************

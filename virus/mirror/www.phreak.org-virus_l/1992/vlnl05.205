@@ -1,0 +1,854 @@
+VIRUS-L Digest   Friday, 18 Dec 1992    Volume 5 : Issue 205
+
+Today's Topics:
+
+Batch file to "fix" CHKDSK.EXE (PC)
+Posting Philosophy (PC)
+Generic detection of Boot Sector/MBR viruses (was Re: Is this a real virus?) (PC)
+Re: Does anyone have info on DAME? (PC)
+Re: VSHIELD, VIRSTOP, ... comparison ? (PC)
+Re: Stoned Virus (PC)
+Re: Does anyone have info on DAME? (PC)
+RE: info on cansu virus (PC)
+Re: Is this a new virus? (PC)
+Re: Does anyone have info on DAME? (PC)
+noint - what is it? (PC)
+VI-SPY 10.0 spitting out strange numbers... (PC)
+Re: F-PROT and Stoned variant (PC)
+PC Viruses "protected" by CPAV (PC)
+Origin of Plague virus. (PC)
+Re: OS2-stuff (OS/2)
+Re: SCAN for OS/2 uploaded to mcafee.COM... (OS/2)
+"Benevolent" Viruses
+Viral Based Distribution System
+Request For Polymorphic Virus paper references
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 18 Dec 92 10:41:48 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Batch file to "fix" CHKDSK.EXE (PC)
+
+In an idle moment I put together the following batch file to convert
+the 04-09-91 version of CHKDSK.EXE from MS-DOS 5.00 to the 11-11-91
+model (only a three byte change after all). No guarentees but it seems
+to work ok on my PCs. Please follow the instructions exacticalylylyly.
+
+                                        Merry Christmas, Y'all,
+
+                                                Padgett
+
+- ---------------------cut here ---8<-------------------------------------
+@echo off
+echo CHKFIX.BAT by Padgett. Patch for early MS-DOS 5.00 CHKDSK.EXE that has
+echo   been reported to corrupt disks having over 62,000 allocation units
+echo   when the /F switch is used.
+echo.
+echo This program is FreeWare but no guarentee of any kind is made. Use
+echo   is entirely at your own risk. Please read all messages carefully.
+echo.
+echo If at all possible, obtain the "official" MS-DOS release. This program 
+echo   has not been authorized by MicroSoft in any way.
+echo.
+echo The original CHKDSK.EXE must be in the current directory. On conclusion 
+echo   a new program CHKDSK2.EXE will be created with the same changes as 
+echo   found in the MS-DOS 5.00 CHKDSK.EXE dated 11-11-91.
+echo.
+echo This program also expects that DEBUG will run from the current directory.
+
+if not exist chkdsk.exe goto endit
+if exist chkdsk2.exe del chkdsk2.exe
+
+dir chkdsk.exe 
+echo.
+echo IMPORTANT: use *only* with the 16,200 byte version of CHKDSK.EXE
+echo   shipped with the original DOS 5.00 dated 04-09-91 or its exact
+echo   duplicate. Ctrl-C will exit.
+echo.
+pause
+
+echo Creating CHKFIX.DAT (will be deleted when done).
+
+echo s1l1 ">>> 4F <<< original value in 283F">chkfix.dat
+echo e283f>>chkfix.dat
+echo 7f>>chkfix.dat
+echo s1l1 ">>> 8B <<< original value in 2841">>chkfix.dat
+echo e2841>>chkfix.dat
+echo 32>>chkfix.dat
+echo s1l1 ">>> F9 <<< original value in 2842">>chkfix.dat
+echo e2842>>chkfix.dat
+echo ed>>chkfix.dat
+echo w>>chkfix.dat
+echo q>>chkfix.dat
+
+copy chkdsk.exe c2.e >nul
+echo Creating new CHKDSK2.EXE
+debug c2.e <chkfix.dat
+echo If the value in brackets ">>>  <<<" is not the same as the current value
+echo   two lines below it, do not use the resultant CHKDSK2.EXE. If the
+echo   change value (following line) is the same as the current value, you
+echo   already have the updated version
+ren c2.e chkdsk2.exe
+echo.
+echo CHKDSK2.EXE created, cleaning up directory
+del chkfix.dat >nul
+:endit
+- --------------------------end CHKFIX.BAT-------------------------------------
+
+
+------------------------------
+
+Date:    Fri, 18 Dec 92 11:09:16 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Posting Philosophy (PC)
+
+Recently I have been posting too many things about CHKDSK.EXE and wish
+to apologise to the readers. It does point out a desperate need
+though.  (Yes, Virginia, we are back to a National Laboratory).
+
+Consider all of the bandwidth that has been used to say three things:
+1) What the risk was.
+2) How do you tell if you are at risk.
+3) What do you do about it.
+
+And really this should have occurred sometime before 11-11-91 since it
+was known then. For me, it was just chance that the disk purchased
+just over a month ago did mot suffer the same fate (one partition is
+within 100 "allocation units" of the danger mark). True, it has been
+just in the last year that big disks became common and since most disk
+compression routines use 8,192 byte clusters, they were not at risk
+(though the day before yesterday I saw a system with a 600Mb STACKed
+disk - guess what the number of clusters was ?)
+
+But, if we had at any time a responsible posting giving the three
+elements above as an "advisory", note would have been taken,
+corrections made, and we would have gone on. It wasn't and disks had
+to become corrupted before public notice was made and then knee-jerk
+reactions were made (does this sound like Michelangelo).
+
+NIST has apparently abandoned the PC. Magazines try but they are not
+necessarily looking at the right things or looking the right way. So
+it is relegated to us amateurs & like most things "you get what you
+pay for".
+
+                                And a Merry Christmas to all,
+
+                                                        Padgett
+             *
+             |
+            abc
+           defgh
+          ijklmno
+         pqrstuvwx
+        yzabcdefghi
+       jklmnopqrstuv
+           wxyz
+            |
+           ---
+
+------------------------------
+
+Date:    Wed, 16 Dec 92 19:24:03 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Generic detection of Boot Sector/MBR viruses (was Re: Is this a real virus?) (PC)
+
+Good morning Vesselin,
+
+You wrote:
+>Ah, this explains the "Generic Boot Virus" report... It seems to me
+>that SCAN is using some kind of heuristics (Aryeh?) and reports a
+>"generic" boot (or partition) virus each time when something seems
+>wrong with the boot sector(s) - like missing names of the hidden DOS
+>files, missing signature (0AA55h), etc. In your case the whole
+>contents of the boot sector has been destroyed, so its contents has
+>become obviously "abnormal". This has triggered SCAN's heuristics
+>(just a wild guess; I'm not certain that it is indeed so).
+
+The Generic Boot Sector and Master Boot Record (partition table) virus
+detection routines are actually looking for several common instructions 
+that appear over and over again in different viruses such as Stoned, 
+Joshi, and so forth.  By looking for these, we can detect variants/new
+viruses based on older viruses.
+
+The Generic Boot Sector/MBR code is not doing a "fitness check" to see
+if the partition table (the actual data) or 55 AA signature is valid,
+since those would not neccessarily be due to a virus infection (e.g.,
+could be an unformatted drive).  Likewise, we don't do a filename check
+since that could cause false positives with non-DOS operating systems 
+such as Unix and OS/2.
+
+Regards,
+
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+
+------------------------------
+
+Date:    Wed, 16 Dec 92 15:31:42 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re: Does anyone have info on DAME? (PC)
+
+David Mickle writes:
+>We've got a PC which is displaying a message to the effect it's
+>infected by the "DAME" virus.  Don't know what symptoms there are in
+>addition to the message.  We're going to do a low level format, but
+>would like to know what we've contracted.
+
+If it's only one file, or is not a COM or EXE file, or is less than
+2K, you most probably have a false id.  DAME=Dark Avenger Mutation
+Engine.  It's what everyone else is calling MtE.  I believe only
+McAfee calls it DAME.
+
+If indeed you are using McAfee, they'll probably want a copy of the
+reported file to investigate.
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    16 Dec 92 22:50:52 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: VSHIELD, VIRSTOP, ... comparison ? (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+
+>2) VShield can scan a file while it is being copied. VirStop does not
+>have such a feature yet, although Frisk is promising it since a long
+>time.
+
+I have it working on my desk now...needs a bit of testing, though, but I hope
+to be able to include this feature in 2.07.
+
+>amount of memory used. This slows down the loading of the programs.
+>VirStop does not have such an option (although Frisk intends to
+>implement it), but then the memory requirements for VirStop are much
+>more modest.
+
+Uh, not correct.  VirStop CAN swap its signatures out to disk (with the /DISK)
+switch, in which case the memory requirements drop down to 2K or so.
+
+- -frisk
+
+------------------------------
+
+Date:    16 Dec 92 23:15:37 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Stoned Virus (PC)
+
+a2js@loki.cc.pdx.edu (Jahed Sukhun) writes:
+
+>I am using a FPROT 2.06a.  When I am checking the hard disk for
+>viruses, FPROT comes with a message:
+
+>          A NEW VARIANT OF THE STONED VIRUS WAS FOUND. 
+>          NO ATTEMPTS TO DISINFECT.
+
+>It doesn't give a name to it or anything.  
+
+Well, of course it does not give a name - it does not match any of the
+known variants.
+
+There are several possibilities:
+
+    1) Really a new variant.
+    2) An old variant, perhaps corrupted by something, so the checksum
+       does not match.
+    3) Previously infected, but incorrectly disinfected.
+
+However, without further information I really cannot say what is going
+on.
+
+>I have FPROT set to the following settings:
+
+>          -    User defined Strings          Yes
+
+You should not use this, unless you have actually defined some new
+strings...othewise it will just slow the program down a.
+
+- -frisk
+
+------------------------------
+
+Date:    16 Dec 92 23:18:46 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Does anyone have info on DAME? (PC)
+
+MICKLE@csmcmvax.bitnet (Dave Mickle x5205) writes:
+
+>We've got a PC which is displaying a message to the effect it's
+>infected by the "DAME" virus.  Don't know what symptoms there are in
+>addition to the message.
+
+>We're going to do a low level format,,
+
+   Why ?
+
+   That's like curing a cold by shooting the patient.
+
+>but would like to know what we've contracted.
+
+Without further information it is hard to tell.  What program reports
+this ?  Is it just one file ? many files ? Memory ?
+
+- -frisk
+
+------------------------------
+
+Date:    17 Dec 92 08:49:17 -0500
+From:    MEWETT@qut.edu.au
+Subject: RE: info on cansu virus (PC)
+
+        RE: information on the 'Cansu' virus
+
+Recently, we have had an outbreak of the 'Cansu' or 'V-sign' virus around the
+Brisbane (Australia) area, and I would greatly appreciate any information on 
+this virus, as any published inforamtion seems rather scarce.
+
+        Sincerely Scott Mewett
+
+Scott Mewett
+Information Security Research Centre
+Queensland University of Technology
+e-mail:  mewett@qut.edu.au
+FAX:     (07) 221 2384
+Phone:   (07) 864 2095
+
+Remember for complete virus protection...
+
+1) don't buy a computer
+2) if you do buy a computer, don't turn it on
+
+
+------------------------------
+
+Date:    17 Dec 92 02:57:17 +0000
+From:    tck@fold.ucsd.edu (Kevin Marcus)
+Subject: Re: Is this a new virus? (PC)
+
+bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+>tck@fold.ucsd.edu (Kevin Marcus) writes:
+>
+>> trinh@camins.camosun.bc.ca writes:
+>> >[description of a typical Stoned+Michelangelo problem deleted]
+>
+>> It looks like you had a multiple infection.  Stoned and it's varients
+>> (Michelangelo is one...) don't always copy the MBR to the same spot.
+>
+>No, the problem is cause by exactly the opposite - both Stoned and
+>Michelangelo copy the MBR to exactly one and the same spot (on the
+>hard disk), which results in the original MBR being lost.
+
+I have varients of stoned which copy to 0,0,15, and 0,0,7, as well as a
+few other locations.  They do not necessarily copy to the same spot.
+
+
+- -- 
+|| Kevin Marcus, Computer Virologist.  (619)/457-1836; RE-xxx, TSCAN       ||
+|| INET: tck@bend.ucsd.edu       []-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]
+||       tck@fold.ucsd.edu       || All I wanted was a Pepsi...            ||
+||       datadec@watserv.ucr.edu ||       And she wouldn't give it to me...||
+
+------------------------------
+
+Date:    17 Dec 92 14:47:59 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Does anyone have info on DAME? (PC)
+
+MICKLE@csmcmvax.bitnet (Dave Mickle x5205) writes:
+
+> We've got a PC which is displaying a message to the effect it's
+> infected by the "DAME" virus.  Don't know what symptoms there are in
+> addition to the message.  We're going to do a low level format, but
+> would like to know what we've contracted.
+
+Please read the FAQ for a description how to report such cases. In
+particular, you should state the name and the version of the program
+that reported the virus.
+
+"DAME" is the name that SCAN gives to all MtE-based viruses. However,
+a few other scanners use it too... The MtE detector in SCAN versions
+before 99 is not good enough and might sometimes report false
+positives. Did you get a report only about one infected file or about
+several files?
+
+It is not possible to tell you "what the DAME virus does", because
+there is no such thing as "the DAME virus". There are several
+different viruses, which are using the MtE for polymorphism and they
+do different things. All of them are reported as DAME by SCAN (except
+some of the unencrypted replicants, but this is irrelevant).
+
+At last, a low level format is never necessary. Just delete all
+infected files and replace them with clear originals.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 17 Dec 92 12:42:45 -0500
+From:    Gang Wu <gaw2@cunixa.cc.columbia.edu>
+Subject: noint - what is it? (PC)
+
+anyone has any idea what noint virus is? we discovered several of them
+here in barnard college and it seemed that the virus can physically
+destroy the floppy disk (all the disks we found infected by this virus
+has numerous bad sectors after the infection.)
+
+Gang
+gaw2@cunixa.cc.columbia.edu
+
+------------------------------
+
+Date:    17 Dec 92 18:41:36 +0000
+From:    yoshida@microsupport.sas.upenn.edu (Dan P. Yoshida)
+Subject: VI-SPY 10.0 spitting out strange numbers... (PC)
+
+VI-SPY 10.0
+RG Software Systems, Inc.
+
+Has anyone encountered this problem with VI-SPY 10.0?
+
+I have vi-spy running from the autoexec.bat on a Northgate
+386 that has a Stacker "stacked" drive.
+
+On boot up, vi-spy starts to check for viruses, then it spits
+out four numbers, <<3031>>,<<3120>>,<<E8F4>>,<<4549>>,
+then the system freezes (need to hit the reset button).
+
+- --dan
+
+ =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
+ |  Dan P. Yoshida                                       | University of |
+ |--PC Specialist--  yoshida@mail.sas.upenn.edu          | PENNsylvania  |
+ |--SAS Computing--  yoshida@quantum.sas.upenn.edu(NeXT) | o-o_o-o_o-o_o |  
+ =--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=--=
+
+------------------------------
+
+Date:    Thu, 17 Dec 92 22:13:03 +0000
+From:    mechalas@expert.cc.purdue.edu (John Mechalas)
+Subject: Re: F-PROT and Stoned variant (PC)
+
+CHIP@BDSO.Prime.COM (Chip Seymour) writes:
+>>From V5 #200:
+>
+>> We may have found a new variety of STONED on our campus. 
+>> F-Prot 2.06a identified it as a STONED virus but refused to
+>> remove it. 
+>
+>We've had three instances of the same problem here. In two cases FDISK
+>/MBR corrected the problem with no adverse side-effects. The user in
+>the third case is reluctant to run FDISK on a DOS 3.0 machine.
+> 
+>Anyone know what'll happen if we do that?
+
+The MBR is DOS ver. independant.  Simply boot his DOS 3.0 machine with
+a DOS 5.0 floppy, run FDISK /MBR, and you won't have any problems.
+
+- -- 
+John Mechalas                      | If you think my opinions are Purdue's, then
+mechalas@expert.cc.purdue.edu      |      you vastly overestimate my importance.
+Purdue University Computing Center |             Help put a ban on censorship :)
+General Consulting                 |                       #include disclaimer.h
+
+------------------------------
+
+Date:    17 Dec 92 22:16:35 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: PC Viruses "protected" by CPAV (PC)
+
+> MC1980@mclink.it (Luca Parisi) reports
+
+> " I' ve had some random problems on my PC and wondered if some 
+> virus could be responsible for this. ... I also poked around with 
+> PCTools, and find a strange repeating pattern in the slack space 
+> of many .EXE files. It contains something like 'Carmel SW' and a 
+> copy of the 'MZ' signature, not the usual garbage...
+
+This tail is a form of integrity checker, and is added to the file 
+(in exactly the same way as a virus) by part of the CPAV/CARMEL 
+anti-virus software.  When you run the program it is run first, and 
+warns you if the start of the file, or the length, has been changed.  
+
+This is a nice idea, but unfortunately this product has caused a 
+number of users a lot of problems by protecting pre-existing viruses 
+it has failed to detect. "Intelligent" scanners will generally fail 
+to find viruses protected in this way, as the initial entry point 
+goes to the CPAV software, instead of the virus. Logically "dumb" 
+scanners ought to find the virus, but may not do so in practise.  
+
+We have just received a new strain of Zerotime (or Slow) in which 
+the decryption procedure has been patched to avoid detection.  The 
+sample disk we received had many files in which the virus was 
+protected in this way.  Because the CPAV software overwrites the 
+start of the file (after saving it elsewhere) it has split the 
+encryption procedure in two.  Neither part is long enough to detect 
+reliably, without causing many false alarms, and so it is not 
+possible to detect the virus unless the CPAV software is removed.
+
+The virus will emerge, and make itself obvious by infecting new 
+files (and also the ones with the "protected" virus), in the normal 
+way immediately you run an infected file, but the source will remain 
+hidden.  If you are having trouble getting rid of a virus you should 
+treat any files "protected" by this product with extreme suspicion.
+
+In investigating this we re-examined samples we had collected from a 
+shop having virus like problems.  At the time we did not know about 
+this product (which had been added by the proprietors son, without 
+permission), and assumed it was causing the problems.  However when 
+we looked at the files again we found that Padded virus was hiding 
+behind the Carmel software.  Neither McAfee Scan nor Dr. Solomon's 
+Toolkit can find the virus in these files. 
+
+We know of two strains of this product, and have added signatures 
+for them to VET 7.11.  This will flag affected files as "Packed with 
+CPAV anti-virus."  
+
+Roger Riordan                     riordan.cybec@tmxmelb.mhs.oz.au
+
+CYBEC Pty Ltd.                                 Tel: +613 521 0655
+PO Box 205, Hampton Vic 3188   AUSTRALIA       Fax: +613 521 0727
+
+------------------------------
+
+Date:    17 Dec 92 22:21:58 +0000
+From:    riordan.cybec@tmx.mhs.oz.au (Roger Riordan)
+Subject: Origin of Plague virus. (PC)
+
+m.oleary@qut.edu.au asks
+
+> Just finished reading an old computer magazine which claims that a
+> Brisbane virus "expert" created the plague virus.  I thought this
+> virus was created in the USA.  Any information on the accuracy of 
+
+This report was written by a journalist who totally misinterpreted a
+comment made by the gentleman in question, who was invited to add a
+little local colour to a seminar addressed by John McAfee.  It was an
+incredibly sloppy piece of reporting, and has no foundation whatever.
+The victim is currently suing the magazine, and claiming some millions
+of dollars damages.
+
+Roger Riordan                     riordan.cybec@tmxmelb.mhs.oz.au
+
+CYBEC Pty Ltd.                                 Tel: +613 521 0655
+PO Box 205, Hampton Vic 3188   AUSTRALIA       Fax: +613 521 0727
+
+
+------------------------------
+
+Date:    17 Dec 92 15:02:41 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: OS2-stuff (OS/2)
+
+KARGRA@GBA930.ZAMG.AC.AT writes:
+
+> 3) Watching the filenames that pop up for short, I got the impression, that
+> OS2SCAN does not scan *.DLL, *.DRV, *.ADD files. You can correct this either
+> with /A or /E switch. But these do belong to the standard executables and it
+> should not be necessary to think about these. Probably there are more ex-
+> tensions to be included.
+
+I know almost nothing about OS/2, but are these files really
+executable? OK, I understand that they contain executable code, but
+can they be started from the command line or by clicking on them? You
+see, there are currently no known OS/2 viruses. Any known-virus
+scanner for OS/2 can only scan for DOS viruses. Therefore, it makes
+sense for it to scan only things that the known DOS viruses can
+infect. In order a known DOS virus to infect something, it must either
+have an executable extension, or it must be executed by the Exec
+function call. Are the files with the extensions mentioned by you
+executed in this way? If not, then it does not make sense to scan them
+for viruses...
+
+> 4) Did you think of the built-in undelete-function ? I hope the /D switch
+> works correct. You need to overwrite first, and then delete the file to en-
+> sure it does not survive as a deleted shadow.
+
+What do you mean? If a file is really overwritten before it is
+deleted, then what's the point to undelete it?
+
+> 8) SCAN for DOS rel.9.0 V99 (most recent on Dec. 12th, 1992) does not do any-
+> thing within a OS2 DOS-box. Neither windowed nor fullscreen. Although I read
+
+Please, try NETSCAN 99B instead and post the results. Be aware,
+however, that it will not check the boot sectors.
+
+> 9) In Virlist I found a passage for the fam*-viruses where no information
+> is provided about their behaviour. Is this correct ? And if so, why ?
+
+The Fam* viruses reported by SCAN are something like heuristic scan
+strings. They are signatures (usually very short) for code that is
+often found in viruses. In this way they can detect a lot of silly 
+viruses with a few short signatures, but no identification of the
+virus can be obtained. Don't consider such reports as indications of a
+particular virus; instead consider them just as reports for viral
+code.
+
+> I thought, that Mutation Engine is a .OBJ-file to be linked with viral coding
+> So DAME itself would not be a virus to be listed this way in VIRLIST.TXT.
+
+Correct, but SCAN (as most other scanners) is not able to distinguish
+between the different MtE-based viruses. I agree, however, that the
+description of the "DAME virus" in VIRLIST.TXT is completely bogus.
+
+> It would be better to introduce a new column for viruses using MtE.
+
+A better idea is to introduce a new column, for polymorphism. This
+would be more general, since there are many other polymorphic viruses,
+not only the MtE-based ones...
+
+> 10) I did some testing on F-Prot 2.06a too. The /NOBOOT switch is the thing t
+o
+> make it run on HPFS drives. What I miss in COMMANDS.DOC is the /EXT= switch
+> to force scanning of other extensions. Especially within WINDOWS and OS2 we
+> find extensions like *.DLL, *.DRV and the like. The should be scanned by
+> standard too, as they contain executable code like any *.OV?. Also an example
+> in the *.doc file for /EXE=switch would be nice. I did not manage to make it
+> recognise multiple extentions. Does it work and if, what is the delimiter ?
+
+Probably, yes. The delimiter is a dot. In my tests I am using the
+switch like this: "/EXT=COM.EXE.SYS.BOO". It was me who insisted that
+Frisk includes something similar in his program, so I knew the
+syntax... :-) Isn't it explained well in the docs?
+
+> 13) A more special question. I hope I didn't miss it in the faq-list: What is
+> exactly a companion virus? I mean, under which circumstances does it infect
+> and in which environments. Somehow I have the impression, they are especially
+> dangerous within networks. Vesselin? Padgett? Anybody?
+
+See the FAQ, question B8), "What is a companion virus?". :-) We've put
+quite a lot of effort in this FAQ, it would be nice if at least some
+people read it... :-))
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    17 Dec 92 15:26:59 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: SCAN for OS/2 uploaded to mcafee.COM... (OS/2)
+
+aryeh@mcafee.com (McAfee Associates) writes:
+
+> - -     Since OS/2 operates in a protected mode environment it can
+>       only check its own area of memory or "memory image" for
+>       viruses.  Viruses in a DOS session or VDM will not be
+>       detected in memory by OS2SCAN.
+
+This is not actually a problem. Since the scanner runs in its own area
+of memory, protected from the other processes, it cannot be fooled by
+a stealth virus and cannot be made to spread a fast infector on all
+files it scans... In fact, I am wondering why a memory check is
+performed at all by an OS/2-based scanner...
+
+> - -      OS2SCAN checks "extended filenames" and HPFS-partitioned
+>        drives as well as DOS (FAT) drives.
+
+Do you know any way in which a known DOS virus can infect an extended
+filename on an HPFS partition?
+
+> - -      The /SAVE switch does not modify the OS2SCAN.EXE file.
+>        Instead, it creates a SCAN.INI file.
+
+That's good news! It would be a good idea to make SCAN for DOS act the
+same way! This will be one self-modifying program less...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.1 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 17 Dec 92 14:52:07 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: "Benevolent" Viruses
+
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+
+>This is a result of the misunderstanding of the definitions. I know at
+>least three anti-virus packages, which are "benevolent viruses",
+>according to Dr. Cohen's definition. The supervisor installs them on
+>the LAN server -once- and each time a user logs in, the package
+>automatically installs (or updates) itself on the user's workstation.
+>Therefore, the package propagates from the server to the workstations
+>like a virus (or like a worm, if we want to be precise).
+
+The interesting fact is that as far as I know this is a concept that
+was originally discussed here on V-L with explicit specification two
+years ago (before Fred's contest in fact - Anthony ?).
+
+>There's nothing bad in the above...Therefore, there are no ethical problems 
+>involved - - if you don't like that policy, don't use that LAN.
+
+Exactly. The same argument may be used about privacy concerns and ANI/
+Caller-ID dial-up logging.
+
+                                Warmly,
+                                        Padgett
+
+
+ Just as a final final note, for those who do not wish to bother
+ with DEBUG to determine which DOS 5.00 CHKDSK.EXE you have and
+ do not trust dates, the following PKZIP CRC-32 and VALIDATE
+ results are given:
+
+ PKUNZIP (R)    FAST!    Extract Utility    Version 1.1    03-15-90
+
+ Length    Date    Time   CRC-32    Name
+ ------    ----    ----   ------    ----
+  16200  04-09-91  05:00  8e2aba28  CHKDSK.EXE  (dangerous)
+  16200  11-11-91  05:00  59dbaefb  CHKDSK.EXE  (with "bug fix")
+
+McAfee Validate 0.3 numbers:
+
+          File Name:  chkdsk.exe
+               Size:  16,200
+               Date:  11-11-1991
+File Authentication:
+     Check Method 1 - 19D8
+     Check Method 2 - 16E2
+
+"Most version numbers have the same relation to reality as the Chevrolet
+ horsepower figures that put a '67 Z-28 @ 290 and a '69 L-88 at 430" 
+        (and are probably produced by the same people).         
+
+------------------------------
+
+Date:    17 Dec 92 06:59:48 +0000
+From:    ygoland@edison.SEAS.UCLA.EDU (The Jester)
+Subject: Viral Based Distribution System
+
+Fred Cohen has brought up the point that virus design techniques can
+be used for beneficial purposes. In his example he describes a
+network product that installs itself without the user ever having to
+know its there.
+
+Instead of discussing a variety of basic problems involving
+distribution and maintance of a viral based system, all of which are
+system specific and a nit picker could find ways to solve each and I
+could come up with a new problem ad inifnitum ad nightem. Instead I
+will discuss one major, system non-specific, problem:SECURITY.
+
+For a destructive program to do damage, it must be executed in one
+form or another. The nature of the program, virus, trojan, or just
+badly writen, is not relevant. The first line of defense against
+these types of programs is through tracking and control of all
+executable programs. Viruses, by their very nature, are a wildcard.
+The only effective means of executable control is to keep absolute
+control over access to the executables. That way accurate records
+can be kept on file size, content, check codes, etc. A virus, by
+it's very nature, denies this ability. For a virus to be effective
+it must be executed. How is it to be executed? 
+
+If the purpose of the program is to automatically cause some
+'change' in various computers, then the program must execute from a
+loader or an infected file. If its being launched from a loader then
+the need for the distribution system is nullified. Assuming the goal
+is to still keep absolute system security, then the loader will be
+'allowed' in by the administrator but the virus it is loading won't
+be allowed to attach itself to another program, just make the change
+for the single user that activated the loader. If this is an
+effective means of distribution then why use a virus at all? 
+
+If, on the other hand, the loader can not be trusted, then a virus
+may come in to play. If I can't be sure that all my users will
+execute the loader and update their system then I can have a virus
+go through and infect all sorts of executables until I finally hit
+one a user will execute and thus have their system updated. Leaving
+aside the question of how effective this sort of distribution
+mechanism is, there is the question of executable integrity. If the
+virus distribution system is to work it must be able to violate
+system security. It must be able to infect the system executable
+files. This means that file size, content, checksum codes, and so on
+will all change in an unpredictable manner. This quickly turns
+system security into system guessing. An unacceptable situation.
+
+In conclusion, a system that changes in an unpredictable manner,
+that uses hard to track mechanisms of change, is a security
+nightmare. Just as self modifying programs have been given a very
+bad reputation for very good reasons, a viral based distribution
+system deserves a similarly bad reputation.
+
+                        Yaron (The Jester) Goland
+- -- 
+                        The Jester-PGP Ver2 upon Request
+"You can lead a herring to water, but you have to walk really fast,
+or he'll die."-Stolen from my Evil Mistress (TM)
+               NWILSON@MIAVX1.ACS.MUOHIO.EDU
+
+------------------------------
+
+Date:    17 Dec 92 08:07:13 +0000
+From:    ygoland@edison.SEAS.UCLA.EDU (The Jester)
+Subject: Request For Polymorphic Virus paper references
+
+I am currently writing a paper on polymorphic virus design and
+detection. The paper's focus is on designing self modifying programs
+(my interest in this area comes from my interest in Artificial
+Intelligence, the concept of a program that can alter it's own code
+facinates me) as well as problems associated with detecting a specific
+polymorphic virus.
+
+However I have no desire to reinvent the wheel. Along
+this line I have been trying to track down any articles written on
+the subject. Unfortunatly, UCLA's computer index leaves a bit to be
+desired when it comes to finding virus articles and books. As such
+any pointers to articles and books that address the issues of
+polymorphic viruses would be appretiated. I am not interested in
+loading mechanisms, distribution mechanisms, or payload design. Just
+the mechanisms of causing a program to swap, insert, encrypt, or
+otherwise alter itself so as to fool scanners and like programs.
+
+                Thank you,
+                        Yaron (The Jester) Goland
+                        Junior-Computer Science & Engineering
+                        University Of California, Los Angeles
+- -- 
+For some reason unintelligible to me, Lord Acton's dictum that
+"Power tends to corrupt and absolute power corrupts absolutely"
+is rarely raised in connection with judges, who...possess power
+.that comes [close] to being absolute"-Judge Bork
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 205]
+******************************************
+

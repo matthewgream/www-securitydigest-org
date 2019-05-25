@@ -1,0 +1,497 @@
+Subject: RISKS DIGEST 11.66
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 13 May 1991  Volume 11 : Issue 66
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+"Children of the Computer" To Teach Our Children (Jay Elinsky)
+Case of the Replicated Errors: An Internet Postmaster's Horror Story
+    (Erik E. Fair)
+Trojan pipe to login on 4.x bsd (Mark Seecof) 
+Emergency off switch - IBM 1620 (Martin Ewing)
+Re: Rude Behavior (Bill Murray)
+Re: Where justice is done ...  (Richard A. O'Keefe)
+Re: Quirk in British Computer Privacy Laws (Paul Johnson, 
+    Chaz Heritage, John ffitch)
+Re: Dagobert (NL) or Scrooge McDuck (UK/US) (Herman J. Woltring)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 11, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Mon, 13 May 91 00:21:53 EDT
+From: "Jay Elinsky" <ELINSKY@YKTVMZ.BITNET>
+Subject: "Children of the Computer" To Teach Our Children
+
+The Sunday, May 12 edition of the New York Daily News has the front-page
+headline "The Brain Drain -- City faces flood of novice teachers".  One
+of the hopeful new teachers, who will replace old-timers lured out by a
+retirement incentive, is a 23-year-old student teacher in English, whose
+name and alma mater I will omit even though they're given in the article.
+
+His cooperating teacher gives him high marks for energy and creativity.
+"[He] concedes, however, that spelling and grammar are not his strong
+suits, and that he is working hard not to repeat spelling mistakes such
+as `hatrid', `envolved', or `increduluous' when he writes on the blackboard
+or in homework assignments.  `I'm a child of the computer.  I'm used to
+pushing 'spellcheck' and that corrects the words'".  As I said above, he's
+a student teacher in English.
+
+Jay Elinsky, IBM T.J. Watson Research Center, Yorktown Heights, NY
+
+   [Good speling and gramar arent everything but it shure helps.
+   I include this item here to remind us that discipline can easily stifle
+   creativity, but that creativity without discipline may be of very 
+   limited value.  It clearly helps to have some discipline, energy, 
+   creativity, and perhaps even some intelligence!  PGN]
+
+------------------------------
+
+Date:     Thu, 09 May 91 23:26:50 -0700
+From:     "Erik E. Fair" (Your Friendly Postmaster) <fair@APPLE.COM>
+To:       tcp-ip@NIC.DDN.MIL, unicode@SUN.COM, [...]
+Subject:  Case of the Replicated Errors: An Internet Postmaster's Horror Story
+
+    [Forwarded to RISKS by Jerry Leichter <leichter@lrw.com> and Jim Horning]
+
+This Is The Network: The Apple Engineering Network.
+
+The Apple Engineering Network has about 100 IP subnets, 224 AppleTalk zones,
+and over 600 AppleTalk networks. It stretches from Tokyo, Japan, to Paris,
+France, with half a dozen locations in the U.S., and 40 buildings in the
+Silicon Valley. It is interconnected with the Internet in three places: two in
+the Silicon Valley, and one in Boston. It supports almost 10,000 users every
+day.
+
+When things go wrong with E-mail on this network, it's my problem.
+My name is Fair. I carry a badge.
+
+[insert theme from "Dragnet"]
+
+The story you are about to read is true. The names have not been
+changed so as to finger the guilty.
+
+It was early evening, on a Monday. I was working the swing shift out of
+Engineering Computer Operations under the command of Richard Herndon.  I don't
+have a partner.
+
+While I was reading my E-mail that evening, I noticed that the load
+average on apple.com, our VAX-8650, had climbed way out of its normal
+range to just over 72.
+
+Upon investigation, I found that thousands of Internet hosts were trying to
+send us an error message. I also found 2,000+ copies of this error message
+already in our queue.
+
+I immediately shut down the sendmail daemon which was offering SMTP service on
+our VAX.
+
+I examined the error message, and reconstructed the following sequence
+of events:
+
+We have a large community of users who use QuickMail, a popular macintosh based
+E-mail system from CE Software. In order to make it possible for these users to
+communicate with other users who have chosen to use other E-mail systems, ECO
+supports a QuickMail to Internet E-mail gateway. We use RFC822 Internet mail
+format, and RFC821 SMTP as our common intermediate E-mail standard, and we
+gateway everything that we can to that standard, to promote interoperability.
+
+The gateway that we installed for this purpose is MAIL*LINK SMTP from Starnine
+Systems. This product is also known as GatorMail-Q from Cayman Systems. It does
+gateway duty for all of the 3,500 QuickMail users on the Apple Engineering
+Network.
+
+Many of our users subscribe, from QuickMail, to Internet mailing lists which
+are delivered to them through this gateway. One such user, Mark E. Davis, is on
+the unicode@sun.com mailing list, to discuss some alternatives to ASCII with
+the other members of that list.
+
+Sometime on Monday, he replied to a message that he recieved from the mailing
+list. He composed a one paragraph comment on the original message, and hit the
+"send" button.
+
+Somewhere in the process of that reply, either QuickMail or MAIL*LINK SMTP
+mangled the "To:" field of the message.
+
+The important part is that the "To:" field contained exactly one "<" character,
+without a matching ">" character. This minor point caused the massive
+devastation, because it interacted with a bug in sendmail.
+
+Note that this syntax error in the "To:" field has nothing whatsoever to do
+with the actual recipient list, which is handled separately, and which, in this
+case, was perfectly correct.
+
+The message made it out of the Apple Engineering Network, and over to Sun
+Microsystems, where it was exploded out to all the recipients of the
+unicode@sun.com mailing list.
+
+Sendmail, arguably the standard SMTP daemon and mailer for UNIX, doesn't like
+"To:" fields which are constructed as described. What it does about this is the
+real problem: it sends an error message back to the sender of the message, AND
+delivers the original message onward to whatever specified destinations are
+listed in the recipient list.
+
+This is deadly.
+
+The effect was that every sendmail daemon on every host which touched
+the bad message sent an error message back to us about it. I have
+often dreaded the possibility that one day, every host on the Internet
+(all 400,000 of them) would try to send us a message, all at once.
+
+On monday, we got a taste of what that must be like.
+
+I don't know how many people are on the unicode@sun.com mailing list, but I've
+heard from Postmasters in Sweden, Japan, Korea, Australia, Britain, France, and
+all over the U.S. I speculate that the list has at least 200 recipients, and
+about 25% of them are actually UUCP sites that are MX'd on the Internet.
+
+I destroyed about 4,000 copies of the error message in our queues here
+at Apple Computer.
+
+After I turned off our SMTP daemon, our secondary MX sites got whacked.
+We have a secondary MX site so that when we're down, someone else will
+collect our mail in one place, and deliver it to us in an orderly
+fashion, rather than have every host which has a message for us jump on
+us the very second that we come back up.
+
+Our secondary MX is the CSNET Relay (relay.cs.net and relay2.cs.net).  They
+eventually destroyed over 11,000 copies of the error message in the queues on
+the two relay machines. Their postmistress was at wit's end when I spoke to
+her. She wanted to know what had hit her machines.
+
+It seems that for every one machine that had successfully contacted apple.com
+and delivered a copy of that error message, there were three hosts which
+couldn't get ahold of apple.com because we were overloaded from all the mail,
+and so they contacted the CSNET Relay instead.
+
+I also heard from CSNET that UUNET, a major MX site for many other hosts, had
+destroyed 2,000 copies of the error message. I presume that their modems were
+very busy delivering copies of the error message from outlying UUCP sites back
+to us at Apple Computer.
+
+
+This instantiation of this problem has abated for the moment, but I'm still
+spending a lot of time answering E-mail queries from postmasters all over the
+world.
+
+The next day, I replaced the current release of MAIL*LINK SMTP with a
+beta test version of their next release. It has not shown the header
+mangling bug, yet.
+
+
+The final chapter of this horror story has yet to be written.
+
+The versions of sendmail with this behavior are still out there on hundreds of
+thousands of computers, waiting for another chance to bury some unlucky site in
+error messages.
+
+Are you next?
+
+[insert theme from "The Twilight Zone"]
+
+	just the vax, ma'am,
+
+	Erik E. Fair	apple!fair	fair@apple.com
+
+------------------------------
+
+Date: Fri, 10 May 91 16:56:14 -0700
+From: Mark Seecof <marks@latimes.com>
+Subject: trojan pipe to login on 4.x bsd (Re: Graham-Cumming, RISKS-11.65)
+
+> >From: John Graham-Cumming <John.Graham-Cumming@prg.oxford.ac.uk>
+> Has anyone else had a similar problem with piping and LOGIN?
+
+	On many Unix's with BSD features you can fool, not login, but 'su -'
+(simulate a login) which might "do the job" of of fooling the user (his utmp
+entry will be wrong).  To accomplish this you must use the TIOCSTI ioctl in a
+clever way (I am reluctant to say more).  I think that the getpass(3) routine
+could probably be modified to limit this attack by messing with the terminal's
+distinguished process group (TIOCSPGRP).
+
+Mark Seecof, Publishing Systems Department, Los Angeles Times, Times-Mirror 
+Square, Los Angeles, California  90053                         213-237-5000
+
+------------------------------
+
+Date: Sat, 11 May 1991 03:22:15 GMT
+From: ewing-martin@CS.YALE.EDU (Martin Ewing)
+Subject: Emergency off switch - IBM 1620
+
+Remember all the risks we unknowingly took in our youth?  Driving without
+seatbelts, using lawnmowers without automatic shutoffs, etc.?  Well, there were
+computing risks like those, too.  Recently wandering through the library
+stacks, I came across "Programming the IBM 1620" by Clarence B. Germain
+(Prentice-Hall, 1962). (The 1620 was a scientific machine with variable word
+length and 1-5 KIPS -- don't ask about SPECmarks.)
+
+I was going over the control panel description when I came upon the 
+following:
+
+  Finally, we should mention the EMERGENCY OFF SWITCH... It removes all
+  power from the machine instantly.  Damage to the machine results
+  from its use, and a customer engineer is required to turn the machine
+  back on.  Unless the computer is struck by lightning while you are
+  using it, do NOT touch this switch; it is for emergency use only.
+
+Men were men in those days, and giants strode the earth.
+
+Martin Ewing, Yale University
+
+------------------------------
+
+Date:  Fri, 10 May 91 22:28 EDT
+From: WHMurray@DOCKMASTER.NCSC.MIL
+Subject:  Rude Behavior (Where justice is done, Woltring, RISKS-11.65)
+
+Not all rude behavior should be criminal.  The Dutch have always tolerated
+behavior that other people have criminalized.  Who are we to tell the Dutch
+what level of rude behavior they should be prepared to tolerate?
+
+>Thus, the ball is bounced back in the case of the attacked American
+>computers.
+
+Ah, there is the rub.  The behavior of the Dutch students is not confined to
+their country.  Are we prohibited from telling the Dutch what level of rude
+behavior we are prepared to tolerate?
+
+Not only are the Dutch not prepared to call that behavior criminal, they do not
+appear to be inclined to label it rude.  Not only are they not prepared to
+invoke criminal sanctions, so far they have refused to invoke social sanctions.
+While they contend that criminal sanctions are not warranted, they continue to
+fund the little rowdies.  While they seem to object to being labelled a rogue
+nation, otherwise responsible citizens of that nation insist upon defending and
+justifying this behavior and trying to blame the victims.  While they clearly
+have the option to confine this behavior within their own borders, they do not
+do so.  What are the rest of us to do?  Have we no choice but to provide the
+playpen for brats?
+
+HJW's assertions to the contrary notwithstanding, this is not an issue of the
+security of American systems.  While our systems may not be more secure than
+those in the Netherlands, they are no less so.  Neither are they less secure
+than those in the rest of the internet.  While our systems are the targets of
+these attacks, it is the systems in Europe, specifically including those in the
+Netherlands, that are paying the cost of attack.  Our systems are the targets,
+but we are no more the victims than the rest of the internet.
+
+Given the number of systems in the internet, the level of security is a given;
+it cannot change much in a short time.  Given the law of large numbers, given a
+normal distribution of security in systems within the net, the net will always
+be vulnerable to this kind of attack.
+
+"Computers at Risk," the report cited by HJW, would have you believe that the
+problem is one of the systems shipped by vendors.  If vendors did a better job
+of design and chose safer defaults, the problem would be solved.  Would God
+that that were so.  It would be lovely to have to deal with only thousands of
+vendors instead of millions of users.
+
+While good design and safe defaults may be necessary to security, they are not
+sufficient.  Do any of you seriously believe that there is any security that a
+vendor can put into a system that users cannot compromise away?  Do you believe
+that if a vendor could do so, that all of us his competitors would follow his
+lead?  That no vendor could be successful selling performance and function at
+the expense of security, or that none of the systems that he sold on that basis
+could find their way into the net?
+
+This is not simply an issue of the security of the systems within the net.  The
+security of the net is, only in part, a function of the security of the systems
+in it, it is also influenced by other properties and behavior of those nodes.
+If you can believe the report, the Wily Hacker used the system of the Mitre
+Corporation as it was intended to be used.  However, that intention so reduced
+the Wily Hacker's normal and expected cost of attack that it put the rest of
+net at risk.  In taking his scientific/law-enforcement response to the attack,
+Cliff Stoll put his neighbors at risk.  Now, he was at least watching to be
+sure that the Wily Hacker was not too successful, but wouldn't you expect your
+neighbor to pull the plug on him?
+
+Note that the security of a given system does not protect it.  My system may be
+sufficiently resistant to outsiders to keep the Dutch students out.  However,
+it does not keep them from using the adjacent system to attack me.  The attack
+is a problem without regard to its success.  It consumes some cycles, but it
+consumes an inordinate amount of communication capacity.
+
+So, what are we to do?  Assume that the Dutch students continue their rude
+behavior.  Assume that their elders continue to fund them and smile tolerantly
+on the little hoodlums.  Must we simply tolerate it?  Have we no other open
+options?  How long will we tolerate this abuse before we break the connection?
+
+Now, I was not surprised at the response when I suggested this remedy last
+month.  I expected that a community dependent upon connectivity would be
+reluctant to use that connectivity as a control mechanism.  I was a little
+amused at the over-statement that was used to attack the idea.
+
+I did not suggest that we ostracize Holland (Go back and read it if you must)
+though I did say that we should be prepared to do so.  I did not even suggest
+that we permanently bar any systems from the net.  It did not occur to me that
+anyone would think that the disconnections would need to be permanent or even
+of long duration.  One of these days I will learn that if you leave room to be
+misconstrued, you can expect to be.
+
+I only said that if you get rude traffic, break the connection to the system
+that it is coming from.  Tell them why you have done so.  If they are not the
+origin, invite them to follow your example.  (Of course you can restore the
+connection as soon as the rude traffic stops.)
+
+That is all I said to do.  If everybody does that, the rude traffic will be
+isolated at its source.  Now, the originators may continue to send the rude
+traffic, but I doubt it.  If no system will listen, who will they send it to?
+Their elders may continue to fund "their experiments," but I doubt it.  If we
+stop playing victim, the fun will go out of their playing bully.
+
+I have to confess that I was surprised that some readers concluded that I
+advocated having data police and that I was nominating myself for the job.  Let
+me make it clear.  What I want is an orderly network that needs no policing.
+What I want is the kind of orderly well-behaved network that we have enjoyed
+for almost two decades.  To the extent that there is any requirement for
+policing, what I am proposing is self-policing.  What I am resisting is the
+idea that between what is illegal and what we can prevent, we must expect and
+tolerate everything else.  What I am resisting is the idea that our only hope
+for order is to appeal to the authority of the law.
+
+Finally, let me conclude with a regret.  I regret that this has become a
+national issue.  I particularly regret that the nation involved is the
+Netherlands.  I hope they take no more offense at my rhetoric than is intended.
+If all the world were as civilized as the Netherlands, it would be a better
+place.
+
+Nonetheless I am convinced that the rhetoric is indicated and I hope that it
+gets their attention.  I am concerned that these otherwise most orderly of
+people appear not to understand that they are fostering mischief.  I am
+concerned that they seem not to realize that they are setting in motion forces
+which they cannot control and inflicting damage on public order which may not
+be reversible.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840       203 966 4769
+
+------------------------------
+
+Date: 13 May 91 09:08:39 GMT
+From: ok@goanna.cs.rmit.OZ.AU (Richard A. O'Keefe)
+Subject: Re: Where justice is done ... (Woltring, RISKS-11.65)
+
+I'm sorry to keep this topic going, but I am rather distressed by this.
+People keep writing as if "unauthorised entry" were only a threat to big
+universities and Government sites, as if the only reason for a site to
+be vulnerable is negligence or incompetence.  "It's easy, just put a B2
+layer in between your net and the rest of the world!"  "It's *just*, you
+only have to convince the court that your system was secure."
+
+That's not my perspective.  I'm worried about small organisations (as I
+said before, I have a particular charity in mind) for whom an 80386
+running UNIX V.3 is a *large* expenditure, for whom buying an extra PC
+would be a financial hardship.  These people could benefit a lot from
+being on the net.  E-mail could save them a lot of money.  Remote access
+could cut down on consultants' fees (no need to make a physical trip).
+There must be many thousands of small businesses in the same situation.
+
+*These* people are vulnerable to "unauthorised entry" too.  Why would
+anyone break into a system with no juicy data sets &c?  Well, why do
+people spray graffiti all over the trains?  Why do people try to burn
+down schools?  Would anyone really break into a charity's computer and
+destroy files if they thought they could get away with it?  YES!
+
+Whatever "security" requirement is demanded of a victim before the
+courts will protect them should not be more than the victim could
+(a) reasonably be expected to know about, not being a computer expert
+(b) reasonably be expected to afford, bearing in mind the cost of the
+data and computer system.
+
+------------------------------
+
+Date:       13 May 1991 10:16:03-BST
+From: paj <paj@gec-mrc.co.uk>
+Subject:    Re: Quirk in British Computer Privacy Laws
+
+Ed Ravin <elr%trintex@uunet.UU.NET> quotes The Economist on the UK Data
+Protection Act, saying that in order to evade the right to personal information
+about you held on computer, reporters write anticipated obituaries on paper.
+
+A far worse example was (possibly is) the university I attended.  In those days
+it was University College Cardiff.  It did not allow students to see their
+records, and held them on paper in order avoid having to do this.  Processing
+was done by computer under a DPA clause which permits temporary storage for a
+limited time without having to have the data registered.  Then the data was
+printed out and the magnetic media erased.  The next time it was needed it was
+re-keyed.  I found this to be a truly stunning way of doing things.
+
+I also glanced through the report which preceded to the DPA.  There was mention
+made of this issue.  Many of the experts who gave evidence stressed that the
+distinction between computerised data and manually held data is an arbitrary
+one.  The report noted that this was probably true but that the protection of
+paper files was outside their brief, so they could not consider it.
+
+Hanlon's Razor: Never attribute to malice that which can be adequately
+explained by stupidity.
+
+Paul Johnson      +44 245 73331     paj@gec-mrc.co.uk
+
+------------------------------
+
+Date: 	Mon, 13 May 1991 04:28:00 PDT
+From: chaz_heritage.wgc1@rx.xerox.com
+Subject: British Privacy Law (Ravin, RISKS-11.63)
+
+> When the subject is no longer in a position to demand his right to freedom of
+information, the obituary is then put into the computer for publication.
+
+This was not the reason why manually held records were excluded from the
+provisions of the Data Protection Act, 1984. British law does *not* 'let
+individuals look at computerised information that others may hold about them'.
+Perhaps Mr. Ravin should read the Act. His faith in British law is touching,
+but is quite misplaced.
+                                              Chaz
+
+------------------------------
+
+Date: Mon, 13 May 91 15:28:07 BST
+From: jpff@maths.bath.ac.uk
+Subject: Re Quirk in British Privacy Laws
+
+When we at the university were looking at the implications of the so-called
+Data Protection Act I was led to asking the questions about the use of
+scanners.  We were concerned with the procesing of examination marks, and as we
+include second year results in out final examination we wondered if printing
+them and deleting the files, and then scanning would be OK.  The opinion we got
+was that if you intend to re-enter the information then it still comes under
+the DPA.  (The court case inquiring what I intended to do could have been
+interesting.  :-)  )
+
+  However in the case of obituaries the situation is different.  The DPA does
+not apply to information about dead people, as that is not personal.
+  An amusing sideline to this is we considered the holding of bibliographies,
+which were then searched, which would be personal data, and so we would have to
+register under the law.  However if we sent the university hit squad round we
+could save the serious offence of holding unauthorised personal data, if at the
+expense of a murder or two.
+
+                                             ==John ffitch
+
+------------------------------
+
+Date: Fri, 10 May 91 23:00 MET
+From: "Herman J. Woltring" <UGDIST@nici.kun.nl>
+Subject: Re: Dagobert (NL) or Scrooge McDuck (UK/US) [RISKS-11.58]
+
+When I referred to "Dagobert Duck" in my RISKS-11.58 posting, I did not realise
+that this personality is called Scrooge McDuck in Anglosaxon (and, I believe)
+American parlance.  I trust that the identification was unambiguous by context!
+
+------------------------------
+
+End of RISKS-FORUM Digest 11.66
+************************

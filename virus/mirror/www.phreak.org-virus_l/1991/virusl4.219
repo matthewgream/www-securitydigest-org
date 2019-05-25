@@ -1,0 +1,693 @@
+VIRUS-L Digest   Friday, 15 Nov 1991    Volume 4 : Issue 219
+
+Today's Topics:
+
+Norton SI 6.01 and Cascade? (PC)
+First SPARC Virus? (Character Replacement Within Files) (UNIX)
+12 Trojan Tricks (PC)
+Question re possibility of virus migration: Dos -> Xenix
+Re: Hong Kong Virus found (PC)
+Re: Hardware...
+Re: Virus removals vs. Virus classification
+Re: A couple questions (Mac) (Commodore)
+Re: Real User
+System 7 vs. viruses (Mac)
+F-PROT 2.01 (PC)
+Re: Companion viruses (was: Virus Proof Machine Response)
+Re: Theory : definition & classification
+Virus report (PC)
+NCSA/ICVP Call for Papers
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Tue, 12 Nov 91 17:17:08 +0000
+>From:    westk@cgrb.orst.edu (Ken West - Entomology)
+Subject: Norton SI 6.01 and Cascade? (PC)
+
+I just installed Norton Utilities version 6.01 with DOS 5.0 running on
+my 386-25.  The SI (system information) utility has a function to list
+hardware interupt usage.  When I make this selection, it reports
+[Cascade] grabbing interrupt 2 (IRQ 02).  I scanned the machine with
+McAfee Scan v. 84, and F-prot version 2.01 and neither report
+infection.  Can anyone tell me what is going on here?  Has anyone else
+seen this with Norton 6.01?
+
+I realize that Cascade is harmless but I don't want it around.  Also,
+when I look at the interrupt usage with Quarterdeck's Manifest it
+shows IRQ 02 being used by the system ROM.  I'm confused!
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+=
+Kenneth J. West               Fishing isn't a matter of life and death,
+westk@bionette.cgrb.orst.edu         it's more important than that!
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+- -
+
+------------------------------
+
+Date:    Tue, 12 Nov 91 15:22:28 -0500
+>From:    Valdis Kletnieks <VALDIS@VTVM1.CC.VT.EDU>
+Subject: First SPARC Virus? (Character Replacement Within Files) (UNIX)
+
+>Date:    Sat, 09 Nov 91 04:22:15 +0000
+>From:    cmcl2!tester@uunet.uu.net (L Testerville)
+>>
+> Recently, it was necessary for me to restore an entire filesystem from
+>backups.  The system in question is a SPARCstation 1+ with 40M, CG3, two
+>1.6G Wren drives, one 1.2G Wren drive, no internal drive, EXB-8200 8mm,
+>and Wangtek 6200HS 4mm tape.
+>
+> After successful filesystem restoration from tape, I noticed that there
+>were quite a few errors going from single user to multiuser due to
+>syntax errors in the /etc/rc* files.  Specifically, character: "[" was
+>turned into "{" and "]" was turned into "}".  This, however, was not the
+>only anomaly or set of files experiencing problems.  The format.dat had
+>several instances of the "\" being replaced by "|".  In both situations
+>not every instance of the affected character experienced this
+>replacement phenomenon.  It seemed to randomly affect the target
+>characters in different places.
+
+Hmm... Let's see...
+
+square left bracket = [ = x'5b' = b'0101 1011'
+curly left bracket  = { = x'7b' = b'0111 1011' = x'5b' + x'20'
+
+square right bracket = ] = x'5d' = b'0101 1101'
+curly right bracket  = } = x'7d' = b'0111 1101' = x'5d' + x'20'
+
+backslash = \ = x'5c' = b'0101 1100'
+vert bar  = | = x'7c' = b'0111 1100' = x'5c' + x'20'
+
+I suspect that your tape drive has a sticky bit in it someplace.
+
+True Story:
+
+When I was working at Clarkson, back around 1983 or so, we were the
+recipients of a donated Gould PN/9080 computer.  Eventually, the time
+came to upgrade from UTX/32 1.0 to UTX/32 1.1.  Gould informed us that
+there was an incompatible change to the filesystems, so we would have
+to dump everything to tape, and re-'mkfs' the disks, and then restore.
+
+I set aside a long weekend for this.. dumped the whole system to tape
+(took like 9 tapes at 6250BPI), and then dumped a *SECOND* time to 9
+other tapes, which I then stashed off in a corner.  I then spun the
+upgrade tapes, and reformatted the disks.
+
+So now I have a nice shiny new 1.1 system up and running, ready to
+restore user files.
+
+The tapes won't load. Period.  Neither the first set, nor the second.
+Tried *all* the backup tapes from the daily backups. Bad too.  'restore'
+just says "not in backup format" and barfs.
+
+Finally, after some 36 hours of panic (which included about 6 hours of
+poking at the backplane with a logic analyzer while trying to decipher
+schematics that I wasn't sure corresponded to the installed hardware),
+I found the problem.
+
+It seems that a chip had gone bad in the tape controller board installed
+in the backplane, such that of the 8-bit data path to the tape drive,
+bit 4 would be correct for 4 bytes, then *inverted* for 4 bytes...
+The tape drive never reported a 'read after write' error because the data
+was already bad when it arrived at the drive.
+
+The cure was to (a) Install a new tape controller and (b) write a dumb
+C program to front-end 'backup' that basically did a
+
+for (;;) {
+   read(tape,buffer,bufsize);
+   for(i=0;i<bufsize;i++) if ((i % 8) > 4) buffer[i] ~= \010;
+   write(backup,buffer,bufsize);
+}
+
+                                  Valdis Kletnieks
+                                  Computer Systems Engineer
+                                  Virginia Polytechnic Institute
+
+
+------------------------------
+
+Date:    Tue, 12 Nov 91 16:03:00 -0600
+>From:    ADUS13@Jetson.UH.EDU
+Subject: 12 Trojan Tricks (PC)
+
+Has anyone seen this one yet?  One of my users' PCs was acting
+strangly, so I checked it out and found a series of minor problems,
+including STONED and this 12 Trojan Tricks (it might have been 12
+Tricks Trojan).  Using the copy of Mcafee's SCAN/CLEAN that they had
+(6.7) I was able to remove STONED, but 12 T.T. just VANISHED.  SCAN
+had reported it as being in a self-incripting file called LZEXE, so I
+went looking.  That file didn't exist.  SCAN couldn't find it again,
+either.  I tried CLEAN again, just in case it could hide from SCAN,
+but no luck.  I finally tried to reboot the machine -- it wouldn't
+boot.  Norton (5.0) reported the C: drive's partition table as being a
+device driver.  Before we run FDISK and DISKEDIT -- has anybody else
+out there run into this thing and if so what did you do about it?
+
+------------------------------
+
+Date:    13 Nov 91 03:13:52 +0000
+>From:    vmk@rand.mel.cocam.oz.au (Victor Kay)
+Subject: Question re possibility of virus migration: Dos -> Xenix
+
+I have a simple (hopefully) question that I need some information on.
+
+One of our clients uses a Dos PC to run an application on a Xenix
+machine.  They use Kermit as the communications software.
+
+They recently reported to us the possibility of a virus on their Dos
+PC but have no details as to the type of virus (if any) - I am trying
+to get this from them.
+
+Their concern, and my question, relates to the possibility of the Dos
+virus migrating to their Xenix machine and infecting that. Given that
+Xenix effectively runs as a partition on a Dos machine (or rather a
+machine with a Dos BIOS) what is likelihood that a virus can migrate
+to the Xenix machine.
+
+My gut feel is that this is most unlikely but I have no real basis for
+making any positive statement to our client. My suspicious mind can
+only think of the possibility of a clever partition table infecting
+virus that can somehow travel to the Xenix machine and infect its
+partition table.  Is this likely? Possible?
+
+Many thanks in advance for any replies, information, etc on this.
+
+Regards
+
+Victor Kay
+Co-Cam Computer Group , Melbourne, Australia
+
+E-Mail: vmk@rand.mel.cocam.oz.au
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 01:23:27 -0500
+>From:    RY01@ns.cc.lehigh.edu (Robert Yung)
+Subject: Re: Hong Kong Virus found (PC)
+
+Can SCAN/CLEANv84 find and remove the Hong Kong virus? I couldn't find
+listed in the virlist.txt...
+
+(%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%)
+ |  Robert 'Bobby' Yung           "Before the gates of excellence,  |
+ |  RY01@NS.CC.Lehigh.Edu          the gods have placed sweat."     |
+ |   "THE MACHINE!"                                     -Armstrong  |
+  \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+------------------------------
+
+Date:    13 Nov 91 09:12:21 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Hardware...
+
+frisk@complex.is (Fridrik Skulason) writes:
+
+> You can protect computers from viruses if you do something like the
+> following:
+
+Ha-hem, sorry to disagree Frisk, but the theory (i.e., Cohen) say
+another thing... See below.
+
+>     ... Carefully analyse all new programs brought in, to be sure
+>         nothing infected gets installed to begin with.
+
+This won't help, since you'll inevitably miss some - the general
+question whether a program is infected or not is undecidable...
+
+>     ... Put all executable programs in ROM, or on a write-disbled hard
+>         disk (of course you have to be sure no virus is active when
+>         you temporarily write-enable the disk).
+
+Well, if you permit the disk to be writable at least for some time,
+you still risk infection.
+
+>     ... Prevent the users from ever copying or compiling a program.
+
+Aha, that's one sound theoretical method (not practical? oh, who
+speaks about practical methods... <grin>). More exactly, you need to
+LIMIT THE FUNCTIONALITY. That's one of the methods. The others two are
+
+	... LIMIT TRANSITIVITY. That is, the user A could give
+information to user B and user B could give information to user C, but
+it must be against the rules for A to give information to B, which B
+then passes on to C.
+
+	... LIMIT SHARING. Divide the users in clusters and the
+clusters into integrity levels and forbid information to be read from
+the lower integrity levels (lest it can corrupt you) or infomration to
+be written to the highest integrity levels (lest you might corrupt
+them). There is a more general model of limited sharing, based on
+partially ordered sets, but it's too complex to explain here. Those
+that are interested could find it in the excellent textbook from Fred
+Cohen "A Short Course on Computer Viruses", ASP Press, 1990, ISBN#
+1-878109-01-4.
+
+For those that are getting bored by my constant quotations of Fred
+Cohen - it's not my fault that he usually turns to be right and uses
+to supply proofs to his claims.
+
+However! He's also far from perfect and also makes mistakes. For
+instance, his basic proof of the undecidability of detecting a virus
+by appearance is basically incorrect! Not that the problem is not
+undecidable, but the proof that it is, as provided by Cohen, contains
+an error. However, describing it will require a separate (and quite
+longuish) posting...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    13 Nov 91 10:13:52 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus removals vs. Virus classification
+
+frisk@complex.is (Fridrik Skulason) writes:
+
+>     1) Should Suriv-1 and Suriv-2 be considered to members of an
+>        "Israeli"-family, that also includes the Jerusalem viruses ?
+
+>     2) Should the two encrypted variants (Slow and Scott's Valley)
+>        be considered a separate family ?
+
+>     3) Should the Plastique/AntiCAD viruses be considered to belong
+>        to a separate family ?
+
+> My opinion is:  1) Maybe  2) No  3) No, but of course I don't have the
+> final say in this matter.
+
+Well, my personal preference is 1) Yes, 2) Maybe, 3) Maybe, with
+"maybe" meaning more "yes" than "no"... :-)
+
+> My program, and I presume alse othe one Vesselin described, will for
+> example not disinfect Slow-infected programs, because of the extra
+> encryption code added - but I don't hesitate to classify them as
+> Jerusalem-variants nevertheless.
+
+You're right, it won't (well, more exactly, the program I described
+does, but it uses a separate method for Slow, so it doesn't count),
+and I, just like you, tend to put Slow among the other Jerusalems...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    13 Nov 91 15:43:10 +0000
+>From:    smithd@professor.eng.tulane.edu (David Smith)
+Subject: Re: A couple questions (Mac) (Commodore)
+
+XRJDM@SCFVM.GSFC.NASA.GOV (Joe McMahon) writes:
+
+> >What makes the difference between the two is this, one is constantly
+> >on - going from one application to another, while the other has to
+> >constantly be shut off.  On a Mac, (OR IBM for that matter) if you
+> >want to increase the ANTI-virus protection, just after EACH
+> >application shut the system off. The virus MAY still spread, but then
+> >again, it may not.
+>
+> No. It *will* spread. Running an infected program will infect your
+> machine. Scenario: Run an nVIR-infected program with no protection.
+> It starts up and noiselessly infects the System file. You shut down.
+> You reboot. You run another uninfected program. The copy of the virus
+> in the System file gets the new application. You have gained nothing.
+> If most of your Commodore disks are bootable, essentially you have
+> multiple different computers which all run a single program and
+> which never contact each other. That's what keeps viruses down on
+> your Commodore.
+>
+> >Another reason why my Commodore can't be infected is that it has its
+> >DOS in ROM not in a modifyable DISK which is then loaded into RAM.
+> >Both are loaded into RAM, but on the Commodore, it cannot be changed
+> >with software.
+>
+> I'm not so sure about "can't". Certainly interpreter-level viruses
+> could be spread on a Commodore; how about a viral BASIC program?
+
+No a Commodore cannot be infected if you do what most people do and
+turn off the machine after each program because the operating system,
+and the interpeter is also ROM resident so unless the virus has hands
+and can reprogram ROM then you have nothing to worry about.  Also it
+seems there are less people trying to write virus programs for
+Commodore.
+
+??????????????????????????????David Smith?????????????????????????????????????
+??     <smithd@professor.eng.tulane.edu>  <smithd@comus.cs.tulane.edu>      ??
+?? I am surrounded by fools.  There are people all around me.               ??
+?? God made us in his image.  Therefor is God a fool?                       ??
+??                          "He's dead Jim!"                                ??
+??  /Std. disclamer, My views are only my own.../                           ??
+??????????????????????????????????????????????????????????????????????????????
+
+------------------------------
+
+Date:    13 Nov 91 16:00:10 +0000
+>From:    dwd@mcs213k.cs.umr.edu (Dan DeNise)
+Subject: Re: Real User
+
+turtle@darkside.com (Fred Waller) writes:
+> Write-protect tabs are not `near'-perfect - they ARE perfect.
+> Totally, not just `near'; there's no software bypass of a write-
+> protect tab.  True, a write-protected disk cannot be updated. True,
+> the inconvenience of using only write-protected disks is
+> overwhelming.  So, we have to make them a little less perfect...
+
+The old INIT-29 virus on the Mac's had a VERY effective way to bypass
+the write protection on a diskette.  It put up a message box saying
+the disk needed 'minor repairs' and instructed the user to turn the
+write protect off so they could be made.  It would block mounting the
+disk unless you did.  (True, this involves the user, but so does any
+other virus infection.  Viruses ONLY spread when USERS run infected
+programs.)  All you have to do to get around a write protect tab is
+fool the user into thinking there's a legitimate reason for writing to
+the disk.  With as many gullible people as there are, write protect
+tabs not only aren't 'totally perfect', they aren't even near perfect.
+- --
+Daniel W. DeNise                       E-mail: c0016@umrvmb.umr.edu
+Computing Services                     Phone:  1.314.341.4841
+University of Missouri-Rolla           USMail: 114 Math/Computer Science
+Missouri's Technological University            Rolla, MO, 65401
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 11:30:00 -0500
+>From:    <LISSA@WHEATNMA.BITNET>
+Subject: System 7 vs. viruses (Mac)
+
+>AB5891A@ACAD writes:
+
+>>constantly be shut off.  On a Mac, (OR IBM for that matter) if you
+>>want to increase the ANTI-virus protection, just after EACH
+>>application shut the system off. The virus MAY still spread, but then
+>>again, it may not.
+
+>DON'T DO THIS ON A MAC! If you turn off a Mac without quitting to the
+>Finder and selecting "Shut Down" from the "Special" menu, you risk
+>corrupting your disk and damaging any files you may have been
+>using--including your application. Simply turning off the Mac after
+>using an application does not give the Mac the chance to properly
+>update the disk or any open files.
+
+>..and some Mac viruses will continue to spread anyway. In fact, most of
+>them will if you are using MultiFinder or System 7.
+>
+>- --Rob Levandowski
+>  Computer Interest Floor / University of Rochester
+
+It should be noted that the "Desktop" viruses (WDEF and CDEF) do _not_
+infect System 7. This is explained in the online Disinfectant manual.
+
+"...System 7 is completely immune to the 'Desktop' viruses (WDEF and CDEF).
+These viruses never activate, spread or cause any damage under System 7....
+..Under MultiFinder, the Desktop files are always 'busy'..."
+
+This goes on to say that Disinfectant cannot affect changes in MultiFinder.
+Since it cannot chnage it to repair it, it is safe to assume that the file
+cannot undergo changes to be infected with the virus in the first place.
+
+Hmmm...maybe Apple is finally getting smart. :-)
+
+- -----------
+
+All opinions are my own, and are very humble. :-)
+
+*******************************************************************************
+***     Melissa A. Jehnings         *  "We sometimes catch a window         ***
+***     Student Manager             *   A glimpse of what's beyond          ***
+***     Academic Computing Center   *   Was it just imagination             ***
+***     Wheaton College             *   Stringing us along?                 ***
+***     Norton, MA                  *   More things than are dreamed about  ***
+***     BITNET: LISSA@WHEATNMA      *   Unseen and unexplained              ***
+***             WUG@WHEATNMA        *   We suspend our disbelief            ***
+***     Apple Ambassador for the    *   And we are entertained."            ***
+*** Computer Users' Group of Wheaton*           ---Rush, "Mystic Rhythms"   ***
+*******************************************************************************
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 11:35:00 +0000
+>From:    Jim Schenk <JIMS@SERVAX.BITNET>
+Subject: F-PROT 2.01 (PC)
+
+Hi,
+
+Does anyone out there have any experience loading VIRSTOP.EXE into
+upper memory with 386Max?  My Zenith 386/20 crashes when I add the
+line C:\386MAX\386LOAD PROG=C:\F-PROT\VIRSTOP.EXE to autoexec.bat.
+
+Any comments from Frisk or others would be appreciated.
+
+Jim Schenk
+University Computer Services
+Florida International University
+
+Bitnet:         jims@servax
+Internet:       jims@servax.fiu.edu
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 19:13:00 +0200
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: Companion viruses (was: Virus Proof Machine Response)
+
+  Vesselin Bontchev and Chris Stops write:
+VB> Also, don't forget about the companion viruses.
+
+CS> Could be knocked out  by changing  the file and/or   executable naming
+CS> system, so that two executables with the same  name cannot exist.  For
+CS> example, if my   machine  has lots  of  memory, why don't  we simplify
+CS> things and forget  about COMs, and  just have EXEs (or their non-80x86
+CS> equivalent)?  It'll probably be OK, as  applications   continue to get
+CS> bigger.
+
+VB> Hmm, the above seems a good idea... More exactly, one can rename all
+VB> EXE files to COM extensions and compile all BAT files with something
+VB> like BAT2EXEC... If all executable files have only COM extensions, the
+VB> companion viruses will simply not work. (DOS itself will be able to
+VB> recognize the file type, by the first two bytes of the file.)
+
+Neither idea will work, since even if all programs had the same exten-
+sion (regardless of whether it's COM or EXE), a companion virus with
+the *same name and extension* could be created in a directory which is
+*earlier in the user's search path* than the directory containing the
+target program, and which would therefore be executed in place of the
+intended program (in most cases).
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 19:20:00 +0200
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: Theory : definition & classification
+
+  Maxim Titov has presented an approach to a formal theory of computer
+viruses.  I don't claim to understand your posting, Maxim, but if you
+haven't seen the following article, you should definitely take a look
+at it:
+
+                L. M. Adleman
+                An Abstract Theory of Computer Viruses
+                CRYPTO '88, pp. 354-374
+
+(which *must* be relevant since I don't understand it either :-) ).
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Wed, 13 Nov 91 11:08:43 -0600
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: Virus report (PC)
+
+For those people who are keeping track of viruses.....
+
+Plastique/Anticad and Invader/4096-B (a member of AntiCad family?) has
+been found at ua1vm.  Plastique/Anticad was found in the boot sector
+of several diskettes and a laptop, while the Invader/4096-B was found
+in the file FDISK.EXE.
+
+F-Prot v2.01 took care of the problem.
+- ----------
+Habits are at first cobwebs, then cables.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@risc.ua.edu
+
+------------------------------
+
+Date:    Tue, 12 Nov 91 19:07:00 -0500
+>From:    <RUTSTEIN@HWS.BITNET>
+Subject: NCSA/ICVP Call for Papers
+
+This call for papers just came in from the NCSA....thought everybody
+would like to see it....
+
+
+
+                     C A L L        F O R      P A P E R S
+
+              NCSA's 1st INTERNATIONAL COMPUTER VIRUS PREVENTION
+                           CONFERENCE AND EXHIBITION
+
+                      June, 1992     -     Washington, DC
+
+
+The purpose of the 1992 International Computer Virus Prevention
+Conference is to provide a forum for anti-virus product developers,
+researchers and academicians to exchange information among themselves
+and the public.  NCSA/ICVP '92 will consist of advanced seminars,
+tutorials, open forums, distinguished keynote speakers, and the
+presentation of high-quality accepted papers.  A high degree of
+interaction and discussion among Conference participants is expected,
+as a workshop-like setting is promoted.
+
+ICVP '92 is sponsored by the National Computer Security Association.
+Cosponsors include Network World and Washington Technology.
+
+Because ICVP '92 is a not-for-profit activity funded primarily by
+registration fees, all participants and speakers are expected to have
+their organizations bea r the costs of their expenses and
+registration.  Presenters of papers will pay a reduced conference fee.
+
+
+WHO SHOULD ATTEND
+
+The conference is intended for computer security researchers,
+managers, advisors, EDP auditors, network administrators, and help
+desk personnel from government and industry, as well as other
+information technology professionals interested in computer security.
+
+
+CONFERENCE THEME
+
+The first in a series of conferences devoted to advances in virus
+prevention, this Conference will encompass developments in both theory
+and practice.  Papers are invited in the areas shown and may be
+theoretical, conceptual, tutorial or descriptive in nature.  Submitted
+papers will be refereed, and those presented at the Conference will be
+included in the proceedings.
+
+
+Possible topics of submissions include, but are not restricted to:
+
+        o       Virus Detection                         o       Virus Trends and
+ Forecast
+        o       Virus Removal                           o       Virus Prevention
+        o       Recovering from Viruses         o       Incident Reporting
+        o       Viruses on LANs and WANs        o       Emergency Response
+        o       OS/2 Viruses                            o       Viruses and
+ theLaw
+        o       Virus Geneology                         o       Education &
+ Training
+
+
+THE REFEREEING PROCESS
+
+All papers and panel proposals received by the submission deadline and
+which meet submission requirements will be considered for presentation
+at the Conference.
+
+All papers presented at ICVP '92 will be included in the Conference
+proceedings, copies of which will be provided to Conference attendees.
+All papers presented, will also be included in proceedings to be
+published by the NCSA.
+
+INSTRUCTIONS TO AUTHORS
+
+        [1]  Three (3) copies of the full paper, consisting of 22-26
+ double-spaced
+      (approximately 5000 words), typewritten pages, including diagrams, must
+      be received no later than 1 February 1992.  Diskettes and electronically
+      transmitted papers will not be accepted.
+
+        [2]  Each paper must have a title page which includes the title of the
+      paper, full name of all authors, and their complete addresses including
+      affiliation(s), telephone number(s) and e-mail address(es).  To facilitate
+      the blind review process, these particulars should appear only on a
+      separate title page.
+
+        [3]     The language of the Conference is English.
+
+        [4]     The first page of the manuscript should include the title and a
+ 300
+        word abstract of the paper.
+
+        [5]     Papers submitted that are subject to copyright must be
+ accompanied
+        by a written assignment to the NCSA Conference Committee or written
+        authorization to publish and release the paper at the Committee's
+        discretion.  Papers selected for presentation at the NCSA Conference
+        requiring U.S. Government pre-publication review must include, with
+        the submission of the final paper to the committee, a written release
+        from the U.S. Government Department or Agency responsible for pre-
+        publication review.
+
+
+IMPORTANT DATES
+
+        o       Full papers to be received by the Program Committee by 1
+ February
+        1992.
+
+        o       Notification of accepted papers will be mailed to the author on
+ or
+        before 13 March 1992.
+
+        o       Accepted manuscripts, in camera-ready form, are due no later
+ than
+        10 April 1992.
+
+        o       Conference: 18-19 June 1992, Hyatt Regency, Crystal City, VA
+
+
+WHOM TO CONTACT
+
+Questions or matters relating to the Conference Program should be directed to
+the NCSA:
+
+        NCSA/ICVP '92
+        Attn:  Mr. Paul Gates
+        227 West Main Street
+        Mechanicsburg, PA 17055
+        USA
+
+        Telephone:  (717) 258-1816   -   Fax:  (717) 243-8642
+
+
+That's all....NCSA is currently not on the Internet.
+
+                           Charles
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 219]
+******************************************

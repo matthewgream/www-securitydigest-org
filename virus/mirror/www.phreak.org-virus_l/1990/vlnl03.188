@@ -1,0 +1,379 @@
+VIRUS-L Digest   Tuesday, 27 Nov 1990    Volume 3 : Issue 188
+
+Today's Topics:
+
+Pipelines in DOS (Was Is this a virus? Help!) (PC)
+Re: List of known viruses urgently required.
+Virus info databases
+Yale/Alameda (PC)
+Antiviral reviews
+Removal of EDV? (PC)
+Amiga Help
+SAM 2 & ZUC B (Mac)
+a Macintosh WORM???!!! (Mac)
+Re: Trojan Warning: SCANV70 (PC)
+Re: Virus "WDEF A", help! (Mac)
+Dark Avenger frequency?
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Fri, 23 Nov 90 12:44:30 +1300
+From:    Russell Page <russell@bks.co.nz>
+Subject: Pipelines in DOS (Was Is this a virus? Help!) (PC)
+
+Robert E. Mee sees strange files when he pipes a MS-DOS directory
+listing through more.
+
+> dir | more
+
+There are essentially two ways to implement pipelines.  UNIX creates
+two concurrent processes. The kernel (at least I think it is the
+kernel) keeps the two processes synchronized. One process pours stuff
+into the pipe until it fills up, and then goes to sleep while the
+other empties the pipe. The other then sleeps while the first refills
+the pipe.
+
+MS-DOS doesn't support concurrent processes. There are no kernel
+facilities for managing interprocess communications. Pipes are
+implemented directly by command.com.
+
+The mechanism is something like this.
+    1.  Command.com creates a temporary file and attaches it's standard
+	output to it.
+    2.  The first program then runs. It inherits it's standard files
+        (including it's standard output) from command.com. So it's output
+	gets dumped into the temporary file.
+    3.  When the first process (dir in your case) exits, command.com attaches
+        it's standard input to the temporary file, and starts the
+	second process (more). When this process finishes, command.com
+	deletes the temporary file.
+
+Thus at the time dir runs, the temporary file has been created, but
+still has nothing in it. So you see a zero sized file with some weird
+system generated name.
+
+The second file is related to it in some weird unspecified way. My
+guess is that it contains data that command.com must keep around to
+implement all the redirection. It probably saves this in a file rather
+than memory. There are a number of good reasons why this is a sensible
+way to do it in DOS. The basic one being that memory is unprotected in
+this environment, and a child process can do terrible things to memory
+owned by it's parent.
+
+The bottom line on your trojan is that you were seeing the files that
+DOS created to implement your pipeline.
+
+------------------------------
+
+Date:    Fri, 23 Nov 90 09:15:46 +0000
+From:    s37775d@taltta.hut.fi (Pandy (A. Holmberg))
+Subject: Re: List of known viruses urgently required.
+
+UMEEM37@VAXA.CC.IMPERIAL.AC.UK (Olivier M.J. Crepin-Leblond) writes:
+>Could someone please send me a quantitative list of all known viruses,
+>worms, trojans, etc. A short (one line ?) description of each would be
+>also welcome. E-mail it directly to me. Thanks.
+
+	Because you didn't mention which computer you use I guess it's a Mac.
+
+	You can copy the program Disinfectant 2.3 from anonymous ftp.
+	It contains a rather comprehensive list of all known viruses.
+
+	/pandy
+
+- --
+"If you feel that the days pass you by and life escapes you;
+ Pull yourself together and do something useless."
+                                                -- I. Sjostrand
+
+******************************************************************************
+       /I I   Andreas "Pandy" Holmberg             pandy@spiff.hut.fi
+      /-I-I   Helsinki University of Technology    pandy@otax.hut.fi
+     /  I I   Faculty of Electrical Engineering    s37775d@taltta.hut.fi
+******************************************************************************
+
+------------------------------
+
+Date:    Fri, 23 Nov 90 12:46:07 +0100
+From:    JAN-LIEN@vera.stacken.kth.se
+Subject: Virus info databases
+
+Does anybody know if there are any (publicly reachable) databases with
+virus information ?  I mean real databases, that use search commands
+and keys, not a repository for various texts on the subject.  I am not
+interested in commercial packages that can be bought for a pc.
+
+The reason is that I am going to build a database for my own computer,
+in swedish language, and would like to know how much work has been
+done world-wide on this.  Also if there are any such projects in
+preparation or progress.  Yes, I would like to copy the database if
+so.  There is also possibility to create an english-language database
+if there is enough interest.  At the moment I feel there is too much
+information coming thru virus-l, with too little search structure.
+Which means it is hard for a new-comer to use the list efficiently.  A
+database could help a little.
+
+(There is a remote possibility of setting up a database and file
+ repository (like wsmr-simtel20) on a networked computer here in
+ Sweden).
+
+Any replies sent directly to me will be summarized to the list.
+
+Thanks!      jan-lien@vera.stacken.kth.se
+
+------------------------------
+
+Date:    23 Nov 90 17:08:51 +0000
+From:    cjohnson@acsu.buffalo.edu (charles johnson)
+Subject: Yale/Alameda (PC)
+
+I was running a routine scan on some of our diskettes and got the
+following message using scan 2.3V56 Found Yale/Alameda Virus [Alameda]
+in boot sector.
+
+We run a PC lab with all floppies and this was found on two of our DOS
+diskettes. Can anyone tell me exactly what this virus does, how to
+clean it and how to prevent reinfection..
+
+Also we have seen what we think may be a virus that shows up as inital
+bad sectors, but when we run Norton Disk Doctor it keeps getting more
+and more bad sectors.. Any information or suggestion would be greatly
+appreciated..
+ Any replies can be email directtly and I'll post a summary..
+thank you..
+_+_+_+_+_+_+_+_++_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_+_u+_+_+_
+Charles Johnson               cjohnson@acsu.buffallo.edu
+Lab Assistant                  v079lvjh@ubvms.bitnet
+Educational Opportunity Center
+SUNY@Buffalo, Buffalo NY
+
+------------------------------
+
+Date:    Fri, 23 Nov 90 21:36:54 -0800
+From:    Robert Slade <USERQBPP@SFU.BITNET>
+Subject: Antiviral reviews
+
+There have been, fairly consistently, those who have requested not
+only the names, but reviews of the various anti-viral packages.  I am
+writing to as many companies as I can find (and there are many), to
+request a copy of any anti-viral software (and some hardware) package.
+As manager of the data security information network on the SUZY
+information system, I provide reviews of anti-viral software to the
+members.  I am also in final preparation for a series of seminars
+which will be presented in a number of centres around North America,
+and will be providing demonstrations of various software packages at
+that time.  Formal reviews have also been contracted by ISR Software
+Review Corporation, and will be published by their service.
+
+As I said, I am writing to all the companies I have leads for.
+However, I do not wish to leave out any "minor players" or
+"newcomers", and therefore would be pleased to review any packages
+sent to me.  Reviews and demonstrations will only be conducted on full
+packages received with documentation.  Unless otherwise specified by
+the publisher, no copies of any software received will be made
+available to any third party, either by loan, gift or sale.  All
+packages received will be retained by Robert Slade, and will be used
+for demonstration in the seminars unless the publisher requests
+otherwise.
+
+The address is the same as for the viral information files:
+         Robert Slade
+         3118 Baird Road
+         North Vancouver, B. C.
+         Canada     V7K 2G6
+
+------------------------------
+
+Date:    25 Nov 90 12:21:32 +0700
+From:    "Daud.R..Matthews" <D03T005@SAKSU00.BITNET>
+Subject: Removal of EDV? (PC)
+
+Can anyone help in getting rid of the EDV virus?
+
+A colleague has this virus on his IBM PC. He has run the scan program
+and detected it's presence. He has rebooted from a 'clean' floppy and
+run the 'clean' program. On checking the hard disk with the scan
+program it runs 'clean.' Yet when he reboots from the hard disk EDV is
+back.  Does he really have to re-install DOS?
+
+Any help would be appreciated. Regards, Daud.
+
+------------------------------
+
+Date:    Mon, 26 Nov 90 02:02:40 +0000
+From:    set@phobos.cis.ksu.edu (Steve E Tietze )
+Subject: Amiga Help
+
+I have recently been downloading amiga programs from ftp sites.  And
+since i have been doing this i have alot of funny stuff going on in my
+computer.  Im using Oneline V3 with a SupraModem 2400 donwloading them
+with the Zmodem option.  When i Download the programs on a formatted
+disk they are fine .  But when i try to look at the dir in the CLI I
+get the system message:SoftWare Faliure All tasks held ect. now this
+is been happing alot lately.  I also noticed something weird when i
+loaded my Sculpt 4D.  During the Download i got a system message
+saying :Disk is Write Protected ect.  Its like something is trying to
+write its self to my program?  Whats the deal?  How come i always get
+the System Message, Is it the download ing program or have a caught
+something?/ I have used Zero Virus and VirusX And they found nothing??
+Can someone help/?????
+
+Email set@phobos.cis.ksu.edu
+
+------------------------------
+
+Date:    26 Nov 90 02:41:00 +0000
+From:    D1660@AppleLink.Apple.COM (SoftPlus, Paul Cozza,PRT)
+Subject: SAM 2 & ZUC B (Mac) New version of virus (Mac)
+
+For SAM 2.0 Users:
+
+A new strain of the Macintosh virus ZUC has appeared in Italy. It is
+very similar to the first strain of ZUC in its behaviour. It modifies
+CODE resources in applications. In standard, advanced or custom mode,
+SAM 2 will alert you too this virus's attempt to change CODE
+resources. Denying these attempts prevents the virus from spreading.
+You can enter the following virus definition with Virus Clinic to
+detect this virus by name.
+
+   Virus Name:   ZUC B     (or ZUC 2)
+
+Resource Type:   CODE
+  Resource ID:   1
+Resource Size:   Any
+Search String:   7002A2604E752014A0552240      (hexadecimal)
+Search Offset:   Any
+
+Paul Cozza
+SAM Author
+
+------------------------------
+
+Date:    Sun, 25 Nov 90 22:23:32 -0500
+From:    JK_APPLEREP@UNHH.UNH.EDU (Joe Kazura)
+Subject: a Macintosh WORM???!!! (Mac)
+
+We have a student who claims that Vaccine is reporting a "DCD WORM"
+infestation
+
+I have never heard of a WORM on the Mac as yet, but who knows!
+
+I have not seen this message and nothing I have can detect it on
+floppies that contain the "infected" files!  Supposedly SAM is one of
+the infected files as well as GateKeeper (and Aid)!
+
+I'm lost here, any help would be GREAT!!!!
+
+Thanks in advance,
+
+Joe Kazura
+Apple Student Rep.
+Univ. of New Hampshire
+
+JK_APPLEREP@UNH.UNHH.EDU
+ST0566@APPLELINK.APPLE.COM (ST0566 on AppleLink)
+
+------------------------------
+
+Date:    Sun, 25 Nov 90 20:57:20 +0000
+From:    plains!umn-cs!LOCAL!aslakson@uunet.UU.NET (Brian Aslakson)
+Subject: Re: Trojan Warning: SCANV70 (PC)
+
+keithm@ashtate.A-T.COM (Keith Mund) writes:
+
+>Speaking personally as a software author, buy software from the
+>manufacturer or a legitimate dealer. The same fears you have are felt
+>by them manyfold, and great care is taken to insure safe software.
+>Although you threw out names of companies freely, none of them has
+>distributed software with any problems. Why fear a problem that does
+>not exist. Viruses are spread by individuals copying software, not by
+>legitamate manufacturers.
+
+Sorry!  I've heard many horror stories, some in this group, about
+viruses in shrink-wrapped software.  I've downloaded from dial-in
+bbs's and done anonymous ftp, and yes, copied software from friends.
+I've never been infected.
+
+The only place where I've seen infections are in multiple use
+environments like computer labs at Universities.  Although I haven't
+seen infections from any other sources, they do exist, and I check
+everything just in case.  Viruses are spread in many ways.
+
+If you are referring to Anti-viral programs, I'm sure that they are
+the most virus free programs you can find, other than something you
+write yourself!  (My experience is mostly with Disinfectant,
+Gatekeeper, SCAN, and F-PROT).
+
+- --
+Brian Aslakson
+
+aslakson@cs.umn.edu
+mac-admin@cs.umn.edu  <-= Macintosh related
+
+------------------------------
+
+Date:    Sun, 25 Nov 90 13:40:28 -0500
+From:    Josh Hayes <JAHAYES%MIAMIU.BITNET@OHSTVMA.IRCC.OHIO-STATE.EDU>
+Subject: Re: Virus "WDEF A", help! (Mac)
+
+From the documentation that comes with Disinfectant 2.3, it seems that
+WDEF comes in two strains, the A and B strain; the latter beeps when
+it infects a new disk, the former doesn't.
+
+It attacks only the Desktop file; as a consequence, you should
+be able to eliminate the infection by booting from a LOCKED floppy
+and holding down shift-option-cloverleaf as you boot, until you
+get the "Are you sure you want to rebuild the desktop on "DiskName"?
+This may take a few minutes". Just do it. Apparently, rebuilding the
+desktop eliminates current infection of that file. Remember, though,
+that EVERY SINGLE FLOPPY that talked to your infected computer will
+also have an infected Desktop file and will need to have it either
+rebuilt, or scanned and disinfected using Disinfectant or the like.
+
+I have waged a fairly continuous war against this little booger for
+the last two months in our department, as there are sufficient numbers
+of idiots who continue to use the same old infected disks to re-infect
+cleaned ones....grrrrr....this particular virus is bad news especially
+for the portable and IIci; perhaps also for the newer models as well.
+Hope this helps.
+
+Josh Hayes, Zoology Department, Miami University, Oxford OH 45056
+voice: 513-529-1679      fax: 513-529-6900
+jahayes@miamiu.bitnet, or jahayes@miamiu.acs.muohio.edu
+"I am the Supreme Being, you know; I'm not completely dim."
+
+------------------------------
+
+Date:    26 Nov 90 10:54:46 -0500
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Dark Avenger frequency?
+
+I was just talking to a reporter for a U.S. paper (calling from
+Bulgaria!); he says that he's been told by at least two people that
+the Dark Avenger (and/or other "Bulgarian" viruses) is very common in
+certain parts of Europe.  One person, he says, tells him that he's
+seeing several Dark Avenger reports per week.  Does this agree with
+anyone else's observations?  We get rather few reports of the Dark
+Avenger (or the VACSINA, or any other TPxxVIRs, or really any other
+"Bulgarian" viruses); are there places (many places?) in the world
+where these viruses are very common?
+
+DC
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 188]
+******************************************

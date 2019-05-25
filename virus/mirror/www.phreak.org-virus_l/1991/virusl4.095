@@ -1,0 +1,564 @@
+VIRUS-L Digest   Monday,  3 Jun 1991    Volume 4 : Issue 95
+
+Today's Topics:
+
+New virus that halts system after 3000 keystrokes (PC)
+Re: Interesting advert (PC)
+Network World Article (PC)
+re: FSP and sales figures (was: Into the 1990s)
+Re: MS-DOS in ROM; Re: NVMs (PC)
+A question regarding commercial dial-up services
+Question About Stealth Viruses
+Spinrite II (PC)
+Re: Hard Disk R/W errors (PC)
+denzuko and semlohe viruses (PC)
+Re: Interesting advert (PC)
+Re: F-Driver.SYS and QEMM (PC)
+Product Test - - VirusDetective (Mac)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 03 Jun 91 06:41:52 +0000
+From:    Christoph Fischer <ry15@rz.uni-karlsruhe.de>
+Subject: New virus that halts system after 3000 keystrokes (PC)
+
+Hi here is the preliminary analysis of a new virus (out in the wild)
+
+Name of Virus
+	V08-15
+Alias
+	none sofar (I hope that stays that way)
+Virus family
+	(to be done)
+First occurrence
+	May 1991 probably around since 1990
+Site of first occurrence
+	Germany
+Type of virus
+	COM and EXE infector, memory resident
+Length of virus
+	1322..1337 (virus is placed on even paragraphs)
+Operating system
+	MS-DOS
+Version of OS
+	3.* and above
+Computers
+	IBM and compatibles
+Direct detection
+	Answers upon a INT 21 AX=FFFE with AX=0815 if resident
+	Infected files contain the readable string:
+	'CRITICAL ERROR 08/15: TOO MANY FINGERS ON KEYBOARD ERROR.'
+	EXE-type files are marked infected by 4D54h at offset 12h
+	(that is the EXE header checksum).
+	COM-type files are marked by the same 16bit value but at
+	offset 3 in file (that is 103h when loaded).
+Infection mechanism
+	The resident virus intercepts INT 21 and infects anything
+	loaded and executed, provided there is enough space on the
+	drive and file is not too big for COM-type files
+Infection targets
+	Any executabel code with and without EXE-header
+Interrupts
+	INT 09 (only if triggered)
+	INT 21
+	INT 24 (only during infection)
+Payload
+	After the 11th of November 1990 the virus will intercept INT 09
+	and count the keystrokes. If the number of keystrokes reaches
+	3000 the virus will display the message above and halt the system.
+	Counting starts as soon as the first infected file is started.
+Special clues
+	The number 08/15 refers to the standard rifle used by the Germans
+	in World War II. Today this number is synonymous for the term
+	'standard' of 'plain vanilla'.
+	The 11th of November is the begin of the carneval season.
+Detection
+	This is brand new, so use the above mentioned properties
+	till the scanners are updated.
+Removal
+	Boot from a clean disk and delete or replace infected files
+Analysis
+	Christoph Fischer
+	Micro-BIT Virus Center
+	University of Karlsruhe
+	Zirkel 2
+	DW-7500 KARLSRUHE 1
+	Tel.: +721 37 64 22
+	FAX:  +721 32 55 0
+
+------------------------------
+
+Date:    Fri, 31 May 91 12:02:15 -0400
+From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Re: Interesting advert (PC)
+
+>From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+
+>There is absolutely nothing new in this ad.
+
+Exactikalaly.
+
+>  Padgett Peterson to Kenny::
+>>Question: when does it go resident ? If from CONFIG or later, you know
+>>          my opinion.
+
+>Answer: Who says a checksum program has to go resident at all??  Most
+>checksum programs I know of (incl. Vaccine and V-Analyst) can (or
+>must) be run without going resident.
+
+Well some form of integrity checking must go resident, even if it is
+just smart enough to call the checksum program. Otherwise, what is
+going to identify that a program is new or changed. (you could handle
+"changed" with a zillion little .BAT files but new ?) Since you do not
+want to add to the pilot's workload, it must be automatic therefore
+resident.
+
+Further, in order to handle the undocumented DOS "features" and
+Windows/Novell /etc interactions, it needs to go resident (at least
+the disk handler) before DOS loads e.g. from the BIOS.
+
+Considering performance, while it would be possible to call the main
+routine from disk (most good anti-viral routines now permit code
+swapping for systems with limited free DOS RAM), it is better to keep
+the necessary elements available. Since new memory systems (DR-DOS,
+MS-DOS 5.0, QEMM) can provide up to 637k free with 121k of TSRs loaded
+"high" on my home machine, in the future, 10-20k of integrity
+management should not be a problem (incidently, the 19k check-summing
+routine I use is in high memory so on my PC the only loss to DOS is 1k
+of the BIOS-level stuff: have 636k of free RAM under 640k).  The delay
+in checking each program/disk access is unnoticable to the user.
+(Norton reports SI 27.1 / DI 9.1 on a non-cached 25 mhz 386,
+ST-251-1/SMARTDRV combo)
+
+Point is, anyone who says the above can't be done is nuts.
+
+						Warmly,
+							Padgett
+
+ps My wife has no idea any of the above is there when she writes a
+   letter, she just turns the PC on & goes.
+
+------------------------------
+
+Date:    Fri, 31 May 91 12:02:41 -0400
+From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Network World Article (PC)
+
+>From:    rtravsky@CORRAL.UWYO.EDU (Richard W Travsky)
+
+>An accompanying chart shows the percentage of detection by the packages
+>against 921 viruses. Here's how the rankings went (only 15 of the 21 were
+>reported for some reason):
+
+Interesting: when you eliminate the older versions of the products,
+you are actually left with 10 programs and all appear to be scanners,
+not validation programs (Enigma-Logic's Virus-Safe, McAfee's VSHIELD
+,etc. were not included) so it is difficult to tell just what they are
+evaluating.
+
+Just to provide "apples vs apples" tests, possibly in conjunction with
+the public domain viral list, we should make a stab at a weighted test
+(e.g. Jerusalem 1000 pts for detection, Pentagon 1 pt.) if we can come
+up with a probability function for infection it would certainly be
+better than "We can detect 900 viruses". We can start with David's
+list, flesh it out a bit, and apply a bit of Quattro's "What If"
+(there goes some more negative free time - what we need is a national
+laboratory).
+
+					Warmly,
+						Padgett
+
+------------------------------
+
+Date:    Fri, 31 May 91 12:03:05 -0400
+From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: FSP and sales figures (was: Into the 1990s)
+
+>From:    microsoft!c-rossgr@uunet.uu.net
+
+>If the seed is entered by the user, then there might well be problems
+>of getting "pre-installed" copies within an organization that al share
+>the same seed.
+
+Ross: we seem to be cross communicating. In our shop we do not use "pre-
+      installed" copies, no two machines are alike anyway & we are running
+      everything from DOS 2.0 up. On installation, the package we use takes
+      3-5 minutes to take a "snapshot" of the PC and record every executable
+      on it during installation.
+
+>And if they have the seed stored on the system anywhere -- sorta
+>required in order for it to work! -- then the bad guy can find it just
+>as easily as my own code can.
+
+Only if the "bad guy" knows where it is stored and if the offsets are
+the same on every machine - one of the drawbacks to
+"pre-installation". If you cannot ensure the physical integrity of the
+machine all bets are off. It would take a complex and specifically
+targetted piece of software to be able to determin that you were there
+(and not some other routine) and bypass it - not for an amateur. One
+of the problems is that at present there is a single criteria for
+judging PC protection programs: the number of viruses it detects.  In
+actuality, this is one of the lesser threats that a full package
+should take care of.
+
+>If you want RACF on a PC, you'll have to change operating system, I
+>think.  It looks like you're speaking of authenticity and access
+>control -- these must be considered important *parts* of an anti-viral
+>package.  But not the whole thing.
+
+a) RACF is the only product that I have seen that will tell a user where its
+   holes are (LISTDSD command).
+
+b) I am but authentication of the system/programs, not of the user.
+
+c) Thats what I said - see multilayer "model" of a few months ago.
+
+The points made should still be targets, possible but not necessarily easy.
+BTW all my cars are Pontiacs.
+
+					Warmly, Padgett
+
+------------------------------
+
+Date:    31 May 91 19:22:18 +0000
+From:    anthony@convex.csd.uwm.edu (Anthony J Stieber)
+Subject: Re: MS-DOS in ROM; Re: NVMs (PC)
+
+walker@aedc-vax.af.mil (William Walker C60223 x4570) writes:
+
+>to a RAM-disk ).  The method of running MS-DOS from ROM, as Padgett
+>states, is currently used by some laptops, and also by some diskless
+>LAN- stations and third-party boot cards.  The method of booting from
+>a ROM- disk ( with an infection-proof boot sector and system files ),
+>which I wrote about, is not implemented at this time, to the best of
+>my knowledge.
+
+The Toshiba T1000, and the Zenith MinisPort laptops as well as some
+Tandy desktop machines have ROMdisks with MS-DOS 2.x or 3.x.  This
+technology has been around for some time, since at least 1987.  All it
+really is, is a RAMdisk with a write protect tab :-).
+
+MS-DOS running in ROM hasn't been around so long.  It takes special
+effort to get a program to run in memory that is not writable.  As far
+as I know, the only machines that run MS-DOS in ROM are the HP-95LX
+palmtop running MS-DOS 3.22 (just announced last month) and possibly
+the Poquet PC.  The Atari Portfolio palmtop runs DIP-DOS in ROM, which
+is MS-DOS compatible.
+
+Network bootable network adapters used in diskless workstations and
+elsewhere are more likely to just load the operating system off a file
+server rather than actually hold the entire OS in ROM.
+- --
+<-:(= Anthony Stieber	anthony@csd4.csd.uwm.edu   uwm!uwmcsd4!anthony
+
+------------------------------
+
+Date:    Fri, 31 May 91 17:05:16 -0700
+From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: A question regarding commercial dial-up services
+
+lev@suned1.Nswses.Navy.Mil (Lloyd E Vancil) writes:
+
+> Given: A BBS service distributes a program that you must run in your
+> machine to use the service. ( ;-) guess who! )  This service becomes
+>
+> Investigation reveals whole blocks of ram have been dumped to the
+> file.  Typical finds include, dos environment information, disk
+> directories, pieces of files that were deleted by dos (but not removed
+> from the disk surface).
+>
+>   Would it be possible;
+> 	1. for a memory resident virus to be scooped up by this service..
+> 	   and return to reinfect the machine at a later date?  Presumably
+>            by the service's reusing of the file fragment that contains the
+>            "screen primitive" and the "scooped" virus code.
+>
+> 	2. for a virus to be written to take advantage of this transmission
+> 	   method?
+>
+> (I'm not sure that the "service" retains a complete copy of it's
+>  users "staging file"; after all they claim nearly 1 million
+
+Given a virus infected file which had been deleted "normally" (i.e. in
+MS-DOS the file is still there but the directory listing is removed)
+it is possible for the infective/viral code to appear in this
+purported file.  (Shall we call it, say, STAGE.DAT?)
+
+My understanding is that the information contained in our theoretical
+file is data, and that it is "viewed" rather than being "run".  If,
+however, the system used a "resource" type system (such as the Mac
+does), it may be possible for portions of the file to be "run", and
+then the danger of reinfection is possible.
+
+Given the very large size of our theoretical file, one can note that
+very little, if any, of it could be transmitted during the time the
+"send data" LED is on.  The risk of the information being transmitted
+to the central service and redistributed is therefore extremely
+remote.  It would take a prodigious effort to infect users this way,
+but it is not outside the bounds of possibility.
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Fri, 31 May 91 16:50:10 -0700
+From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Question About Stealth Viruses
+
+76476.337@CompuServe.COM (Robert McClenon) writes:
+
+> someone please explain exactly what "stealth" viruses are?  Is there a
+> standard definition of what characteristics make a virus a "stealth"
+
+There is *always* argument over terms in the computer virus field.
+
+However, I think that most researchers would agree that "stealth" viri
+are those which "trap" any reading of the disk, and hide themselves by
+ensuring that the information given back to the screen (or calling
+program) is only that of the original program, before infection.  This
+means that stealth viri, while active, can avoid any kind of detection
+mechanism that relies on reading the disk, such as file signature
+checking, file size checking, checksum, CRC or other "image signature"
+calculation and checking.
+
+Generally, stelath viri can be detected by examination of system memory.
+Exactly how, or the best way to do this, would be the subject of great
+debate.  (Which I am not going to precipitate.)
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    01 Jun 91 03:39:28 +0000
+From:    rich@ersys.edmonton.ab.ca (Richard Hempsey)
+Subject: Spinrite II (PC)
+
+Several people have sent me mail asking what Spinrite II is, and what
+does it do, so here's some info (some from the manual, some of it my
+own words).
+
+Spinrite II is an MS-DOS based hard drive maintenance utility that
+(among other things) non-destructively low-level formats your hard
+drive.  From page 1 of the manual:
+
+"SpinRite reads and repairs damaged, unreadable, and uncorrectable
+data, spots and removes soft and correctable errors long before the
+become problems, certifies fundamental drive/controller data
+compatibility, determines and resets a hard disk's sector interleave
+for maximum data throughput, performs the most thorugh surface defect
+detection, analysis, and data relocation ever, and renews and restores
+the low-level format on hard disk drives.
+
+"Best of all, it does all this without disturbing any of the data that
+is already on the drive.."
+
+My opinion: best utility you can buy.  Should be available at most
+computer stores.  Price would probably be around US$65 - 75.
+
+It fixed 3 errors on my hard drive that the manufacturer found, but
+found 2 others and locked them out.  Be warned though, the deepest
+testing level does read/write testing 84 times on each sector of the
+disk - it took about 21 hours for my 32meg HD.  It also adjusted the
+interleave, and increased the speed by about 5 times!
+
+It (claims) to work with any MFM,RLL, or ERLL drive, requires DOS 2.1
+or later, and works with Compaq DOS 3.31, MS-DOS 4.0, and many
+third-party disk partitioning device drivers (such as OnTrack's Disk
+Manager.)
+
+(sorry about the verbosity, a lot of it comes directly from the manual
+and package).  (Disclaimer: I have absolutely nothing to do with
+Gibson Research, I just like the product.)
+
+Richard Hempsey   at   ersys!nowhere!rich@nro.cs.athabascau.ca
+                  or   rich@ersys.edmonton.ab.ca
+                  or   ...!alberta!aunro!ersys!nowhere!rich
+- -----------------------------------------------------------------------
+"If my theory of relativity is proven successful, Germany will claim
+me as a German... Should my theory prove untrue... Germany will declare
+that I am a Jew." - Albert Einstein
+
+------------------------------
+
+Date:    29 May 91 14:20:32 +0000
+From:    rich@ersys.edmonton.ab.ca (Richard Hempsey)
+Subject: Re: Hard Disk R/W errors (PC)
+
+DUG@CZHETH5A.BITNET (Schwegler Ralph) writes:
+>     Hello,
+>
+>     When i first switch on my computer, my HD (Seagate SR-238) works well.
+>     But after some minutes, there are many R/W errors. I am using DOS 3.21;
+>     i have low level formated my HD as a SR-238R HD, with Seagate's
+>     Diskmanager.
+>
+>     I could not find a virus, either with f-prot 115 or scan 77. If i list
+>     the TSR, there is a 3120 bytes long file labelled ?.
+>
+>     Could that be the cause of the harddisk problems ?
+>
+>     Thanks for your advices.
+>
+>     Ralph Schwegler, student at University St.Gallen for Economics (CH).
+>     E-Mail : 89611628@csghsg54.bitnet  /  89611628S@gamma.unisg.ch
+
+The problem might simply be thermal expansion of the platter in the
+drive.  As the drive warms up, the platter expands, and the heads are
+now mis-aligned.  I had the same problem with my Miniscribe 8438.  A
+very simple cure: I never turn my computer off! Well, except for
+thunderstorms...  If you have to turn the computer off, then boot from
+a (clean, of course!) floppy, and wait for the computer to warm up
+before using the hard drive.
+
+Suggestion: Buy a copy of Spinrite II and use it regularly. Best $80 I
+ever spent. (I am in no way affiliated with Gibson Research, just a
+satisfied customer)
+
+Richard Hempsey   at   ersys!nowhere!rich@nro.cs.athabascau.ca
+                  or   rich@ersys.edmonton.ab.ca
+                  or   ...!alberta!aunro!ersys!nowhere!rich
+- -----------------------------------------------------------------------
+"If my theory of relativity is proven successful, Germany will claim
+me as a German... Should my theory prove untrue... Germany will declare
+that I am a Jew." - Albert Einstein
+
+------------------------------
+
+Date:    Sat, 01 Jun 91 13:59:20 -0230
+From:    David Hansen <davidh@garfield.cs.mun.ca>
+Subject: denzuko and semlohe viruses (PC)
+
+Our visiting Indonesian grad students have brought two viruses to our
+campus (Memorial University), they are called denzuko (which has no
+apparent translation into english) and semlohe, which apparently means
+sexy.  The students in question may have the antidote, but have I
+simply have not had a spare 15 minutes this week to look into it
+properly. Has anyone heard of these viruses from Indonesia??
+
+David Hansen, davidh@garfield.cs.mun.ca
+
+------------------------------
+
+Date:    01 Jun 91 14:37:34 +0000
+From:    ccml@hippo.ru.ac.za (Mike Lawrie)
+Subject: Re: Interesting advert (PC)
+
+RADAI@HUJIVMS.BITNET (Y. Radai) writes:
+
+
+>  Kenny Stevenson writes:
+
+>>Vaccine anti-virus system -  "Vaccine  is virus-non specific detection
+>>software.  It uses  cryptographic checksums to  monitor the  state  of
+>>executables on  a PC or  file-server.  Any change, however caused will
+>>be detected.  Since  Vaccine does not  need to know  about  particular
+>>viruses in order to detect them,  it is future proof.  Once installed,
+>>Vaccine will detect all viruses, past, present and future."
+
+>There is absolutely nothing new in this ad.  There are zillions of
+>checksum programs for the PC which claim to do the very same thing.
+
+They don't cater for this scenario:-
+
+1. Somehow infect the RAM of your PC with a COM/EXE targetting
+   virus, such as Plastique (eg run an infected program from a
+   floppy, or from a network).
+
+2. Run SCAN on your hard disk - this does a DOS open on all COM/EXE
+   files on your hard disk, and thus infects each and every such
+   file _after_ SCAN has pronounced them virus-free
+
+3. You end up with every COM/EXE file on your disk having to be
+   reloaded, but you believe otherwise until you find out the
+   bitter truth
+
+4. You treat checksum checking programs with utter disgust, because
+   they fooled you into believing that you had protection.
+
+Don't say that is cannot happen, it DID.
+
+Mike
+- --
+Mike Lawrie
+Director Computing Services, Rhodes University, South Africa
+....................<ccml@hippo.ru.ac.za>..........................
+Rhodes University condemns racism and racial segregation
+
+------------------------------
+
+Date:    01 Jun 91 23:26:47 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: F-Driver.SYS and QEMM (PC)
+
+Michael_Kessler.Hum@mailgate.sfsu.edu writes:
+>However, the station had been used on and off several times since its
+>infection, with no detection by f-driver.sys (ver 1.15A), and I
+>suspect that the reason for this is that it had been loaded into high
+>RAM by QEMM when running OPTIMIZE.  I do not recall reading anything
+>about this in the F-PROT documentation.
+
+No - simply because I was not aware of it until recently - it seems
+that if F-DRIVER is loaded into high memory, it may miss some boot
+sector viruses on bootup, although it will detect all program viruses.
+This has been fixed in 1.16 - due in a few days.....
+
+- -frisk
+
+------------------------------
+
+Date:    Fri, 31 May 91 10:16:21 -0600
+From:    Chris McDonald ASQNC-TWS-R-SO <cmcdonal@wsmr-emh03.army.mil>
+Subject: Product Test - - VirusDetective (Mac)
+
+******************************************************************************
+                                                                         PT-30
+       								      May 1991
+******************************************************************************
+
+
+1.  Product Description:  VirusDetective is a shareware program to detect and
+to delete known viruses and trojan horses for the Macintosh.
+
+2.  Product Acquisition:  VirusDetective is available from its author Jeffrey
+S. Shulman, P.O. Box 1218, Morgantown, WV 26507-1218.  The cost is $40.00 for
+U.S. customers and $45.00 for others.  A registered user receives a program
+diskette, a license, and automatic notification of future malicious code search
+strings.  One can also download the program from many Internet sites and
+bulletin board systems.  Mr. Shulman states in his documentation that multiple
+copy discounts are available.
+
+3.  Product Tester:  Chris Mc Donald, Computer Systems Analyst, Information
+Systems Command, White Sands Missile Range, NM  88002-5506, DSN 258-4176, DDN:
+cmcdonal@wsmr-emh03.army.mil or cmcdonald@wsmr-simtel20.army.mil.
+
+[Ed. The complete test is available for anonymous FTP on
+cert.sei.cmu.edu in the pub/virus-l/docs/reviews directory under the
+filename mcdonald.virusdetective]
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 95]
+*****************************************

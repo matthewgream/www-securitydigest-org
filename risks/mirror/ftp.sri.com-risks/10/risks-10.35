@@ -1,0 +1,535 @@
+Subject: RISKS DIGEST 10.35
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 10 September 1990   Volume 10 : Issue 35
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Robustness of RISK architectures (Martin Minow)
+  RISKS of relying on hardcopy printers (Voyager) (Tom Neff)
+  Analog vs digital failure modes and conservation laws (Jerry Leichter)
+  Analog vs digital reliability (Jack Goldberg)
+  Re: Software bugs "stay fixed"? (Tom Neff, Stephen G. Smith, Martyn Thomas)
+  Simulator classification as safety-critical (Martyn Thomas)
+  Re: New Rogue Imperils Printers (Henry Spencer)
+  Re: Postscript virus (Robert Trebor Woodhead)
+  Re: Computers and Safety (Robert Trebor Woodhead)
+  SafetyNet '90 Conference Announcement (Cliff Jones)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory; bye logs out.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Mon, 10 Sep 90 13:39:09 PDT
+From: Martin Minow <minow@bolt.enet.dec.com>
+Subject: Robustness of RISK architectures
+
+Last August, a note posted to info-vax@kl.sri.com showed how user-mode code
+can crash a RISC (reduced instruction set) architecture machine.  The program
+generated a string of random bytes and jumped into it.  Further discussion
+showed that several RISC architectures could be crashed, but none of the
+CISC (complex...) architectures that were tried. One person, commenting on
+this, noted that one of the ways to speed up RISC architectures is to allow
+certain (possible) instruction sequences to have undefined behavior, and to
+let that behavior include "wedging" the machine.  However, CISC architecture
+specifications make sure that every possible instruction (i.e., every pattern
+of bits that can be loaded into the instruction register) returns the machine
+to a known -- viable -- state.
+
+Something else to lose sleep over...                            Martin Minow
+
+------------------------------
+
+Date: 10 Sep 90 05:48:07 GMT
+From: tneff@bfmny0.bfm.com (Tom Neff)
+Subject: RISKS of relying on hardcopy printers (Voyager)
+
+Although plain old hardcopy is often an excellent backup for reducing
+the RISKS of losing magnetic storage, it's not foolproof, as seen in
+this excerpt from the regular Jet Propulsion Laboratory (JPL) space
+probe status bulletin:
+
+                    Voyager Mission Status Report
+                          September 7, 1990
+ 
+                              Voyager 1
+ 
+     ...On August 27 Computer Command Subsystem A004 (CCSL A004) began
+execution.  Upon arrival for the prime shift on August 27 it was discovered
+that five character printers in the real-time area were not printing due to one
+cause or another; four of the printers were either not loaded correctly or were
+configured in the "local" vs "online" mode and one printer had a paper jam.
+All of these printers were missing data since early August 25.  One of the
+character printers that was not functioning was the General Science printer.
+The hard copy was needed for analysis of the PRA POR event. ...
+
+------------------------------
+
+Date: Sun,  9 Sep 90 00:35:31 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: Analog vs digital failure modes and conservation laws
+
+The recent discussion of the apparent inherent dangers of digital control
+control systems reminds me of a story told in another context - but which I
+think embodies an interesting kernel of truth.  If I remember right I heard
+this from Bill McKeeman a couple of years back.  He was called in to consult
+on a bank account control system, the development of which was way behind
+schedule.  In talking to the banking people, he discovered an interesting -
+if obvious in retrospect - dicotomy between computer people and business
+people.  Computer people were impressed and happy with the generality and
+power of their systems.  Hey, the same system they were using to manage bank
+accounts could be programmed to play space invaders!  Neat, right?
+
+The bankers found this terrifying:  If a system was general-purpose and that
+powerful, they didn't feel they could understand or control what it was doing
+to their bank accounts.  McKeeman's approach was to come up with what I guess
+we'd today call an axiomatic/object-oriented approach:  He designed a series
+of basic primitives to manipulate things like money, accounts, and so on.  The
+primitives enforced, in a very transparent way, such basic "laws" as "the law
+of conservation of money":  Money can be neither created nor destroyed, it
+can only be moved from place to place.  The rest of the system was built on
+top of these primitives, and was apparently a great success.
+
+Now consider analogue and digital devices from the point of view of "laws".
+One reason analogue devices tend to have more predictable behavior is that
+their components follow fairly constrained physical laws - and, more
+important, these are laws that we understand at a deep level and can work
+with analytically.  If the total energy stored in a system is less than 1
+joule, no possible failure mode can release more than 1 joule.  If that system
+is enclosed inside of something with a certain thermal mass, no failure mode
+can increase the temperature outside the enclosure by more than a certain
+amount.  And so on.  Where the inherent constraints are insufficient to
+guarantee safety, we can add constraints fairly easily.  A governer can limit
+the maximum speed of a rotating element, hence indirectly such things as the
+energy in the system.
+
+There can certainly be catastrophic failures due to our failure to fully
+understand the system:  We may only put a joule of energy in, but neglect the
+energy stored in a spring that was compressed during assembly.  Let the pin
+holding the spring down fail and all of a sudden there may be a lot more than
+a joule in there.  However, we have many years of experience building these
+kinds of systems, and we've seen most of these kinds of failures before.  We
+also have a lot of experience making such failures very unlikely - and we can
+realistically compute what "very unlikely" means.
+
+General-purpose digital systems, on the other hand, are subject to no a priori
+conservation laws.  If I show you all the lines of code of a program except
+for one and ask you to bound the value of a variable in the program, you can
+say nothing at all.  Well, there are two exceptions, and they're instructive:
+If the variable isn't in scope at the hidden line, any bound you compute from
+the rest of the code is valid (at least in a language where you can guarantee
+that pointers aren't passed around arbitrarily).  If the language supports
+variable declarations with bounds, AND guarantees to enforce them, then you
+also are obviously in good shape.  (However, few languages do this.)
+
+This example may shed some light on why scope rules are so important: Our
+programming languages continue to emphasize power and generality, not
+conservation laws.  Scope rules (and, every once in a while, bounded variable
+declarations with appropriate support) are about all our languages, as such,
+provide us with.
+
+Now, the algorithm being executed itself provides constraints.  But there's a
+problem here:  If the only source of constraints is the algorithm itself, an
+error can easily render both the algorithm and the constraint enforcement
+invalid.  Constraints so closely tied to what is being constrained don't add
+safety.  Relying on them is like relying on a system that suspends a weight on
+a string that can only hold five pounds and then saying "Well, it won't drop
+the weight because I KNOW that if the weight were heavier than five pounds the
+string would break."
+
+Instead, constraints have to be programmed in explicitly.  This is all too
+rarely done:  Because the underlying system is so general, there are just
+SO many constraints to check.  In an analogue system, many of the constraints
+come free because of the physical laws governing the parts of the system.
+
+Beyond that, analogue systems are usually built of standardized parts - and
+those standardized parts are specified to obey certain fundamental constraints.
+We have relatively few standardized digital components, and often the
+constraints on them aren't very useful: They are themselves hard to check.
+
+							-- Jerry
+
+------------------------------
+
+Date: Mon, 10 Sep 90 10:50:09 -0700
+From: Jack Goldberg <goldberg@csl.sri.com>
+Subject:  Analog vs digital reliability
+
+Several correspondents have suggested that digital computers are less reliable
+than analog computers because of certain intrinsic properties of the two
+methods; for example, analog computing is more continuous, while digital
+computing is subject to arbitrary redirection at every step, also, the
+complexity of digital circuitry makes it more prone to failure.  This is an
+interesting conjecture, but as stated it allows a confusion of design and
+implementation issues.  Some analog realizations (cams, gears, relays with
+heavy armatures, etc.)  do have certain reliability enhancing properties such
+as continuity of state during loss of drive power, or known reset states in the
+absence of power, but these properties do not extend to more common (and higher
+speed) analog realizations.
+
+Function for function, the design of a program that realizes a standard analog
+function, e.g., integration or filtering, is about as easy to get right as its
+analog counterpart, and its implementation in digital hardware may be even more
+reliable (considering, for example, drift and noise in analog electronic
+circuits and the sharing of services in multiple-function systems that is
+possible in digital designs).
+
+The real risk in using digital rather than analog computing may be that in
+pursuit of enhanced system functionality, one can easily introduce complex
+decision functions (with all their opportunity for design error) that would be
+infeasible in analog computers.  In other words, the reliability benefit of
+analog design may be that it does not allow the designer to attempt more
+complex computing functions, with their possibilities for design error.  But
+this limitation in computing functionality may place higher demands on human
+operators or limit the capabilities of safety systems, so one has to look at
+the larger picture.
+
+------------------------------
+
+Date: 9 Sep 90 20:41:14 GMT
+From: tneff@bfmny0.bfm.com (Tom Neff)
+Subject: Re: Software bugs "stay fixed"?
+
+In RISKS 10.34 Robert L. Smith claims that it is possible to be certain that a
+software bug has been eradicated without waiting for nonrecurrence, and cites
+an example where he traced a bug in a tablet input program to one line of code,
+which he removed, and now feels certain that the bug is gone.
+
+Obviously if we consider the trivial cases -- 5 line class exercises and
+whatnot -- we can KNOW a bug's gone.  In slightly more complex cases
+where we nonetheless retain complete control over the code, we can stay
+pretty near certainty that a bug is gone.  I'm sure most RISKS readers
+encounter this sort of thing weekly.  You may not in all cases be
+absolutely certain you've fixed everthing wrong, but the RISK of missing
+something is deemed acceptable because further testing awaits.
+
+But now take the case of truly HUGE projects, and truly old ones: the fertile
+spawning grounds for RISKS incidents the world over.  How can we be sure we
+have fixed a bug?  Suppose a "J" appears somewhere in a report and they task me
+to fix it.  I find a typo in someone's module, featuring just such an errant
+"J" in a constant string.  I correct the line.  Have I fixed the problem?
+Anyone who thinks they can be certain without rerunning the report is in the
+wrong line of work.  I have seen the "impossible" happen with fair regularity!
+For instance: Yes I fixed the line in FROBOZZ.FTN, but what I didn't know is
+that FROBOZZ is automagically regenerated by a code generator once a month from
+a config file somewhere!  Next month, the "bug" reappears.  Or -- I corrected
+my copy, but what I didn't know is that 6 other programmers have "boilerplated"
+from this code to do their own projects, so that not one but dozens of errant
+"J"'s appear in various reports.  It's fine for me to feel righteous about
+having fixed the ONE instance originally noted, but when the customer keeps
+seeing "J" it's impossible to convince him we really fixed the bug!  And so on
+-- a hundred ways for human nature to conquer seemingly iron clad programming
+"logic."  That's why checking for nonrecurrence is the best way -- prediction
+is great, but observation pays the bills.
+
+------------------------------
+
+Date: Sun, 9 Sep 90 21:55:15 -0400
+From: sgs@grebyn.com (Stephen G. Smith)
+Subject: Re: Software bugs "stay fixed"? (RISKS-10.31)
+
+My experience with "bit rot", where previously solved problems reappear, is
+that they are usually caused by poor configuration control.  While most systems
+have CC tools, like sccs on UNIX or CMS on VAX/VMS, getting your friendly
+average programmer to use them is like pulling teeth.  When management insists
+on use of the tools, you will find lots of log entries of the form:
+
+REV	DATE		USER	COMMENTS
+1.1	10/02/89	root
+1.2	10/05/89	root
+	...		...
+
+It seems that the preferred way of working on a large system is to
+simply grab a complete copy of the source code (as root so that silly
+protection modes don't get in the way :-) and hack away.  When you get
+several programmers working on a section of code (not at all uncommon),
+it's amazing that anything at all ever works.
+
+Add in the interaction of hardware CC with software CC and you have orders of
+magnitude more things that can go wrong.  It's amazing the number of times that
+you find old software running on new hardware of vice versa.
+
+Solutions?  Programmer education.  Even more important is manager
+education, to eliminate the "It takes too much time" objection.  Telling
+somebody at a salary review something like "We expect our <next higher
+position> people to be fully familiar with our configuration control
+methods.  You haven't shown this." is *extremely* effective.  Yes, I've
+done this -- the explosions are interesting.
+
+Steve Smith,   Agincourt Computing,   sgs@grebyn.com      (301) 681 7395
+
+------------------------------
+
+Date: Mon, 10 Sep 90 13:08:57 +0100
+From: Martyn Thomas <mct@praxis.co.uk>
+Subject: Software bugs "stay fixed" (again!)
+
+ In RISKS-10.34 Robert L. Smith <rlsmith@mcnc.org> replies to my comments:
+
+:    Mr. Thomas implies that it is impossible to be certain, other than by
+:nonrecurrence, that a nontrivial software bug is fixed.  My experience
+:indicates otherwise.
+
+    (... anecdote about a bug and its correction removed for brevity)
+
+:    This is my point: I am as certain as a man can be that the noted
+:misbehavior will never recur in that program for that reason, ...
+					      ^^^^^^^^^^^^^^^^
+
+Here we have it. If the error is never reintroduced and if the distributed
+program is compiled from the corrected source code, then this instance of
+the incorrect behaviour will never recur. But what about the faulty thinking
+which led to the error in the first place? Is it an incorrect mental model
+of the design, which could have led to similar errors (with identical
+symptoms) elsewhere in the program? Is it a misunderstanding of the meaning
+of a programming construct or library call (which could also lead to other
+similar errors)? I believe that this is what Dave Parnas (RISKS 10:32)
+meant by "...if they were not *properly corrected* " (my emphasis).
+
+Note also "as certain as a man can be" above.
+Unfortunately people keep asking us to quantify this statement!
+
+But this thread has rather lost its way. It started through my attempt to
+counter Robert Smith's seeming argument that software was better than
+hardware for critical applications because hardware errors recur whilst
+software errors do not. Of course software doesn't display the failures that
+hardware does, through components wearing out, but that is a small
+consideration alongside the bigger issues of system complexity and costs.
+
+------------------------------
+
+Date: Mon, 10 Sep 90 13:24:30 +0100
+From: Martyn Thomas <mct@praxis.co.uk>
+Subject: Simulator classification as safety-critical
+
+In RISKS-10.32 Brinton Cooper <abc@BRL.MIL> writes:
+
+:Pete Mellor and Martyn Thomas agree that
+:>> You cannot expect crew to do better than their
+:>> training under the stress of an emergency.
+:Er...the crew are, after all, thinking humans and merely another set of
+:automatons in the system.  A recent (past 5 years) air crash in the mid-US was
+:less disastrous than it might have been precisely because the pilot performed
+:beyond his training, in a situation which he had not been expected to
+:encounter.  This is, after all, one of the differences between human and
+:machine.  
+
+This is missing the point. Crew may indeed do better than their training,
+but it is surely unacceptable to use this as an argument that a flight
+simulator is not safety-critical. If the simulator trains behaviour which
+causes an accident, the accident is logically a consequence of the simulator
+design, not of the crew (who are behaving exactly as trained). 
+Doesn't this make the simulator as critical as any cockpit system?
+
+------------------------------
+
+Date: Mon, 10 Sep 90 13:35:08 JST
+From: Robert Trebor Woodhead <trebor@foretune.co.jp>
+Subject: Re: Postscript virus (RISKS-10.32)
+
+In re: the alleged Postscript virus reported in the SJ Mercury.
+
+Rumors of this have been flying around the virus-hunter's network for
+some weeks now, and two separate vaccines have been developed; to wit,
+one that is added to the Laser Prep file on the Macintosh to disable
+the SETPASSWORD operator temporarily (until next reboot of the printer)
+and an after-the-fact password resetter that reads the old password
+from the EEPROM on the Laserwriter and uses it to reset the password
+(This works only on 68000 based Laserwriters, and probably only on ones
+using ADOBE PostScript.
+
+After much discussion, it was generally agreed upon that these tools would not
+be released except on an as-needed basis, for several reasons.  Primary
+amoungst these is that nobody has yet come up with a confirmed sighting of the
+alleged poisoned clip-art; thus the scattered reports of malignant graphics
+could in fact be isolated cases of either weird machine messups, or some jerks
+just downloading a line or two of PostScript.
+
+However, it should be noted that the other major reason was that the cure may
+be worse than the disease, in that the number of reports of problems with
+Laserwriter passwords is so small that it would be dwarfed by the number of
+problems caused by improper installation and use of the cures, and additionally
+the cures can easily be perverted into new variants of the possibly spurious
+disease they were intended to cure.
+
+Robert J Woodhead, Biar Games, Inc.  !uunet!biar!trebor trebor@biar.UUCP 
+
+------------------------------
+
+Date: Mon, 10 Sep 90 13:46:22 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: New Rogue Imperils Printers
+
+>... PostScript, that "surreptitiously reprograms a chip inside the
+>printers, changing a seldom-used  password stored there. When the
+>password is altered, ...  the printer no longer functions properly."
+
+It's not entirely clear what is going on here -- whether the code is
+simply doing a password change by virtue of knowing the old password
+or whether it's doing it by some sneak path -- but it raises an
+interesting risk either way.
+
+The password on a PostScript printer (well, in the usual implementation)
+is a number.  It protects certain parameters of the printer that user
+code really shouldn't change, like communications parameters and idle
+timeouts.  There is considerable potential for malice in knowing the
+password, up to and including causing hardware damage of a minor sort
+(the EEPROM used to store printer parameters can be rewritten only a
+limited number of times due to wear-out processes in the chip).
+
+The default password as shipped is 0.  Very few printer owners bother
+to change this.  The problem is that there is significant incentive
+*not* to change it... because the PostScript code from a good many
+badly-written but legitimate applications tries password 0 and will fail
+if it has been changed!  Typically, all the application uses it for is
+to set some parameters back to reasonable defaults -- whether the printer
+owner wants it that way or not -- but the code makes no attempt to cope
+with the possibility of a non-standard password forbidding such changes.
+
+Believe it or not, there are people who will defend the idea that you should
+leave your printer's password unchanged so that programs can mess with its
+parameters however they please.
+
+                              Henry Spencer at U of Toronto Zoology utzoo!henry
+
+------------------------------
+
+Date: Mon, 10 Sep 90 13:55:49 JST
+From: Robert Trebor Woodhead <trebor@foretune.co.jp>
+Subject: Re: Computers and Safety (RISKS-10.34)
+
+J.G. Mainwaring discourses about GOTO's and the infamous C BREAK
+(as in "Here is where your program will BREAK!")
+
+It has long been my opinion (which as we all know, carries the force
+of law in several of the smaller West African countries.. ;^) that the
+EXIT() command pioneered in UCSD PASCAL was an ideal compromise.
+
+EXIT(a) exited you from enclosing procedure "a", which made it most
+convenient for getting out of incredibly convoluted nested structures
+without making them hugely more convoluted.  It was the equivalent of
+a restricted GOTO to the end of the current procedure, with the extra
+ability to exit any enclosing procedure (even PROGRAM, the whole
+kit-n-kaboodle).  It gave you the the same abilities as 90% of GOTO
+use, but you always knew exactly what it was going to do, and thus
+it was much less dangerous than BREAK.
+
+A nice side effect of the ability to semantically nest procedures and
+functions in PASCAL was that this allowed you to put inner parts of
+some horrifically obscure structure into sub-procedures, allowing you
+to exit from the inner parts but not the outer parts.
+
+Robert J Woodhead, Biar Games, Inc.  !uunet!biar!trebor trebor@biar.UUCP 
+
+------------------------------
+
+Date: Wed, 5 Sep 90 14:58:38 BST
+From: cliff@computer-science.manchester.ac.uk
+Subject: SafetyNet '90 Conference Announcement
+
+	THE SAFETYNET '90 CONFERENCE & EXHIBITION
+	FORMAL METHODS FOR CRITICAL SYSTEMS DEVELOPMENT
+        Royal Aeronautical Society, 4 Hamilton Place, London
+	Tues 16th October   -   Wed 17th October 1990
+        Registration & Coffee, 9.00a.m. - 9.30a.m.
+
+	SafetyNet, PO Box 79, 19 Trinity Street, Worcester, WR1  2PX
+        Tel: 0905 611512  Fax: 0905 612829
+
+SafetyNet '90		Programme Day 1			16th October
+
+09.30	General Chair			Digby A. Dyke, Editor, SafetyNet
+
+09.40	Session 1 Chair			Dr. John Kershaw, RSRE
+							
+09.50	Tutorial 1:
+	An Introduction to the RAISE    Soren Prehn, Computer Resources
+	Specification Language		International
+
+10.40	RAISE- A Case Study of		Soren Prehn
+	a Concurrent System		Computer Resources International
+							
+11.35	Critical Software -		Peter Jesty, Dr. Tom
+	A Standard and its		Buckley, Keith Hobley
+	Certification			& Margaret West, University of Leeds
+
+12.10	Intellectual Property		Dr. Mathew K.O. Lee
+	Critical Systems		BP Research Centre
+
+14.00	Product Liability (Civil	Ranald Robertson
+	& Criminal) Issues for		Partner,
+	Developers of Safety-		Stephenson Harwood
+	Critical Software		Solicitors
+
+14.35	Methods for Developing		Stephen Clarke, Andy Coombes 
+	Safe Software			& John A McDermid, University of York
+
+15.30	Panel 1:			Chair:
+	What are the relationships	Prof Bernard Cohen
+	among standards, certifica-	Rex, Thompson &
+	tion, compliance, evidence	Partners
+	and legal liability ?
+
+16.30	Panel Summary			Prof Bernard Cohen
+
+16.40	Closing Remarks			Dr. John Kershaw
+
+16.45	Close of Day 1 (Please depart by 17.45)
+
+19.30	Conference Dinner		Guest Speaker
+	Le Meridien Hotel, Piccadilly, London
+
+
+SafetyNet '90		Programme Day 2			17th October
+
+09.35	General Chair			Digby A. Dyke, Editor, SafetyNet
+
+09.40	Session 2 Chair			Fred Eldridge, Rex, Thompson &
+					Partners
+
+09.50	Tutorial 2:			Peter Froome and Jan Cheng Adelard
+        A Formal Method	for Concurrency			
+
+10.40	Application of Formal		Dr. D.S. Neilson
+	Methods to Process Control	BP Research Centre
+	
+11.35	Proof Obligations 3:		Prof Bernard Cohen,
+	Concurrent Systems		Rex, Thompson &	Partners
+
+12.10	Refinement in the Large		Paul Smith, Secure Information Systems
+
+14.00	An Introduction to the NODEN	Dr. Clive Pygott, RSRE
+        Hardware Verification Suite
+
+14.35	Mural - A Formal Development 	Dr. Richard Moore
+	Support Environment		University of Manchester
+
+15.30	Panel 2:			Chair: Prof Cliff Jones, 
+	What is inhibiting widespread	University of Manchester
+        use of Formal Methods ?		
+
+16.30	Panel Summary			Prof Cliff Jones
+
+16.40	Closing Remarks			Fred Eldridge
+
+16.45	Close of Day 2 (Please depart by 17.45)
+
+Liz Kerr, SafetyNet, PO Box 79, 19 Trinity Street, Worcester  WR1  2PX
+Tel: 0905 611512, Fax: 0905 612829  
+                               [Coffee, lunch, tea breaks omitted.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.35
+************************

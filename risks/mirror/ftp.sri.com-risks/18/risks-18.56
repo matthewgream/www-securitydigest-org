@@ -1,0 +1,564 @@
+Subject: RISKS DIGEST 18.56
+
+RISKS-LIST: Risks-Forum Digest  Thursday 31 October 1996  Volume 18 : Issue 56
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+The next stage of Differential Fault Analysis (Adi Shamir)
+AOL Bans All Mail from 53 "Junk Mail" Domains (Edupage)
+"Fall back, free parking; spring forward, pay more" (Bear Giles)
+Cruise Missile software bugs (Kofi Crentsil)
+Tote Board Crash at Breeder's Cup (Tony Harminc)
+ATM problems in Canada (Richard Akerman)
+Re: Beating the GRE: What time zone are you in? (Li Gong, Bear Giles)
+More Personal Information Databases (Lauren Weinstein)
+Where Wizards Stay up Late: Book Review (Tom Perrine)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 31 Oct 1996 21:27:44 -0800
+From: Adi Shamir <shamir@wisdom.weizmann.ac.il>
+Subject: The next stage of on Differential Fault Analysis
+
+  The Next Stage of Differential Fault Analysis:
+  How to break completely unknown cryptosystems, 30 October 1996 (draft)
+
+  Eli Biham, Computer Science Dept., The Technion, Israel
+  Adi Shamir, Applied Math Dept., The Weizmann Institute, Israel
+
+The idea of using computational faults to break cryptosystems was first
+applied by Boneh Demillo and Lipton to public key cryptosystems, and then
+extended by Biham and Shamir to most types of secret key cryptosystems.
+[See RISKS-18.54.]  In this new research announcement, we introduce a
+modified fault model that makes it possible to find the secret key stored in
+a tamperproof cryptographic device even when nothing is known about the
+structure and operation of the cryptosystem. A prime example of such a
+scenario is the Skipjack cryptosystem, which was developed by the NSA, has
+unknown design, and is embedded as a tamperproof chip inside the
+commercially available Fortezza PC cards. We have not tested this attack on
+Skipjack, but we believe that it is a realistic threat against some
+smart-card applications that were not specifically designed to counter it.
+
+The main assumption behind the new fault model is that the cryptographic key
+is stored in an asymmetric type of memory, in which induced faults are much
+more likely to change a 1 bit into a 0 than to change a 0 bit into a 1 (or
+the other way around). CMOS registers seem to be quite symmetric, but most
+types of nonvolatile memory exhibit some degree of asymmetry. For example, a
+1 bit in an EEPROM cell is stored as a small charge on an electrically
+isolated gate. If the fault is induced by external radiation (e.g.,
+ultraviolet light), then the charges are more likely to leak out of the gate
+than to be forced into the gate.
+
+To make the analysis simpler, we assume that we can apply a low-level
+physical stress to the tamperproof device when it is disconnected from
+power, whose only possible effect is to occasionally flip one of the 1 bits
+in the key register to a 0. The plausibility of this assumption depends on
+numerous physical and technical considerations, which are beyond the scope
+of this note.
+
+We further assume that we are allowed to apply two types of cryptographic
+functions to the given tamperproof device: We can supply a cleartext m and
+use the current key k stored in the nonvolatile memory of the device to get
+a ciphertext c, or we can supply a new n-bit key k' that replaces k in the
+nonvolatile memory.
+
+The cryptanalytic attack has two stages:
+
+1. In the first stage of the attack, we keep the original unknown secret key
+k stored in the tamperproof device, and use it to repeatedly encrypt a fixed
+cleartext m_0. After each encryption, we disconnect the device from power
+and apply a gentle physical stress. The resultant stream of ciphertexts is
+likely to consist of several copies of c_0, followed by several copies of a
+different c_1, followed by several copies of yet another c_2, until the
+sequence stabilizes on c_f. Since each change is likely to be the result of
+one more key bit flipping from 1 to 0 (thus changing the current key k_i
+into a new variant k_i+1), and since there are about n/2 1 bits in the
+original unknown key k, we expect f to be about n/2,and c_f to be the result
+of encrypting m_0 under the all-zero key k_f.
+
+2. In the second stage of the attack, we work our way backwards from the
+known all-zero key k_f to the unknown original key k_0. Assuming that we
+already know some intermediate key k_i+1, we assume that k_i differs from
+k_i+1 in a single bit position. If we knew the cryptographic algorithm
+involved, we could easily try all the possible single bit changes in a
+simple software simulation on a personal computer, and find the (almost
+certainly unique) change that would give rise to the observed ciphertext
+c_i. However, we don't need either a simulator or knowledge of the
+cryptographic algorithm, since we are given the real thing in the form of a
+tamperproof device into which we can load any key we wish, to test out
+whether it produces the desired ciphertext c_i. We can thus proceed
+deterministically from the known k_f to the desired k_0 in O(n) stages,
+trying O(n) keys at each stage. The attack is guaranteed to succeed if the
+fault model is satisfied, and its total complexity is at most O(n^2)
+encryptions.
+
+This seems to be the first cryptanalytic attack that makes it possible to
+find the secret key of a completely unknown cryptosystem in polynomial time
+(quadratic time in our case). It relies on a particular fault model that
+seems to be realistic, but requires further study.  In the full version of
+this paper, we'll discuss numerous extensions of the attack -- including the
+analysis of more complicated fault models in which the sequence of corrupted
+keys forms a biased random walk in the space of 2^n possible keys.
+
+------------------------------
+
+Date: Tue, 29 Oct 1996 21:17:27 -0500 (EST)
+From: Edupage Editors <educom@elanor.oit.unc.edu>
+Subject: AOL Bans All Mail from 53 "Junk Mail" Domains (Edupage, 29 Oct 1996)
+
+America Online's new "Preferred Mail" junk e-mail blocking tool was
+activated several days ago on all 6.5 million accounts;  it blocks all
+e-mail from a list of (currently) 53 network domains that AOL has identified
+as junk e-mailers.  Many of the domains have been used in the past by
+Stanford Wallace, who is suing AOL for blocking his messages. One blocked
+domain, managed by an Internet service provider called Cybercom, has been
+tentatively removed from AOL's prohibited list, after protesting that it had
+been placed on the list not because of its own actions but because two of
+its 1500 clients sent adult-oriented junk e-mail, causing AOL immediately to
+block all mail to AOL subscribers from any Cybercom customer.  (*Atlanta
+Journal-Constitution*, 29 Oct 1996, D4)
+
+  [Following up on this strategy, the next step 
+  would be for AOL to block all mail from AOL!  PGN]
+
+------------------------------
+
+Date: Wed, 30 Oct 1996 18:27:57 -0700 (MST)
+From: Bear Giles <bear@tigger.cs.colorado.edu>
+Subject: "Fall back, free parking; spring forward, pay more"
+
+The University of Colorado at Boulder has replaced the mechanical parking
+meters in severals lot with a centralized computerized version that prints
+a receipt convenient when challenging parking tickes. (Or is that
+"convenient for them," since you need this receipt to successfully challenge
+parking tickets?  :-) The two spots I use are in prominent locations -- one
+is across from Regents Hall, the other is adjacent to the Police building.
+I mention this because one would expect parking lot monitors to frequent
+these sites...
+
+Yet is it any wonder that I was a scofflaw during my classes on Monday
+afternoon (on the first school day after the return to Mountain Standard
+Time), since this high-tech solution to a simple problem made it impossible
+to pay for my first hour of parking?
+
+The flip side is worse -- if ticketed I could make a legal defense that
+"what isn't permitted can't be compelled."  Unlucky visitors in the spring
+can't make such a claim and may be forced to pay for an additional hour of
+parking.
+
+Bear Giles  bear@indra.com
+
+------------------------------
+
+Date: Thu, 31 Oct 1996 07:41:46 -0500
+From: crentsil.k@atomcon.gc.ca
+Subject: Cruise Missile software bugs
+
+I don't remember seeing anything in RISKS on software bugs deflating the
+success rates of recent cruise missile strikes on Iraq.  It all sounds very
+similar to the Ariane-5 software reuse fiasco.  Below are the relevant
+excerpts from David A. Fulghum's "Hard Lessons in Iraq Lead to New Attack
+Plan" in the September 16 1996 issue of *Aviation Week & Space Technology*
+(pp. 24-25).
+
+The article states: "Bomb damage assessment of the initial cruise missile
+strike indicates that three of the 10 targets attacked by 13 Air Force
+CALCMs (Conventional Air-Launched Cruise Missiles) emerged with "no
+detectable damage," according to a U.S. intelligence report.  The Boeing
+built CALCMs, converted from Cold War-era nuclear weapons at a cost of
+$165,000 each, were launched from two B-52H bombers over the Persian Gulf."
+
+Apparently: "Part of the problem with the CALCMs were that they were fired
+at targets they were not designed to destroy, a product of hasty planning,
+according to a senior Pentagon official. Air Force success rates were
+further deflated because of missile computer programming quirks."
+
+Further on: "Another CALCM target escaped damage because of a software
+targetting quirk left over from its nuclear role. If two CALCMs are aimed at
+the same target at the same time, one of the missiles will re-aim itself at
+the next highest priority target. In the initial raid, one CALCM missed the
+target while the other went on to the next site."
+
+The risks of reusing software without proper testing for the new application
+are obvious.
+
+Kofi Crentsil (crentsil.k@atomcon.gc.ca)
+
+------------------------------
+
+Date: Wed, 30 Oct 96 15:34:00 PST
+From: "Harminc, Tony" <tzha0@toraag.com>
+Subject: Tote Board Crash at Breeder's Cup
+
+The Breeder's Cup - an American horserace being run for the first time in
+Toronto last Saturday - suffered from various organizational difficulties,
+according to an article in the Toronto _Globe & Mail_ on Monday Oct. 28,
+1996.  Among these was that the "tote board" - the display of current
+betting odds - crashed.
+
+"Betting was never halted during the tote board disruption, but [Ontario
+Jockey Club president David] Willmot said it probably cost about
+[CA]$400,000 in local betting handle because serious players will not make
+large bets unless they can see exact odds.  It was a $35,000 bet in US
+currency that crashed the system. The software designed to convert US money
+to Canadian in the tote pools could not handle such a large amount."
+
+Hmmm... $35,000.  Do you suppose a bet of oh, say $32,767 might have worked?
+
+Tony Harminc  tzha0@toraag.com
+
+------------------------------
+
+Date: Wed, 30 Oct 1996 21:20:52 -0400
+From: Richard Akerman <akerman@appliedmicro.ns.ca>
+Subject: ATM problems in Canada
+
+Toronto-Dominion bank's automated teller machines crashed for most of the
+weekend, affecting the bank's 2000 machines.  The TD debit payment system
+was also down.  In Canada, 80% of the banking is done electronically, and
+the 30 million residents have 43 million bank cards.  In a separate item,
+some Royal Bank customers had their accounts debited but received no cash.
+[There were 1.023 billion ATM transactions in 1995 (about 35 transactions
+per year for every person in Canada).]  [Source: Halifax *Daily News* 29 Oct
+1996, p. 19.  Reported in Canada by Rob Ferguson, The Canadian Press (CP)
+agency, in many papers.  PGN Abstracting.]
+
+Richard Akerman  rakerman@chebucto.ns.ca  http://www.chebucto.ns.ca/~rakerman/
+
+------------------------------
+
+Date: Wed, 30 Oct 1996 13:43:23 -0800
+From: Li Gong <li.gong@Eng.Sun.COM>
+Subject: Re: Beating the GRE: What time zone are you in? (RISKS-18.55)
+
+The test-beating scenario could actually happen within the same time zone.
+To gain entrance to a British graduate school, one usually is required to
+take ELTS, which is a British administered English language test that it
+similar to the American TOEFL.  ELTS contains 6 exam subjects, including the
+normal listening comprehension as well as writing exams where one is asked
+to compose a long essay and a short one, in the space of one hour, for two
+given themes.  I singled out these two exam subjects because they tend to be
+the more difficult ones for native Chinese speakers.  (Oral exam by
+interview is probably more difficult, but it is almost impossible to cheat,
+except perhaps by hitting on a discussion topic that is favoured by the
+interviewer.)
+
+About 10 years ago, the local British council was responsible for
+administering the tests, and they had four test sites: Beijing, Shanghai,
+Chengdu, and Guangzhou.  They were (and are) in the same time zone but are
+hundreds of miles apart.  The British council made things worse (1) by using
+a travelling team to conduct the tests, which meant 3 to 5 days delay
+between two consecutive tests, and (2) by having only two sets of exam
+papers.  The upshot was that snail mail could still allow a few days for one
+to fully prepare for the composition tests.  It was said that a year
+earlier, an examiner noticed, during listening comprehension, that some
+students finished 100% correct papers when the tape was played only half-way
+through.
+
+Li Gong, JavaSoft
+
+------------------------------
+
+Date: Wed, 30 Oct 1996 18:37:54 -0700 (MST)
+From: Bear Giles <bear@tigger.cs.colorado.edu>
+Subject: Re: Beating the GRE: What time zone are you in? (Manny, RISKS-18.55)
+
+> I'm not sure what the charges are for prosecuting such a thing.
+
+Perhaps "falsification of legal documents"?  The government has an obvious
+interest if a student is admitted and gets federally backed financial aid on
+the basis of fraudulent documents.  Even if the student doesn't get direct
+aid, most public schools still receive indirect subsidies.
+
+Bear Giles  bear@cs.colorado.edu 
+
+------------------------------
+
+Date: Mon, 14 Oct 96 13:27 PDT
+From: lauren@vortex.com (Lauren Weinstein; PRIVACY Forum Moderator)
+Subject: More Personal Information Databases [From PRIVACY Forum Digest 5 19]
+
+PRIVACY Forum Digest      Monday, 14 October 1996      Volume 05 : Issue 19
+            Moderated by Lauren Weinstein (lauren@vortex.com)         
+              Vortex Technology, Woodland Hills, CA, U.S.A.
+               The PRIVACY Forum is supported in part by the          
+                 ACM (Association for Computing Machinery)
+	         Committee on Computers and Public Policy,      
+          "internetMCI" (a service of the Data Services Division         
+      of MCI Telecommunications Corporation), and Cisco Systems, Inc.
+
+As you probably have seen over the last few weeks, the topic of personal
+information databases has rather suddenly become a "hot topic" in the
+mainstream media, propelled partially by the Lexis-Nexis "P-TRAK"
+controversy.  The Federal Trade Commission is reportedly considering placing
+Social Security Numbers (SSN) and some other related data back into the
+"protected" status of the Fair Credit Reporting Act [FCRA] (that is,
+removing SSN from the "publicly available" credit header category).  There
+are also reports that Congressional efforts that were on track to *weaken*
+the FCRA may have been halted or reversed by the resulting public outcry.
+
+But it's worth emphasizing again that we need comprehensive study and
+legislation to begin broadly addressing the entire privacy area; it is
+simply not possible for these problems to be addressed one service at a
+time.
+
+As I pointed out originally, "P-TRAK" does not represent the most onerous of
+available databases.  Lexis-Nexis *did* block name to SSN lookups (though
+not the reverse), and has provided mechanisms to allow people to request
+removal (which may or may not be effective in the long run--time will tell).
+But they are at least trying.
+
+There are other services that promote the availability of vast arrays of
+personal information that many people would (erroneously) consider private,
+with no removal options of any kind available.  It's important to note that
+with all the services with which I'm familiar, there is nothing illegal or
+otherwise illicit about their operations.  They're distributing "public
+record" and other openly accessible data not currently covered by the FCRA
+or other laws.  Much of the data comes from public municipal databases, or
+from "business transaction" information of the sorts we've discussed
+previously, and over which little or no legislative restrictions exist.
+
+It's also the case that there are legitimate reasons why some individuals
+and other entities might at times need access to some of the information
+contained in various categories of these databases.  There are cases where
+some frauds can be prevented or traced through such information.  The
+problem is that at present there are no legal requirements placing any
+sort of "need to know" on most of this data, so most is accessible
+essentially to anyone willing to pay the designated fee, regardless of their
+(good or bad) motives.
+
+Many services are providing these sorts of data, some very large and
+some small.  Outside of Lexis-Nexis "P-TRAK" with which we're already
+familiar, here's information regarding two representative others...
+
+-- "Information America" (http://www.infoam.com)
+
+IA has a nicely laid out web site listing a veritable cornucopia of public
+record and other related available data.  I won't even attempt to give a
+comprehensive listing here, but just a few of the many categories include:
+
+	Wizard -- master search of all Information America online services
+
+	Asset Locator -- real property, stocks, personal property, etc.
+
+	People Finder -- Address Alert, Credit Bureau Headers,
+		         Deceased Records, Neighbor Listings,
+			 Person Locator, Skip Tracer,
+			 Social Security Number Tracker, Telephone Tracker,
+			 Trace a person's residential moves
+
+	Relationship Identifier, and so on...
+
+This is but a small sampling.  In a conversation with their Executive VP, 
+I learned that, in response to concerns raised by the "P-TRAK" furor, they
+have very recently voluntarily removed SSN data from the credit header
+output information.  Their web site has been recently updated and no longer
+shows SSN as an available data output item.
+
+This puts them in the same category as "P-TRAK" in this respect, in that you
+can still *search* for other information using SSN if you already know the
+number, but you can't get an SSN from other data via Information America. 
+I was told that some of their clients engaged in criminal investigation type
+work were not at all happy at having the ability to lookup SSNs removed from
+everybody's access, since they consider it to be an important investigative
+tool.
+
+Information America does not provide a mechanism for persons wishing to be
+removed from any of their databases.  First, they feel that the public
+record data they supply would be less useful for legitimate purposes if
+people could opt-out at will.  Secondly, they say that since some of the
+databases are not under their direct control, they do not have the technical
+means to provide such mechanisms in any case.
+
+--- CDB Infotek (http://www.cdb.com)
+
+CDB provides a range of services and data very similar to that of Information
+America.  However, they have chosen *not* to block access to Social Security
+Number data.  According to the customer service representative I spoke to,
+you can still look up a person's credit header record based on name,
+address, or other data, and obtain their SSN through the service (provided
+the SSN is included in that person's database record of course, which would
+typically be the case).  CDB also promotes the availability of all
+information over the Internet.  No obvious provision for requesting removal
+from their databases is apparent.
+				    - - -
+
+There are other similar organizations as well.  It's a difficult situation.
+In the absence of legislation addressing these issues across the board,
+services who take unilateral actions to restrict any class of data feel
+that they're putting themselves at a competitive disadvantage compared
+with those services who *don't* implement such restrictions.
+
+We need to start working out sensible, logical, and balanced rules and laws
+regarding information and privacy, that address the concerns of a wide
+range of individuals and organizations.  The longer we wait, and the
+more we approach the area in a piecemeal fashion, the more intractable
+the problems are likely to become.
+
+--Lauren--
+
+------------------------------
+
+Date: Tue, 29 Oct 1996 17:07:04 -0800 (PST)
+From: Tom Perrine <tep@SDSC.EDU>
+Subject: Where Wizards Stay up Late: Book Review
+
+	Where Wizards Stay Up Late: The Origins of the Internet
+	by Katie Hafner and Matthew Lyon, Simon and Schuster, NY NY 1996
+        (ISBN 0-684-81201-0) 
+        Reviewed by Tom Perrine <tep@sdsc.edu> [See also RISKS-18.29]
+
+The Internet has erupted onto the scene of mainstream consciousness in just
+a few short years.  Numerous attempts to "explain" all this technology has
+lead to a plethora of books purporting to educate "everyman" about the
+innermost workings of this technology.  Out of this morass of
+poorly-researched books (and entirely too few good ones) comes something
+more interesting: a technological history of the Internet's direct ancestor,
+the ARPA network.
+
+Coming seemingly out of nowhere, vaulting from the relative obscurity of a
+handful of research facilities into homes and schools across the country and
+around the world, the Internet is obviously the most important technological
+tool since the personal computer (some would say since movable type).
+
+But where did the Internet come from?  Was it created from whole cloth?  Was
+it created by a single company?  Why isn't it run by "The Phone Company?"
+What was the ARPAnet?  Just who did invent the Internet, and when, and why?
+
+All of these questions (and many more) are answered by the eminently
+readable book _Where Wizards Stay Up Late: The Origins of the Internet_.
+This books could be dismissed as simply _The Soul of a New Network_, but
+that would be a mistake.  This book is more readable, yet more technically
+complete and accurate than Kidder's _The Soul of a New Machine_.
+
+Katie Hafner and Matthew Lyon have successfully explained the origins of the
+technology that millions now depend on and take for granted every day.  They
+take the reader on a journey that begins in the early days of the Cold War
+with the launch of Sputnik, and ends with today's commercial on-line
+services, and ubiquitous electronic mail and World Wide Web addresses.
+
+If you doubt that "the Net" has become important to average consumers,
+consider these questions: Has anyone seen a recent television commercial or
+magazine advertisement without an "http" in it lately?  Why did the Cable
+News Network (CNN) have as its lead stories the recent network outages of
+America Online and BBN Planet that left literally millions without Internet
+access for more than a day?
+
+Along the way, we are treated to the dreams of visionaries and charlatans,
+academics and bureaucrats, scientists and engineers, who shared the hope of
+using technology to connect people to people.
+
+The story is organized chronologically, yet always sets the technology in
+the context of the people and the culture of the times.  The book focuses on
+the earliest period of the ARPAnet, the original computer network research
+project funded in the 1960s by the US Department of Defense.  This period is
+the least known, and the information about this period the most important to
+preserve at this time, while the persons involved are still around to tell
+(and debate) their stories.
+
+This book is a first-class piece of historical detective work, piecing
+together developments at laboratories across the country and around the
+world, all of which dovetailed to produce the world's first
+geographically-distributed computer network.
+
+The first chapters are devoted to the origins of the Advanced Research
+Projects Agency (ARPA) itself, set in the days following Sputnik, and
+America's technology "wake-up call".  The early advocates of "computer
+communications" are introduced, including Bob Taylor, Joseph Licklider
+("Lick"), and Larry Roberts.
+
+This book attempts (and mostly succeeds) in tracing the engineering
+decisions that shaped the ARPAnet's technology (and culture).  The early
+debates of circuit-switched vs. packet-switched designs, centralized (star)
+vs. distributed (mesh) are all examined and explained in accessible, yet not
+over-simplified terms.
+
+The origins of Bolt Beranek and Newman (BBN),and the people who worked there
+are described in some fascinating detail.  Who would imagine that a
+consulting company that was formed to perform acoustical engineering for new
+buildings would become the builders of a computer network?  The trials and
+tribulations of the "IMP Guys" that led to the creation of the first network
+"router", the ARPANET Interface Message Processor (IMP), introduces two
+people who would continue to to connect people and computers: Willie
+Crowther (original author of "ADVENTURE"), and Bob Kahn, who started the
+Strategic Computing Program, which is the more formal name for the
+"Information Superhighway" program of the U.S. government.  The late nights,
+and the eradication of "the bug" on the eve of the first IMP's shipment from
+Cambridge to California are all recounted in a no-nonsense,
+technically-savvy style.
+
+Later chapters describe the activities at SRI, the original Network
+Information Center (NIC), and the culture and people who decided that a
+network standards document should be a "Request For Comments" (RFC).
+
+These RFCs, and a culture of openness have been blamed (or praised) for the
+demise of the International Standards Organization (ISO) Open System
+Inteconnect (OSI) network protocols; the closed, agonizingly slow process of
+ISO standardization process was continually "overcome be events" as the
+ARPANET folks pushed the envelope with "rough consensus and running code".
+
+Along the way we meet the first RFC, by Steve Crocker, titled simply "Host
+Software", followed by the first higher level protocols, documented by Jon
+Postel, Vint Cerf, the "MsgGroup" and the network's first "flame war" (over
+e-mail standards), the now-infamous "header wars".
+
+The ARPANET's direct contribution to Artificial Intelligence research,
+operating systems (including UNIX), and human communication are all explored
+as well.
+
+It's an interesting journey, told through the eyes of the pioneers that
+blazed the trail.  But make no mistake, this book is about the people behind
+the technology as much (or more) than about the technology itself.  Having
+essentially "grown up" on the net (my first ARPANET host account was active
+in 1976, when I was in high school), I was fascinated by the stories of the
+people who made all this communication possible.  This book has filled in
+all the background of the happenings that I was too naive (or busy with
+school :-) ) to understand at the time.
+
+The authors of this book have reached back to the original sources, they
+have spoken to and interviewed many of those who were directly responsible
+for the work described.  In many cases the authors have reached into the
+ARPA/IPTO Oral History project tapes and distilled this collection of
+interviews into a seamless, coherent picture.
+
+This book is about the people who invented the technology and culture of the
+Internet, the legacy of practical engineering, and "rough consensus and
+running code."
+
+Tom E. Perrine (tep@SDSC.EDU) | San Diego Supercomputer Center 
+http://www.sdsc.edu/~tep/     | Voice: +1.619.534.5000
+
+------------------------------
+
+Date: 15 Aug 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.56 
+************************

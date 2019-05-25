@@ -1,0 +1,614 @@
+precedence: bulk
+Subject: Risks Digest 21.96
+
+RISKS-LIST: Risks-Forum Digest  Thursday 14 March 2002  Volume 21 : Issue 96
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/21.96.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Airbus A300 "BSD" Incident from 1997 (Peter B. Ladkin)
+Airbus A320 Cross-Wired Sidestick Incident (Peter B. Ladkin)
+Out with pilots, in with pibots (Erling Kristiansen)
+Risks of Unicode and WSIWYG (Len Spyker)
+Thousands seek Ladonian citizenship over the Internet (PGN)
+Risks of inadequate testing, yet again (Tony Lima)
+Hacking with a Pringles tube (Chris Leeson)
+Re: LED lights can reveal computer data (Tramm Hudson, Colin McEwen)
+Re: Loosing It's Grammer Skill's (Mike Albaugh)
+Re: Sorry, that number is now in service (Jay D. Dyson, Gene Spafford, 
+  Jay D. Dyson, James Graves, Gene Spafford)
+Re: Disclaimers (J F Hitches)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 14 Mar 2002 16:36:11 +0100
+From: "Peter B. Ladkin" <ladkin@rvs.uni-bielefeld.de>
+Subject: Airbus A300 "BSD" Incident from 1997
+
+During the course of trying to figure out why AA587's tail came off, the US
+NTSB is looking at an incident to another Airbus A300-600 aircraft in 1997,
+also in service with American Airlines. AA Flight 903, en route from Boston
+to Miami on 12 May 1997, experienced an upset after descending to 16,000ft
+in preparation for landing. The NTSB determined that the aircraft stalled,
+and entered pitch, yaw and roll manoeuvres described as "oscillations" which
+continued for 34 seconds before recovery. The aircraft lost 3,000ft altitude
+during the event. The NTSB also determined that the crew took "improper
+remedial action" after the aircraft was allowed to stall. One person was
+seriously injured.
+
+Aviation Week (4 Mar 2002, pp52-3) says that investigators learned that
+flight data displayed on the Electronic Flight Information System (EFIS)
+screens disappeared for 2-3 sec. during the upset while the avionics
+reset. "Data were deplaced by white diagonal slash marks across the
+screens." That means that the crew lost essential flight data: attitude,
+airspeed, rate of descent, altitude, etc. This data would normally be
+essential to proper recovery from an "unusual attitude", particularly at
+night and in clouds. (The AvWeek article does not state the time or weather
+conditions.)
+
+As a consequence, the NTSB issued safety recommendations A-98-3, through
+-5. A-98-3 asked the FAA to require modification of the Symbol Generator
+Unit software so that "unreliable data reset of the [EFIS] will not occur
+during an upset". The SGU renders the flight data on the EFIS screens from
+sensor and other input. The NTSB says it "learned that the threshold for
+triggering an auto reset can be reached during an inflight upset.  For
+example, if the roll angle rate of change is more than 40 deg. per sec., a
+reset will occur." According to the Flight Data Recorder, this limit was
+reached during the upset.
+
+Peter B. Ladkin, University of Bielefeld, Germany
+http://www.rvs.uni-bielefeld.de
+
+------------------------------
+
+Date: Thu, 14 Mar 2002 19:32:36 +0100
+From: "Peter B. Ladkin" <ladkin@rvs.uni-bielefeld.de>
+Subject: Airbus A320 Cross-Wired Sidestick Incident
+
+On 20 Mar 2001, a Lufthansa Airbus A320 destined for Paris came within two
+feet and a few seconds of crashing on takeoff from Frankfurt.
+
+The captain (in the left seat) was Pilot Flying (PF) on takeoff.  Shortly
+after leaving the ground, the aircraft encountered a little turbulence and
+the left wing moved down. PF corrected, applying "right stick", but the
+aircraft responded by rolling further left. Left bank reached 21 deg. and
+the left wingtip came within 1.5 feet of the ground.  The first officer,
+Pilot Not Flying (PNF), realised what the problem was, switched sole control
+to his stick (normally, the control inputs from both sticks are averaged)
+and recovered the aircraft. The crew climbed the aircraft to 12,000ft,
+performed some handling checks to confirm that the captain's stick was
+operating in the reverse sense in roll, and landed back at Frankfurt.
+
+Control reversals of this sort are known with conventional aircraft, in
+particular, small aircraft with cables between cockpit controls and
+aerodynamic control surfaces. Cables are reconnected in reverse during
+maintenance. It pays to check the controls thoroughly and carefully after
+maintenance (in fact, one is required to check them before every
+flight). Not everyone can recover - has recovered - either themselves or the
+aircraft from the surprise of suddenly having to deal with controls
+operating in reverse sense upon takeoff.
+
+But the A320 is fly-by-wire, not fly-by-cable. It turns out that the
+captain's controller had indeed been reverse-connected (electrically) for
+roll commands, during maintenance. And the first officer's was correct. With
+cable control, if one is wrong, then both are wrong.  In either case, this
+should be noticed on the control check before takeoff.
+
+The incident raises three main questions:
+1. How did the misconnection happen? 
+2. Why did maintenance not discover it on the return-to-service
+   control check (after controls have been worked on, such a check is
+   mandatory)? 
+3. Why did the pilots not discover it on the pre-takeoff control check?
+
+Sidestick roll commands are input into five computers: two Elevator and
+Aileron Computers (ELACs) and three Spoiler and Elevator Computers (SECs).
+Each of these boxes is "dual channel", with two processors, one hot and the
+other shadowing the first. Each ELAC contains a pair of MC68000 series
+processors with dissimilar software; each SEC a pair of Intel 80186's with
+dissimilar software. For roll, the ELACS control the ailerons, and the SECs
+the spoilers, on the wings, through three different hydraulic systems. Roll
+is achieved through use of the four outer spoilers (of five, per side) and
+ailerons (two adjacent, outboard of the spoilers, per side), and actuation
+of these surfaces is distributed amongst the hydraulic systems to achieve
+redundancy amongst the hydraulics. Control command redundancy is achieved by
+distributing the control surfaces amongst the computers, through different
+hydraulic systems. One can even lose both ELACs and roll is then controlled
+by the SECs, and vice versa. A diagram and explanation can be found on
+pp. 133-4 of Cary R. Spitzer, Digital Avionics Systems: Principles and
+Practice, Second edition, McGraw-Hill, 1993.
+
+The incident aircraft had returned from maintenance. According to the report
+by David Evans in Air Safety Week (ASW), 4 Jun 2001, maintenance personnel
+had found a damaged pin on one segment of the four connector segments on the
+"rack side" of one of the ELACs. Each connector segment has 140 pins. ASW
+says that a complete rewiring "upstream" of the connector pins was
+performed. Apparently the polarity was reversed on four wires in one
+segment: two for roll control inputs and two for the associated control
+channel outputs. Although it is physically impossible to mismate connectors,
+it is mooted that there are some differences in color-coding of the wiring
+between different aircraft models and that this may have played a role.
+
+But this story conflicts prima facie with the details of the architecture
+and the incident history. The sidestick input goes into five computers,
+which amongst other things vote somehow on consistency. If only one ELAC
+received reversed control commands through reversed wiring, it would have
+conflicted with the other and they would have been taken off-line, leaving
+the SECs with (correct) control. Generalising, it follows that a majority of
+the five ELAC and SEC computers were operating with reversed control from
+the left sidestick during the incident. The reversed connection must have
+been effected upstream of the point or points at which the one control
+signal from the sidestick is demultiplexed into the five signals for the
+five computers. If a connector and the associated wiring to one ELAC was
+faulty, I do not see why that should require a rewiring upstream of any
+demultiplexor. I do not see how such a rewiring can have affected signals to
+all five (or even a majority of all five) computers.
+
+(The other possibility is that the signal from the sidestick is not
+demultiplexed; that each computer receives a separate signal direct from the
+sidestick. But that would require at least ten pins on the sidestick
+connector - two for each computer - and only four wires were reported
+misconnected; even those were in a two-plus-two arrangement. So that could
+not have affected the senses of the other six.)
+
+It has been confirmed that, after maintenance, the technician performed
+control checks only on the right-seat sidestick, not the left-seat stick.
+It makes no sense to me why, after performing maintenance on the left-seat
+sidestick, anybody (let alone a Lufthansa technician) would then perform
+checks only on the *right-seat stick*. If you have just repaired a flat tire
+on your car, you don't inflate the tire on the other side! That suggests
+some cognitive confusion, namely that the rewiring did not take place right
+up to the sidestick, but up to an intermediate connector that was imagined
+to be common to both sticks.  But, as I have just noted, I just cannot
+reconcile that supposition with the avionics architecture and the rest of
+the story.
+
+The preflight checks require both pilots to perform a control check.  When
+the check is performed, a schematic of the control surfaces (the "Flight
+Control Page") appears on the screen of the Electronic Centralized Aircraft
+Monitor (ECAM), and the actual control outputs are shown. The ailerons and
+spoiler actions would have been shown reversed.  Upon performing a control
+check in this situation, it is just conceivable that one might not notice
+that the ailerons are operating in reverse sense, but the spoilers are
+asymmetric: one side goes up and the other doesn't move. I cannot imagine
+putting in left stick and then just not noticing that the *right spoiler
+bank* activated instead of the left bank, or vice versa. So there is another
+puzzle. And if some of the computers were computing differently-sensed
+control commands from others, one would have expected that an annunciation
+on the ECAM to that effect would have followed, and that the annunciation
+would have been noticed by both pilots.
+
+In the ensuing ten months, I have obtained no information which sheds
+further light on this incident.
+
+There are two kinds of issues here. One kind admits possible explanations:
+maybe the humans failed in a big way on their post-maintenance and
+pre-flight checks somehow. The other kind does not admit any explanation: I
+see no way to reconcile the supposed details of the misconnection in this
+incident with the architecture and operation of the ELAC and SEC avionics.
+The story must be different from that which has been told, but I do not know
+how.
+
+Peter B. Ladkin University of Bielefeld, Germany
+http://www.rvs.uni-bielefeld.de
+
+------------------------------
+
+Date: Thu, 14 Mar 2002 09:43:18 +0100
+From: Erling.Kristiansen@esa.int
+Subject: Out with pilots, in with pibots
+
+>From AVflash 8.11b. <http://www.avweb.com>
+
+Later this week, representatives from NASA, the U.S. Navy, New Mexico State
+University and the industry will descend upon Las Cruces, N.M., to show that
+remotely controlled aircraft can operate safely in the National Airspace
+System.  The team will fly up to three aircraft on collision courses to test
+onboard sensor technology designed to detect and avoid potential threats.
+The Proteus aircraft, built by Scaled Composites in Mojave, Calif., will
+take part, fitted with a Skywatch HP traffic advisory system, a radio-based
+device that detects other aircraft.  Proteus will also carry an Engineering
+2000 infrared sensor, and an Amphitech radar "non-cooperative" sensor --
+devices that don't require signals or transmissions from any other source --
+to detect the presence and course of other aircraft.
+
+  [Gives me a nightmarish vision of a cloud of little unmanned aircraft all
+  heading for the same place, trying to avoid each other, and the regular,
+  piloted airliner flying through the cloud and scattering it in all
+  directions - pretty scary.  EK]
+
+------------------------------
+
+Date: Wed, 06 Mar 2002 21:00:35 +0800
+From: Len Spyker <redmond@iinet.net.au>
+Subject: Risks of Unicode and WSIWYG
+
+My daughter was finally called in to aid with a help desk call from a
+Japanese visitor to Perth Australia. He was setting up his Mac to connect to
+a local ISP with a package the ISP had supplied.
+
+The visitor was entering into the dialog boxes the usual english texts
+"mail@fred.com etc" but it would not connect. Many phone calls to the
+support desk were futile. 
+
+Then my clever bilingual daughter who uses a Japanese OS Mac herself
+finally realised the Mac user was probably in some Japanese text mode? when
+entering the "English" looking characters into the boxes. When she got him
+to change to a pure English text mode and entered it all again it worked!
+
+I guess that when the connect strings went out instead of sending 4 ASCII
+bytes for "fred" it was sending out 4 unicode 16 bit codes, or 8 bytes.
+
+The OS was storing the visibly "English" text somewhere as unicode and the
+modem string handler was just sending out a (8 byte) null terminated string. 
+
+Maybe the problem was that the ISP's application was not Unicode aware, but
+definitely a really nice case of WYSINWYG. What You See Is NOT What You Get.
+
+------------------------------
+
+Date: Wed, 13 Mar 2002 12:10:12 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Thousands seek Ladonian citizenship over the Internet
+
+Lars Vilks, state secretary of Ladonia, reports that more than 3,000
+Pakistanis recently applied for Ladonian citizenship over the Internet.
+According to an 11 Mar 2002 CNN.com SCI-TECH report, Ladonia already has
+6,000 registered "citizens".  According to the official national Web site
+(http://www.aim.se/ladonia), Ladonia is one square kilometer in size,
+between Sweden and Denmark, having become a free nation on 2 Jun 1996.  Its
+capitol is Wotan City, with one main wood building (Nimis) and a nearby town
+(Arx) with a stone and concrete construction.  The national anthem is
+performed by throwing a stone into water.  Having been swamped with
+applicants, its Web site was temporarily shut down -- because applicants had
+mistakenly expected jobs and housing.  The on-line citizenship application
+has now been amended, with an appropriate disclaimer.  Common citizenship is
+free; nobility costs $12, and you can choose your own title.
+
+In actuality, Ladonia exists only on the Internet and in Vilks' imagination.
+According to the CNN report, Vilks established Ladonia on 2 Jun 1996,
+protesting Swedish authorities who had attempted to remove his two large
+abstract art works (Nimis and Arx?) from Skaane in southern Sweden.
+
+Please get your April Fool's Day items in early.  This is not one of them.
+Everything above is true, except possibly my question-marked supposition
+about the identity of the disputed art works.
+
+------------------------------
+
+Date: Wed, 06 Mar 2002 18:46:11 -0800
+From: Tony Lima <TonyLima2@att.net>
+Subject: Risks of inadequate testing, yet again
+
+I received the message shown below from Worldnet.  Note the quoted first
+line.  I absolutely refuse to use any mail reader that "supports" html.
+Howver, everything after <META- in the message below appears as an html box
+in Agent.  In other words, unless your mail reader supports html you will
+never see the message telling you what to do! Perhaps AT&T should have
+tested this on someone who actually uses software that doesn't support
+html. - Tony Lima
+
+On Wed, 6 Mar 2002 20:11:03 -0500 (EST), attwns-announcement-system
+<CustomerNotifications@worldnet.att.net> wrote:
+
+>To: AT&T WorldNet Customers <WorldNetCustomers@att.net>
+>Subject: Your March Newsletter Is Here!
+>From: attwns-announcement-system <CustomerNotifications@worldnet.att.net>
+>Date: Wed, 6 Mar 2002 20:11:03 -0500 (EST)
+>
+><META HTTP-EQUIV="Content-Type" CONTENT="text/html;charset=iso-8859-1"><!-- If your e-mail tool doesn't support html, please see the on-line version at http://www.att.net/perks/newsletter/  -->
+
+------------------------------
+
+Date: Fri, 8 Mar 2002 14:43:38 -0000 
+From: "LEESON, Chris" <CHRIS.LEESON@london.sema.slb.com>
+Subject: Hacking with a Pringles tube
+
+>From the BBC News Website:
+
+http://news.bbc.co.uk/hi/english/sci/tech/newsid_1860000/1860241.stm
+
+The article notes that an antenna for eavesdropping on Wireless
+Networks can be created out of an old Pringles tube.
+
+A link from this article goes to a page describing how such an
+antenna can me made (this article by Rob Flickenger). It is written
+in a partly humourous vein, and is well worth a glance:
+
+http://www.oreillynet.com/cs/weblog/view/wlg/448
+
+This is of interest to RISKS not so much for the security/privacy risks
+inherent in a wireless network (see RISKS Passim), but for how easy and
+cheap it is to create the tools for the job.
+
+The ability to create antenna "out of anything" is nothing new: I remember
+my Antenna Theory lecturer describing how a satellite dish could be created
+out of an old metal dustbin lid. That was about 20 years ago.
+
+------------------------------
+
+Date: Wed, 13 Mar 2002 04:39:52 +0000 (UTC)
+From: hudson@swcp.com (Tramm Hudson)
+Subject: Re: LED lights can reveal computer data (njs, RISKS-21.95)
+
+A few years ago, my group at Sandia National Labs was building a new
+operating system for the Intel Paragon massively parallel super computers.
+These machines had an amazing high-speed message passing interconnect, but
+it was flakey while we were rebuilding the network driver.
+
+The nodes were nearly "embedded", with only the mesh interconnect and a few
+LEDs on the front panel.  They had no other IO, not even a serial port.
+There was an even more unreliable channel used for downloading kernels, but
+it failed as often as the mesh driver.
+
+To help get crash data off the nodes, we wrote an ISR that would translate
+printk() calls into 2400 N81 pulses of one of the front panel LEDs.  We used
+a 4k ring buffer, so it would continuously repeat until the machine was
+reset.  A light pen was duct taped over this LED and hooked to a nearby
+SPARCstation's serial port.  We used this for debugging for several years
+and through many versions of the operating system.
+
+The software eventually went into "production" use on the larger machine.
+We occasionally saw nodes that had crashed on the big system blinking out
+their panic messages.  Since it was installed in a secure computing
+facility, I was always concerned that this might be used as a covert channel
+for extracting data (slowly!)  from the classified compute runs.
+
+> ... and it was difficult to hold the detector in the exact alignment
+
+We had no such problems.  I seem to recall that this was working
+within a weekend of realising that we could do it.  Most of the time
+was tracking down the light pen...
+
+Recently a similar subject was discussed on alt.folklore.computers.
+<a26pkf$lji$1@newsreaderg1.core.theplanet.net> started the thread
+on "Morse code diagnostics".
+
+Trammell.Hudson@celera.com http://www.swcp.com/~hudson/   W 1-240-453-3317
+
+------------------------------
+
+Date: Thu, 14 Mar 2002 14:04:20 -0000
+From: Colin McEwen <Colin.McEwen@INTEROUTE.COM>
+Subject: Re: LED lights can reveal computer data (RISKS-21.95)
+
+LEDs intended as activity lights for human observation are engineered to
+give bright and easily perceived output when signals are detected.  This
+requires flashing at a few Hertz max, despite the signals being anywhere
+between 2400 bps and 100+ MHz (depending on the system). The solution is to
+use a monostable or other pulse-stretching device in the driver.  This
+destroys any direct relationship between LED brilliance and the data.
+
+Direct drive of the LED with the data is not normally used - short data
+bursts just are not seen at all and continuous data usually gives the half
+brightness effect described by Nick Simicich in Risks-21.95.
+
+I am prepared to believe that LEDs indicating modem *status signals* such as
+CTS (Clear To Send) *might* be directly driven by the signals, and thus
+*might* be viewed at a distance - but I am not prepared to believe that the
+*data* is exposed in this way.
+
+[Note that many important advances in knowledge have been immediately
+preceded by an expert saying "this cannot be done".  I am therefore making
+my contribution to this topic by saying "this cannot be done" (!)]
+
+------------------------------
+
+Date: Tue, 12 Mar 2002 17:00:37 -0800 (PST)
+From: albaugh@spies.com
+Subject: Re: Loosing It's Grammer Skill's (Williams, RISKS-21.95)
+
+> You are talking about the rise of the Apostrophe Virus [...]
+
+Ah, but folks who read these electronic documents on anything but Windows
+see not apostrophes, but question-marks or little hollow rectangles,
+courtesy of the exceedingly ill-named "smart quotes".  That is, they do
+unless the author has been silly enough to include the apostrophes yet wise
+enough to run the text in question through John Walker's "Demoronizer". This
+appears to me an unlikely convergence.  I have even seen cases where the
+offending apostrophes were completely eliminated, which would be a good
+thing (tm, Martha Stewart), if not for the fact that the correct apostrophes
+were also eliminated.
+
+> ..., and spellcheckers are assumed to handle all grammar issues.
+
+Only Hogwarts students really need spellcheckers, IMHO :-)
+
+(although perhaps I am mistaken, given the Sorceror's Apprentice nature of
+the average Spelling Checker)
+
+------------------------------
+
+Date: Fri, 22 Feb 2002 16:28:45 -0800 (PST)
+From: "Jay D. Dyson" <jdyson@treachery.net>
+Subject: Re: Sorry, that number is now in service (Spafford, RISKS-21.92)
+
+I read with interest Gene Spafford's tale regarding his friend's addressing
+within the 69 Class A netblock.  I just did a quick rifling both the ARIN
+database and the IANA IPv4 Addressing Space, because I too have my routers
+and firewalls similarly configured.
+
+It would seem that both ARIN AND IANA are just as unaware of the
+assignment of the 69/8 netblock as Gene was.  Both list the 69 through 79
+Class A's as "Reserved."
+
+I think this merits further investigation.
+
+------------------------------
+
+Date: Fri, 22 Feb 2002 19:54:53 -0500
+From: Gene Spafford <spaf@cerias.purdue.edu>
+Subject: Re: Sorry, that number is now in service
+
+It was a typo in my posting.   It was the 67.* block, not 69.*
+
+------------------------------
+
+Date: Fri, 22 Feb 2002 17:33:09 -0800 (PST)
+From: "Jay D. Dyson" <jdyson@treachery.net>
+Subject: Re: Sorry, that number is now in service
+
+And the risks are apparent.  ;)  (Sorry, couldn't resist.)
+
+Looks like the 68/8 was picked up a month after the 67/8, too.
+Time for me to update my lists...
+
+------------------------------
+
+Date: Tue, 26 Feb 2002 20:31:06 -0600 (CST)
+From: James Graves <ansible@xnet.com>
+Subject: Re: Sorry, that number is now in service
+
+    [Gene Spafford writes about a problem with a router's
+    configuration, and how he set up a periodic e-mail reminder.]
+
+I think your RISKS example points out one of the most difficult issues with
+system administration: documentation.
+
+Mr. Spafford has slapped a temporary bandage on the problem by sending
+himself an e-mail every 6 months, but he's just traded one risk for another.
+What happens if his 'at job' (or whatever) fails? (*) The only time he'll
+realize that it has failed is when he didn't need it (he remembered anyway).
+
+And what about the ten thousand other bits of knowledge that he has in his
+head that helps keep his network running smoothly?  Setting up at jobs for
+all those bits of information isn't practical.
+
+And then, what happens when he's on vacation, and doesn't want to be
+disturbed?  Of if he's been hit by a bus?
+
+None of this is meant as a personal attack on Mr. Spafford.  Having relied
+on his advice (through the printed page), I have only the highest respect
+for him and his efforts at computer security.  It's just that his response
+to the situation is typical of a system administrator.
+
+The better system administrators tend to have very good memory, which is
+both a blessing and a curse.  It helps tremendously to not have to
+constantly refer back to documentation to get something done.
+
+Unfortunately, the one-off problems (that will _never_ occur again :-) )
+don't tend to get documented.  The busy sysadmin feels he has better things
+to do than spend 15 minutes writing up a problem and solution.
+
+The real RISK with all this attitude is that as our lives become more
+complex (and dependent on technology) it will take longer and longer to
+diagnose and fix problems.  And worse yet, we'll be fixing the same problems
+over and over again.
+
+The only counter to this RISK is documentation.  Every organization ought to
+have (IMHO), a central jumping-off point for documenation.  There has to be
+one place for people to start looking for answers, if those answers exist at
+all.
+
+Documentation is great, as long as it's relevant.  As it gets out of date,
+it's less and less likely that people will use it.  So then they'll spend
+(or waste depending on the point of view) time diagnosing and solving the
+same problems again.  And in the mean time, service will suffer.
+
+The best tool I've seen for up-to-the-minute documentation is a Wiki.  If
+you can encourage the 'wiki attitude' in your organization, you'll end up
+with a really good, and relevant reference, which will go a long way towards
+improving the work.
+
+James Graves
+
+(*) Aside from software bugs, the classic reason why 'at' jobs fail is
+because people forget about them when they are moving to new machines.  The
+ones that run every day are remembered very quickly if absent.  But those
+that only run every six months...
+
+------------------------------
+
+Date: Tue, 26 Feb 2002 21:37:32 -0500
+From: Gene Spafford <spaf@cerias.purdue.edu>
+To: James Graves <ansible@xnet.com>
+Subject: Re: Sorry, that number is now in service
+
+Actually, I documented it in 3 places:
+   * in the configuration file, near where the rules are
+   * in a readme file in the same directory, where I keep notes for 
+whoever maintains the file
+   * by posting to Risks so we build up community memory! :-)
+
+Unfortunately, in first posting in RISKS-21.92, I misidentified the networks
+involved. :-)
+
+------------------------------
+
+Date: Thu, 14 Mar 2002 16:34:20 +0000
+From: "J F Hitches" <J.Hitches@kingston.ac.uk>
+Subject: Re: Disclaimers
+
+Michael (Streaky) Bacon (RISKS-21.95) complained about the message on an
+e-mail from the BBC (British Broadcasting Corporation) stating that e-mail
+may be monitored and that further use indicated acceptance of that
+monitoring.
+
+That sort of statement will be seen more widely on messages coming from the
+UK because it is part of a requirement of an Act of Parliament called the
+"Regulation of Investigatory Powers Act". This is combined with a Statutory
+instrument called "The Telecommunications (Lawful Business Practice
+Regulations) 2000" .
+
+The requirement is that monitoring may only be carried out "if the
+controller of the telecommunications system on which they are effected has
+made all reasonable efforts to inform potential users that interceptions may
+be made".
+
+How can one inform e-mail users other than a message on an e-mail?
+
+Many of us are still pondering how we warn people who contact us for the
+first time.....
+
+John Hitches
+
+------------------------------
+
+Date: 12 Feb 2001 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.  Alternatively, via majordomo,
+ send e-mail requests to <risks-request@csl.sri.com> with one-line body
+   subscribe [OR unsubscribe]
+ which requires your ANSWERing confirmation to majordomo@CSL.sri.com .
+ [If E-mail address differs from FROM:  subscribe "other-address <x@y>" ;
+ this requires PGN's intervention -- but hinders spamming subscriptions, etc.]
+ Lower-case only in address may get around a confirmation match glitch.
+   INFO     [for unabridged version of RISKS information]
+ There seems to be an occasional glitch in the confirmation process, in which
+ case send mail to RISKS with a suitable SUBJECT and we'll do it manually.
+   .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+   .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 20" for volume 20]
+ http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+   Lindsay Marshall has also added to the Newcastle catless site a
+   palmtop version of the most recent RISKS issue and a WAP version that
+   works for many but not all telephones: http://catless.ncl.ac.uk/w/r
+ http://the.wiretapped.net/security/info/textfiles/risks-digest/ .
+ http://www.planetmirror.com/pub/risks/ ftp://ftp.planetmirror.com/pub/risks/
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    http://www.csl.sri.com/illustrative.html for browsing,
+    http://www.csl.sri.com/illustrative.pdf or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 21.96
+************************

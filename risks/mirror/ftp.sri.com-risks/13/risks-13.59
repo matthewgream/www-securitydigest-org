@@ -1,0 +1,544 @@
+Subject: RISKS DIGEST 13.59
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 18 June 1992  Volume 13 : Issue 59
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+SOUNDEX algorithm fails in Directory Enquiries (Nick Rothwell)
+Two wrongs make a right (Fred Cohen)
+Computer problem provides free phone porn (Mark Bartelt)
+Australia benefits from US encryption export ban (Rick Noah Zucker)
+Re: Missed Pagings (Marc Schwartz)
+Privacy problems with voter records (Norman Kraft)
+Call for Participation, CFP '93 (Bruce R Koball)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 13, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ If you cannot read RISKS on-line, try FAX!  For info, phone 310-455-9300
+ (or send FAX to RISKS at 310-455-2364, or EMail to risks-fax@cv.vortex.com).
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 16 Jun 1992 10:45:55 +0000
+From: Nick Rothwell <nick@dcs.edinburgh.ac.uk>
+Subject: SOUNDEX algorithm fails in Directory Enquiries
+
+This is something I picked up while having some discussions at a software
+company here in Edinburgh. The company has a Gaelic name, and has been
+having problems with British Telecom's directory enquiries service not
+finding their entry. Apparently, all calls to directory enquiries are put
+through an implementation of the SOUNDEX algorithm: the operator listens to
+the name given by the caller, and types in the name as heard or a close
+phonetic approximation to it. I don't know a great deal about SOUNDEX, but
+it doesn't work for Gaelic, even though the company's name (An Teallach) is
+not too distant from the phonetic pronunciation (An Chellack).
+
+The final part of the long, heated discussion with the BT engineer revealed
+that they've been having a lot of problems with the system, especially with
+people calling up to ask for phone numbers of French restaurants...
+                                                                      Nick
+
+------------------------------
+
+Date:  Wed, 17 Jun 92 14:55 EDT
+From: fc <FBCohen@DOCKMASTER.NCSC.MIL>
+Subject:  Two wrongs make a right
+
+Those of us who are aware that denial results when the output queues for
+peripherals overrun are aware that it can be devastating, but there are
+also those of us who take advantage of it as if it were a feature.  Here
+is what happened to me today.
+
+          On a 3B2, the system backups and restoration program does not
+allow you to restore information to different directory structures than
+it was backed up from without great difficulty.  I happened to have over
+9,000 files to restore to a system, and they were backed up from "/v",
+but the system they were being restored on had only a "/u" it would fit
+on.  (These are Unix sub\directories).  As a result, I essentially had
+to do the restore to a newly created "/v" in the root file system, which
+did not have enough file space available to do the entire restore.  I
+had a plan - As the tape was restored, I would copy disk-to-disk and
+delete the incoming files after copying them.  I have done this "race"
+before, and I knew that I had to transfer out at a rate high enough so
+that the root file system would not overrun - which is to say, I had to
+beat the incoming tape transfer with disk to disk transfers.  Of cours
+the tape in streeming mode operates faster than the disk I was using, so
+in the end, it was helpless because it takes two disk accesses to move a
+file from one disk to another, but only 1 access to get a new file from
+the tape.  I tried putting in multiple transfer processes at high
+priority, but of course, the DMAs always won from the tape to the disk.
+
+          The solution I used (when the available space began to get
+critical) was to halt output on the console!  Hard to believe it works?
+Of course it does.  The tape transfers produce a dot on the screen for
+each of the files transfered in, and by pressing <ctrl>s (stop output) I
+was able to block the tape transfer process after only a few hundred
+more files are transfered.  By watching the disk space, stopping the
+console output to block tape transfers when space got too low, and
+continuing output when more space was created by the transfer to the
+second disk, I was able to complete the job.
+
+          The point of this insanity is that as a practical matter, there are
+times when knowing how to cause denial of services can be a very useful part of
+systems administration - especially when we can do it so selectively.  The
+title of this piece indicates that by knowing about how to break a system, I
+was able to compensate for one flaw in the system by exploiting another flaw -
+hence, 2 wrongs made a right!
+
+P.S.  I am interested in other stories where knopwn holes were used to
+compensate creatively for other known holes.  It is my contention that most of
+the best systems administrators and systems programmers know about and exploit
+these sorts of things all of the time, and that without these flaws, we would
+really have to design systems right - otherwise, we would never be able to make
+up for the wrongs with other wrongs.
+                                                         FC
+
+------------------------------
+
+Date: Thu, 18 Jun 92 08:00:43 EDT
+From: Mark Bartelt <sysmark@orca.cita.utoronto.ca>
+Subject: Computer problem provides free phone porn
+
+[ Toronto Star, 17-Jun-92 ]
+
+Bell attempts to correct error that allows free phone-sex calls
+
+OTTAWA (CP)  --  Bell Canada is scrambling to repair a computer error
+that allows some Ottawa pay phones to dispense free phone-sex services.
+   The error has been giving callers easy access for months to graphic
+recordings of simulated kinky sex.  Callers have also been able to speak
+to women whose job is to fulfil sexual fantasies by talking dirty.
+   Bell officials weren't aware of the glitch in the system until an
+Ottawa Citizen reporter told them of it, said official Lynn Francoeur.
+   Phone-sex clients "certainly weren't going to call Bell and tell us
+they were getting this for free."
+   Francoeur could not say why Bell hadn't detected the error which has
+affected pay phones in Ottawa's west end and in the nearby community of
+Nepean.  Nor could she say how much money Bell and the phone-sex companies
+have lost, or how long the error has existed.
+   Many west-end high school students have been in the know for months.  At
+Woodroffe High School, where three pay phones allowed the no-charge calls,
+several teenagers said they knew of the free dial-a-porn since late 1990.
+   "It's perverted," said a 16-year-old male in Grade 10, who asked not to
+be identified.
+
+Mark Bartelt                                                  416/978-5619
+Canadian Institute for                               mark@cita.toronto.edu
+Theoretical Astrophysics                             mark@cita.utoronto.ca
+
+------------------------------
+
+Date: Wed, 17 Jun 92 16:19:13 -0700
+From: noah@cs.washington.edu
+Subject: Australia benefits from US encryption export ban
+
+>From The Courier-Mail, Queensland, Australia - May 18, 1992
+	"Pay-TV boost to technology" (copied without permission)
+
+A US export ban on pay-TV decoding technology could lead to a multibillion-
+dollar, Australian-led revolution in the industry.  The 15-year-old decoding or
+encryption system used in the US is classified "military sensitive", ruling out
+its export to and use in Australia when this country introduces a pay-TV system
+in 1994.
+
+Far from creating a major hurdle for Australia's nascent pay-TV industry - pay
+TV cannot work without a signal decoding system - the export ban is likely to
+result in a massive boost for Australian technology.
+
+After three years of developmental work, Gold Coast-based electronics company
+Digital Blanking Systems has produced a pay-TV "black box" which, it says, is
+better than the American version and which could save Australia $100 million a
+year in imports.  [RNZ - $A1 = ~$US0.76]
+
+The company says its revolutionary decoder could earn Australia up to
+$2.5 billion a year in exports if the designed was accepted in key Asian
+and European pay-TV markets.
+
+	So, what we've said in the past about US export restrictions on
+encryption technology being detrimental economically is coming to pass.
+
+Rick Noah Zucker, Dept. of Computer Science & Eng., University of Washington
+noah@cs.washington.edu
+
+------------------------------
+
+Date:  Tue, 16 Jun 92 12:38 EDT
+From: SchwartzM@DOCKMASTER.NCSC.MIL
+Subject:  Re: Missed Pagings (RISKS-13.58)
+
+In the June 15 issue of RISKS-13.58, Bill Griswold of UCSD describes an
+incident that took place regarding a missed page that nearly cost the life of a
+person in personal crisis.  I cannot comment on the availablity of any type of
+fault-tolerance in most radio paging system, that is can the system confirm
+that the page was recieved by the intended beeper?  It would seem that the
+beepers that are typically available cannot transmit a return signal to
+indicate reception.  I make that statement based upon the logical assumption
+that if the system needs a 100 foot tall (sometimes taller) tower to transmit
+the primary signal to the pager, the pager does not have the power to send a
+return signal.  There are certainly experts out there in radio signal
+transmission that can comment on the specifics.  But in most cases, it takes
+less power to sense a transmission than to actually generate one.  Automotive
+radar detectors are a prime example of this.
+
+My personal experience has had similar events.  In my former life as a cardiac
+surgical assistant, there were times that I missed pages during life
+threatening situations when patients were in need of immediate attention from a
+health care professional.  I had a Motorola BPR2000 beeper (the LCD display
+type) that was considered one of the best at the time (1981 - 1986 time frame)
+and there were more times than I care to think about when I was either in the
+hospital or on call away from the hospital that pages were missed.  In no case
+did anyone die (luckily), but it did create enormous amounts of tension as
+precious minutes were sometimes lost due to not recieving the page the first
+time.  In one circumstance, I changed from the hospital's own system to a
+commercial system, that was signifcantly more reliable (higher power
+transmitter with a better, more central antenna location).  With that system, I
+did not miss any pages over the course of the subsequent year.  At least that I
+know of!
+
+I also would be curious to hear of any similar experiences and any expert
+comments on the nature of error detection and correction on the systems,
+especially with the new nation-wide paging systems that are in wide spread
+use by companies, including my present employer for our field personnel.
+
+Marc Schwartz, Director, Clinical Services, Summit Medical Systems
+Minneapolis, Minnesota     E-mail: SchwartzM at dockmaster.ncsc.mil
+
+------------------------------
+
+Date: Wed, 17 Jun 92 15:53:06 EDT
+From: Lance J. Hoffman <hoffman@seas.gwu.edu>
+Subject: privacy problems with voter records
+
+Date: Wed, 17 Jun 92 11:49:09 PDT
+From: "Willis H. Ware" <willis%iris@rand.org>
+ 
+From: nkraft@bkhouse.cts.com (Norman Kraft)
+Newsgroups: alt.privacy
+Subject: Privacy alert:San Diego voters on CD
+Date: 8 Jun 92 18:31:33 GMT
+Organization: Argus Computing, San Diego, CA
+ 
+An article that made the front page of the San Diego Union on Sunday,
+June 7, 1992 bore the title: "Technology pits privacy vs. Information
+Age". The article starts with these paragraphs:
+ 
+++++++
+ 
+   The morning after Bill Turner voted in last week's election, he picked up a
+copy of a local computer magazine and his jaw dropped.  "This ad just jumped
+out and hit me in the face," said the 35-year old La Mesa computer programmer.
+"It was a severe shock."  There, for sale, were Turner's name, address,
+unlisted telephone number, occupation, birthplace, birthdate and political
+affiliation.
+ 
+   A list of San Diego County's 1.25 million registered voters containing the
+information is available for $99 in a relatively new format [CD-ROM] that
+virtually anyone with a personal computer can use. It is the first known such
+use of voter registration data in the nation.
+ 
+++++++
+ 
+The CD-ROM is marketed by a San Diego company call Sole Source Systems, a local
+computer store.
+ 
+Lists of voter information have always been available, and political campaigns
+have had access to the information on data tapes for years.  This is, however,
+the first time that such information has been made available to the public at
+large, in an easily accessible format (dBase, from what I can gather).
+ 
+Sole Source says that use of the CD is limited to "election purposes,
+...election, scholarly or political research, or government purposes."  Sole
+Source says that they require ID and the completion of a form before selling
+the CD.  Turner responds to this with "What is there to prevent me from going
+up there and telling him I'm with the Little Old Ladies Auxilliary 97, and I
+want this list to call people up and help arrange transportation to the polls
+on Election Day?  It would be a bald-faced lie, but I would get it [the CD]."
+ 
+He may be right, as Conny McCormack, the San Diego County Registrar of Voters
+says that the registrar's office does not check to make sure the list is being
+used within the law, primarily because "we have no authority in that area."
+ 
+David Banisar, a policy analyst with Computer Professionals for Social
+Responsibilities in Washington, DC, said in all likelihood the CD would end up
+in the hands of direct marketers. "This is really an unanticipated use of the
+data," he said, "You register to vote because you want to feel patriotic and do
+your citizen's duty and try to get some good government.  You don't register to
+vote so that you can be solicited by every bozo out there with a widget that he
+feels he should hock to you."
+ 
+The article goes on to discuss the problems of privacy in the computer age, and
+mentions two other CD-ROM databases that are publicly available: PhoneDisc USA,
+from a corporation of the same name in Marblehead, Mass., lists 90 million
+names, addresses and phone numbers nation wide.  MetroScan CD, from
+Transamerica Information Management in Sacramento, is a database containing
+housing ownership information, from deed filings, and for a given address
+provides the owner's name, address, when the building was purchased, how many
+bedrooms and bathrooms it has, how many square feet it has, and it's property
+tax assessment.
+ 
+In the article, Ken Smith, from Transamerica Information Magagement,
+is quoted as saying: 
+ 
+   "I'm very much in favor of making the information, if it's in the
+    public domain, available to a very wide audience, rather than just
+    major corporations and government agencies. It's a very, very 
+    powerful tool for the little guy."
+ 
+and further:
+ 
+   "I don't think the privace issue has been a concern yet. I can
+    see where it might be in the future, but it's not a problem now."
+ 
+Finally the article goes back to Dante Tuccero, from PhoneDisc USA Corp.,
+listing such PhoneDisc customers as "the U.S.  Drug Enforcement
+Administration, the Navy, the Air Force, the Social Security
+Administration, as well as local libraries and law enforcement, public
+investigators, geneologists, and even high school and college reunions."
+Quoting Tuccero, "There's a company in Langley, Va,. that uses it, I
+believe, but wouldn't say so."
+ 
+The last paragraphs of the article point out that "the direct-mail company
+that provides PhoneDisc with most of it's data prefers to remain off other
+people's lists."
+ 
+"We're not at liberty to share that," Tuccero said, "A lot of data
+providers like to be low key."
+ 
+The saddest part of the whole article, in my opinion, is this statement
+from Turner: "I have voted in every election since I was 18, and I think
+(this) was the last election I'll ever vote in."
+ 
+[For those concerned about the PhoneDisc listings, they will remove your
+name from the next release of their CD if you call.  They claim that only
+two people have called so far.  I imagine we can change that!  Their
+number in Marblehead, Mass. as given by directory assistance, is
+617-639-2900.]
+ 
+Norman R. Kraft, Senior Partner, Argus Computing, San Diego, CA 
+UUCP : ucsd!crash!bkhouse!nkraft        INET  : nkraft@bkhouse.cts.com
+ 
+------- Message 2
+ 
+From: jim@rand.org (Jim Gillogly)
+Newsgroups: alt.privacy
+Subject: Re: Privacy alert:San Diego voters on CD
+Summary: PhoneDisc won't remove names.
+Date: 9 Jun 92 21:18:44 GMT
+
+...
+ 
+I called this number to get removed from their list.  The lady who
+answered the phone was polite, and told me that they got their information
+from the white pages of phone books around the country, which are public
+information.  I told her I wanted to be removed from their product, and
+she responded that all I needed to do was to get an unlisted number from
+the phone company so that I would not be in the next phone book, and that
+would prevent me from getting into the next copy of their product.  They
+will not remove someone from it individually.
+ 
+Looks like more cause for concern...
+ 
+ Jim Gillogly    jim@rand.org 
+ 
+------------------------------
+
+Date: Tue, 16 Jun 92 19:28:55 -0700
+From: Bruce R Koball <bkoball@well.sf.ca.us>
+Subject: Call for Participation, CFP '93
+
+                         CFP'93
+   The Third Conference on Computers, Freedom and Privacy
+         Sponsored by ACM SIGCOMM, SIGCAS & SIGSAC
+                    9 - 12 March 1993
+     San Francisco Airport Marriott Hotel, Burlingame, CA
+
+INVITATION
+
+This is an invitation to submit session and topic proposals for 
+inclusion in the program of the Third Conference on Computers, 
+Freedom and Privacy.  Proposals may be for individual talks, panel 
+discussions, debates or other presentations in appropriate 
+formats. Proposed topics should be within the general scope of the 
+conference, as outlined below.
+
+SCOPE
+
+The advance of computer and telecommunications technologies holds 
+great promise for individuals and society. From convenience for 
+consumers and efficiency in commerce to improved public health and 
+safety and increased participation in democratic institutions, 
+these technologies can fundamentally transform our lives.
+
+At the same time these technologies pose threats to the ideals of 
+a free and open society. Personal privacy is increasingly at risk 
+from invasion by high-tech surveillance and eavesdropping. The 
+myriad databases containing personal information maintained in the 
+public and private sectors expose private life to constant 
+scrutiny. 
+
+Technological advances also enable new forms of illegal activity, 
+posing new problems for legal and law enforcement officials and 
+challenging the very definitions of crime and civil liberties. But 
+technologies used to combat these crimes can threaten the 
+traditional barriers between the individual and the state.
+
+Even such fundamental notions as speech, assembly and property are 
+being transformed by these technologies, throwing into question 
+the basic Constitutional protections that have guarded them. 
+Similarly, information knows no borders; as the scope of economies 
+becomes global and as networked communities transcend 
+international boundaries, ways must be found to reconcile 
+competing political, social and economic interests in the digital 
+domain.
+
+The Third Conference on Computers, Freedom and Privacy will 
+assemble experts, advocates and interested people from a broad 
+spectrum of disciplines and backgrounds in a balanced public forum 
+to address the impact of computer and telecommunications 
+technologies on freedom and privacy in society. Participants will 
+include people from the fields of computer science, law, business, 
+research, information, library science, health, public policy, 
+government, law enforcement, public advocacy and many others.
+
+Topics covered in previous CFP conferences include:
+
+Personal Information and Privacy
+International Perspectives and Impacts
+Law Enforcement and Civil Liberties
+Ethics, Morality and Criminality
+Electronic Speech, Press and Assembly
+Who Logs On (Computer & Telecom Networks)
+Free Speech and the Public Telephone Network
+Access to Government Information
+Computer-based Surveillance of Individuals
+Computers in the Workplace
+Who Holds the Keys? (Cryptography)
+Who's in Your Genes? (Genetic Information)
+Ethics and Education
+Public Policy for the 21st Century
+
+These topics are given as examples and are not meant to exclude 
+other possible topics on the general subject of Computers, Freedom 
+and Privacy.
+
+PROPOSAL SUBMISSION
+
+All proposals should be accompanied by a position statement of at 
+least one page, describing the proposed presentation, its theme 
+and format. Proposals for panel discussions, debates and other 
+multi-person presentations should include a list of proposed 
+participants and session chair. Proposals should be sent to:
+
+	CFP'93 Proposals
+	2210 Sixth Street
+	Berkeley, CA 94710
+
+or by email to:    cfp93@well.sf.ca.us    with the word "Proposal" 
+in the subject line. Proposals should be submitted as soon as 
+possible to allow thorough consideration for inclusion in the 
+formal program. The deadline for submissions is 15 August 1992.
+
+STUDENT PAPER COMPETITION
+
+Full time students are invited to enter the student paper 
+competition. Winners will receive a scholarship to attend the 
+conference and present their papers.
+
+Papers should not exceed 2500 words and should address the impact 
+of computer and telecommunications technologies on freedom and 
+privacy in society. All papers should be submitted to Professor 
+Dorothy Denning by 15 October 1992. Authors may submit their 
+papers either by sending them as straight text via email to:   
+denning@cs.georgetown.edu   or by sending 6 printed copies to:
+
+	Professor Dorothy Denning
+	Georgetown University
+	Dept.  of Computer Science
+	225 Reiss Science Bldg.
+	Washington DC 20057
+
+Submitters should include the name of their institution, degree 
+program, and a signed statement affirming that they are a full-
+time student at their institution and that the paper is an 
+original, unpublished work of their own.
+
+INFORMATION
+
+For more information on the CFP'93 program and advance 
+registration, as it becomes available, write to:
+
+	CFP'93 Information
+	2210 Sixth Street
+	Berkeley, CA 94710
+
+or send email to:    cfp93@well.sf.ca.us    with the word 
+"Information" in the subject line.
+
+THE ORGANIZERS
+
+General Chair
+-------------
+Bruce R. Koball
+CFP'93
+2210 Sixth Street
+Berkeley, CA 94710
+510-845-1350 (voice)
+510-845-3946 (fax)
+bkoball@well.sf.ca.us
+
+Steering Committee
+------------------
+John Baker                        Mitch Ratcliffe
+Equifax                           MacWeek Magazine
+
+Mary J. Culnan                    David D. Redell
+Georgetown University             DEC Systems Research
+                                   Center
+Dorothy Denning
+Georgetown University             Marc Rotenberg
+                                  Computer Professionals
+Les Earnest                        for Social Responsibility
+GeoGroup, Inc.
+                                  C. James Schmidt
+Mike Godwin                       San Jose State University
+Electronic Frontier Foundation
+                                  Barbara Simons
+Mark Graham                       IBM
+Pandora Systems
+                                  Lee Tien
+Lance J. Hoffman                  Attorney
+George Washington University
+                                  George Trubow
+Donald G. Ingraham                John Marshall Law School
+Office of the District Attorney,
+ Alameda County, CA               Willis Ware
+                                  Rand Corp.
+Simona Nass
+Student - Cardozo Law School      Jim Warren
+                                  Microtimes
+Peter G. Neumann                   & Autodesk, Inc.
+SRI International
+
+Affiliations are listed for identification only.
+
+Please distribute and post this notice!
+
+------------------------------
+
+End of RISKS-FORUM Digest 13.59
+************************

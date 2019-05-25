@@ -1,0 +1,617 @@
+precedence: bulk
+Subject: Risks Digest 22.41
+
+RISKS-LIST: Risks-Forum Digest  Thursday 5 December 2002  Volume 22 : Issue 41
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/22.41.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Understanding the Windows 2000 EAL4 Evaluation (Jonathan S. Shapiro)
+L.A. woman gets prison in counterfeit software ring (Monty Solomon)
+NSF Fastlane Exposes PINs (Geoff Kuenning)
+UK Government under digital attack: security breaches revealed (Ian Cuddy)
+Internet eBay auction scam (NewsScan)
+Re: eBay sends plaintext password changes (George C. Kaplan)
+Re: Patch slip-up raises security questions (Fred Cohen)
+REVIEW: "XML Security", Blake Dournaee (Rob Slade)
+REVIEW: "A Guide to Business Continuity Planning", James C. Barnes (Rob Slade)
+CFP: Workshop on Investigation & Reporting of Incidents & Accidents 
+  (C. Michael Holloway)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Wed, 27 Nov 2002 7:11:48 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Understanding the Windows 2000 EAL4 Evaluation, Jonathan S. Shapiro
+
+Understanding the Windows EAL4 Evaluation
+Jonathan S. Shapiro, Johns Hopkins University Information Security Institute 
+  "Jonathan S. Shapiro" <shap@eros-os.org>
+  http://eros.cs.jhu.edu/~shap/NT-EAL4.html
+    [Via Bruce Schneier's Crypto-Gram (courtesy of Paul Walczak)]
+
+By now, you may have heard that Microsoft has received a Common Criteria
+certification for Windows 2000 (with service pack 3) at Evaluation Assurance
+Level (EAL) 4. Since a bunch of people know that I work on operating system
+security and on security assurance, I've received lots of notes asking "What
+does this mean?" On this page I will try to answer the question. For the
+impatient the answer is:
+
+Security experts have been saying for years that the security of the Windows
+family of products is hopelessly inadequate. Now there is a rigorous
+government certification confirming this. 
+
+Since that's a pretty strong statement, bear with me while I try to explain
+it in plain English. 
+
+How a Security Purchase Should Work (In Abstract)
+At the risk of telling you something you already know, here is how a
+purchaser ought to proceed when buying a security product: 
+
+  * Assess your needs. Determine what your requirements are. 
+  * Decide which product you are most confident will meet those needs. 
+  * Buy and deploy it. 
+
+Each of these is potentially an involved process, and most customers don't
+have the expertise to do them effectively. Even if you did, Microsoft (or
+any other vendor) isn't likely to let you examine their code and design
+documents in order to evaluate their product. 
+
+The purpose of the Common Criteria process is to develop standard packages
+of commonly found requirements (called Protection Profiles) and have a
+standard process of independent evaluation by which an expert evaluation
+team arrives at a level of confidence for some particular software product. 
+
+As a customer, this makes your life simpler, because you can compare your
+needs against existing requirements constructed by experts and then see how
+well the software you are buying meets those requirements. Security
+requirements are fairly hard to write down correctly, but if the resulting
+document is annotated properly they aren't all that hard to understand. 
+
+Obviously, if you don't know your needs (requirements) you don't stand much
+of a chance of getting them met. Likewise, if you don't know what
+requirements a software product was evaluated against, the evaluation result
+isn't terribly useful to you in practical terms. 
+
+How Common Criteria Works
+
+>From the customer perspective, a Common Criteria evaluation has two parts: 
+
+A standardized requirements specification called a Protection Profile that
+says what the system is supposed to do. Sometimes there will be more than
+one of these -- usually a general baseline protection profile and then some
+others describing additional, specialized requirements. 
+
+An evaluation rating. This is basically an investigation by well-trained
+experts to determine whether the system actually meets the requirements
+specified in the protection profile(s). The result of the evaluation is an
+"Evaluation Assurance Level" which can be between 1 and 7. This number
+expresses the degree of confidence that you can place in the system. 
+
+In order to understand the result of an evaluation, you need to know both
+the evaluation result, which will be a level between EAL1 and EAL7, and the
+protection profile (the requirements that were tested). Given two systems
+evaluated against the same protection profile, a higher EAL rating is a
+better rating provided the requirements meet your needs. 
+
+Knowing that a product has met an EAL4 evaluation -- or even an EAL7
+evaluation -- tells you absolutely nothing useful. It means that you can
+have some amount of confidence that the product meets an unknown set of
+requirements. To give a contrived example, you might need a piece of
+software that always paints the screen black. I might build a piece of
+software that paints the screen red with very high reliability, and get it
+evaluated at EAL4. Obviously my software isn't going to solve your problem. 
+
+The Windows 2000 Evaluation
+Microsoft sponsored an evaluation of Windows 2000 (with Service Pack 3 and
+one patch) against the Controlled Access Protection Profile (plus some
+enhancements) and obtained an EAL4 evaluation rating. This is most
+accurately written as "CAPP/EAL4". 
+
+Problem 1: The Protection Profile
+
+The Controlled Access Protection Profile (CAPP) standard document can be
+found at the Common Criteria website. Here is a description of the CAPP
+requirements taken from the document itself (from page 9): 
+
+The CAPP provides for a level of protection which is appropriate for an
+assumed non-hostile and well-managed user community requiring protection
+against threats of inadvertent or casual attempts to breach the system
+security. The profile is not intended to be applicable to circumstances in
+which protection is required against determined attempts by hostile and well
+funded attackers to breach system security. The CAPP does not fully address
+the threats posed by malicious system development or administrative
+personnel. 
+
+Translating that into colloquial English: 
+
+Don't hook this to the Internet, don't run e-mail, don't install software
+unless you can 100% trust the developer, and if anybody who works for you
+turns out to be out to get you you are toast. 
+
+In fairness to Microsoft, CAPP is the most complete operating system
+protection profile that is presently standardized. This may be the best that
+Microsoft can do, but it is very important for you as a user to understand
+that These requirements are not good enough to make the system secure. It
+also needs to be acknowledged that commercial UNIX-based systems like Linux
+aren't any better (though they are more resistant to penetration). 
+
+Note that the "Don't install software" part means that you probably
+shouldn't install a word processor. On several occasions Microsoft has
+unintentionally shipped CD's with viruses on them. A CD with a virus
+qualified as "malicious system development."
+
+Problem 2: The Evaluation Assurance Level
+
+Having described the requirements problem, I now need to describe the
+problem of the EAL4 evaluation assurance level that Windows 2000 received. 
+
+As I mentioned before, EAL levels run from 1 to 7. EAL1 basically means that
+the vendor showed up for the meeting. EAL7 means that key parts of the
+system have been rigorously verified in a mathematical way. EAL4 means that
+the design documents were reviewed using non-challenging criteria. This is
+sort of like having an accounting audit where the auditor checks that all of
+your paperwork is there and your business practice standards are
+appropriate, but never actually checks that any of your numbers are correct.
+An EAL4 evaluation is not required to examine the software at all. 
+
+An EAL4 rating means that you did a lot of paperwork related to the software
+process, but says absolutely nothing about the quality of the software
+itself. There are no quantifiable measurements made of the software, and
+essentially none of the code is inspected. Buying software with an EAL4
+rating is kind of like buying a home without a home inspection, only more
+risky.
+
+The Bottom Line for Windows 2000
+
+In the case of the CAPP protection profile, there actually isn't much point
+to doing anything better than a low-confidence evaluation, because the
+requirements set itself is very weak. In effect, you would be saying "My
+results are inadequate, but the good news is that I've done a lot of work so
+that I can be really sure that the results are inadequate.
+
+In the case of CAPP, an EAL4 evaluation tells you everything you need to
+know. It tells you that Microsoft spent millions of dollars producing
+documentation that shows that Windows 2000 meets an inadequate set of
+requirements, and that you can have reasonably strong confidence that this
+is the case. 
+
+Conclusion
+
+Security isn't something that a large group can do well. It is something
+achieved by small groups of experts. Adding more programmers and more
+features makes things worse rather than better. Microsoft has been adding
+features demanded by their customers for a very long time. 
+
+It is possible to do much better. EROS, a research operating system that we
+are working on here in the Systems Research Laboratory at Johns Hopkins
+University, should eventually achieve an EAL7 evaluation rating, and is
+expected to provide total defense against viruses and malicious code. It
+won't be compatible, because the most important security problems in Windows
+and UNIX are design problems rather than implementation problems. In fact,
+none of the viable research efforts toward secure operating systems are
+compatible with existing systems. 
+
+It remains to be seen whether EROS or one of the other attempts to build
+secure operating systems will prevail, but better solutions are coming. 
+
+  [We somehow keep coming back to electronic voting machines in RISKS.  The
+  2002 FEC "Voting System Standards" document says that COTS software does
+  not have to be inspected if it is used in the construction of a voting
+  system.  So any voting machine using Win2K can claim Common Criteria
+  compliance, even though it may be riddled with security flaws!  PGN]
+
+------------------------------
+
+Date: Sat, 23 Nov 2002 19:10:50 -0500
+From: Monty Solomon <monty@roscom.com>
+Subject: L.A. woman gets prison in counterfeit software ring
+
+A Los Angeles woman was sentenced on 22 Nov 2002 to nine years in prison and
+ordered to pay $11 million in restitution for her role in one of the largest
+counterfeit software cases in U.S. history.  The sentence imposed on
+52-year-old Lisa Chen by Superior Court Judge Ronni MacLaren was the longest
+prison term for a first-time conviction on software piracy, prosecutors
+said. ...  [Reuters, 22 Nov 2002]
+     - http://finance.lycos.com/home/news/story.asp?story=30082290
+
+------------------------------
+
+Date: Wed,  4 Dec 2002 12:09:33 -0800 (PST)
+From: Geoff Kuenning <geoff@cs.hmc.edu>
+Subject: NSF Fastlane Exposes PINs
+
+Today is the deadline for submitting reference letters for applicants for
+NSF graduate fellowships, and the quickest way to do so is through FastLane.
+Most of their system is relatively friendly, but when you begin working on a
+new student, you are asked for a PIN (actually, it's a password) and the
+following message is displayed:
+
+  Your PIN will be used to identify you for future access to
+  your Reference Report and to protect it from unauthorized access.
+
+Note that it does *not* give any information about how long the PIN might be
+necessary, whether it will be shared among other students you are creating
+references for, or what might be a good algorithm for selecting a PIN.
+Lacking such, and being in a hurry, I foolishly chose one of my standard
+passwords that I use for a number of moderately secure applications.
+
+Imagine my surprise when a few moments later I received a cleartext e-mail
+telling me the PIN I had chosen!  Nowhere on the Web page does the NSF hint
+that the "secret" value you are typing will immediately be mailed to you in
+cleartext.  Since many people manage password explosion by reusing
+passwords, this could potentially expose the password to much more critical
+things than reference letters.
+
+    Geoff Kuenning   geoff@cs.hmc.edu   http://www.cs.hmc.edu/~geoff/
+
+------------------------------
+
+Date: Mon, 2 Dec 2002 19:48:02 -0000
+From: "Ian Cuddy" <ic@egovmonitor.com>
+Subject: UK Government under digital attack: security breaches revealed
+
+By Ian Cuddy, eGov monitor Weekly
+www.egovmonitor.com/newsletter/signup.asp
+
+UK Government departments have experienced more than 9,000 "digital attacks"
+on their IT systems so far this year, it has emerged.
+
+The security threat was revealed in Ministers' responses to a series of
+parliamentary questions tabled by Labour Party backbencher Brian White MP.
+
+Over half of the incidents were directed towards the Cabinet Office and its
+agencies, which during 2002 reported some 5,857 attacks, with 1,167 of these
+occurring in October alone. Douglas Alexander, the Minister for
+e-Transformation, said that none of the events had resulted in "compromise,
+loss or damage to any information held on the systems".
+
+By contrast, the Treasury, the Foreign and Commonwealth Office, Department
+for Education and Skills and the Department for Culture, Media and Sport
+said they had not detected a single attack on their systems this year. The
+Treasury admitted, however, it had discovered in June that an external
+website had been attacked while it was still under construction.
+
+The Ministry of Defence confirmed that 10 computer hacking incidents,
+including a website defacement, had taken place since January although none
+of these, it said, had a "significant" impact on military operations or core
+Defence business.
+
+The Home Office reported no hacking attempts this year but said that around
+2,500 attacks involving computer viruses had been detected. In the same
+period the Department for Environment, Food and Rural Affairs said it had
+experienced 564 attacks which were all blocked by its security measures.
+
+The Department for International Development also disclosed a series of
+incidents where viruses had infected internal computers. In April the
+destructive Elkern virus slipped past the Department's defences and spread
+to 500 PCs - about one in six computers - before it was stopped. The DFID is
+currently conducting a review of anti-virus arrangements which is expected
+to be completed and put into effect by the end of this month.
+
+Ian Cuddy, Chief Editor, eGov monitor  www.egovmonitor.com
+T 020 7384 1551  F 020 7384 2551  E ic@egovmonitor.com
+
+------------------------------
+
+Date: Thu, 05 Dec 2002 09:15:16 -0700
+From: "NewsScan" <newsscan@newsscan.com>
+Subject: Internet eBay auction scam
+
+A 27-year-old Los Angeles man, Chris Chong Kim, has been charged with
+defrauding eBay buyers on six continents who had purchased computer
+equipment from him but never received delivery of the products they had
+purchased.  The criminal complaint against Kim details losses of $453,000 to
+26 U.S. customers and to eBay and Bank of America.  If convicted, Kim will
+face a penalty of up to 24 years in prison.  [Reuters/*USA Today*, 4 Dec 2002;
+NewsScan Daily, 5 December 2002]
+  http://www.usatoday.com/tech/news/2002-12-04-ebay-scam_x.htm
+
+------------------------------
+
+Date: Wed, 27 Nov 2002 09:58:58 -0800 (PST)
+From: "George C. Kaplan" <gckaplan@enceladus.Net.Berkeley.EDU>
+Subject: Re: eBay sends plaintext password changes (B.R.Neumann, RISKS-22.40)
+
+: An unscrupulous person at an ISP could take advantage of this by sending out
+: faked eBay change-password e-mails and sniffing for password changes coming
+: through.  
+
+There are lots of scenarios that wouldn't even require any help from ISP
+insiders.  Anyone could do this at a public wireless hotspot, for example.
+
+George C. Kaplan, Communication & Network Services, University of 
+  California at Berkeley  1-510-643-0496 gckaplan@ack.berkeley.edu
+
+------------------------------
+
+Date: Wed, 27 Nov 2002 06:45:11 -0800 (PST)
+From: Fred Cohen <fc@all.net>
+Subject: Re: Patch slip-up raises security questions (Solomon, RISKS-22.40)
+
+> [Re: BIND] The delay, coupled with messages sent to several administrators
+> urging them to pay to become part of an early-warning group run by the
+> ISC, has some security experts worried that security is taking a backseat
+> to secrecy and money.  ...
+
+Sounds more like a shakedown to me.  If this story is accurate, the
+consortium appears to be threatening other entities with collapse of their
+infrastructure unless they pay the consortium for the information on how to
+be safe.  This is, in many ways, similar to what the AtStake folks used to
+do.  They would create vulnerability exploit scripts and then sell the
+defenses to the vendors prior to making the attack script available for
+free.
+
+I guess it's time to move away from BIND to a source that is truly open,
+and perhaps one that is really secure.  Which brings up point 2.  BIND has
+been around for many many years.  It seems to me that the effort put into
+patching and reworking this software long ago exceeded the cost of doing a
+trusted version.  If it is in the national interest to secure this
+infrastructure, when will the government act in the common defense and
+provide properly skilled people with the $s to do these jobs right once and
+for all?
+
+Fred Cohen  http://all.net/  fc@all.net  fc@unhca.com  tel/fax: 925-454-0171
+Fred Cohen & Associates	- University of New Haven - Security Posture
+
+------------------------------
+
+Date: Tue, 3 Dec 2002 07:42:56 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "XML Security", Blake Dournaee
+
+BKXMLSCR.RVW   20021003
+
+"XML Security", Blake Dournaee, 2002, 0-07-219399-9, U$59.99
+%A   Blake Dournaee
+%C   300 Water Street, Whitby, Ontario   L1N 9B6
+%D   2002
+%G   0-07-219399-9
+%I   McGraw-Hill Ryerson/Osborne
+%O   U$59.99 800-565-5758 fax: 905-430-5020
+%O  http://www.amazon.com/exec/obidos/ASIN/0072193999/robsladesinterne
+%P   379 p.
+%T   "XML Security"
+
+Chapter one is an outline of the book.  The differences between
+symmetric and asymmetric cryptography are given in chapter two, which
+provides a good treatment of the basics, although there are odd
+additions of extraneous details.  The XML primer, in chapter three,
+follows the all-too-common practice of describing syntax rather than
+function, but the explanation of document parts is useful.  The syntax
+of XML digital signatures, and a brief mention of canonicalization,
+makes up chapter four.  Part two of the introduction to signatures is
+in chapter five, which concentrates on canonicalization, but does not
+present this important concept clearly.  Chapter six provides some
+examples, although neither the problems nor the solutions are defined
+well.  The elements of XML encryption are listed in chapter seven. 
+Chapter eight is a promotion for an RSA product.  The elements of the
+XML key management specifications are given in chapter nine.
+
+While the syntax of various XML operations is provided properly, the
+book fails to provide the newcomer to the field with any understanding
+of the uses or limitations of the XML security provisions.
+
+copyright Robert M. Slade, 2002   BKXMLSCR.RVW   20021003
+rslade@vcn.bc.ca  rslade@sprint.ca  slade@victoria.tc.ca p1@canada.com
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: Tue, 19 Nov 2002 07:47:24 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "A Guide to Business Continuity Planning", James C. Barnes
+
+BKAGTBCP.RVW   20020922
+
+"A Guide to Business Continuity Planning", James C. Barnes, 2001,
+0-471-53015-8, U$35.00
+%A   James C. Barnes
+%C   5353 Dundas Street West, 4th Floor, Etobicoke, ON   M9B 6H8
+%D   2001
+%G   0-471-53015-8
+%I   John Wiley & Sons, Inc.
+%O   U$35.00 416-236-4433 fax: 416-236-4448
+%P   174 p.
+%T   "A Guide to Business Continuity Planning"
+
+Chapter one is an introduction, and also introduces us to a
+characteristic of the book: enormous tables with little apparent
+purpose.  Table 1.1 is a list, by country, of regulatory agencies that
+may have something to require from you in the way of business
+continuity planning (BCP).  The table is stated to be for motivational
+use, but does point out some BCP ideas or policies.  There is also a
+rather innocent sounding mention that the book is written from the
+perspective of a consultant: this fact is more significant than the
+reader may realize.  For project foundation, chapter two does not give
+the usual advice to get management on-side and build a broadly based
+team, but concentrates on costing, expanding, and selling consulting
+services.  (There are confusing areas: having presented one
+questionnaire, the text tells you to use results from "the two."  Some
+items (such as the advice to use a month's worth of invoices to
+estimate rate of consumption of supplies) are helpful, but a lot of
+space seems to be wasted (on things like pages of fake employee and
+customer data--and a month's worth of supply invoices).  The list of
+threats, consequences, and preventive measures is more than usually
+detailed (and listed twice), in chapter three, but the discussion of
+business impact analysis (BIA) itself is *extremely* terse.  Chapter
+four's initial material on strategy selection is quite confused.  The
+example RFP (Request For Proposal) for business continuity services
+does have some good points, but the pages of lists of specific PCs to
+be provided seem pointless.  Later details are brief, but reasonable. 
+Plan development, in chapter five, assumes multiple teams and, again,
+has some good points (the provision for leadership succession), but
+the lists become too specific in many places (does the top level
+emergency management team really all need to do CPR?)  There is almost
+no general discussion of testing and maintenance in chapter six.
+
+The book is not necessarily wrong, but only has enough real material
+for a good magazine article.
+
+copyright Robert M. Slade, 2002   BKAGTBCP.RVW   20020922
+rslade@vcn.bc.ca  rslade@sprint.ca  slade@victoria.tc.ca p1@canada.com
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: Tue, 03 Dec 2002 08:30:06 -0500
+From: "C. Michael Holloway" <c.m.holloway@larc.nasa.gov>
+Subject: CFP: Workshop on Investigation & Reporting of Incidents & Accidents
+
+The following Workshop should be interesting to many RISKS readers.
+
+C. Michael Holloway, Senior Research Engineer, NASA Langley Research Center
+General Chair IRIA 2003  <http://shemesh.larc.nasa.gov/iria03/>
+Workshop on Investigation & Reporting of Incidents & Accidents
+
+IRIA 2003 (First Call for Papers)
+<http://shemesh.larc.nasa.gov/iria03/>
+Mirror at <http://www.logicteacher.com/iria03/>
+Deadline: 28 March 2003
+
+
+The 2nd Workshop on the Investigation and Reporting of Incidents and 
+Accidents (IRIA03) will be held 16 - 19 September 2002, at the Radisson 
+Fort Magruder Hotel & Conference Center in Williamsburg, Virginia, United 
+States.
+
+Incident and accident investigation and reporting systems play a primary 
+role in the safety of many industries across the globe. These systems are 
+diverse; the practices and techniques that have been developed within one 
+industry are seldom shared by those in other areas. Similarly, techniques 
+that have been developed within one national industry are often different 
+from those that are used in the same industry in other countries. These 
+observations have considerable practical consequences. It can be difficult 
+or impossible to exchange data between these many diverse systems. 
+Similarly, it can be difficult to ensure that `best practices' are 
+effectively transferred between industries and between national systems. 
+This workshop is intended to provide a forum for the exchange of 
+information about incident and accident investigation and reporting systems 
+in many different application domains, including but not limited to 
+aviation, automotive industry, chemical process industry, healthcare, 
+military systems, marine systems, the rail industry, and nuclear applications.
+
+Topics of interest include, but are not limited to, the following:
+
+o incident and accident causal analysis techniques
+
+o investigatory techniques, particularly for gathering of evidence
+
+o forensic software engineering and techniques for analyzing software failure
+
+o presentation and dissemination of safety-related information and 
+recommendations
+
+o integrating incident and accident recommendations into broader risk 
+analysis and assessment
+
+o the integration of human factors, system engineering, and management 
+concerns
+
+o data mining and trending techniques for incident and accident data
+
+o validation and the monitoring of incident and accident investigation and 
+reporting systems
+
+o field studies in the application of incident and accident reporting
+
+o studies of the rhetoric of incident and accident reports
+
+o tools for supporting incident and accident investigation and reporting
+
+Authors should submit full papers not exceeding 6000 words to the Program 
+Committee Chair, Barry Strauch <STRAUCB@ntsb.gov>, by 28 March 
+2003.  Papers should consist of original work not submitted elsewhere. 
+Electronic submissions are encouraged.  PDF is the preferred format, but 
+other formats will be accepted for initial submissions.
+
+Authors will be notified of the Program Committee's decision by 23 May 
+2003.  Authors of accepted papers will be given instructions about the 
+required format of the final papers.
+
+Revised final versions of all papers must be received by 14 July 2003 for 
+inclusion in the Workshop Proceedings, which will be published as a NASA 
+Conference Publication.  Final papers will also be published on the 
+workshop web site.
+
+General Chair: C. Michael Holloway, NASA Langley Research Center
+
+Program Committee Chair: Barry Strauch, National Transportation Safety Board
+
+Program Committee Members (with more to be added)
+D. Busse, Microsoft
+E. Byrne, NTSB
+F. Chandler, NASA
+J. Davies, U. Calgary
+K. Hanks, U. Virginia
+M. Holloway, NASA
+C. Johnson, U. Glasgow
+J. Knight, U. Virginia
+P. Ladkin, U. Bielfeld
+N. Leveson, M.I.T.
+R. Mumaw, Boeing
+M. O'Leary, British Airways
+T. Panontin, NASA
+J. Stoop, Tech. Univ. of Delft
+B. Strauch, NTSB
+T. van der Schaaf, Eindhoven U. of Tech.
+
+For the latest information about IRIA03, visit the web site at 
+<http://shemesh.larc.nasa.gov/iria03/>.  If you have any problems with that 
+address, try the mirror at <http://www.logicteacher.com/iria03/>
+
+C. Michael Holloway, Senior Research Engineer, NASA Langley Research Center
+General Chair IRIA 2003  <http://shemesh.larc.nasa.gov/iria03/>
+Workshop on Investigation & Reporting of Incidents & Accidents 
+
+------------------------------
+
+Date: 29 Mar 2002 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.  Alternatively, via majordomo,
+ send e-mail requests to <risks-request@csl.sri.com> with one-line body
+   subscribe [OR unsubscribe]
+ which requires your ANSWERing confirmation to majordomo@CSL.sri.com .
+ If Majordomo balks when you send your accept, please forward to risks.
+ [If E-mail address differs from FROM:  subscribe "other-address <x@y>" ;
+ this requires PGN's intervention -- but hinders spamming subscriptions, etc.]
+ Lower-case only in address may get around a confirmation match glitch.
+   INFO     [for unabridged version of RISKS information]
+ There seems to be an occasional glitch in the confirmation process, in which
+ case send mail to RISKS with a suitable SUBJECT and we'll do it manually.
+   .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+   .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 21" for volume 21]
+ http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+   Lindsay Marshall has also added to the Newcastle catless site a
+   palmtop version of the most recent RISKS issue and a WAP version that
+   works for many but not all telephones: http://catless.ncl.ac.uk/w/r
+ http://the.wiretapped.net/security/info/textfiles/risks-digest/ .
+ http://www.planetmirror.com/pub/risks/ ftp://ftp.planetmirror.com/pub/risks/
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    http://www.csl.sri.com/illustrative.html for browsing,
+    http://www.csl.sri.com/illustrative.pdf or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 22.41
+************************

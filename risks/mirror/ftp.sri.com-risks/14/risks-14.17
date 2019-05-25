@@ -1,0 +1,544 @@
+Subject: RISKS DIGEST 14.17
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 8 December 1992  Volume 14 : Issue 17
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Name confusion and its implications -- PART TWO (Don Norman, Guest Moderator, 
+  with contributions from Amos Shapir, J. Brad Hicks, Tarl Neustaedter, 
+  Chris Hibbert, Will Taber, Andrew Shapiro, Olaf Titz, Wayne A. Christopher,
+  Craig Hansen, Jim Morris, Simon Marshall, Gary McClelland, Craig Partridge)
+  [PART ONE IS IN RISKS-14.16.]
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 14, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+
+ For information regarding delivery of RISKS by FAX, phone 310-455-9300
+ (or send FAX to RISKS at 310-455-2364, or EMail to risks-fax@cv.vortex.com).
+
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+    [THIS SPECIAL DOUBLE ISSUE IS CONTINUED FROM RISKS-14.16.]
+
+From: amos@cs.huji.ac.il (amos shapir)
+
+Having lived most of my life in a country that uses the national id system, I
+find it quite useful. I also find it hard to understand what harm there is in
+such a system, let alone that it constitutes an "obvious" risk to human
+rights.  ....
+
+>In other words, how to we get the benefits and avoid the risks?
+
+We can't. Since the development of technology will sooner or later make
+such a system inevitable, we'd better be prepared to take both benefits
+and risks.
+
+ - - - - - - - - - - - - - - - -
+
+From: J. Brad Hicks <mc/G=Brad/S=Hicks/OU=0205925@mhs.attmail.com>
+ 
+My life has been complicated horribly by name confusion, so I've put a lot
+of thought into this. There are two theses I would like to put forward:
+ 
+ 1) If you manage to make name, or name plus any other attributes, a
+ unique key, then you will acquire all of the problems that go with
+ a national identity number.
+ 
+ 2) There is nothing that can be done to names, as socially used, that
+ will make them adequate unique keys.
+ 
+UNIQUE NAME = NATIONAL IDENTITY "NUMBER"? Let's suppose that you have an
+application for which you wish to track people by their National Identity
+Numbers, whether for good or ill. Being a sensible programmer, and knowing
+that NIN formats could change, you make it a nice long alphanumeric field.
+Then let us suppose that name alone, or name plus date of birth plus number,
+or name plus some combination of attributes, turns out to be sufficient to
+accurately identify anybody. What's to stop you from putting that string into
+the key field? In that case "JAMES BRADLEY HICKS 07/11/1960 1" =becomes= my
+National Identity Number. If it is unique, it can be used for database
+lookups, just as efficiently as a number.
+ 
+NAME CAN'T BE PART OF A UNIQUE KEY? Let's take the hypothetical case of
+Jonathan Quincy Customer, of 1234 Main Street, Springfield, NI 66666.  Even if
+there are no other Jonathan Quincy Customers anywhere else in the "target
+area" (city, country, world, whatever), you're going to run into problems
+looking him up by name. (1) What if he signs it John? or Johnny? (2) What if
+the clerk misspells it "Jonathan"? or "Jon"? (3) What if it's actually
+"Johnnathon" or some other non-standard spelling?  Then you'll never untangle
+it, since the clerks everywhere "know" how to spell it and will screw it up
+all the time.
+ 
+(Maybe you think that you can solve this problem with training. When US cities
+began converting from candlelight to gas lamps, people frequently BLEW UP
+THEIR HOUSES at night, killing everybody inside, because deep down in their
+reflexes they "knew" that you turn off a wall light by blowing it out. With
+their LIVES on the line, it took many of them YEARS to be trained not to do
+this. If your system requires people to unlearn things, even as minor as
+spellings of names, your system will not work in the real world.)
+ 
+(4) What if he routinely goes by his middle name?
+ 
+The credit bureaus, I'm told by a friend who used to program for one, "solve"
+problems 1-4 by using as their primary key last name + first initial of first
+name + first letter of street name + "city", i.e., standard metropolitan area.
+(I live in Maryland Heights, a suburb of St.  Louis. For such purposes, they
+would use "Saint Louis" not "Maryland Heights", presumably by lookup on ZIP
+code.) (5) What happens to his records if/when he moves? Or the city renames
+the street?
+ 
+Then of course, as with the X.400 spec, really ugly things happen when you try
+to parse the name string into separate fields, such as "last name" in the
+example above. Which one is the "last name" or "surname"? If he is of Latin
+American origin, it could be =either= Quincy =or= Customer. In China, the
+patronymic would be "Jonathan", and "Quincy Customer" the given name. (In the
+X.400 spec, if the name is "Jonathan Quincy Customer" and Quincy is the
+surname, how should the rest be recorded in the given name field? "Jonathan
+Customer"? Won't half the systems in the world reconstruct that as "Jonathan
+Customer Quincy"? Is this why there's a separate initials field?) (6) So
+knowing all of this, what would the clerk type in to the "last name" field?
+ 
+(What =do= non-Europeans who run into this idiocy say when they're asked
+for their "first name, middle initial, last name"?)
+ 
+Even assuming you parse it right, (7) what about Jonathan's cousin Jane who
+lives across the street? OK, some of them untangle this by using house numbers
+as well. (8) Somebody had better warn him not to name his first child "Jane"
+or "Janet" or "James" or "Johann", or he'll get what happened to me. As soon
+as Johann grows up enough to apply for a credit card, while living at the same
+address, the two files will be cross-linked inextricably.
+ 
+My name is James Bradley Hicks. My father is James Bedford Hicks.  Observe,
+the name is an adequate identifier in these cases, but no, I am NOT "James B.
+Hicks, Jr." But almost all of the computers out there use first name, middle
+initial, last name for an identifier, and as I've said, the credit bureaus
+don't even use that much. For us, it's no problem: he's Jim (or to some people
+who've known him since The War, "Bud") and I'm Brad. But when he and I were
+both working for IBEW Local 1, both of our work hours got credited to his
+pension account; they turned out to be flatly incapable of untangling this
+other than by "renaming" me as Brad J. Hicks.
+ 
+Then, the other day (thanks to a tip in RISKS) I requested my TRW report.  ONE
+HUNDRED PERCENT of my report is in error. You see, item 1 was just a query,
+and item 2 was an "address and SSN correction", because they saw on some
+report that I had as a previous address "1371 Broadlawns" in St.  Louis (I
+grew up there), and they were still getting credit reports from "1371
+Broadlawns" ... my father, of course. They even "corrected" my social security
+number ... to his. From then on, there were no separate files for us; if I had
+any credit activity, their search didn't find it, and all of his showed up
+when they searched for mine.
+ 
+I'll work with them to correct this, but there is no way under the current
+system to stop it from happening again, so for the rest of our lives, our
+credit records are going to be screwed up.
+ 
+Speculation:
+ 
+Whatever the problems are of having a "national identity number", we've got
+them already. When the cop pulls you over, he can and usually does ask for
+your driver's license, which almost certainly has enough information on it to
+find you in any database that he cares about. You show that same id, with name
+and address, to anybody who you want to cash a check. You even have to show it
+on some cash transactions, like gun purchases or renting a hotel room. Banning
+the use of National Identification Numbers (to the pitiful extent that this
+was even done) did not solve the problem.
+ 
+Since not having an NIN didn't solve the problem, having an NIN won't make
+things any worse, and they =will= make one thing better: if there are
+ambiguities or things that are easy to mis-key on your existing identity card,
+right now you can get confused with a deadbeat or a fleeing felon, with ugly
+results. With an NIN with adequate check digits, it seems to me that you would
+acquire no problems that we don't have now and eliminate the problem of false
+identification.
+ 
+J. Brad Hicks
+Internet: mc/gn=Brad/sn=Hicks@mhs
+attmail.com
+X.400: c=US admd=ATTMail prmd=MasterCard sn=Hicks gn=Brad
+ 
+Yes, I work for a credit card company, but (a) I'm not speaking for them, I'm
+only speaking my own personal opinion, and (b) as far as I can tell, my
+opinions on this are not influenced by my work. (And no, I can't do anything
+about your credit card balance. Not only is the joke unfunny, we don't even
+=know= your credit card number OR balance; that's the issuing bank's
+responsibility.)
+
+ - - - - - - - - - - - - - - - -
+
+COMMENT BY DN: I have been deleting signatures in order to save space, but
+this particular signature actually is relevant: it points out one of the
+fears of universal access to databases. (And the fact that the e-mail
+address requires explanation is another sign of the difficulty of getting
+unique -- and understandable -- addresses.)
+
+ - - - - - - - - - - - - - - - -
+
+From: tarl@coyoacan.sw.stratus.com (Tarl Neustaedter)
+
+As you can tell from my email address, I am not one of those people whose name
+gets easily confused with someone else's. But having a unique name is not the
+same as having a standardized unique identifier that everything uses. The
+former is a comfort and a privilege, the latter is a frightening idea.
+
+With computerized databases today, merging databases is trivial as long as
+you can make the associations between entries. A standardized identifier which
+is validated at time of data entry (e.g., SSN), will permit this association.
+A unique name, when the name isn't guaranteed to be unique, or guaranteed to be
+correctly spelled, does not permit such an association. And thus the barriers
+to a centralized database of everything are still high.
+
+With my name, I get to observe the process first hand with junk mail. I give
+to various political causes and some charities, most of which have variously
+misspelled my name. When I receive new junk mail, I will frequently receive
+three or four identical pieces of mail addressed to slightly different people.
+The new purveyor of junk mail has purchased several databases, and done an
+imperfect merge - the possibilities of instead generating databases describing
+the individuals are fairly clear.
+
+ O.K.. - Mr. 57Zy65zz; it says here that you have given money to both
+ the NRA and HCI, you are currently taking prozac, you checked into a
+ drug rehab unit last year, and I just stopped you for crossing a solid
+ yellow line. Clearly, you are so screwed up as to be a danger to
+ yourself and others - I'll have to take you in.
+
+Fantasy? Sure. But we have shown ourselves, as a society, to be unable to limit
+use of data for the purpose that it was collected. So we shouldn't be asking
+how to generate unique standard identifiers for individuals, but instead 
+should be asking how to prevent bureaucracies from doing so.
+
+ - - - - - - - - - - - - - - - -
+
+WHY USE OF SOCIAL SECURITY NUMBERS IS A PROBLEM
+
+COMMENT BY DN:: The following is an excerpt from Chris Hilbert's
+"Frequently Asked Questions about Social Security Numbers."
+
+Date: 24 Nov 1992 06:00:37 GMT
+From: hibbert@xanadu.com (Chris Hibbert)
+Subject: Social Security Number FAQ
+
+ What to do when they ask for your Social Security Number
+
+ by Chris Hibbert
+
+ Computer Professionals
+ for Social Responsibility
+....
+Why use of Social Security Numbers is a problem
+
+The Social Security Number doesn't work well as an identifier for several
+reasons. The first reason is that it isn't at all secure; if someone makes up
+a nine-digit number, it's quite likely that they've picked a number that is
+assigned to someone. There are quite a few reasons why people would make up a
+number: to hide their identity or the fact that they're doing something;
+because they're not allowed to have a number of their own (illegal immigrants,
+e.g.), or to protect their privacy. In addition, it's easy to write the number
+down wrong, which can lead to the same problems as intentionally giving a
+false number. There are several numbers that have been used by thousands of
+people because they were on sample cards shipped in wallets by their
+manufacturers.
+
+When more than one person uses the same number, it clouds up the records.
+If someone intended to hide their activities, it's likely that it'll look
+bad on whichever record it shows up on. When it happens accidentally, it
+can be unexpected, embarrassing, or worse. How do you prove that you
+weren't the one using your number when the record was made?
+
+A second problem with the use of SSNs as identifiers is that it makes it hard
+to control access to personal information. Even assuming you want someone to
+be able to find out some things about you, there's no reason to believe that
+you want to make all records concerning yourself available.  When multiple
+record systems are all keyed by the same identifier, and all are intended to
+be easily accessible to some users, it becomes difficult to allow someone
+access to some of the information about a person while restricting them to
+specific topics.
+
+The market for stolen numbers increased in 1986, with the passage of the
+Immigration reform law. While making up a number is usually good enough to
+fool the public library, employers submit the number to the IRS, which cross
+checks with its own and SSA's records. Because of the checks, illegal workers
+need to know what name goes with the number so they won't be caught as
+quickly.
+
+ - - - - - - - - - - - - - - - -
+
+DN COMMENT: The following contribution was in answer to a series of
+question I posed to Chris as I put together this summary.
+
+From: hibbert@xanadu.com (Chris Hibbert)
+
+One of the few points in your article that I disagreed with was the idea
+that we might solve a lot
+of problems by requiring people to use unique names. There are many
+problems that we might use unique universal IDs to solve, but there
+are also a lot of problems we'd create or exacerbate with such a
+system. One of the protections of our privacy currently is that not
+every database uses the same universal IDs, and so it's often a fair
+bit of trouble for someone who knows you in one context to find other
+information about you. 
+ ...
+When people ask me about designing databases and want to know what to
+use for a universal ID, my usual answer is to suggest that they think
+real hard about how secure the system has to be, and what the
+penalties are for not realizing that someone already has an account.
+I don't have a good answer for making sure that you always match
+returning customers with their accounts, but assigning account numbers
+and requiring them to remember them works pretty well. 
+
+ - - - - - - - - - - - - - - - -
+
+MAKING ENTRIES IN DATABASES UNIQUE
+
+COMMENT BY DN: Many people suggested that life would be solved if only we
+ensured that whenever a new name was entered into a database, it would be
+entered uniquely, so as not to combine records of different people. In my
+opinion, these proposals are technically reasonable and fundamentally
+flawed. They are flawed because they assume one or more of the following:
+
+1. the person entering the data knows if this is a new entry or not. 
+
+This can't possibly be true when the database might have hundreds of
+millions of names (the world population is measured in the billions), when
+there are thousands of people entering the information, and when the person
+about whom the information is being entered either does not know, does not
+care, or deliberately does not wish to cooperate. 
+
+Every large database of names I know of suffers from problems of: the same
+person multiply entered (Donald A Norman is not the same as Donald Norman who
+is not the same as D.A. Norman. To say nothing of mistyping: D.  Narman), and,
+simultaneously, the same records confusing two different people (the d. norman
+who wrote paper 1 is not really the same as the d.  norman who wrote paper 2).
+(See the discussion of the U.S. Social Security database.)
+
+I see no simple solution to this problem, despite the clever solutions
+proposed by respondents, of which I will here reprint a few:
+END COMMENT BY DN:
+
+ - - - - - - - - - - - - - - - -
+
+From: Will_Taber@dgc.mceo.dg.com
+
+The initial problem is that the police database was designed with the
+assumption that name/DOB would be unique. A much simpler solution would seem
+to be to provide an occurrence number in the database. Each time a STEVEN REID
+or a JOHN A SMITH or a REGIS Q MISSLETHWAITE is entered into the database the
+occurrence number for that name is incremented and stored in the record for
+that individual. The database now has a unique ID for each individual and when
+there is confusion, information other than name (DOB, Address, Phone Number,
+what ever is available and relevant) can be used to determine which person is
+the one in question.  
+
+ - - - - - - - - - - - - - - - -
+
+From: shapiro@mica.Colorado.EDU (Andrew Shapiro)
+
+In order for the police to identify someone they would type that persons
+name. If more than one person share that name then the computer would ask
+for some other identification, like DOB. If a single individual still
+cannot be identified the computer would guide the officer by asking for
+more information. 
+
+This system allows people to chose and use any name they would like while at 
+the same time allows computer operators to identify individuals without 
+confusion. I do not believe that people should be forced to conform to the 
+inflexible programs software engineers write. 
+
+ - - - - - - - - - - - - - - - -
+
+From: s_titz@ira.uka.de (Olaf Titz)
+
+There already is a system where all people have names chosen by
+themselves. It's IRC (Internet Relay Chat), where every person is
+known by a name ('nickname' is the term actually used; the real names
+of the people are known too) that he can choose himself freely,
+provided it does not exceed 9 characters and is globally unique. The
+latter is currently becoming a problem as the user base of IRC grows
+to several thousand people. Of course everyone wants a nick that has a
+meaning and fits the person, so the choice becomes increasingly
+difficult for new users. Some people have proposed to deal with the
+problem in an in this context already well-known way: adding
+information of locale. But many don't like that idea.
+
+(More information on IRC can be found in a paper by Elizabeth Reid
+(emr@munagin.ee.mu.oz.au) titled 'Electropolis', which is carried by
+many anonymous FTP servers, including ftp.uni.kl.de.)
+
+ - - - - - - - - - - - - - - - -
+
+COMMENT BY DN: The schemes above rely too much on the good faith of the
+person about whom the information is being entered. It is apt to lead to
+less commingling of records at the price of multiple records for the same
+person. I don't think the problem is in retrieval: the problem is in data
+entry. See some of the horror stories above.
+
+Many people commented on the fact that there already exist registries for
+ensuring unique identification:
+
+ - - - - - - - - - - - - - - - -
+
+From: faustus@ygdrasil.CS.Berkeley.EDU (Wayne A. Christopher)
+
+A friend of mine in Sweden got a letter one day from the government, telling
+her that her name was too common, and would she mind changing her last name to
+her mother's maiden name? This may seem excessively paternalistic to many
+people in the US, but I guess it does make some sense.
+
+ - - - - - - - - - - - - - - -
+
+From: craig@mnemosyne.MicroUnity.com (One of the people named Craig Hansen)
+
+I believe the Screen Actors Guild has such a registry; many people have found
+their given name already taken and have been forced to take a "Stage Name."
+Ultimately, though, identifiers such as SSN are already unique, and these
+unique identifiers are at the root of the privacy concerns, because they are
+globally unique identifiers for information.  The SSN makes it easy to join
+together pieces of the information from different databases, which permits the
+assembling of a dangerously complete dossier from a series of apparently
+benign releases of information.
+
+COMMENT BY DN: See the discussion of SSN.
+
+ - - - - - - - - - - - - - - - -
+
+From: Jim Morris <jhm+@andrew.cmu.edu>
+
+How about a completely non-coercive service in which people (or their parents)
+could register their names and a few lines about themselves, subject to good
+taste, privacy, and other concerns. Then prospective parents could scan it and
+make their own judgments about what they are getting their kids into. I would
+imagine that the spread of names would increase.
+
+ - - - - - - - - - - - - - - - -
+
+From: Simon Marshall <S.Marshall@sequent.cc.hull.ac.uk>
+
+I'd like to suggest the application of computer password techniques. We all
+know that the best password is computer generated gibberish, right? Even if we
+stick to lower case letters, two 5-letter identifiers, such as ``yloof
+lirpa'', would give something like 141 thousand billion different
+permutations, enough for a long time to come.
+
+Though this technique is not often used for passwords, since they are difficult
+to remember, writing down your name in case you forget it would not render it
+useless. Indeed, just imagine the commercial possibilities, selling names that
+actually make sense to those with more money than sense. How much money do you
+think you could get if the computer came up with ``jdanq uayle'' for your name?
+Maybe not much, but you'd want to sell it anyway.
+
+ - - - - - - - - - - - - - - - -
+
+From: mcclella@yertle.Colorado.EDU (Gary McClelland)
+>In other words, how to we get the benefits and avoid the risks?
+
+I'll give it a try using Don's model of the California license
+plate system and the name database of the American Kennel Club as
+models to be modified for this larger purpose:
+
+1. "Used" names only are recorded in the database.
+
+2. Database is encrypted to prevent casual reading (although the
+experts at, say, NSA might still be able to read it).
+
+3. From terminals lots of places, parents, new immigrants, people wanting to
+change their names, etc. could try out potential names. The test name is
+encrypted and checked for a match in the database. System replies only "OK" or
+"used."
+
+4. Finding an unused name could be a pain. Here is where the AKC strategy
+applies. They encourage outlandish and multiple names to avoid duplicates
+(this can even be fun!). Just as one does not use the official AKC name for
+the dog very often (not on the dog tag, not when you want the dog to fetch
+your slippers, and not even with the vet, just for official registration forms
+at dog shows), one would use one's official name only on official documents
+(that is another problem of deciding just what documents require one's full
+name but that is not a new problem) and it could be used whenever it was
+necessary to avoid name collisions such as the Ottawa example that started
+this thread.
+
+5. Some folks don't like long, complicated names for either themselves or
+their dogs. The AKC deals with this by simply adding a short number to the end
+of names that are duplicates.  In this case, if the system indicated a desired
+name was a duplicate, one could be given the option of adding a short number
+(a true PIN!) or arbitrary character string to make the name unique. One would
+use this short extra part of one's name only for official purposes.
+
+Obvious risks:
+ a. all those existing programs and official written forms that haven't left
+enough room for the long names
+ 
+b. one could purposely try to select a confusing name by trying test names
+until finding a duplicate and then adding a short PIN such as "1"
+
+I'm sure there are other obvious risks but they aren't "obvious" to me right
+now. Have at it!
+
+BTW, once the system is set up I want to request
+ Gary Hubbard Willie McCovey McClelland
+
+ - - - - - - - - - - - - - - - -
+
+NAMES; JR. AND SR. DO NOT MEAN RELATIONS
+
+COMMENT BY DN: One interesting fact about names emerged:
+
+From: Craig Partridge <craig@aland.bbn.com>
+
+In your posting to RISKS, you left out one other trend. The advent of Jr.  and
+Sr. (or Older and Younger) or other distinguishing features to label people.
+If a town had two John Smiths, quite often one would be John Smith Jr., the
+other John Smith Sr., even if they were not related. Furthermore, someone who
+was the John Smith Jr. in early life could become the John Smith Sr.  in later
+life. Sufficiently confusing that the practice was largely dropped and we only
+use Jr. and Sr. for son and father these days.
+
+COMMENT BY DN: I asked Craig: Did they ever use "the taller" or "the
+fatter" (fat John Smith)? He replied:
+
+Not that I've heard of, once last names came into effect. (Before then it
+was quite common of course). What I've seen is using town names to distinguish
+(John Smith of Wayland) and Jr. and Sr. if that wasn't enough. My uninformed
+guess is that town name plus Jr. and Sr. worked pretty well in most cases.
+
+But the Jr. and Sr. to mean younger and older stayed common practice until
+quite recently. Certainly through the 18th century in the US. (A common
+warning in genealogy books is to be aware of this practice and not assume
+Sr. is father of Jr.).
+
+ - - - - - - - - - - - - - - - -
+
+COMMENT BY DN: My thanks to the many people who responded, some of whom were
+most helpful with multiple messages, clarifying, finding references, etc.
+
+Don Norman (of Apple). Also Donald A. Norman (of the University of
+California, San Diego).
+
+Donald A. Norman
+ Until December 31, 1992                 Starting January 1, 1993
+  Cognitive Science                       Apple Computer, Inc
+  University of California, San Diego     1 Infinite Loop, MS 301-3G
+  La Jolla, CA 92093                      Cupertino, CA 95014
+E-mail (permanently valid): dnorman@ucsd.edu or AppleLink: dnorman
+
+         [And super thanks to Don for pulling this material 
+         together.  I think this was a very valuable effort.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 14.17
+************************

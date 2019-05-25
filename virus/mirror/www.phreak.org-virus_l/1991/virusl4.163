@@ -1,0 +1,780 @@
+VIRUS-L Digest   Tuesday, 17 Sep 1991    Volume 4 : Issue 163
+
+Today's Topics:
+
+Re: Boot sectors
+Re: Extra file in F-PROT 2.00? (PC)
+Scanning LZEXE and PKLITE files (PC)
+Re: Mutant viruses (PC)
+Re: Scanners
+Re: Testing antiviral utilities
+automatic virus CLEAN
+Interesting laptop config (PC)
+Re: Virus Simulator
+New files on risc.ua.edu (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    17 Sep 91 10:06:09 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Boot sectors
+
+grdo@botik.yaroslavl.su writes:
+
+> In fact there is a way to overcome ANY boot sector infector on PC.  To
+
+Not ANY... see below...
+
+> do this it is enough to restore the contents of interrupt vectors area
+> just before booting DOS - virus will lost control.  It is also desired
+> to set a correct amount of RAM into an appropriate BIOS variable (loc.
+> 0:413H). It is possible to place a necessary program code into a DOS
+> BOOT sector (not MBR - such a code must be loaded AFTER all possible
+
+In general you're correct, but the described approach is a bit dirty.
+It's better not to mess with the contents of the boot sector. A much
+better approach is to implement this idea in a separate program. When
+run in "installation mode", the program traces INT 13h to BIOS level
+and using a CALL to that address reads the MBR and the boot secotrs of
+all hard disk(s) and partition(s) and stores them (together with the
+original INT 13h handler's address) in a file.
+
+When the program is run in "check mode", it gets the address of the
+original INT 13h handler from the file and using a CALL to it reads
+the current contents of all the saved boot sectors. If any of them
+does not match the saved one, its current contents is saved to a file
+for later examination; its original contents is restored; the user is
+notified; and the system is rebooted.
+
+This will automatically disinfect all curent boot sector infectors
+(including the stealth ones), but has some drawbacks:
+
+1) It will also "disinfect" (i.e., automatically remove) any added
+boot sector modification (say, a password boot protection program) or
+even DOS upgrades of the boot sector. The solution of this problem is,
+of course, to reinstall the anti-virus program each time a change is
+made to the boot sector. Unfortunately, the average user is not always
+competent enough to determine that such modification has been made.
+
+2) It is possible (in theory) to design a virus which particularly
+attacks this protection scheme - i.e., tries to find the file where
+the original contents of the boot sector is, intercepts the program at
+the point where the user is notified, prevents the system to be
+rebooted, etc. All this could be made difficult enough but requires a
+good amount of programming.
+
+3) If a boot sector infector removes itself from the disk immediately
+after it has installed itself in memory and then writes its code back
+after, say, 5 minutes, chances are that the virus protection program
+(if run from the AUTOEXEC.BAT file) will not notice it.
+
+4) If a boot sector virus is already present when the anti-virus
+program is being installed, it will effectively re-install it after
+each disinfection.
+
+> neccessary, restore each time PC is booted.  Such an approach was
+> implemented at least in one program in USSR.
+
+Such approach was implemented by at least one program in Bulgaria...
+:-) The program is called ShrDog and is freeware, so if there is
+enough interest, I'll e-mail it to Ken. The Bulgarian program has been
+implemented independently of the USSR's one (i.e., it was the
+implementor's own idea and he didn't know about similar approaches in
+the past), however I admit that the idea was first published in the
+Soviet Union.
+
+Since you are from the Soviet Union, could you please answer these two
+quiestions:
+
+1) Is the Bulgarian virus Dir II already spread there? (It is a virus
+that cross-links all COM and EXE files to the last disk cluster.) I
+received a report that it is already spread in Poland, so I'm just
+wondering... (To all the others: I'll publish soon a detailed
+description of this virus.)
+
+2) Can you (or whoever from the SU reads this) provide us with contact
+with the Soviet anti-virus researcher Bezrukov, Nikolaj Nikolaevitch?
+He lives in Kiev and has published a book on computer viruses. I know
+his snail-mail address, but could anyone provide him with e-mail
+contact?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    17 Sep 91 16:27:33
+>From:    Ari.Hypponen@hut.fi (Ari Hypp|nen)
+Subject: Re: Extra file in F-PROT 2.00? (PC)
+
+>>>>> On 10 Sep 91 09:34:10 GMT, zlsiial@cs.man.ac.uk said:
+LeBlank> VIRSTOP.EXE runs and installs itself even if VIRSTOP.BIN has been
+LeBlank> deleted.  Is VIRSTOP.BIN therefore an unnecessary file released with
+LeBlank> the others by mistake?
+
+VIRSTOP.EXE is constructed from VIRSTOP.BIN when you install it. The
+EXE contains some text strings, which vary from language to language.
+These strings are taken from the corresponding .TX0-file.
+
+- --
+Ari.Hypponen@hut.fi
+- --
+Ari Hypp|nen    Ari.Hypponen@hut.fi   p.253 298, t.694 4422
+There's more to life than books you know, but not much more
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 07:10:55 -0700
+>From:    Eric_Florack.Wbst311@xerox.com
+Subject: Scanning LZEXE and PKLITE files (PC)
+
+Hello, all.
+
+I've recently gotten into a disussion, on another network, about LZEXE
+and PKLITE'd files, and scanning inside of them. I take the stance
+that there is no reliable way to scan inside them, with executing them
+first, thereby infecting the system. As such, I have banned all such
+treated files from my BBS's.
+
+Now, here's the question, or rather the challange: Someone convince me
+I'm wrong; that such files /can/ in fact be scanned without risk, and
+with accuracy, BY CURRENTLY EMPLOYED METHODS.
+
+Best Regards,
+E
+
+------------------------------
+
+Date:    17 Sep 91 14:06:48 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Mutant viruses (PC)
+
+grdo@botik.yaroslavl.su writes:
+
+> At least two viruses wich can NOT be detected by scanning programs
+> (SCAN etc.) have been reported in USSR. These are mutant viruses.
+
+Which ones? Can you send examples (encrypted please) to the VTC
+Hamburg? We already got a Russian encrypted and mutating virus that is
+currently unknown to the public. It was sent to us by two Russian
+anti-virus researchers who claimed that they have created it in order
+to show that virus scanners are inefective... The so-called Washburn
+approach... :-((
+
+> They do not contain any constant scan strings. They are self-encrypted
+> and decrypting parts differ from file to file. These viruses use the fact
+> that many *86 instructions can be represented by quiet different hex
+> codes. And between two meaningful instructions a random number of
+> randomly chosen do-nothing instructions is placed. "Do-nothing"
+> instruction is not just a NOP. For example, if a decryption algorithm
+> does not use SI register, then any instruction modifying SI (INC SI,
+> DEC SI, XOR SI,AX etc.) may be treated as do-nothing. It is still
+
+Yeah, yeah, I know... The idea is not new, the V2Px viruses use
+exactly that approach.
+
+> possible to implement scanning algorithms using powerful enough
+> regular expressions.
+
+This means that the instructions that perform the decryption are
+always in the same order? Well, this is not strictly nessecary; the
+V2Px viruses mentioned above use different permutations of these
+instructiuons, so they cannot be matched even by a regular
+expression...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    17 Sep 91 14:31:21 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Scanners
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  But why do we need "precise identification"?  As a user, I don't
+>  much care whether the virus infecting my system is the "Mpghffhmx
+>  Virus, version 1-A" or version 1-B, five bytes different. Nor
+>  should anyone. Yet, the entire antivirus industry was based from
+>  the beginning on the idea that it was somehow indispensable to
+>  "name" and "identify" each "virus".  To a large extent, the
+>  industry still carries that "mission".  The idea that defense
+>  against computer viruses must include "precise identification"
+>  is rather peculiar and unsatisfactory.  In this sense, hardware
+
+Precise identification is undispensable if your program has to
+disinfect the infected media. If it tries to disinfect the wrong virus
+variant (even if it differes by only one or two bytes), it may damage
+that file beyond repair. Of course, it's always better to restore from
+non-infected backups, but most users want disinfection too.
+
+>  I often wonder if we shouldn't credit the virus-naming penchant of
+>  antivirus publishers (and the attendant publicity), as well as the
+>  quest for "precise identification", with being at least partially
+>  responsible for the extraordinary proliferation of new viruses, and
+>  the concomitant increase in virus incidents worldwide.  I'm not
+>  referring to any possible collusion, or virus-production, by anti-
+>  virus entities, but to the obvious invitation that "orthodox" virus
+>  authors must feel to rise to the challenge and produce new
+>  creations that could trick a given scanner, if only ephemerally.
+
+The above is just an unfounded flame against the anti-virus
+researchers, so I won't bother to comment it. I'll contend myself only
+to mention that each science begins with defining the proper terms,
+naming, and classification. The fact that even this is not yet
+accomplished in the field of computer viruses, only means that the
+computer virology is a very young science.
+
+>  If I were writing such software, I would seldom bother composing
+>  dergablers.  Each encrypted virus has its own degarbler built in.
+>  Why not just use that?  It usually works rather well... <g>.
+>  Sliding-window encryptors do not respond well, but the rest do.
+
+You obviously have very little (or no) experience with really mutating
+viruses. Viruses with a highly mutating degarbler (like V2Px) cannot
+be matched by a simple (or even wild-card) string and require
+algorithmic approach.
+
+>  It aims at being virus-specific, but the general public doesn't
+>  realize just how non-specific a procedure it is to look for a few
+>  bytes of code and, on having found them, announce that "this file
+>  is infected with the ABC virus".  There may exist reasonable
+>  correlation between a given virus and a given chosen search string,
+>  but as a general method, such comparison is very non-specific.  No
+>  search string should be assumed to exist only in a virus, which
+>  the scanners assume.  Rosenthal's Virus Simulator proves just that,
+>  if proof was ever needed.
+
+>  Yes, and assuming that "identification" is what is really needed.
+>  As mentioned, I don't think it matters what the peculiar version
+>  and subversion (!) of a virus are.  I only want to prevent it from
+>  invading my system and from multiplying on it.  That's all *any*
+>  user wants.  In practice, virus scanners have not accomplished
+>  that.  In fact, some contend that scanners have accomplished just
+>  the opposite.  Now, Rosenthal graphically demonstrates how fallible
+>  scanners really are.  So, from both theoretical and practical
+>  viewpoints, virus scanning is not useful.
+
+Re-read again the above two paragraphs. You either want exact
+identification or not. If you don't, you have also to accept the fact
+that some perfectly legal (that is non-virus) programs may trigger the
+scanner. That's what happens with the notorious Rosenthal's program.
+Or if you want exact identification, you have to accept that new
+versions of a known virus could be missed, even if they are only
+slight mutations. That is, the notorious virus simulator will not be
+detected. What are you complaining about - that it causes false
+positives, ot that it is not detected by some virus scanners? Or you
+want a scanner that is able to identify every possible virus, never
+trigger on non-virus programs, and identify virus "simulators" as
+such? Sorry, but such thing is algorithmically impossible. Read Dr.
+Fred Cohen's papers for proofs and explanation.
+
+>  And from what I've seen so far, the "heuristic virus analyzers" are
+>  even worse than the scanners in the number of false alarms they
+>  produce.
+
+Again, you words are unfounded. Can you state some exact numbers, some
+results of experiments? Frisk, who is author of such a heuristic
+analyzer, claims that his program gives only about 1 % false
+positives. I'll test it too and shall either confirm or deny the
+result. Can you supply such factual information? Which heuristic
+analyzers have you tested? Under what conditions? How many false
+positives did you get? On which files?
+
+Please, be more precise in your words in the future.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    17 Sep 91 15:02:59 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Testing antiviral utilities
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  Of course! Having the hardware (a computer with a hard disk) is
+>  certainly not the problem I had in mind. I clearly explained that
+>  most prospective buyers of antivirus softeware could not obtain
+>  the large collection of viruses that is necessary to determine
+>  whether a given virus scanner does or does not work as intended.
+>  It's not getting a hard disk that's the problem. It's the jealously-
+>  guarded "samples".  Without them, testing is impossible.
+
+Agreed. Without a large virus collection (and without a considerable
+amount of knowledge, BTW) the testing of the anti-virus programs is
+impossible. That's why they should not be tested by the inexperienced
+users, but rather by a third-party organization. I would propose that
+each anti-virus software producer's product is tested by his
+competitor, but I seriously doubt that this is feasable... :-)
+
+>  That is the perceived "hole" that programs such as Rosenthal
+>  Engineering's Virus Simulator try to fill. It is a very real market
+
+As was several times noted, Rosenthal's program does not fill any hole
+at all. It does not test ANYTHING. It does not show that a scanner is
+able to detect a virus. It des not show that a scanner is NOT able to
+detect a virus. It just FOOLS some scanners and that's all. If it does
+prove anything at all, it just proves that some scanners can be fooled
+to trigger on non-infected files, which is a well-known fact.
+
+>  The situation is akin to a software publisher asking you to buy
+>  his program because "it would prevent your computer from having
+>  problems", but offered no hard evidence of its effectiveness.
+
+Agreed. That's the life... :-)
+
+>  Snake oil.  Then comes Rosenthal Engineering and offers a product
+>  that seems to show that the Emperor really wears no clothes, so
+>  the publishers all protest that the idea is useless. It's not
+>  useless; it shows that the Emperor wears no clothes, and _that's_
+>  its usefulness.
+
+Nope, if we use your own example, it just shows that the famous
+software that can prevent your computer from having problems sometimes
+reports problems when there are none. Back to the Emperor's example -
+it only PRETENDS that the Emperor's clothes are out-of-fashion. :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Fri, 13 Sep 91 11:55:00 -0600
+>From:    THE WILD EYED BOY FROM FREECLOUD <SLHPV@cc.usu.edu>
+Subject: automatic virus CLEAN
+
+I don't know if SCAN by McCaffry has an autoclean option but if so I cant find
+it, so I wrote this program to call SCAN and then call CLEAN for each virus it
+finds.  This will cause some problems I know, but in general access labs often
+I have seen SCAN detect a virus and the user just shrugs and keeps going.  If
+you're having infection problems in a lab, installing this in the login script
+can help slow down infection.  (no guarantees i'm afraid)
+
+/* This program uses the McCafrie (misspelled i'm sure) virus scan and */
+/* clean utilities to automatically clean all viruses found during the */
+/* scan process.  To call type VIRUS C: (or whatever you name it)      */
+/* written in TurboC by David A Dunn                                   */
+#include <stdio.h>
+
+#define TEMPFILE  "d:\\viruslog.txt"
+
+FILE *report;
+
+int  vnum = 0;
+char vlist[32][16];
+
+insert (char *s)
+{
+  int i;
+  sscanf (s, "%15s", vlist[vnum]);
+  for (i=0; i<vnum; i++)
+    if (!strcmp(vlist[i], vlist[vnum]))
+      return;
+  vnum++;
+}
+
+main (int argc, char *argv[])
+{
+  char line[128];
+  char com[64];
+  int i;
+
+  if (argc != 2)
+   {
+    printf ("drive or directory specification required\n");
+    exit(0);
+   }
+  sprintf (com, "scan %s /report %s", argv[1], TEMPFILE);
+  system (com);
+  if ((report = fopen(TEMPFILE, "r")) == NULL)
+   {
+    printf ("scan report file missing or unreadable\n");
+    exit(0);
+   }
+  while (fgets(line, 127, report) != NULL)
+   {
+    for (i=0; i<strlen(line); i++)
+      if (line[i] == '[')
+        insert (&line[i]);
+   }
+  for (i=0; i<vnum; i++)
+   {
+    sprintf (com, "clean %s %s", argv[1], vlist[i]);
+    system(com);
+   }
+  sprintf (com, "del %s", TEMPFILE);
+  system(com);
+}
+
+------------------------------
+
+Date:    Mon, 16 Sep 91 11:27:23 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Interesting laptop config (PC)
+
+	Recently, I finally found a laptop I could afford to replace my
+aging Columbia "luggable". DAMARK mail order (purveyors of closeout items
+such as portable hot-tubs and radar detectors) acquired the TANDON (Calif)
+LT-386 laptop and offered them for sale at $999.99 with 386sx-16, 40MB ide
+drive, 1.44 floppy, and a bright VGA display. At first I suspected something
+amiss since the price seemed too low but ordered one anyway.
+
+	On arrival, it was certainly a laptop and not a notebook & requires
+a diaper bag for transport but had some interesting and unnannounced features
+built into the BIOS:
+
+1) Password boot protection
+2) Password keyboard locking while operating
+3) Floppy/FD boot selection
+4) Partition table validation
+
+	The last two were interesting from a anti-virus standpoint since
+some real thought went into them. While we have discussed the concept of
+HD-only booting, the problem would arise if the HD became unbootable &
+the TANDON circumvents this by reading the MBR from the BIOS and checking
+for a valid partition table. If one is not found (i.e. when I loaded
+DISKSECURE) an error is recorded at boot with "No Active Partition Found".
+
+	To fix this, I had to modify DS so that a valid table was present
+(and hastens DS II development) before booting would continue. Once
+fixed and booting from HD first was selected, a real defense against
+the ever-present BSIs was possible.
+
+	Obviously, from a security standpoint, this is a superior design
+(though what the user is supposed to do if the alarm triggers is not well
+documented - OTOH I had no problem "fixing" it) and more vendors should
+be providing this additional level of integrity management.
+
+	Subjectively, the unit is everything I had hoped with the exception
+of the display which suffers from uneven contrast but is bright and readable
+otherwise - certainly far better than what was available two years ago. I have
+a feeling they will not last long.
+
+						Padgett
+
+------------------------------
+
+Date:    17 Sep 91 15:26:29 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus Simulator
+
+turtle@darkside.com (Fred Waller) writes:
+
+>  Perhaps the best way to solve it is to move away from string scanning
+>  as a viral "detection" technique.  The assumption that, in order to
+>  *stop* a virus one needs to *identify* it is, in my view, an
+>  incorrect assumption.
+
+Why? There are other ways to stop a virus, agreed, but none of them is
+universal (except of turning your computer off, of course). Neither is
+the scanning approach, but nobody claimed that. It is true, however,
+that most users get a false sense of security. That's why they often
+panic: "Help! McAfee's SCAN does not detect it! What to do?!"
+
+Recognizing known viruses is just one of the ways to stop them. You
+need exact identification only if you want to remove the virus too
+(something that I strongly discourage, but most users insist on it
+anyway). Or if you don't want to cause false alerts. But in this case
+you may miss some future modifications of the virus. If the scan
+strings are carefully chosen, they give few false alarms and detect
+many future virus modifications. Oh, yes, and they also get sometimes
+fooled by Rosenthal's program... :-)
+
+>  It's a "step" in the sense that it will make a lot of people aware
+>  of the inadequacy of string scanning as a virus-detection technique.
+
+But it doesn't do that! It only shows that some scanners may be fooled
+sometimes to produce a false positive. And the average user is much
+more concerned with the false negatives! There -is- a way to show that
+scanners are unreliable and that way consists of infecting somebody's
+system (protected only by scanning techniques) with a completely new
+virus. :-) As Alan Dowson from Thailand says, "no virus has been ever
+first detected by a scanner". :-)
+
+>  > Once again? But wasn't addressed it wide enough? At least I've
+>  > seen this problem addressed in most proffessional journals that
+>  > test anti-virus products... Virus Bulletin comes to mind at once.
+
+>  We shouldn't expect evryone to read the same trade publications...
+>  :-)  But no, I don't think it was addressed.  I certainly haven't
+>  seen anything similar to the Virus Simulator being announced before.
+>  Did I miss something?  If I did, my apologies.
+
+I had in mind that the problem that the average user is not able to
+test the anti-virus programs s/he buys has been addressed several
+times. That's why we badly need a non-commercial organization that
+could perform such testing objectively. As about Virus Simulator, my
+guess is that most people understand its uselessness, that's why it
+has not been announced/created/reviewed before... :-)
+
+>  However, I was referring specifically to the rather flaming response
+>  by Fridrik Skulason. Instead of admitting the *reason* why Rosenthal
+>  saw an opportunity to produce his Virus Simulator, Frisk was simply
+>  complaining about how bad the program had to be. It's bothersome
+
+Yes, because it -is- bad and useless. Not just the program, the whole
+conception is wrong. And Frisk pointed out exactly -why- it is wrong.
+Please, read again his objections carefuly.
+
+>  *their* software. Imagine the appearance of things if, every time
+>  Frisk announces a new version of F-PROT, Rosenthal were to launch
+>  into a stream of abuse criticizing how F-PROT was a useless program
+>  because it could not remove certain viruses (which it can't), or
+>  gave incorrect identifications (which it gives) or otherwise caused
+>  problems to its users (which it does).
+
+If anyone could prove that Frisk's program is based on a wrong and
+useless conceptions, we all will wellcome that. About the possible bugs
+in F-Prot - just compose a careful list of them and send it to the
+author - he will appreciate it very much. It's like that how the
+software gets improved.
+
+>  > It doesn't "test" anything. It just fools some (stupid) scanners
+>  > and that's all.
+
+>  Yes, I am in total agreement with the above. And shows how easy it
+>  is to fool them. How easy it has *always* been to fool them.
+
+I'm glad that you agree. So, please don't re-state that the Virus
+Simulator tests anti-virus software in the future.
+
+>  > It's normal for SCANV .... IBM's VIRSCAN, TBSCAN, HTSCAN - all
+>  > these are not virus scanners -
+
+>  Hmmm... could've fooled me, and many other people who call them
+>  "virus scanners", including their publishers.  I wonder why they
+>  all include the word "scan" in their names?  :-)
+
+Because they are scanners, of course. Just scanners for (wildcard)
+strings in files. What makes them virus-oriented is their database
+with virus-related strings.
+
+>  Last I heard such "pattern matching engines" were widely called
+>  "virus scanners"... but I'm not adverse to a change of name...
+>  If they are to be called something else now, it's fine with me.
+
+No, they are called just scanners. A scanner, combined with a database
+of scan strings that can be found in several known viruses, is called
+a virus scanner. If Rosenthal's program would scan for the strings
+contained in it, it would be a virus scanner too...
+
+>  If they are reliable and do not produce false alarms, like the
+>  scanners do, then they will be more useful. We'll have to wait
+>  <sigh> and see.
+
+What I conseder a really bad false alarm is the claim that a
+particular virus HAS BEEN IDENTIFIED to be present in that file, while
+in fact it isn't. Neither of the above programs makes such a bad error
+- - neither of them will try to disinfect the simulator.
+
+>  I imagine that by "F-PROT" what is meant here is "F-FCHK", the
+>  signature-scanning program in the pre-2.0 F-PROT package. Or its
+
+Correct.
+
+>  both will indeed give two levels of "identification", one `possible'
+>  and one `certain', depending on whether it finds only one or both
+>  of the *two* signature strings it uses for each virus.  No matter,
+
+I think that you're wrong here. It uses three strings and their
+offsets from the file entry point. (Frisk will correct me if this is
+not true.) This way it is much more difficult to get a false alarm (or
+to fool it). As to Dr. Solomon's Anti-viru Toolkit, it uses a checksum
+on the unchangeable parts of the virus body, to it is IMPOSSIBLE to
+fool it.
+
+>  in both cases, the process is similar and the program is equally
+>  easy to fool into thinking it has found a virus when, in reality,
+>  there are only a few innocent, chosen bytes there.  I imagine such
+
+It might be possible to fool Frisk's program, but it won't be EASY. It
+will certainly not possible to fool SEVERAL programs that use Frisk's
+approach. And it would be totally useless, BTW.
+
+>  a two-step process would be the next challenge for Rosenthal's Virus
+>  Simulator.  Actually, it's easy to make a two-string fake virus file
+>  that totally fools F-FCHK. Maybe even cause it to try to "disinfect"
+>  the "virus"?
+
+Nope...
+
+>  As far as the "heuristic virus analyzer" built into F-PROT v2.0,
+>  that's another matter: it doesn't use scanning strings at all
+>  so Rosenthal's Virus Simulator files have no effect on it.  But
+>  let us not rejoice too soon: Frisk's "heuristic virus analyzer"
+>  is *extremely* prone to false alarms, much more so than his string
+>  scanner. In fact, it produces more false alarms than any other
+>  virus detector I've tested.  It would be even easier to make fake
+
+You probably tested it on some programs that were badly written, used
+self-encryption or modification, modified executable files, and in
+general behaved in an unusual way...
+
+>  Sorry, but at this stage of the art, I see no advantage in using
+>  these "heuristic virus analyzers" either.
+
+Well, it is said in the documentation that this is an experimental
+feature. Nobody forces you to use it. I personally find it nice.
+
+>  One thing that is rather unpleasant is that the author takes the
+>  liberty of judging what somebody else's program should or should
+>  not be coded like: if it finds something it dislikes, it puts out
+>  a message that "it is a badly-written program".  What gall!
+
+Ah, you see... :-) Jokes apart, if it would be possible to force any
+programmer to use a very strict set of rules to write his/her
+software, it would be quite simple to catch viruses, based only on
+static analisys of the code. It would also to automatically catch
+bugs, BTW. I strongly suggest you to read some papers/books on formal
+program verification. The only problem with the whole thing is that it
+is not practically achievable.
+
+>  Rosenthal's Virus Simulator is "useless";  the utilities many
+>  cherish are "badly written"; only "his kind" of programs are
+>  "well-written", etc.  I really think such attitude ought to be
+>  controlled.
+
+Controlled? Why? Frisk's heuristic analyser only warns the user that a
+program does something strange. It's up to the user to decide whether
+s/he will use <put your favorite utility here> or not. Note that I do
+not suggest that you stop using Rosenthal's virus simulator if you
+like it - I'm only trying to inform the other users. So does Frisk.
+
+>  As an example of *actually* successful antivirus software, I just
+>  downloaded from the McAfee BBS a program called SECURE, by Mark
+>  Washburn.  This is an excellent Interrupt monitor which performs
+>  almost flawlessly and succeeds in stopping every known virus from
+>  multiplying.  Now, I really don't know whether it satisfies
+
+Well, when I tried Mark Warburn's program, it just hung my system, so
+I stopped using it at all. Well, to be honest, it was a rather old
+version - 2.11 or something like that. I have to try version 2.30 and
+see if it works. I have also to test it against some of the most
+clever Bulgarian viruses...
+
+>  that it *works* extremely well and that it stops every virus I've
+>  tried on it.  SECURE never bothers to identify any given virus,
+>  it simply stops it from replicating.
+
+It is very easy to write a dedicated virus, which will aim
+particularly SECURE and disable or circumvent it. It is even easier
+than to construct a fake file which causes SCAN to report false
+positives. :-)
+
+>  It's very difficult to cause
+>  SECURE to produce false alarms, even intentionally.  It doesn't
+
+Just try to use PC Tools or Norton Utilities, without registering them
+properly in the database file... :-) And if you -do- register them and
+give them the appropriate rights to modify executable files, a virus
+which infects them will gain the same rights. I strongly suggest you
+to read the paper "Computer Viruses - Theory and Experiments" by Fred
+Cohen. It explains the very basic things in computer virology - a
+knowledge that you really need to avoid some theoretical traps when
+dealing with the computer virus problem. If you are not satisfied
+and/or find the paper too basic, consider also "Computetional Aspects
+of Computer Viruses", by the same author.
+
+>  interfere with normal program operation. It uses but 4kB of RAM.
+>  I call *that* successful antivirus software.  And, of course, it
+>  remains totally unaffected by Rosenthal's Virus Simulator.
+
+I repeat, it is just as easy to fool it, by using a different
+approach, however. And it will be just as useless to do so.
+
+>  At the general-public level, yes!  Some of us might not be overly
+>  impressed with the Virus Simulator, but the majority of lay users
+>  have been `trained' to believe that virus scanners are trustworthy.
+>  Rosenthal's Virus Simulator provides a rude awakening from such
+>  dangerous dreams.
+
+OK, OK, I agree with that. Just remember that it does not test
+anything, it just shows how some scanners could be fooled.
+
+>  Yes, there are many people who will be interested in the Virus
+>  Simulator. But I protest again at the seeming ease with which we
+>  seem to be willing to slight and demean each other here... why
+>  stoop to such expressions at all?  _Ad hominem_ attacks are odious
+>  and achieve nothing except exacerbate the ill will of people. They
+>  don't prove anything; they don't disprove anything. They only make
+>  people mad at each other.  What for?
+
+Alright, you are correct. I got a bit carried away. I apologise.
+
+>  > Yes. All this means that Rosenthal has fished these signatures
+>  > from the different scanners.
+
+>  Does it need to mean anything else? So he fished them out. Good
+
+Well, yes, but in the previous posting you said that the scan strings
+weren't provided by the anti-virus researcher - as if Rosenthal has
+found them himself... OK, this is not that important, after all.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Tue, 17 Sep 91 10:52:16 -0500
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files on risc.ua.edu (PC)
+
+The following files have been placed on risc.ua.edu for anonymous FTPing:
+
+           scanv82.zip - McAfee's Scan
+           vcopy82.zip   McAfee's VirusCopy
+           vshld82.zip   McAfee's Virus Shield
+           clean82.zip   McAfee's Clean Up
+           netscn82.zip  McAfee's NetScan
+
+           0files.9109   Updated listing of pub/ibm-antivirus files.
+
+They can be located in the directory pub/ibm-antivirus.  Older versions
+of the programs have been removed.
+- ----------
+If your parents didn't have children, odds are that you won't either.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@risc.ua.edu
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 163]
+******************************************

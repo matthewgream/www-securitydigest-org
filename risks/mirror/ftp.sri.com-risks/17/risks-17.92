@@ -1,0 +1,558 @@
+Subject: RISKS DIGEST 17.92
+
+RISKS-LIST: Risks-Forum Digest  Weds 20 March 1996  Volume 17 : Issue 92
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Re: Backdoors, bugs, and Oracle (Mary Ann Davidson)
+Errors in W2s and other tax forms (David Emery)
+Music, nonstop! (Bruce Kingsbury)
+Stupid ftpd messages (Mark Rafn)
+Ironic risks on ATM story (Dave Barr)
+Risks of using an insecure browser, as discussed on RISKS (Doug Claar)
+Reminder: Computers, Freedom and Privacy '96, 27-30 March 1996 (Bruce R Koball)
+Re: jury duty (Steve Sapovits)
+Re: FTC Targets Internet Fraud (Paul Hoffman)
+More on Iomega stock volatility (Carl Wittnebert)
+Re: Hare Krsna chants trigger answering machine (Panero, Kevin Rainier)
+Call for Papers -- CSI 23rd Annual Conference (Patrice Rapalus)
+ABRIDGED info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: 20 Mar 96 09:50:05 -0800
+From: "MADAVIDS.US.ORACLE.COM" <MADAVIDS@us.oracle.com>
+Subject: Re: Backdoors, bugs, and Oracle [Identity withheld, RISKS-17.88]
+ 
+On 9 March, an unidentified user posted a message concerning backdoors,
+bugs, and Oracle7.  He mentioned a specific (security-relevant) bug that he
+had reported through Oracle's normal bug reporting mechanisms and which
+Oracle has subsequently fixed.
+ 
+It is general - and prudent - security practice not to publish details of
+security-relevant bugs, in order to protect exposed systems from potential
+attack. In his rush to expose `backdoors and bugs,' The unidentified user
+has irresponsibly put other Oracle7 customers - who may not have had a
+chance to upgrade - at risk, while his systems are, of course, protected.
+ 
+  (As a sidebar, many of his other comments were inaccurate - but a
+  discussion of the reasons for this properly belongs on
+  comp.databases.oracle rather than this forum.)
+ 
+The RISK? That users who think they know a little about security can, by
+posting before thinking, create or magnify the threat they are allegedly
+trumpeting against.
+ 
+Mary Ann Davidson <madavids@us.oracle.com>
+Manager, Security Product Management, Oracle Corporation 
+
+------------------------------
+
+Date: Tue, 19 Mar 96 21:23 PST
+From: emery@grebyn.com (David Emery)
+Subject: Errors in W2s and other tax forms
+
+I recently got a call from a friend where I used to work (The MITRE
+Corporation).  MITRE recently "re-engineered" their financial systems.  It
+turns out that these "new and improved" systems mis-printed the W2 forms
+(U.S. tax form showing earnings and tax withholdings.  Up here in Canada we
+call it a T-4 form, eh?)  The employer ID number was printed incorrectly.
+It should start with a leading zero, but this zero was suppressed, leaving
+the employer ID with the wrong number of digits.
+
+MITRE made a quiet announcement about this problem in its weekly news
+bulletin, and it was only through a phone call from a friend still there
+that I found out about this problem.
+
+My mother recently had a problem with a IRS 1099, which mistakenly reported
+tax-exempt interest income as taxable.  She was lucky to catch the mistake.
+Otherwise, she would have received a dunning letter from the IRS assessing
+taxes and penalties and requiring lots of back-and-forth to rectify the
+mistake.  (Been there, done that...)
+
+The MITRE incident raises two questions, one technical and one social.
+
+Technically, the problem with the mis-printed number is the distinction
+between "radix numbers" (e.g. Federal Employer ID number, Social Security
+Number) which are required to have a fixed number of digits, and where the
+leading zero is significant, and "cardinal numbers", where the leading zero
+can (and usually should) be suppressed.  Of course, COBOL gets this exactly
+right, with two different format strings (9 and Z).  But other languages
+don't make this clear distinction, and I suspect that the MITRE system was
+not written in COBOL...  (I shudder to think what it WAS written in.  There
+are lots of horror stories about the failure of this system...)
+
+The other issue concerns the employer's responsibility to report errors on
+computer-generated forms, to both the IRS and to the former employee.  I
+think that publishing a "by-the-way" notice in the company newsletter is NOT
+a sufficient response to errors on a legal document.  (If anyone thinks that
+a W2 is not a legal document, good luck arguing this with the IRS!)
+
+The unfortunate thing about computers is that it's so easy to replicate
+mistakes.  (Reminds me of the ``Dear Rich Bastard'' letters...)
+[See RISKS-14.89, with a follow-up from Mark Brader in RISKS-15.08.  PGN]
+
+dave emery
+
+------------------------------
+
+Date: Thu, 21 Mar 96 10:24:35 +1200(GMT)
+From: Bruce@omega.co.nz
+Subject: Music, nonstop!
+
+As I sat reading the latest RISKS, the local Radio Station here announced
+that their computer is down, so they won't be playing any advertisements --
+just music all afternoon.  Apparently all the adverts are now kept as
+digitised files on the computer rather than on "carts" as they formerly
+were.  I'm sure there's a "risk" in this story somewhere, but I'm not
+exactly sure what it is.
+
+  [Count your blessings, not your adverts.  
+  But it is amazing that they could not ``Ad lib''!
+  Most stations keep manual backup copies or readable hardcopies 
+  for just such situations -- they hate to lose ad revenue.
+  But, I hope this outage was not blamed on a home-grown
+  compiler, so that we can conclude that
+    ``The key, we see, is not the KiWi-C.''  PGN]
+
+------------------------------
+ 
+Date: Wed, 20 Mar 1996 08:54:31 -0800
+From: Mark Rafn <dagon@halcyon.com>
+Subject: Stupid ftpd messages
+
+Has anyone else been surprised by an FTP server, when it denies access
+because of too many users, affirming that the user-count isn't a bug?
+
+For example, the ftp.adobe.com site gives the following message:
+# Sorry, there are too many anonymous FTP users 
+#   using ftp.adobe.com at this time.
+# There is currently a limit of 90 anonymous users.
+# This message is not the result of a bug. 
+
+What is the purpose of the last line?  I can't imagine that it's actually
+somehow checking number of users in more than one way, and only generating
+the "not a bug" comment when both methods match (and therefore generating a
+"this might be a bug" message if there's a discrepancy).  All I can think of
+is that someone once reported a bug which turned out not to be a bug and the
+comment was put there to prevent more non-bug reports when the server's busy.
+
+The risks are somewhat obvious, although minor.  If there *is* a bug, it'll
+take longer to find and fix, because it's clearly labelled "not a bug", so
+it won't get reported as soon or often.  I think there's also a risk in the
+programmer attitude that erroneous bug reports can be best prevented by such
+disclaimers - I'd much prefer that an informative sentence (such as "it's
+not uncommon to see 300 users or more trying to access this site") be
+displayed than a condescending and difficult-to-believe "this is not a bug".
+
+Mark Rafn dagon@halcyon.com <http://www.halcyon.com/dagon/>
+
+------------------------------
+
+Date: Tue, 19 Mar 1996 19:31:25 -0500 (EST)
+From: Dave Barr <barr@math.psu.edu>
+Subject: Ironic risks on ATM story
+
+	Here I am, watching the Discovery Channel.  There's this show called
+"Invention", which has this interesting story about Automated Teller
+Machines.  On the show they have the Scottish inventor of the ATM, Shephard
+Barron (I probably have the spelling wrong).  They go and introduce him and
+show him walking down the street of his home town, and him walking up to an
+ATM and in plain sight you see him insert his card and TYPE IN HIS PIN!
+	If that weren't ironic enough, later on in the story you hear him
+talk about how he had some buddies at MI6 try to break the system.  (they
+couldn't)
+	You also got to see at least one other "person off the street"
+demonstrate the ATM and his poor PIN is seen typed in in plain view.  (in
+closeup this time!)
+	The risk?  Shows like this only reinforce people's ignorance of how
+important it is to keep PINs private.
+
+--Dave
+
+------------------------------
+
+Date: Wed, 20 Mar 1996 09:19:29 -0800
+From: Doug Claar <dclaar@hprtnyc.ptp.hp.com>
+Subject: Risks of using an insecure browser, as discussed on RISKS
+
+I am having a really difficult time working up much sympathy for the folks
+who complained in RISKS about the html "mailto:" code getting triggered:
+Netscape 2.0's security flaws have been widely noted.  But I find it very
+interesting that RISKS readers, who ought to know better, are still using a
+browser with known security problems.  (Netscape 2.01, which has been out
+for a week or so, has plugged this particular hole, and allows you to turn
+off Javascript altogether).
+
+For all the complaints decrying the ignorance of "those people out there
+still running unsecure sendmail, etc.", we find that even those that "know
+better" still do the same thing.  Of course, like the majority of drivers
+who think that they are the minority of very good drivers, RISKS readers
+probably think that "they know what they are doing".
+
+==Doug Claar
+
+     [Besides, Netscape is paying good money to folks who are helping 
+     them find new flaws!  Sounds like a constructive strategy,
+     considering how difficult it is to solve the security problem,
+     especially in the presence of Trojan horses!  PGN]
+
+------------------------------
+
+Date: Wed, 20 Mar 1996 14:38:17 -0800
+From: Bruce R Koball <bkoball@well.com>
+Subject: Reminder: Computers, Freedom and Privacy '96, 27-30 March 1996
+
+On March 27-30, MIT (and its Laboratory for Computer Science, together with
+the World Wide Web Consortium) will host the Sixth Conference on Computers
+Freedom and Privacy (CFP).  Since its inception in 1991, the series of CFP
+conferences has been the premiere forum for exploring the implications of
+computer and telecommunication technologies for privacy and civil liberties.
+This year's conference brings together international experts from the fields
+of computer science, law, business, public policy, law enforcement, and
+government to confront controversial issues that have dominated public
+discussions of computer communications policy over the past year.
+
+Highlights of the conference include
+
+- The Constitutional challenge to the Communications Decency Act. Computer
+companies, internet service providers, publishing and library associations,
+and civil liberties groups have filed suit in Federal court to overturn the
+Communications Decency Act of 1996 on the grounds that it violates the First
+Amendment.  A judgment is expected in April.  One basis for the challenge is
+the existence of less restrictive means to protect children from indecent
+material on-line, including filtering software developed at the MIT Lab for
+Computer Science.  At the conference, lawyers involved in the ongoing suit
+will discuss the progress of the suit and analyze the Constitutional
+arguments raised in briefs by the challengers and by the Department of
+Justice.
+
+- Limiting on-line speech on campus.  Harvard Law School's Arthur Miller
+will moderate a panel of university administrators, lawyers, and journalists
+to explore the conflicts between universities and the free-speech rights of
+their students.
+
+- Can the US government outlaw unauthorized encryption?  In cooperation with
+the Criminal Justice Section of the American Bar Association, the conference
+will present a moot Court hearing on the Constitutionality of a proposed law
+that criminalizes the use of encryption methods that have not been
+authorized by the government.  The arguments, which pit former federal
+prosecutors against noted civil liberties lawyers, will be conducted before
+a distinguished panel of federal appellate and district court judges.
+
+- China and the Internet.  The Chinese expression "may you live in
+interesting times" clearly applies to issues of computers and society as the
+Internet spreads explosively throughout China and the rest of Asia.
+Sociologist Gary Marx and a panel that includes officials of the China
+Education and Research Network (CERNET) discuss the likely social impacts of
+the Internet on China.
+
+- Export-controlled encryption software on the Internet.  Jeff Schiller,
+Manager of the MIT Network, and Ron Lee, General Counsel of the National
+Security Agency, will describe the legal and technical procedures to be
+followed in distributing software over the Internet in compliance with US
+export controls.
+
+- FBI/DOJ law-enforcement training on computer crime.  On the afternoon of
+March 27th, Peter Toren of the US Department of Justice Computer Crime Unit
+and Richard Ress, Head of the FBI's National Computer Crime Squad, will run
+a training session devoted to crime and law in cyberspace.  Admission to
+this tutorial will be free for law-enforcement personnel, so long as they
+pre-register.  (Qualified law-enforcement personnel should phone
+617/253-1700 for information.)
+
+- George Metakides, Director of Research and Development in Information
+Technologies for the European Union, will present a keynote address on
+Freedom and Privacy in the Information Age: A European Perspective.
+
+- Michael Dertouzos, Director of the MIT Laboratory for Computer Science,
+will deliver a banquet speech on "Ancient Humans in the Information Age".
+
+- A free-admission, all-day "Technology Fair" on March 27 will include
+hands-on demonstrations of computer technologies affecting freedom and
+privacy.
+
+- Noted privacy advocate Marc Rotenberg and a panel of international experts
+will discuss the roles of governments and technology in dealing with data
+privacy in the Global Information Infrastructure.
+
+- What policies and regulations are under consideration for the
+international control of cryptography?  How does a multinational company
+meet those requirements?  How do we resolve tensions between countries,
+between governments and industries, and between governments and popular
+groups?  Dorothy Denning of Georgetown University, Deborah Hurley of the
+OECD, Chairman David Herson of the European Commission's Senior Advisor
+Group on Information Systems, Nick Mansfield of Shell, and White House
+Special Assistant on Information Technology Mike Nelson examine the issues.
+
+- The struggle to control controversial content on the Internet is being
+waged in the the US Congress and in open and restrictive societies around
+the world.  Will conflicts among governments over what and how to censor
+restrict the flow of ideas for all?  Moderator Danny Weitzner of the
+Washington-based Center for Democracy and Technology and an international
+panel will offer their views.
+
+- Representatives of business, banking, and law enforcement look at the
+future of Electronic Money.  Should on-line payments be anonymous or
+traceable?  David Chaum of DigiCash, the American Bankers Association's
+Kawika Daguio, and Stan Morris of the Financial Crimes Enforcement Network
+(FINCEN) will compare different perspectives.
+
+- Will copyright law be an enabler of freedom of expression in digital
+networked environments or will it be an impediment to free speech?  Does
+digitizing information so fundamentally change the economics of creating and
+disseminating information products as to render copyright law obsolete?
+Pamela Samuelson of Cornell Law School will explore this topic with and
+international panel of copyright experts.
+
+- Science fiction authors Pat Cadigan, Tom Maddox, Bruce Sterling, and
+Vernor Vinge will present their unique perspectives on the future of freedom
+and privacy in an increasingly computerized world.
+
+For further information, consult the conference web page at
+http://web.mit.edu/cfp96, or send a blank e-mail message to
+cfp96-info@mit.edu, or phone MIT Conference Services at 617/253-1700.
+
+------------------------------
+
+Date: Tue, 19 Mar 1996 15:36:48 -0500 (EST)
+From: Steve Sapovits <steves@telebase.com>
+Subject: Re: jury duty (Bruhin, RISKS-17.91)
+
+> Emily is only 8 years old and, therefore, is not *eligible* for jury duty...
+
+I'm guessing there's more to it than this.  As far as I know, all potential
+juror names are pulled from some known pool.  Traditionally, the list of
+registered voters was used.  Some areas are now using lists of licensed
+drivers.  Either pool would yield people of the proper age.  The last time I
+served at the county level here in Pennsylvania I was pulled from the list
+of registered voters.  However, we were told that licensed drivers would be
+used in the near future to get a larger pool and not discourage people from
+voting to avoid their "other" civic duty.  I don't know if this sort of
+decision is typically made at the state or local level.
+
+No comment on WPVI.  But if you're in Philly and it snows, you can 
+turn to Channel 6 to see every flake.
+
+Steve Sapovits  Telebase Systems  steves@telebase.com
+http://www.musicblvd.com and http://www.telebase.com
+
+------------------------------
+
+Date: Wed, 20 Mar 1996 11:42:16 -0800
+From: "Paul Hoffman's publications inbox" <pubs@proper.com>
+Subject: Re: FTC Targets Internet Fraud (Edupage, 17 March 1996)
+
+The *SJ Mercury* article about this had a bit more information. Near the end
+of the article they listed just what it was that the FTC found in its first
+busts. The scams had nothing to do with the Internet: they were the same
+kinds of scams you see flyers for on non-computer bulletin boards and the
+classified ads of most newspapers (credit history fixing and so on).
+
+The RISK here is that people tacking the word "Internet" onto the job they
+are already doing makes the job sound more important and the Internet more
+dangerous than the rest of the world. In this case, neither are true.
+
+--Paul Hoffman, Proper Publishing
+
+------------------------------
+
+Date: Wed, 20 Mar 1996 00:57:41 -0800 (PST)
+From: Carl Wittnebert <cewit@wco.com>
+Subject: More on Iomega stock volatility (Re: Edupage, RISKS-17.91)
+
+: ... postings on Motley Fool and other BBSs have contained false information
+
+This is speculative and misleading.  No one has demonstrated that online
+discussion influences the price of a stock.  Companies often complain to the
+SEC about alleged manipulation; such complaints, in my experience, are
+usually spurious, as there are no adverse consequences to the company from
+making unfounded claims.
+
+Share prices go up or down primarily on the decisions of mutual fund
+managers, who don't have the time or inclination to read newsgroups.  The
+amount of capital controlled by Internet users is minuscule compared to the
+$1+ trillion in equity mutual funds.
+
+------------------------------
+
+Date: Tue, 19 Mar 1996 16:27:57 -0800
+From: panero@netcom.com (Panero)
+Subject: Re: Hare Krsna chants trigger answering machine (Cross, RISKS-17.91)
+
+Concerning the attempt to record Hare Krishna chants on a telephone
+answering machine...
+
+When Ma Bell invented touch tone dialing it was quite reasonable to choose
+frequencies that fall within the range of the human voice -- after all, all
+the equipment was and still is optimized for that range.  It was many years
+before anyone tried detecting these "DTMF" tones in a context where a person
+would be speaking.  It is difficult to avoid false detection of DTMF tones
+in human speech.  Of course, if the telephone answering machine industry had
+waited around for the development of "out of band" signalling systems such
+as ISDN, a multi-billion dollar industry would never have gotten off the
+ground.
+
+Tony Panero / home: panero@netcom.com / work: tonyp@clipper.robadome.com
+
+   [Also noted by "john (j.g.) mainwaring" <crm312a@bnr.ca>.  PGN]
+
+------------------------------
+
+Date: 20 Mar 96  6:11:10 EST
+From: Kevin Rainier <Kevin_Rainier.NOTES@crd.lotus.com>
+Subject: Re: Hare Krsna chants trigger answering machine (Cross, RISKS-17.91)
+
+Voice activation of tone-detection equipment is a long standing issue with
+voice mail/answering machine systems.  The problem has been significantly
+alleviated by the transition from analog circuitry to digital signal
+analysis, but some voices still register as one or another DTMF signal.
+Fortunately, digital signal analysis has eliminated the far more annoying
+problem of the recorded message triggering tone detection when it is played
+back.  If the expected signal may be both quite brief and the margin of
+error is wide (to accommodate some PBX systems which generate fixed length
+and remarkably dirty tones), a wide variety of voices may cause a problem.
+
+For the record, my answering machine thinks that Lisa Kudrow and Chrissie
+Hynde singing harmony on "Smelly Cat" sounds like a DTMF * (end-of-message
+indicator).  Or maybe it just has taste...
+
+ Kevin Rainier
+
+------------------------------
+
+Date: Wed, 20 Mar 96 12:23:02 PST
+From: "Rapalus, Patrice" <prapalus@mfi.com>
+Subject: Call for Papers -- CSI 23rd Annual Conference
+
+The Computer Security Institute invites you to submit an abstract of a
+proposed topic to be considered for presentation at the 1996 23nd Annual
+Computer Security Conference, November 11-13, in Chicago.
+
+We are looking for presentations on the following possible topics: access
+control, electronic commerce, remote access security, Internet,
+cryptography, risk management, business continuity planning, security
+awareness, telecommunications security, network architecture, wireless
+network security, LANs, WANs, management issues, network viruses,
+client/server systems, single sign-on, imaging, privacy issues and e-mail.
+
+We are particularly interested in case studies -- in-depth practical
+discussions of network-related security projects, problems, and solutions
+for the real world.
+
+Next year's conference will offer approximately 120 scheduled sessions.
+Faculty are intended to address a broad range of experiences, expertise and
+interest in networks and related security issues. Sessions generally run one
+hour and fifteen minutes. Double sessions are scheduled if warranted by the
+topic. If your abstract is selected, you are required to provide a paper for
+inclusion in the proceedings.
+
+Applicability to Attendees
+The proposed presentation should offer successful concepts, models, processes 
+and applications useful to those responsible for information security.
+
+Innovation/Originality
+A presentation that advances existing or presents new ideas is better than a
+presentation that merely repeats information already widely known. The
+timeliness of ideas is important. A presentation designed to sell a name
+product or service will be rejected. A presentation should focus on the
+general attributions, benefits and drawbacks of a given application or tool.
+
+Some general guidelines
+Courses that offer tips and techniques to increase productivity, in addition
+to theory, are much more valuable. Sessions on novel and unique applications
+of products and tools are good but keep in mind that emphasis on a single
+product can limit the scope of appeal for the class. Case studies of
+computer security projects, problems and solutions are very popular.
+
+To ensure a wide variety of perspectives, no more than three principal
+speakers per organization will be allowed to present at the conference.
+Papers presented at other computer security conferences will be disqualified
+unless they contain substantial new or updated information.
+
+The Submission Process
+To be eligible for selection as a speaker, you will need to submit an
+abstract that describes the content of your talk(s), a biography that
+describes your background, and complete contact information including your
+e-mail address and fax numbers. We must receive your submissions by April
+15, 1996 to be considered. Please include any scheduling conflicts you have
+as well.
+
+The abstract should be approximately 200-300 words (8-10 sentences), and
+classified by the presenter as entry-level, intermediate or advanced. Please
+provide 3-6 "bullet points" telling us what attendees will learn from your
+session. Indicate any special prerequisite knowledge required of
+participants and emphasize what attendees will learn.
+
+We prefer to receive submissions electronically. E-mail should be sent to
+prapalus @mfi.com. Upload to the CSI BBS at 415/905-2480.  Abstracts can
+also be mailed to CSI, 600 Harrison St. San Francisco, CA 94107 or faxed to
+415-905- 2218. For more information, please call Patrice Rapalus at
+415-905-2310.
+
+Speakers receive complimentary registration for the 2-1/2 day conference and 
+attendance at all lunches and receptions.
+
+  [I just received my copy of CSI's NetSec '96 program.  It identifies
+  Gene Spafford with Perdue University.  Perhaps he has become a Friar?
+  Or he deserves a Pullet-Surprize?  PGN]
+
+------------------------------
+
+Date: 18 March 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: ABRIDGED info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) on
+ your system, if possible and convenient for you.  BITNET folks may use a 
+ LISTSERV (e.g., LISTSERV@UGA): SUBSCRIBE RISKS or UNSUBSCRIBE RISKS.  [...]
+ DIRECT REQUESTS to <risks-request@csl.sri.com> (majordomo) with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:]
+   INFO     [for unabridged version of RISKS information]
+
+ CONTRIBUTIONS: to risks@csl.sri.com, with appropriate,  substantive Subject:
+ line, otherwise they may be ignored.  Must be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, nonrepetitious, and without caveats
+ on distribution.  Diversity is welcome, but not personal attacks.  [...]
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Particularly relevant contributions may be adapted for the RISKS sections
+ of issues of ACM SIGSOFT Software Engineering Notes or SIGSAC Review.
+
+ * Submissions:  By submitting an item that is accepted for publication
+ in RISKS, the author grants permission for unlimited public distribution 
+ and redistribution in electronic or other form.
+ * Reuse:  Blanket permission is hereby granted for reuse of all materials
+ in RISKS, under the following conditions.  All redistributed items must
+ include the Risks-Forum masthead line.  All reuse must be accompanied by 
+ the following statement:
+     Reused without explicit authorization under blanket permission
+     granted for all Risks-Forum Digest materials.  The author(s), the 
+     RISKS moderator, and the ACM have no connection with this reuse.
+ As a courtesy, reusers of individual items (as opposed to forwardings of 
+ entire issues) should notify the authors, and should pay particular 
+ attention to any subsequent corrections.
+
+ RISKS ARCHIVES: "ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR> 
+ cd risks<CR> or cwd risks<CR>, depending on your particular FTP.  [...]
+ [Back issues are in the subdirectory corresponding to the volume number.]
+   Individual issues can be accessed using a URL of the form
+     http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue]
+     ftp://ftp.sri.com/risks
+
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+ PRIVACY: For info on the PRIVACY Forum Digest and Computer PRIVACY Digest,
+   see the unabridged INFO file at RISKS-Request (send one-line message INFO
+   to risks-request@CSL.sri.com as noted above).
+
+------------------------------
+
+End of RISKS-FORUM Digest 17.92 
+************************

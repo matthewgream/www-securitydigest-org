@@ -1,0 +1,779 @@
+VIRUS-L Digest   Wednesday,  2 Sep 1992    Volume 5 : Issue 145
+
+Today's Topics:
+
+Info on "Invol" virus (PC)
+Re: Need Advice on Evaluating and Ordering Antivirus Software (PC)
+Re: help, high weirdness (PC)
+Re: Anyone for a Feist ??? (PC)
+Request for Recommendations... (PC)
+BIOS Virus Protection (PC)
+HELP with partition infector!! (PC)
+Re: NetWare and viruses - some new results (PC)
+Datalision Inc fractal program (PC)
+Strange event when scanning. (PC)
+Anyone heard about NOVI ?? (PC)
+Boojum (PC)
+Re: On integrity checking (PC)
+Bug in F-PROT? (PC)
+Fingerprinting self-modifying files
+Misunderstanding of polymorphic
+Re: (c) Brain - part 2 (CVP)
+(c) Brain - part 3 (CVP)
+I'm off [to Scotland]...
+New files on risc (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 26 Aug 92 22:47:02 -0400
+From:    "Tarkan Yetiser" <TYETISER@ssw02.ab.umd.edu>
+Subject: Info on "Invol" virus (PC)
+
+   Hello everyone,
+   following is a preliminary analysis of the "Invol" virus:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Suggested Name: Involuntary
+Location      : U.S.A.
+Type          : Encryptive, resident EXE/SYS infector with damage trigger
+                Program entry is modified to point to the virus decryption
+                code appended at the end of the victim. File size will
+                grow by 14xx bytes. The size change can be observed with
+                a DIR command, no stealth attempt is made by the virus.
+
+Interrupts    : 21h via direct access to IVT
+hooked             Checks for AX = 4B00, LOAD/EXEC request
+
+                Virus handler will always have 0014 as the offset
+Scan string   : No simple scan string is available for EXE files due to the
+                encryptive nature of the beast. In memory (INT 21h handler)
+                and SYS files, you can check for:
+
+                3d 00 4b 74 03 e9 45 02 50 53
+                52 1e 06 b8 02 3d cd 21 73 03
+
+Damage        : Overwrites the first ten sectors of the first FAT on C:
+drive
+and trigger     using INT 26h (absolute disk write).
+condition       It triggers every month on the 14th day and displays the
+                following message before doing damage:
+
+                   "You have helped spread this virus
+                   This has been a message from your friendly
+                   neighborhood infection service.
+                   Thank you for your involuntary cooperation."
+
+                After the message is displayed, the mentioned area of the
+                C: drive will be overwritten and the computer will hang.
+
+Comments      : This virus uses a crude 16-bit XOR type encryption routine
+                to evade identification. The encryption key is obtained
+                from the BIOS timer (low word only). The decryption loop
+                also contains a bunch of NOP instructions for confusion.
+                The general routine used for encryption is fixed and
+                the virus does not qualify for fully polymorphic.
+
+                     LOOP_TOP:
+                               ...
+                     ad        lodsw
+                               ...
+                     33 c2     xor     AX, DX
+                               ...
+                     ab        stosw
+                               ...
+                     e2 ??     loop    LOOP_TOP
+                     e9 ?? ??  jmp     VIRUS_ENTRY
+
+                When it first activates, it will try to read the
+                C:\CONFIG.SYS file and look for device drivers to infect.
+                It checks EXE victims fo 'MZ' signature, not extension,
+                therefore any program loaded via 4B00, and that has an MZ
+                signature is infected.
+                The virus avoids multiple infections as follows:
+                   If the difference between the SS field and the SP field
+                   in the EXE header is equal to 5Ch, then assumes already
+                   infected; otherwise, infect now.
+                File access during infection is via handle-oriented DOS
+                functions. If the victim is write-protected, it will NOT
+                be infected since the virus does not attempt to clear
+                the file attribute if a request to OPEN for READ/WRITE
+                fails.
+                The message shown above occurs twice in the infected SYS
+                victim. The virus seems to go after
+                        device=?:\?ansi.sys
+                in C:\CONFIG.SYS.
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Tarkan Yetiser
+VDS Advanced Research Group               P.O. Box 9393
+(410) 247-7117                            Baltimore, MD 21228
+e-mail:  tyetiser@ssw02.ab.umd.edu
+
+------------------------------
+
+Date:    Thu, 27 Aug 92 03:36:51 +0000
+From:    lachlan@dmp.csiro.au (Lachlan Cranswick)
+Subject: Re: Need Advice on Evaluating and Ordering Antivirus Software (PC)
+
+JSIMPSON%MIAMIU.BITNET@OHSTVMA.ACS.OHIO-STATE.EDU (Joe Simpson) writes:
+
+>We evaluated anti-viral software for MS-DOS.
+
+>We used the criteria:
+>Cost
+>Distribution off campus (the data doesn't stay on campus).
+>Frequency and quality of updates (anti-viral programs require
+>                                  frequent update)
+>General concerns about the nature of the supplier.
+>Prophylaxis as well as identification/removal.
+>"Ease of Use"
+>Co-existance with dos, windows, networks, various apps.
+
+>We ended up liking McAfee's product and Fridrick Skuulassen's product.
+>Bought f-prot on the basis of ease of distribution off campus.
+>We think we gave up some technical support by making this decision.
+>We very much admire McAfee's company and can testify to the support
+>they have to offer.
+
+Have you looked at VET which is made my CYBEC in Australia.  Very easy
+to install, also has memory resident software including a device
+driver that checks every floppy-disk when it is put into the
+disk-drive.
+
+Has other utilities also, including saving the CMOS setup to disk just
+in case the battery runs out or it is corrupted by a virus.
+
+It is also legetimate to give to give copies to people to install on
+their home computers as that is where an infection will usually come
+from.
+
+For out site licence, it averaged 10 to 15 Australian Dollars per
+on-site computer.
+
+- --
+  Lachlan Cranswick  -  CSIRO             _--_|\  lachlan@dmp.CSIRO.AU
+  Division of Mineral Products           /      \     +61 3 647 0367
+  PO Box 124, Port Melbourne 3207        \_.--._/ fax +61 3 646 3223
+  AUSTRALIA                                    v
+
+------------------------------
+
+Date:    Thu, 27 Aug 92 06:14:24 +0000
+From:    alawrenc@sobeco.com (a.lawrence)
+Subject: Re: help, high weirdness (PC)
+
+leveret@warren.demon.co.uk (Nick Leverton) writes:
+
+>hurd@sfu.ca (Peter L. Hurd) writes:
+
+>>2)  Keyboard spaceyness, it gets to thinking that the shift is down, so
+>>even numbers show up as @#$%^, and the alt ,and ctrl keys don't quite
+>>do what I expect them to (usually happens in WP5.1)
+
+>This is a known problem with some BIOSes. There is a set of programs
+>Out There Somewhere (tm) which fix it. I came across them under the
+>name INT099FI.ZIP, so look for that name wherever you usually get your
+>shareware and PD software.
+
+I have had this problem as well.  It appeared when I used a
+replacement keyboard while my orginal was beening fixed.  I have a
+solution in the form of a DEBUG script retrieved from FIDOnet.  The
+text with the solution attributes it to Microsoft.  If anyone wishes
+it, I can post it to the appropriate group.  (alt.sources.misc ??).
+
+Please e-mail any requests.
+- --
+On a clear disk you can seek forever.
+- -------------------------------------------------------------------------
+Andrew Lawrence, Informaticien Conseil           |  alawrenc@sobeco.com
+3605 St-Urbain, #1605                            |  uunet!sobeco!alawrenc
+
+------------------------------
+
+Date:    Thu, 27 Aug 92 11:45:08 +0000
+From:    guest@dhhalden.no (.GJEST)
+Subject: Re: Anyone for a Feist ??? (PC)
+
+ISB202REID@redgum.qut.edu.au (Did somebody say Coffee ??????) writes:
+
+>A few days ago I came across a machine absolutely
+>covered by the feist virus..
+
+>Clean 93 wouldn't remove it, although it was in F-Prot 2.04a's
+>database, wouldn't even recoginise it !!
+
+>Can someone tell what it does and _can_ it be removed...
+
+Have you tried Integrity Master. It have solved all my problems!!!
+
+------------------------------
+
+Date:    Fri, 28 Aug 92 12:29:33 +0000
+From:    alvino@Solomon.Technet.sg (Alvin Ong)
+Subject: Request for Recommendations... (PC)
+
+Dear All,
+
+Can I have your opinions/recommendations for Anti-virus software for
+my suite of SPANKING BRAND NEW PCs... I have seen several the likes
+of:
+
+	Turbo Anti-virus,
+	McAFee, and
+	Untouchable.
+
+Can I have your thoughts for the above. Else, if anyone has got a
+better suggestion, I'd love to hear it.
+
+Thanks in advance
+
+Regards,
+
+Alvino...
+
+
+------------------------------
+
+Date:    Fri, 28 Aug 92 09:29:50 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: BIOS Virus Protection (PC)
+
+	 A major development seems to have quietly slipped in that
+should make it possible for effective *free* reduction of risk to PC
+users who have purchased their machines in the last year.
+
+	As you may know, for some time we have been saying that the
+easiest means of protection from boot sector infectors (Stoned, Azusa,
+Michelangelo) is to disable floppy booting (the major source of such
+infection). I have been giving away copies of NoFBoot (in the FixUtil
+package at many sites) to prevent such accidental warm-booting from a
+floppy however, as has been said only hardware can prevent cold floppy
+booting.
+
+	In the past, I have lauded those manufacturers (Zenith,
+Tandon, NEC) that have built such protection into the BIOS. Yesterday,
+I had occasion to replace the motherboard in my 386-25 (expanded from
+4 to 8 MB & the machine refused to recognize the addition - turned out
+to be a MB problem).
+
+	In the process my 1989 vintage AMI BIOS (AMI, Phoenix, & Award
+are the three major clone BIOS manufacturers) was replaced with an AMI
+dated 5 May, 1991 and referred to as the "New" BIOS. In the "Advanced
+Setup Menu" is an entry for "System Boot Up Sequence" which may be
+selected as A:,C: (original flavor) or C:,A: In the second case, boot
+will be from A only if C is unbootable (what the "unbootable" criteria
+are, I do not know - yet). In addition, the BIOS permits password
+selection for both BOOTUP and BIOS alteration.
+
+	Now, since these setups are something that even many
+technicians are not comfortable with (often people call with "slow"
+PCs that recover miraculously with a proper interleave or removal of
+wait states - my "new" system got a 28% Norton SI boost with proper
+setup - from the factory they are set to accomodate "worst case"
+peripherals & chips).
+
+	At any rate, IMHO this is all the hardware that is necessary
+for a PC to be "safe" (see my models of a year or two ago), everything
+else necessary to protect a PC from anything except *possibly* a
+directed attack on a specific configuration can be handled by layers
+of software. (I could but today's viruses can't).
+
+						Warmly,
+
+							Padgett
+
+BTW - if anyone knows where I could pick up 2 or 3 8-bit CO-AX Ethernet
+      adapters (speed not important, Novell compatability is) inexpensively
+      (<$100 please, << better - used ok so long as working) so I can set up
+      a permanent test site, please let me know: padgett@tccslr.dnet.mmc.com
+
+------------------------------
+
+Date:    28 Aug 92 16:13:14 +0000
+From:    cca07@seq1.cc.keele.ac.uk (Tim Simmonds)
+Subject: HELP with partition infector!! (PC)
+
+I have scanned a PC for virus's using SCANv8.7B95 and it reported
+that the Partition table was infected with the Cansu[Can] virus.
+	And the CLEAN-UP program reported that the virus could not be
+	removed safely....Is there anything else that can be donee
+	and how can you get a copy of the Partition Boot Record.
+
+	The PC is a IBMPC 386 running DOS 5.
+
+Please help...
+
+		  Tim Simmonds
+		  Computer Centre
+		  Keele University
+		  Staffs
+		  England
+
+
+------------------------------
+
+Date:    Mon, 24 Aug 92 15:07:45 -0600
+From:    kev@inel.gov (Kevin Hemsley)
+Subject: Re: NetWare and viruses - some new results (PC)
+
+Mr. Fred Cohen writes:
+
+>Test 1: Exhaustive test of netware preotection setting on files and
+>directories against common viruses.
+>
+>Result: Only 3 of the 15 bits provide any protection - Execute ONLY?
+>NO GOOD!!! Read ONLY? NO GOOD!!!
+>
+>Result: Novell manuals are completely backwards in their depiction of the
+>rights granted through inheritance!!!  If you follow the manual,
+>you get wiped out!
+
+I'm not sure what you mean by exhaustive test, but I think that if you
+review your test results again, you will find the following:
+
+1. There is a clear distinction between NetWare RIGHTS and ATTRIBUTES.
+Attributes are an emulation and an extension of regular DOS file
+attributes.  Rights are NetWare's own security implementation.
+
+2. Viruses cannot directly alter _ASSIGNED EFFECTIVE RIGHTS_.  Rights
+security controls which directories, subdirectories and files a user
+can access and what the user is allowed to do with them.  Rights
+Security supersedes attribute security, in that a user must first be
+given access to a directory, subdirectory or file before attributes
+can be defined for each.
+
+3. The Supervisory right overrides any restrictions placed on
+subdirectories or files with an _INHERITED RIGHTS MASK_.  Use of the
+Supervisory right will directly contribute to virus propagation when
+assigned independently, or in conjunction with any other combination
+of rights.
+
+4. A virus which has Read, Write and File Scan rights, can infect
+target files.  Therfore careful consideration should be given to use
+of the Write right.
+
+5. In addition to the basic attributes of Archive, Read Only, System
+and Hidden, NetWare adds several other attributes to extend the
+limitations of DOS attributes.  NetWare attributes are less effective
+against viral infection because of NetWare's excellent emulation of
+DOS.  All DOS attributes can be changed by viruses.  Only one
+attribute does not seem to be emulated exactly by NetWare.  This is
+the System attribute.  Use of the System attribute prohibits viral
+infection.  The only other attribute which stops viral infection, out
+of the _18_ NetWare attributes is the Execute Only attribute.
+
+Because of the risk of Supervisor privilege misuse, Network
+administrators should not rely 100% on NetWare for protection.
+However, IMHO, careful assignment of rights will provide a better
+protection against virus propagation than no protection at all.
+Careful management of NetWare rights combined with an integrity check
+at login time will go a long way to keeping a LAN clean.
+
+I encourage Mr. Cohen to redesign his tests with a better
+understanding of Rights and Attributes.  If your basic theory is to
+prove that NetWare Attributes are not effective against viruses, you
+will essentially be correct, however if your basic theory is that
+NetWare Rights are not effective against viruses, then you will, in
+general, be incorrect.
+
+I believe that if you reread the red books, you will find that they
+are correct their description of inheritance.
+
+ --
+ Kevin Hemsley                             | The cute message that used to
+ Information & Technical Security          | be here was destroyed by a
+ Idaho National Engineering Laboratory     | nasty .sig virus!
+ (208) 526-9322                            |
+ kev@inel.gov                              | Please control your .sigs.
+
+------------------------------
+
+Date:    Sat, 29 Aug 92 13:57:49 +0000
+From:    homer@theory.TC.Cornell.EDU (Homer Smith)
+Subject: Datalision Inc fractal program (PC)
+
+     Dear People,
+
+     Being into fractals and all I get lots of fractal disks
+in the mail from would be fractal types.  A few years
+back I got a disk called MANJU87 from a company called
+DATALISION PULISHERS, INC.  New York 10017.
+
+     Now the fractals on this disk were pretty nice, but the program
+was a joke, and failed to function so many times I took to playing
+frisbee with the disk.  Further it forced you to enter a password
+everytime you wanted to use the program.  I used CSHOW to look at the
+images.
+
+     Anyhow a few weeks ago I got around to installing it for
+the first time to see what the competition was like.
+A few days later I found my hard disk will missing 16 million bytes
+in 8110 lost clusters!
+
+     I got a bit frantic wondering what the hell it was, until I
+remembered the competency with which manju was pieced together.  I
+fixed my disk with pctools and reinstalled manju87 and lo and behold
+8110 lost clusters.
+
+     What is this joker doing anyhow?  Besides placing a hidden file
+in my root directory named !_235053 which was filled with sniblets of
+random files on my disk, how did he manage to lose that many clusters
+and cross allocate files in my fat to the point where pctools just
+gave us and went to the mirror file?
+
+    Anyhow I haven't contacted the people who put this thing out yet,
+I am having too much fun playing frisbee with their disk, but I have
+a mind to, except that they are probably long gone and should be.
+
+     Besides their ENGLISH in the documentation was terminal, some
+people just don't know how they come across with their broken english.
+especially on the jacket of a product touting itself to be the
+world reference for fractals, and demanding level 10 security
+clearance to use the disk.
+
+     Have a nice day.
+
+     Homer
+
+------------------------------
+
+Date:    Sun, 30 Aug 92 01:33:54 +0000
+From:    mcampbel@nyx.cs.du.edu (Matthew Campbell 'The Fire Fox')
+Subject: Strange event when scanning. (PC)
+
+What happened here?
+
+C:\SCAN> SCAN C: @SCAN.DAT
+
+SCAN 8.5V91 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+Scaning for memory resident viruses.
+Scanning for known viruses.
+Scaning Volume: System
+Scaning C:\NORTON\DISKMON.EXE
+
+Sorry, an impossible internal error occurred.
+The error code is: 8105
+
+
+SCAN 8.5V91 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+
+     This progrm may not be used in a business, corporation, organization,
+     government or agency environment without a negotiated site license.
+
+
+C:\SCAN> TYPE SCAN.DAT
+/a /bell /chkhi /m /nobreak /sub
+
+C:\SCAN>
+
+Programs active:   C = loaded in Config.Sys    A = loaded in Autoexec.Bat
+
+C  Himem.Sys
+C  DmDrvr.Bin (Disk Manager 5.0)
+C  Ansi.Sys
+C  Emm386.Exe (V4.44)  (devicehigh=c:\windows\emm386.exe on 1024 h=100)
+A  Mark.Com   (Memory Mark utility)
+A  DiskMon.Exe (Disk Monitor, protecting system areas on drive C:, Norton 6.01)
+   Win.Com    (Windows 3.1)
+   Win386.Exe
+   Command.Com (Dos Shell running under Windows 3.1)
+
+I know I have a virus, I'm just not sure what it is.  The scanners can't detect
+it, but CRC checking does.  Command.Com has been renamed to Security.Cli.
+The computer will boot fine, but I must reassign the COMSPEC to e:\command.com
+as soon as possible.  E: is a write protected partition.
+
+- --
+Matthew Campbell     'The Fire Fox'
+Internet:  MatthewCal@Ids.Net     MCampbel@Nyx.Cs.Du.Edu
+           Ugcsmc0084%Mtvms2.Dnet@Terra.Oscs.Montana.Edu
+A thought to remember: "The only way to God is through his son Jesus Christ."
+
+------------------------------
+
+Date:    Sun, 30 Aug 92 07:39:00 -0500
+From:    TO5232@iscsvax.uni.edu
+Subject: Anyone heard about NOVI ?? (PC)
+
+Has anyone heard read any reviews on the antivirus product NOVI by
+Certus?  I am interested in how NOVI compares to CPAV, McAfee's, and
+F-PROT.  Whether it has the same or better detection and disinfection
+power than the other packages.  I tried to find a review on CERT.ORG,
+but there was not any.
+
+------------------------------
+
+Date:    Fri, 28 Aug 92 08:32:31 +0000
+From:    skrause@informatik.hu-berlin.de (Steffen Krause)
+Subject: Boojum (PC)
+
+Please send my any information you have about the Boojum virus ( [Boo]
+in scan91.
+
+Steffen
+skrause@informatik.hu-berlin.de
+
+- --
+- ---------------- Steffen Krause --------------------------------------------
+Zu Risiken oder Nebenwirkungen lesen Sie die Packungsbeilage und informieren
+Sie Ihren Arzt oder Apotheker.
+- ----------------------------------------------------------------------------
+
+------------------------------
+
+Date:    31 Aug 92 15:18:19 +1200
+From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: On integrity checking (PC)
+
+tck@netlink.cts.com (Kevin Marcus) writes:
+> Hey, Vesselin, all that talk about new products and detecting unknown
+> viruses...  Blech.  Wouldn't this fool an integrity checker, if the
+> virus were installed to a new system...
+
+I guess an integrity checker could limit the spread and warn of the
+presence, but not stop a virus-infected program being put onto the
+system.
+
+> Assume a stealth virus, which disinfected on the fly - really flying -
+> disinfecting on file opens, reinfecting on a file close, and also on
+> findfirst/next calls.  If the virus is unknown to the integrity
+> checker, then woulnd't it fake it out if it were in memory at the time
+> of the scanning?
+
+If the change detector uses standard DOS calls (or even BIOS) then it
+stands to get fooled.  But it doesn't have to. As for an integrity
+checker doing its thing as part of the program execute sequence, it is
+a good idea to use this in conjunction with other anti-viral
+precautions, e.g. ones that check whether important BIOS and DOS
+vectors have changed. There is still a way a virus can get around
+this, but it is difficult, and requires the virus know about the
+particular change detector that is running.  And viruses that go to
+such an extent will be obvious to other, elementary, change detectors
+(e.g. ones that simply look for changes to particular parts of system
+memory).
+
+Mark Aitchison, University of Canterbury.
+
+------------------------------
+
+Date:    Mon, 31 Aug 92 08:28:07 -0400
+From:    Kevin_Haney@nihcr31.bitnet
+Subject: Bug in F-PROT? (PC)
+
+I was using F-PROT 2.04c from a bootable DOS 5.0 diskette.  After
+booting from the A: drive, I wanted to scan another diskette in the A:
+drive.  F-PROT produced unintelligible messages, such as "cotaaly
+tanmcyng, ico staro%Nnurta...".  Another user here reported the same
+phenomenon.  Does anyone have an explanation and/or fix for this
+problem?
+
+Kevin Haney
+Internet: khv%nihcr31.bitnet@cu.nih.gov
+
+------------------------------
+
+Date:    Fri, 28 Aug 92 11:26:12 +0000
+From:    suresh@papaya.iss.nus.sg (Suresh Thennarangam - Research Scholar)
+Subject: Fingerprinting self-modifying files
+
+Is there general agreement that fingerprinting files with a relaible
+method is the most foolproof way of detecting virus infection ?
+
+How would one apply this technique to some programs that modify their
+disk-images ?
+
+Does the MS-Windows distribution contain any such binary files that
+are self-modifying ?
+***************************************************************************
+* Suresh Thennarangam               *  EMail: suresh@iss.nus.sg(Internet) *
+* Research Scholar                  *         ISSST@NUSVM.BITNET          *
+* Institute Of Systems Science      *  Tel:  (065) 772 2588.              *
+* National University Of Singapore  *  Facs.: (065) 778 2571          *
+* Heng Mui Keng Terrace             *  Telex: ISSNUS RS 39988             *
+* Singapore 0511.                   *                                     *
+***************************************************************************
+
+------------------------------
+
+Date:    Sat, 29 Aug 92 13:35:54 +0000
+From:    Albert-Lunde@nwu.edu (Albert Lunde)
+Subject: Misunderstanding of polymorphic
+
+(I know that there was a message saying that no further rumors about
+Aliens 4 would be posted.)
+
+I read the intial bulletin and the later follow-up elsewhere, and it
+seems fairly likely that no new virus was involved. (False alarms from
+old software, multiple infections by common viruses and non-virus
+related problems seem like plausable explainations, though one can
+never prove absolutely a negative.)
+
+It seems that the originator of the reports is (still) unclear about
+how a polymorphic virus will behave.  I am concerned that this
+misconception not be spread further.
+
+In my understanding, it is not particularly likely that a polymorphic
+virus would trigger scanners in such a way that it would look like two
+different existing viruses.
+
+A new polymorphic virus is most likely to "look" to scanners like a
+series of unknown viruses (which may well not be detected by scanners
+at all on this account).
+
+A polymorphic virus with code derived from an existing virus might at
+times look like that virus -- but it is wildly unlikely that it would
+resemble two unrelated viruses.
+
+This looks like a canditate for a developing virus "urban myth".
+- --
+    Albert Lunde                      Albert-Lunde@nwu.edu
+                                      alunde@nuacvm.bitnet
+
+------------------------------
+
+Date:    Thu, 27 Aug 92 23:38:34 +0000
+From:    bryce@sdf.lonestar.org (Bryce Hamm)
+Subject: Re: (c) Brain - part 2 (CVP)
+
+Well i dont understand.. So then you can (c) virii?  or is that only
+in the Middle Eastern countries.. forgive me for the stupid question..
+i was just confuesed when you mentioned two brothers Copywrighting
+it..
+
+hmm..
+
+------------------------------
+
+Date:    Fri, 28 Aug 92 16:31:49 -0700
+From:    rslade@sfu.ca
+Subject: (c) Brain - part 3 (CVP)
+
+HISVIR8.CVP   920810
+
+                        (c) Brain - part 3
+
+I have mentioned Alan Solomon's analysis of the Brain family with
+regard to the dating of the ashar variant.  Fridrik Skulason
+performed a similar analysis of the Ohio and Den Zuk versions, and
+has been proven 100% correct in his conclusions.
+
+The Ohio and Den Zuk variants contain the Brain identification code,
+and so will not be "infected" or overlaid by Brain.  However, Ohio
+and Den Zuk identify Brain infections, and will replace Brain
+infections with themselves.  Thus, Ohio and Den Zuk may be said to
+be agents acting against the Brain virus (at the expense, however,
+of having the Ohio and Den Zuk infections).  frisk also found that
+the Den Zuk version preferentially overlaid Ohio.  (This "seeking"
+activity gives rise to one of Den Zuk's aliases: "Search".  It was
+also suspected that "denzuko" might have referred to "the search"
+for Brain infections.  This turned out not to be the case.)
+
+There is text in both strains which indicates a similarity of
+authorship.  Ohio contains an address in Indonesia, both contain a
+ham radio licence number issued in Indonesia.  Both contain the
+identical bug which overlays FAT and data areas on non-360K format
+disks.  Den Zuk has the more sophisticated touches in programming.
+>From all of this, frisk concluded that Ohio was, in fact, an earlier
+version of Den Zuk.
+
+So it proved to be, in a message from the author.  The author turns
+out to have been a college student in Indonesia who, to this day,
+sees nothing wrong with what he did.  (On the contrary, he is
+inordinately proud of it, and is somewhat peeved that his earlier
+creation is "misnamed" Ohio: he's never been there.  The name of
+Ohio was given by McAfee in reference to the place of the first
+identification of the viral program: Ohio State University.)  Den
+Zuko is his nickname, derived from John Travolta's character in the
+movie "Grease".
+
+Full details of Fridrik's analysis and his contact with the author
+are available in Fridrik's article in the Virus Bulletin.
+
+copyright Robert M. Slade, 1992   HISVIR8.CVP   920810
+
+=============
+Vancouver      ROBERTS@decus.ca         | "The client interface
+Institute for  Robert_Slade@sfu.ca      |  is the boundary of
+Research into  rslade@cue.bc.ca         |  trustworthiness."
+User           p1@CyberStore.ca         |    - Tony Buckland, UBC
+Security       Canada V7K 2G6           |
+
+
+------------------------------
+
+Date:    Thu, 27 Aug 92 10:50:06 +0700
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: I'm off [to Scotland]...
+
+I just released a new version of F-PROT (2.05), and now I'm off for
+the virus conference in Scotland.  I will be taking my yearly one-week
+vacation [no :-) here, unfortunately] right after the conference, and
+will not be back until September 13th.
+
+My apologies to those which have sent me E-mail recently that I have
+not been able to reply to - I have 400 messages waiting for a reply
+and they will probably be around 800 when I get back.
+
+If anybody absolutely has to get in contact with me personally during
+this time, just send a fax to +354-1-28801 - my staff will know how to
+contact me.
+
+- -frisk
+
+------------------------------
+
+Date:    Sun, 30 Aug 92 14:01:28 -0400
+From:    James Ford <JFORD@UA1VM.UA.EDU>
+Subject: New files on risc (PC)
+
+The following files have been placed on risc.ua.edu (130.160.4.7) in the
+directory /pub/ibm-antivirus for anonymous FTP:
+
+                  fp-205.zip   - FProt v2.05
+                  vsumx208.zip - Virus Summary Listing.
+
+It is time for the once-in-a-blue-moon checking of files on
+risc.ua.edu.  Please send email to jford@risc.ua.edu if any of these
+files are out of date or just should not be there.  Thanks.
+
+- -- jf
+
+P.S.  I have removed htscan17.zip already.................
+- ------------------------------------------------------------------------
+               cvcindex.zip   navupd01.zip   vaccinea.zip   virx23.zip
+0files.9209    dir2clr.zip    netsc95b.zip   validat3.zip   vkill10.zip
+aavirus.zip    fixfbr11.zip   pcv4.zip       validate.crc   vshell10.zip
+asig9207.zip   fixmbr24.zip   pkz110eu.exe   vc300ega.zip   vshld95c.zip
+avs_e224.zip   fixutil3.zip   scanv95b.zip   vc300lte.zip   vsig9207.zip
+bbug.zip       fp-205.zip     secur235.zip   vcheck11.zip   vstop54.zip
+bootid.zip     fshld15.zip    sentry02.zip   vcopy82.zip    vsumx208.zip
+catchmte.zip   fsp_183.zip    stealth.zip    vdetect.zip    vtac48.zip
+ccc91.zip      htscan17.zip   tbresc19.zip   vds20t.zip     vtec30a.zip
+chk.zip        htscan18.zip   tbscan41.zip   virlab15.zip   wcv201.zip
+chkint.zip     i-m123.zip     tbscnx31.zip   virpres.zip    wolfchk.zip
+clean95c.zip   i-msetup.bat   trapdisk.zip   virsimul.zip   wp-hdisk.zip
+cpavse.zip     innoc5.zip     unvir902.zip   virstop.zip    wscan95b.zip
+cvc792am.zip   killmonk.zip   uxencode.pas   virus-l.faq    ztec61b.zip
+cvc792ma.zip   m-disk.zip     vacbrain.zip   virusck.zip
+cvc792ms.zip   mteavr22.zip   vaccine.zip    virusgrd.zip
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 145]
+******************************************

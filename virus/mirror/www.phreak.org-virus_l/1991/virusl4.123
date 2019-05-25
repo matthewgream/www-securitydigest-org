@@ -1,0 +1,632 @@
+From:	   Kenneth R. van Wyk (The Moderator) <krvw@CERT.SEI.CMU.EDU>
+Errors-To: krvw@CERT.SEI.CMU.EDU
+To:	   VIRUS-L@IBM1.CC.LEHIGH.EDU
+Path:      cert.sei.cmu.edu!krvw
+Subject:   VIRUS-L Digest V4 #123
+Reply-To:  VIRUS-L@IBM1.CC.LEHIGH.EDU
+--------
+VIRUS-L Digest   Thursday, 11 Jul 1991    Volume 4 : Issue 123
+
+Today's Topics:
+
+FPROT version 1.16 and MS-DOS 5.0 (PC)
+Re: Stoned and DIR command (PC)
+Stoned and DIR command (PC)
+Re: Doodle Virus (PC)
+Ma Bell did'nt have a virus
+Re: T.S.R's ( Which is the best ) (PC)
+Re: Problem with GUARD (PC)
+"Empire" variant C found (PC)
+Re: New Scanner! (well, not really) (PC)
+Re: General definition part 1 (general)
+Link-viruses in packed, self-extracting programs (general)
+Cheers for John Norstad and Northwestern University (Mac)
+Viruses in the USSR (PC)
+Crackpot (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 10 Jul 91 11:21:36 -0700
+From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: FPROT version 1.16 and MS-DOS 5.0 (PC)
+
+Pursuant to the various messages regarding FPROT and DOS 5:
+
+I have run into the same problem.  I have sent a couple of messages to 
+frisk with boot sectors and CONFIG.SYS files to look at, but here is a 
+summary of my own experiences so far:
+
+The system so far tested is a Dell/PC's Limited System 300 with two hard 
+disks.  This machine is connected to a Lantastic network, and 
+occasionally is used as a server.
+
+Upon booting from the hard disk, the machine hangs with the "Virus 
+Alert!! Int 13 changed" message if F-DRIVER.SYS is the first entry in the 
+CONFIG.SYS file, or if it is listed after system commands, but before any 
+device drivers are installed.  This happens regardless of whether DEVICE= 
+or DEVICEHIGH= are used.
+
+If F-DRIVER.SYS is placed last in the file, it loads and runs normally.  
+(SMARTDRV.SYS is one of the device drivers present and invoked before 
+F-DRIVER.SYS)
+
+If the system is booted from a floppy disk, F-DRIVER.SYS can be the first 
+item in the CONFIG.SYS file.
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 19:43:32 +0300
+From:    vasya@stack.fian.msk.su (Vasili Bykov)
+Subject: Re: Stoned and DIR command (PC)
+
+Several weeks ago I had a discussion of the same problem. One of
+my friends told me that he issued DIR command  when  a  diskette
+with  Stoned  was in disk drive, and found "RAM-resident Stoned"
+message after it....
+
+In fact, the following happens:
+
+As  you  know,  boot sector of any MS-DOS diskette contains some
+important information about the diskette  (  number  of  tracks,
+sectors/track,  FAT length, number of FATs etc.) There are a lot
+of  possible diskette formats and, in order to handle a diskette
+properly, DOS should read this info. It ( or HE  ?  )  makes  it
+using BIOS disk-read function ( function 02 of  13th interrupt ).
+
+During  this operation WHOLE boot sector of the diskette is read
+into some buffer in memory. ( A sector is the smallest part of a
+disk you can handle ). Virus code  gets  into  RAM also, for  it
+resides  in  the  same  sector.  Surely, it will be found by any
+antivirus program during RAM-scanning and you'll  get  a  report
+about resident Stoned.
+
+But, which is very important, this code is not being executed  -
+it's  dead!  Virus  (  like  any  other  program ) MUST BE GIVEN
+processor's control. Virus in executable  program  gets  control
+when  DOS  runs  this program. Virus in boot sector gets control
+when BIOS startup procedure ( after reset or  turning  PC  on  )
+reads boot sector and runs boot program ( as BIOS thinks ).
+
+When DOS reads boot sector in order to find important info about
+the diskette it DOESN'T RUN boot code ( it's  naturally  ).  All
+the  contents of boot sector are treated as data. So the code of
+Stoned which antivirus finds in memory is not  really  resident.
+It  just  resides there until a buffer in which it was read will
+be overwritten. I'm sure that if, after  making  DIR  on  floppy
+disk drive, you perform some actions which require a lot of disk
+operations  ( compile some program, for example ) and try to run
+antivirus once more, it will not find "resident Stoned".
+
+The fact that Stoned doesn't  get  control  during  DIR  is  100
+percents  valid  because if it was given a control, it would run
+original boot program after  installing  itself,  so  DIR  would
+cause the same effect as Ctrl-Alt-Del....
+
+By the way, I had Stoned crawled to my disks once, and  it  made
+havoc  then (because it cannot spread itself to the diskettes of
+some formats correctly and spoils directory  record  when  doing
+so). Beware Stoned if you use diskettes formatted to 720 K !
+
+~~~~~~~~~~~~~\/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Vasili Bykov || Lebedev's Institute of Physics USSR Acad. Sci.,
+   system    || Moscow.
+ programmer  || vasya@stack.fian.msk.su
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 20:34:55 +0300
+From:    vasya@stack.fian.msk.su (Vasili Bykov)
+Subject: Stoned and DIR command (PC)
+
+>>From: walker@aedc-vax.af.mil (William Walker C60223 x4570)
+>
+> This is due to the same problem with MS-DOS which caused the PRODIGY
+> scare and the abuse which was recently heaped upon Ross GreenbErg:
+> MS-DOS does not clear resources (memory or disk) before reusing them.
+> If you want it done, you've got to do it yourself.  However, as
+> indicated by the first test, DIR does not load the boot sector into
+> memory in the first place.  ...
+
+In the previous article I've wrote about the actions which DOS
+performs when making DIR. Boot sector *IS* loaded into memory.
+Although, it can be overwritten during some future work. God only
+knows, where DOS have loaded boot sector when you make first test and
+was or was not it overwritten when running SCAN...
+
+> One interesting note:  In an attempt to make a "defanged" version of
+> Stoned (with which to train users in using antivirus software), I
+> changed some disk write commands to disk resets and one CALL to NOP's,
+> and got this:
+>      SCAN A: /M
+>           "Found Azusa Virus [Azusa] in boot sector."
+> Are they really that close?
+
+Virus scanners often recognize infection by checking a signature: some
+characteristic piece of code or text string. Say, it checks 5 bytes
+beginning from file (or boot sector) offset 25h to be equal to
+...smth...  If you fill those bytes with appropriate values and others
+with the words of your favorite song, a scanner will show infection
+too.  You have accidentally created a signature of Azusa virus...
+
+~~~~~~~~~~~~~\/~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Vasili Bykov || Lebedev's Institute of Physics USSR Acad. Sci., 
+   System    || Moscow.
+ programmer  || vasya@stack.fian.msk.su
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 22:10:47 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Doodle Virus (PC)
+
+DEVMTG12@SAKFU00.BITNET (MUSTAFA T. ALGHAZAL) writes:
+>Hello ,
+> one of our PCs here is inficted by doodle virus .We remove it by Macafee
+> clean software ,but it returned back.
+[rest of message deleted]
+
+Hello Mr. Al-Ghazal,
+
+If the Yankee Doodle virus reappears on your system, then you could be
+reinfecting yourself by leaving the virus in memory or by overlays
+which are not scanned/cleaned because they are not in the default list
+of extensions.
+
+The correct method for removing the Yankee Doodle virus is:
+
+1.	Power down the infected PC and boot it off of a clean, write-protected
+	DOS Boot disk.
+
+2.	Insert the disk with CLEAN-UP on it and type in:
+
+		CLEAN C: D: E: [DOODLE] /A
+
+	If you do not have D: or E: drives then skip them.  If you have other
+	drives, include them as well.  The /A option tells CLEAN-UP to go 
+	through all files on the hard disk.
+
+3.	After CLEAN-UP finishes, install the VSHIELD program in the AUTOEXEC
+	to prevent reinfection.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+- -- 
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com
+4423 Cheeney Street	 | FAX   (408) 970-9727	| (Aryeh Goretsky)	
+Santa Clara, California	 | BBS   (408) 988-4004	| 
+95054-0253  USA		 | v.32  (408) 988-5190	| mrs@netcom.com
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | (Morgan Schweers)
+
+------------------------------
+
+Date:    10 Jul 91 22:40:45 +0000
+From:    neilshnn@mse.cse.ogi.edu (Neil Shannon)
+Subject: Ma Bell did'nt have a virus
+
+With all the news about possible virus infections affecting the
+telephone systems I thought it was interesting to find a small article
+tucked in the back of the Oregonian Newspaper (Associated Press
+story):
+
+Quoted in part:
+
+"an official of the company that made the software, DSC Communications
+of Plano, Texas, told a congressional sub-committee that the outages
+were caused by a software modification it made in April...the company
+modified the software at the request of Pacific Bell."
+
+"the changes were made without subjecting them to the normally
+exacting tests, which he (Frank Perpiglia, DSC senior vice president)
+called 'an absolute mistake.'"
+
+With all the loud voices that were screaming computer virus, this
+seams like a very soft voice that said, 'oops, we were wrong'.  It's
+another case of check your hardware and software BEFORE looking for
+viruses.
+
+	Neil Shannon
+	neilshnn@mse.ogi.edu
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 12:44:00 +1200
+From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: T.S.R's ( Which is the best ) (PC)
+
+Alan@aj.ds.mcc.ac.uk (Alan Jones) writes:
+> Does anyone have any feelings on what T.S.R. virus checker for the PC
+> gives the best protection whilst not using a vast amount of memory.
+
+There are good reviews of anti-virus products available for anonymous
+ftp, with information posted regularly about them. But it would be
+even nicer if there were tubulated summaries, arranged by type, to
+make finding a product easier (or helping decide what reviews are
+worth downloading). Anyone want to volunteer to maintain an index of
+the latest versions (and perhaps a simple weighted score of detection
+capability)??
+
+By the way, has anyone ever tried to make anti-virus software aimed at
+lab PC's, etc, where the user of the computer might be *trying* to
+infect the machine? Obviously scanning utilities are poor choices in
+any case, if the user isn't likely to be motivated to run them, but
+even automatic, resident scanners are useless with some users unless
+they make a lot of noise, or send secret messages to a supervisor,
+etc.
+
+Mark Aitchison.
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 17:52:06 -0600
+From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: Re: Problem with GUARD (PC)
+
+RADAI@HUJIVMS.BITNET (Y. Radai) writes:
+
+>  Several people seem to be under the impression that GUARD is sup-
+>posed to be a panacea for virus problems, and are disappointed when
+>they find that it is not.
+
+I'm sorry.  I had let my hopes be built a little too much. :)
+ 
+>GUARD is intended to block a *specific
+>security hole*: that which occurs because ordinary anti-viral pro-
+>grams, such as those mentioned above, don't get a chance to activate
+>when booting is performed from a diskette.  GUARD is not designed as a
+>*substitute* for other programs, but as a *supplement* to them.
+>Please judge it in that light.
+
+It seems to me the security hole is only partially blocked by GUARD.
+The hard disk does get infected, and the virus gets one turn at
+controlling the computer.  Until the computer is rebooted again, any
+disk used is in danger of infection.  And Guard does not warn that
+this has happened.  In a student lab environment a virus could do a
+lot of spreading in that case.
+
+Could you add a re-boot feature to guard, when a virus is found in the
+MBR, so that the virus is then removed from the system as well as from
+the MBR?
+
+A second problem: I don't understand how Guard hoped to get around
+Stealth viruses.  An MBR virus, when infecting a guard-protected hard
+drive, will move the MBR (in this case Guard) to another sector.  When
+the computer is rebooted from the hard drive, the virus runs first,
+taking control of the INT 13.  Then guard is run, and tries to
+re-install itself in the first sector, but the virus won't let it do
+so.  This is where I thought you might be doing something new, based
+on your previous postings.  Unfortunately I can't test it: the only
+stealth virus I have (Empire) locks Guard up.
+
+>Actually, I haven't yet had the opportunity to try DiskSecure 
+
+I'm pleased to see more and more anti-virus tools become available.  I
+think Guard is a fine effort, as a "gamma test" release.  But I think
+it is important, as virus fighters, that we try to take the current
+technology as our starting point, and go beyond it, rather than
+redoing what our colleagues have already done. For instance, if anyone
+can come up with a good way to remove a stealth virus automatically,
+while it is "in control", let me know.  Our labs could use it!
+
+   Tim Martin
+   Soil Science
+   University of Alberta
+** Disclaimer: these are my own opinions: my employer has none. ** 
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 19:34:58 -0600
+From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: "Empire" variant C found (PC)
+
+Another variant of the Empire virus has been found.  This one differs
+significantly from Empire A and Empire B in two ways:
+
+1. It is not detected by CHKDSK, because it does not tell the system
+it is present.
+
+2. On floppy disks, it first checks the floppy format, and hides the
+clean boot sector at the bottom of the root directory, rather than 
+simply hiding at side 1, sector 3.
+
+I have included my best attempt at a proper posting: maybe others 
+can fix any errors it may have.  Padgett or Frisk may have suggestions
+for signature scan strings.
+
+   Tim Martin
+   Soil Science 
+   University of Alberta
+
+- -------------------------------------
+Virus Name: EMPIRE variant C
+Aliases:
+V Status:  New
+Discovery: June, 1991
+Symptoms:  System crash, possible floppy failures, message.
+Origin:    Alberta, Canada
+Type:      BPRS (Boot and Partition table infector - resident - Stealth)
+           Encrypted. 
+Detection: F-SYSCHK, F-DISINF v1.16, DiskSecure, Scan v80  
+Removal:   F-DISINF, (for hard drives, and 360k floppies.)
+           (I haven't tested other virus removal packages.)
+           Cold boot from clean, write-protected floppy, replace MBR
+           or boot sector.  
+
+Comments:  Empire C appears to have been designed as an attempt to get
+around CHKDSK and other "top-of-memory" testers.  It does this by hiding
+where it hopes it will not get overwritten, (64K or 128K below the top of
+memory; 9000:0000 or 8000:0000 on a 640k computer) without telling 
+the operating system that it is present.  Of course this leads 
+to a system crash on the first disk read or write after this memory 
+location is used by any program running on the computer.  This
+behavior will probably greatly limit the spread of this virus.
+
+On a hard disk, Empire C hides the clean main boot record at cyl 0, head 0,
+sector 3. On a floppy disk, the hiding place for the clean boot record
+is the bottom of the main directory, which depends on format type:
+    --Format--     --location--
+    360kb 5.25"   side 1, sector  3 
+    720kb  3.5"   side 1, sector  5 
+    1.2Mb 5.25"   side 1, sector 14 
+    1.44Mb 3.5"   side 1, sector 15
+ 
+As with the previous Empire viruses, Empire C avoids cross-infection by
+checking that the first four bytes of the MBR or boot record are EA 9F 01 C0. 
+
+The FPROTv1.16 package correctly identifies the Empire family of viruses.
+We use the FPROT package at U of Alberta.  I have not properly tested 
+other, virus protection and removal software against the Empire 
+family.  I have observed that Scan v80 may identify some of the 
+Empire viruses as "Azusa".  
+
+------------------------------
+
+Date:    Wed, 10 Jul 91 10:26:51 +0000
+From:    kmcvay@oneb.wimsey.bc.ca (Ken McVay)
+Subject: Re: New Scanner! (well, not really) (PC)
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+
+>I don't think I'm going to be doing a review on this one ...
+
+Actually, it's remarkably entertaining, although worthless for
+actually protecting anything... it's more fun than most of the games
+I've seen on local bulletin boards :-)
+
+>RW> have you heard of a file called PARASCAN.ZIP.  I got it and
+>RW> it kept saying things like "VIRUS FOUND: THE ZSA ZSA GABOR
+>RW> VIRUS ... or some other famous person.  It then goes
+
+Highly recommended for anyone with high blood pressure :-)
+
+- -- 
+50,000 Americans in the Gulf need to hear   | ANY SERVICEMEMBER     |
+from you! Please write a letter TODAY       | Persian Gulf Command  |
+to "saudinet@oneb.wimsey.bc.ca", using the  | APO NY NY 09866-0006  |
+address format (to the rt.) in the msgbody's upper left-hand corner!  
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 13:27:00 +0300
+From:    Y. Radai <RADAI@HUJIVMS.BITNET>
+Subject: Re: General definition part 1 (general)
+
+  Rob Slade writes:
+>I must make mention, before I continue, of the work of Fred Cohen.
+>Dr. Cohen is generally held to have coined the term "computer virus"
+>in his thesis, published in 1984.
+
+Just for the record, the term "virus" (as we use it) was *not* coined
+by Fred Cohen.  Cohen's use of it came from his advisor, Len Adleman
+(the "A" of the well-known "RSA" cryptosystem).
+
+  Btw, Adleman has published a very formal treatment of viruses, full
+of esoteric Goedelian concepts like "partial recursive" functions (not
+to be confused with recursive calls in programming) and Goedel number-
+ing.  Although I studied these things in Logic courses in my undergrad
+days, I've never had the time or patience to wade through Adleman's
+article, but if anyone's interested, the reference is:
+      L. M. Adleman, "An Abstract Theory of Computer Viruses",
+      Crypto 88, pp. 354-374.
+
+  Speaking of the "A" of "RSA", the "R" (Rivest) has just announced a
+new one-way hash function, MD5.  Although MD4 has never been broken,
+so many people were implementing it, he decided to strengthen it just
+to be on the safe side (at the cost of increased execution time), and
+the result is MD5.
+
+  Now what's all this got to do with Slade's remark?  Oh, well ....
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    11 Jul 91 09:43:29 +0200
+From:    "Otto Stolz" <RZOTTO@DKNKURZ1.BITNET>
+Subject: Link-viruses in packed, self-extracting programs (general)
+
+Hello folks,
+
+I've not been able to read all of the discussion during the preceding
+couple of months, so forgive me if I'm re-hashing an old topic.
+Though, Mc Affee's recent announcement of his newest Virus Scanner in
+this forum makes me conjecture that I'm indeed bringing up a new
+point.
+
+Packing files to save disk storage or to gather them into archives has
+long been done on MS-DOS (and probably other systems, as well). Later,
+several utilities (e.g. LZEXE) have relieved the user from the burden of
+explicitely unpacking his or her programs before running them: those
+utilities incorporate the unpacking routine within the packed program
+such that the invocation of the packed program will result in unpacking
+it into the main storage and running it immediately.
+
+Such utilities have caused some headache to people concerned about
+viruses, as a program may be infected before packing--thus obscuring
+the virus to classical virus scanners or other anti-virus tools but not
+precluding replication nor any other effect of the virus. Meanwhile,
+several virus scanners scan both the disk image (for infection after
+packing) and an unpacked image (for infection before packing). Now every-
+body is happy and feeling safe again.
+
+However, it is not enough to scan in this dual way! Recently, it has
+occurred to me that a program may be packed several times with various
+utilities, resulting in several layers of packing and possible virus
+infection. E.g., imagine the following steps, which typically may occur
+with PD software
+   1. Program P.EXE is built from it's source-code.
+   2. A copy of P.EXE is infected with Virus V1 (perhaps at another site)
+   3. P+V1 is packed with self-extracting packing utility U1
+   4. U1-packed (P+V1) program is transmitted to another site
+   5. U1-packed (P+V1) program is infected with virus V2
+   6. U1-packed (P+V1)+V2 is packed with utility U2
+   7. U2-packed ((U1-packed P+V1)+V2) is again infected with virus V2.
+Now we have three infections with two different viruses in three layers
+of packing (one "external" and two "internal" layers), viz.
+U2-packed ((U1-packed P+V1)+V2)+V2.
+
+Naive scanners will only spot and possibly disinfect the unpacked
+("external") instance of V2; running the program--even the disinfected
+variant U2-packed (U1-packed (P+V1)+V2)--will result in propagating
+both V1 and V2.
+
+More advanced scanners will also spot and possibly disinfect the packed
+("internal") instance of V2; but (I guess) any state-of-the-art scanner
+will miss the doubly-packed instance of V1! With these scanners,
+any attempt to disinfect will yield the (still virulent!) program
+U2-packed (U1-packed (P+V1)).
+
+What can and should we do about this?
+
+To the user, this is one more reason for my general advice:
+  Never exert the "disinfect" option of any virus scanner,
+  rather replace all infected programs with clean copies.
+However, if the user is presented with a multiply-packed virus (as our
+final beast "U2-packed (U1-packed (P+V1))") to begin with, then probably
+no contemporary virus-scanner will alert him or her of that virus: the
+user will every now and then experience "unexplicable" virus re-
+infections.
+
+To the software developer, this observation presents a new challenge.
+The principal algorithm for a thorough scanner is easy; it implies
+repetitive or recursive unpacking and scanning along the following
+outline:
+   PROC scan thoroughly
+   = (IMAGE given) VOID: ( scan (given)
+                         ; IF   packed(given)
+                           THEN scan thoroughly (unpack(given))
+                           FI
+                         )
+or, repetitively:
+   PROC scan thoroughly
+   = (IMAGE given) VOID: ( scan (given)
+                         ; LOC IMAGE current := given
+                         ; WHILE packed(current)
+                           DO current := unpack(current)
+                            ; scan (current)
+                           OD
+                         )
+where
+   IMAGE   is a datatype to represent program images,
+   scan    is a procedure to scan for known viruses,
+   packed  is a BOOL-typed function to check for known packing schemes,
+   unpack  is a IMAGE-typed function to unpack a program image;
+   LOC     declares a local variable,
+   :=      assigns a value to a variable,
+   PROC    starts a procedure (or function) declaration, and
+   VOID    indicates a procedure proper (as opposed to a function).
+
+I hope that this suggestion will be adopted shortly by the major
+anti-virus programs.
+
+And I hope, I've got all those brackets right :-)
+Best regards
+             Otto
+
+------------------------------
+
+Date:    11 Jul 91 13:21:44 +0000
+From:    nvuxr!ccw@bellcore.bellcore.com (christopher wood)
+Subject: Cheers for John Norstad and Northwestern University (Mac)
+
+I just wanted to express my gratitude to John Norstad of Northwestern
+University for his continuing efforts to stamp out viruses and educate
+the user community.  I am looking forward to Disinfectant 3.0 (although
+I haven't upgraded to system 7 yet). Thanks, John!
+
+Chris Wood     Bellcore     ...!bellcore!nvuxr!ccw
+                         or ccw@nvuxr.cc.bellcore.com
+
+------------------------------
+
+Date:    Thu, 11 Jul 91 15:04:38 +0300
+From:    eldar@lomi.spb.su (Eldar A. Musaev)
+Subject: Viruses in the USSR (PC)
+
+By the information of the moscow AV researcher and developer of the
+AIDSTST (one of the soviet analogs of SCAN) Dmitry N.Lozinsky there
+are 142 viruses in the USSR, and half of them are soviet ones. Most of
+them are "student" viruses.
+
+But (!) another moscow AV researcher Dr.Kaspersky speak about a couple
+of dozens of soviet viruses, not more. That is much nearer to
+my information.
+
+Eldar A.Musaev, researcher, Ph.D.			 eldar@lomi.spb.su
+Mathematical Institute of the Soviet Academy of Sciences,  Leningrad, USSR
+
+------------------------------
+
+Date:    11 Jul 91 11:09:05 -0400
+From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Crackpot (PC)
+
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+>
+>  ...    just group all his viruses together and give them a name like
+>"Stupid Jack" or "Crackpot", followed by a number. We would then have
+>
+>        Crackpot-272    (not "Demon")
+>        Crackpot-1951   (not "Goblin")
+>
+>and so on for his 20 (or whatever) viruses.  Opinions ?
+
+An excellant idea!   I'd be glad to use those names; we should certainly
+avoid feeding this person's ego.
+
+(This is also a good reason to continue to call the Dark Avenger
+virus "the Dark Avenger virus", rather than doing as the author would
+prefer and calling *him* "the Dark Avenger", and his virus "Eddie".)
+
+DC
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 123]
+******************************************

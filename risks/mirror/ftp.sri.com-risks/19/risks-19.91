@@ -1,0 +1,600 @@
+precedence: bulk
+Subject: Risks Digest 19.91
+
+RISKS-LIST: Risks-Forum Digest  Thursday 13 August 1998  Volume 19 : Issue 91
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at http://catless.ncl.ac.uk/Risks/19.91.html and at
+ftp.sri.com/risks/ .
+
+  Contents:
+Titan IV explodes with Vortex satellite; cost over $1B (PGN)
+Global War[m|n|p|r]ing? (PGN)
+"John-the-Ripper" software collects passwords
+Unix passwords no longer safe  (Chiaki Ishikawa)
+linux on submarines (jay)
+Perils of rushing to market (Mich Kabay)
+Re: USS Yorktown: WinNT --not?-- the fault (Nathan Myers, Phil Edwards,
+    Martin Ward)
+Re: Software flaw exposes e-mail programs ... (Li Gong)
+Win98 Yx problem, not Y2K? (Scot E. Wilcoxon)
+CFP - 1999 IEEE Symposium on Security and Privacy (Mike Reiter)
+REVIEW: "Time Bomb 2000", Edward Yourdon/Jennifer Yourdon (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 13 Aug 1998 8:12:39 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Titan IV explodes with Vortex satellite; cost over $1B
+
+The Lockheed-Martin Titan IV that began self-destructing at 20,000 feet only
+40 seconds after liftoff from Cape Canaveral carried a top-secret satellite
+(code-named Vortex) for the U.S. National Reconnaissance Office.  It was
+destroyed on ground command two seconds later.  The Air Force gave no
+information on the cause.  This was the last launch for this Titan IV model;
+future launches are already scheduled to use an improved model.  [Source:
+Reuters item, 13 Aug 1998; PGN Abstracting]
+
+Only two failures out of 25 launches is reportedly thought to be a
+reasonably good record, although this loss is expensive -- $300M for the
+Titan, and between $800M and $1B for the satellite.  Associated Press noted
+that a previous Titan IV failure occurred from Vandenberg AFB in August 1993
+(ignoring the Titan IV that blew up on the test stand on 1 April 1991 -- see
+RISKS-12.09 -- as a result of a problem that seemingly could have been
+caught in simulation).
+
+------------------------------
+
+Date: Thu, 13 Aug 1998 8:16:22 PDT
+From: "Peter G. Neumann" <neumann@chiron.csl.sri.com>
+Subject: Global War[m|n|p|r]ing?
+
+Despite rampant evidence of global warming, satellite evidence over the past
+20 years has been suggesting that the earth's atmosphere is cooling.  Frank
+J. Wentz and Matthias Schabel, scientists at Remote Sensing Systems in Santa
+Rosa, California, have published a study in *Nature* (out today) that
+concludes that atmospheric temperatures have in fact increased, and that the
+previous satellite data was erroneous -- in part because orbiting
+thermometers lose altitude and in part because of the computers.  The
+argument based on the global warping of orbits continues the global warring
+among scientists and policy makers as to whether there really is global
+warming that merits global warning.  [Source" *The Washington Post*, 13 Aug
+1998; PGN Abstracting]
+
+If you happen to have particular faith in satellite data, please don't
+forget Bill McGarry's report in RISKS-3.29 about how the very clear early
+warning of ozone-layer depletion over the South Pole was ignored for many
+years because the dramatic data values were rejected by the software --
+because they were so extreme.  That case is one of the rare examples of a
+bounds check that *should have* been missing (as opposed to all of the
+missing bounds checks that we report in RISKS as causing security flaws or
+other problems).
+
+------------------------------
+
+Date: Thu, 13 Aug 1998 8:12:39 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: "John-the-Ripper" software collects passwords
+
+Michael Kleber, a UC Berkeley Sys Admin, discovered that someone had cracked
+his password, and was using his account -- having already successfully
+cracked over 48,000 passwords from a list of 186,126 encrypted passwords.
+From Berkeley, the cracker broke into systems at "a noted Silicon Valley
+company", an Indiana ISP, other UCBerkeley systems, Caltech, MIT, and
+Harvard, having used a Swedish ISP Telenordia, and coming through computers
+in England, Denmark, and South Korea.  He was finally detected on 29 Jun
+1998.  [Source: Henry K. Lee, *San Francisco Chronicle*, 13 Aug 1998, A21]
+
+Incidentally, pending U.S. legislation on copyright protection would make it
+illegal to crack passwords, but as a side-effect would also make it illegal
+for sys admins to find out which passwords on their systems were easily
+crackable -- as well as outlawing reverse engineering to do constructive
+security analysis!  That is a law that would have very little effect on
+foreign crackers, and could have a serious effect in further dumbing down
+system and network security, which is already pitiful in many cases -- as
+readers of RISKS are well aware.
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 06:09:56 +0900 (JST)
+From: Chiaki Ishikawa <Chiaki.Ishikawa@personal-media.co.jp>
+Subject: Unix passwords no longer safe 
+
+Re: "Cracking DES" (Gilmore, RISKS-19.87)
+
+The successful cracking of DES by brute force using a farm of dedicated
+chips has also brought force the danger of Unix password compromises in a
+new light.
+
+Now we can target the root account for compromise attempt.
+
+Most readers of RISKS are by now familiar with the basic concepts, but here
+it goes again:
+
+- Traditionally, UNIX uses one-way function (a twist on DES, detail later)
+  to store user password in encrypted form.   Usually /etc/passwd.
+  The shadow password scheme leaves the old /etc/passwd less the encrypted
+  field for backward compatibility and uses another file (only root can read
+  it) to store the encrypted field.
+
+- When the user logs in, the typed password is encrypted and the result is
+  compared with the stored encrypted password.  If they match, the
+  authentication succeeds.
+
+The best known attack to Unix password scheme is to steal/copy the password
+file where the encrypted passwords are stored and then encrypt a
+"dictionary" of common words and popular phrases and see if the result of
+encryption of a phrase matches the entry in the password file.  The best
+known program, Crack by Allec Muffet, works in this manner.
+
+The more words that are in the dictionary, the greater the chance of
+cracking some accounts in the given password file.  Please note that a
+particular user's account is still hard to crack.  The idea of Crack to weed
+out the weak passwords from a collection of passwords, not particularly for
+cracking a single password entry.  Cracking a few ordinary user accounts is
+enough for evil crackers to use that host for gathering local information
+and then use it as a launching ground for another attack on other hosts.
+Crack is meant to plug such holes.
+
+The encryption used for traditional Unix password system is a variation of
+DES algorithm. [1]
+
+Traditionally the password is 8 characters maximum.  The 8 seven-bit
+character codes are used as the initial DES-like algorithm key to encrypt a
+constant to produce the encrypted form of the password.
+
+From what I read about the DES cracking LSI, I think it would be as
+easy/difficult to implement an LSI that performs the encryption algorithm of
+the traditional UNIX password system.
+
+Given the availability of DES cracking LSI farm, the availability of a
+similar system of cracking UNIX password of a "GIVEN USER" once the password
+file is available is within our reach.
+
+Please note that this system can pin-point a single user account as its
+target, usually root. This was not quite possible with Crack, for example.
+(yes, if the root user chooses a simple word such as cocacola or something
+like it, then it could have been cracked using Crack.  But something like
+"1,#Oa0l'" would have been hard unless the particular phrase was in the
+dictionary. But it seems that we can now generate these random strings one
+by one and compare and exhaust the candidates within a month!?)  [LESS!]
+
+Given the profit of breaking such account, I assume that major intelligent
+gathering organizations and crime organizations are either in the possession
+of such cracking system or building one now, I suppose.
+
+Yes, it is a good thing that 
+
+ - at least many systems now supports shadow password file, (But this can be
+circumvented by application program failure.  A pop3 mail server is known to
+leave the encrypted password entry from the shadow file for comparison in
+memory when the password didn't match, and a known buffer overflow problem
+immediately after the failed comparison can dump core with the password
+entry in it. I read about this in BugTraq lately.)
+
+ - some Unix-like systems use different algorithms such as use of MD5 as one
+way function.  This avoids the danger from such a cracking system discussed
+here.
+
+Reference:
+
+[1] Password Security: A Case History
+    Robert Morris and Ken Thompson
+    AT&  Bell Laboratories, Murray Hill, NJ
+   (My copy is part of the BSD manual set published by O'Reilly.)
+
+To quote from that reference, section 4:
+
+"4. The Threat of the DES Chip
+
+Chips to perform the DES encryption are already commercially available and
+they are very fast.  The use of such a chip speeds up the process of
+password hunting by three orders of magnitude.  To avert this possibility,
+one of the internal tables of the DES algorithm (in particular, the
+so-called E-table) is changed in a way that depends on the 12-bit random
+number.  The E-table is inseparably wired into the DES chip, so that the
+commercial chip cannot be used.  Obviously, the bad guy could have his own
+chip designed and built, but the cost would be unthinkable."
+
+Unthinkable indeed more than 20 years ago!
+
+I think the slight variation on DES by using the use of salt (the mentioned
+12-bit random number) to make the stock DES algorithm chip unusable may no
+longer be viable to protect a user account.
+
+Of course, I am assuming that the building of such an LSI is as
+easy/difficult as the DES LSI. E-table modification may result in a much
+slowdown even in the case of LSI implementation.  (Anyone who knows the
+details of the circuit implementation care to comment?)
+
+But in any case, a large organization that still use old, say, SunOS 4.1.4
+without shadow password facility installed, or use such system for, again,
+old NIS server needs to think of at least installing the shadow password
+facility or moving over to the next generation of OS that supports different
+authentication scheme.
+
+I know of one Japanese ISP using a Sun system in the above configured manner
+:-( Gosh, they could be the rampant attack launching ground within the next
+12 months or so...  I hope peer pressure will move such sites into modern
+age.
+
+Chiaki Ishikawa,  Personal Media Corp., Shinagawa, Tokyo, Japan 142-0051
+ishikawa@personal-media.co.jp.NoSpam
+
+  [RISKS readers must be tired of my saying that fixed reusable passwords
+  are a menace, irrespectively of how long they are, how full of funny
+  characters, how often they are changed (of course, sniffing catches all
+  changes), how they are managed, etc.  It is time to retire them.  PGN]
+
+------------------------------
+
+Date: Mon, 10 Aug 1998 16:38:22 -0400 (EDT)
+From: jay <jay@invengen.com>
+Subject: linux on submarines
+
+After reading about all of the navy's woes with NT, perhaps they should
+listen to the folks at MIT.  MIT has created an automatic sub which runs
+Linux.  No GPF's at 20000ft for me.
+
+http://web.mit.edu/rec/orca/orca.html
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 14:47:45 -0400
+From: Mich Kabay <mkabay@compuserve.com>
+Subject: Perils of rushing to market
+
+I bought McAfee's PC Medic 97 Deluxe package a week ago.  The QuickBackup
+program version 2.04 for Windows failed to perform a total backup; many
+files were not copied.
+
+Network Associates' Web site reveals a known problem: version 2.04 cannot
+backup files from directories whose names contain a blank space.  Solution:
+download version 2.05 from the Web site.
+
+- From NAI customer service, I received the product ID and password required
+for the download.  Unfortunately, the file reference for the download
+results in a 404 error; seems the download file is not on the server.
+
+This is a wonderful example to include in my quality assurance courses.  I
+try to get across the concept that QA is not an add-on -- it must inform all
+aspects and stages of software development and delivery.  The same, BTW, is
+true of security -- security is a process, not an end state.
+
+M. E. Kabay, PhD, CISSP / Director of Education,  ICSA Inc. -- Carlisle,
+PA <http://www.icsainc.com>
+
+------------------------------
+
+Date: Fri, 7 Aug 1998 16:43:57 -0700 (PDT)
+From: ncm@nospam.cantrip.org (Nathan Myers)
+Subject: Re: USS Yorktown: WinNT --not?-- the fault (Fraser, RISKS-19.90)
+
+> That sounds like a bug in an application program, not the 
+> esteemed operating system!
+
+I don't know who "esteems" NT, but if somebody entering a zero kept me
+from getting under steam for two hours, I would be "steamed" myself.
+
+It doesn't matter what "caused" the outage.  If a program failure can 
+kill the engine, then a system failure could equally well do likewise.  
+NT's habit of crashing frequently is well-documented.  Future releases 
+(with a predicted 65%+ of code replaced!) promise no better stability.
+
+What's the RISK, here?  It looks to me as if the Navy brass decided
+to "standardize" on technology that their own technical experts had
+warned against relying on, and actually deployed the system before
+they were forced to admit its flaws.  Full E-Steam Ahead!
+
+Nathan Myers  http://www.cantrip.org/
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 11:27:41 +0100
+From: "Phil Edwards" <phil@ntexplorer.com>
+Subject: Re: USS Yorktown: WinNT --not?-- the fault (Fraser, RISKS-19.90)
+
+I could talk about crash protection and task isolation and threads, but I
+think there's a more interesting point here (and a whole new risk).
+
+The official account of the fault, by Vice Admiral Henry Giffin, was quoted
+as follows:
+
+The Yorktown lost control of its propulsion system because its computers
+were unable to divide by the number zero ... The Yorktown's Standard
+Monitoring Control System administrator entered zero into the data field for
+the Remote Data Base Manager program. That caused the database to overflow
+and crash all LAN consoles and miniature remote terminal units. The program
+administrators are trained to bypass a bad data field and change the value
+if such a problem occurs again.  [endquote]
+
+The question is whether we accept this as a factual account of what
+happened.  I'd argue that there are very good reasons for scepticism. In my
+experience, users' accounts of system problems very rarely match what
+actually went on - to be more precise, there are correspondences, but it
+takes work to identify them.  An account from a non-technical senior manager
+who wasn't directly involved is still less likely to be accurate in any
+unproblematic way.
+
+So, can we trust Giffin's account? I doubt strongly that the "Remote Data
+Base Database?] Manager" program has a singular "data field" and I don't
+think there's any such thing as a "LAN console". More to the point, I don't
+know what could possibly be meant by "caus[ing] the database to overflow";
+or how any sort of DBMS "overflow" could bring down a network server; or how
+a network crash could disable a ship's propulsion system (although *that*
+may be precisely the problem).
+
+In short, technically speaking it's horse feathers. We know there was a
+crash; we can reasonably assume that it had something to do with a division
+by zero.  Beyond that I'm sceptical in the extreme. My reading of the story
+is that NT Server blue-screened for no apparent reason (as it does) and
+displayed a message about a division by zero (as it does - a contributor to
+another list reported seeing div/0 crashes in every version of Windows since
+2.0).
+
+Unfortunately we're never likely to get a fuller (or, I'd argue, more
+accurate) account than Giffin's. The risk here is the kind of poor
+communication with the technical front-line which allows user stories to
+spread and be taken literally.  Inadequate problem analysis leads to
+inappropriate remedial measures, giving you the worst of both worlds: an
+unstable OS, plus an extra layer of procedures and training to ensure that
+sysadmins know how to "bypass a bad data field and change the value".
+
+But I may be wrong.
+
+Phil Edwards  Editor, Windows NTexplorer  phil@news400.com, @ntexplorer.com
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 11:44:07 +0100 (BST)
+From: Martin.Ward@smltd.com (Martin Ward)
+Subject: Re: USS Yorktown: WinNT --not?-- the fault (Fraser, RISKS-19.90)
+
+The whole point is that a decent operating system should not be capable of
+being crashed by an application program. My Sun machine has been running
+continuously for the last 8 months (until the power cut this morning :-( ):
+during that time it has been hammered by buggy development software, without
+crashing.
+
+The same "shifting of the blame" was seen in the NatWest bank case: a bug in
+NatWest's application caused NT to crash, yet NatWest are continuing to use
+NT despite this fundamental flaw.
+
+The next stage in blame shifting is to blame the user for entering a zero:
+with the fix being to hang a big sign over the terminal "Please don't enter
+a zero into this program". This reminds me of the old spy movies where the
+SuperVillain's Secret Base always had a large red button labelled "Secret
+Base Self-Destruct System"...
+
+Martin.Ward@durham.ac.uk http://www.dur.ac.uk/~dcs0mpw/ Erdos number: 4
+Maintainer of the G.K.Chesterton web site: http://www.dur.ac.uk/~dcs0mpw/gkc/
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 16:37:55 -0700
+From: Li Gong <gong@games.Eng.Sun.COM>
+Subject: Re: Software flaw exposes e-mail programs ... (Haahr, RISKS-19.90)
+
+    What all the reports I've read appear to be missing is that bugs
+    like this are almost inevitable in C or C++, yet pose almost no
+    security issues in safer programming languages, including as Java,
+    Lisp, Ada, Smalltalk, Modula-3, Eiffel, ML, etc.
+
+Not only the advantages of Java were glossed over or totally missed by some
+of these reports, some others even positively singled out Java as if it is
+the most dangerous and insecure technology.  After the latest Eudora
+security bug was found, Qualcomm sent the following notice to all registered
+users:
+
+    QUALCOMM recently identified that a potential security risk
+    existed in Eudora Pro Email 4.0 for Windows and Eudora Pro Email
+    4.0.1 for Windows.
+    ...
+    This security risk involves the ability to include user hostile
+    Java applets or scripts in an email message.
+
+Note the causal use of "Java applets or scripts".  The real bug is that
+Eudora would blindly launch the appropriate applications to process attached
+content, and in some case, this would result in some executables being run.
+There is nothing here that is Java specific.  The executables can be many
+different things.
+
+But by lumping everything together and then calling it "Java applets or
+scripts", the announcement is grossly misleading, is creating unnecessary
+confusion in the mind of the customers, and is in fact tarnishing the unique
+strength and advantage in security that Java has over other competing
+Internet oriented technologies.
+
+For an analogy of what Qualcomm said, imagine that you see such an official
+notice being posted all over San Diego (where Qualcomm is headquartered):
+
+    Warning!  Due to an electrical problem on our part, all door locks
+    are no long working.  To prevent theft, please do not leave
+    valuables in your offices, because of the risk that Qualcomm
+    employees and some other people may steal them.
+
+What would you think upon seeing this notice?
+
+Li Gong, Java Security Architect, Java Software, Sun Microsystems
+
+------------------------------
+
+Date: Tue, 11 Aug 1998 12:13:38 -0500 (CDT)
+From: sewilco@fieldday.mn.org
+Subject: Win98 Yx problem, not Y2K?
+
+I'm a Linux user and don't have Win98 around to test this, but I've found
+two reports so far today that Win98 has a date problem.
+
+A Y2K test program in the UK reported a Y2K problem, but further testing
+revealed that it was not a Y2K problem.  The date was a day or two off
+when crossing between any two years.  Because it happens every year and
+not only in 2000, it is not a Y2K bug.
+
+You might want to try to mess up the nearest Win98 machine to confirm
+this before reporting it...and I don't expect this report to be used
+with exactly this phrasing, as I expect you'll find plenty of other sources
+with better information.  (OK, so I can even tell an editor that I know
+he'll do his job :-)
+
+I saw one report on the BBS web page and now a second related one at
+http://www.sunday-times.co.uk/news/pages/sti/98/08/09/stibusnws01022.html
+  [Sorry, I cannot include the user code.  PGN]
+
+As these are reports from the UK, I don't know if the problem is sensitive
+to the British Isles or GMT time zones or not.  One can hope there is
+something more complex than just a date sensitivity, as one's eyebrows tend
+to get stuck to the ceiling when a major product has such a problem this
+close to Y2K.
+
+Scot E. Wilcoxon	sewilco@fieldday.mn.org
+
+------------------------------
+
+Date: Sun, 9 Aug 1998 19:50:32 -0400 (EDT)
+From: Mike Reiter <reiter@research.att.com>
+Subject: CFP - 1999 IEEE Symposium on Security and Privacy
+
+The call-for-papers for the 1999 IEEE Symposium on Security
+and Privacy is now available at
+
+http://java.sun.com/people/gong/conf/ieee-sp/cfp99.html
+
+- Mike
+
+------------------------------
+
+Date: Wed, 12 Aug 1998 11:13:24 -0800
+From: "Rob Slade, doting grandpa of Ryan and Trevor" <rslade@sprint.ca>
+Subject: REVIEW: "Time Bomb 2000", Edward Yourdon/Jennifer Yourdon
+
+BKTMBM2K.RVW   980531
+
+"Time Bomb 2000", Edward Yourdon/Jennifer Yourdon, 1998,
+0-13-095284-2, U$19.95/C$27.95
+%A   Edward Yourdon
+%A   Jennifer Yourdon
+%C   One Lake St., Upper Saddle River, NJ   07458
+%D   1998
+%G   0-13-095284-2
+%I   Prentice Hall
+%O   U$19.95/C$27.95 201-236-7139 fax: 201-236-7131
+%P   416 p.
+%T   "Time Bomb 2000: What the Year 2000 Computer Crisis Means to You"
+
+It doesn't take long to figure out which Saturday morning is being referred
+to in the Preface.  And one of the common failures suggested by pundits
+after December 31, 1999, is that of phone service.  As the outage extends to
+a decade, however, one begins to wonder how realistic this book is going to
+be.  For one thing, loss of dial tone is much less likely than billing
+errors, and the most likely errors would be failure to bill for those calls
+taking place as midnight (switch time) strikes.  However, the introduction
+goes on to point out that the subtitle is much more appropriate to this
+book: it is addressed to the non-technical audience, rather than those
+charged with fixing the problem.  A bit of overstatement can therefore be
+forgiven.  It is odd, though, that so many of the examples used refer to
+large infrastructures: what *could* the normal citizen do if faced with a
+region wide water outage?
+
+Chapter one introduces the concepts of risk management and planning, and
+stresses the relative time elements to plan for.  However, one of the
+central statements is that we simply do not know what is going to happen,
+and that makes planning rather difficult.  There are some general
+suggestions (for example, that most disruptions will be of days, rather than
+weeks, duration), but even these are questionable.  One specific
+recommendation, for instance, is that stockpiling a month's supply of food
+in a city apartment might be difficult, so maybe you should go visit friends
+in the country for a month.  I'm not sure what assumption this is based on,
+but if food distribution is interrupted, it might be more likely that
+emergency food provision would be concentrated in population centres.  The
+consequences to employment are reviewed in chapter two, which ultimately
+suggests only one course of action: have a nest egg on hand.  The scenario
+is alarming, but also possibly unduly optimistic, since it repeatedly
+suggests planning for a year out of work.  Using the book's own figures, and
+fairly simple arithmetic, the average time out of work would appear to be
+four years.  The discussion of utility disruption, in chapter three, is
+vague and offers little in the way of practical suggestions.  Interconnected
+failures are not emphasized (gas furnaces fail as soon as electrical
+thermostats shut down) and food stockpiling is probably not realistic (how
+many foods require no refrigeration for storage and no heating for
+preparation?)
+
+Given the heavy business emphasis in other areas, it is odd to note that the
+concern for transportation is limited to personal travel in chapter four.
+While a sudden transition to telecommuting would have a major effect on
+business (and be impossible for some), the failure of shipping is much more
+serious.  Chapter five's assessment of the banking industry could be
+responsible for a run on the banks, itself.  (The advice to keep hardcopy of
+all transactions in the months preceding and following December 31, 1999 is
+very good.)  The problems of the advice regarding food in chapter six have
+already been addressed, since the material basically repeats, in more
+detail, what has already been said elsewhere.  Home computer problems are
+really only looked at in terms of business use of PCs in chapter seven.  I
+am rather interested to note that the Internet does not get a mention either
+in regard to personal computers or in relation to news and information in
+chapter eight.  The overview of medical care, in chapter nine, is solid,
+careful, and useful.
+
+While I agree that government is one of the largest, and most tardy,
+potential victims of Y2K, chapter ten is shortsighted in seeing it
+only as a provider of cheques.  As with much of the rest of the book,
+the information in this section is US-centric, although similar
+concepts apply elsewhere.  Chapter eleven reviews embedded computers,
+but only broadens the scope of what could happen in other areas.  This
+material should probably have been included earlier in the general
+discussion of the problem.  Education, as all too often, seems to be a
+bit of an afterthought, but some important points are made in the
+relatively short chapter twelve.  Chapter thirteen notes that
+communication is an obvious target, and so most likely to be
+adequately addressed by the deadline.  That is good, since the book
+gives no realistic advice for fallback positions.  (A cell phone will
+be just as dead as a land line if all the switches are down, and is
+much more likely to have problems in the handset.)
+
+Despite the many shortcomings of the book, I do feel that it should be read
+and considered by a good many people.  The books and articles currently
+extent concentrate on the problem and necessary solutions from a systems and
+technical perspective.  There is a need for some consideration about
+personal actions that can be taken to ameliorate potential problems.
+Hopefully this discussion can have some rationality behind it: producing a
+run on the banks or dry soup mix in December '99 will help nobody.
+
+copyright Robert M. Slade, 1998   BKTMBM2K.RVW   980531
+
+------------------------------
+
+Date: 31 Mar 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 18" for volume 18]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 19.91 
+************************

@@ -1,0 +1,654 @@
+precedence: bulk
+Subject: RISKS DIGEST 19.09
+
+RISKS-LIST: Risks-Forum Digest  Thursday 17 April 1997  Volume 19 : Issue 09
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Why Bre-X crashed the Toronto Stock Exchange (Dave Wortman)
+"Big Glitch Hits MSN E-mail" (PGN)
+"Heading off emergencies in large electric grids" (IEEE Spectrum via PGN)
+"My Hairiest Bug War Stories" (CACM via PGN)
+The risks of not using your own security measures [name withheld by request]
+Daylight savings change problem (Steve Doig)
+Using GPS as your time standard (Bernard Lyons)
+Re: Fake "PGP CRACKED" message lures users into trap (Fred Cohen)
+Re: DES Challenge risks (Thomas Koenig)
+Re: Social Security--the other side (Carey Tyler Schug)
+Re: YAAXF: Yet Another ActiveX Flaw (Russ Cooper)
+They fixed one! 11-digit dialing in San Diego (Mark Seecof)
+Re: Risks of Mail Merge for Ontario NDP (Mark Connolly)
+Daylight Time and UTC (Maggie Iaquinto)
+Re: More on GMT vs BST: RS6000 (Andrew Yeomans)
+Re: GMT, BST, UTC and all (Ian Miller, Bernard Lyons, Ian Stephens)
+"Network Security" by Kaufman/Perlman/Speciner (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: 	Wed, 16 Apr 1997 11:05:17 -0400
+From: Dave Wortman <dw@pdp1.sys.toronto.edu>
+Subject: Why Bre-X crashed the Toronto Stock Exchange
+
+Previously undiscovered bugs in a legacy software system and record high
+trading volumes in one stock are being blamed for crashes that stopped
+trading on the Toronto Stock Exchange several times in the last few days.
+
+The stock is question is Bre-X Minerals Ltd. Its price is in free fall due
+to alleged misrepresentations concerning assay results for their large gold
+discovery in Indonesia.
+
+Although the Toronto Stock Exchange (TSE) is able to handle large trading
+volumes (e.g. 23.2 billion shares/year), the frantic buying and selling of
+Bre-X shares exceeded the normal volume for a single stock by a couple
+orders of magnitude leading to memory and system congestion problems.
+
+In "TSE speak", the active set of buy and sell orders for a particular stock
+is a "book".  Under normal conditions a book contains 200 .. 300 orders.
+The largest book size encountered before Bre-X was around 1600 orders.  The
+Bre-X book was averaging 2,500 orders with peaks to around 4,500 orders.
+
+The TSE trading system is estimated at 3,000,000 LOC (language unspecified).
+The article describes the code as poorly documented and heavily modified.
+The software is designed so that when it tries to execute a single order
+(buy or sell transaction), it reads the entire book for the stock into main
+memory (probably to match buy and sell orders).  Normally this isn't a
+problem but the size of the Bre-X book caused memory contention/overload
+problems that apparently crashed the system.  This problem was fixed by
+adding more memory to the system.
+
+Subsequent attempts to run the system exposed another bug in the legacy
+software. There is apparently a memory leak that occurs when an order is
+canceled.  The memory for the order (or possible the entire book) isn't
+released properly and eventually the system strangles for lack to available
+memory. The very high trading volume in Bre-X caused a much higher than
+normal number of cancelled orders. The TSE is working on a solution to this
+problem and as an interim measure is carefully controlling trading in Bre-X.
+
+These problems hadn't surfaced in 20 years of operation because the order
+books had never been big enough and the trading in one stock volatile enough
+to trigger the memory problems.
+
+  [Source: Abstracted from a very well written article by Geoffrey Rowan in
+  the Toronto *Globe and Mail*, 12 Apr 1997]
+
+------------------------------
+
+Date: Thu, 17 Apr 97 12:11:17 PDT
+From: "Peter G. Neumann" <neumann@chiron.csl.sri.com>
+Subject: "Big Glitch Hits MSN E-mail"
+
+On Monday, 14 Apr 1997, as a result of greatly increasing volume of e-mail
+traffic, two Microsoft MSN servers bellied up -- one for users with logon
+names beginning with C through E, the other with names beginning with T
+through Z.  After two days of persistent reboots, further crashes, and lots
+of customer complaints, Microsoft finally shut down the entire MSN e-mail
+service on 16 Apr 1997 for a day or two, to increase storage capacity.  This
+affects all 2.5 million customers.  [Source: an article by Julia Angwin,
+*San Francisco Chronicle*, 17 Apr 1997, D1]
+
+------------------------------
+
+Date: Wed, 16 Apr 97 17:19:22 PDT
+From: "Peter G. Neumann" <neumann@chiron.csl.sri.com>
+Subject: "Heading off emergencies in large electric grids" (*IEEE Spectrum*)
+
+*IEEE Spectrum*, April 1997 (pp.43-47) includes a marvelous article by
+Nickolai Grudinin and Ilya Roytelman of Siemens Power Systems Control, with
+the title as in the "Subject:" line above and a subtitle of "The blackouts
+that swept power systems out West last year could have been prevented by a
+centralized automatic response system."  The lead figure is a map of the
+Western states showing in sequence the locations of 48 distinct events that
+occurred during the cascading outage of 10 Aug 1996.  (For background, see
+the discussion in RISKS, beginning in RISKS-18.32.)  The title and subtitle
+give a clear indication of what the authors have in mind -- protecting the
+power system as a whole, not just protecting the individual transmission
+lines from overloads.
+
+------------------------------
+
+Date: Wed, 16 Apr 97 17:26:31 PDT
+From: "Peter G. Neumann" <neumann@chiron.csl.sri.com>
+Subject: "My Hairiest Bug War Stories" (*CACM*)
+
+The April 1997 *Communications of the ACM* (pp. 30-37) has a risks-relevant
+article by Marc Eisenstadt (title = subject: above), presenting an analysis
+of some debugging tales reported to him.  My favorite among those he cites
+is this:
+
+  I once had a program that worked properly only on Wednesdays...
+  The documentation claimed the day of the week was returned in a
+  doubleword, 8 bytes.  In fact, `Wednesday' is 9 characters long,
+  and the system routine actually expected 12 bytes of space to put
+  the day of the week.  Since I was supplying only 8 bytes, it was 
+  writing another 4 bytes on top of the storage area intended for 
+  another purpose.  As it turned out, that space was where a `y' was
+  supposed to be stored for comparison with the user's answer.  Six 
+  days a week the system would wipe out the `y' with blanks, but on
+  Wednesdays, a `y' would be stored in its correct place.
+
+------------------------------
+
+Date: Wed, 16 Apr 1997 
+From: [name withheld by request]
+Subject: The risks of not using your own security measures
+
+The military is filled with people who are constantly trying to justify
+their existence and, worse yet, think that what they do is the most
+important concern of everyone else.  The computer people are no exception.
+
+Recently, there has been an enormous push for computer security.  The
+computer people have gone crazy promoting COMPUSEC (computer security)
+including safeguarding passwords.  As a matter of fact, they have made
+everybody who touches a computer take an eight block test with 15 questions
+each on computer security (complete with boring tutorials, fortunately
+non-mandatory).  Since they didn't want to install the test everywhere, the
+software was placed on central computers.
+
+Well, the systems people finally got around to getting my work area attached
+to the installation LAN.  Being the curious type, I nosed around some to
+find out what resources were available.  On my second day of exploring, I
+found a computer with some files that weren't password protected.  One of
+the files was a database file that I decided to look at.  Lo and behold, to
+my amazement I found dozens of unencrypted passwords.  I knew that the
+program wasn't critical, but I also realized that people reuse passwords.
+
+Being the security conscious kind-of-guy that I am, I called the systems
+office to let them know about this breach of COMPUSEC.  I described what I
+found and tracked down the computer on the LAN to aid the systems office.
+Wouldn't you know it?  I happened upon one of the central computers for the
+COMPUSEC tests and found the password file for it.
+
+Later that day there was an e-mail to all of the users (using a different
+e-mail system) advising them to change passwords if they used that machine.
+
+Systems people: please make sure you follow your own rules.  You can be sure
+that other people aren't.
+
+------------------------------
+
+Date: Tue, 15 Apr 1997 15:37:04 -0700
+From: Steve Doig <steve.doig@asu.edu>
+Subject: Daylight savings change problem
+
+This was sent to me by a friend who works at a newspaper that I'll leave
+unnamed:
+
+A funny thing happened this weekend.  The **ONLINE EDITION** copy is
+generated by an automated conversion from typesetter copy to online copy
+that works for the **PAPER**.
+
+The program runs on a schedule, every morning at 2:15 a.m.  But, of course,
+there was *no* 2:15 a.m. this Sunday!! The NT servers dutifully jumped from
+2 a.m. to 3 a.m. without missing a beat.
+
+But there was no copy on **ONLINE EDITION** come Sunday morning. Oops. They
+had to move as much of it by hand as they could.
+
+I'm sure this RISK has been well-discussed in RISKS, but I can't wait to
+see what happens this fall.
+
+Stephen K. Doig, Professor, Cronkite School of Journalism, Box 871305,
+Arizona State Univ., Tempe, AZ 85287-1305 1-602-965-0798 steve.doig@asu.edu
+
+  [I presume you might get TWO copies!  PGN]
+
+------------------------------
+
+Date: 16 Apr 1997 15:08:17 -0700
+From: "Bernard Lyons" <bernard_lyons@qm.claris.com>
+Subject: Using GPS as your time standard (re: Horner, RISKS-18.96)
+
+Many readers might be tempted by the availability and reliability of GPS to
+buy an inexpensive receiver and use it as a highly accurate time source for
+computer systems.  I would caution against relying blindly on GPS to set
+your clock by.  In addition to 1999's 13-bit overflow problem, GPS is
+currently 11 seconds ahead of UTC.
+  http://tycho.usno.navy.mil/leap.html
+If one system takes its time from GPS, and another from UTC (like most
+telecommunications networks do?), then there could be trouble.  In some
+applications, 11 seconds is an eternity.
+
+Bernie
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 08:45:31 -0800 (PST)
+From: fc@ca.sandia.gov (Fred Cohen)
+Subject: Re: Fake "PGP CRACKED" message lures users into trap (Ziglar, R-19.08)
+
+The claim was apparently in a forged e-mail asserted to be from me
+(fc@all.net)!  I would like to take this opportunity to formally deny that I
+ever made a 5-line program that cracks PGP available via FTP or Telnet on
+the all.net server.
+
+Fred Cohen can be reached at tel:510-294-2087 fax:510-294-1225
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 19:36:19 +0200 (MET DST)
+From: Thomas Koenig <ig25@mvmap66.ciw.uni-karlsruhe.de>
+Subject: Re: DES Challenge risks
+
+You may have heard of the effort to crack the DES challenge by
+a group originating from Sweden (http://www.des.sollentuna.se/).
+
+This has one very worrying aspect:  The organizers don't give out the
+sources.  The reason given on their web site is:
+
+>   Q5: Will you release the source-code? And why not!?
+>   No, unfortunately we will not release the sourcecode for the client.
+>   This is due to the fact that people may, advertently or inadvertently,
+>   modify the client so that it breaks. This would of course jeopardize
+>   the entire effort, since some clients would not be able to find the
+>   correct key. When the project is finished, we will release all of the
+>   source-code used in the project.
+
+There are quite a lot of things a malicious binary expected to soak up
+cycles of CPU could do:
+
+a) The program could do any of the the traditional naughty things
+   (send out password information, install Trojans or back doors, ...)
+
+b) The program could look for local passwords, try to crack them,
+   and send them back to the master server.
+
+c) The program could also try to crack other codes.  The master
+   DES keys of the EuroCheque ATM cards, for example, would be a
+   an attractive target.  [There are about 40 million EC ATM cards in
+   use in Germany today; fraud involving EC cards is increasing].
+
+Point c) is especially worrying.  I do assume the organizers themselves are
+honest (mostly because at least two people I know quite well by 'net
+reputation are involved in this).  But even with that assumption, a criminal
+could still break into the organizer's web site and substitute modified
+clients.  The organizers have take no precautions against this that I can
+see.  There are no PGP signatures of the supplied binaries, not even MD5
+checksums (which a criminal could also alter on the web pages).
+
+Finally, the organizers also rely on security through obscurity to
+ensure integrity of their clients:
+
+>   Both between a client and a server and between a server and the
+>   masterserver, a special authentication method is used to make sure
+>   that it is the correct program in the other end. This is done to avoid
+>   people from disturbing the challenge by reporting in blocks as
+>   finished even if they are not.
+
+It's almost unnecessary to say that this is not good enough.
+
+Thomas Koenig, Thomas.Koenig@ciw.uni-karlsruhe.de, ig25@dkauni2.bitnet.
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 07:52:57 -0600
+From: Carey_Tyler_Schug@em.fcnbd.com
+Subject: Re: Social Security--the other side (Garfinkel, RISKS-19.05)
+
+Sometimes one's person's privacy is a risk to the rights of others, and
+privacy should be sacrificed.
+
+> "In this instance, people familiar with the new Social Security system
+> say, there is danger for abuse from many directions: a legal adversary, an
+> employer seeking to learn about an employee's outside income, an ex-spouse
+> contemplating adjustments in support."
+
+Those sound like usually legitimate uses:
+
+1. Nearly all employers require an affirmation not to work for anybody who 
+might conceivably be a competitor.  If a person lied about it, this is the 
+first step to investigating such abuse.
+
+2. An ex-spouse with a support payment of a percentage of income is
+[otherwise] at the mercy of the person reporting income.
+
+Of course, I am an extremist, and I believe that if we want to claim our
+government is a democracy, then *ALL* government information should be
+public.  Period.
+
+That includes all tax forms for all taxing bodies and all taxed individuals,
+groups and businesses.  Only military and court documents could be sealed,
+and then only for a minimum amount of time.  The absolute maximum for court
+documents, for instance, should be the lifetime of the litigants and
+occasionally of a witnesses (If a witness admitted to having an affair with
+one of the litigants, and it was a significant portion of the case, the
+records could be sealed till the witness' death).
+
+Just a side note: If tax returns were made public, that might spur the
+greatest tax simplification in history, to the point where almost everybody
+could do their Federal Income taxes in an hour or two.
+
+------------------------------
+
+Date: Thu, 10 Apr 1997 19:29:30 -0400
+From: Russ <Russ.Cooper@RC.on.ca>
+Subject: Re: YAAXF: Yet Another ActiveX Flaw (Kennedy, RISKS-19.06)
+
+Oh please, when will the media, and RISKS, stop pampering to the misinformed
+just because it seems to make a story?
+
+ActiveX objects don't attempt to prevent any action, beyond the security
+pre-existing on the running OS.  Authenticode is for identification and
+integrity, not prevention of malicious apps doing malicious things.  Who's
+said otherwise?
+
+Sun says "security loophole" and the media jumps up and down with glee.
+Fact is there is no "security loophole" since there was never an attempt to
+prevent the applications functionality in the beginning.
+
+Sun says "specially written program containing ActiveX", what they really
+mean is simply an ActiveX object.  What's specially written?
+
+Sun says "the program then took over the user's computer", why'd they bother
+to do that?  Besides, its highly unlikely that the ActiveX object actually
+prevented the user from doing other things.
+
+Sun says "personal financial information", how'd they distinguish between
+personal and business financial information?
+
+> > McNealy ... said they see security as a major issue differentiating Java...
+
+Oh, so like all the looming issues regarding Java have now disappeared
+forever?
+
+Finally, why we needed to hear from David Kennedy that the ActiveX object
+was signed is beyond me, and beyond what I thought was the scope of
+Risks. Who cares if it was signed, was it signed by some reputable business
+attempting to be legitimate or was it signed by Sun for Sun's internal
+consumption (or maybe to be included in an up-coming release to their most
+favoured developer?). The signature is irrelevant, its merely intended to
+guarantee who wrote the object and that the object is delivered as it was
+written. It has absolutely no bearing on the content of the object (beyond
+telling you who wrote the hack), and certainly no bearing on Risks, IMO.
+
+Stick to Risks.  Accepting ActiveX objects across untrusted boundaries
+without prior understanding of the importance of the digital certificate is
+a risk, period.
+
+Russ  R.C. Consulting, Inc. - NT/Internet Security 
+owner of the NTBugTraq mailing list: http://ntbugtraq.rc.on.ca/index.html
+
+------------------------------
+
+Date: Wed, 16 Apr 1997 12:13:59 -0700
+From: Mark Seecof <Mark.Seecof@latimes.com>
+Subject: They fixed one! 11-digit dialing in San Diego
+
+Without fanfare, Pacific Bell has modified the switch software in downtown
+San Diego to allow 11-digit dialing even of local (7-digit) numbers.  By
+making it simpler to program (especially mobile) computers (or people) to
+make calls reliably, this reduces some of the risks which RISKS contributors
+have lamented over the years.
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 14:56:11 -0400
+From: Mark Connolly <mark@connollydesign.com>
+Subject: Risks of Mail Merge for Ontario NDP
+
+Regarding the use of a database of street names to spew out thousands of
+amendments to a proposed government bill in the Legislature of Ontario,
+technology is a sword that cuts both ways.
+
+It turns out that, as with many a similar database, the one used by the New
+Democratic Party (NDP) had duplicate or similarly named items in it (Old
+Orchard Grove and Old Orchard Grv., for example). The NDP found itself
+needing to occasionally interrupt the proceedings on points of order to
+withdraw from consideration those errant amendments.
+
+The proceedings were carried on the Legislature's cable TV channel, and I
+watched the shenanigans at various and found the whole display hugely
+entertaining (but then, I once participated in a performance of Erik Satie's
+"Vexations").
+
+I happened to catch this little nugget one night, from Gilles Bisson
+(Member for Cochrane South):
+
+  Point of order, Chair: You'll note that the following amendment has the
+  following: Richmond Street and Richmond Court -- r-i-c-h-m-o-n-d street
+  and Richome, spelled differently, r-i-c-h-o-m-e, Court. It looks like the
+  IBM PC broke down just like normal and the PC printed two of them at the
+  same time. So if we used the Mac maybe this wouldn't have happened. It's a
+  PC problem. I'd like to withdraw that amendment.
+
+Hansard has transcripts of the whole thing up on the Web, another example of
+my tax dollars hard at work. The above snippet can be found at:
+<http://www.ontla.on.ca/hansard/36_parl/session1/house/0497/L176_18.htm>
+
+I'd guess that Mr. Bisson was enjoying the fact that the "PC problem" he
+referred to could be taken to mean a problem with a personal computer or a
+problem with the governing Progressive Conservative party.
+
+Mark Connolly Connolly Design Inc., Waterloo, Ontario, Canada
+http://www.connollydesign.com
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 07:14:49 +1000 (EST)
+From: Maggie Iaquinto <iaquinto@ozemail.com.au>
+Subject: Daylight Time and UTC
+
+As a ham-radio operator, I use satellite tracking programs. One of the best
+of these programs requires the user to enter the timezone offset. Here in
+Melbourne, Australia, the offset is +10 hours. Then it asks to set the
+Daylight Flag if it is now Eastern Summer Time. When I do, the tracking
+program shows the time in UTC with Local Time as +11 hours. When we switch
+back to Standard Time [Spring ahead, Fall behind], I remove the Daylight
+Flag.
+
+Why is such an implementation so difficult, Microsoft?
+
+Maggie  iaquinto@ozemail.com.au
+
+------------------------------
+
+Date: Wed, 16 Apr 1997 05:06:53 EDT
+From: andrew_yeomans@uk.ibm.com
+Subject: Re: More on GMT vs BST: RS6000 (RISKS-19.08)
+
+The AIX time rules can be changed using the TZ environment variable. It is
+documented under "environment File" (/etc/environment) in Files Reference
+book.  I'm currently using "TZ=GMT0BST,M3.5.0,M10.4.0" which works for most
+years, depending on our legislators.
+
+Andrew Yeomans, Andrew_Yeomans@uk.ibm.com  NOSS/VNET: WINVMD(YEOMANA)
+
+  [Also noted by "Eric Ball" <ericball@VNET.IBM.COM>.  PGN]
+
+------------------------------
+
+Date: Wed, 16 Apr 1997 12:00:19 +0100
+From: Ian Miller <firewalls@scientia.com>
+Subject: Re: GMT, BST, UTC and all (Minow, RISKS-19.08)
+
+>It should be pointed out that the United States Naval Observatory
+><http://tycho.usno.navy.mil/> distinguishes between UTC and GMT (which is
+>currently one hour ahead of UTC). 
+
+No.  It quotes "GMT/BST" as currently BST and one hour ahead of UTC.  It
+also confusingly uses GMT as an abbreviation for "Greenwich Mean
+Time/British Summer Time".
+
+The authority defining GMT is the Royal Greenwich Observatory
+<http://www.ast.cam.ac.uk/RGO/>.
+In <http://www.ast.cam.ac.uk/pubinfo/leaflets/time/time.html> they state:
+
+RGO>In the UK we use Greenwich Mean Time (GMT) which in fact nowadays is 
+RGO>Universal Time (UTC). In the summer we adjust our clocks to British 
+RGO>Summer Time, BST, which is one hour in advance of GMT. 
+
+> It would seem, then, that Windows 95 is correctly advancing GMT when the
+> user selects "adjust for daylight savings changes."
+
+No. GMT is always UTC. The current UK time is BST = GMT+1.   [...]
+
+------------------------------
+
+Date: 16 Apr 1997 13:32:03 -0700
+From: "Bernard Lyons" <bernard_lyons@qm.claris.com>
+Subject: Re: GMT, BST, UTC and all
+
+GMT (Greenwich Mean Time) is the standard time at the Meridian at Greenwich
+Observatory in London, at zero degrees longitude.  It was originally derived
+from the sun's noon position at Greenwich.  For many years it was the "base"
+standard for the world's timekeeping, local timezones being promulgated at
+some offset from GMT.  UTC (Coordinated Universal Time) is a newer time
+standard, sanctioned by international standards bodies and kept by scores
+(hundreds?) of advanced "clocks" around the world.  There's also
+International Atomic Time (TAI) which currently differs from UTC by 30
+seconds.  UTC differs from GMT by some small number of seconds.  These time
+standards vary a little because of occasional corrections (such as the
+addition of leap seconds) to account for tiny changes in the Earth's
+rotation speed.  A fuller explanation can be found at:
+  http://www.ast.cam.ac.uk/pubinfo/leaflets/time/time.html
+
+For all practical purposes, however, UTC and GMT are the same - and always
+stay the same. GMT does not change: it neither "springs" forward nor "falls"
+back.  GMT is used as standard (winter) time for Britain and Ireland, but
+for historical & cultural reasons it is still called GMT and not British
+<something> Time.  I suspect that this is what may cause confusion in the
+minds of US citizens, programmers included.
+
+At 01:00 GMT on the last Sunday in March each year Britain and Ireland
+advance clocks by one hour.  This is British Summer Time (BST), or GMT+1.
+Clocks are put back an hour at 02:00 (local time, still 01:00GMT) on the
+last Sunday in October each year.  GMT itself stays put.
+
+This system of advancing clocks by one hour from spring to autumn was used
+in Britain from 1916 up to the Second World War.  During WWII Britain was
+run on GMT+1 during the winter and GMT+2 during the summer, partly to allow
+munitions factories a longer production day.  Britain reverted to GMT/GMT+1
+in 1948.  The changeover dates were adjusted in recent years to harmonise
+with the rest of Europe.
+  http://www.ast.cam.ac.uk/pubinfo/leaflets/summer/summer.html
+
+Interestingly, the UK's Royal Society for the Prevention of Accidents
+(RoSPA) believes that many lives could be saved in the UK each year if
+Summer Time was adopted permanently.  Using GMT+1 all year round was tried
+in a 3-year experiment from 1968 to 1970.  This was called British Standard
+Time [unfortunately, also BST!  PGN].  RosPA predict more road accidents in
+the dark mornings, but fewer in the brighter evenings as tired drivers make
+their way home.  They estimate the net benefit for the UK's 50 million or so
+population at up to 400 fewer fatalities and about 10,000 fewer serious
+injuries.  Political considerations within the UK have prevented this idea
+from being implemented so far.  The Labour party (expected to win the
+forthcoming election) have said that they will adopt GMT+1, at least
+experimentally.
+
+The idea is that shifting the clock forward for the summer "saves" energy by
+moving the work day closer to the actual hours of daylight.  In our modern,
+high-speed, global, 24-hour society this concept is perhaps of less benefit
+than it was. Especially with abundant artificial light and too-cheap
+energy... but that's an argument for another time and place ;-).  However,
+there are now many more time-dependent systems to change twice a year than
+there were in the 1940's and perhaps the costs are beginning to outweigh the
+advantages.
+
+The RISKS of something new or unexpected going wrong with
+computer-controlled systems because clocks are out of sync seems to me to be
+increasing with the number and interconnection of such systems, and our
+increasing dependence on them.  Perhaps it's time to seriously consider
+dropping Daylight "Savings" Time (originally an American idea!)  altogether.
+
+Bernard Lyons  (bernard_lyons@claris.com)  Dublin, Ireland.
+
+------------------------------
+
+Date: Thu, 17 Apr 1997 11:15:50 +0100
+From: Ian Stephens <Ian.Stephens@b-g-trading.btx400.co.uk> 
+Subject: Re: GMT, BST, UTC and all
+
+  [... stuff duplicating Bernard Lyons' note omitted.  PGN]
+         
+BST is sometimes used (totally incorrectly) by the uninformed to mean "GMT
+or Summer time, as the case may be, depending on the season".  There are
+examples of this on various web pages, some I am ashamed to admit
+originating in the UK.
+        
+I note that during WW2 in the UK Double Summer Time (GMT+2hr) was kept - if
+carried on today (as has been suggested), this would give scope for
+confusion with DST=Daylight Saving Time?
+
+Useful basic info giving an idea of the complications of time zones in
+Europe is shown at:
+  http:/wsspinfo.cern.ch/file/sunos-europe
+        
+It is clear that it is impossible to program in future summer time changes
+more that a year ahead, given the reliance on government decision rather
+than precise formulae.  Very RISKy to rely on your OS getting it right for
+you.
+        
+Ian Stephens <Ian.Stephens@b-g-trading.btx400.co.uk>
+
+  [And there will still be screwups...  PGN]
+
+------------------------------
+
+Date: Wed, 16 Apr 1997 11:03:12 EST
+From: Rob Slade <roberts@mukluk.hq.decus.ca>
+Subject: "Network Security" by Kaufman/Perlman/Speciner
+
+"Network Security", Charlie Kaufman/Radia Perlman/Mike Speciner, 1995
+%A  Charlie Kaufman charlie_kaufman@iris.com
+%A  Radia Perlman perlman@novell.com
+%A  Mike Speciner ms@color-age.com
+%C  One Lake St., Upper Saddle River, NJ   07458
+%D  1995
+%G  0-13-061466-1
+%I  Prentice Hall
+%O  +1-201-236-7139 fax: +1-201-236-7131 beth_hespe@prenhall.com
+%P  505
+%T  "Network Security: Private Communication in a Public World"
+ 
+For communications security, this is the text.  A solid conceptual
+background covers cryptography and authentication.  The number theory basis
+of much of modern encryption is provided as well.  In addition, there is
+overview coverage of specific security implementations, including Kerberos,
+PEM (Privacy Enhanced Mail), PGP (Pretty Good Privacy), and a variety of
+proprietary systems.  Where many security texts use only UNIX examples, this
+one gives tips on Lotus Notes, NetWare, and Windows NT.
+ 
+The explanations are thorough and well written.  The organization of the
+book may be a bit odd at times (the explanation of number theory comes only
+after the discussion of encryption that it supports), but generally makes
+sense.  The end of chapter "homework" problems are well thought out, and
+much better than the usual reading completion test.
+ 
+copyright Robert M. Slade, 1996  BKNTWSEC.RVW  961209
+roberts@decus.ca  rslade@vcn.bc.ca  rslade@vanisl.decus.ca
+
+------------------------------
+
+Date: 1 Apr 1997 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 18" for volume 18]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 19.09 
+************************

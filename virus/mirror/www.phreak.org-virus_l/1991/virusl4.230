@@ -1,0 +1,807 @@
+VIRUS-L Digest   Wednesday,  4 Dec 1991    Volume 4 : Issue 230
+
+Today's Topics:
+
+Postscript laser printer 'virus' (solved for TI 2115) (Mac)
+potentially cute idea (PC)
+Re: vaccine for STONED on boot disks? (PC)
+FDISK & Telephonica (PC)
+Forward from FidoNet
+Re: In-Re: Radai re: Murray re: Radai re: Frisk, re: Washburn
+Listing for the all PC viruses? (PC)
+Re: Washburn
+Re: NIST Naming Proposal
+Virus Verification and Removal
+Re: Virus Proof Machine Response
+Re: Warning! SCAN 82 trojanized! (PC)
+What is special about "stealth" viruses?
+Re: Washburn
+Re: What's special about LAN's? (PC)
+Re: What the user wants (was Re: Disk Compression) (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 04 Dec 91 00:53:34 -0600
+>From:    lindahl@arrisun3.uta.edu (Charlie Lindahl)
+Subject: Postscript laser printer 'virus' (solved for TI 2115) (Mac)
+
+Here are the details of my problem and the solution. Thanx to
+Ken Wyk for his assistance on the phone today (yesterday, actually).
+
+I am NOT a regular subscriber to VIRUS-L (or VALERT-L, for that
+matter). So if you wish to continue a discussion on this thread,
+please EMAIL me directly (I will respond as time permits; I try my
+best to give back as much as the net gives me :-) ).
+
+The problem
+- -----------
+I got a POSTSCRIPT printing error when trying to print from my
+standard Mac II (system version 6.0.5). The error (which showed up
+on my PRINTMONITOR application) said something about an "incorrect
+password". The actual message (from the dialog box within
+PRINTMONITOR) was:
+
+   Error: PasswordIncorrect
+           Offending command: exitserver
+
+Files failed to print from MS WORD 4.0, NCSA Telnet 2.4.7, and the
+Finder (Print Directory menu item).
+
+The Environment
+- ---------------
+Standard Macintosh II running on an Ethertalk network to an
+Apple Laserwriter-compatible printer (TI printer model 2115).
+
+The solution
+- ------------
+In V3, Issue 171, postscript code was posted to read the EEPROM of the
+printer. I'm reporting that the code works fine for the TI 2115; I was
+able to read the password and then set the password to the default of
+0 (thereby disabling the "feature") by means of the following
+POSTSCRIPT code:
+
+- ---- CUT HERE ----
+serverdict begin <old-password> exitserver
+statusdict begin
+<old-password> 0 setpassword
+end
+- ---- CUT HERE ----
+
+I sent both the password reading code and the above code via the
+public domain program "SENDPS".
+
+Note: the Appleyard indices listed this problem & solution as
+a "LaserWriter" virus; I had previously scanned the indices for
+PRINTER and POSTSCRIPT (not LASERWRITER) and hence missed the
+reference(s) the first time I looked in the archives.
+
+Note2: one solution for the LASERWRITER was to cycle power on the
+       printer. Unfortunately ,the TI laser printer has a battery
+       backup on its configuration memory, and hence this was NOT
+       a viable solution in my case.
+
+Charlie S. Lindahl
+Automation and Robotics Research Institute
+University of Texas at Arlington
+Internet EMAIL: lindahl@cse.uta.edu
+
+When the going gets tough, computer scientists press the reset
+button.  -- From Werner Uhrig (werner@rascal.ics.utexas.edu).
+
+Disclaimer: I don't write this stuff, I just pass it on!
+
+------------------------------
+
+Date:    Mon, 02 Dec 91 11:28:54 -0500
+>From:    hobbit@ftp.com (*Hobbit*)
+Subject: potentially cute idea (PC)
+
+Do enough partition table viruses hide stuff in the "dead" sectors
+around the rest of cyl/head 0/0 to make the following hack worthwhile:
+
+Low-level format your HD such that the first sector of 0/0 is good and
+the rest are flagged bad.  You can do this in DEBUG with a call to
+int13 and the "format table" with a lot of 80H's in it.  Nothing
+should then be able to write to those sectors, because the controller
+hardware hands back an error.
+
+Do PT viruses bother to check if their "moving" of the original PT
+succeeded?  Would this stop some of them?  Having bad sectors around
+the rest of track 0 doesn't seem to bother DOS at all.
+
+Of course, it probably wouldn't work on IDE drives, but then again...
+I don't have any PT virus samples, so I can't try this myself.
+
+_H*
+
+------------------------------
+
+Date:    Mon, 02 Dec 91 20:27:56 +0000
+>From:    watpod62@alfred.carleton.ca (George Bragg)
+Subject: Re: vaccine for STONED on boot disks? (PC)
+
+MEDAL@mail.crk.umn.edu (Don Medal) writes:
+
+>I am happily in possession of INNOC which says it will innoculate against
+>STONED, but with one tiny unhappy exception: it won't protect DOS bootable
+>disks.                                                        ^^^^^^^^^^^^
+ ^^^^^
+Huh?  What the heck's the point?  Stoned is a boot sector virus, which
+gets transmitted by booting up, if I recall correctly.  Is this a
+pointless product?
+
+>We are constantly being infected with Stoned from a pool of student disks
+>and would very much like to find a way to vaccinate against STONED for
+>bootable disks, ideally to include hard drives, but at LEAST floppies.
+>Can this be done?  Is it theoretically impossible?
+
+Easiest way I know of is to fix it so you can't boot from the floppy
+drive, and ensure the hard drive is clear.
+
+------------------------------
+
+Date:    Mon, 02 Dec 91 16:29:25 -0500
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: FDISK & Telephonica (PC)
+
+>From:    cs_b152@ux.kingston.ac.uk
+
+>To get rid of the virus from the HD boot from a clean floppy and
+>assumming you've get DOS 5, type FDISK /MBR which will rebuild the
+>partition table.
+
+Close: this will also work for most MBR infectors, but only those for
+which a valid partition table is found in sector 1 (luckily nearly all
+except for some "stealth" infections). It will work with STONED 8*)
+
+                       HOWSUMEVER
+
+FDISK/MBR does NOT "rebuild the partition table", rather it places new
+executable code in the MBR preceeding the existing partition table.
+If what is in the partition table area in sector one is trash (e.g.
+many access control routines and a number of viruses) then you will
+wind up with an unaccessable (by DOS) hard disk.
+
+To test, try booting from a floppy first (DOS 5.0), then check to see
+if C: is accessable. If so, and the floppy is not infected, FDISK/MBR
+should work. If you get "Invalid Drive Specification" following the C:
+request, then FDISK/MBR will probably NOT work.
+
+BTW, when I tried it, there was no message to the screen, it just came
+back to a A: prompt following execution.  While on the subject, does
+anyone know just why DOS 5.0 FDISK.EXE carries 9 copies of the MBR
+code internally?
+
+					Padgett
+
+by popular request:	Internet: padgett%tccslr.dnet@mmc.com
+
+------------------------------
+
+Date:    Mon, 02 Dec 91 23:48:54 +0100
+>From:    Mikael Larsson <vhc@abacus.hgs.se>
+Subject: Forward from FidoNet
+
+This article is for the attention of Fridrik Skulason and is forwarded
+from VirNet, all replies will be forwarded back to VirNet.
+______________________________________________________
+
+Hi Frisk,
+ I have used FPROT for sometime & regard it to be the best piece of AV
+software currently available. I do however have the following
+questions to ask you considering its interaction with the 1963 virus.
+- - I use FPROT vers 2.01 by the way.
+ As 1963 is not listed in the F-PROT.EXE Virus Information section of
+your program, i presume that it is the generic scanner thats detects
+the suspicious code & identifies it as "Possibly a new variant of
+Eddie". I tested FPROT2.01 on a Dos 3.3 system with the following
+files & found the following interesting results.
+
+The following files were infected with 1963: Command.Com, Chkdsk.Com,
+Comp.Com & then there was the virus source 1963.Com
+
+1963 NOT memory resident               With 1963 memory resident
+========================               =========================
+SCAN TYPE   INFECTIONS FOUND IN        SCAN TYPE    INFECTIONS FOUND IN
+- ---------   -------------------        ---------    -------------------
+Secure      Comp.Com & 1963.Com        Secure       -- nothing --
+Quick       -- nothing --              Quick        -- nothing --
+Full        Comp.Com & 1963.Com        Full         -- nothing --
+                                       + nothing suspicious found in mem
+
+ My questions are the following:
+(1) As 1963 is not an encrypting virus, how is it that FPROT only found 50%
+of the infected files to contain suspicious code ?
+
+(2) Why was nothing detected in memory? (- or does the generic scanner only
+work on files?)
+
+ My final question is one of personal interest & not related to FPROT (thus
+answers from anyone would be appreciated!)...
+
+(3) I notice that 1963 displays the "correct" filesizes of infected files
+even when the virus is not resident. I understand this to be something to do
+with the eof marker. - Is this true? - if so, how does the virus prevent
+others applications from overwriting the first 1963 bytes of the relocated
+code?
+
+Regards,
+Chris Seeley
+Fidonet: 2:250/110   VirNet: 9:441/106
+
+------------------------------
+
+Date:    Mon, 02 Dec 91 15:36:37 -0700
+>From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: Re: In-Re: Radai re: Murray re: Radai re: Frisk, re: Washburn
+
+zmudzinskit@imo-uvax6.dca.mil (zmudzinski, thomas) writes:
+
+>Should we do business with someone who has inflicted a virus on the
+>community?
+>
+>I say no (and will limit myself to two examples:)
+>
+>(1) "Shunning" as practiced by various Pennsylvania Dutch sects.
+>
+>(2) The Israeli Government's policy of not dealing with kidnapers.
+>
+>In each case, it may be hard on the innocents involved, but the
+>results are deemed positive, i.e., the persons making and keeping
+>to the policy are perceived as "winning" by their community.
+>(Otherwise there would soon be new policies in both communities.)
+
+While Thomas' note contains enjoyable literary historical accuracy, in
+the continuing saga of Pandora and the Hubris, I'm afraid the above
+bit is historically inaccurate.  At least the part about the
+Pennsylvania Deutch: I don't know about the Israeli Government.  In
+Waterloo County, where my grandfather was shunned, the average "old
+order" mennonite family has eight children, yet the community hasn't
+grown in size for decades.  The policy may be perceived as winning,
+but history shows it isn't.
+
+Now what this might have to do with our Computer Security community,
+I'm not sure.  I hope the suggestion is not that we should be as
+reactionary and non-progressive as some religious sects (not to
+mention some governments).  Fascinating history, though.
+
+Tim.
+
+ -------------------------------------------------------------
+  Tim Martin                 *
+  Soil Science               *     These opinions are my own:
+  University of Alberta      *        My employer has none!
+  martin@cs.ualberta.ca      *
+ -------------------------------------------------------------
+
+------------------------------
+
+Date:    Tue, 03 Dec 91 09:12:50 +0500
+>From:    "A.Ilkay Yigit" <YIGIT@TRMETU.BITNET>
+Subject: Listing for the all PC viruses? (PC)
+
+I am looking for the listing of all PC viruses(i.e. the active
+codes,names,etc) Does any server store that kind of info elsewhere?
+- -Ilkay.
+e-mail: YIGIT@TRMETU.BITNET
+
+------------------------------
+
+Date:    Tue, 03 Dec 91 11:20:05 +0000
+>From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: Washburn
+
+In Message 27 Nov 91 16:48:54 GMT,
+  martin@cs.ualberta.ca (Tim Martin; FSO; Soil Scien writes:
+
+>ago it would have been unpardonable.  Six years ago, might it have been
+>a grave error in judgement, based on undeveloped values, or was it
+>unpardonable then, too?
+
+Well, this argument does not apply in Washburn's case - his viruses
+are fairly new.. - What he did was to develop a family of viruses,
+which use self-modifying encryption, and make it available, and it
+even seems that one version was seleased in source code form.  This
+was done despite the protests of the (by the enstablished) anti-virus
+community.
+
+His viruses are:
+
+     V2P1  (also known as 1260)
+     V2P2
+     V2P6 (and V2P6Z, which is only slightly different)
+
+He claims to have cancelled his plans to release V2P7, the latest
+member of the family......
+
+V2P1 seems to have been released in source code format, and
+disassemblies of the later, more sophisticated variants are now freely
+available ob some virus BBSes.
+
+Mark Washburn parctically invented the idea of sophisticated
+self-modifying encryption, (which prevents the use of signature
+strings to detect the viruses) - those techniques arenow used in more
+and more new viruses - the Maltese Amoeba being the latest example.
+
+I don't particularly object to him wtriting the viruses - I see no
+ethical problem with writiting viruses as well as anti-virus software,
+as long as
+
+    a) you don't describe any new techniques used in the viruses
+    b) you don't give the virus to anyone
+    c) you destroy all copies of the viruses when the experiment is over
+
+What I object to is the simple fact that he is spreading new virus
+techniques, which may encourage others to write viruses, while at the
+same time he is selling an anti-virus program....
+
+- -frisk
+
+------------------------------
+
+Date:    03 Dec 91 20:04:00 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: NIST Naming Proposal
+
+KADLOF@PLEARN.BITNET writes:
+
+> I know that the soviet researches are using radically different naming
+> convention. It is based on classification method proposed by Nikolay
+> Bezrukov from Kiev Institute of Civil Aviation Engineers. I am sure that
+
+Indeed, Bezrukov uses behaviouristic description codes. I personally
+dislike the naming schemes of this type, but his naming scheme is the
+best one (least bad one?) of this kind that I have ever seen. I also
+know that Jim Bates uses a scheme of this kind as well.
+
+> Vesselin Bontchev has english description of soviet convention (he
+> posted it in the FIDONET about one year ago). If you have in your sample
+> collection any file with name like RCE-1834 then it is from Soviet Union
+> archives. I do believe Vesselin will be able to provide better english
+> description what I am talking about.
+
+I do have the file that I posted on Fido, but Nikolay Nikolaevitch has
+improved his scheme much more since then. (If you have his book, you
+probably know that.) One of these days I'll translate the appropriate
+appendix from the book and shall post it here - just need a little bit
+of free time... And having in mind that I just returned from a
+Washington conference with about 70 viruses which are new for our
+virus collection, I might not have free time in the next few days...
+:-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    03 Dec 91 15:29:26 -0500
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Virus Verification and Removal
+
+> From:    KADLOF@PLEARN.BITNET
+> I am very happy that this subject is at last raised.
+
+And I'm happy to see that others are interested in it!  It's a problem
+that we certainly need to solve before we can really solve some other,
+more commonly discussed problems (like a common set of names).
+
+Is your magazine published in an English edition?
+
+I discussed the matter with Vesselin Bontchev recently, and it sounds
+like we all have about the same ideas.  Your four types of areas
+correspond rather closely with the types used by VERV: I distinguish
+between code areas, constant areas that matter for the function of the
+virus, constant areas that don't matter, and varying areas.  This
+allows VERV to distinguish true variants (that might have differences
+that matter for cleanup purposes) and very minor variants with
+non-functional differences that may be useful for tracking, but don't
+change the cleanup required.
+
+>Control sums are computed with the algorithm used by the Polish
+>Section of Virus Information Bank.
+
+Could you give a little more detail on this algorithm?  It's of course
+very desirable to use a publicly-available algorithm, so anyone can
+implement the verification function themselves.  On the other hand, if
+the algorithm is well-known and not hard to invert, a malicious virus
+writer could produce a new virus that would be misidentified as an old
+one; something we definitely want to avoid!
+
+(Because various people have expressed an interest in more details of
+the language that VERV uses, I may write up a more detailed
+description of it, including all the verbs and their operands.  I'd be
+interested in seeing similar writeups from others.  Thanks again to
+Andrzej Kadlof for posting his!)
+
+DC
+
+------------------------------
+
+Date:    03 Dec 91 20:37:15 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus Proof Machine Response
+
+cs@nabla.electrical-engineering.umist.ac.uk (Chris Stops) writes:
+
+> Maybe I wasn't clear enough on what I meant by CREATE & WRITE...
+
+> 1)  When I say 'CREATE',  I mean (in DOS terms) to  create the file (e.g.
+> function 3Ch) followed by writing the data (e.g. function 40H).
+
+> 2) When I  only say 'WRITE', I mean (in  DOS terms) to open  an exisiting
+> file for write access  (e.g. function 3Dh)  followed by writing  the data
+> (e.g. function 40H).
+
+Well, I see the misunderstanding now.... I meant only the appropriate
+DOS functions. Thus, in your example 1) I'll say CREATE & WRITE and in
+your example 2) I'll say OPEN_WITH_WRITE_ACCESS & WRITE.
+
+> clever about how it patches itself in. But it will be much easier to spot
+> than a good (or do I mean bad?) DOS executable virus. Also, remember that
+
+Easier?... Yeah, probably...
+
+> there can  be no stealth  viruses to  conceal changes. So  "Easy to spot"
+> could include "Easy to spot by a simple source code checksummer".
+
+What do you call a "simple source code checksummer"? If you mean brick
+or something alike, it's method of calculating checksums is publicly
+known and easy to forge. Remember, the checksumming algorithms that
+are good for detecting random errors are not necessarily good for
+detecting intentional forgery...
+
+> On what I meant by 'Virus Proof'...
+
+> 'practical PC  type machine implementable  with existing '386 technology,
+> proofed against  all the usual  and most effective DOS attack  paths like
+> boot sector  infectors, resident viruses and code  attaching to exisiting
+> executables, but admittedly leaving a few minor holes such as source code
+> infectors and interpreted code infectors'.
+
+Aha, I agree with that, epecially if you add to the few minor holes
+the ability to infect executable files which are not protected by the
+users (say, explicitely made writable and so on).
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    03 Dec 91 20:48:20 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Warning! SCAN 82 trojanized! (PC)
+
+pshuang@Athena.MIT.EDU writes:
+
+> Does anyone know if PAK 2.0's security envelope feature has also been
+> compromised?  There doesn't seem to be the need to come up with any
+> sophisticated procedure or program from scratch if one already exists.
+> Adopting one of the schemes whereby the file is CRC'd by two seperate
+> algorithms should also be foolproof, right?
+
+I got the above message in private e-mail as well. Unfortunately, due
+to my one-week absense (I had to attend a conference in Washington), I
+was unable to respond in time. Since I see it now publicly posted,
+I'll reply it here, just in case other people are also interested.
+
+First of all, no, I don't have any idea about how secure is PAF 2.0's
+security envelope. Or ARJ 2.22's, for that matter... I'm also curious
+to see any reliable report about that. Unfortunately, I'm not a
+cryptanalyst, so my information on that subject is not very good.
+
+However, I strongly object that a checksum (in fact, two checksums),
+which is obtained by aplying two separate CRC checksummers is
+foolproof. If you really mean CRC (Cyclic Redundancy Control), then
+the result of obtaining two checksums (from two different CRC
+polynoms) is exactly as easy to forge as the CRC obtained by ONE
+polynom - which is the Least Common Multiple of the previous two
+polynoms.
+
+Regards,
+Vesselin
+
+P.S. I have no idea how PAK & ARJ compute their authentification
+checksums, but strongly suspect that they don't use CRC at all...
+Maybe some propritary functions, in which case I have no idea how
+secure they are.
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Tue, 03 Dec 91 12:06:00 -0700
+>From:    TED SHAPIN <TSHAPIN@BIIVAX.DP.BECKMAN.COM>
+Subject: What is special about "stealth" viruses?
+
+What is special about "stealth" viruses?  Why are they called
+"stealth"?
+
+Ted Shapin
+
+------------------------------
+
+Date:    03 Dec 91 21:03:20 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Washburn
+
+martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences) writes:
+
+> One historical note seems to be missing, so far, in the Frisk - Radai -
+> Murray - Radai dialogue (flame-throwing contest?) on the Washburn virus
+> (whatever that is) and appropriate punishment for a virus writer.
+
+[stuff deleted]
+
+> are beginning to institute laws to that effect.  But an individual's values
+> will necessarily have evolved as well.  An individual may have made a mistake
+> in the past, based on earlier, less developed value sets, yet today
+> have fully embraced the currently acceptible code of behavior.  That
+> individual is in a different category than one who is writing viruses
+> today, in the face of the norms, values and laws in place today.
+
+Ha-hem... Being from a country where the virus writing is some kind of
+national sport I usually refrain from taking part in etics arguments.
+Especially if you have in mind that in the very early days of the
+virus era I've committed what we call now the "Ralf Burger's mistake"
+- - I used to give away a disette, which contained an explanation what
+viruses and anti-virus programs are and (my goodness!) a live example
+of the Vienna virus (and a Spanish program which was able to disinfect
+it).
+
+However. In my case it was a mistake. A very bad mistake. I stopped
+doing so as soon as I realized that and since then I dedicated myself
+to do my best to help the users fighting viruses. I could accept that
+what Ralf Burger did was a mistake, had he stopped the distribution of
+his book, as well as its translation into English and Russian. (We
+lacked only a Bulgarian eddition, but by now it's too out-of-date as a
+do-it-yourself textbook for virus writers, so it wouldn't meet any
+interest in Bulgaria any more. <grin>) On the top of all, he published
+a second edition...
+
+With Mark Washburn we had the 1260-mistake. A bad mistake. Almost
+everybody pointed him this out. But nevertheless, he produced the
+V2P2-mistake, the V2P6-mistake, the V2P6Z-mistake, and now (see the
+November issue of Virus Bulletin) - the V2P7-mistake. All of them
+with the purpose to demonstrate that virus scanning is internally
+flawed - something that seems quite obvious to me...
+
+The question is: if he really had to prove this to somebody, had he to
+produce a virus? Of course not! It was sufficient to create a program
+that does not infect files, but asks the user for the name of the file
+it has to create and then creates a file with this name and copies a
+modified version of itself into it. This will be not a virus (except
+by the Cohen's definition) and everybody would be happy. Even if
+Washburn had considered the first attempt to prove that scanning is
+flawed as not convincing enough, he could implement his next (more
+advanced) algorithms not as viruses, but as programs similar to the
+one I described. After all, everybody told him that writing viruses is
+not nice even after the first one... He could even publish the sources
+of these (non-virus) programs, although I would prefer to submit them
+only to producers of virus scanners. Of course, somebody could use the
+source to create a virus, but at least it wouldn't be Mark Washburn's
+problem... (as cynical as it sounds :-)) Nope, he deliberately
+prefered to create viruses.... And you call this a mistake? Hmm...
+
+(Speaking about implementing dangerous techniques as non-virus
+programs for demostration purposes. I have written a program, called
+TRASH.COM, which still floats around some anti-virus researchers'
+virus collections and which Dr. Solomon's Anti-virus Toolkit
+identifies as "Trash trojan". This program zeroes out the master boot
+sector of the hard disk, by accessing it though a direct call to the
+ROM BIOS INT 13h handler. The original address of the handler is
+obtained, using the technique, currently known as "interrupt tracing".
+In fact, this program is -NOT- a trojan. I clearly says what it will
+do and requres TWO confirmations from the user, one of which requires
+him to press a weird key combination - Alt-Ctrl-RightShift-F5 or
+something alike, which definitively cannot happen by accident. I wrote
+this program to demonstrate the techinque of interrupt tracing, which
+at that time was used only by the Yankee Doodle virus (yeah, no 4096
+at that time...) and which invalidated the usage of monitoring
+programs much in the same way the 1260 virus invalidates simple
+signature scanning. Unfortunately, none of the producers of monitoring
+programs seemed to know about it at that time.)
+
+Speaking about Mark Washburn's product - no it does not make
+difference for me that it's author is a virus writer. And, of course,
+does not make his heavy mistakes in writing viruses less heavy...
+Nevertheless, my oppinion of the product is: it is really the best of
+the existing monitoring programs, or more exactly - the least bad one.
+It can be easly circumvented, so I would never rely on it to defend me
+against viruses. Besides, it's internally flawed - just like the
+scanners, or the other monitoring programs, or an discretionary
+control system, for that matter...
+
+Just my two cents worth...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    03 Dec 91 21:36:24 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: What's special about LAN's? (PC)
+
+TSHAPIN@BIIVAX.DP.BECKMAN.COM (TED SHAPIN) writes:
+
+> What if anything is special about virus on a LAN?  Is it simply a
+> matter of needing to scan all the network drives when looking for
+> possible virus?
+
+Oh, no, the matter is much deeper...
+
+In fact, a cluster of PCs (and I mean Personal Computers, not just the
+brain-dead IBM child that we all are using... <grin>) is much more
+virus-resistent, if it is well maintained. I emphasize: WELL
+MAINTAINED.
+
+The reason is that in such cluster the users are less likely to
+install new programs (usually there is already a huge collection on
+the server), and tend less to swap software on diskettes, which are
+the primary way for virus spreading. And even in a workstation gets
+infected, if the LAN is WELL MAINTAINED, it is less likely to spread
+the infection further. The ideal would be a disketteless workstation,
+but it is not very useful, IMHO. (Yes, Ken, I know that they're using
+such things at Lehigh after the virus outbreak. :-))
+
+However, if the server gets infected (which generally means that you
+haven't maintained your LAN well enough), the disinfection process is
+a real nightmare. Even if the virus does not do anything destructive
+on the LAN (not intentionally, just because of its author's
+ignorance), you usually have to shut down the entire network, in order
+to clean the virus. Otherwise as soon as you log to the server, it
+infects your workstation, and as soon as you disinfect a workstation,
+it gets reinfected from the server. Usually shutting down an average
+LAN means tens of protesting users and hundreds (if not thousands) of
+$$ lost due to lost worktime....
+
+To summarize: on a LAN you're less likely to get a virus, but if you
+get one, it's less likely that you'll get rid of it easily...
+
+Of course, you're now supposed to ask me what means to maintain a LAN
+well. Here are some rules:
+
+- - Try to keep all the executable, which are shared by the users write
+protected. (Novell users - don't use file attributes for this; use
+file access rights instead.)
+
+- - Give the least possible privileges to the users, and only on a
+need-to-have basis.
+
+- - Keep each user's files write-protected from the other users, execpt
+some special areas, dedicated for file sharing. State explicitly that
+the users must use these areas only to share data files.
+
+- - Any person with superuser (or whatever it is called) rights, must
+have also a regular account (with low privilege rights only) and must
+use only this account for his/her everyday work. S/he must log in with
+superuser rights only when s/he really has to do some job that
+requires these rights and must log out as soon as the job is done.
+
+- - Be careful!
+
+- - And, of course, DON'T PANIC.
+
+Remember, the above rules do not mean that it is impossible to infect
+your system, only that it is more difficult.
+
+Hope the above helps.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    03 Dec 91 21:57:16 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: What the user wants (was Re: Disk Compression) (PC)
+
+PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+
+> I appreciate what Vesselin Bontchev is saying, but it is from the perspective
+> of total security, and what some future viruses (and a few present ones) migh
+t
+> be able to do.  It is worthwhile spending some time on such questions, but it
+> is also reasonable to answer questions like: "What use is a virus protection
+> system that only offers partial protection?". It shouldn't be a rhetorical
+> question; this is what I think the answer is...
+
+OK, it is relatively easy to write a program, which will vaccinate
+your files against the Jerusalem virus and your disk(ette)s against
+the Stoned virus (yeah, yeah, and they could be still bootable). These
+viruses are currently causing about at least 50 % of all the
+infections (and, of course, 86.4 % of all statistics are made up
+<grin>). Make such a program and distribute it betweeen the users.
+We'll see wether the virus infections will decrease. My prediction is
+that they will not, instead other viruses will take the freed
+ecological hole.
+
+The same will happen if you make the spread of all the stupid PC
+viruses impossible - you'll only free an ecological hole for the more
+sophisticated ones (and will get blamed by Fred Waller that your
+program has caused the appearance of more sophisticated viruses).
+
+> worthwhile (like extra disk space), or preferably both.  If it is possible
+> to knock the main viruses on the head, by (for once) having the majority of
+> PC's stopping/slowing the spread of the main viruses, then this could have a
+> major impact both on those individual viruses that have reached epidemic
+> proportions PLUS (I guess) a psychological effect to discourage new virus
+> production.
+
+Discourage them? Ha, you'll only create a new challenge for these
+jerks... And they'll take it immediately...
+
+>(2) You could argue that making it tougher for a virus to survive makes it mor
+e
+> of a game for virus writers.
+
+Exactly.
+
+> Well, it is tougher still for viruses on Unix
+> and VMS systems, but you don't see a lot of viruses there. Unix systems are a
+
+Just wait. With all these Unix boxes sold now we'll have a Unix virus
+problem in the very near future...
+
+> special case perhaps, due to hardware differences, but I suspect the main
+> reasons there aren't plagues of VMS viruses are: (a) Virus writers don't give
+> the idea of tackling VMS a second thought, and (b) Users of the system are
+> more security conscious, because they know the operating system is "serious"
+> about security. PC's are considered "easy meat" by virus writers.
+
+Nope, the reason is that the community of people that have PCs and
+write viruses usually do not have full access to Unix and VMS machines
+and cannot play with them as they wish... I had a friend in Bulgaria
+(he's in the States now), who has hacked the entire DOS for IBM 360
+and used to write some kind of clever channel programs and to didle
+with the privilege bit in the PSW as he wished... He wondered how
+anybody could store anything confidential on a 360... :-) Just to give
+you the impression, I'll add that he used to write machine language
+programs for the 360 as DATA arrays in his FORTRAN programs and to
+call them as subroutines... :-) Also, he had managed to decompile to
+Pascal source the whole UCSD operating system (and he did this alone!)
+and to rewrite it from scratch, so that it became about 30 % smaller
+and 30 % faster....
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De   Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -246     Vogt-Koeln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 230]
+******************************************

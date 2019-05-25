@@ -1,0 +1,634 @@
+precedence: bulk
+Subject: Risks Digest 20.58
+
+RISKS-LIST: Risks-Forum Digest  Friday 17 September 1999  Volume 20 : Issue 58
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.58.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+The Microsoft/NSA Crypto Brouhaha (Dan Wallach)
+Hurricane Floyd stops trains in Michigan (Ed Ravin)
+USA Today weather page - no reasonability check (Bob Dainauski)
+Date failure on weather.com (Eric Remy)
+Emergency Alert System interrupts Hurricane Announcement, and crashes ()
+Hacker attack on NASDAQ, AMEX, and others (Keith A Rhodes)
+Hacker admits attacks on NATO, USIA Web pages (Doneel Edelson)
+Indonesian Year 2000 plans (Fraser McHarg)
+Yet another date-related problem (Geoff Kuenning)
+Smart Dust (Steve Holzworth)
+Re: The real story on Centaur/Milstar (Rick Carter)
+Terrorist bombing botched due to timing error... (Joan L. Grove Brewer)
+NSI blows it again---is there no lower bound to their idiocy? (Lenny Foner)
+HTML on Win Desktop (Robert Graham)
+E-commerce stupidity (Michael Taylor)
+Re: Refrigerator gasket frozen out (Henry Spencer)
+Risks of old RISKS (Ochran Industries)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Thu, 16 Sep 1999 22:57:14 -0500
+From: Dan Wallach <dwallach@cs.rice.edu>
+Subject: The Microsoft/NSA Crypto Brouhaha (Re: Fernandes, RISKS-19.57)
+
+Andrew Fernandes of Cryptonym has publicized an interesting feature of
+Microsoft's Crypto Service Provider (CSP) architecture [1].  Microsoft's
+design goal appears to have been preventing "unauthorized" people from
+writing their own CSP modules and dropping them into Windows (and thus
+circumventing US crypto export policy).  Microsoft's architecture does this
+by verifying a digital signature on the crypto module before loading it.
+
+Microsoft included an additional public key, allegedly belonging to the NSA.
+One might imagine that the NSA, which most likely has homegrown cryptography
+it prefers to use, might want to distribute its own CSP to its clients
+without the intervention of Microsoft.  Microsoft has said in public that
+this is a "backup" key, which is also believable.
+
+My complaint with Fernandes' analysis is his implication that this might
+allow for NSA espionage or some other nefarious activity.  As I understand
+it, Microsoft's architecture has no provision for some third party throwing
+a new CSP module at a target host and forcing it to be installed (whether
+signed by the NSA or not).  If someone truly wished to perform some kind of
+espionage, they would need some other way of breaking into the target
+machine, and would be more likely to install a "remote administration
+service" like Back Orifice than to change out the crypto module.
+
+Needless to say, Fernandes' message has caused a wide range of conspiracy
+theorists to come out of the woodwork (for example, check out the Slashdot
+discussion threads [2]).  Fernandes will claim that this feature still
+"makes it easier" for the NSA to somehow attack you.  This appears to be
+completely wrong.  Indeed, this feature seems to make it much easier for
+parties outside the US to enhance the cryptographic strength of their system
+and thus make it harder for the NSA or anyone else to attack them.
+
+In the past two weeks, this has been discussed ad nauseum in a number of
+technical forums.  The Telcom Digest has some excellent summaries of what
+happened and how Microsoft's CSP architecture works [3].  NTBugTraq has a
+nice article [4], and Bruce Schneier has a concise article on his page [5].
+
+What are the RISKS and morals of the story?
+
+- Elaborate cryptographic architectures designed to obey the US export
+crypto standards may have bugs in them.  It's somehow ironic that a bug in
+Microsoft's CSP architecture effectively allows anyone to install their own
+CSP module, without the permission of anyone.
+
+- Security through obscurity still doesn't work.  People will expend amazing
+energies to reverse engineer code to get around any restrictions it may
+have.
+
+- Going public with a story that sounds tasty to conspiracy theorists will
+get you a lot of press ("Microsoft in bed with NSA, film at 11!"), whether
+or not your arguments are technically sound.  Security researchers thus have
+a responsibility to verify their claims.
+
+And, perhaps most ironic of all, the Clinton administration has now
+announced it is relaxing US crypto export restrictions [6], allowing
+companies like Microsoft to effectively export anything they want, and thus
+rendering the whole CSP architecture an anachronism.  The new policy doesn't
+make crypto completely free of regulation (and Microsoft may yet need to
+keep its CSP architecture around), but that's a topic for another RISKS
+posting.
+
+Dan Wallach, Rice University
+
+[1]http://www.cryptonym.com/hottopics/msft-nsa.html
+
+[2]http://slashdot.org/article.pl?sid=99/09/03/0940241&mode=thread
+(also) http://slashdot.org/article.pl?sid=99/09/09/138209&mode=thread
+
+[3]http://hyperarchive.lcs.mit.edu/telecom-archives/archives/back.issues/recent.single.issues/V19_%23379
+
+[4]http://ntbugtraq.ntadvice.com/default.asp?sid=1&pid=47&aid=52
+
+[5]http://www.counterpane.com/nsakey.html
+
+[6]http://www.wired.com/news/news/politics/story/21786.html
+
+  [Incidentally, I ran the Fernandes item in RISKS-20.57 fully aware that
+  Dan's subsequent discussion was needed to complete the story, but wanted
+  to provide the sequential nature of its unfolding.  PGN]
+
+------------------------------
+
+Date: Tue, 14 Sep 1999 21:00:55 -0400 (EDT)
+From: eravin@panix.com
+Subject: Hurricane Floyd stops trains in Michigan
+
+The US passenger rail company, Amtrak, has announced service changes due to
+Hurricane Floyd - as one might suspect, they are canceling trains to and
+from Miami and North Carolina, but some of the changes reach much farther
+than any of the hurricane's weather effects.
+
+According to Amtrak's Web site, because some Amtrak trains are dispatched
+from the CSX (US freight rail) operations center in Jacksonville, Florida (a
+location where they fear the seas will rise 20 feet due to the hurricane),
+they are canceling trains between Chicago and Grand Rapids, Michigan, as
+well as several other trains to and from Chicago.
+
+The Amtrak notice is at http://www.amtrak.com/news/pr/floyd.html
+
+RISKS-8.70 mentions CSX's Jacksonville computer-assisted dispatch operation,
+and how it consolidated 34 dispatch offices into one big room.
+
+  [Sara Thigpen noted that the shutdown of commuter rail service in
+  the Maryland/Washington D.C. area caused massive automobile commuter
+  traffic problems, well ahead of the hurricane effects.
+
+  Richard Heritage wondered whether CSX has any capability for decentralized
+  operation.  (Apparently not.)  and also wonders what would have happened
+  had the hurricane actually knocked out the Florida dispatching center.
+
+  It has been duly noted by various folks that this centralized control
+  problem might suggest a serious Y2K risk.  We are of course assured
+  that "everything is under control."  <pun intended by PGN>
+
+  Incidentally, I am teaching a course on survivable systems and networks
+  in the Engineering Department at the University of Maryland this fall
+  (see my Web site).  In that context, survivability implies tolerance to
+  arbitrary adversities.  Last week's lecture took place in a lightning
+  storm that knocked out the PC controlling some of the remote feeds.  The
+  third lecture on 16 Sep was cancelled because of the hurricane.  Nothing
+  like self-referential examples to the problem under discussion...  PGN]
+
+------------------------------
+
+Date: Thu, 16 Sep 1999 09:05:36 -0400
+From: radainauski@papl.com
+Subject: USA Today weather page - no reasonability check
+
+With Hurricane Floyd expected to pass through here (Allentown, PA) today, I
+thought I'd check the USA Today weather page for an update.  The forecast
+for is for a record high:
+
+THURSDAY: Rain is likely. The high temperature will be 577 degrees
+                   Fahrenheit (303 degrees Celsius).
+
+I saved an image of the page, which was quickly fixed.  In this instance the
+error is more humorous than RISKy, but it serves as another example of a
+lack of defensive design.  A deficiency which could have significantly more
+serious consequences in other scenarios.
+
+Bob Dainauski - robertd@fast.net
+
+------------------------------
+
+Date: Thu, 16 Sep 1999 17:55:20 -0400
+From: Eric Remy <edremy@chemserver.chem.vt.edu>
+Subject: Date failure on weather.com
+
+Like many others, I use weather.com to get daily weather reports.  Today I
+went to get my "Detailed local forecast" and noted that while the forecast
+seemed accurate so far as I could tell by looking out the window, the date
+on the forecast read April 28.  (It's currently September 16) So is the date
+wrong or am I seeing the forecast for April 28?
+
+The RISK? Normally, this wouldn't be a big deal, save that as of yesterday,
+I didn't know if Hurricane Floyd was going to run over my area.  I'm on the
+fringe of the possible storm track and in the mountains, so I'm not
+following it closely on TV.  As more people being getting news and weather
+reports via the net, Web sites that provide information like this had better
+be very careful to avoid lawsuits.
+
+Eric D. Remy      Chemistry Learning Center Director, Virginia Tech
+edremy@chemserver.chem.vt.edu     (540)-231-9016
+
+------------------------------
+
+Date: Fri, 17 Sep 1999 
+From: [identity withheld by request]
+Subject: Emergency Alert System interrupts Hurricane Announcement, and crashes
+
+On Monday Sept 13th at 5PM the local news stations here in West Palm Beach,
+Florida were reading the latest advisory from the National Hurricane Center
+regarding Hurricane Floyd (winds 155mph) when the Emergency Alert System
+activated and seconds later crashed leaving nothing but a Blue Screen on all
+channels of my Comcast Cable TV System.  This Blue Screen persisted for 20
+minutes or more and prevented reception of the local news which was
+announcing a Hurricane Warning (upgraded from a Hurricane Watch) for the
+local area.  What is worse is that the exact same thing happened just one
+week prior (that time it was for a severe thunderstorm warning and lasted
+for a full 60 minutes).  Comcast doesn't seems to have taken any action
+other than resetting whatever equipment had malfunctioned, no attempt to
+learn from this and prevent it from recurring.  The recent outage was
+widespread enough for the local news anchor to mention it and clarify that
+the outage was not the fault of the TV Station but rather a problem with an
+unnamed Cable TV system.
+
+The new Emergency Alert System (EAS) is supposed to be an improvement over
+the Emergency Broadcast System (EBS) but in this case seems to be a step
+backwards in terms of reliability.
+
+------------------------------
+
+Date: Thu, 16 Sep 1999 09:49:58 -0500
+From: "Keith A Rhodes"<rhodesk.aimd@gao.gov>
+Subject: Hacker attack on NASDAQ, AMEX, and others
+
+ZDNN (http://www.zdnet.com/zdnn/) reported on 16 Sep 1999 that a group
+calling themselves United Loan Gunmen had altered Nasdaq and American Stock
+Exchange Web sites, and claimed responsibility for earlier attacks on
+C-Span, ABC, and Matt Drudge sites.  *The New York Times* (in an AP item,
+http://www.nytimes.com/aponline/w/AP-Nasdaq-Hacked.html) noted that ``The
+hackers left a taunting message -- the high-tech equivalent of
+spray-painting graffiti -- and also claimed to have briefly created for
+itself an e-mail account on Nasdaq's computer.''  [PGN-ed]
+
+------------------------------
+
+Date: Wed, 8 Sep 1999 08:56:18 -0400
+From: "Edelson, Doneel" <doneeledelson@aciins.com>
+Subject: Hacker admits attacks on NATO, USIA Web pages
+
+``Zyklon'' (Eric Burns, 19) has pleaded guilty to Web site attacks on NATO,
+Al Gore, and the USIA, and faces up to 5 years, a $250K fine, and
+restitution.  His Web Bandit program identifies vulnerable sites.  [Source:
+Reuters, 7 Sep 1999, seen on Yahoo! News; PGN-ed]
+
+------------------------------
+
+Date: Mon, 13 Sep 1999 11:18:55 +1000
+From: Fraser_McHarg@nag.national.com.au
+Subject: Indonesian Year 2000 plans
+
+I admit that I haven't been able to verify this report, but if only half true
+the risks are obvious...
+
+PLN, Indonesia's national electricity board, was recently asked by an
+Indonesian newspaper about its Y2K Preparedness.
+
+The reply is a gem:
+
+  "We can observe what happens (at midnight 1999) in Western Samoa, New
+  Zealand and Australia and still have 6 hours to make plans."
+
+Cheers,
+
+Fraser McHarg from the East coast of Australia and contrary to the above report
+we have two hours to make plans after observing New Zealand :-)
+
+  Well, the RISKS archives include cases of systems such as ATMs failing in
+  New Zealand and the fix being effected before midnight in England.  
+  HOWEVER, the complexity of fixing dynamically detected Y2K bugs may be
+  different from some of the previous clock problems.  PGN]
+
+------------------------------
+
+Date: Mon, 13 Sep 1999 23:52:30 -0700
+From: Geoff Kuenning <geoff@cs.hmc.edu>
+Subject: Yet another date-related problem
+
+I was working on a new script last night, and stopped to consider how many
+output columns would be occupied by a Unix timestamp in the semi-standard
+decimal representation.  Nine digits, right?  Always has been, always will
+be... NOT!
+
+The Unix timestamp first hit 9 decimal digits on March 3, 1973, and it has
+been inexorably incrementing ever since.  A quick check with my time
+conversion program tells me that at precisely 01:46:40 UTC on Sunday,
+September 9, 2001, it will need that 10th digit.
+
+This is a much smaller problem than most other date bugs, of course.  But I
+have to suspect that there are a few programs out there that will break, at
+least to the extent of causing an 80-character output line to wrap to 81.
+
+Geoff Kuenning   geoff@cs.hmc.edu   http://fmg-www.cs.ucla.edu/geoff/
+
+------------------------------
+
+Date: Wed, 8 Sep 1999 15:05:48 -0400
+From: Steve Holzworth <sch@unx.sas.com>
+Subject: Smart Dust
+
+From *New Scientist*:
+
+"CLEANLINESS FREAKS have a new rationale for their pathological hatred of
+dust--it could soon be spying on them.
+
+Packed full of sensors, lasers and communications transceivers, particles of
+"smart dust" are being designed to communicate with one another. They could
+be used for a range of applications from weather monitoring to spying. "
+
+See http://www.newscientist.com/ns/19990828/newsstory2.html
+
+Steve Holzworth <sch@unx.sas.com>  Senior Systems Developer
+SAS Institute - Open Systems R&D VMS/MAC/UNIX  Cary, N.C.
+
+------------------------------
+
+Date: Thu, 16 Sep 1999 13:09:54 -0400 (EDT)
+From: Rick Carter <Rick.Carter@umich.edu>
+Subject: Re: The real story on Centaur/Milstar (Ladkin, RISKS-20.57)
+
+There was a third example that comes to mind here.  I clearly remember that,
+probably in the mid 1980s, a shuttle experiment's data was invalidated
+because of a mixup in a parameter [...]
+
+Rick Carter, System Administrator, Physics Dept., University of Michigan
+Rick.Carter@umich.edu
+
+  [I think Rick is referring to the experiment on Discovery (before we
+  began the on-line RISKS, documented in my Risks section of ACM Software
+  Engineering Notes vol 10 no 3, July 1985, and in my Computer-Related Risks
+  book) in which the input "+10,023" for the elevation of a mirror for a
+  laser experiment was interpreted as miles, not feet, resulting in the
+  laser beam being aimed upward (to a point 10,023 miles above sea-level)
+  rather than downward (to a point 10,023 feet above sea-level, at the top
+  of Mona Kea in Hawaii.  PGN]
+
+------------------------------
+
+Date: Sat, 11 Sep 1999 12:52:20 -0700
+From: "Joan L. Grove Brewer -- Mnemosyne" <pegasus@transport.com>
+Subject: Terrorist bombing botched due to timing error...
+
+Last week, Israeli time -- which is not on our western Daylight Savings Time
+-- fell back.  Due to the lack of synchronization between the time in Israel
+and Palestine, which is on Daylight Savings Time, a car bomb went off in
+Haifa one hour earlier than expected, killing the bomber who was still in
+the car.  Israel sets their clocks to coincide with Yom Kippur... :-)
+
+Did time run out for terrorist bombers?
+
+See Barbara Demick, Knight Ridder Newspapers
+http://www.seattletimes.com/news/nation-world/html98/alttime_19990911.html
+
+Joan L. Brewer -- A Muse <pegasus@transport.com>  
+Issaquah, WA 98027  http://www.transport.com/~pegasus
+
+------------------------------
+
+Date: Thu, 16 Sep 1999 15:27:04 -0400 (EDT)
+From: Lenny Foner <foner@media.mit.edu>
+Subject: NSI blows it again---is there no lower bound to their idiocy?
+
+Network Solutions just spammed (apparently) its entire customer base with a
+message that guarantees we'll see a lot of forged mail originating from
+them.  (The message came from integram.org, interestingly enough, but claims
+to be from NSI---thought WHOIS integram.org claims that the admin and
+billing contacts are "no.valid.email@worldnic.net"!)
+
+Parts (a) and (b) of the message said, basically, "you now have to pay in
+advance for a new domain registration" and "we've added you without warning
+to a global directory".  (Big deal---that was already available via NIC
+WHOIS, although I haven't checked the directory to see if it's more
+searchable and thus more subject to abuse.)  [The message is also amazingly
+poorly formatted, but hey, I guess NSI can't be bothered to follow generally
+accepted practices for sending mail that are documented in RFC's...]
+
+But part (c) said [formatting fixed]
+
+    3. Lastly, we are pleased to offer you a FREE e-mail account using our
+    new dot com now mail service. Because it's Web-based, you can use it
+    in the office, at home or on the road. You'll need the following
+    information to set up your account:
+     >>>>>>>>>>>>Login name:  XXXXXXXX
+     >>>>>>>>>>>>Password:    XXXXXXXXnsi
+
+    Please visit http://www.netsol.com/dotcomnowmail to review all the
+    features of dot com now mail and set up your account.
+
+Apparently, -everyone- got the -same- sort of password, making it totally
+trivial to crack.  I've replaced the ID with X's above, but it's a -totally-
+trivial thing to guess.  (Nor do they say which of my various domain names
+it's supposed to be associated with, incidentally.)
+
+This is also being discussed on slashdot.
+
+-And-, to add insult to injury, -of course- their server is now completely
+overwhelmed and is timing out on all queries, which means I cannot -change-
+my password.  I'm hoping that I'll be able to change my password before this
+issue of Risks goes out---even disguising the "foner3" part of the username
+above won't help much, since it's trivially guessable and is presumably
+similarly guessable for everyone -else's- accounts...
+
+P.S.  You can call NSI's toll-free number at 888/642-9675.  I spent 10
+minutes on hold with them, finally got an answer, and said, "Hi there.  I
+just got spam from NSI indicating you'd created an account for me without
+asking me and I need to you to change the password immediately."  They hung
+up on me after the word "spam".  I tried again, was told "only our tech
+people can do this", was left on hold for 15 minutes, and then was dropped.
+
+P.P.S.  Having -finally- gotten through to the URL mentioned in the spam,
+I've now spent 10+ minutes trying to figure out -how- to actually log in and
+change my password.  Still no luck.  Anyone have any clues?
+
+  [Also commented on by Marcus Ranum, David Rochberg, Ben Cantrick,
+  Karl Reinsch, Merlyn Kline, T Byfield, and maybe others.  PGN]
+
+------------------------------
+
+Date: Sat, 11 Sep 1999 17:30:03 -0700
+From: "Robert Graham" <rob@networkice.com>
+Subject: HTML on Win Desktop
+
+HTTP has a feature where it indicates the "Referer", which is the page
+somebody followed to get to your document. RISKS of this field have been
+well documented in the past. Here is a new variant.
+
+I peruse my Web server logs occasionally. I found this particular "Referer"
+item:
+  file:///D|/WINNT/Profiles/lattimm.000/Desktop/home/idsfaq.html
+
+From this, I know:
+
+1. the user name is "lattimm". Discovering the user name is a frequent
+first-step in a hacker attack against a machine.
+
+2. On that machine, Windows NT is installed in D:\WINNT. There are many
+Web-browser attacks that require knowing the exact filename, which is why
+many people (like me) choose to install in a directory other than c:\winnt
+or c:\windows.
+
+Solution:
+
+Don't save HTML files to your desktop. Of course, you could always turn off
+the "Referer" field as well through an add-on product.
+
+Robert Graham, CTO, Network ICE
+
+------------------------------
+
+Date: Wed, 8 Sep 1999 17:34:50 -0300 (ADT)
+From: Michael Taylor <mctaylor@arles.ns.ca>
+Subject: E-commerce stupidity
+
+I recently worked on setting up an e-commerce payment system for my business
+and was surprised with the nonperformance of the "shopping cart" software
+which I had bought from a local e-commerce "solution provider."  While
+configuring and test the site during my setup I had no problems with it, but
+after I opened the storefront I had reports that customers were unable to
+buy anything, not a good thing. It turns out that this "shopping cart" had
+violated the URI specs and while older browsers accepted this, the current
+versions of Communicator and IE did not. This is a simple demonstration of
+the classic risk of caveat emptor, it also demonstrates how "sloppy" Web
+design might be acceptable to current versions of the most popular Web
+browsers, that does not test whether a site is correct (as per HTTP, URI,
+HTML specifications). Of the professional Web site designers I have contact
+with, only one occasionally uses a HTML verifier while the rest just check
+the display of generically configured Communicator and IE browsers.
+
+Since I am involved in e-commerce, a colleague forwarded me a strange e-mail
+recently. It was a bounce message from the back-end of an order processing
+system for a large multinational company who had their "orders" mailbox (or
+related drive) fill up. In original e-mail, and still in the bounced message
+sent to the customer, was an unencrypted copy of all the order information
+including all his credit card information. The risks are obvious, an e-mail
+message which was expect to remain within a "trusted" LAN did not due to a
+simple and common failure of e-mail delivery. It is not clear how many
+administrators at the company and his ISP may have also received unencrypted
+copies of his credit card information.
+
+Michael Taylor   mctaylor@arles.ns.ca  Arles Trading Company   
+Linux / BSD software retailer  http://www.arles.ns.ca/  
+
+------------------------------
+
+Date: Wed, 15 Sep 1999 16:45:33 -0400 (EDT)
+From: Henry Spencer <henry@spsystems.net>
+Subject: Re: Refrigerator gasket frozen out (Lee, RISKS-20.54)
+
+> ... it had to go surface because it was regarded as hazardous cargo.  
+> I assume that is because it is essentially one big magnet ... 
+
+Modern planes generally do still have magnetic compasses, as emergency
+backups for the more sophisticated hardware.
+
+On the other hand, the classification of magnets as hazardous cargo goes
+back a long time, to the days of much smaller aircraft and much less
+sophisticated equipment, when cargo was physically closer to the flight deck
+and magnetic compasses got more use.
+
+On the third hand :-), that sort of aircraft is still in use in a lot of the
+world's backwaters, and there is considerable advantage in having uniform
+hazardous-materials rules, even if that does mean worst-case rules which are
+a bit stricter than necessary in specific situations.
+
+Henry Spencer <henry@spsystems.net> or <henry@zoo.toronto.edu>
+
+------------------------------
+
+Date: Fri, 17 Sep 1999 23:03:51 +1000 (EST)
+From: Ochran Industries <n2585464@sparrow.qut.edu.au>
+Subject: Risks of old RISKS
+
+I came across comp.risks, and decided I wanted to read the previous issues,
+so, starting at volume 1, issue 1, I began reading, using Lindsay Marshall's
+wonderful archive (and have noticed that the more the world changes, the
+risks stay the same!).
+
+I used the gzipped (.gz) version of the original posting, rather than
+the more flashier Web versions, for various reasons.
+
+Until I came to volume 5. Requesting issue one from the archive page, I got
+the response: No such issue. Strange. So I tried issue 2, and got the same
+result. Requested issue 56 - and still got the dreaded "No such issue". So I
+sent an e-mail off to Lindsay, and waited. And waited and waited. So I
+thought that he had seen my e-mail, and ignored it. Which turned out to be
+very, very wrong, on my part.
+
+It turns out that Volume 5 wasn't there due to a disk corruption
+issue. *But*, Lindsay was on holiday, and thus, could never have read my
+e-mail. So while I was sitting here, and reading the html versions, and
+wondering why the problem wasn't getting fixed, Lindsay was totally unaware
+of the problem.
+
+The Risks
+
+1. Archives get corrupted. They 'loose' [lose] files. And you normally don't
+need to worry, until some stranger comes along and finds that bits are
+missing, or things are not as they should be. Or worse, *you* need the
+archives, and find bits missing.
+
+2. Just because you sent that e-mail, don't expect that the person on the
+other end got it. You may have typed the address wrong (easily checked). It
+may have been munched by the maw of the 'net, and gone that place in the
+universe where all e-mails are finally united with their brethren (I don't
+know how common this is, but I assume not very). Or, the person on the other
+end may just not be there. They may be taking a well earned rest from the
+plagues of e-mail they get every day (which turned out to be true). They may
+not care, and the request may be one which should never been sent in the
+first place. And, they may be dead, or missing, and the news just hasn't got
+to you yet.
+
+So how does this story end? Lindsay returned from his holiday, read my
+e-mail, and fixed it but good. I came across another missing issue, 12.72,
+and as soon as it was reported, it was fixed. I'd like to thank you Lindsay,
+for the wonderful job you have been doing, and PGN for such an excellent job
+as moderator, guide, and mover. May both your risks ever be insignificant
+for the rest of all time.
+
+That was a while ago, and had been reading further, when I came across
+17.83, in which PGN mention he had fixed a typo. Leaving out the uneasiness
+which came over me at what amounts to revisionism in my books, the typo had
+not been fixed in the version I read, as Lindsay archives posts direct from
+usenet, not from the archive at SRI.
+
+The RISKS:
+
+1. Having multiple, independent archiving sites is great, unless you change
+something in one archive, and forget about the others.
+
+2. Changing something in an *archive* copy. As the name suggests, these
+represent things *as-they-were*, not as-they-should-have-been.  There is no
+need to change things in earlier versions, as a note in the current version
+("post x in volume y issue z got 'c' wrong, as it is supposed to be
+'d'). Perhaps a pointer to issue z+1 in issue z is okay, as long as it is
+clear it is an addition, and clearly visible as such, but altering archived
+versions of *anything* is skating on thin ice.
+
+westyX   -   n2585464@sparrow.qut.edu.au
+
+  [Don't forget, Lindsay's Newcastle archive is a beautiful mirror of
+  the much simpler SRI archive at ftp.sri.com (cd risks) that merely
+  gives the raw issues.  I certainly believe in redundancy!  
+
+  On those rare occasions when I [change] the SRI archive, I identify the 
+  change, and almost always remember to let Lindsay known.  I think putting 
+  in an occasional N+1 pointer that something will be corrected in the
+  next issue is a very sound practice, because otherwise erroneous stuff
+  tends to propagate without correction.
+
+  And I too thank Lindsay repeatedly for the wonderful job he is doing.
+  I even had a chance to see him in person when I was in Newcastle
+  last week!  PGN]
+
+     [Self-referentially, I fixed two typos in THIS item!  Sorry.  PGN]
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.58 
+************************

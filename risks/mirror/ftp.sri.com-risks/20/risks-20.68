@@ -1,0 +1,666 @@
+precedence: bulk
+Subject: Risks Digest 20.68
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 14 December 1999  Volume 20 : Issue 68
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.68.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+RST discovers defective crypto in Netscape mail password saver (Gary McGraw)
+Canada Post has "electronic post" on line (Alan DeKok)
+Sanity.com: buy now, pay never (David Shaw)
+A Tale of Two Web Sites: Calling it secure doesn't make it so (Steven J. Zeil)
+IDs in color copies and prints: confirmed (Lauren Weinstein)
+BBC Censorship! (Peter McWilliams via Lindsay Marshall)
+Melissa perpetrator faces five years in prison (NewsScan)
+Oh, no! Y2K virus competitions (Ross Stewart via Peter de Jager)
+Re: No bounds checking in Microsoft RTF controls (meeroh)
+Slashes in spreadsheets (Christopher Warnock, David Empson)
+Risk of APC Power Chute (Geoffrey Coram)
+Risks of e-mail monitoring (Thomas Roessler)
+Re: Counterfeit Japanese coins and resulting risk... (Henry Spencer)
+Re: Ladbroke Grove (Mark Brader)
+USENIX Security Symposium 2000 - A Call for Papers (Moun Chau)
+Call for Papers - Safecomp 2000 (Gemma Windt-Krose)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Mon, 13 Dec 1999 17:18:18 -0500
+From: Gary McGraw <gem@rstcorp.com>
+Subject: RST discovers defective crypto in Netscape mail password saver
+
+Because remembering your passwords is a pain (you do have more than one,
+don't you?), many programs are set up to remember them for you.  Exactly how
+they do this is a risky business.  Netscape didn't do it right.  Beyond simply
+stealing e-mail passwords, our discovery provides a gateway to other accounts
+and systems since people generally use the same password
+everywhere. Netscape has been notified of the flaw.
+
+The POP3 and IMAP protocols are often used to read e-mail on a home or
+office PC from a central mail server.  As a convenience to the user, many
+programs offer to remember the user's password.  When Netscape offers to
+save your e-mail password, it is encrypted before being stored in the
+registry or preferences file on your computer.
+
+Unfortunately, the encryption algorithm used by Netscape to scramble
+passwords is exceptionally weak.  Tim Hollebeek, an RST Research Associate,
+and John Viega, a member of the RST Software Security Group, were able to
+deduce the algorithm after only eight hours of work.  No reverse engineering
+of the software was involved.  Instead, a few hundred carefully chosen
+passwords were analyzed using pencil and paper.  The algorithm turns out to
+be a simple combination of XOR with a constant key and a substitution cipher
+weaker than those found in puzzle magazines. For more details, see
+http://www.rstcorp.com/news/bad-crypto.html
+
+Once the cipher is known, recovering a POP3 or IMAP password stored on a
+machine is trivial.  Any attacker with physical access to the victim's
+machine or the ability to run code on it can use our exploit.  Additionally,
+passwords can be stolen from some versions of Netscape remotely using
+Javascript.
+
+RST has created a working password snagging attack in the lab.  A successful
+attack allows the bad guy to download and read a victim's e-mail from a
+remote machine. Since careful use of the hack would not leave too many
+obvious clues, a victim's e-mail could be snooped indefinitely.  The only
+workaround is to turn off the ``remember password'' feature.
+
+Though stealing mail alone is a very serious security/privacy problem, more
+dangerous scenarios exist. The largest risk is that people use the same
+password for POP3 and other logins to remote machines (and maybe even their
+PGP passphrase).  In particular, many people use IMAP or POP3 to access work
+related e-mail from home, and their mail password is also the login password
+they use at work.  In fact, the login account and the mail account are often
+the same.  Home computers are notoriously insecure and easy to penetrate.  A
+malicious attacker can read the POP3 password stored on an insecure home
+computer (often over the net) and use it to log in to a more secure machine
+run by the victim's employer.  The attacker can then take control of an
+account, read sensitive information, attack more privileged accounts, and
+set up remote monitoring systems inside a corporate network.  Our exploit
+code could also be used as a payload in a much more insidious version of
+Melissa.
+
+  Quote of the day: ``We didn't do this with just a pencil and some paper.
+Lots of our notes are in pen.  We didn't need to erase much.'' Tim Hollebeek
+& John Viega
+
+  Other quote: ``This is another illustration of how bad closed,
+proprietary, cryptography is.  What makes this vulnerability particularly
+nasty is that people tend to use the same passwords over and over again.  If
+you can attack someone's mail server password, you're likely to also have
+their login password, PGP password, etc.  Software security is important.''
+Bruce Schneier
+
+Gary McGraw, Ph.D., Vice President, Corporate Technology
+Reliable Software Technologies  http://www.rstcorp.com
+
+------------------------------
+
+Date: Tue, 30 Nov 1999 19:02:41 -0500
+From: Alan DeKok <aland@striker.ottawa.on.ca>
+Subject: Canada Post has "electronic post" on line
+
+Canada Post has recently been announcing it's new on-line mail service,
+"epost", at http://www.epost.ca/.  They claim it's a secure on-line service
+for handling mail and bills via the web, as if it's something new and
+unique.
+
+Why would I need an on-line central post office if I can PGP encrypt/sign my
+messages, or use a corporations SSL-enabled web site to view and pay my
+bills?
+
+In addition, they still fall into the standard security traps.  Your
+"secure" e-mail is stored on their servers, where it is vulnerable to non-web
+based attacks.  This is equivalent to having the paper version of the post
+office open and sort all of your mail for you.
+
+Their security statement at
+
+      http://www.epost.ca/guided/english/why_2a.html
+
+has the following wonderful quote:
+
+   If you are accessing your ELECTRONIC POST OFFICE BOX[tm] using a Web
+   browser, you do not need to worry about viruses since no data are
+   exchanged between the computer you are using and our system.
+
+Umm... right.  How many security related browser bugs have their been in the
+past year?
+
+Alan DeKok
+
+------------------------------
+
+Date: Tue, 30 Nov 1999 16:00:58 +1100
+From: David Shaw <David.Shaw@alcatel.com.au>
+Subject: Sanity.com: buy now, pay never
+
+The following is a summary of an article found on page 101 of the
+*Sydney Morning Herald*, Saturday November 27, 1999.
+
+Sanity.com's web-site, www.sanity.com.au, an online audio CD shop, was
+launched on October 18, 1999 with a significant flaw. It was possible to
+order CDs and not have to pay for them.
+
+Reports of the flaw resulted in Internet users swamping the web-site,
+prompting an official to say "We're close to having a meltdown."
+
+The problem with the site began with a design flaw which was originally
+contrived to make life easier for consumers. Customers are given the
+option of ordering a CD online but are not required to enter their credit
+card details online if they feel uncomfortable about security.
+
+The intention is of course that these customers would phone, fax or
+e-mail their credit card details before receiving their goods. However,
+the site does not tell consumers the phone numbers or e-mails to use to 
+pass on credit card details.
+
+Customers who omitted their credit card details soon discovered they
+received the CDs anyway. Invoices obtained by the *Herald* showed that
+the "payment by" field was left blank.
+
+Global Fulfilment, a US-based company, which provides the technical,
+financial and ordering system for the site, denied any technical error,
+but did reveal that the Sanity.com website had not installed an automated
+credit card processing system in the first few weeks of operation.
+
+Sanity.com has cut its relationship with Global Fulfilment for the
+technical design of the site, which will now be done on-site. Global
+Fulfilment will still provide coordination and fulfilment of CD orders.
+
+Sanity.com's shares are set to debut on the Australian Stock Exchange (ASE)
+today (Tuesday November 30, 1999) after an AUD$8.4m float of 14%.
+Sanity.com maintains it lost no substantial revenue due to the free CDs and
+is therefore under no obligation to file a prelisting disclosure to the ASE.
+Sanity.com has stated that the problem has been fixed and that no customer
+would be retrospectively billed for any free CDs.
+
+David Shaw, Alcatel Australia Limited     david.shaw@alcatel.com.au
+
+  [I eschewed any spelling corrector's suggestions of Fulfillment
+  or Fulfilament.  PGN]
+
+------------------------------
+
+Date: Thu, 9 Dec 1999 13:19:59 -0500
+From: szeil@notesmail.cs.odu.edu
+Subject: A Tale of Two Web Sites: Calling it secure doesn't make it so
+
+My wife was recently engaging in some on-line Christmas shopping, and
+stopped short of placing orders with two merchants because the usual "secure
+site" icon was not being displayed on the web browser's status line (both
+the latest versions of Netscape and Internet Explorer flagged the pages as
+unsecured).
+
+The first point of interest was that both sites featured prominent "This
+site is secure" assurances, with links to pages explaining that they use
+secure servers to protect credit card and other customer information.
+
+A little investigation showed that the first site, http://www.toysrus.com,
+really was using a secure https server, but the secured page was appearing
+as a frame inside a larger page from an unsecure server, thus fooling both
+browsers into displaying the "unsecured" icon.
+
+The second site, http://www.thesportsauthority.com, showed no signs at all
+of using any security mechanism despite their stated "Privacy and Security
+Policy".  We sent a message to their customer service address complaining of
+this fact and asking if they would honor the sale prices advertised on their
+web site even if we were to call their toll-free number and place the order
+by telephone.  Their response absolutely floored us:
+
+  "Thank you for writing to www.thesportsauthority.com.
+
+  We apologize for any problems you are having using our site and appreciate
+  your concerns and criticism regarding security.  Please try placing your
+  order again, as there has been ongoing adjustments to the pages.  All our
+  orders in the online store are placed via the Internet, even if you were
+  to call us." [remainder omitted]
+
+In other words, whether you click or whether you call, your credit card
+number is going out over the net via plain-text!
+
+So, one site that is secure masquerades as insecure. Another is truly
+insecure, whether you use it or not!
+
+Steven J. Zeil                           http://www.cs.odu.edu/~zeil
+Dept. of Computer Science  Old Dominion University  Norfolk, VA 23529
+
+------------------------------
+
+Date: Wed, 08 Dec 99 14:52:59 PST
+From: Lauren Weinstein <lauren@vortex.com>
+Subject: IDs in color copies and prints: confirmed
+
+Greetings.  In my latest PRIVACY Forum Digest, I've presented
+a report confirming the fact (well known in the copier trade,
+but something of an urban legend for everyone else) that xerographic
+color copiers/printers include "steganographically" encoded IDs.
+Essentially, these IDs are encoded repeatedly as part of the
+background "noise" in images, and cannot be decoded without
+knowledge of the proprietary algorithms involved.
+
+The full report can be viewed at:
+
+http://www.vortex.com/privacy/priv.08.18
+
+In that report, I mentioned the possibility of such IDs being implemented
+within inexpensive, consumer-level equipment.  This could include both
+copiers and such widely-used devices as inkjet printers.  Those readers who
+might question this possibility might wish to take a look at:
+
+http://www.bep.treas.gov/countdeterrent.htm
+
+which is a Bureau of Engraving and Printing procurement offering
+dealing with precisely these issues.
+
+--Lauren--
+Lauren Weinstein
+lauren@vortex.com
+Moderator, PRIVACY Forum - http://www.vortex.com
+Co-Founder, PFIR: People For Internet Responsibility - http://www.pfir.org
+
+------------------------------
+
+Date: Fri, 3 Dec 1999 13:11:54 +0000 (GMT)
+From: Lindsay.Marshall@newcastle.ac.uk
+Subject: BBC Censorship!
+
+This item was in rec.humor.funny. If you go to
+<http://www.bbc.co.uk/home/today/> and try the "E-mail a friend" button,
+you can verify that this indeed happens.
+
+----- Original Message -----
+From: Peter McWilliams <petermcw@geocities.com>
+Newsgroups: rec.humor.funny
+Sent: Friday, December 03, 1999 3:30 AM
+Subject: BBC Censorship!
+
+> The BBC web pages have links which allow you to send web pages to e-mail
+> addresses and to include a text message.
+>
+> I just sent myself a page with the word Saturday in the body of the
+> message. It arrived with the word changed to Sa****ay!
+>
+> Hmmm. So I tried sending...
+>
+> >"I hope you still have your appetite for scraps of dickens when I bump
+> >into you in class in Scunthorpe, Essex on saturday"
+>
+> Yes! It replied...
+>
+> >"I hope you still have your appetite for s****s of dickens when I ***p
+> >into you in class in S****horpe, Es*** on sa****ay"
+>
+> Missed the t**, the a** and the d*** though.  [* This line PGN-ed]
+
+> Peter Mc*****ams
+
+> Selected by Jim Griffith.  MAIL your joke to funny@netfunny.com.
+> Attribute the joke's source if at all possible.  A Daemon will auto-reply.
+>
+> Jokes ABOUT major current events should be sent to topical@netfunny.com
+> (i.e., jokes which won't be funny if not given immediate attention.)
+> Anything that is not a joke submission goes to funny-request@netfunny.com
+> For the full submission guidelines, see http://www.netfunny.com/rhf/
+>
+> This joke's link: http://www.netfunny.com/rhf/jokes/99/Dec/censorship.html
+
+    [* The other parts (of speech!) have been truncated in 
+    the name of Internet Decency.  PGN-Petered out, I guess]
+
+------------------------------
+
+Date: Thu, 09 Dec 1999 09:32:30 -0700
+From: "NewsScan" <newsscan@newsscan.com>
+Subject: Melissa perpetrator faces five years in prison
+
+David L. Smith, the New Jersey computer programmer who has pleaded guilty to
+having created the Melissa virus that infected more than 100,000 computers
+worldwide and caused an estimated $80 million in damages, is likely to face
+a sentence of five years in federal prison.  Security expert and former
+prosecutor Mark D. Rasch says, "The federal government is trying to send a
+message that they take these kinds of Internet crimes very seriously. This
+is also a recognition that a single individual has the ability to cause tens
+of millions of dollars of damage." (*The New York Times*, 9 Dec 1999,
+http://www.nytimes.com/; NewsScan Daily, 9 Dec 1999)
+
+------------------------------
+
+Date: Wed, 08 Dec 1999 13:23:21 +1300
+From: Ross Stewart <ross@wilsonwhite.co.nz>
+Subject: Oh, no! Y2K virus competitions 
+
+   [Via: Peter de Jager <pdejager@year2000.com> (tel 1-905-792-8706)]
+
+>X-Sender: ars@pop.wilsonwhite.co.nz
+>To: y2k_group@year2000.co.nz
+>
+>I don't have a lot of patience nor tolerance for those who use their
+>talents to try and stuff up my life nor those of my staff by developing
+>ever more sophisticated and warped viruses.  All it does is cause us grief
+>and hinders us from finding good jobs for smarter, more honourable and
+>usually more intelligent IT professionals.
+>
+>We have just received a warning from an anti-virus specialist (poacher
+>turned gamekeeper ?) about some idiots in Holland who have established a
+>competition for the best Y2K virus.  The p[i?]rates involved have set up 
+>"game rules" with the only requirement being that each entry has to be a
+>virus/trojan or backdoor, and preferably related to the Millennium Bug or
+>the year 2000.
+>
+>Quoting (after editing) from the site :
+>"The viruses that will be sent for the Y2K infection feast [sic] will be
+>sent 4-5 days before the release to AV companies. The one that gets
+>detected last will be the winner."
+>
+>Words fail me.
+>
+>I'm told there are almost 50,000 viruses floating around the world
+>now.  It's a real pain that some stupid ***** ***** is going to further
+>waste my time over Y2K, just when I don't need the hassle.  I'm sure you
+>don't either.
+>
+>What to do?
+>
+>We're disconnecting our e-mail servers from the WWW and setting up an e-mail
+>service on a standalone PC.  This standalone machine will do ALL e-mail
+>downloads from real soon now until well after New Year.  We'll keep that
+>machine loaded to the gunwales with the latest anti-virus software and will
+>endeavour to ensure that any virus outbreaks are thus contained.
+>
+>We strongly suggest you seriously consider doing the same.
+>
+>We'll pass CVs internally across to other "more sensitive" machines in .rtf
+>format (using rtf avoids Word-type macro viruses).
+>
+>Remember also that the major anti-virus companies have all agreed to
+>provide FREE 90-day versions of their software to cover this period.  GET
+>SOME !!!  before 31 December via http://www.year2000.co.nz/y2k8.htm#antivirus
+>
+>Lastly, remember to pull the power cord/s out of the wall socket/s when you
+>go home before New Year, a simple method of avoiding any possible surge
+>damage to electronic equipment.
+>
+>Thinks : Wouldn't it be nice if we could have a quiet Y2K period ????
+>
+> A R (Ross) Stewart, Wilson White Group, Auckland, New Zealand
+> ross@year2000.co.nz http://www.year2000.co.nz/  ross@wilsonwhite.co.nz
+> ph: +64(9)307-3869 (posted at http://www.year2000.co.nz/y2kema21.htm)
+
+------------------------------
+
+Date: Wed, 01 Dec 1999 18:28:12 -0500
+From: meeroh <meeroh@MIT.EDU>
+Subject: Re: No bounds checking in Microsoft RTF controls (Downes, R-20.66)
+
+>I can think of hundreds, thousands, hundreds of thousands of loops I
+>have written and seen over the years, everyone of course having a bounds
+>check built in. I mean, this is very _basic_ programming, isn't it?
+>  for (cp = buf; cp < buf + BUFSIZE; cp++)
+>    /* * */
+
+It may be worth pointing out that a more correct way of implementing this
+loop is
+
+  size_t size = BUFSIZE;
+  while (size-- > 0) {
+     /* ... */
+  }
+
+The original code fails in the subtle case when buf + BUFSIZE extends past
+the end of the address space. Note that the ANSI C guarantee that you should
+be able to compute the address of the first element beyond the end of a
+named array doesn't apply if buf is dynamically allocated.
+
+This common idiom, while it's guaranteed to work if buf is a named array of
+characters, will fail if buf was dynamically allocated -- yet almost every
+programmer I've seen uses the same idiom for both cases.
+
+(See Writing Solid Code by Steve Maguire, p 132.)
+
+meeroh
+
+PS. Yes, I do realize that in the context of a local buffer with hardcoded
+size, which was the topic of the original post, this idiom is okay.
+
+meeroh@mit.edu | <http://meeroh.mit.edu/meeroh/> | MIT I/S Mac developer
+
+------------------------------
+
+Date: Mon, 22 Nov 1999 08:04:31 -0500
+From: "Christopher Warnock" <cwarnock@rocs.com>
+Subject: Slashes in spreadsheets (Re: Quirk, RISKS-20.64-65)
+
+The "slash" usage in Excel can be changed quite easily to another character
+or to nothing at all, effectively being disabled.  In Excel, under
+Tools/Options, select the "Transition" tab and you will see the text
+"Microsoft Excel menu or Help key:" and this will have a text box to the
+right of it containing a "/" character.  In this text box, type the
+character that you wish to use for this function and then select the "OK"
+button.  Leave this text box blank to disable the functionality.
+
+Christopher Warnock, CCNA, Senior Network Architect 
+Resource One Computer Systems V: 614.228.8165 F: 614.241.5810
+
+------------------------------
+
+Date: Tue, 23 Nov 1999 01:21:57 +1300
+From: dempson@actrix.gen.nz (David Empson)
+Subject: Slashes in spreadsheets (Re: Quirk, RISKS-20.64-65)
+
+> From: Kent Quirk <kent_quirk@cognitoy.com>
+>
+> [Lotus] 1-2-3's menu system (before any attempt at GUI standards and
+> before the mouse was common) was invoked by hitting slash. Once you got
+> used to it, you really really liked it. So /fr was "menu file retrieve",
+
+It is even older than that: the slash key was used in the same manner by the
+original spreadsheet program: VisiCalc running on an Apple II (circa 1980).
+
+David Empson <dempson@actrix.gen.nz>
+Snail mail: P O Box 27-103, Wellington, New Zealand
+
+------------------------------
+
+Date: Tue, 7 Dec 1999 18:19:28 -0500
+From: Geoffrey Coram
+Subject: Risk of APC Power Chute
+
+I recently installed APC's Power Chute Plus for Win98/NT, which allows
+control of various features of their UPS devices.  I was surprised when I
+started the program that it listed two possible devices, mine and another
+machine in my building.
+
+It turns out that the default installation of PC+ sets up the installation
+directory as shared to everyone in your workgroup - perhaps a fine idea for
+corporate networks, but not the right idea for cable modems and campus dorms
+(my case).  I don't want my neighbors to have the ability to simulate a
+power failure - with the loud warning beep - at 4 AM, or otherwise mess with
+the settings.
+
+I happened to have file sharing turned off, so the properties of the
+directory were ignored.  I was surprised that this was not mentioned during
+the install process, but instead buried in the help file.  APC tells me they
+will consider my recommendation to switch the default, and let the
+(presumably) more knowledgeable corporate network administrator enable the
+feature if he wants it.
+
+Just another risk of shared networks.
+
+gjcoram@nospam.mit.edu
+
+------------------------------
+
+Date: Wed, 8 Dec 1999 00:46:48 +0100
+From: Thomas Roessler <roessler@guug.de>
+Subject: Risks of e-mail monitoring
+
+In some small firms, a simplistic approach may be applied to monitor
+employees' electronic mail: A responsible person inside the firm receives a
+copy of each incoming message, and possibly carbon copies of outgoing
+messages.
+
+The privacy problems of this approach are obvious, however, they are not
+what this is about.  In fact, there is another risk for the person who
+*receives* the message copies which is not completely obvious.
+
+This risk is closely linked to the way in which most e-mail clients in
+common use today display message overviews to users.  In most cases, users
+are pesented a list of message senders and subjects.  The list of recipients
+is not shown, and no indication of the recipient is given, since the
+software assumes that every message in the user's inbox is intended for him.
+(There are exceptions from this, for instance the pine and mutt e-mail
+clients for Unix.)
+
+Given no help from the software, the user will make up his own mapping from
+the information presented to him (i.e., subjects and message senders) to
+recipients. In particular, when there are some message senders who
+correspond with one or two employees on a regular basis, the person doing
+the monitoring will mis-recognize messages from these senders which are
+actually directed to her, and not to the senders' usual correspondence
+partners.  The monitoring personnel may even delete these messages unread
+when the correspondence between the parties in question is not considered
+worth the effort of closer monitoring.
+
+Given that the monitoring personnel might frequently be senior employees,
+this effect may even lead to the loss of particularly important e-mail
+messages sent by clients to these senior employees.
+
+
+The cure?  Use e-mail clients which tell you whether your e-mail is personal
+or not.  Or, even better, use a reasonable e-mail monitoring policy which
+(1) avoids the privacy implications of the simplistic scheme and (2) makes
+it possible to easily distinguish surveillance output from personal
+messages.  Finally, senior employees may just be forced to read *all*
+messages which reach their e-mail inbox.  However, this may not be an option
+depending on the amount of noise introduced by the monitoring.
+
+------------------------------
+
+Date: Tue, 7 Dec 1999 18:59:14 -0500 (EST)
+From: Henry Spencer <henry@spsystems.net>
+Subject: Re: Counterfeit Japanese coins and resulting risk... (Opie, R-20.67)
+
+>The lesson to comp.risks?  Of course, that assumption that a coin is a coin.
+
+Unfortunately, merely returning the customer's own coin is not sufficient.
+Unless there are other restrictions, it's almost as easy for the crook to
+make some trivial purchase, requiring most of his supposed money to be
+returned as change.  (This is a common counterfeiter tactic, although in
+the past it has usually been applied to humans rather than machines.)
+
+Henry Spencer  henry@spsystems.net  (henry@zoo.toronto.edu)
+
+------------------------------
+
+Date: Mon, 6 Dec 1999 17:37:44 -0500 (EST)
+From: msb@vex.net (Mark Brader)
+Subject: Re: Ladbroke Grove (RISKS-20.62)
+
+In the first item on the Ladbroke Grove rail accident, the number of deaths
+was given as "at least 70".  It turned out that that number included a large
+number of people that simply *might* have been on the train and could not be
+immediately located.  Based on information I got from Clive Feather, there
+were only 30 deaths that day (including the two drivers), plus one more who
+died from burns on 3 Nov 1999.
+
+------------------------------
+
+Date: Mon, 6 Dec 1999 19:39:27 GMT
+From: moun@usenix.ORG (Moun Chau)
+Subject: USENIX Security Symposium 2000 - A Call for Papers
+
+9th USENIX Security Symposium 2000 Conference
+August 14 - 17, 2000
+Denver, Colorado, USA
+Conference URL: http://www.usenix.org/events/sec2000
+
+The USENIX Security Symposium brings together researchers, practitioners,
+system administrators, systems programmers, and others interested in the
+latest advances in security and applications of cryptography. The keynote
+speaker is Dr. Blaine Burnham, Director of the Georgia Tech Information
+Security Center (GTISC) and formerly Program Manager for the National
+Security Agency (NSA) at Ft. Meade, Maryland.
+
+We are currently seeking submissions for Refereed Papers, Works-In-Progress
+Reports, Talks/Panel Session proposals, and Tutorial presentation proposals
+for this event. If you are working in any practical aspect of security or
+applications of cryptography, the program committee urges you to submit a
+paper.
+
+Please see the detailed author guidelines, which include a sample abstract,
+for more information.
+  http://www.usenix.org/events/sec2000/cfp/guidelines.html
+
+* Paper submissions due: 10 Feb 2000
+
+USENIX Security Symposium 2000 is sponsored by USENIX, the Advanced
+Computing Systems Association, in cooperation with the CERT Coordination
+Center. USENIX is an international membership society.
+
+------------------------------
+
+Date: Thu, 2 Dec 1999 16:11:49 +0100 
+From: "Windt-Krose, Gemma" <g.j.m.vanderwindt-krose@tbm.tudelft.nl>
+Subject: Call for Papers - Safecomp 2000
+
+SAFECOMP 2000 Call for Papers
+
+          19th International Conference on
+     Computer Safety, Reliability and Security
+
+  October 25-27, 2000 	 ROTTERDAM, The Netherlands
+
+Papers are invited on all aspects of state-of-the-art, experiences and new
+trends in the area of computer safety, reliability and security regarding
+critical applications of computer systems.  Special topics include security
+relevant to safety, human factors, hardware solutions, verification &
+validation, distributed systems, and safety-critical y2k experiences.
+Special themes are on medical systems, transport & infrastructure systems,
+and software process improvement. Contributions from research, industrial
+applications and experiences, and on licensing questions are welcomed.
+
+====> Paper submission DEADLINE: FEBRUARY 15, 2000 <====
+
+MORE INFORMATION:
+     http://www.wtm.tudelft.nl/vk/safecomp2000
+     E-mail: safecomp2000@wtm.tudelft.nl
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ Also, new AUSTRALIAN archive http://mirror.aarnet.edu.au/risks/ 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.68 
+************************

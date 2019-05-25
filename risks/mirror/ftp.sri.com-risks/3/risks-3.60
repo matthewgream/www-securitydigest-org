@@ -1,0 +1,424 @@
+20-Sep-86 09:08:05-PDT,21148;000000000000
+Mail-From: NEUMANN created at 20-Sep-86 09:04:54
+Date: Sat 20 Sep 86 09:04:54-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS-3.60
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest, Saturday, 20 September 1986 Volume 3 : Issue 60
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Sanity checks (Roy Smith)
+  Viking Flight Software working the `first' time? (Greg Earle)
+  A million lines of code works the first time?
+    (Anonymous, Dave Benson, Herb Lin)
+  Re: Massive UNIX breakins at Stanford (Scott E. Preece)
+  Re: Protection of personal information (Andy Mondore, Herb Lin)
+  Announcement of Berkeley Conference on the SDI (Eric Roberts)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.
+  Summary Contents in MAXj for each i; Vol 1: RISKS-1.46; Vol 2: RISKS-2.57.)
+
+----------------------------------------------------------------------
+
+Date: Fri, 19 Sep 86 16:43:39 edt
+From: allegra!phri!roy@seismo.CSS.GOV (Roy Smith)
+Subject: Sanity checks
+Organization: Public Health Research Institute, NYC, NY
+
+	I'd like to relate 3 incidents along the lines of people willing to
+believe anything the computer tells them, what I call the "if it's on
+green-bar, it it must be true" syndrome.
+
+	Incident #1 was two weeks ago.  I got 2 items for $5.95 and $8.95
+at our local Radio Shack.  There was no tax on this sale and I quickly came
+up with $14.90 in my head (if that's not right, I'm going to be *really*
+embarrassed).  The sales clerk grabbed a calculator and came up with $14.93.
+I'm not so upset at the fact that he came up with the wrong sum, but that
+he didn't apply the trivial check that if you have a bunch of numbers, all
+ending in 0 or 5, the sum must also end in 0 or 5.  Moral:  Always check
+your results for sanity and never trust the clerks in Radio Shack.
+
+	Incident #2 was a few days later.  In a discussion of very large
+memories I mentioned that 200 bits is the biggest address you would ever
+need and that 2^200 was about 10^40 (see usenet's net.arch for the past few
+weeks).  How did I come up with that?  Easy, I just fired up a desk
+calculator program, typed "2^200" at it and it typed back "1.70141e+38".
+
+	Now, I *knew* this was too small (at 3 or 4 bits per decimal digit
+I expected about 10^65) so I tried it again.  Since it gave the same answer
+again, I figured it must be right.  Of course the problem was overflow (you
+would think that by now any time I see a Vax print out 1.7e38 a bell would
+go off in my head).  This is even worse than the clerk in Radio Shack; here
+I had 2 reasons to suspect the answer was wrong and I still blindly
+believed what the computer told me!  Moral: Always check your results for
+sanity and don't get a big head thinking you're smarter than the clerks at
+Radio Shack.
+
+	Incident #3 was a few years ago.  We got a FORTRAN program to
+predict protein secondary structure (feed it a sequence and it says where
+it's alpha-form and where it's beta).  We fired it up and it ran so we put
+it into production use.  It showed a lot more beta then we expected, but it
+never occurred to us to suspect the program -- the algorithm was known to
+slightly over-predict beta and we were perfectly willing to believe that
+the outrageous amount of beta we were getting was due to that.
+
+	To get to the point, the program was from a Vax and we were running
+it on a pdp-11.  The input (3-letter codes) was stored in INTEGER*4's,
+quitely truncated to INTEGER*2's by the compiler.  Most of the codes are
+distinct in the first 2 letters so this was usually ok.  It was, however,
+turning aspartic acid into asparagine (asp->asn) and glutamic acid into
+glutamine (glu->gln); both those substitutions tend to result in more beta
+form!  It was weeks before somebody spotted that the annotated sequence the
+program printed out didn't match the input.  Moral #1: Always use sanity
+checks, but don't blindly rely on them; if your check is "x > y", think
+before you accept "x >> y" .  Moral #2: If the program provides aids like
+echo printing of input, use them.  Moral #3: If you're modifying a program
+or porting it to a new machine, do regression testing.
+
+------------------------------
+
+Date: Wed, 17 Sep 86 21:35:44 pdt
+From: elroy!smeagol!gorbag!earle@csvax.caltech.edu (Greg Earle)
+To: RISKS@csl.sri.com
+Subject: Viking Flight Software working the `first' time?
+
+Correct me if I am wrong, but for any spacecraft that I know of, virtually
+every major spacecraft function can be exaustively tested on the ground
+before the thing ever leaves the pad.  About the only thing you can't test
+(obviously) is the software to actually physically separate the lander from
+the command module on descent into the atmosphere.  Everything else, to
+my knowledge, can be covered pretty thoroughly.  The projects that I am
+associated with, here at JPL, are involved with test sets that test all
+the functions of the spacecraft Command Data Subsystem (CDS) which is also
+called the Payload Data System (PDS) on Mars Observer.  In other words,
+this exercises the flight software that resides in the command data subsystem,
+and telemetry streams are initiated, commands are uplinked, etc. etc.
+
+Now maybe we want to pick nits and say "Well it worked the first time in
+Actual Outer Space Usage", which is true, but considering the amount of
+testing done beforehand (we are now testing breadboard CDS's for missions
+that won't launch until at least 1991), 'tis not all that surprising
+when it works ...
+
+	Greg Earle		UUCP: sdcrdcf!smeagol!earle; attmail!earle
+	JPL			ARPA: elroy!smeagol!earle@csvax.caltech.edu
+        AT&T: +1 818 354 0876   earle@JPL-MILVAX.ARPA
+				
+------------------------------
+
+Date: 18 Sep 86 20:21:00 EDT
+Subject: Anonymous contribution
+To: risks-request@sri-csl
+Re: "a million lines of code and it worked the first time", or words to 
+    that effect, from an SDI spokesman referring to a recent test.
+
+Let's take this with a grain of salt.  I have seen a large system (over
+100,000 lines of high-level language) "work the first time". By this I
+mean that in the first live test of the system, it performed as designed
+with no errors.  That software had been designed and programmed by a
+small, close-knit group of experienced real-time programmers, and had
+been extensively tested at the module level with drivers and stubs, and
+also at the system level using a very realistic simulation. (Also bear
+in mind that the first live test of *any* system is likely to be quite
+conservative in its objectives; it's likely that only a small fraction
+of all possible paths through the code will actually be exercised.) 
+Furthermore, the 100K lines of code that made it to the first live test
+were by no means the original, first-cut 100K lines written (although a
+gratifyingly large percentage of them were, thanks to good design
+practices.) 
+
+If the SDI test were a similar situation -- well-designed, thoroughly
+pre-tested software that worked well on its initial, conservative live
+test -- then it's at least plausible.  If, on the other hand, the
+spokesman actually meant "we coded up 1,000,000 lines and then tried
+them and they all worked" -- then I'd have to see some proof (in fact, a
+*lot* of proof) before I'd believe it. 
+
+------------------------------
+
+Date: Tue, 16 Sep 86 16:56:14 pdt
+From: Dave Benson <benson%wsu.csnet@CSNET-RELAY.ARPA>
+To: risks%csl.sri.com@CSNET-RELAY.ARPA
+Subject: A million lines of code works the first time?
+
+ |Heard on NPR's "All Things Considered" yesterday evening:
+ |An Air Force Lt. Col., speaking about a kinetic energy weapons
+ |test earlier this week, which apparently went better than expected
+ |in several respects.  If this isn't an exact quote (I heard it
+ |twice, but didn't write it down at the time), it's real close:
+ |"We wrote about a million lines of new computer code, and tested
+ |them all for the first time, and they all worked perfectly."
+
+Hoo boy!  I would appreciate any and all leads by which I might track
+this to some reliable source.  Thank you,  David B. Benson, Computer
+Science Department, Washington State University, Pullman, WA 99164-1210.
+csnet: benson@wsu
+
+------------------------------
+
+Date: Wed, 17 Sep 1986  12:44 EDT
+From: LIN@XX.LCS.MIT.EDU
+To:   Dave Benson <benson%wsu.csnet@RELAY.CS.NET>
+Cc:   risks@CSL.SRI.COM, arms-d@XX.LCS.MIT.EDU
+Subject: I found one! (A critical real-time application worked the first time)
+
+    From: Dave Benson <benson%wsu.csnet at CSNET-RELAY.ARPA>
+
+        The unprecented success of the Viking
+    	mission was due in part to the ability of the flight software
+    	to operate in an autonomous and error free manner. ...
+    	Upon separation from the Oribiter the Viking Lander, under autonomous
+    	software control, deorbits, enters the Martian atmosphere,
+    	and performs a soft landing on the surface. ... Once upon the surface,
+    	... the computer and its flight software provide the means by
+    	which the Lander is controlled.  This control is semi-autonomous
+    	in the sense that Flight Operations can only command the Lander
+    	once a day at 4 bit/sec rate.
+
+    Nevertheless, we may judge this as one of the finest software engineering
+    acomplishments to date.  The engineers on this project deserve far more
+    plaudits than they've received.  I know of no similar piece of software
+    with so much riding upon its reliable behavior which has done so well.
+
+While I certainly agree that the Viking software is an example of very
+fine software, its subsequent history is one that is less laudatory.
+Ground control lost contact with Viking 1, apparently due to a
+software change transmitted to the lander that was accidentally
+overlaid upon some mission-critical software already in the lander's
+computer. (Bruce Smith, "JPL Tries to Revive Link with Viking 1",
+@ux(Aviation Week and Space Technology), April 4, 1983, Volume
+118(14), page 16.)
+
+------------------------------
+
+Date: Thu, 18 Sep 86 09:12:59 cdt
+From: "Scott E. Preece" <preece%ccvaxa@GSWD-VMS.ARPA>
+To: RISKS@CSL.SRI.COM
+Subject: Re: Massive UNIX breakins at Stanford
+
+> From: reid@decwrl.DEC.COM (Brian Reid) The machine on which the initial
+> breakin occurred was one that I didn't even know existed, and over
+> which no CS department person had any control at all. The issue here is
+> that a small leak on some inconsequential machine in the dark corners
+> of campus was allowed to spread to other machines because of the
+> networking code. Security is quite good on CSD and EE machines, because
+> they are run by folks who understand security. But, as this episode
+> showed, that wasn't quite good enough.
+----------
+
+No you're still blaming the networking code for something it's not supposed
+to do.  The fault lies in allowing an uncontrolled machine to have full
+access to the network.  The NCSC approach to networking has been just that:
+you can't certify networking code as secure, you can only certify a network
+of machines AS A SINGLE SYSTEM.  That's pretty much the approach of the
+Berkeley code, with some grafted on protections because there are real-world
+situations where you have to have some less-controlled machines with
+restricted access.  The addition of NFS makes the single-system model even
+more necessary.
+
+scott preece, gould/csd - urbana, uucp:	ihnp4!uiucdcs!ccvaxa!preece
+
+------------------------------
+
+Date: Fri, 19 Sep 86 10:00:10 EDT
+From: Andy_Mondore%RPI-MTS.Mailnet@MIT-MULTICS.ARPA
+To: RISKS@csl.sri.com,     rbbb@rice.edu
+Subject: Re: Protection of personal information
+
+David Chase wrote in Risks 3.58 that at his university, students were
+required to give a lot of personal information on a form before they could
+sign up for on-campus job placement interviews and that by signing this
+form, they authorized the university to release their transcripts to
+potential employers.  He also complained about the use of the social
+security number as the student number.
+
+Here at RPI, I think the only form you are required to fill out before
+getting on-campus interviews is a resume form.  I work in the Registrar's
+office and we release a transcript only if we have received a signed
+statement from the student authorizing release of the transcript to a
+specific person or company.  As far as I know, we don't accept "blanket"
+releases.
+
+As for the use of social security numbers as student numbers -- we also use
+social security numbers for this purpose.  One of the reasons we do this is
+that if you are receiving financial aid, we must verify your attendance
+every semester to the agency supplying the aid.  Very often, this
+verification is in the form of a computer-generated list or tape from the
+agency and the only way to cross-reference their list to our file is via the
+social security number.  It is usually difficult to do a computer-match on
+name because of differences in how the names might be formatted.  There is
+the same problem when a student has an on-campus job -- the payroll office
+needs to verify that the student is registered and they need the social
+security number for tax purposes, so they prefer to use it as their primary
+means of identifying the student (or any other employee).
+
+In terms of requiring you to give us your social security number, federal
+law prohibits us from requiring you to give it to us except for tax or
+social security purposes.  However, the law has also been interpreted to
+mean that we also have the option of not servicing you if you refuse to give
+it.  (I don't think that has ever happened here, however.)
+
+For the final word on what can and cannot be done with personal
+information, I suggest you check the Family Rights to Privacy
+Act (popularly known as the Buckley Amendment).
+
+------------------------------
+
+Date: Thu, 18 Sep 1986  21:26 EDT
+From: LIN@XX.LCS.MIT.EDU
+To:   David Chase <rbbb@RICE.EDU>
+Cc:   risks@CSL.SRI.COM
+Subject: Protection of personal information
+
+My understanding is that use of one's SS number must be authorized by law.
+There are times when others ask, but you are not required to give it to them.
+
+Under those circumstances, I don't believe it it is illegal to give a
+fake SSN.  The way to protect yourself is to give your real SSN,
+except for a small error that you can later blame on an entry error.
+
+------------------------------
+
+Date: Thu, 18 Sep 86 13:25:05 pdt
+From: roberts@src.DEC.COM (Eric Roberts)
+To: risks@CSL.SRI.COM, arms-d@XX.LCS.MIT.EDU
+Subject: Announcement of Berkeley Conference on the SDI
+
+The Dave Redell/Hugh DeWitt panel (Saturday morning) should be of special
+interest to RISKS readers and the rest of the program of general interest.
+
+
+                      STAR WARS AND NATIONAL SECURITY
+
+             A Conference on the Strategic Defense Initiative
+          October 9-11, 1986, University of California, Berkeley
+
+
+--------------------  PART ONE: Exploring the Issues  --------------------
+
+             Thursday Evening, 8:00-10:30, Wheeler Auditorium
+
+Opening Debate:  "Technical Feasibility and Strategic Policy Implications
+of the SDI"
+   Andrew Sessler (moderator), Former Director of Lawrence Berkeley
+      Laboratory; Member of American Physical Society Panel on Directed
+      Energy Weapons.
+   Lowell Wood, leader of "O Division," Lawrence Livermore National
+      Laboratories.
+   Richard Garwin, IBM Research Fellow; Adjunct Professor of Physics,
+      Columbia University; Adjunct Research Fellow, Center for Science and
+      International Affairs, Kennedy School of Government, Harvard
+      University.
+   Colin Gray, President, National Institute for Public Policy; Member of
+      the President's General Advisory Committee on Arms Control and
+      Disarmament.
+   John Holdren, Professor of Energy and Resources, UC Berkeley; Chairman,
+      U.S. Pugwash Committee; Former Chairman, Federation of American
+      Scientists.
+
+               Friday Morning, 9:00-11:00, Sibley Auditorium
+
+Legislative Hearing: "Keeping California Competitive in R&D: The Impacts of
+Increased Military Spending, the SDI, and Federal Tax Reform" (This event
+will be co-sponsored by the California Assembly Committee on Economic
+Development and New Technologies.)
+   Glenn Pascall, Senior Research Fellow, Graduate School of Public
+      Affairs, University of Washington; President, Columbia Group Inc.
+   Jay Stowsky, Research Economist, Berkeley Roundtable on the
+      International Economy, UC Berkeley.
+   Ted Williams, Chief Executive Officer, Bell Laboratories [invited].
+   Robert Noyce, Vice-Chairman of the Board, Intel [invited].
+   Ralph Thompson, Senior Vice-President for Public Affairs, American
+      Electronics Association.
+   John Holdren, Professor of Energy and Resources, UC Berkeley; Chairman,
+      U.S. Pugwash Committee; Former Chairman, Federation of American
+      Scientists.
+
+Documentary Film: "Star Wars: A Search for Security," produced by Ian
+Thiermann for PSR, 11:30-12:00 and 2:00-2:30, Room 4, Dwinell Hall.
+
+              Friday Afternoon, 3:00-5:00, Wheeler Auditorium
+
+Panel Discussion: "The Effects of SDI on Universities"
+   Marvin Goldberger (moderator), President, Caltech.
+   Vera Kistiakowsky, Professor of Physics, MIT.
+   John Holdren, Professor of Energy and Resources, UC Berkeley; Chairman,
+      U.S. Pugwash Committee; Former Chairman, Federation of American
+      Scientists.
+   Clark Thompson, Professor of Computer Science, University of Minnesota.
+   Danny Cohen, Director, Systems Division, Information Sciences Institute,
+      University of Southern California; Chairman, SDIO Committee on
+      Computing in Support of Battle Management.
+
+
+--------------------  PART TWO: Responses to the SDI  --------------------
+
+              Saturday Morning, 9:00-1:00, Wheeler Auditorium
+
+Panel Discussion: "Demystification of the SDI: Software, Hardware, and the
+Appropriateness of Technological Solutions to Political Problems" 9:00-
+10:30
+   Hugh DeWitt, Physicist, Lawrence Livermore National Laboratory.
+   Dave Redell, Computer Scientist, Systems Research Center, Digital
+      Equipment Corporation.
+
+Panel Discussion: "Alternatives to the SDI: The Peaceful Uses of Space
+Technology and Alternative Security Strategies" 10:45-1:00
+   Congressman George Brown (D. CA), Co-Chair, Congressional Space Caucus,
+      a leading advocate for space cooperation and opponent of space
+      militarization.
+   Dan Deudney, author of "Forging Missles into Spaceships," World Policy
+      Journal, Spring 1985, and "Whole Earth Security: Toward a Geopolitics
+      of Peace," Worldwatch Paper No. 55.
+   Mark Sommer, Co-founder of the Exploratory Project on the Conditions of
+      Peace (EXPRO) and author of Beyond the Bomb.
+   Anne Ehrlich, Senior Research Associate in Biological Sciences, Stanford
+      University; member of the Sierra Club Committee on the Environmental
+      Aspects of Warfare.
+   Vivienne Verdon-Roe, Co-founder of the Educational Film and Video
+      Project; her films include "In the Nuclear Shadow" and "Women--For
+      America, For The World."
+
+            Saturday Afternoon, 2:00-5:30, Room 10, Evans Hall
+
+National and Local Political Strategies, 2:00-3:30
+   Congressman George Brown (D. CA), Co-Chair, Congressional Space Caucus.
+   Jerry Sanders, Senior Research Fellow, World Policy Institute; author of
+      Peddlers of Crisis.
+   Michael Shuman, President, Center for Innovative Diplomacy.
+   Lee Halterman, Legal Counsel to Congressman Ron Dellums.
+   Robert Ferrell, member, Los Angeles City Council; National Democratic
+      Committee.
+
+Organizing Strategies for Universities, 3:30-5:00
+   Leonard Minsky, Executive Director, National Coalition of Universities
+      in the Public Interest.
+   Keith Miller, Professor of Mathematics, UCB; Chairman of the SDI
+      Roundtable.
+   Ted Forrester, Professor of Physics, UCLA; Chairman of Concerned
+      Faculty.
+   Roger Axford, Professor of Education, University of Arizona; Chairman
+      of the Coalition for World Peace.
+
+Concluding Remarks, 5:00-5:30
+
+
+Conference sponsors include: Federation of American Scientists, National
+Coalition for Universities in the Public Interest, Physicians for Social
+Responsibility, Computer Professionals for Social Responsibility,
+Progressive Space Forum, Student Pugwash, Peace and Conflict Studies (UCB),
+ASUC.
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

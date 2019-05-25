@@ -1,0 +1,725 @@
+From:	   Kenneth R. van Wyk (The Moderator) <krvw@CERT.SEI.CMU.EDU>
+Errors-To: krvw@CERT.SEI.CMU.EDU
+To:	   VIRUS-L@IBM1.CC.LEHIGH.EDU
+Path:      cert.sei.cmu.edu!krvw
+Subject:   VIRUS-L Digest V4 #125
+Reply-To:  VIRUS-L@IBM1.CC.LEHIGH.EDU
+--------
+VIRUS-L Digest   Monday, 15 Jul 1991    Volume 4 : Issue 125
+
+Today's Topics:
+
+Authentication of PCs to Servers (PC)
+Re: Info on nVIR and WDEF (Mac)
+Re: long and technical (PC)
+Re: long and technical (PC)
+Scanning Compressed Files
+Virus for Sale
+Re: nVIR/WDEF (Mac)
+Re: Virus simulations - a bad idea ? Different approach (PC)
+Microsoft up to their tricks again... (PC)
+Re: Reviews of anti-virus software
+Re: Link-viruses in packed, self-extracting programs (general)
+Re: McAfee on VSUM accuracy and Microcom (PC)
+re: PC Plus (PC)
+Re: Product Test - - VIRx (PC)
+Re: Flushot Plus - Which Version? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 12 Jul 91 15:48:45 -0400
+From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Authentication of PCs to Servers (PC)
+
+	Tim Martin of the University of Alberta asks about removal of
+viruses from networked systems from the server level. Actually this is
+something that I have been thinking about for some time and would have
+some special requirements possible only with networks. It would
+require some (not much) specialized programming and a knowlege base
+resident on the server. There are some problems however.
+
+	In the first place, it would be possible to maintain a
+knowlege base on a server that would allow comarison of a known good
+PC signature with its current configuration. Secondly, it is possible
+to include in that data base a known clean path to the disk or memory
+that could bypass even a resident stealth virus to be used for
+restoration. The major difficulty would be cleaning memory remotely
+since the server cannot cycle the power switch without help.
+
+	The problem is that when a server discovers an infected
+client, that client must already have an active infection. If the
+infection is active, it cannot be trusted to do ANYTHING properly. For
+this reason DiskSecure was deliberately written to force a boot from
+floppy disk in this case since it would be impossible to trust any
+software execution on an infected machine.
+
+	True, a generic disinfection could be written to clean the
+disk from a known virus without interception, but at some point,
+control must be returned to the operating system and this cannot be
+trusted. You cannot even trust a software generated reboot.
+
+	Thus while the server could force the client to authenticate
+itself, if authentication fails, it cannot be trusted to "fix" itself.
+Programs could be written to remove viruses that are known, but what
+about the unknown ones and varients ? Don't forget that servers do not
+run the client software. They must rely on the client CPU for
+execution.
+
+			At the POCI Convention in Cleveland,
+
+							Padgett
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 15:39:59 -0400
+From:    Joe McMahon <XRJDM@SCFVM.GSFC.NASA.GOV>
+Subject: Re: Info on nVIR and WDEF (Mac)
+
+Jeff Dycus (DYCUJA@morekypr.BITNET) asks:
+>Can someone (anyone) please send be some info on:
+>
+>1)  The nVIR virus family, and;
+>2)  The WDEF virus
+
+nVIR is the standard for a two-part Mac virus. It consists of an INIT
+resource and several code resources, all disguised as "nVIR"
+resources.  An infected program, when run, adds the INIT resource to
+the System file along with the other nVIR resources. As each program
+is run, the virus modifies the CODE 1 resource to add code which will
+write the virus into the system file. This cycle of System file, to
+application, to System file, allows nVIR to spread to unprotected
+applications and System files.  It is easy to detect the nVIR
+"pattern", so clones with different resource names (a common practice
+for a while) can be taken out with one generic set of code.
+
+WDEF takes advantage of the resource search path under Systems
+previous to System 7. The WDEF 0 virus consists of a WDEF 0 resource
+which "front-ends" the standard System WDEF. The "front-end" code
+copies the viral code into the Desktop file, which is opened by the
+Finder when a disk is mounted. Since nothing actually has to be
+executed for the virus to spread, it spreads very fast.System 7 blocks
+it automatically, because the Desktop mechanism has changed.
+
+A side note on WDEF: if you have installed any of the numerous WDEF 0
+replacements (AltWDEF comes to mind), which add function to the basic
+window, WDEF will not be able to spread. This is apparently caused by
+AltWDEF's blocking of attempts to substitute another WDEF for itself.
+
+ --- Joe M.
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 00:15:16 +0000
+From:    glratt@is.rice.edu (Glenn Forbes Larratt)
+Subject: Re: long and technical (PC)
+
+martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences) writes:
+>I've been thinking about an interesting Virus Protection programming
+>problem.  The following discussion is a bit long, and horribly technical.
+>I hope it is clearly stated, though.  It should be interesting to some.
+>
+>Consider the following typical (?) large University problem:
+>
+>The Setting:
+>A dozen or more computer "labs", each with as many as several dozen DOS
+>computers.  Each computer is connected to a (write-protected) file server.
+>Each computer has a hard drive as well.  The computers are booted from
+>their C: drives, then (via device drivers and autoexec.bat) they log onto
+>the file server.
+>
+>The Goal:
+>To provide an automated way of removing main boot record (MBR) viruses from
+>computers, on boot-up.  This is to avoid the need for on-site, manual
+>clean-up by a technician....
+
+>... The idea is
+>to AUTOMATICALLY (via software) 1. identify that an infection has occurred,
+>2. clean the MBR and 3. re-boot clean.  Even if the infection is by a
+>stealth virus.
+
+The solution we use (although we only have two such labs, and only use
+this method for one presently) accomplishes 2. and 3., although it is
+not a boot-up process, but a weekly maintenance task.
+
+Every Saturday, the operations staff here take the time to boot each
+machine in the lab from a specially-prepared "wiper" diskette.  The
+diskette is programmed (via autoexec.bat and some special widgets
+written in-house) to format all logical hard disks in the machine,
+rebuild DOS, and reinstall the necessary drivers to connect to the
+network.  Additional programming handles some special cases: one
+machine in the lab is a "languages station", which has Fortran, C, and
+Pascal compilers installed; another is a "printing station", which has
+mirrors of publicly available software configured to print to a
+LaserJet printer.  The main special widget identifies what machine
+it's in based on the Ethernet/Token Ring card installed, configures
+appropriate drivers based on that identification, and uses a special
+login to download the language and print installations from the
+server.
+
+Since the process is based on a (cold) boot from a write-protected
+diskette, infections on the hard drive do not carry through to a
+freshly wiped machine.  Reformatting takes care of boot sector
+viruses; we are currently working on one of our widgets so that it can
+automatically rebuild and overwrite the partition table for a complete
+"wipe".  Although it is a weekly task rather than a boot-up process,
+it has worked for us so far; the process takes about 5 minutes for
+standard machines, about 20 for the languages station, and about 35
+for the print station (60 meg disk crammed full of software).
+
+- --
+===/| Glenn Forbes Larratt      |    CRC OCIS     | "So, what do we need?" |/
+==/| glratt@rice.edu (Internet) | Rice University | "To get laid!"        |/=
+=/| GLRATT@RICEVM2 (Bitnet)     |=================| "Can we get that     |/==
+/| The Lab Ratt (not briggs :-) |  Neil  Talian?  |       at the 7-11?" |/===
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 06:44:13 +0000
+From:    act@softserver.canberra.edu.au (Andrew Turner)
+Subject: Re: long and technical (PC)
+
+martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences) writes:
+>I've been thinking about an interesting Virus Protection programming
+>problem.  The following discussion is a bit long, and horribly technical.
+>I hope it is clearly stated, though.  It should be interesting to some.
+>
+>The Goal:
+>To provide an automated way of removing main boot record (MBR) viruses from
+>computers, on boot-up.  This is to avoid the need for on-site, manual
+>clean-up by a technician.  "Boot ROMS" are too expensive, for underfunded
+>education institutions.  The solution must be a software one.  The idea is
+>to AUTOMATICALLY (via software) 1. identify that an infection has occurred,
+>2. clean the MBR and 3. re-boot clean.  Even if the infection is by a
+>stealth virus.
+
+Two products may interest you:
+
+1. Virus Buster from Leprechaun Software Pty Ltd
+	PO Box 134, Lutwyche, QLD, 4030 AUSTRALIA
+	Fax +61 7 2524071, Ph +61 7 2524037, BBS +61 7 2524104
+
+In their anti-viral sweet provide DISKLOK.EXE and DISKLOK.SYS.  These
+provide the facility to make the hard disk invisible from a floppy
+boot and also automatically disinfect many of the boot sector viruses
+including the ubiquitous stoned virus.  After disinfection your PC is
+rebooted with a clean bill of health.  DISKLOK doesn't work for AZUSA
+which does not save a copy of the partition table.
+
+2. Thunderbyte from Calmer Software Services
+	361 Somerville Rd
+	Hornsby Heights NSW 2077, AUSTRALIA.
+	Ph +61 2 4821715, BBS +61 2 4821716
+
+Thunderbyte is a short card which provides hardware virus prevention.
+I've only had a brief look at this one but it appears promising.  Its
+ROM sits above C000 with the standard AA55 signature and is executed
+prior to the A: / C: boot and has many anti-viral features. eg;
+ability to disable card during booting, ability to warn of attempts to
+write to hard disk, ablity to warn of attempts to change R bit on
+files, ability to check changes to interrupt vectors after a program
+has run, ability to capture the disk interrupts while booting, ability
+to monitor any changes to programs, ability to prevent internal access
+to DOS + more. There is also a password protectable configuration
+program which provides additional features.
+
+- -- 
+ Andrew Turner  act@csc.canberra.edu.au
+	Die, v:	To stop sinning suddenly.
+			-- Elbert Hubbard
+
+------------------------------
+
+Date:    Sun, 14 Jul 91 13:55:41 -0400
+From:    MMCCUNE@sctnve.sct.peachnet.edu
+Subject: Scanning Compressed Files
+
+Lately there has been concern about viruses being spread by compressed
+EXE and COM files (see Aviel Roy-Shapiri's message in Issue 120 for an
+example.) Newer Scan versions of Scan and VirX will now scan inside of
+PKlite and LZexe files. The exe files only problems with this is: 1)
+Scanning inside of compressed files is not always always reliable 2)
+There are a lot of other compression methods other than PKlite and
+LZexe (Diet, TinyProg, Lexm, Axe, Exetrx, Srnch, Ice and ExePack are
+examples.)  and 3) Some of these compression methods can't even be
+decompressed.
+
+So what can be done? There is a little known IBM program called VSTOP
+that will reliably detect viruses inside of any compressed executable.
+The way it does it is to scan the file while it is being executed (and
+already decompressed.) This is the only program I know that works in
+this way (please correct me if I'm wrong.) IBM currently doesn't
+distribute or support this program. Maybe if enough people show
+interest in this program, IBM may distribute this program (maybe even
+include it with there VirScan package.) Any comments on this are
+appreciated (especially from Dave Chess or anybody else from
+IBM.)...<MM>.
+                              Mike McCune
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 14:22:00 -0400
+From:    WHMurray@DOCKMASTER.NCSC.MIL
+Subject: Virus for Sale
+
+This week's ComputerWorld (July 8, 1991) quotes John McAfee (p. 106) as
+saying that a computer magazine, "MicroTimes'" is carrying an ad
+offering to sell a working copy of Jerusalem for US$29.99.
+
+Why would anyone want to buy what they can hardly avoid getting anyway?
+Why would they want to pay for what so many of the rest of us are
+willing to pay to avoid?  How do you suppose they arrived at an offering
+price?
+
+Not only would I consider it irresponsible to make such a purchase,  I
+am not very happy about someone making such an offer to sell.  I hope
+that the rest of you will join me in boycotting both the publisher of
+the magazine and the publisher of the program.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+Date:    Mon, 15 Jul 91 09:19:49 +0000
+From:    nils@rivm.nl (Nils C. Egberts)
+Subject: Re: nVIR/WDEF (Mac)
+
+Jeff Dycus writes:
+
+>More info about:
+
+>1) nVIR
+>2) WDEF
+
+
+nVIR contains two virusses, nVIR-A and -B, together they create a new
+virus.  Both nVir-a and B are not that dangerous, they delay CPU-time
+and can cause some troubles when you make use of Telnet.
+
+"You're application has unexpectedly quit .."
+
+I have no experience with the new virus created by the both nVirs, so far.
+
+My experience with WDEF so far:
+
+Some applications cannot be started, are cause a restart.
+
+You can use SAM 2.0 or higher or disinfectant to clean files infected
+with the nVIR(A/B) or WDEF virus, just make sure you scan/repair in
+the Finder only and restart immediately after repairing (otherwise the
+virus stays in memory)
+
+------------------------------
+
+Date:    Fri, 12 Jul 91 14:04:51 +0000
+From:    klotz@Informatik.TU-Muenchen.DE (Karlhorst Klotz)
+Subject: Re: Virus simulations - a bad idea ? Different approach (PC)
+
+frisk@rhi.hi.is (Fridrik Skulason) writes:
+>I recently got an E-mail message from Doren Rosenthal, the author of a
+>virus simulator program.  It seems he has written a program which
+>generates files which contain various signature strings from various
+>viruses.
+>
+>He asked me if I would provide him with a list of the signatures I
+>use.  As I find his program totally useless, and capable of doing more
+>harm than good I refused.
+>
+[...]
+>
+>- -frisk
+
+I don't see the use of that kind of simulation, so I would agree. 
+
+But what about simulating a PC environment (DOS, floppies and hard
+disk with files, boot sectors etc.) and virus infection mechanisms?
+In this environment a student could try and see what happens when a
+virus is in the system, when it spreads, where it hides, what the
+effect of deleting files, restarting etc. is. All that of course
+without any real virus code, just functional simulation.
+
+In fact, that's just how a program recently developed at TUM behaves.
+VIRLAB 1.0 has a trace mode so that novice users can easily follow
+infection paths. A restricted DOS is simulated; some minor executable
+programs are supplied that perform I/O. Help windows and information
+windows (only in German up to now, sorry) give help on available
+commands and information about the state of the simulated system.
+
+Any simulated virus is simulated only in respect to the classification
+given in VIRLIST.TXT (copyright/courtesy of McAfee). Thus no special
+viral effects (e.g. sound, texts, grahpics) are simulated, and
+individual methods of infection or doing damage are represented by
+'typical' behavior.
+
+Any objections to THAT kind of virus simulation?
+
+Regards,
+Karlhorst Klotz	
+- -------------------------------------------------------------------------------
+Institut fuer Informatik			     TTTTTTT  U     U  MM   MM
+TU Muenchen   					        T     U     U  M M M M
+Orleansstr. 34   				        T     U     U  M  M  M
+D-8000 Muenchen 80   				        T     U     U  M     M
+Tel. ++89/48095-115	   			        T     U     U  M     M
+Fax  ++89/48095-203   				        T      UUUUU   M     M
+- -------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Mon, 15 Jul 91 15:34:24 +0700
+From:    James Nash <ccx020@cck.coventry.ac.uk>
+Subject: Microsoft up to their tricks again... (PC)
+
+After the DOS 5 SETVER self-modifying EXE debacle, comes another
+Microsoft-aided generosity product towards viruses: Windows 3.1.
+
+The word on the bus is that 3.1 will join the legions of programs
+that insist on modifying their installation disks. Windows 3.1
+will require you to enter your name and Company name which will
+then be splashed on every "About" box going.
+
+However it will modify some data on the install disks to do so.
+Everyone knows (I hope) that the biggest spreader of viruses in a
+corporate environment are Micro Support. If every machine has to
+modify the install disks, the chances that somone like me will
+catch a rogue virus from the installation machine are massively
+increased. This virus can then spread at will though the next
+machines to be installed.
+
+** FLAME ON
+I know that this is a technique employed by many nefarious
+software houses but surely Microsoft are beyond this rather
+childish method of copy-protection. Just as you will never
+stop any other crime, you will not stop software piracy by
+half-assed phsychologically inept "guilt/blame" methods.
+** FLAME OFF
+
+Apart from that, I still like Microsoft, honest!
+- --
+James Nash, Computing Services, Coventry Polytechnic, England
+
+------------------------------
+
+Date:    Mon, 15 Jul 91 15:36:08 +0100
+From:    Alan Solomon <drsolly@ibmpcug.co.uk>
+Subject: Re: Reviews of anti-virus software
+
+With reference to the recent reviews of anti-virus software in PC Plus
+- - it really is very difficult to do an unbiased review of anti-virus
+software.  I can see several sources of bias.
+
+1.  The choice of viruses used in the test.  A subset of all possible
+viruses is used, and within that subset, a selection of instances of
+each virus is used.  If the subset used, is that same as the subset
+used by one of the vendors, then that scanner will score 100%, even
+if it would have scored perhaps 50% if a wider subset was used.  There
+needs to be some sort of disclosure on this commonality of the subsets
+of the viruses.
+
+2.  The criteria used for the review.  For example, there was a review
+several months ago, in which about 50% of the scores were given for
+getting the names of the viruses "right".  Since there is no agreed
+naming system, "right" in this context was used to mean identical with
+one particular naming system.
+
+3.  What is important?  For example, how important is disinfection?
+If a vendor believes that it is unimportant (or even dangerous), he
+will not implement it, and will downrate a product that includes it.
+If a vendor believes that it is useful and important, he will downrate
+a product that leaves it out.  So a connection between a reviewer and
+a vendor can affect the way that products are judged.
+
+As Anthony Naggs posting points out, it is important that any review
+includes a full disclosure of connections.  In the case of the PC Plus
+review, it was worth disclosing that:
+
+Sophos (one of the vendors of anti-virus software) owns Virus
+Bulletin.
+Bates (one of the vendors) is a contributing editor of Virus Bulletin
+Hamilton (the writer of the review) is a regular contributor for Virus
+Bulletin
+RG Software (one of the vendors) is the US distributor of Virus
+Bulletin (according to a recent posting on Virus-L).
+
+I think that the only recourse is to disclose the connections
+when doing reviews (of course, the ideal would be not to have any).
+Such connections can be entirely innocent; nevertheless, they do
+introduce sources of bias, as above.
+
+Disclosure of my connection:  I work for S&S, a vendor of Anti-virus
+software (Dr Solomon's Anti-Virus Toolkit) and publisher of Virus News
+International.
+
+Alan Solomon
+S&S International                "Obscure quote"
++44 442 877877
+
+------------------------------
+
+Date:    Mon, 15 Jul 91 09:29:34 +0000
+From:    dave@tygra.Michigan.COM (David Conrad)
+Subject: Re: Link-viruses in packed, self-extracting programs (general)
+
+It may be worthwhile to note that after the first, subsequent compressions
+tend to yield much diminished returns unless the later compressors are far
+more efficient than the earlier ones.  So I think it is unlikely that one
+would see multiply compressed files.
+
+For example, say I have an executable, P.EXE, which is 100k in size.
+I use LZEXE to produce, say, PLZ.EXE, which is, say, 70k (which is not
+unreasonable, I think).  If I were to then try PKLITE and produce
+PLZLITE.EXE which might be 67k, would I bother with the extra loading
+time for such a small gain?  Probably not.
+
+Of course, it's possible that someone might compress many executables in
+a batch, and not notice, or perhaps compress as a policy, and not care.
+I guess recursive-unpacking scanners will become available, either through
+necessity or simply to top the other guy's bulleted feature list.
+
+David R. Conrad
+dave@michigan.com
+- -- 
+=  CAT-TALK Conferencing Network, Computer Conferencing and File Archive  =
+- -  1-313-343-0800, 300/1200/2400/9600 baud, 8/N/1. New users use 'new'    - 
+=  as a login id.  AVAILABLE VIA PC-PURSUIT!!! (City code "MIDET")        =
+   E-MAIL Address: dave@Michigan.COM
+
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 14:56:11
+From:    c-rossgr@microsoft.COM
+Subject: Re: McAfee on VSUM accuracy and Microcom (PC)
+
+>From:    mcafee@netcom.com (McAfee Associates)
+>
+>Hello Ross,
+>
+>I've given Mr. McAfee a copy of your message  [regarding the license
+price for one machine to be able to use his scan product]
+>..., but he hasn't typed up a
+>reply yet.  In the meantime, perhaps you could leave me your mailing
+>address and/or fax number so that I could give that to John for a
+>(faster) reply.
+
+I'd rather find out here publicly, if you don't mind: I know a lot of
+people have recently had pricing questions regarding your company's
+scan products and this might clear up a lot of confusion.
+
+Thanks.
+
+Ross
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 15:26:16
+From:    c-rossgr@microsoft.COM
+Subject: re: PC Plus (PC)
+
+>From:    xa329@city.ac.uk
+
+Forgive me while I take you to task a tad.
+>
+>Most of the reviews I have seen have suffered from undisclosed interests.
+
+Interestingly enough, most reviews I've seen seem to suffer from a
+case of "Gee, I don't really know nuttin' about anti-virus software,
+but I got a job to do"-itis.  I've been affiliated with a number of
+different journals over the course of the last few years, been
+Technology Editor here, freelancer there (and, currently, on the
+Editorial Board of Virus Bulletin).
+
+Undisclosed interests aren't half as bad as ignornat reviewers, in my
+opnion.
+
+>Several considerations may have influenced Mark Hamilton's review in
+>PC PLUS:
+>*   journalists don't generally maintain their own libraries of viruses for
+>    testing, in this case the 100% detection rate of Bates Associates
+>    product indicates that Jim Bates' virus collection was used.
+
+But Mark does, at least he did the last time I checked.  He's gotten
+some from me, personally.  He's a well respected individual in the UK
+trade press and has been a true friend to the cause of getting the
+*truthful* message out regarding the virus problem.  It might be wise
+for you to check these things out before making wild accusations.
+
+Yes, I do consider him a friend, and wish he lived on my side of the
+puddle.  (Mark: do you still have a number for Fiona anyplace? <grin>)
+
+>*   Hamilton writes for the Virus Bulletin; this publication is owned
+>    by Sophos.
+
+So what?  If Ed paid enough, I'd write for VB, too.  Frisk, Tech
+Editor of VB, certainly isn't going to do anything to make the Sophos
+product look better than it really is against his own FPROT product.
+Ray Glath writes for them, too.
+
+There is the idea of editorial integrity.  Ed Wilding, in my opinion,
+has worked hard to attain that integrity.  It is an easy thing to lose
+- -- you should be careful that your implications are founded on some
+sort of reality.  In this case, they're not.
+
+Hamilton is *real* journalist.  I would think that only a sufficient
+number of scantily clad nubile your 16-year old females are going to
+be enough to get him to say a dishonest word.
+
+Heck, if the 16-year olds are willing enough, I'd be dishonest in this
+case, too.
+
+>*   RG Software has just been announced as the new distributor for the
+>    Virus Bulletin in the USA.
+
+Again, so waht?  Make Virus Bulletin an offer, and they'll make you a
+local distributor, too.  Most of the anti-virus folks I know have a
+number of other business interests: Ray's anti-viral stuff is only a
+portion of his business.
+
+>*   Microcom's Virex-PC is the commercial version of Flushot+, in one
+>    edition that I saw the documentation included an acknowledgement from
+>    the author of code contributed by Mark Hamilton.
+
+Yup: Mark hacked an old copy of FLU_SHOT+, found a gaping hole, and
+sent me code to fix it up.  I incorporated the code, gave him credit,
+and he wouldn't take any money that I offered him.  I shuld offer him
+some money again and see if he accepts it this time.
+
+The last review of my Virex-PC program in in VB, by Hamilton, should
+lay to rest any myths regarding VB's (or Hamilton's) lack of
+integrity: I personally feel the review was inaccurate and that the
+wrong version of the code was used.  Lots of problems with that
+review.  Ed Wilding did call me up on the phone and apologize for the
+review: I didn't even think of asking him for any retraction and I
+*know* that even asking would have been unprofessional.  Wilding did
+tell me that a response from me (or from Microcom) would be printed in
+a later VB.
+
+He kept his word.
+
+>I am not suggesting that Mark Hamilton has deliberately misrepresented
+>the products of these companies, but that these relationships should be
+>kept in mind when reading the review.
+
+Ah, but what you write *does* suggest that you have a problem with
+either Hamilton's credibility or VB's or both.
+
+>Declaration of interests: I work at Thecia System Ltd, we produce an
+>anti-virus product called Virus Clean, which was not invited for inclusion
+>in Hamilton's review.
+
+The crux of the problem, certainly.  Did you, by any chance, have the
+opportunity to forward a copy of your code to VB for inclusion in
+their review(s), or did you expect them to track you down?
+
+Ross M. Greenberg
+ Author, FLU_SHOT+, VIREX-PC, VIRx and some other stuff
+ Editorial Board: Virus Bulletin.
+ Editorial Advisor to a coupla pubs
+ Freelance writer.
+ Single, not bad looking and looking forward to *anyone* giving me that
+ list of available 16-year old females who only say "Yes"...
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 15:44:23
+From:    c-rossgr@microsoft.COM
+Subject: Re: Product Test - - VIRx (PC)
+
+>From:    Chris McDonald ASQNC-TWS-R-SO <cmcdonal@wsmr-emh03.army.mil>
+>
+>6.  Product Disadvantages:
+>
+>    a.  Free programs may not always be free.  Microcom has a marketing
+>interest in encouraging users to migrate from the free detection program to it
+s
+>more comprehensive commercial program Virex-PC.  One cannot predict how long
+>Mr. Greenberg or the vendor will allow users the free use of one-third of its
+>commercial program.
+
+As long as we have a favorable response to the freebiew VIRx, we'll
+continue producing it -- as far as I'm concerned.  I am not the
+marketing dude at Microcom who likely consults with some old bones and
+tea leaves to determine what makes good marketing "sense".  To the
+*very* best of my knowledge, the program will continue onwards into
+the foreseeable future (about 12 months is as far as I'd be willing to
+hang my own credibility on, though)
+
+>7.  Comments:
+
+>A final observation is that, while Mr. Greenberg has issued versions 1.4,
+>1.5, and 1.6 of VIRx, I as a registered user of VIREX-PC have yet to receive
+>any notification from Microcom of an actual upgrade to the commercial
+>product.  Registration, according to the literature, should result in automati
+c
+>notifications of all revisions when they become available.  This reinforces fo
+r
+>me the position that one cannot rely exclusively on a single product for viral
+>protection.
+
+In all fairness to Microcom (please rememebr that I am but the
+programmer, ok?)  chances are that you were sent your free-upgrade (I
+think you started with version 1.1a, right? If so, then you probably
+have Version 1.2).  Those who are subscribers to the update package (I
+think they charge something like $50 or $75 for it) should have been
+advised of the updates at the least and should have been sent those
+updates.  If not, please call 919-490-1277 and make a big stink?  It
+irks me to think that I bust my chops to make good code and they might
+be sitting on it for some obscure "marketing" reason.
+
+The original contract I had with Microcom called for four updates a
+year: we've been averaging one every six or seven weeks for the last
+three or four updates.  Notifications cost a lot of money when sent
+out to tens of thousands of people.
+
+But, yeah, I wish that everybody were notified an that they updated.
+It kills me to walk into an establishment and see somebody using code
+over a year old!
+
+------------------------------
+
+Date:    Sat, 13 Jul 91 15:55:30
+From:    c-rossgr@microsoft.COM
+Subject: Re: Flushot Plus - Which Version? (PC)
+
+>From:    QSD@NIHCU.BITNET
+>
+>Could someone please tell me what the current version of Flushot Plus
+>is.  I have seen versions 1.81 and 1.82.  1.81 was found on a server
+>that maintains copies of the Simtel 20 archives and version 1.82 was
+>found at the Computer Security Association's bulletin board.
+
+There's a new release due out momentarily, but the current release of
+FLU_SHOT+ is version 1.82.  The new version will have only a few changes:
+   *it will no longer be a bundled archive/zip with the VIRx stuff, breaking
+    the tie in between the two products
+   *it will catch some new viruses before they go resident
+   *some DOS 5.0 bugs will be fixed.
+
+I owe Keith Petersen a new upload on FLU_SHOT+ but have been delaying
+it pending the new update.  What makes FLU_SHOT+ a "slow update"
+program?  Contractual obligations that make my first priority to
+Virex-PC.
+
+My apologies for the confusion.
+
+Ross M. Greenberg
+ Author, FLU_SHOT+  (and Virex-PC)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 125]
+******************************************

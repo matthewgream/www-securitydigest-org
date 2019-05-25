@@ -1,0 +1,343 @@
+28-Feb-86 12:55:30-PST,16641;000000000000
+Mail-From: NEUMANN created at 28-Feb-86 12:51:30
+Date: Fri 28 Feb 86 12:51:30-PST
+From: RISKS FORUM    (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+Subject: RISKS-2.18
+Sender: NEUMANN@SRI-CSL.ARPA
+To: RISKS-LIST@SRI-CSL.ARPA
+
+RISKS-LIST: RISKS-FORUM Digest,  Friday, 28 Feb 1986  Volume 2 : Issue 18
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Titanic and What did I overlook? (Hal Murray)
+  Titanic Effect (Jong)
+  Computers placing telephone calls (Art Evans)
+  Misdirected modems (Sam Kendall)
+  Modems and phone numbers (David Barto)
+  Misdirecting my modem (Mike McLaughlin)
+  Power-outages, & other failures of central DP systems (Dave Platt)
+  Computer voting booths (Dave Platt)
+  Data Encryption Standard (Chris McDonald)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@SRI-CSL.ARPA, Requests to RISKS-Request@SRI-CSL.ARPA.)
+(Back issues Vol i Issue j stored in SRI-CSL:<RISKS>RISKS-i.j.  Vol 1: MAXj=45)
+
+----------------------------------------------------------------------
+
+Date: Wed, 26 Feb 86 00:24:08 PST
+From: Murray.pa@Xerox.COM
+Subject: Titanic and What did I overlook?
+To: RISKS FORUM (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+
+There is also the reverse of the Titanic problem. Sometimes trying to
+protect against a particular mode of failure that you are very worried
+about actually makes the overall reliability worse. I'm thinking of the
+cases where the whole system gets so much more complicated because
+"fixing" something pushes it over the edge of well understood
+technology.
+
+The aspect of calculating failure probabilities that has always bothered
+me is that I can't see any way to take into account the things I have
+totally overlooked, the areas that I haven't even dreamed about. You
+know, the sort of problem where, after you hear the story, you sigh, and
+feel sorry of the people involved rather than thinking that they would
+have noticed the problem if they had been a bit more diligent when
+testing. Is there any theory in this area?
+
+I've helped track down several very obscure bugs in hardware and/or
+microcode. Each time we finally located a problem, I've been amazed at
+how easy it was to make it happen. That is after we knew where to poke
+and had set up the right test programs. Two examples come to mind.
+
+Ten years ago, I worked on a PDP-10. At one point, the machine was acting a
+bit funny. It would run Tenex for days. However, our only big hairy LISP
+program sometimes got the wrong answer and the bootstrap loader sometimes
+zeroed itself while it cleared memory. One day, the boot loader trouble got
+reasonably solid. We wrote a small program to mimic what the it was doing,
+catch the trap, reconstruct the test sequence, and try again. It didn't
+fail. We included the previous 6 instructions from the loader into our test
+sequence. They were doing something totally uninteresting. It failed solidly
+- every few milliseconds for an hour while we poked around with a scope. We
+finally found a textbook example of a runt pulse. It was happening just when
+the end test should decide to stop. (The real problem was a sick power
+supply.)
+
+Several years ago, I was doing a lot of Ethernet tire-kicking. The early
+Dandelions were coming out of the factory. Everybody was looking for
+trouble rather then introducing new problems into their code. Things
+felt pretty solid. One evening, I was testing some transceivers. Nothing
+interesting was happening, so I connected in another spool of coax.
+Poof. Lots of packets started falling through the cracks. Simple tests
+worked 100%, but more complicated tests would miss 50% of the packets.
+It was a simple timing problem. If a packet started arriving while the
+microcode was preloading the transmit FIFO, the microcode/hardware
+discarded the input packet as it disabled the transmitter while
+switching modes to go inspect the input packet. By inserting the extra
+coax, I had increased the delays enough to drop a packet right into the
+window.
+
+PS: I second Earl Boebert's recommendation for John Gall's Systemantics.
+If only I could remember all his lessons that seem so simple and
+obvious while reading about them....
+                                      [Maybe you could be COAXed.  PGN]
+
+------------------------------
+
+Date:  Wed, 26 Feb 86 12:24 EST
+From:  Jong@HIS-BILLERICA-MULTICS.ARPA
+Subject:  Titanic Effect
+To:  risks@SRI-CSL.ARPA
+
+I suppose if I had said to the designer of the Titanic:  "Yes, the worse
+maritime accident on record involved the breaching of four watertight
+compartments, SO LET'S PLAN ON SURVIVING FIVE," the designer would have
+specified smaller compartments, so that the Titanic would have had eighteen,
+not sixteen, compartments.  And the iceberg would have ruptured six
+compartments... 
+
+------------------------------
+
+Date: Wed 26 Feb 86 14:18:23-EST
+From: "Art Evans" <Evans@TL-20B.ARPA>
+Subject: Computers placing telephone calls
+To: Risks@SRI-CSL.ARPA
+
+Some years ago the ARPANet Network Control Center (NCC) at BBN was
+tasked to check periodically that each dialup line to each TIPs was in
+fact functional.  Absent such a check, a TIP port could be
+non-operational for a long time before anyone would notice.
+
+To make the check, a computer at NCC was connected to an outward WATS
+line and programmed to call every TIP line around the country
+periodically, every week or so, to be sure it could properly connect to
+a modem.  For a busy signal or other failure to handshake with a modem,
+the program would retry a few times and then alert a human being about a
+possible problem.  Then a person at the TIP site would be asked to check
+the line there.
+
+All this was OK, and it worked just fine.  Once, however, by some
+accident, the computer was connected to an ordinary phone line rather
+than to the outward WATS line.  The first indication BBN had about this
+disaster occured when the phone bill came, in a cardboard box, with some
+three inches thickness of call itemization slips for all those calls.  I
+don't remember the total, but I do remember that it attracted a *lot* of
+attention at very high management levels.  There was much discussion
+about whether the improper phone connection was BBN's error or the phone
+company's; I think a compromise was eventually worked out.
+
+A nice check was immediately added to the whole system.  The outward
+WATS line had the property that it could be used to call anywhere in the
+48 contiguous states except Massachusetts (which is where BBN is).
+Thereafter, each night the program placed the first call to a
+Massachusetts modem.  If that call worked, the run immediately aborted
+and a human was notified that some line other than the proper WATS line
+was in use.
+
+A lot of problems are easy to solve, once you know what the problem is.
+
+Art Evans
+
+------------------------------
+
+Date: Fri, 28 Feb 86 08:09:37 est
+From: delftcc!sam@nyu.arpa
+To: cmcl2!risks@sri-csl.arpa
+Subject: Misdirected modems
+
+Modems and calling software should treat as special the case that the
+phone on the receiving end goes off hook, but no carrier is detected.
+This means either that (1) a person has picked up the phone, or (2)
+there is some incompatibility between the calling and answering modems,
+or (3) there is a bad connection.  (3) should also be detectable to a
+modem (is this true?), so we eliminate it from the special case.  In the
+special case the calling software should retry the number a very few
+times, then call for human intervention.
+
+Unfortunately, the ultra-standard Hayes Smartmodem 1200 cannot
+distinguish between various NO CARRIER conditions at all, much less
+distinguish (3) from (1) and (2).  Better (smarter) modems are needed
+before the calling software can deal with this special case, and stop
+its modems from accidentally torturing people.
+
+----
+Sam Kendall			     allegra \
+Delft Consulting Corp.		seismo!cmcl2  ! delftcc!sam
++1 212 243-8700			       ihnp4 /
+ARPA: delftcc!sam@nyu.ARPA
+
+------------------------------
+
+To: risks@sri-csl.arpa
+Subject: Modems and phone numbers
+Date: 27 Feb 86 13:27:46 PST (Thu)
+From: David Barto <celerity!shipit!barto@sdcsvax.ucsd.edu>
+
+While setting up a link to a new system, I entered the phone number
+incorrectly.  I failed to connect when the machine attempted to do the
+call.  Being very suspect of myself (on the first call), I dialed the
+number the machine was attempting to call.  A person answered, and I
+attempted to determine the phone number she was at.  This number was
+not the same number I was dialing.  I then called the operator (good
+old AT&T), and asked what was going on.  The operator dialed the same
+number, got the same person on the line, and verified the number was
+different.
+
+We worked on the crossed lines problem for 2 days.
+
+The final solution was not crossed lines, but the fact that multiple
+numbers connected to ONE phone.
+
+Sadly, neither the operator, nor the person answering the phone, had
+any idea that multiple phone numbers went to the same physical unit.
+
+How many phones sit on your desk.  How many phone numbers will it
+ring to.  Are you really sure?
+-- 
+David Barto, Celerity Computing, San Diego Ca, (619) 271-9940
+decvax-\    bang-\			ARPA: celerity!barto@sdcsvax.ARPA
+ucbvax-->-sdcsvax->!celerity!barto
+ihnp4--/   akgua-/
+
+	"Moderation in all things, including moderation"
+
+   [Including net addresses?  PGN]
+
+------------------------------
+
+Date: Wed, 26 Feb 86 20:36:07 est
+From: mikemcl@nrl-csr (Mike McLaughlin)
+To: risks@sri-csl
+Subject: Misdirecting my modem
+
+Once upon a time, early in the days of my computer-life, I worked late.  I
+told my Z-120 to tell my Hayes to call a number.  It did, and I heard the
+ring, and then the answer.  No whistle-hiss-CONNECT, but a quavery young 
+female voice saying, "Hello?... "  I sent three pluses and an ATH to the 
+Hayes, read the (wrong) number off the screen, and dialed it on my voice
+phone.  I wanted to render immediate and abject apologies.  The phone 
+rang and rang.  I redialed, in case I had incorrectly dialed the wrong 
+wrong number.  It rang and rang.  I quit.  There was no way to un-scare
+that young woman.  I have been much more careful since then - but still 
+ring a wrong number now and then.  If it is during the day I voice-phone to
+apologize.  If it is in the wee hours, I just say a prayer for that person's
+serenity, and mine, and go on.  
+
+It seems common courtesy to check all supposed "computer phones" by voice, 
+by day, prior to using them in an auto-dial mode.  The computer doesn't lie
+awake at night wondering what wierdo is ringing the phone and hanging up.
+
+	- Mike McLaughlin
+
+------------------------------
+
+Date: Wed, 26 Feb 86 12:11 PST
+From: Dave Platt <Dave-Platt%LADC@CISL-SERVICE-MULTICS.ARPA>
+To: Risks <Risks@SRI-CSL.ARPA>
+Subject: Power-outages, & other failures of central DP systems
+
+In my experience, battery backup for computer systems is usually of
+extremely limited capacity (an hour or two) when you're talking about
+a large computer center with lots of power-hungry disks and so forth.
+Frequently, the amount of battery storage capacity is enough to permit
+the system operators to shut down their machines in a graceful fashion,
+and requeue any work-in-progress for processing when the AC mains come
+back up.  Sites that absolutely require uninterruptable power generally
+have backup diesel generators... they're much smaller per kilowatt
+than batteries would be, and can run for days at a time as long as you
+keep feeding them fuel.
+
+I'm not sure what would happen to the NYSE if there were a two-day
+blackout in New York.  There was an extensive blackout (six hours or
+so???) back in the 60's, I seem to recall... but it was shorter than
+the one that you're speaking of, and the NYSE is probably much more
+dependent on computers than it was twenty years ago.  I imagine that
+they'd probably have to shut down.
+
+I read a book recently that might be of some interest to Risks readers,
+as it addresses the problems of centralized data transmission and storage
+to some extent.  The book is "Night of Power", by Spider Robinson;  it's
+fictional, borderline SF [by my standards... open to dissent], and
+revolves around the seizure of Manhattan Island (and the East Coast's
+major satellite uplink) during a social revolution in the 1990's.  The
+point was made that the seizure of the uplink could easily have resulted
+in a major collapse of the world's interlinked financial systems, if
+the data flowing through the link were to be cut off or corrupted.
+
+------------------------------
+
+Date: Fri, 28 Feb 86 12:10 PST
+From: Dave Platt <Dave-Platt%LADC@CISL-SERVICE-MULTICS.ARPA>
+To: Risks <Risks@SRI-CSL.ARPA>
+Subject: Computer voting booths
+
+GAAK! Maybe I'm misunderstanding [Larry Polnicky], or the systems actually
+used in the computerized voting booths... but I had always believed that the
+voting systems in this country [paper, computer-based, or whatever] were
+designed to GUARANTEE A SECRET BALLOT! I've NEVER heard of a public-voting
+system that was designed to permit anyone to identify a particular vote, or
+set of votes, with a particular voter.  There is a longstanding tradition in
+this country of guaranteeing that an individual can vote his or her
+conscience, without being identified afterwards as "the person who voted for
+Smidget for Congress".
+
+There have been plenty of examples in the past of the problems that can
+occur when a person's votes are not kept secret.  Both in this country,
+and in numerous countries overseas, people who have voted the "wrong
+way" (usually against a clique in power) have been pressured, fired from
+their jobs, beaten, tortured, or killed.  I would strongly resist any
+computerized (or paper) voting system that would make any votor's voting
+record identifiable to *anyone* without that votor's explicit approval.
+
+Note here that I'm not talking about voting systems such as Congress
+uses, in which the public has an explicit right to know who voted for &
+against what.  In systems such as this, it's fine to have records kept,
+and some sort of accuracy/accountability audit... but by their very
+nature, these systems are generally much smaller than state-wide or
+national voting systems, and are thus less likely to be subject to
+large-scale fraud.
+
+
+    [Even in paper ballot systems, there is usually a serial number which
+     provides a back-link from the voter to the ballot.  Otherwise fraud is
+     far too easy, with mystery ballots appearing out of nowhere.  But
+     recall the earlier Phillipine election in which a local power failure
+     downed the central ballot-counting computer, which upon reboot
+     immediately finished the ballot counting.  Somebody has to be trusted
+     somewhere.  There is a choice as to whom the trust must be given.  PGN]
+
+------------------------------
+
+Date: Fri, 28 Feb 86 12:47:35 MST
+From: Chris McDonald <cmcdonal@wsmr06.arpa>
+Subject: Re: Data Encryption Standard
+To: RISKS FORUM <RISKS@SRI-CSL.ARPA>
+
+In response to the DES item, the National Security Agency and other US
+intelligence services have conducted numerous signal intercept exercises
+throughout the US.  The results of such exercises are for good reasons
+classified under national security directives.  Readers Digest, however, which
+obviously has good connections, has published several articles during the last
+5 years describing the threat from foreign intelligence services as well as
+from industrial espionage.  IEEE Spectrum publication had an excellent article,
+"Thwarting the Information Thieves," in its Jul 85 edition.
+
+Presently under Fed Standard 1027 DES devices are export controlled items.
+This would means that US firms who build such encryption hardware must obtain
+an export license before any foreign sale.  Since NSA is the author of the
+Standard, their position would seem to be consistent.  IBM of course does sell
+and build DES devices, and its personnel developed the algorithm upon which DES
+is based.  Therefore, their position would seem to be consistent.
+
+Chris McDonald
+White Sands Missile Range
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

@@ -1,0 +1,868 @@
+VIRUS-L Digest   Monday, 11 May 1992    Volume 5 : Issue 102
+
+Today's Topics:
+
+Anti-Tel vs Telefonica (PC)
+"Safe PC" model update (PC)
+Re: Starship virus (PC)
+Re: troi (PC)
+Troi Two (PC)
+PC virus spread (PC)
+Re: Virus Detecting Disk Cache/Modem Protocol (PC)
+Re: EuroMail Bomb Virus (Amiga)
+Re: Embedding Codes
+Re: (Primative ?) Question
+Re: Why a good virus is a bad idea?
+Re: Why a good virus is a bad idea?
+EEPROM virus prevention
+Antivirus(A Hardware approach)
+Embedded viruses
+Re: Is a "good virus" a bad idea?
+Re: Why a good virus is a bad idea?
+New files on risc.ua.edu (PC)
+Re: Virus jokes (Humor!)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    07 May 92 11:31:45 +0000
+From:    long@vax.oxford.ac.uk (Neil J. Long)
+Subject: Anti-Tel vs Telefonica (PC)
+
+Hello,
+
+Could someone please email me any information they have regarding a
+Boot sector trojan which appears to be a variant of Spanish Telecom
+aka Telefonica. McAffee's SCAN picks it up as [Anti-tel] and clean
+removes it as [A-Vir]. Sophos SWEEP thinks it is Spanish Trojan as
+does VISCAN and S&S FINDVIR.
+
+A program called ANTIVIR was used to great effect when we were
+infested with Telefonica some time back - it reported the number of
+boots since infection ( 285) on one machine but complained of a
+corrupt partition table, whereas it normally replaces the 'true'
+partition.
+
+I need to know if it is a variant of Telefonica or not and how it has
+spread onto several of our machines. So far I have not found a virus
+infected program but we are trying to run the 'clean' machines as
+normal to see if it becomes re-infected. The users 'swear' that they
+are never booted from a floppy but you know how reliable that is!
+
+Any help greatly appreciated
+Neil Long
+
+------------------------------
+
+Date:    Thu, 07 May 92 09:52:38 -0400
+From:    padgett@hobbes.dnet.mmc.com (A. Padgett Peterson)
+Subject: "Safe PC" model update (PC)
+
+             Some time ago I presented a description of what I considered
+        a  "safe"  PC (Intel/MS-DOS based). Currently, I am  seeing  much
+        discussion on the net of such a system and feel it worthwhile  to
+        reiterate what IMHO would constitute a "safe" PC.
+
+             Just  as  an  aside,  I  have  been  using  such  a  layered
+        methodology using some "store-bought" utilities and some I  wrote
+        myself,  but all follow the robust design criteria set  out  some
+        time ago (Anthony ?). As a point of fact, *none* of the  software
+        I  use  has needed any structural changes  despite  some  "horror
+        cases"  such  as running Windows 3.1 and a  number  of  utilities
+        (Norton's  Desktop  for Windows, Harvard  Graphics  for  Windows,
+        Wordstar for Windows...) from a compressed (SuperStor)  Bernoulli
+        disk  on a 386 with Qemm 6.02, CED, Kraft Mouse, AMENU,  SuperPC-
+        Kwik, Personic's UltraVision - all loaded "high" (over 600k free)
+        - just the things a tech-support person dreads to hear.
+
+             The point is that with an intelligent set-up, there can be a
+        one-size-fits-all  approach  taken  so  long  as  the  system  is
+        understood   and   the  vendors  are  responsive.   Again   IMHO,
+        compatibility  problems are the type of consideration we need  to
+        put  behind  us so we can address the  new  vulnerabilities  from
+        networks and "Enterprise computing".
+
+
+                              Model of a "Safe" PC
+
+                                      BIOS
+
+        Ideally  the firmware should contain two elements in addition  to
+        the usual setups: a) boot disk selection and b) optional password
+        protection.  It is easy to include and simple to service  yet  at
+        present  only  a  small (but  growing)  number  of  manufacturers
+        include  both.  Ones I know about are Compaq,  NEC,  Tandon,  and
+        Zenith.
+
+        Given  these  two  elements, the rest of the  protection  can  be
+        controlled by software.
+
+        The  first step is from the MBR (master boot record),  the  first
+        user-programmable stage. Since the BIOS guarantees that  floppies
+        are  not  booted  by  default, two  important  functions  can  be
+        controlled  from  here: a) authentication of the  code  and  BIOS
+        system installed and b) creation of a "protected' portion of  the
+        fixed disk to include the MBR, DOS boot record, and system  files
+        that   are   also   authenticated   using   a    machine-specific
+        algorithm/seed.  It would be up to the user to determine  whether
+        to  limit  protection  to  the  "hidden"  elements,  additionally
+        protect certain directories, or an entire partition.
+
+        In my experience, since this requires much less than 1k of memory
+        (minimum  allocatable from the BIOS) for the resident portion  it
+        would be possible to also include a software "lock" for use  when
+        the  terminal  is  unattended in this  area  and/or  floppy  boot
+        protection  for  those systems whose BIOS does not  support  boot
+        disk selection.
+
+        At this point the safe model has validated the BIOS, itself,  and
+        the OS (simple and free from false alarms since these change only
+        very rarely) and is ready to permit loading of the OS.
+
+                                Operating System
+
+        With  the  load  of the operating system,  a  different  kind  of
+        protection/detection  is  necessary and the  prime  mechanism  is
+        authentication.  Here, the first user-controllable  operation  is
+        CONFIG.SYS.
+
+        Ideally,  the  authentication  mechanism  should  load  first  to
+        protect against corruption from the earliest moment. In the  real
+        world,  it  is usually better to allow memory managers  and  disk
+        drivers to load first, then to activate protection. In this  case
+        the integrity manager must check itself, memory usage and earlier
+        loading programs before continuing.
+
+        Still since only a few programs must be validated and the  system
+        is  still  firmly defined, this is quick. At the same  time,  the
+        protection  loaded at the BIOS can be authenticated since  it  is
+        possible  to maintain a signature of what the  resident  software
+        area looks like.
+
+        This  authentication mechanism will maintain record of what  each
+        piece  of software does and an authentication signature  for  the
+        program.  On  load,  it  is  encapsulated  in  a  program   shell
+        containing those permissions. By checking the RAM environment for
+        changes  both  before the program runs and after  it  terminates,
+        suspicious activities can be detected quickly.
+
+        The  most difficult area to handle from the OS standpoint is  the
+        introduction of new programs. The best solution would be for each
+        program received to be accompanied by an authentication mechanism
+        traceable  to  the  vendor. Obviously, this is not  going  to  be
+        possible  in  all cases so additional protection  means  will  be
+        necessary.  This  is  where  signature  scanners  and   heuristic
+        analysers would have value as an additional layer of protection.
+
+        Similarly,  such tools would be valuable as detection tools  once
+        *something* has occurred. In this case, speed is unimportant.
+
+
+                                    Networks
+
+        The  final layer to be placed onto such a system is the  network.
+        Far from being a vulnerability, the network can provide essential
+        supervisory and provide automatic detection/correction/reporting.
+
+        However,   this   can  only  happen  in  a   true   client-server
+        relationship  wherein  the server is capable of  controlling  the
+        actions of the client. Peer-peer networks seen thusfar lack  this
+        capability.
+
+        At login, the network can force the client to authenticate itself
+        and  verify that it has booted properly, protection programs  are
+        in place, and that its operating environment is within limits. If
+        any  exception  is  recorded, the server  is  able  to  determine
+        whether  to allow the login to continue and can report to  proper
+        authority the condition.
+
+        At  the  same  time, the server can verify  the  version  of  the
+        software  being run on the client and make any  modifications  or
+        updates necessary. All on-the-fly and invisible to the client.
+
+        The  synergism  of  this  type of  environment  is  evident.  For
+        example,  given this control it would be possible for the  server
+        to  initiate  automatic backup of all changed  files  on  logout.
+        Since the quantity would be small, such action would be fast.
+
+
+                                   Conclusion
+
+        This  then  is  one possible model of  a  "trusted"  system  with
+        multiple layers building on and authenticating each other.  Since
+        the  layers  are compartmented, they are able to  work  with  all
+        software that I have seen. Obviously, while some of the  concepts
+        are  not going to be appropriate for the home user  (actually,  I
+        use *all* of them at home but not everyone's home is networked  -
+        yet)  they are appropriate for the corporate,  governmental,  and
+        educational environment.
+
+        I have not touched on all of the possibilities in this  monologue
+        that  have  been  considered  (e.g  How  to  perform  updates  in
+        protected  areas, encryption of signature strings with  a  unique
+        seed  for  each PC, physical vulnerability  considerations,  etc.
+        etc.  etc.), but the concepts are proven and do work for  today's
+        threats. Now we need to concentrate on tomorrows.
+
+                                           Warmly,
+                                                     Padgett
+
+		<padgett@tccslr.dnet.mmc.com>
+
+------------------------------
+
+Date:    07 May 92 13:49:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Starship virus (PC)
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+
+> It's not compilers that create executables, it's linkers.  And I don't
+
+Of course, but with the nowdays popular integrated products, most
+people think about Borland's Turbo C or Pascal -compiler- as being the
+same as their integrated editor-comliler-linker-debugger
+invironment... And when you "compile to disk" with Borland's IDE, it
+really looks like a single program (usually called the "compiler")
+creates the EXE file. I know of a similar integrated assembler-editor
+that also creates the COM file in a single pass.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 May 92 14:01:25 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: troi (PC)
+
+pl159345@academ01.mty.itesm.mx (PEREZ SALAZAR ANA LUISA) writes:
+
+>  Any Antivirus that can remove Troi virus?
+
+F-Prot 2.03a.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 07 May 92 18:48:56 +0000
+From:    pjo@conan.cs.hut.fi (Pasi 'PJo' Jokela)
+Subject: Troi Two (PC)
+
+ Our nnmaster hasn't updated its database for 40 hours so I don't know
+if I'm the first one to spot _Troi Two_ (but better safe than sorry:).
+I saw it in a hacked pk(un)zip that claimed to be version 2.01.  It
+could be able to infect .EXE files, but I'm not sure.  When the
+executable is run, it checks DOS date and goes resident only if the
+date is after May 1, 1992.  If it goes resident, it moves its code
+(408 bytes) to address 00200, just like Troi (one) did.  I don't know
+what it does when it's resident.
+
+ You can find infected files by searching for string ">>>-Troi Two-->".
+
+	    PJo
+
+ PS. Scan (89) or F-Prot (2.03a, even with heuristics) couldn't find this
+little sucker, but using NCACHE's write protect feature caused it to give
+"Disk is write protected", "R(etry)...." error.
+
+- --
+Pasi 'PJo' Jokela - Pasi.Jokela@hut.fi - pjo@vipunen.hut.fi - PJo on IRC
+              This is the essence, the death of your soul.
+             Elevate your mind, let your body take control.
+V'z ebg-13 ivehf. V znxr crbcyr ebg. Pbcl zr gb lbhe .fvt gb vasrpg vg!!
+
+------------------------------
+
+Date:    Thu, 07 May 92 18:34:56
+From:    "Gonzalo Rojas C." <GROJASC@USACHVM1.BITNET>
+Subject: PC virus spread (PC)
+
+Hi
+
+  For an article I am writing, I need the quantity of PC virus that
+appeared each year, aproximately...
+
+  Thanks in advance...
+
+Gonzalo M. Rojas Costa
+
+------------------------------
+
+Date:    Fri, 01 May 92 19:29:45 -0700
+From:    msb-ce@cup.portal.com (Fritz Schneider)
+Subject: Re: Virus Detecting Disk Cache/Modem Protocol (PC)
+
+In Virus-L Volume 5 Issue 97, ST6074@SIUCVMB (Tim Williams) asked:
+
+TW>   What about
+TW> a virus-checking modem protocol.  I realize this wouldn't work for
+TW> .ZIPped files, and such, but it is absolutely possible for other
+TW> files.  .ZIP files could even be dynamically unzipped and then
+TW> scanned.  It would be a lot of work, but on a fast machine, it could
+TW> be done.
+
+Many BBS's (the best ones :-) ) will unZIP, unLZH, or unARC every upload
+as soon as it arrives, scan the contents, and set it aside in a holding
+directory if it has a virus in it. This seems to be the equivalent of what
+you are suggesting.
+
+Regards,
+
+Fritz
+
+------------------------------
+
+Date:    Fri, 08 May 92 01:31:00 +0100
+From:    Anthony Naggs <AMN@VMS.BRIGHTON.AC.UK>
+Subject: Re: EuroMail Bomb Virus (Amiga)
+
+Michael Engel (engel@ztivax.zfe.siemens.de) asks:
+> One of my viruscheckers (virusZ) finds an EuroMail Bomb virus
+> in some programs I got via ftp. Other checkers do not.
+> Is it really a virus , and if yes, what will it do ?
+
+I assume you mean VirusX, :-)
+
+I am currently collecting Amiga viruses to do a product test, but I
+haven't got a copy of this one.  (I'll mail the results to Rob Slade
+to place at FTP sites, if that's okay with you Rob?)
+
+However I have received a text file which describes this virus,
+though I don't know how accurate it is.  Apparently the virus edits
+startup-sequence to execute a program with the single letter name $A0.
+A file of this name is created in c:.  Effects as described in the file:
++ Damage routine:
++ Works only when devices [directories] EM or EUROMAIL or EUROSYS
++                                                      are available.
++ overwrites all Files in these directories with memory from MsgPort.
++ In damaged files: from $BC text 'clipboard.device'.
++ After that a pause of 3mins using dosdelay $259A
++ After pause damage routine is called again.
+
+I am also looking for other Amiga viruses for use in my a-v s/w tests,
+if you might be able to help please email me, thanks.
+
+Regards, Anthony Naggs  (Email: amn@vms.brighton.ac.uk or xa329@city.ac.uk)
+- -----------------------------------------------------------------------------
+Most things in life eventually can be explained.  But - Joe Chip on a
+fifty-cent piece?  It was the first Joe Chip money he had ever seen.
+- -----------------------------------------------------------------------------
+
+------------------------------
+
+Date:    07 May 92 13:17:51 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Embedding Codes
+
+74370.340@CompuServe.COM (JF Messier) writes:
+
+> In reply to John Parks about embedding code into documents and them
+> making documents containing code, this is absolutely impossible. OLE
+> documents contain ONLY reference to the application whichi created it.
+
+Then a virus could modify the reference to execute some other code
+first, which then chains to the original application.
+
+> About viruses into Windows programs, this is rare enough yet.  usual
+
+It gets less rare as people begin to use this thingo more widely...
+But you are right that properly working viruses into properly working
+Windows applications are rare enough.
+
+> DOS-based viruses cannot easily live inside Windows because of its
+> memory management.
+
+Easily - not. But they can. First, a lot of DOS-based viruses are not
+memory resident. Second, some memory resident viruses install
+themselves in holes in DOS and do not break Window's memory
+meanagenet. Third, a virus can be made to be Windows-aware (-not-
+Windows-dependent!). This is not impossible, it is just not easy.
+
+> Also, the viruses spread based on DOS executable
+> format files. A Windows application infected by a virus would not be
+> executable anymore under Windows.
+
+This is not always true. Even the old Suriv 2.01 virus is able to
+infect Windows applications correctly. (The virus itself will not work
+under Windows due to its way to use memory, but this is another
+story.)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 May 92 13:35:39 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: (Primative ?) Question
+
+UICD@MARIST.BITNET (Christoper V. DeRobertis) writes:
+
+> Is there any known cases of 'hackers' or those involved in computer
+> crimes who have dissected one or more anti-viral programs (from the
+> most basic to the most complex) to find out how they could make a
+> virus 'fool', 'trick', 'avoid', etc. that particular checker? If so,
+
+Yes, there have been several cases. The trojanized version for
+FluShot3 (called FluShot4) was one of the first widely known cases.
+Nowdays SCAN is probably the most often trojanized program in the
+world. Several viruses try to recognize the popular anti-virus program
+and not to activate when they are present or at least not to infect
+them. Some even take some steps to disable them. The Tequila virus
+removes the 10-byte checksum that SCAN adds to the executable files
+when run with the /AV option. There are many more cases...
+
+Just one more correction. The people who are known nowdays to the
+world as "hackers" (a more appropriate word is "crackers"), i.e.
+people who spend their time to invade computers on the net, are
+usually not very skilled in virus writing. The opposite is also true -
+most tallented virus writers don't seem to hack a lot... I guess the
+reason is that one just does not have the time to become good in both
+areas... :-)
+
+> what burdens has that placed on those who develop anti-viral programs?
+
+Virtually nothing. Nothing successful, that is. Several of the
+anti-virus products perform self-checking for modifications. CPAV even
+tries to self-disinfect itself from unknown viruses (which it
+spectacularly fails to succeed even with some of the known ones). I
+have seen at least one scanner, which when executed first runs on
+itself in disinfection mode before scanning anything else. SCAN has
+three different way to check its integrity and they all fail in
+similar ways.
+
+The problem is more general though. How to distribute software through
+insecure channels (like BBSes) and making sure that it has not been
+tampered with? The only possible way is to use public-key
+authentication, but there are some bureaucratic obstacles for this in
+the USA...
+
+> If not, is this a consideration that anti-viral developers place into
+> their products anyway?
+
+I don't know about the future, but currently all solution oscillate
+around the idea of self-check for modifications, which is flawed by
+definition, since no secure channel can be established between the
+program that runs the check and the code being checked.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 May 92 14:24:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Why a good virus is a bad idea?
+
+werner@rascal.ics.utexas.edu (Werner Uhrig) writes:
+
+> > If somebody can think about other arguments why a "good" virus is a
+> > bad idea, please e-mail them to me.
+
+> 	why waste the time if there are no arguments given why this
+> 	should be considered a "good idea"? (There are none?  well,
+> 	we are done then already...)
+
+You have e-mailed me an exact copy of this message and we are already
+discussing your points. Please, respect my wish not to raise a
+discussion about this on Virus-L or to start public ideological wars
+and send me your oppinions privately. This kind request holds for
+everybody else too.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    07 May 92 14:09:07 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Why a good virus is a bad idea?
+
+CHESS@YKTVMV.BITNET (David.M.Chess) writes:
+
+> >                       I would like to present a detailed, objective
+> >and non-biased look on the subject. So, could you please send me a
+> >short note, indicating why you consider the usage of virus techniques
+> >to be a bad idea.
+
+> Interesting!  You want to collect unbiased opinions about X, and so
+> you're asking for everyone to tell you why X is bad?  That sounds a
+> little biased to me...  *8)
+
+More exactly, I want to -present- (my own; i.e. create it) oppinion
+about X, that's why I am asking a public which is probable to have
+oppinions against X for oppinions against it. I'll ask for X-favorable
+oppinions the public that is expected to present them (e.g., Dr.
+Cohen).
+
+> Just kidding; I understand your point.  It's important to note,
+> though, that when Dr. Cohen talks about beneficial viruses, he
+> *doesn't* mean what most of us mean when we talk about viruses.  He
+
+Yes, indeed. You are right, this seems to be important to be noted.
+Most people who already replied me seemed to understand under the term
+"virus" only a "file infector"...
+
+> means anything at all that replicates in any sense.  We, in normal
+> VIRUS-L talk, mean programs designed to replicate across systems
+> without the knowledge or consent of the system owner.
+
+And Cohen understands programs which are able to replicate accross
+other programs. Period. But his definition is clearly stated in his
+works. However, even when we accept his definition, there are some
+good reasons why a "good virus" might be a bad idea and they have to
+be taken into account.
+
+> Dr. Cohen's papers on "good viruses" will make much more sense, and be
+> much less controversial, if you read something like "artificial
+> replicator" when he says "virus".
+
+But, at least as I understand it, he does not speak about artifucial
+replicators... At least, not only about them. Maybe he should have
+called them "self-replicating distributed computations", but the term
+"virus" is much shorter and natural... Unfortunately, it is already
+loaded with negative meaning.
+
+> People working in the artificial
+> life field talk about beneficient uses of replicators all the time
+> without anyone objecting.  The key difference is that the unstated
+> assumption there is that the replicators stay inside their
+> experimenter-controlled artificial world.
+
+But the artificial life creatures don't have much practical value
+(except for some useful simulations) exactly because they cannot
+survive outside their virtual reality...
+
+> I have created systems in which artificial replicators did interesting
+> things, and I feel no guilt for having done it!  While they were
+> probably viruses in Cohen's sense, they were *not* viruses in the
+> sense we use on VIRUS-L; there's no way they could have gotten outside
+
+Even in the Cohen's sense, they have been viruses only in their
+virtual world. But I seriously doubt that you want the real-world
+programs to do what your artificial creatures did in their artificial
+world, right? I think that Dr. Cohen does not limit himself to such
+viruses only; maybe he could comment this?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev           Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226       Fachbereich Informatik - AGN
+** PGP public key available by finger. **     Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de     D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 07 May 92 11:57:49 -0400
+From:    Brian Seborg <seborg@csrc.ncsl.nist.gov>
+Subject: EEPROM virus prevention
+
+Joe Descar writes about using EEROMs etc. for virus prevention.
+Actually, there is already such a device.  Validity Corp. in MD has a
+prototype device which it is test-marketing which does just this.
+Essentially what is done is that a set of flash EPROMs are set up to
+contain the operating system and the McAfee Scan program (other
+programs could easily be substituted).  The hardware is configured so
+that a write to the flash EPROMs must be hardware enabled.  Then the
+device uses the operating system and the scanner stored in the flash
+EPROMs to scan any diskette placed in either of the devices disk
+drives.  If the diskette is found to be clean a green light goes on,
+if not a red light.  Since the flash EPROMs function as the boot
+device, there is no possibility of boot sector infection, or infection
+of any kind by any infected disks.  Obviously, this device would not
+be something the average user would buy, but I would think it might be
+useful for those installations which scan disks prior to entry, and
+where the operator of the equipment cannot look at a CRT screen or has
+limited PC experience.  I am not trying to endorse this particular
+product, but it is the only one of its kind that I am aware of.  A
+dedicated PC could perform similarly with the appropriate hardware
+modifications, but requires that an attending user watch the screen.
+This type of device is not meant to clean the virus, or detect what
+type of virus is actually present, but to essentially make a binary
+decision: clean or not.  Any infected floppies are not permitted past
+the physical control point, adn and are given back to users or
+confiscated for cleaning, etc.
+
+Regards,
+
+Brian Seborg
+
+------------------------------
+
+Date:    Fri, 08 May 92 04:26:00 +0000
+From:    mccd@rosie.uh.edu (Reza Golshan ACUS 743-1587)
+Subject: Antivirus(A Hardware approach)
+
+	I have recently seen a product that offers a hardware solution
+to the virus problem.  I have to still check this claim when I get the
+demo version, however, I wonder if anyone has heard of similar
+products.  I have heard of a company in India which has made the
+similar claim.  Please respond to me directly and I will post the
+answers if any.
+
+==========================================================================
+==  Reza Golshan                        |  <<<<<RGolshan@uh.edu>>>>>	==
+
+==  University of Houston(Park)         |  <<<<MCCD@Jetson.Bitnet>>>	==
+==  Academic Computing User Services    |=================================
+==  36, Heyne Building	                | "A little more than kin, and 	==
+==  Houston, Texas  77204               |  less than kind."		==
+==  ph# (713)-743-1587; FAX: (743-1542) |   Bill Shakespeare, Hamlet	==
+==========================================================================
+
+------------------------------
+
+Date:    06 May 92 23:38:00 +0100
+From:    sgr4211@uk0x08.ggr.co.uk
+Subject: Embedded viruses
+
+JF Messier <74370.340@CompuServe.COM> writes:
+
+>  In reply to John Parks about embedding code into documents and them
+>  making documents containing code, this is absolutely impossible. OLE
+>  documents contain ONLY reference to the application whichi created it.
+>  If the application is not there, because the document has been copied
+>  to somebody else's machine, Windows, will simply say that it can't
+>  open it.
+
+I'm  sorry,  but  this  simply  isn't true.  I didn't notice John Parks'
+mail, so I don't know what was said, but as I'm guilty of having started
+this thread I'll take the liberty of responding...
+
+I  have  described  previously how I created a WRITE file and embedded a
+copy of CALC.EXE, and found that the resulting  file  was  the  size  of
+CALC.EXE,  plus  the size of the WRITE file before the embedding, plus a
+bit (presumably information inserted by PACKAGER).  This is  very  large
+if  all  that  is  contained  is a reference to CALC.EXE.  Examining the
+WRITE file shows that various strings are present that look suspiciously
+like the contents of CALC.EXE, for example:
+
+   "Microsoft Calculator: Developed by Kraig Brockschmidt"
+
+This  file  is  truly  EMBEDDED.   When  CALC.EXE  is renamed to make it
+unavailable though normal channels it is still available from the  WRITE
+file.
+
+You can *also* LINK files, by holding down <ctrl>+<shft> whilst you drag
+& drop the exe into the document.  This *does* include only a  reference
+to the executable, and is what you describe above.
+
+Absolutely impossible? Try it.
+
+
+>  After talking with tech people from MS in Redmond, WA, they
+>  confirmed that.
+
+My  findings  suggest that Microsoft are somewhat mistaken!  Either they
+misunderstand the question or their tech people in  Redmond,  WA,  don't
+know much about Windows v3.1  :-)
+
+>  DOS-based viruses cannot easily live inside Windows because of its
+>  memory management. Also, the viruses spread based on DOS executable
+>  format files. A Windows application infected by a virus would not be
+>  executable anymore under Windows. That could cause unpredictable
+>  results, but no more infection.
+
+I'm not a virus expert - that's why, when I thought of this possible new
+infection route, I posted my queries here on Virus-L.  Vesselin Bontchev
+replied  that  there  *are*  DOS  viruses  that  can infect Windows, and
+there's no reason why viruses can't be made Windows aware (I'm  sure  if
+I'm misrepresenting Vesselin's opinions he will correct me).
+
+>                                  TrueType fonts, when created are made
+>  in to an executable file. When using such fonts into a document, those
+>  fonts are integral part of the document so somebody else can at least
+>  print them. Although those fonts are from an executable file, they
+>  cannot contain a virus.  The document could get damaged, but nothing
+>  else
+
+Yes,  someone  pointed  out  the  TrueType situation after hearing of my
+worries.  I don't know enough about viruses or TrueType to know if  your
+claims  about TrueType's safety are correct, or if we can assume that it
+will always remain inherently invulnerable to attack as new viruses  are
+developed.
+
+
+Steve Richards.
+
+------------------------------
+
+Date:    07 May 92 16:08:00 -0600
+From:    "William Walker C60223 x4570" <WALKER@aedc-vax.af.mil>
+Subject: Re: Is a "good virus" a bad idea?
+
+From:    Werner Uhrig <werner@rascal.ics.utexas.edu>
+>	have you ever heard of a human immunization that spreads
+>	"virus-like"?  I haven't, but even if it was possible, who
+>	would/should take the responsibility to consider the whole
+>	world as their private laboratory...?!?
+
+There is a proposed cure for one of the genetic illnesses (I forget which
+one) which is not only "virus-like," but is "virus-based."  A sample of
+the patient's DNA is extracted, the mutated portion which causes the
+illness is removed and replaced with the normal genome, and the new DNA
+is inserted in the protein case of a REAL virus (sans viral DNA, of
+course).  I also forget the particular virus used, but it is one which
+causes a respiratory disease (the influenza virus, I think).  The patient
+then breathes some air which is "intentionally contaminated" with the new
+"viri," which "attack" the lung cells, inserting the "fixed" DNA in the
+cells, and thereby curing the genetic illness.  This process is, I
+believe, currently undergoing FDA examination.
+
+One of the strongest objections to this procedure is almost exactly the
+same as that stated by Mr. Uhrig:  who would be responsible if the "viri"
+escaped into the world?  Opponents are quick to point out the dangers of
+this procedure.  The DNA in the "viri" is geared toward one specific
+human -- the patient.  If another person should breathe these "viri," his
+DNA would be replaced, too.  The results could then be worse than a mere
+mutation -- some of his own cells would no longer be compatible with the
+rest of his body, resulting in tissue rejection, a new form of cancer, or
+who knows what.
+
+How could a procedure of this kind be controlled?  It can't.  How do you
+know when all of the viri have "attacked?"  You don't.  Suppose a person
+receives this treatment, then goes out and breathes the "unused" viri on
+someone, who inhales them in turn.  Can this be controlled?  No, unless
+you seal the patient in a "plastic bubble" for the rest of his life.  Not
+an attractive solution.
+
+Perhaps a coresponding computer-virus example can be used in the "good
+virus" argument.
+
+Bill Walker ( WALKER@AEDC-VAX.AF.MIL ) |
+OAO Corporation                        |     "That's not a bug,
+Arnold Engineering Development Center  |      that's a feature!"
+M.S. 120                               |          - Anonymous
+Arnold Air Force Base, TN  37389-9998  |
+
+
+------------------------------
+
+Date:    Fri, 08 May 92 03:26:39 +0000
+From:    "Aliza R. Panitz" <buglady@silver.lcs.mit.edu>
+Subject: Re: Why a good virus is a bad idea?
+
+werner@rascal.ics.utexas.edu (Werner Uhrig) writes:
+>
+>	have you ever heard of a human immunization that spreads
+>	"virus-like"?  I haven't, but even if it was possible, who
+>	would/should take the responsibility to consider the whole
+>	world as their private laboratory...?!?
+
+One of the leading current theories on the origin of HIV, the AIDS
+virus, is that it was a contaminant in polio vaccines.
+
+Check out sci.med.aids for info.  Followups are not relevant here.
+
+------------------------------
+
+Date:    Fri, 08 May 92 13:15:37 -0500
+From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files on risc.ua.edu (PC)
+
+The following files have been placed on risc.ua.edu in the directory
+/pub/ibm-antivirus for anonymous FTP:
+
+                  /pub/ibm-antivirus/asig9205.zip
+                  /pub/ibm-antivirus/tbresc19.zip
+
+- --------------------------------------------------------------------
+TBRESC19.ZIP (new release of bootsector rescue program)
+has been uploaded; 20711 bytes, dated 05-03-92 12:43p
+
+And also I've uploaded ASIG9205.ZIP (an "emergency update"
+of the signature-file for TBSCAN/HTSCAN; it only contains
+a sig for Gen-PB that seems to have been seen on several
+Dutch BBS's); filesize 397 bytes, dated 05-05-92 07:04p
+- --------------------------------------------------------------------
+
+Thanks to Jan (vantent@cvx.eur.nl) for the files.
+
+- -- jf
+
+------------------------------
+
+Date:    30 Apr 92 14:00:44 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Virus jokes (Humor!)
+
+CCTR132@csc.canterbury.ac.nz (Nick FitzGerald) writes:
+
+> "Real power-users think "Your PC is Stoned!" is part of the Microsoft
+> copyright message."
+
+Robert Slade had in his signatures some nice ones, like:
+
+"First law of data security: don't buy a computer."
+
+"Second law of data security: If you ever buy a computer, don't turn
+it on."
+
+Here are some more:
+
+"Murphy's first law about computer viruses: If a computer virus can be
+written, it will be written."
+
+"Murphy's second lay about computer viruses: If a computer virus just
+cannot be written, it will be written anyway. It will just take a
+little bit longer."
+
+"For any given virus, there exists a software/hardware configuration,
+on which it will cause damage."
+
+There are certainly more...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 102]
+******************************************

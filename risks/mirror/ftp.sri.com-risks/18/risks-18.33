@@ -1,0 +1,570 @@
+Subject: RISKS DIGEST 18.33
+
+RISKS-LIST: Risks-Forum Digest  Weds 14 August 1996  Volume 18 : Issue 33
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+Fault-tolerant software for escaping "upgrade hell" (Vladimir Z. Nuri)
+RISKy cars coming! (Greg Dolkas)
+128-bit Netscape registration (Alan Arndt via via Jim Horning)
+Operator error or system design fault in Atlanta 911? (Philip Rose)
+The 1994 A300-600 Nagoya accident - final report (Peter Ladkin)
+Re: America Offline (Pete Mellor)
+Re: Computers causing power outages (Robert I. Eachus)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Fri, 09 Aug 96 13:04:28 -0700
+From: "Vladimir Z. Nuri" <vznuri@netcom.com>
+Subject: Fault-tolerant software for escaping "upgrade hell"
+
+The recent America Online blackout has spurred my thinking on the subject of
+decreasing the risks of software upgrades for real-time systems. I want to
+highlight for your readers some very significant techniques that I perceive
+to be underutilized to date and, if developed and used widely in the future,
+could hold great promise in drastically reducing the hazards of simple
+software upgrades. They are inspired by a maddeningly familiar pattern in
+software upgrades one might call "upgrade hell":
+
+The fundamental difficulty we are observing in real-time software is that
+the system is often only designed to run one version of the software at a
+time. Designers are forced to bring "down" the system while they install new
+software, which may or may not function correctly. Often they can only test
+the full range of behavior or reliability of the new software by actually
+installing it and running it "live". Then, if the software fails to work, a
+process that in itself may be difficult to detect, they are forced to "down"
+the system again, and reinstall the old version of the software, if such a
+thing is even possible (in some cases the configuration of the new version
+is such that an older version cannot be readily reverted to).
+
+This story repeats itself endlessly in many diverse software applications,
+from very large distributed systems down to individual PC upgrades.  
+In pondering this I came to some observations.
+
+1. Many designers currently assume that new versions of software will be
+   "plug-and-play" compatible with older versions.
+
+2. Systems are designed to run one version of software at a time.
+
+3. A system has to be inactive during transitions between versions.
+
+4. Upgrades are only occasional and the downtime due to them is acceptable.
+
+These basic features of software and hardware interplay, despite their wide
+adherence, are not in fact "carved in stone". Could we imagine a directly
+contrasting system in which they are fundamentally different?
+
+1. Let us assume that new software is not necessarily compatible with
+   previous versions even where it should be, despite our best attempts to 
+   make it so. In fact let us assume that humans are notoriously fallible 
+   in creating such a guarantee and that in fact such a guarantee cannot be
+   realistically achieved.
+
+2. Let us imagine a system in which multiple versions of software (at least
+   two) can be running simultaneously.
+
+3. Let us imagine a system that "stays running" even during software version
+   upgrades.
+
+4. Let us assume upgrades are periodic, inevitable, and ideally the system
+   would "stay running" even throughout an upgrade.
+
+The above assumptions lead to some attractive properties of the whole I will
+describe. One feature is similar to the way drives can be configured to
+"mirror" each other, such that if either fails the other will take over
+seamlessly and the bad one "flagged" for replacement. Imagine now that
+computations themselves are "mirrored" in the hardware such that two
+versions of software are running concurrently, and the software checks
+itself for mismatches between the results of the computations where they are
+supposed to be compatible (this can be done at many different scales of
+granularity at the decision of the designer). The software could
+automatically flag situations in which the new code is not functioning
+properly, even while running the old version.
+
+What we have is a sort of "shadow computation" going on behind the scenes.
+When a designer wants to run a new version of software, he could "shadow" it
+behind the currently running software to test its reliability without
+actually committing to running it.
+
+Under this new system, software upgrades tend to blend together:
+
+- There is a point where only the old version is running.
+- Then the old and the new version are overlapping or the new "shadowing"
+  the old but the new not actually determining final results.
+- Then reliability is actually measured, and continued to be
+  measured until gauged sufficient.
+- Finally, the actual commitment to running the new version alone 
+  can be made.
+- Additionally, keeping around old versions that can be switched to
+  immediately in times of crisis would be a very powerful advantage--
+  losing some new functionality but preserving basic or core functions.
+
+There would be vastly fewer "gotchas" in this system than those I outlined
+above in the classic "upgrade hell" scenario. Once the concept of different
+versions is embodied within in the software itself by the above principles,
+rather than it being considered foreign or external to the system, we have
+other very powerful techniques that can be applied:
+
+A "divide and conquer" approach can be used to isolate bad new components.
+Different new components, all part of the new upgrade, can be selectively
+turned "on" or "off" (but still shadowed) to find the combination of new
+components that creates bad results based on the "live" or "on-the-fly"
+benchmarks of previous software. In fact, it may become possible to write
+software that actually automates the process of upgrading in which new
+versions of the components are switched on by the software itself based on
+passing automated reliability tests.  The whole process of upgrading then
+becomes streamlined and systematic and begins to transcend human
+idiosyncracies.
+
+These new assumptions could lead to radically different software and
+hardware systems with some very nice properties, potentially achieving what
+by today's standards seems elusive to the point of impossibility yet
+immensely desirable to the point of necessity: robust fault tolerance and
+continued, uninterrupted service even during software upgrades. Of course,
+the above techniques are inherently more difficult to achieve in
+implementation, but the cost-benefit ratio may be wholly acceptable and even
+desirable in many mission-critical applications, such as utility-like
+services like telecommunications, cyberspace, company transactions, etc.
+
+One difficulty of implementing the new assumptions above relative to
+software is that often such changes need to be made from the ground up,
+starting with hardware. But the software and hardware industries have shown
+themselves to be very adaptable to massive redesigns relative to new ideas
+and philosophies if they are shown to be efficacious in the final analysis
+despite some initial inconvenience, such as object oriented programming.  I
+am not saying the above alterations are appropriate for all applications.
+They can also be introduced to varying degrees in different situations,
+ranging from a mere simplicity in switching between versions all the way to
+fully concurrent and shadowed computation with multiple versions immediately
+available.
+
+Also, I am sure your astute readers can point out many situations in which
+the ideas I am outlining already exist. I am not saying they are novel.
+However the emphasis on them in a collection as a basic paradigm I have not
+seen before. In the same way that many designers were using OOP principles
+such as encapsulation, polymorphism, etc. before they were focused into a
+unified paradigm, I believe the above ideas could benefit from such a
+focused development, such as designing hardware, software, and languages
+that explicitly embody them. Many of the ideas I outline are used in
+software development pipelines and distinct QAQC divisions of companies--
+but I am proposing incorporating them in the machines themselves, which to
+my knowledge is a novel perspective.
+
+Actually, the root concept behind these ideas is even more general than mere
+application to software. It is the idea that "the system should continue to
+function even as parts of it are replaced". We see that this basic premise
+can be applied to both hardware and software. It is such a basic attribute
+that we crave and demand of our increasingly critical electronic
+infrastructures, yet so difficult to achieve in practice. Isolated parts of
+our systems today have this property-- is it the case that it is gradually
+spreading to the point it may eventually encompass entire systems?
+
+Many of these ideas come to me in considering a new protocol I am devising
+called the "directed information assembly line" (DIAL), a now-brief
+theoretical construct that supports such features, which I can forward to
+any interested correspondents who send me e-mail. Some of the key
+assumptions I am reexamining are those given above. I believe that actually
+changing our assumptions about the reliability of humans to be more lenient
+can actually improve the reliability of our systems. Let us start from new
+assumptions, including "humans are fallible", rather than "humans approach
+the limit of virtual infallibility if put under enough pressure" (such as
+that always associated with new versions and software upgrades).
+
+V.Z.Nuri  vznuri@netcom.com
+
+------------------------------
+
+Date: Tue, 13 Aug 96 15:52:22 PDT
+From: Greg Dolkas <greg@core.rose.hp.com>
+Subject: RISKy cars coming!
+
+In the 22 Jul 1996 issue of Fortune was an interesting look into the future
+of automobile electronics, "Soon Your Dashboard Will Do Everything (Except
+Steer)".  The topic of steering has already been discussed in this forum,
+but what caught my eye was a review of the "OnStar" product from GM.
+Besides being a navigation aid, it also contains "some anti-bonehead
+features".  These include the ability for you to call GM's "control center"
+for help if you lock your keys in the car, or forget where you parked it.
+From the control center, they can "electronically reach into the car" to
+unlock the doors, or honk the horn and flash its lights.
+
+Since the article doesn't discuss how the control center will authenticate
+that you really own the car you are asking them to unlock, or what measures
+are used to prevent a would-be control center from gaining access, it's not
+clear how the term "bone-head feature" should be applied...
+
+Greg Dolkas  greg@core.rose.hp.com
+
+------------------------------
+
+Date: Wed, 14 Aug 96 12:21:00 P
+From: Jim Horning <horning@intertrust.com>
+Subject: 128-bit Netscape registration
+
+>From:  Alan Arndt
+Sent:  Wednesday, August 14, 1996 11:01 AM
+To:  Everyone!!
+Subject:  Your Privacy
+
+While trying to download the 128-bit high-security version of Netscape,
+there was a notice about how they try to verify that you are a US Resident.
+Apparently they pass on the information you entered to another service and
+presumably if you don't show up you don't get to download the software.
+
+That service is: http://www.lookupusa.com/lookupusa/ada/ada.htm
+[[ SHORTC~1.URL : 4620 in SHORTC~1.URL ]]
+
+I found this rather interesting.  My name is not listed in most of these
+lists because they are usually based on phone numbers and mine is unlisted.
+This one, however, had my name and address, but no phone number.  Not only
+that but it directly connects with a mapping service so you can get a direct
+map for the person's exact location.  Quite neat, until you start to realize
+that it won't be long and people will VERY EASILY be able to find out a lot
+about you.  Getting a map with an X on your house doesn't please me if
+someone is ticked off at me.  Say they don't like my driving style on my
+motorcycle.  (naw couldn't happen) Although personal information is no
+longer available from CA DMV I do believe you can get someone's Name from
+the license plate.
+
+Now the Business lookup is even more fun.  Not only can you map the location
+but you can get a Credit profile.  Ours says Satisfactory.  For $3.00 you
+can get the complete information.
+
+Enjoy, and protect your valuable information.
+
+ -Alan
+
+The following binary file has been uuencoded to ensure successful
+transmission.  Use UUDECODE to extract.
+
+begin 600 SHORTC~1.URL
+M6TEN=&5R;F5T4VAO<G1C=71="E523#UH='1P.B\O=W=W+FQO;VMU<'5S82YC
+;;VTO;&]O:W5P=7-A+V%D82]A9&$N:'1M````
+`
+end
+
+------------------------------
+
+Date: Tue, 13 Aug 1996 18:04:47 +0100
+From: Philip Rose <phil.rose@zetnet.co.uk>
+Subject: Operator error or system design fault in Atlanta 911?
+
+Last weekend the national press here in the UK published extracts from the
+police transcripts of the emergency traffic concerning the Atlanta bomb.
+
+One thing that struck me was the operator's belief that the system's refusal
+to accept Centennial Park as a valid location was her fault.  She even
+queried with the Police dispatcher whether she had spelled Centennial
+correctly.
+
+I see two risks. Firstly, an overexpectation that a computerised system is
+error-free, and that every problem is operator error.  Secondly, the
+deskilling of the operator's job increases the first risk.
+
+Phil Rose  Radcliffe, Manchester  G3ZZA  phil.rose@zetnet.co.uk 
+
+------------------------------
+
+Date: Wed, 14 Aug 1996 18:56:29 +0200
+From: Peter Ladkin <ladkin@TechFak.Uni-Bielefeld.DE>
+Subject: The 1994 A300-600 Nagoya accident - final report
+
+Aviation Week and Space Technology, 29 July 1996, pp36-37, contains the
+article "Pilots, A300 Systems Cited in Nagoya Crash" by Eiichiro Sekigawa
+and Michael Mecham, which summarises the final report of the Japanese
+Aircraft Accident Investigation Committee into the tail-first crash of China
+Air 140 into the runway at Nagoya on 26 April 1994, along with further
+information on the history of the A300 flight-control design for
+automatic/manual interactions.
+
+Thus this accident has HCI aspects. It was discussed extensively in RISKS
+editions 16.05 (Stalzer), 16.06 (Wittenberg), 16.07 (Ladkin), 16.09
+(Yesberg), 16.13 (Terribile), 16.14 (Ladkin, Overy), 16.15 (Shafer, Dorsett,
+Overy, Kaplow), and 16.16 (Dorsett, Ladkin, Kaplow, Mellor, Niland). The
+final report contains no surprises.  Early rumors of a higher-than-expected
+blood alcohol level in the pilots (there is normally some found in autopsy,
+due to decomposition) and of an electrical power failure before the accident
+did not finally figure.  All comments below within quotation marks "..." are
+quotations from Aviation Week.
+
+The final report said that the crash was the result of the pilots fighting
+the autopilot.  It concluded that the pilots were inadequately trained in
+the "use and operational characteristics" of the autopilot.  It also faulted
+Airbus Industrie's cockpit design, specifically the position of the
+autopilot's TOGA (takeoff/go-around) lever beneath the throttle; and
+"unclear writing" in the Flight Crew Operations Manual (FCOM).
+
+The sequence of events was as follows. The First Officer (FO) was flying the
+approach to Nagoya, using the Flight Director (FD) and autothrottle, and
+accidentally triggered the takeoff/go-around (TOGA) lever (at time T), which
+is positioned just below the throttle levers. This caused the automatic
+flight system to go into `go-around' (GA) mode: the FD issued `pitch-up'
+commands. The captain noticed it, autothrottle was disengaged and thrust
+manually increased. Autopilots 1 and 2 were engaged (it's not clear why,
+perhaps in thinking to recapture the glideslope - the descent path - from
+which the aircraft had now departed), which didn't help since the AFCS was
+in GA mode. The aircraft was flying 18 degrees nose-up. The FO attempted for
+20 seconds to force the nose down by pushing hard on the control column,
+thus `fighting' the autopilot, which in response rolled in full nose-up trim
+to keep the pitch up. Finally, at T+45, the autopilots were disengaged, the
+captain took control. However, the alpha-floor protection triggered at T+50
+from excessive angle-of-attack (that means that the aircraft was close to
+stalling) and brought in maximum thrust. However, this increased the nose-up
+attitude to over 52 degrees (since the wing was barely flying because the
+airplane was by now so slow, the thrust generated a pitch-up moment about
+the horizontal axis through the wings, which was uncountered by aerodynamics
+at such a slow speed). The captain disengaged alpha-floor by retarding
+thrust, but the airplane had slowed to 78 knots, stalled at 1,800ft above
+the runway threshold, and crashed tail-first.
+
+The cockpit voice recorder (CVR) shows the pilots were confused as to why
+the aircraft was not responding to the heavy manual nose-down command,
+despite C's recognising that GA mode had been engaged.  The autopilot on all
+transport-category aircraft including this one can be manually disengaged by
+pushing the red autopilot-disconnect button on the handgrip of the control
+wheel.  There is also an on/off switch on the cockpit forward control panel
+of A300/310 series aircraft which can be used to disconnect the autopilot.
+
+The accident aircraft had automatic yoke-force disengagement of the
+autopilot inhibited below 1,500 ft AGL to avoid accidental disengagement of
+the autopilot during automatic landings.  Airbus had already issued service
+bulletin SB A300-22-6021 recommending modification of the flight control
+computer (FCC) to allow disengagement by significant control column force
+above 400 ft AGL.  China Air had not modified the accident airplane to SB
+A300-22-6021.  Airbus "resisted changing its autopilot software below 400
+ft. [sic] out of concern that pilots would have insufficient time to recover
+control if they inadvertently moved the yoke during an automatic blind
+landing." However, in March 1996 Airbus modified the system to deactivate
+below 400 ft. against yoke pressure of 45 lb. push and 100 lb. pull.
+
+The Committee 
+   o   said that alpha-floor combined with the unusual out-of-trim state in
+       fact generated a heavy pitch-up moment, the opposite of what would
+       be needed for stall recovery. It recommended that the BEA "study" this;
+   o   said that the captain misjudged the situation and should have taken over
+       flight control earlier;
+   o   noted that Boeing and McDonnell-Douglas aircraft would have
+       automatically disengaged the autopilot when heavy yoke forces were
+       applied. "Their autopilots are also less likely to trim against
+       pilot yoke inputs";
+   o   criticized Airbus for eliminating an audio alert for the
+       stabilizer-trim-in-motion condition when the THS is in autopilot
+       control. "Airbus should consider making the [..] sound in a
+       THS out-of-trim condition, or if the THS moves continuously,
+       regardless of autopilot engagement";
+   o   said Airbus needed "to study the function, mode-display and
+       warning/alert system"  in the current automatic flight-control
+       system to "consider" pilot reactions. It concluded that the present
+       system is too complicated in emergencies. "The BEA rejected
+       this criticism";
+   o   called for Airbus to "improve" the FCOM instructions for manual
+       override of the autopilot system, its disengagement in GA mode,
+       and recovery procedures from an out-of-trim condition.
+   o   "was critical of Airbus" for not making modification
+       SB A300-22-6021 mandatory in light of three similar incidents in
+       1985, 1989 and 1991; 
+   o   recommended that manufacturers standardize specifications
+       of automatic flight systems to make pilot training easier.
+
+The US National Transportation Safety Board has accepted the findings of the
+report, as did Taiwan's Civil Aeronautics Administration (with only minor
+reservations). But the opinion of the French Bureau Enqu`etes Accidents
+differs in certain aspects, and the report includes a rebuttal of the BEA
+view.
+
+The captain had over 2,600 hours in B747 and over 1,600 hours in A300-600
+airplanes, as well as over 4,800 hours air force flight service. The FO had
+over 1,000 hours in the A300-600. Their behavior in fighting the autopilot,
+rather than disconnecting it (notwithstanding the yoke-force-disconnect on
+other airplanes); and in trying to force the airplane onto the ground
+(rather than going around and landing on the next try), remains simply
+incomprehensible to most pilots including this one.
+
+More details and a fuller explanation of technical terms may be found
+under the Nagoya synopsis of my compendium `Computer-Related Incidents
+and Accidents with Commercial Airplanes', accessible from 
+      http://www.techfak.uni-bielefeld.de/~ladkin/
+
+Peter Ladkin
+
+------------------------------
+
+Date: Tue, 13 Aug 96 15:38:48 BST
+From: Pete Mellor <pm@csr.city.ac.uk>
+Subject: Re: America Offline (Cassel, RISKS-18.31)
+
+In RISKS-18.31, PGN added the footnote:- 
+
+>>   [David, "dishonesty" sounds a little harsh.  How well can anyone
+>>   predict how long it is going to take to fix a problem that has not
+>>   yet been identified and understood?  PGN]
+
+In response, in RISKS DIGEST 18.32, "James K. Huggins" 
+<huggins@eecs.umich.edu> writes:- 
+
+> Exactly.  In fact, this is one of the oldest problems in our field ...  the
+> fact that we don't know how to predict how long it will take to do just
+> about anything useful (write new code, fix an old piece of code, etc.).
+
+and smurf@noris.de (Matthias Urlichs) writes:- 
+
+> You can't, and that's the point. ... 
+
+I disagree. This view seems to be unnecessarily defeatist. What we are
+talking about here is measuring an attribute of a software-based system
+which is usually referred to as "maintainability" and can be defined
+quantitatively as "effort required to diagnose and fix a fault".
+
+Software producers are in a position to measure this. (Whether they actually
+do or not is another matter.) The procedure to be followed would be
+something like the following:-
+
+1. During the system trial (or beta-test), every failure is recorded 
+   by the testers (or users) and reported to the design authority, 
+   with all relevant data, such as symptoms and exception messages 
+   observed at the time, memory dumps subsequently taken, etc. 
+
+2. The design authority then diagnoses the latent fault that was activated
+   and so gave rise to the failure. This would involve finding out:- 
+
+   a) the location of the fault within the software, 
+   b) the identity of the fault in terms of what exactly is wrong 
+      with the code, the module specification, or whatever, 
+   c) the "trigger" conditions which activate the fault, and 
+   d) a classification of the fault according to its cause 
+      (e.g., programming error, specification error, etc.) and 
+      effect (e.g., system crash, files corrupted, etc.). 
+
+3. The DA then devises a "fix", which might be a "work-around" to 
+   avoid the trigger conditions, or a modification to the software 
+   to remove the fault permanently. 
+
+4. Regression testing is then required to ensure that the fix is 
+   effective, and that it does not introduce any new faults. 
+
+5. The effort (person-hours), overhead costs (e.g., machine time 
+   for regression testing), and elapsed time taken, are recorded for 
+   each of these steps. 
+
+The result is a set of statistics (effort, cost and time to diagnose 
+and fix each fault reported) which can be used as the basis for 
+estimating effort, cost and time to deal with any fault reported 
+during live use of the system. 
+
+Obviously, the effort, cost and time will vary, but a statistical 
+analysis would yield useful figures such as mean time to repair (MTTR) 
+and standard deviation, or median time to repair (MeTTR) with percentiles 
+(and similar statistics for cost and effort). The analysis could 
+also break down the cost, effort and time by type, location, and 
+severity of the fault. 
+
+Armed with this information, the producer is now in a position to 
+make a sensible estimate of repair time, with confidence intervals, 
+based on past data. 
+
+OK, this makes it sound simple, and I am fairly sure that few software
+producers actually compile such statistics. (I would be very interested to
+hear from any who do!) The best I could get (many years ago, for a support
+team debugging large mainframe operating systems) was a vague statement from
+the support manager to the effect that "My staff get through about three a
+week each."
+
+However, if this seems odd, or unnecessarily onerous in terms of data
+collection, bear in mind that it is quite normal for hardware equipment to
+be sold with quoted mean time to failure (MTTF) and mean time to repair
+(MTTR), with both of these statistics broken down to apply to particular
+modes of failure. (In the hardware case, which widget has dropped off, and
+how long does it take to find and fit a new one?)  The reliability (measured
+by MTTF), availability (MTTF/(MTTF+MTTR)) and maintainability (measured by
+MTTR) are known.
+
+[In the software case, there is a slight complication. Since software faults
+tend to be transient (remove the trigger conditions and the failure
+condition goes away), the attribute "recoverability", measured in terms of
+"time to restore service", is of equal interest to maintainability.
+(Typically, you record and report the failure, reboot the system, and carry
+on working while the diagnosis and repair takes place off-site.) ]
+
+As long as software producers are unwilling to make the necessary
+measurements, then software development and support will continue to remain
+a "black art", and will not merit the term "software engineering" in the
+same way that we talk about "mechanical engineering", "civil engineering",
+etc.
+
+Peter Mellor, Centre for Software Reliability, City University, Northampton 
+Square, London EC1V 0HB, UK. Tel: +44 (171) 477-8422  p.mellor@csr.city.ac.uk 
+
+------------------------------
+
+Date: Tue, 13 Aug 1996 18:27:03 -0400
+From: "Robert I. Eachus" <eachus@spectre.mitre.org>
+Subject: Re: Computers causing power outages (Hughett, RISKS-18.32)
+
+> ... Not something that I want to hook my house up to.
+
+Sorry about that, but your house is hooked up to it.  Philadelphia Electric
+used to be pretty good about reserve capacity. (I haven't lived there for
+years, so I don't currently know.)  However, what do you think caused the
+Great Northeast Power Blackout?  What was obviously the real cause of the
+recent western blackouts?  The interconnect grids are great if demand stays
+within bounds, but when heavily stressed they become amplifiers.
+
+In the recent past politicians and financial analysts alike have been
+encouraging utilities to reduce their on-line excess capacity, and to shut
+down plants when not required for the current demand level.  But excess
+capacity on-line is necessary to have a stable interconnect system.  The
+difference in stability between 10 plants at running at of 81% capacity and
+9 plants at 90% is dramatic.  (If one facility has a glitch the network goes
+wild.  It has just been thrown from stable operation into instantaneous
+overload, and at the best of times it will take the network hundreds of
+milliseconds--a dozen or so cycles--to stabilize.  If transients cause
+generation facilities or transmission lines kick out before substations, the
+system is gone before any humans can react.)
+
+The Northeast Blackout was caused by a coil failing in a relay in Niagara
+Falls.  The relay had a backup coil which was energized immediately, and the
+main contacts never completely opened.  In other words, the failover met
+specification.  By the time the (amplified) voltage transient reached New
+York City, the result was spectacular, did damage in the tens to hundreds of
+millions of dollars, and killed a number of people.  Some of you just saw a
+similar demonstration.  Trying to figure out whether a fire in Idaho or a
+breaker tripped in California started the electric dominos toppling is
+detail.  The important lesson is that if you run a grid too near the edge it
+amplifies fluctuations and imbalances.  One glitch and we all reap the
+whirlwind.
+
+Robert I. Eachus
+
+------------------------------
+
+Date: 19 July 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a moderated digest.  Its USENET equivalent is comp.risks.
+ SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use BITNET LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ The INFO file (guidelines, submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  All 
+ contributors are assumed to have read the full info file.  
+ ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.33 
+************************

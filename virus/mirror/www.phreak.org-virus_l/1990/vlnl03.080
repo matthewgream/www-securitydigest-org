@@ -1,0 +1,569 @@
+VIRUS-L Digest   Tuesday, 24 Apr 1990    Volume 3 : Issue 80
+
+Today's Topics:
+
+VKILL 1.2 (PC)
+Re: Mainframe Viruses
+WDEF-A on Current-Contents-on-Diskette (Mac)
+Exposure in Formatter (IBM VM/CMS)
+Current Books about Computer Virus
+Update to Memo on Computer Viruses in Commercial Products
+Checking for 4096 (PC)
+Re: Gatekeeper 1.1.1 & Scores (Mac)
+Re: Virus listings
+Re: Virus Summary Document
+Low Level Format
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Mon, 23 Apr 90 13:16:49 +0100
+From:    inesc!ajr%cybill@relay.EU.net (Antonio Julio Raposo)
+Subject: VKILL 1.2 (PC)
+
+          To the readers of the newsgroup comp.virus:
+
+          I sent to Keith Petersen the new version of VKILL and it is now
+available at SIMTEL under the name of VKILL12.ZIP. I also sent it to Bill
+Davidsen (moderator of comp.binaries.ibm.pc) and I am waiting his answer.
+Please do not ask me to send the program until I'm sure it won't be posted,
+I will not answer. The main reason for this is that my link with the net
+is not very good and I don't want large mails bouncing back and forth.
+
+          Answering those who want to know what I do, I am a working on
+microelectronics (design of microchips, investigating new ways of designing
+them) and at home I play a lot with my PC developing a system to control
+a railway layout. The reason I've done VKILL is just because I hate the guy
+who made the virus...
+
+- --
+                                        Antonio Julio Raposo
+                              (ajr@cybill.inesc.pt - LISBOA - PORTUGAL)
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 17:16:02 +0000
+From:    cy5@cunixa.cc.columbia.edu (Conway Yee)
+Subject: Re: Mainframe Viruses
+
+90_PENNYPAB@UNION.BITNET writes:
+>About 6 years ago somebody at a California university (I think it was
+>UCLA) performed an experiment on mainframe viruses.
+
+I believe the author of the original paper was Fred Cohen.
+
+                                        Conway Yee, N2JWQ
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 09:25:00 -0400
+From:    <TYO@MITWCCF.BITNET>
+Subject: WDEF-A on Current-Contents-on-Diskette (Mac)
+
+    I just installed Life Sciences Issue 16 of Volume 33 (April 16,
+1990) of Current-Contents on Diskette for Apple Macintosh Plus, SE and
+II. Upon installation, Gatekeeper Aid popped up and informed me that
+it had discovered and removed WDEF-A virus.
+
+    The diskette had just been removed from the (intact) mailing
+envelope from the Institute for Scientific Information. Unfortunately,
+I had forgotten to move the write-protect tab, so the evidence of
+infection is gone. Naturally, I cannot conclude that the disk was
+actually infected (as opposed to a glitch in my Gatekeeper Aid), but
+if you subscribe to this information service, please use Issue 16 with
+caution.
+
+    I have attempted to contact the publishers of this diskette, but
+their tech reps haven't yet returned my calls. I'll post again after I
+have spoken to them.
+
+- --Mike Tyo,     TYO@MITWCCF            (BITNET)
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 10:24:00 -0400
+From:    WHMurray@DOCKMASTER.NCSC.MIL
+Subject: Exposure in Formatter (IBM VM/CMS)
+
+>Viruses certainly ought to be possible under VM, using the Waterloo
+>Script text formatter.  This formatter has a .sy command that lets you
+>execute VM/CMS commands while your text file is being formatted.  It
+>is handy for running EXECs to allocate files your document has to
+>include text from, but it could easily be put to more sinister uses.
+
+The ".sy" tag in input to the formatter causes the line to be passed
+to the environment to be handled.  In the case noted, the environment
+is CMS as a guest under VM.  By default, CMS will pass anything that
+it cannot handle to the VM control program (CP).  These are two
+different cases of the failure of a program to contain its own
+input.
+
+However, the case of the formatter is a much worse case, since
+the user-invoker of the formatter often believes that he is dealing
+with data and does not recognize the exposure to running commands.
+In the case of a command handed to CMS, the user knows that he is
+dealing in procedure and probably does not care which layer handles
+it.  The formatter case is aggravated by the fact that the formatter
+is sometimes invoked by other applications (e.g. PROFS), transparent
+to the user.
+
+IBM recognized this exposure years ago.  (From recognition of the
+problem to the fix was about a month.  This is a phenomenal response
+time for an institution the size of IBM and involved heroic individual
+effort.)  Therefore, they placed a user control over this capability.
+The IBM shipped default is to require that the ability to pass
+commands through the formatter to the environment be specifically
+enabled at formatter invocation time.
+
+While this is the "safe" setting of the control, its choice was very
+disruptive.  The .sy feature had existed in the formatter for more
+than twelve years prior to the installation of the control.
+Therefore, the choice of the safe setting as the default meant that on
+the day the new control was installed, many procedures that had run
+the day before would no longer run.
+
+I can personally testify to the disruption.  On at least two
+occasions, I had procedures fail because I had not specifically
+enabled the use of .sy.  Even though I had participated in the
+decision to install the control and ship with the safe default, it
+took me a long time to recognize the problem.
+
+I cannot tell from the comment whether the reference is to a WATERLOO
+formatter or a Waterloo implementation of the IBM formatter.  If the
+latter, then this may simply be a case of the installation changing
+the setting to the "non-disruptive" setting.   If the former, there
+may be no control, or the user may simply be seeing an installation
+setting.
+
+This is one more case that illustrates the difficulty of
+distinguishing program from data.  While safe practice suggests that
+they should always be separate, there is great value to the
+flexibility of mixing them.  In fact they are often mixed.  Users rely
+upon the separation at their peril.  This is a case some few of us know
+about; there may be others.
+
+William Hugh Murray, Executive Consultant, Information System Security
+21 Locust Avenue, Suite 2D, New Canaan, Connecticut 06840
+203 966 4769, WHMurray at DOCKMASTER.NCSC.MIL
+
+------------------------------
+
+Date:    23 Apr 90 19:56:57 +0000
+From:    thom%dewey.soe.Berkeley.EDU@ucbvax.Berkeley.EDU (Thom Gillespie)
+Subject: Current Books about Computer Virus
+
+I write for The Library Journal & Publishers Weekly and I'm working on
+a review of current Books about viruses. Please email me your
+favorites and I'll repost a listing. If you have just a galley, I'll
+look at that also even though few computer book publishers ever claim
+to have galleys -- they like to publish them with mistakes and all.
+The range of the column will be from popular books Like the Cuckoo's
+Egg to source code analysis of the Morris Code, public libraries and
+book stores to University Research centers. Thanks.
+
+- --Thom Gillespie
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 07:55:46 -0600
+From:    Chris McDonald ASQNC-TWS-RA <cmcdonal@wsmr-emh10.army.mil>
+Subject: Update to Memo on Computer Viruses in Commercial Products
+
+ASQNC-TWS-RA (380-380a)                              November 89
+                                                            [Revised Apr 90]
+
+MEMORANDUM FOR RECORD
+
+SUBJECT:  Viral Infections in Commercial/Government Software
+DISTRIBUTION: Unlimited
+
+1.  The phenomenon of computer viruses has raised concern  within
+government and the private sector as to the use of public domain,
+shareware and  freeware  products.   While  it  is  difficult  to
+determine the source of "infections" which have occurred over the
+last several years, I would propose for the purpose of discussion
+that  we  who are involved in automation security services cannot
+automatically exclude software  products  as  a  potential  viral
+threat  simply  because  the  software  is "commercial" or simply
+because software comes from "reputable" sources.  I would propose
+as  well that we should be open to the suggestion that there is a
+legitimate mission requirement for public domain,  shareware  and
+freeware  under  the guidance provided by HQDA and our respective
+System Program Managers.  Clearly it is important to have written
+policies  and  procedures  to  acquire,  authorize and test "all"
+software intended for use on government owned or  leased  systems
+regardless of the type of software.
+
+2.   It  seems  desirable  as  well  to  extend  our  concern  to
+government developed software. The dependency of our missions and
+functions  on  automation  resources  magnifies the potential for
+significant disruptions were a government employee or government-
+employed contractor employee to initiate a virus infection.
+
+3.   With  that  end  in  mind  I  have  compiled  from  VIRUS-L,
+RISKS-FORUM and  other  public  sources  the  following  list  of
+"infections"   within   software  packages  identified  with  two
+exceptions  as  commercial  and  distributed  all  by   reputable
+sources.    The  two  exceptions  include  a  distribution  in  a
+commercial   publication,   now   apparently   defunct,   and   a
+distribution  by  the  US  Government  Printing Office for the US
+Census Bureau.  The list is not complete and is not  intended  to
+criticize  any  commercial  firm  or organization.  If anyone has
+additional incidents,  I  would  appreciate  receiving  any  such
+information so that I may update this list.  Any contributor will
+receive the appropriate credit.
+
+4.  MS-DOS INFECTIONS
+
+SOFTWARE                REPORTING LOCATION      DATE     VIRAL INFECTION
+
+a.  Unlock Masterkey    Kennedy Space Center    Oct 89   Vienna
+b.  SARGON III          Iceland                 Sep 89   Cascade (1704)
+c.  ASYST RTDEMO02.EXE  Fort Belvoir            Aug 89   Jerusalem-B
+d.  Desktop Fractal     Various                 Jan 90   Jerusalem (1813)
+          Design System
+
+
+ASQNC-TWS-RA
+SUBJECT:  Viral Infections in Commercial/Government Software
+
+
+e.  Bureau of the       Government Printing     Jan 90   Jerusalem-B
+    Census, Elec. County   Office/US Census Bureau
+    & City Data Bk., 1988
+f.  Northern Computers  Iceland                 Mar 90   Disk Killer
+    (PC Manufacturer shipped infected systems.)
+
+5.  MACINTOSH INFECTIONS
+
+    SOFTWARE            REPORTING LOCATION      DATE     VIRAL INFECTION
+
+a.  NoteWriter          Colgate College         Sep 89   Scores and nVIR
+b.  Brady Hypercard     Various                 Sep 89   nVIR-A
+    1.2.2 (included in the book "Applied HyperTalk")
+c.  CMS HardDrive       Various                 Nov 88   Scores
+      Utilities, Version 3.4
+d.  QLTECH MegaROM      Various                 Oct 88   nVIR
+e.  MS Word 4           Various                 Oct 88   nVir
+f.  STELLA 2.0          EARN                    Oct 88   nVIR
+g.  FreeHand            Various                 Mar 88   MacMag Peace
+h.  Grammitik           Various                 Jan 90   WDEF A
+i.  Chessmate 2100/     Various                 Apr 90   WDEF
+          Cribgin
+
+6.  ATARI INFECTIONS
+
+SOFTWARE            REPORTING LOCATION      DATE     VIRAL INFECTION
+
+WordUp 2.0          Various                 Sep 89   Key
+
+7.  AMIGA INFECTIONS
+
+SOFTWARE            REPORTING LOCATION      DATE     VIRAL INFECTION
+
+Sama Software Inc   Leonard Fetterhoff      1988     Byte Bandit
+(Infected disk          Las Cruces, NM
+      distributed in "AmigoTimes")
+
+8.   All  of  these  infections  came from products received from
+reputable sources and delivered "new." While many of the  reports
+are  fragmented  and  incomplete,  there  is  enough substance to
+conclude that infection of commercial products has occurred.   It
+is  also  possible  to conclude that "certain" vendors have taken
+elaborate safeguards to deter the  infection  of  their  products
+prior to shipment.  Questions which come to mind include:
+
+a.   Should  we  in  the  Army  require some type of random viral
+detection  testing  of   commercial   software   prior   to   its
+installation for production tasks?
+
+
+                                        2
+
+ASQNC-TWS-RA
+SUBJECT:  Viral Infections in Commercial/Government Software
+
+
+b.   Should  software  suppliers  be  asked  to provide technical
+information on what policies and procedures they have in place to
+address  the potential threat of malicious software modifications
+to their product, to include viral detection as a subset  of  the
+malicious class?
+
+c.  Should software acquisitions  include  some  type  of  "viral
+insurance"  warranty  in  the event a supplier supplies a product
+with infected code?
+
+d.  Are policies and procedures in  place  within  Army  software
+development  centers  and  activities  to  address  the potential
+threat of malicious software modifications?  If so, how do  these
+policies and procedures compare with those in the private sector?
+
+9.   This  memorandum  represents  my  own professional views and
+should not  be  construed  as  official  USAISC-WSMR  policy.   I
+solicit      your      comments      and      suggestions      at
+<cmcdonal@wsmr-emh10.army.mil>  or  at  <cmcdonald@wsmr-simtel20.
+army.mil>.
+
+
+
+
+                                        Chris Mc Donald
+                                        Information Systems Mgt Specialist
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 21:52:17 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Checking for 4096 (PC)
+
+I just finished disassembling a new version of the 4096 virus and thought
+of the following 'interesting' method to check if the virus was active in
+memory:
+
+          Set the date to Jan. 1. 2044
+          Create a small file (smaller than 4K)
+          DIR
+
+If the file is reported as having a length of almost 4 Gigabytes, and the
+creation year is AD 100, you are infected with the virus. :-)
+
+- -frisk
+
+------------------------------
+
+Date:    23 Apr 90 22:02:41 +0000
+From:    emx.utexas.edu!ut-emx!chrisj@cs.utexas.edu (Chris Johnson)
+Subject: Re: Gatekeeper 1.1.1 & Scores (Mac)
+
+Gatekeeper Users and Other Concerned Citizens:
+
+I recently received (through VERY indirect channels) a print of a message
+that was posted to VIRUS-L which was an open letter to John Norstad
+(author of Disinfectant) about an alleged bug in Gatekeeper 1.1.1,
+specifically an inability to stop the Scores virus.
+
+I'd like to tell the Gatekeeper users that may have read that message
+that there is no known bug in Gatekeeper which would permit the Scores
+virus to successfully spread.  Period.  This is true of *all* versions
+of Gatekeeper - and I have never, ever, received a report to the
+contrary.
+
+Needless to say, if you have encountered evidence of any such failures
+in your use of Gatekeeper, I really do want to hear about them.
+
+I have over the last year-and-a-half repeatedly tested each version of
+Gatekeeper against Scores (and all other known viruses) and it has
+always proved effective.  (Of course Gatekeeper doesn't stop WDEF,
+but that's what Gatekeeper Aid is for.)  Others have repeated those
+tests both formally and informally and have always confirmed my
+results.
+
+So, I hope the Gatekeeper users who were concerned by this posting
+will now sleep secure in their beds once more.
+
+Having said that, I'd like to step up on my soapbox for few moments.
+
+STEPPING ONTO MY SOAPBOX...
+
+I find it highly peculiar that the person who made this posting,
+who identified him or herself only as "Zav" in the printout I
+received, would be willing to impune the reputation of my product
+(Gatekeeper) and, by extension, me in a public letter to the
+author of a completely different product.
+
+I mean, what's the point?  Unless John Norstad happened to have
+time to forward the message to me, it'd never get to me, so nothing
+would ever be done about the alleged problem.  And why make John
+play mail-router?  He's busy enough as it is.
+
+The only way such information can be useful is if it is sent to
+me, the product's author.  And I'm happy to help... that's why
+my email address has always been included in the documentation
+for both Gatekeeper and Gatekeeper Aid.
+
+So, I find this kind of thing *extremely* aggravating - it impunes
+me and my product, worries users who have enough to worry about
+anyway, and DOES ABSOLUTELY NOTHING TO ACTUALLY SOLVE (or verify)
+THE PROBLEM.  So, I ask again, what's the point?  Is it just
+pulic spleen-venting and product bashing, or was there some
+constructive purpose that I wasn't meant to find out about?
+
+OK.  Enough of me and my soapbox.
+
+
+
+PROBLEM REPORTS, ETC.
+
+I'd like to, once again, publicly thank everyone who has sent me
+their questions and problem reports.
+
+For those of you who've been saving-up your problem reports here's
+the addresses (pick only one :-) to send them to:
+
+Internet: chrisj@emx.utexas.edu
+UUCP:               {husc6|uunet}!cs.utexas.edu!ut-emx!chrisj
+AppleLink:          chrisj@emx.utexas.edu@dasnet#
+
+Remember to include the actual version numbers of Gatekeeper and/or
+Gatekeeper Aid.
+
+I tend to be a bit swamped with email so don't be surprised if
+replies sometimes take a few days, but email is the ONLY way to
+get hold of me; I get so much mail everyday that I can't read the news-
+groups at all.
+
+By the way, it's not my intention to bypass newsgroups like this; I
+would encourage anyone who contacts me with a problem which they feel others
+ought to know about to summarize their question and whatever answers
+I'm able to provide to this newsgroup.  That way, everyone benefits.
+I'd do it myself, but there are only so many hours in the day....  :-(
+
+VERSION CHECK:
+
+The current versions of the Gatekeeper Anti-Virus System's
+components are as follows:
+
+          Gatekeeper                    1.1.1
+          Gatekeeper Aid                1.0.1
+
+If it seems like it's been a long time since there was a new Gatekeeper
+release, don't dispair:  development of new versions has been underway
+for many months and will eventually result in several new and worthwhile
+releases.
+
+Thanks for the time and the bandwidth,
+- ----Chris (Johnson)
+- ----Author of Gatekeeper
+- ----chrisj@emx.utexas.edu
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 20:03:03 -0400
+From:    Yary Richard Phillip Hluchan <yh0a+@andrew.cmu.edu>
+Subject: Re: Virus listings
+
+I personally own books on how to make explosives, how to pick locks,
+etc. not because I want to blow up an embassy but because I'm curious to
+how it's done.  Real theives learn how to pick locks on the street,
+terrorists can read about chemisty in a library.
+
+If you publish virus source listings, people will try to censor you and
+your book and blame it for subsequent viruses.  The truth is, the
+information is already spreading among underground bb's the world over.
+All a legit book will do is tell non-involved folks what's going on.
+
+Anyway, information isn't dangerous, just people who misuse it.
+
+------------------------------
+
+Date:    Mon, 23 Apr 90 20:06:37 -0400
+From:    Yary Richard Phillip Hluchan <yh0a+@andrew.cmu.edu>
+Subject: Re: Virus Summary Document
+
+]There was a request for information in yesterday's Virus-L for a
+]summary list of known viruses.  The VSUM9004 document by Patricia
+]Hoffman is by far the most comprehensive and is available on most
+]FidoNet nodes, or on HomeBase at 408 988 4004.  It is kept reasonably
+]up to date and provides information on: Type of Virus; Size; Origin; ....
+
+Is that list (VSUM9004) available from an anonymous ftp anywhere? Sounds
+useful.
+
+[Ed. I put the file on cert.sei.cmu.edu in pub/virus-l/docs yesterday,
+for anonymous FTP access.  Those without anonymous FTP can get the
+file from the HomeBase BBS, (408) 988-4004.]
+
+------------------------------
+
+Date:    Tue, 24 Apr 90 09:56:55 -0000
+From:    LBA002@PRIME-A.TEES-POLY.AC.UK
+Subject: Low Level Format
+
+          Several people on VIRUS-L have asked me to summarise the replies I ha
+\cd
+to my question on low level formatting and whether it is necessary to carry
+out a low level format of the hard disk as part of the virus recovery process.
+Here is what I think the replies said (with a general acknowledgement to the
+authors of the original replies and apologies if I have misinterpreted the
+information they gave me!)
+
+1. Difference between the DOS FORMAT command and a low level format:
+The DOS FORMAT command when applied to a hard disk does not perform a physical
+format of the disk only a logical format. The hard disk is given a new boot
+sector, a clean File Allocation Table (FAT) and an empty root directory. Thus
+the file system is emptied but the file *data* remains on the disk until
+overwritten by new files. When the DOS FORMAT is applied to a floppy diskette
+a low level physical format is performed on the diskette as well as a logical
+format.
+
+2. How to carry out a low level format:
+This is usually done at the factory or the dealer when the hard drive is mated
+with a controller card. You can perform a low level format with the diagnostic
+disk supplied with your PC (usually with a program called HSECT) or by executin
+g
+that is stored in the BIOS on the controller card (using DEBUG.) The process is
+not documented and not for the squeamish! The exact instructions vary from driv
+e
+to drive. The low level format actually physically formats the disk, dividing
+it into tracks and sectors and putting special labelling information in front
+of each sector to identify it. All data on the disk is destroyed.
+After you do a low level format you must Fdisk the hard disk to create a DOS
+partition and then you must do a logical format with FORMAT using the /s
+option to make the disk bootable.
+
+3. Is it necessary?
+Low level formatting is almost never necessary. Most viruses corrupt .COM and
+.EXE files which can be restored using a disinfection program or deleted and
+restored from backup copies. The only viruses which cause problems are:
+Taiwan which sometimes destroys the infected program instead of properly
+infecting it.
+Jerusalem which occasionally corrupts a file while infecting.
+
+Vienna and Lisbon variant which destroys 1 in 8 of the files it infects.
+
+405 and other overwriting viruses.
+
+With boot sectors formatting is not required. The original boot sector can be
+recovered easily with the exception of the Swap (Fallboot) virus.
+
+When cleaning up after the Dark Avenger virus it is strongly advised
+to format the disk using the normal FORMAT command and restore all
+programs and data files form backups. Dark Avenger may have garbled
+some sectors on the disk and possibly destroyed data or program files.
+
+There is one virus that requires low level format - when the Disk Killer virus
+activates it starts encrypting the hard disk including the partition table.
+DOS format can't handle this and you need to run FDISK first and possibly a
+low level formatting tool.
+
+Hope this is useful info and sorry for the length of the message.
+
+Rgds,
+
+Iain Noble (Teesside Poly Library, UK)
+- -----------------------------------------------------------------------------
+Iain Noble                                   |
+LBA002@pa.tp.ac.uk                           |  Post:  Main Site Library,
+JANET: LBA002@uk.ac.tp.pa                    |         Teesside Polytechnic,
+EARN/BITNET: LBA002%pa.tp.ac.uk@UKACRL       |         Middlesbrough,
+INTERNET: LBA002%pa.tp.ac.uk@cunyvm.cuny.edu |         Cleveland, UK, TS1 3BA
+UUCP: LBA002%tp-pa.ac.uk@ukc.uucp            |  Phone: +44 642 218121 x 4371
+- -----------------------------------------------------------------------------
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

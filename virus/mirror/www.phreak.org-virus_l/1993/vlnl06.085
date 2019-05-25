@@ -1,0 +1,1023 @@
+VIRUS-L Digest   Wednesday, 26 May 1993    Volume 6 : Issue 85
+
+Today's Topics:
+
+Anti-Virus Techniques and direct Port Writes
+Re: VMag Issues 1 & 2
+Re: Unix viruses (UNIX)
+Re: FDISK/MBR with OS/2 boot manager. (OS/2)
+Re: FLIP (PC)
+Macafee v104 reported virus in memory (PC)
+"DIR" infection, or "Can internal commands infect" (PC)
+Re: DIR Infections (PC)
+New Virus ? ABC10201 (PC)
+Re: Cansu or V-Sign virus (PC)
+Re: F-Prot 2.07 (PC)
+Re: Port Writes (PC)
+Re: CPAV updates? (PC)
+Re: Port Writes (PC)
+Re: The Anti-Viral Software of MS-DOS 6 (PC)
+Re: High memory virus? (PC)
+Re: "Dirty Tricks" (PC)
+Re: CPAV updates? (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a gatewayed and non-digested USENET
+counterpart.  Discussions are not limited to any one hardware/software
+platform - diversity is welcomed.  Contributions should be relevant,
+concise, polite, etc.  (The complete set of posting guidelines is
+available by FTP on cert.org or upon request.)  Please sign submissions
+with your real name; anonymous postings will not be accepted.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on CERT.org (192.88.209.5).
+
+Administrative mail (e.g., comments, suggestions, beer recipies)
+should be sent to me at: krvw@AGARNE.IMS.DISA.MIL.
+
+All submissions should be sent to: VIRUS-L@Lehigh.edu.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Tue, 25 May 93 09:52:42 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Anti-Virus Techniques and direct Port Writes
+
+Subject: Port Writes (PC)
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+
+I wrote:
+
+ > Vesselin as usual is correct, but you have to wonder what is the point
+ > of a
+ > port write when a FAR CALL to the proper location will do the same thing
+ > and is independant of drive type.
+
+Inbar wrote:
+
+>The moment someone uses QEMM386 in stealth mode, there goes your FAR call.
+
+True, but not if you load from the BIOS *before* QEMM, then the fact
+that QEMM tool it away is easily detectable (was how I found out what
+QEMM "stealth" did - my program started complaining). Besides I do not
+consider QEMM "stealth" a problem since it is usable only if you
+dedicate 64k to a page frame. With a 386 you do not need page frames
+and it won't work with anything less.
+
+This is deeper than I usually get but Inbar is quite good at first
+generation problems so we need to use some secong generation thinking.
+
+Before the 386 came out, "big" software all used page frame memory to
+swap extended memory in and out by designating a 64k upper memory area
+as a "page frame" and using a special software driver to manage it.
+With the rise of the 386, this became unnecessary and big programs now
+know how to use XMS directly, no page frame is necessary.
+
+Meanwhile QEMM discovered that it is possible in a 386 to use this
+same swap technique to free up additional high RAM normally occupied
+by the BIOS however in the current incarnation QEMM requires that a
+page frame be present to work "stealthily" in addition Int 2Fh Fn 13h
+will detect the fact even if you do not start from the BIOS.
+
+However, most popular programs do not need page frames any more and I
+have found that NOEMS (either with QEMM386 or EMM386) allows
+essentialy the same amount of free memory without all of the
+monkey-motion. At present I consider QEMM "stealth" interesting but
+obsolete (I am using v6.03 right now).
+
+My immortal prose again:
+
+ > The problem a virus has is not being able to write to the disk but in
+ > being able to spread. This requires that the virus be executed whether
+ > as part of a program or as an intercept. If it is going to use port calls
+ > for stealthy reasons, then it must capture the interrupt so that it knows
+ > when to use its "stealth". This capture is detectable if a program knows
+ > what to look for.
+
+To which Inbar responded:
+
+>Who told you I have to capture INT 13? FYI, it's enough to stay resident on
+>INT 15, Service 90 (I think) - Device Busy. The BIOS always calls that before
+>calling the disk, and you can use that ISR merely as a trigger to call your
+>own code.
+
+Who told you I only look at Int 13h ? Again at BIOS time *every*
+fourth byte in the Interrupt vector table through 1Dh must point to a
+BIOS location.
+
+Inbar:
+
+>If you only had the slightest idea what I can do with port writes to the
+>disk, you'd flip out of your skin. Unfortunately, (or Furtunately, Mr. Radai
+>would say), I am not at liberty to expose those techniques, for numerous
+>reasons.
+
+I know what you can do, sometimes it is the only way to recover an IDE
+drive.
+
+Inbar in a second but allied posting:
+
+>Using my suggested port-write technique, you can freely access any harddisk
+>conntected to your controller, regardless of what your computer thinks about
+>it.
+
+>I did it myself. Once, I lost my CMOS info, in a computer not mine, that was
+>not backed up. My harddisk was Type 47, and I had no idea what the setup was.
+
+Sure, you just "walk the disk" & find the number of sectors, number of
+heads, then number of tracks. I still need a guide to tell what the
+write-precomp value is if it is needed (most IDEs don't) or where the
+"landing zone" is but you can always make a good guess. I usually open
+the case, read the drive model, and look it up in an index.
+
+Not to say that what Inbar is doing isn't difficult nor that it
+doesn't take talent, just that there is nothing mysterious about it
+and that some early disks (with BIOS on the controller) did not follow
+the IBM port specification exactly. In some cases, the wrong values
+could cause the end to stick at its limit necessitating a sharp rap
+with a screwdriver handle 8*).
+						Warmly,
+							Padgett
+
+------------------------------
+
+Date:    Tue, 25 May 93 19:41:23 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: VMag Issues 1 & 2
+
+THE GAR (GLWARNER@samford.bitnet) writes:
+
+> Has anyone else seen "VMag"?  It appeared in this weeks Chaos Digest,
+
+The thing that you are calling "VMag" is actually the electronic
+journal for virus writers "40Hex" that was discussed several times
+here. The issues published in the Chaos digest were volumes 1, 2, and
+parts of volume 3 - which is a bit out of date, having in mind that
+volume 10 is out since February, I believe...
+
+> and is a magazine dedicated to publishing virus writing tips.  The
+
+It's not the only one... :-( There are also the Crypt Newsletter,
+NuKE's InfoJournal, and probably a couple of others... There is also
+Mark Ludwig's quorterly (it is in print; not electronical). Misuse of
+the right for freedom of expression in action...
+
+> The question: What do we do about this?  I called the FBI complaint
+
+That's essentially useless, because the Chaos Digest is published in
+France and the FBI has no power to mess there... Funny how many people
+assume that the USA is the whole world... :-)
+
+> desk (202) 324-3000, and talked to "Harris".  He says there are no
+> violations of Federal law, and that people can print whatever they
+
+His "Federal law" doesn't apply in France, but that's pretty much
+irrelevant.
+
+> to make an atomic bomb, that this certainly was legal.  I mentioned to
+> him that once you know how to make a bomb, you need a whole bunch of
+> uranium to do anything, but once you had this publication, you HAVE
+> the bomb.  He suggested I contact an agent in my area, but told me the
+
+Well, the UK seems to have discovered how to deal with such things -
+they are saying that such publications "incite you to commit crime"
+and declare them illegal. For obvious reasons, this trick won't work
+in the "land of the free"... :-(
+
+> case, but he didn't think there was.  The editor of Chaos Digest is a
+> member of the EFF, (the electronic version of the ACLU), so I would
+> bet that anyone who messes with him would get a lawsuit.
+
+As I mentioned, he lives in France and I bet that he doesn't give a
+dime about the US laws, be them Federal or not... However, the French
+have some laws limiting the user of encryption (anybody from France
+care to comment?). One could try to argue that the published documents
+contain encrypted stuff (the debug scripts, the encrypted viruses) and
+try to make the French government take some action, but I'm not
+holding by breath...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 20:59:32 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Unix viruses (UNIX)
+
+Pete Radatti (radatti@cyber.com) writes:
+
+> Ok, however CyberSoft will never supply information that might lead
+> to disclosing who the infected party was.  This policy is necessary
+> to insure that people keep telling us when they get hit.  So few do so.
+
+That's natural. We're interested in the technical aspects of the
+matter only. That is, -what- has happened, not to -whom-.
+
+>     1. A virus attack using a script virus.  The person appeared to not
+>        believe that the virus would work and found out the hard way.
+
+Was that the silly thing published by Tom Duff; I mean, the script
+that looks for world-writable scripts and prepends itself to them?
+
+>     2. A trojan named choosegirl.game which was distributed on the
+>        internet as an executable binary
+
+Not a virus. Doesn't count.
+
+>     3. A worm/virus like attack that was deliberity placed in the source
+>        code of a custom contract program by a staff member that lost
+>        their position.
+
+Now, -that- is interesting! Could you please provide some more
+technical details, e.g. how it worked, what methods of attack were
+used, etc.
+
+>     4. An employee that lost their job installed a timebomb in the
+>        operating system.
+
+Not a virus; not interesting.
+
+>     5. Two separate sites that execute Unix on a i80386 based PC reported
+>        that an MS-DOS virus attacked their system.  This is possible since
+>        these systems can execute MS-DOS programs.  Samples were not provided
+>        therefor I only count these as one-half reports.
+
+Not a Unix virus. Not of interest to me - we've known since a long
+time that some viruses, especially MBR infectors, can survive in any
+PC-compatible environment, even if it is not an MS-DOS one. They
+replication ability is usually imaired, but their destructive
+capability (e.g. of Michelangelo) often remains.
+
+>     6. A professional security officer reported to me a virus attack against
+>        their Unix datacenter.  This only counts as a maybe since details and
+>        samples were not provided, however the reporter was a professional ful
+l
+>        time security officer of a major organization.
+
+According to me, a virus does not exist until I have seen it. Maybe
+the person reporting the case as made the same assumption as you,
+calling "viruses" any kind of malicious software that is not used
+interactively?
+
+>     7. Two reports of Typhoid Mary Syndrome attacks.  (Typhoid Mary Syndrome
+>        describes systems that are unaffected carriers of computer viruses.
+>        Unix systems act as carriers for MS-DOS and Apple Mac because NFS make
+s
+>        it easy for Unix servers to also act as file servers for these systems
+.
+
+Not Unix viruses, not interesting to me.
+
+This leaves out only a single interesting incident. Could you please
+supply more technical details about it?
+
+> Not all of these attacks were from the genus computer virus, however
+> they were all of the family of undirected attack software.  I define
+> undirected to infer software that was created and let loose into the
+> wild to "fend" for itself without control by its authors.  This
+> therefor does not include software used as tools by crackers in a real
+> time attack to secure access or privilege.
+
+Uh, I'm afraid that you definition for a virus is even broader than
+Dr. Cohen's... His viruses at least replicate...
+
+> I understand that my use of the word virus may have caused some
+> confusion.
+
+It did...
+
+> In the course of normal business I have found that the
+> average person does not understand the difference between Worms,
+> Viruses, Trojans, etc...
+
+One more reason to educate them about it on every occasion. Besides,
+the readers of this forum are supposed to be a bit more
+knowledgeable... There have been suggestions to PKLITE the files in
+order to prevent them from being infected :-), but at least nobody
+seems to mess viruses with trojan horses and time bombs...
+
+> software.  It is, from my view point, much better to impart knowledge
+> that is correct except for the name than to impart no knowledge at
+> all.
+
+Unfortunately, using the incorrect terminology can sometimes impart
+the knowledge that you are trying to communicate...
+
+> and that t here is no need to panic.  Products like VFind solve
+> several problems, not just Unix vi ruses.  VFind scans for Unix,
+> MSDOS, Apple Mac, Amiga and user programmed patters.  Net works that
+
+I think that I have already asked about that, but never got a reply.
+>From the ad that you have mailed me it is not obvious how VFind can
+handle polymorphic viruses with the complexity of, say, MtE. Could you
+please elaborate on this subject?
+
+> are heterogeneous and require high reliablity or data migration
+> tracking a re better customers for scanners like VFind.  Additionally,
+> some people find the e xtra protection provided by searching for all
+> forms of Unix attack software, not jus t viruses to be of great value.
+
+Hm, I would think that using some kind of integrity checker to protect
+the integrity of the information would be more appropriate... A
+scanner is useful if you know what to scan for. Do your users know
+what to scan for? Does the scanner come with some database of virus
+scan strings or does it rely on the user to find out what to scan
+for?
+
+> To insure that my comments are not used out of context and that they
+> are reproduced in their whole:
+
+> Copyright 1993 by Peter V. Radatti.
+
+> My comments may be used by individuals and educational institutions as long a
+s
+> they
+> are reproduced whole, complete with this notice.
+
+Huh?! Beats me this one... I've never understood the copyright concept
+entirely... Do you mean that we cannot quote you when we are replying
+to you as I did above? I hope that you don't mean such thing; it
+doesn't make much sense to me... How else will you understand my
+points about your arguments, if I don't quote the arguments I am
+refering to? Anyway, I included the above notice of yours, just to be
+on the safe side...
+
+Regards,
+Vesselin
+
+P.S. This message is NOT Copyright 1993 by Vesselin Bontchev; please
+feel free to quote parts of it when you are replying.
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 19:52:20 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FDISK/MBR with OS/2 boot manager. (OS/2)
+
+Johan Wevers (johan@blade.stack.urc.tue.nl) writes:
+
+> My first harddrive (physical drive C:) contains 2 bootable partitions,
+> DOS 5.0 and OS/2 2.0, and the OS/2 boot manager. I don't know on which level
+
+Actually, it has 3 partitons (DOS, OS/2, BootManager), only one of
+which (the Boot Manager) is bootable.
+
+> the boot manager takes control, nor do I know or the MBR is different when
+
+The Boot Manager gets control after the MBR is executed. It checks
+what you want to boot (DOS or OS/2) and transfers control to it. The MBR
+should be a "normal" one.
+
+> using different operating systems. My direct question is: is it safe to
+> give the command FDISK/MBR on this drive, or would it destroy something?
+
+Should be safe.
+
+Disclaimer: My knowledge of OS/2 is rather limited, so the above may
+contain mistakes and/or incorrectnesses. If somebody more experienced
+than me succeeds to spot them, please post the corrections.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 10:46:28 -0400
+From:    gary@sci34hub.sci.com (Gary Heston)
+Subject: Re: FLIP (PC)
+
+bontchev@news.informatik.uni-hamburg.de (Vesselin Bontchev) writes:
+>Mike Dunn (Mike_Dunn@mindlink.bc.ca) writes:
+
+>> 2pm and 2:38pm at hacker broke into the system and inserted the virus, which
+                     ^^^^^^
+>> came into effect at 2:38pm.  NOTE:  This was a hacker's work, not an uploaded
+                                                  ^^^^^^^^
+>destructive. Either the hacker has done the damage, or you have messed
+                         ^^^^^^
+Please folks, this is the work of a *cracker*. Very few hackers are
+crackers.
+
+Let's get the terminology right, and stop insulting and maligning the
+majority of competent people out there.
+
+- --
+Gary Heston    SCI Systems, Inc.  gary@sci34hub.sci.com   site admin
+The Chairman of the Board and the CFO speak for SCI. I'm neither.
+Hestons' First Law: I qualify virtually everything I say.
+
+
+------------------------------
+
+Date:    Tue, 25 May 93 10:53:54 -0400
+From:    davids@software.mitel.com (David So)
+Subject: Macafee v104 reported virus in memory (PC)
+
+Hello, Macafee scan v104 reported a virus was found while scanning
+the memory.  So I turned off the machine and used a clean system
+disk to boot from A: and scan C: and memory again...no virus
+reported.  But if I boot from C: again, the same virus will be
+reported.
+
+There was another scenario. The first time it found an Isreals
+[Iboot] but Filler [Filler] could be found if I kept repeating the
+scan, or vice versa.
+
+DOS 6.0 msav has the Filler's signature but it could not find it.
+However, the virus list mentions that Filler remains resident in
+memory.
+
+How can I clean up these virus? Shutdwon the system does not seem
+to work.
+
+And what will they do on my system?
+
+All files in my hard drive reported OK.
+
+Any help is appreciated.
+
+thanks/david
+- --
+David Y. So
+Mitel Corporation		Phone: 613-592-2122 x3018
+350 Legget Drive, Kanata	Fax  : 613-592-4784
+Ontario, Canada K2K 1X3		Email: david.so@Software.Mitel.COM
+
+
+------------------------------
+
+Date:    Fri, 21 May 93 09:25:00 +0200
+From:    Inbar_Raz@f210.n9721.z9.virnet.bad.se (Inbar Raz)
+Subject: "DIR" infection, or "Can internal commands infect" (PC)
+
+Amir Netic comments Vesselin about the DIR FAQ addition:
+
+ > On the *first* time a floppy is accessed the bios
+ > attempts to read the boot sector sometimes for several times if the read
+ > has failed (reseting the floppy drive between attempts).
+ > Later the Boot-sector is read once (or not at all) on each floppy
+ > access.
+ > The aim of this is to read the BPB (Bios Parameter Block) holding the
+ > information of how to read this floppy.
+
+You should know that the only reason the Boot Sector is read from a disk is
+because the BIOS has to read the BPB for the disk, to know what it's dealing
+with.
+
+On drives that support the Change Line, the bpb is read when the drive is
+first accessed, and every time a disk has been change. You can make a simple
+test:
+
+Go to DOS, enter an empty disk, and do this:
+
+DIR
+<start measuring time>
+DIR
+<stop measuring time>
+
+Now do this:
+
+DIR
+OPEN DRIVE
+REMOVE DISKETTE
+INSERT DISKETTE
+CLOSE DRIVE
+<start measuring time>
+DIR
+<stop measuring time>
+
+The second measuring will result in a longer period.
+
+Inbar Raz
+Chief Data Recovery
+- - --
+Inbar Raz                 5 Henegev, Yavne 70600, ISRAEL. Phone: +972-8-438660
+Chief Data Recovery, 15 Habanim, Nes-Ziona 70400, ISRAEL. Phone: +972-8-400070
+Netmail: 2:401/100.1, 2:403/100.42, 9:9721/210 nyvirus@weizmann.weizmann.ac.il
+
+- --- FMail 0.94
+ * Origin: Inbar's Point - Home of the first UnTinyProg. (9:9721/210)
+
+------------------------------
+
+Date:    Sun, 23 May 93 11:18:00 +0200
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: Re: DIR Infections (PC)
+
+ Inbar Raz comments to Amir Netiv:
+
+AN:
+ >> On the *first* time a floppy is accessed the bios
+ >> attempts to read the boot sector sometimes for several times if the read
+ >> has failed (reseting the floppy drive between attempts).
+ >> Later the Boot-sector is read once (or not at all) on each floppy
+ >> access.
+ >> The aim of this is to read the BPB (Bios Parameter Block) holding the
+ >> information of how to read this floppy.
+IR
+ > You should know that the only reason the Boot Sector
+ > is read from a disk is because the BIOS has to read the BPB for the
+ > disk, to know what it's dealing with.
+
+Would you please read again the last 2 lines in my quating?
+
+IR:
+ > On drives that support the Change Line, the bpb is
+ > read when the drive is
+ > first accessed, and every time a disk has been change.
+ > You can make a simple
+ > test:
+
+Since the issu was simply regarding the "DIR" infection I don't find
+it necessry to explain all that you've mentione (although its true).
+In the same manner I wouldn't write the explanation of how the drive
+is accessed, all the bios and ports ;-) relating to it etc...
+
+Please read the tings you comment about more carfully, ok?
+
+BTW: your Ports write discussion is interesting, I'd suggest you lay
+off the stupid talk with Ysrael, and keep on the good work... 8-)
+
+warm etc...
+
+* Amir Netiv. V-CARE Anti-Virus, head team *
+
+- ---
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Sun, 23 May 93 10:39:00 +0200
+From:    Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv)
+Subject: New Virus ? ABC10201 (PC)
+
+Hello (who ever you are), on your question:
+
+ > I seem to have a problem. I have found a directory that I have not
+ > made. It's name is ABC10201. It is found on my c:\. At first I thought
+ > it could have been a trash directory that I made one night, but here is
+ > why I doubt it. I have tried to to run sca v2 and scanv102. sorry but
+cannot > remember exactly the names. But I scanv102 and It says no viruses
+detected.
+
+It could be several things: One is a trash directory just as you suspect,
+another is a copy protection of some software you've installed latelly, The
+third is a virus trashing your directory, and another is a faulty program or
+disk (2 different problems).
+
+ > Now here is the real kicker, If I use the old version of scan, it gets to
+ > the above directory c:\abc10201. Now scan starts it search and the search
+ > path goes one directory deeper. example c:\abc1020\\ pm.Pag
+ > Note that it has found this file  pm.Pag. also note that it has upper
+ > and lower case and has a space like this inserted into it
+ > ^pm.Pag. Every time that I run scan v2 it continues to go deeper into
+ > that darn abc10201 directory, until the scan program stops. I have not
+ > count the directory sub layer but it's a whole bunch. I have also noted
+ > that the abc10201 directory is attributed as a system directory.
+
+Makes sense, In any of the above mentioned options the symptoms could be just
+what you say.
+
+ > Help ? It has not appeared to harm the system, but you guys never know ?
+ > My system has dos 5.0 and 4 meg of memory, what would you suggest ?
+
+Fist sit down and try to remember when the problem apeared? what did you do
+just before?
+
+If you come up with nothing, try running CHKDSK, and/or NDD (beware of
+corrections if you do not understand the messages), if that doesn't help also
+the last thing to do is to try
+removing this additional directories and files by a disk editor (like Norton's
+DISKEDIT).
+
+> Do you think a complete re-format would squash the sucker ?
+
+As Vesselin likes to say: This is almost NEVER necessary.
+
+Good Luck
+
+* Amir Netiv. V-CARE Anti-Virus, head team *
+
+- ---
+ * Origin: <<< NSE Software >>> Israel (9:9721/120)
+
+------------------------------
+
+Date:    Tue, 25 May 93 14:07:07 -0400
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: Cansu or V-Sign virus (PC)
+
+Amir_Netiv@f120.n9721.z9.virnet.bad.se (Amir Netiv) writes:
+
+>infector on floppies, and an MBR infector on hard-disks, unlike other BOOT or
+>MBR infectors this virus does not keep a backup of the original sector.
+
+Eh, not quite right.
+
+   Stoned.Manitoba stores the original MBR, but not the DOS boot sector,
+   Stoned.Azusa stored the DOS boot sector, but not the MBR.
+
+In all other cases it is possible to restore the MBR/DOS boot sector.  V-sign
+does not store the entire MBR/Boot sector, but it overwrites only a part of
+the sector, and stores those parts it overwrites, so restoration should
+always be possible,.
+
+- -frisk
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Tue, 25 May 93 18:32:45 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-Prot 2.07 (PC)
+
+Inbar Raz (Inbar_Raz@f210.n9721.z9.virnet.bad.se) writes:
+
+>  > Well, SCAN says that it has been "damaged" - why do you think that
+>          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+> That's the whole point! It DOESN'T.
+
+Ooops, I see where the misunderstanding comes from. Mea culpa, you are
+right. I uncompressed the file with the program UNP 3.01, while you
+have used PKLITE -x. Obviously, UNP seems to have a bug, because it
+uncompresses to a file which is a few bytes shorter than the original.
+Obviously, the file length difference triggers SCAN's alarm. Is the
+author of UNP listening?
+
+> I believe that such programs should ask me wether it was I who tampered with
+> them. Only if I say yes, will they agree to run.
+
+Not good. Do you imagine how many (l)users will always reply 'Yes' to
+such questions? When it is a security-related question, one has to be
+always paranoid and never rely on the competence of the users...
+
+But it's a cute idea to veirfy both the compressed and uncompressed
+image of the file and to accept any of them - maybe more producers of
+anti-virus software should become to implement it.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 18:56:46 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Port Writes (PC)
+
+Inbar Raz (Inbar_Raz@f210.n9721.z9.virnet.bad.se) writes:
+
+>  > I thought that this would crash the computer. DOS seems to intercept
+>                                                  ^^^^^^^^^^^^^^^^^^^^^^
+
+> Exactly. DOS. But _I_ am NOT dos. I am 'interacting' with the disk directly,
+> and I don't need any IRQs from it when I can LOOP until it's not busy.
+
+Yes, I understand. But I mean that your activities will "steal" some
+disk access operations from DOS. DOS will not "see" them. I don't know
+why (or even if) it is looking for them; I just assumed that there is
+a good reason for that and that if a few of them suddenly disappear,
+this could have unwanted results.
+
+>  > It is possible. The question is whether the computer will continue to
+>  > work without problems. I don't know.
+
+> Again - DOS won't work with it. But I said - you only need to disable it when
+> YOU do your dirty stuff. Turn it on later, and no one will ever know you've
+> been around...
+
+I'm not sure that even the above will not cause problems - I just
+don't know. One must try and see...
+
+> As far as I've checked, through single-stepping my AMI 386DX33 BIOS, INT 13
+> calls INT 15/90 sometime, and that's all. All other interaction with the
+> harddisk is through pure port writes, and reading the Status Register.
+
+Wait, wait, wait, this cannot be true. When you want to do some disk
+access, you eventually reduce it to INT 13h calls to the hard disk
+handler, which is in the BIOS. (Even if you request the disk access at
+a higher level, e.g. from DOS, it is still reduced to INT 13h calls.)
+
+When the INT 13h handler in the BIOS gets control, it must somehow
+perform the disk access. Obviously - through the ports (unless the INT
+15/90 handler does it, which I find difficult to believe). What I am
+trying to say is that each time when the BIOS accesses the disk
+through the ports, this is caused by an INT 13h request. Therefore,
+your program must match the INT 13h requests with the "device busy"
+interrupts, which are caused by the controller.
+
+>  > There are still a lot of MFMs around there... But you are right - a
+
+> distinguish an MFM from an IDE from a SCSI. At the time being, what I
+> remember at the moment (I might know more, but on sourcefiles), I know how to
+> distinguish an IDE DEFINITELY, how to determine a SCSI is installed, and
+> then, by eliminating, determine that it's an MFM if it wasn't either.
+
+Sure, you can. I meant that you won't be able to use the method on MFM
+disks and there are still quite a lot of them around... But, the virus
+author usually don't care.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 15:21:15 -0400
+From:    drkerns@sony7.sdrc.com (sean kerns)
+Subject: Re: CPAV updates? (PC)
+
+ee1ckb@sunlab1.bath.ac.uk (Alan Boon) writes:
+|> I am currently using CP Anti-Virus v1.4 and before anyone say anything
+|> bad about it, I like it and think it's one of the best around! Does
+|> anybody knows where I can download virus signature files from so I can
+|> update my CPAV detection capabilities? It will be lovely if anyone
+|> can. Thankx in advance.
+
+In your CPAV manual, there is a number for CP's BBS. Form there, you
+can download the latest sig files for DOS and Windows versions of
+CPAV.
+
+Sean
+
+*****************************************************************
+* ------------------------------------------------------------  *
+* |  "As God is my witness, I thought turkeys could fly..."   | *
+* |                                                           | *
+* |  e-mail: sean.kerns@sdrc.com (Sean R. "Snake" Kerns)      | *
+* |                                                           | *
+* |  These may not even be MY opinions...                     | *
+* |                                                           | *
+* ------------------------------------------------------------  *
+*****************************************************************
+
+------------------------------
+
+Date:    Tue, 25 May 93 19:10:08 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Port Writes (PC)
+
+Inbar Raz (Inbar_Raz@f210.n9721.z9.virnet.bad.se) writes:
+
+>  > Vesselin as usual is correct, but you have to wonder what is the point
+>  > of a
+>  > port write when a FAR CALL to the proper location will do the same thing
+>  > and is independant of drive type.
+
+> The moment someone uses QEMM386 in stealth mode, there goes your FAR call.
+
+Heh... Padgett's protection programs are usually invoked when the boot
+sector is executed, so he doesn't care much about QEMM and all its
+stealth modes... :-) It is just not loaded at that time... That's why
+Padgett keeps repeating that the protection must begin from the BIOS
+level - then the machine is being booted up.
+
+>  > The problem a virus has is not being able to write to the disk but in
+>  > being able to spread. This requires that the virus be executed whether
+>  > as part of a program or as an intercept. If it is going to use port calls
+>  > for stealthy reasons, then it must capture the interrupt so that it knows
+>  > when to use its "stealth". This capture is detectable if a program knows
+>  > what to look for.
+
+> Who told you I have to capture INT 13? FYI, it's enough to stay resident on
+> INT 15, Service 90 (I think) - Device Busy. The BIOS always calls that before
+> calling the disk, and you can use that ISR merely as a trigger to call your
+> own code.
+
+Who told you that Padgett is talking only about INT 13h? :-) In order
+to get activated, a memory-resident virus must capture some interrupt,
+right? (Not necessarily through the IVT.) Padgett is talking about
+ensuring that all the -important- interrupts point to the BIOS at boot
+time. Finding out which interrupts are "important" is left as an
+exsercise to the reader... :-)
+
+> Remember what Vesselin wrote about the new russian virus? It was
+> undetectable. And it uses a one-degree-less technique from port-writes.
+
+Uh, I didn't say that it was undetectable. I only said that it is able
+to stealth its presence, even if you have a clean path to the INT 13h
+handler. I'm pretty sure that it will be detected by Padgett's boot
+sector protection program. Maybe VirStop will be able to say something
+meaningful about some interrupt vectors being modified (Frisk?).
+
+It is just one more trick to think about; nothing else. OK, it caught
+us by surprise, OK, the current "automatic boot sector virus removers"
+will most probably miss it, but it is far from undetectable...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Wed, 26 May 93 04:33:58 -0400
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: The Anti-Viral Software of MS-DOS 6 (PC)
+
+RADAI@vms.huji.ac.il (Y. Radai) writes:
+
+>will take years to be corrected, if at all.  For years users complained that
+>they could not use any other scanner after CPAV, since it did not bother to
+>encrypt its scan strings, thus causing other scanners to detect its strings in
+>memory buffers or in the CPAV.EXE and VSAFE.COM files themselves, and producin
+g
+>false alarms.  My tests indicate that this problem has finally been corrected,
+>but it has taken much too long.
+
+Unfortunately no...Here is for example one report I received yesterday from
+one of my largest users:
+
+>I have encountered interaction between DOS V6.0's VSAFE and McAfee V104 and
+>F-Prot 2.08a
+>
+>If I have VSAFE loaded McAfee says
+>	Found the Israeli Boot [Iboot] Virus active in memory
+>
+>F-Prot says
+>	Stoned
+>
+>DOS V6 Antivirus show no viruses. (Fine I know the DOS V6 is the 'weakest'
+>scanner of the bunch)
+
+A similar problem happens with Turbo Anti-Virus and CPAV.  In MSAV's case it
+seems to depend only on *how* VSAFE is loaded into memory.  What will I do
+about this ?  I see this basically as MS/CP problem - those scanners seem to
+be the only ones which do not encrypt all virus signatures in memory.  This
+is generating too many questions for me though - and what I probably will do
+is to add a check for VSAFE to my program, and if it is found I will display
+a message like "WARNING! WARNING! - VSAFE found in memory"
+
+- -frisk
+- --
+Fridrik Skulason      Frisk Software International     phone: +354-1-694749
+Author of F-PROT      E-mail: frisk@complex.is         fax:   +354-1-28801
+
+------------------------------
+
+Date:    Tue, 25 May 93 19:47:04 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: High memory virus? (PC)
+
+Glenn Smith (gksmith@mcl.cc.utexas.edu) writes:
+
+> Are there any viruses that take advantage of high memory?  I've
+
+Yes. The Tremor virus "loads itself high", a few other viruses (e.g.,
+EDV) copy themselves to a chunk of writable memory above the 640 Kb
+limit and so on.
+
+> I can see where a virus could get loaded high accidently if it's
+> attached to a program that is loaded high (DEVICEHIGH, LOADHI, various
+
+Indeed, this is also true.
+
+> other methods).  But I haven't heard of any that load themselves there
+> automaticlly. It seems to me that a modern virus would look for high
+> memory and load there.
+
+Tremor does exactly this. As far as I know, it is the first one that
+uses the high memory intentionally, "by the book".
+
+> What about viruses that load into XMS, or EMS?  A small
+> loader/controller could be used to control access to the actual virual
+> code.  I can't think of any anti-virus program that checks beyond 1
+> meg.  Only the loader/controller could be detected, but might not be
+> recognized as a virus related program for quite awhile.
+
+Why not?
+
+> Finally, given that 486s have an internal cache, could a virus be
+> written that hides in the cache?  The 486 has methods of enabling and
+> disabling the cache, clearing the contents, and so on. (This would be
+> a very tough virus to write).
+
+Nope. You can't store something executable in this cache permanently.
+Actually, storing anything there at all would be a bit tricky - all
+you can do is to enable, disable, or flush the cache.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 20:25:40 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: "Dirty Tricks" (PC)
+
+A. Padgett Peterson (padgett@tccslr.dnet.mmc.com) writes:
+
+> Well, my formal schooling began before there was such a thing as "structured
+> programming" though I think ANSI 77 Fortran is easier to read than the
+> Fortran II (2) learned originally.
+
+Well, I started a bit later, with FORTRAN IV, considered "modern" at
+that time... :-) Punched cards, line printers, 128 Kb RAM on a IBM/360
+system clone...
+
+> Thus, since the operation takes place wholly during the execution of a
+> single instruction, there is no need for using CLI/STI since it cannot
+> be interrupted.
+
+I wasn't bitching about the absense of CLI/STI but about the
+modification of only the segment part of the vector - I think I did
+emphasize that we were thought to set both the segment AND the offset
+part...
+
+> ps I also like "equivalence" instructions.
+
+Yeah, they were cute... But most of my computer language education was
+in Pascal, so I prefer to have a pointer to a packed array [0..0] of
+0..255, set it to nil, turn off the range checking and index it with
+the address of memory cell I want to poke... :-) Too bad that Turbo
+Pascal removed this nice trick (it doesn't have packed structures), so
+its usage died out... :-)
+
+Regarding FORTRAN, my favorite one is DO1I=1,5... :-))
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Tue, 25 May 93 20:30:51 +0000
+From:    bontchev@rzsun2.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: CPAV updates? (PC)
+
+Alan Boon (ee1ckb@sunlab1.bath.ac.uk) writes:
+
+> I am currently using CP Anti-Virus v1.4 and before anyone say anything
+> bad about it, I like it and think it's one of the best around! Does
+
+Would be curious to know why to you think that it is so good?
+According to my own experience, it is actually one of the worst
+anti-virus programs around... Don't you like it because of the user
+interface, by chance? Remember that there is no record of a virus
+being ever stopped by a user interface... :-)
+
+> anybody knows where I can download virus signature files from so I can
+> update my CPAV detection capabilities? It will be lovely if anyone
+
+They are available via anonymous ftp as
+
+ftp.informatik.uni-hamburg.de:/pub/virus/progs/cpav_upd.zip
+
+According to Padgett, the updates can be used to upgrade also the
+MS-DOS version of MSAV - the scanner that comes with MS-DOS 6.0.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.2 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 85]
+*****************************************
+

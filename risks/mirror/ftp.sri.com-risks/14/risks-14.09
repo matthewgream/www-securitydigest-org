@@ -1,0 +1,558 @@
+Subject: RISKS DIGEST 14.09
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 24 November 1992  Volume 14 : Issue 09
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+BNFL Sellafield nuclear incident (Peter Ilieve)
+Privacy Risks of Computerized Medical Billing (Paul Kleeberg via John Bonine)
+Teller machine networks (Steve Holzworth)
+Re: Election HW/SW problems (Rebecca Mercuri)
+The ultimate in anti-virus, anti-invasion security (Lee S. Ridgway)
+Technophones (David Honig)
+Re: London Ambulance Service (Trevor Jenkins)
+Mathematics of Dependable Systems (conference announcement, Vicky Stavridou)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 14, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+
+ For information regarding delivery of RISKS by FAX, phone 310-455-9300
+ (or send FAX to RISKS at 310-455-2364, or EMail to risks-fax@cv.vortex.com).
+
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 24 Nov 92 13:43:16 GMT
+From: Peter Ilieve <peter@memex.co.uk>
+Subject: BNFL Sellafield nuclear incident (followup to RISKS-12.65)
+
+RISKS readers with long memories or good archives may remember the piece I
+submitted about an incident at the British Nuclear Fuels plc plant at
+Sellafield (RISKS-12.65). I recently noticed that the official report by the
+Nuclear Installations Inspectorate (NII) had been published in July and I now
+have a copy. It is summarised below.  As will be seen at the end, this is a
+real `text-book' incident.
+
+First, the complete text of the Health and Safety Executive's quarterly
+Statement of Nuclear Incidents relating to this incident.  This was dated 3 Jan
+92. The NII are part of the HSE.
+
+  In September maintenence work was taking place within a monitoring cell at
+  British Nuclear Fuels (BNFL) Sellafield Waste Vitrification Plant, which is
+  used to handle containers of highly active vitrified waste. To facilitate the
+  maintenence two shield doors, normally closed during cell operations, had
+  been opened to allow access.
+
+  On 15 September, a container of the vitrified waste was raised into the cell
+  remotely by a process worker who had been instructed to restart operations.
+  The worker then observed on a TV monitor that both sets of shield doors were
+  still open and took action to close them, reinstating the shielding. No
+  workers were in the area at the time.
+
+  The matter was reported to the HSE's Nuclear Installations Inspectorate
+  (NII), which immediately started an investigation to determine the causes of
+  the incident. A similar investigation was also set in train by BNFL. The
+  plant will remain shut down until the results of these investigations are
+  known and any necessary modifications to the equipment and changes to
+  procedures have been completed to prevent a recurrence. The NII will monitor
+  the implementation of these changes to both plant and procedures.
+
+This is a very bland statement, just saying `two doors were open'.  The
+incident was considered serious though. There are about 3 incidents reported
+via this mechanism every quarter but I can't remember another case where a full
+report was published.
+
+To the report itself. Knowing that nobody was irradiated or otherwise hurt you
+can enjoy the comedy of errors that follows.
+
+The cell involved was a room with a robot in it. Freshly cast blocks of
+vitrified waste were cooled and decontaminated on the level below the cell,
+then lifted by a crane through a hatch door in the floor, given a final scrub
+down by the robot, and then passed up trough another door, the gamma gate, in
+the ceiling.  The two shield doors allow access into the cell for people to fix
+the robot, using the doors like an airlock.
+
+When the plant was designed it was not expected that much fixing would be
+needed and it was though acceptable that only one door would be open at a time
+during maintenence. The system that ensured this was a Programmable Logic
+Controller (PLC) driven by a key exchange box. This is a partly mechanical
+thing that ensures that the key needed to open the outer door is trapped in a
+dummy lock until an external key from the Permit Foreman's office is inserted
+and the key to operate the inner door is put in a dummy lock and the inner door
+is closed. It would seem to be enough in itself to ensure that only one door is
+open at at time.  There is also a hardwired interlock to prevent the outer door
+opening if a gamma monitor inside the cell detected high radiation.
+
+During the initial commissioning of the plant it was discovered that the robot
+needed a lot more fixing than at first thought, and it was also decided that it
+would be better if people working inside the cell could get out quickly by
+having both doors open at once.  An additional keyswitch was added to the key
+exchange box to bypass the existing arrangement, with another key which was
+normally held in the Permit Foreman's office.
+
+In mid 1990, still during commissioning, more changes were made.  Hardware
+changes were made to ensure that the doors could only open in the correct
+sequence and that the hatch door in the floor could not open if the new
+override key was in use. Software changes were also made to prevent the hatch
+door opening when the inner door was open `however, instead of being achieved
+directly, this was effected by a complicated set of conditional relationships
+intended to ensure that the inner door could only be opened if the in-cell
+crane was parked next to the inner door'. If the crane was parked there it
+could not be lifting anything through the hatch.
+
+During commissioning of these mods. a further change was made to the PLC
+program. This was designed to prevent the hatch door opening when the inner
+door was open. `However it has since been shown to contain a coding error: a
+"+" sign had been missed out, which rendered it completely ineffective.' This
+did not cause the incident, but if it had been correct it would have prevented
+it.
+
+There are procedures under the nuclear site licence from the NII that
+modifications should be categorised according to their safety importance and if
+they are significant they should be checked and the NII informed before
+proceeding. All of these mods. were categorised as minor, partly because they
+were designed to improve things and partly because no single mod. could have a
+serious effect as there were multiple protective systems. As a result, they
+were not comprehensively checked, nor was the NII informed.
+
+The scene was set for the incident by the need to fix the robot and also to
+replace some hydraulic hoses in the cell. The Foreman's log shows that at 22:00
+on Thursday 12 September 91 the outer door was in the closed position.
+
+The conditions for entering the cell, laid down in the written cell entry
+procedure, included the isolation of the gamma gate in the ceiling and a mobile
+decontamination tank below the hatch door in the floor, first checking that the
+tank was not below the hatch. Isolating the gamma gate also isolated the supply
+to the switch indicating the gate was closed. This meant that the in-cell crane
+could not be moved, as the signal saying the gamma gate was closed was not
+present. This was not recognised at the time.
+
+The cell entry procedure states that the inner door should be opened first.
+However, the Foreman's log at 06:30 on Friday showed that the outer door was
+open. The Foreman tried to open the inner door and failed, because:
+
+a. The outer door was open and the software in the PLC would not allow
+   the inner door to open in this condition
+b. The in-cell crane was not parked just inside the inner door, which
+   the PLC also required to see before opening the inner door.
+
+The Foreman thought the inner door was actually faulty and got the maintenance
+department to look at it. They spent most of Friday morning trying to find a
+fault, before realising that the doors were being opened in the wrong sequence.
+They then shut the outer door.  The inner door would still not open as the
+in-cell crane was parked above the hatch door, and it could not be moved
+without re-energising the gamma gate.
+
+After thinking about this for a while the Shift Manager decided to place a
+temporary override on the PLC to fool it into thinking the crane was in the
+correct position just inside the inner door.  `This course of action was
+quicker to implement. The decision was probably influenced by the fact that the
+engineer responsible for robot repairs worked on dayshift only: there might not
+have been time to complete the necessary repairs if the other systems had been
+re-energised to move the crane and then re-isolated in accordance with the
+checklist.'
+
+He authorised a Temporary Plant Modification Proposal (TPMP) and got the door
+to open. The details of this TPMP were added to the shift log, the permit to
+work, and a TPMP book, but the entry in the shift log did not get carried
+forward to subsequent shifts.
+
+The robot engineer fixed the robot. The doors were left open as the hoses still
+needed replacing. `During the night shift little work was done in the Control
+Cell as the replacement hoses were found to have the wrong end fittings.'
+
+Work restarted about Saturday lunchtime and was probably finished by about
+18:00 on Saturday. The cell could not be re-energised yet as there was no
+electrician on duty who could do this until the night shift.  The Shift
+Manager's log noted that the doors were still open and the Foreman's log said
+that the outer door was open and the cell still needed re-energising. The TPMP
+was not mentioned at this handover to the Saturday night shift. Shortly before
+midnight the electrician was authorised to re-energise the cell. The TPMP
+remained in place.
+
+The incident itself happened when an operator raised a container of waste
+through the hatch door into the cell. His written instructions had nothing
+about checking the state of the doors, his control panel had no indicators for
+the doors, and it was almost impossible to see the doors from his control
+position. He did have a TV monitor to provide another view of the cell and as
+he raised the container he noticed in the background that the doors were open.
+He went to another control panel about 5 metres away and managed to close the
+inner door. The TPMP gets an honourable mention here as without it the PLC
+would not have allowed the inner door to move.
+
+Nobody was in the room outside the cell. Four people were in the next room and
+they were warned by an alarm in the room outside the cell.  These people were
+not intending to enter this room at all.  Nobody was found to have received any
+radiation exposure from the incident.
+
+During the subsequent NII investigation it was discovered that:
+
+- The changes to the key exchange box for the doors had resulted in its design
+becoming unsafe. The added override key was not held captive in the box so it
+could be removed at any time, and if it was removed it restored power to the
+hatch door. Also, once the outer door was open the keys could be removed from
+the box by reversing the normal sequence but with the outer door still open.
+These defects had not been discovered during any of the commissioning stages.
+It was not discovered when the keys had been removed and returned to the Permit
+Foreman's office.
+
+- The permit to work was signed off based on the keys being returned without
+any physical check of the state of the doors.
+
+- The logic controlling the crane did not care that the crane appeared to be in
+two places at once, where it really was and where the TPMP said it was. The
+logic still allowed the crane to lift the container of waste into the cell in
+this condition.
+
+- The PLC modification to prevent the hatch door opening if the inner door was
+open, described above, had the coding error involving the + sign.
+
+The NII made various technical recommendations, but their first
+recommendation bears repeating:
+
+  The incident graphically illustrates the need for:
+
+  (a) those who design and operate such plants to ensure that the protection
+  systems provided are, so far as is reasonably practicable, independent of the
+  control systems for the plants. The design and operation of such systems
+  should be made as simple as possible.
+
+The NII are also discussing with BNFL and the IAEA to get this incident
+included as one of the case-book examples on the International Nuclear Event
+Scale for Nuclear Reprocessing Plants.
+
+Summarised from: HSE, Windscale Vitrification Plant Shield Door Incident
+15 September 1991, HMSO, ISBN 0 11 886348 7.
+                                              Peter Ilieve peter@memex.co.uk
+
+------------------------------
+
+Date: Mon, 23 Nov 92 07:16:33 PST
+From: John Bonine  E-LAW US <ejohn@igc.apc.org>
+Subject: Privacy Risks of Computerized Medical Billing
+
+I forward to you the following, which contains a good discussion, from a
+professor of medicine in Minnesota, of why doctors are resisting a drive for
+(seemingly innocuous) computerization of billing procedures.  John Bonine
+
+>From: Paul Kleeberg <PAUL@gacvx1.gac.edu>
+>
+>Last Thursday Gerald M. Phillips <GMP@PSUVM.BITNET> said:
+>
+>> I was working with AMANET when it collapsed because doctors wouldn't use it.
+>Out of curiosity, did you aver ask the doctors why?  I used it and found the
+>interface somewhat non-intuitive and was disappointed that there was never
+>any type of gateway established with the Internet.  The current iteration of
+>AMA/Net => U.S. HealthLink also is free standing though I am told they are
+>looking into an internet gateway.  Same non-intuitive interface.  Many of us
+>who would most wish to use the system (rural physicians) have to pay long
+>distance phone charges on top of access charges.
+> 
+>> Now the HCFA is mandating computerized recordkeeping, but doctors are
+>> fighting it tooth and nail.
+> 
+>The family doctors on my list (Fam-Med) are concerned about a number of
+>things.  Among them: confidentiality of patient records, who is going to pay
+>for this change and has it ever been shown to improve outcome or patient
+>care?
+> 
+>Regarding the confidentiality of patient records, the paper chart assured
+>confidentiality since it could never be found.  An electronic chart can be
+>accessed by several people at once from distant locations and since payors
+>are one of the groups who are strongly supportive of an electronic record, I
+>might be just a bit concerned as an individual.  Given payors propensity to
+>exclude preexisting conditions, a simple keyword search of an electronic
+>chart could unearth all sorts of interesting data about an individual with
+>little effort.  It would further interfere with the physician-patient
+>relationship causing patients to be even more cautious about the types of
+>information that got into their chart.
+> 
+>Who is going to pay for it?  Gov't has told us in no uncertain terms that we
+>physicians should.  For those of us in struggling rural practices, that
+>added burden will be all that it takes to cause some of us to close up shop
+>and join a HMO in a metropolitan area (Better pay, less call, fewer
+>administrative hassles and better cultural quality of life) or just retire.
+>For those of you in urban areas that may not sound like much but out here in
+>rural America, where communities and hospitals depend on having a physician,
+>it can mean economic survival of the community as well as life or death for
+>the individual.
+> 
+>Has it ever been shown to improve outcome or patient care?  We all believe
+>it will but I do not believe it has ever been studied.  Nothing like going
+>full tilt investing megabucks in systems we *believe* should work without
+>first evaluating the costs or measuring the benefits of implementation.
+>Lets look at the systems in use today.  What difference have they made?
+> 
+>You can be sure that if a computer can be shown to help a physician see more
+>patients in a day, reduce the cost of providing services or enable her to
+>provide a higher quality of care to her patients, it will be quickly adapted.
+> 
+>Paul Kleeberg, M.D., 604 North 3rd St, St. Peter, MN 56082       507-931-6721
+>Family Practice, University of Minnesota  Paul@GAC.Edu or Paul@GACVAX1.Bitnet
+
+------------------------------
+
+Date: Mon, 23 Nov 1992 15:12:14 -0500 (EST)
+From: Steve Holzworth <sch@unx.sas.com>
+Subject: Teller machine networks
+
+I experienced an interesting failure of an ATM network over the weekend.  Using
+a Mastercard supplied by an out-of-state (OUS) bank, I accessed an ATM at my
+usual personal bank, NationsBank (NC). I was attempting to get my bank card
+balance. The ATM had me enter my PIN, then asked for the transaction type. I
+pressed "Acct. Balance" (actually, a series of buttons), and the ATM paused
+briefly, then dutifully spit out a receipt with a balance on it. The
+interesting thing was that the balance, to the best of my knowledge, was about
+$1200 high, just over my credit limit. I was NOT amused.  I assumed I might
+have been subjected to a fraudulent use of my card, so I went home and called
+the 800 number for OUS. I reached a call director, which among other things,
+allowed balance requests. I asked for my balance, and was given a number right
+in line with what I expected, about $2000. Further, the automated system stated
+that this WAS the current balance as of that day, Saturday.
+
+Monday morning, I called OUS Customer Service and spoke with one of their
+representatives. I related the problem I had had over the weekend. She checked
+the balance herself, and indicated that the automated system gave the correct
+number, and the ATM gave an incorrect number. Her response was: 'it's an ATM
+failure, so you need to contact that bank about it...'.
+
+I called the local branch of NationsBank, the same branch where the ATM is
+located. They had me call an 800 number for NationsBank. The person there
+looked at a few things, including my current CHECKING balance, just in case the
+ATM had printed THAT number by mistake (!). Nope, not even close. After leaving
+me on hold for awhile, she stated that her supervisor felt that I should speak
+to someone in their ATM division. I was transferred there to yet another
+front-line service rep. After I explained the circumstances again, she thought
+about, then said it was OUS's problem since they were the issuing bank for the
+card and I should take it up with them (of course).
+
+Ignoring the customer service runaround, there are several interesting points
+here:
+
+1) My ATM is getting (or giving me) an incorrect balance for a Mastercard,
+despite being part of the Mastercard ATM net. Note that the normal failure for
+a request not handled by the network, or the bank in question, is to say "Not a
+valid transaction type" (or something like that). I've had this happen when
+attempting a balance request for a card from yet another bank.
+
+2) If my balance request is being mishandled, what about cash withdrawals?
+What number actually gets relayed between the banks?
+
+3) The printed receipt has the correct Mastercard number on it, along with the
+text:
+
+   CC INQUIRY
+   FR CREDIT CARD
+   BALANCE       $too.many
+
+so it thought it was doing the correct transaction, with the correct account.
+
+4) The only numbers I enter are for my PIN (4 digits).
+
+5) Off the topic, but interesting, is the fact that my bank-supplied PIN is
+identical to the third group of digits in the account number.  This may be a
+strange coincidence, or an example of gross stupidity.
+
+Steve Holzworth  sch@unx.sas.com  SAS Institute, Open Systems R&D, Cary, N.C.
+
+------------------------------
+
+Date: Sat, 21 Nov 92 19:39:39 EST
+From: mercuri@gradient.cis.upenn.edu (Rebecca Mercuri)
+Subject: Re: Election HW/SW problems (Urken, RISKS-14.08)
+
+A. Urken posted some comments in RISKS-14.08 regarding the FEC's and NASED's
+joint efforts in "development of standards and certification testing" for
+election equipment and software. This is a somewhat misleading statement. The
+"standards" that have been issued to date are not standards, only suggested
+guidelines. They need to be adopted by the individual states before they are
+accepted as standards. This is a lengthy process, and some states have been lax
+in doing so. Furthermore, upon investigation of these documents, it will be
+revealed that the rigorous security standards work of NCSC, which takes the
+form of the rainbow series, seems to have been largely ignored by the FEC and
+NASED to date.
+
+Note that election equipment does not come under the Computer Security Act,
+and hence it is not required to conform to any Orange Book standards. The
+question that concerned citizens have been asking for years is: WHY NOT? 
+
+Although Independent Testing Agencies are now becoming "certified," the purpose
+of ITAs is presently dubious.  SRI [a consultant to N.Y.C. and the system
+evaluators] had its hands tied by two non-disclosure agreements (one 6 years,
+and one 30 years) by one manufacturer of election equipment, during an
+(ongoing) examination process. The policy of the FEC is to allow secrecy in the
+examinations, in order to preserve trade secrets claimed by the manufacturers.
+Perhaps someone can explain how an ITA can be "independent" while being
+prohibited from disclosing certain information they discover in the course of
+their testing process to the intended purchasers?  Yes, the manufacturers know
+that they can protect their property with copyrights and patents, but some have
+claimed that such filings would "provide a road map to rigging elections" and
+so rely on and impose trade secrecy.
+
+Regarding Peter Mellor's posting on City University's SW Engineering program:
+HAIL BRITTANIA! Let us ally forces and post some curricula to the forum!
+
+Rebecca Mercuri.
+
+Copyright (c) 1992 by Rebecca Mercuri. All Rights Reserved.
+Permission granted to RISKS FORUM for posting, and ELECTRONIC reposting 
+is permitted in its ENTIRETY, with this notice intact. Printed (hard-)
+copy may only be made for personal (non-profit) use. The author retains
+all rights to the material herein.
+
+------------------------------
+
+Date:         Tue, 24 Nov 92 09:35:56 EST
+From: "Lee S. Ridgway" <RIDGWAY@mitvma.mit.edu>
+Subject:      The ultimate in anti-virus, anti-invasion security
+
+Found in rec.humor:
+
+  Here are The Three Laws of Secure Computing (TLSC)
+
+  1) Don't buy a computer
+
+  2) If you do buy a computer, don't plug it in.
+
+  And, finally,
+
+  3) If you do plug it in, sell it and return to step 1.
+
+------------------------------
+
+Date: Fri, 20 Nov 92 17:03:26 -0800
+From: David Honig <honig@ruffles.ICS.UCI.EDU>
+Subject: Technophones
+
+Just encountered yet another hazard of modern life.  In a certain new office
+phone system, unplugging the phone from the wall jack disables it.  It won't
+work after its plugged in again, though after a moment it does tell you the
+time.
+
+Also, hidden in the manual is a line telling you not to reprogram certain keys.
+Of course, someone tried it, not having memorized the manual, and this disabled
+not only the phone but also the receptionist's master phone.
+
+Pretty neat, huh?
+
+------------------------------
+
+Date: Sat, 21 Nov 92 11:54:00 GMT
+From: tfj@apusapus.demon.co.uk (Trevor Jenkins)
+Subject: Re: London Ambulance Service (RISKS-14.05)
+
+Some news related to the London Ambulance Service fiasco.
+
+This week's edition of Computer Weekly had a small article from the chief
+executive of the British Computer Society. The implication was that had the
+programmers and analysts from the LAS project participated in the society's
+Professional Development Scheme then this fiasco would not have happened.
+
+I doubt his conclusion very much because I've been a member of the BCS for the
+last 15 years and during that time I have received nothing substantial about
+the PDS. What I know about the scheme has been gleaned from Computer Weekly and
+Computing rather than from the BCS themselves. If those involved in the LAS
+fiasco would have benefitted from such a scheme it is unlikely that they would
+have discovered that the scheme existed.
+                                                   Trevor
+
+PS Computer Weekly and Computing are the ``free'' weekly trade press.
+
+Trevor Jenkins, 134 Frankland Rd, Croxley Green, Rickmansworth, WD3 3AU,
+England   email: tfj@apusapus.demon.co.uk   phone: +44 (0)923 776436
+
+------------------------------
+
+Date: Mon, 23 Nov 92 18:03:25 GMT
+From: Vicky Stavridou <victoria@dcs.rhbnc.ac.uk>
+Subject: Conference announcement
+     
+        THE INSTITUTE OF MATHEMATICS AND ITS APPLICATIONS
+             THE MATHEMATICS OF DEPENDABLE SYSTEMS
+                    1st--3rd September 1993
+  Royal Holloway, University of London, Egham, Surrey, United Kingdom
+
+            PRELIMINARY ANNOUNCEMENT AND CALL FOR PAPERS
+
+The construction of dependable systems, by which we mean systems providing 
+high levels of reliability, availability, safety and/or security, is a problem
+of considerable concern to both providers and users of information processing 
+systems of all types.  Historically, different aspects of system dependability
+(e.g. reliability and security) have been studied quite independently, albeit
+that many of the goals are similar.  For example, the notion of certifying 
+functionality assurance levels applies equally to reliable systems and secure 
+systems.  In addition, users will often require some combination of security 
+and fail-safe operation.
+
+The purpose of this conference is to consider the mathematical aspects of the 
+provision of dependable systems, one goal being a comparison and possible 
+unification of mathematical techniques for providing safe, reliable and secure
+systems.  A number of different mathematical approaches have been taken to the
+overall problem, including probabilistic/statistical reasoning, formal models 
+of safe, secure and reliable systems and logics of authentication and access 
+control/privilege delegation.  Papers on all these areas are solicited, the 
+unifying theme being the application of mathematical techniques to the overall
+dependability problem.  Hence papers will be particularly welcome which cross-
+fertilise the application domains.  The conference will consider dependability
+for both hardware and software systems.
+
+Organising Committee
+....................
+
+Dr. B. Chorley (National Physical Laboratory) 
+Dr. J. Jacob (Coventry University)
+Prof. B. Littlewood (City University)
+Prof. C. Mitchell FIMA (RHUL) 
+Dr. V. Stavridou (RHUL)
+Dr. V. Varadharajan (Hewlett-Packard)
+
+Call for papers
+...............
+
+Extended abstracts of papers (of between 1000 and 1500 words) should be 
+submitted to: Miss Pamela Irving, Conference Officer, IMA, 16 Nelson Street, 
+Southend-on-Sea, Essex SS1 1EF, United Kingdom to arrive no later than 31st 
+March 1993. 
+ 
+Authors will be notified of the decision of the programme committee regarding 
+their paper by 31st May 1993.  Accepted papers will have a 30 minute 
+presentation time at the conference.  The conference will be run under the 
+normal IMA procedures.
+
+Conference Proceedings
+......................
+
+It is hoped that the proceedings of the conference will be published by Oxford
+University Press in the IMA Conference Proceedings Series.  Full papers will 
+be subjected to the normal refereeing procedure after the conference before 
+being accepted for publication in the proceedings.
+
+Location
+........
+
+The conference will be held at Royal Holloway, University of London (RHUL), 
+Egham, Surrey, England where accommodation will be available for participants 
+from the evening of August 31st 1993.  RHUL combines an attractive parkland 
+setting with easy transport access (5 minutes from the M25, 20 minutes from 
+Heathrow airport, and 40 minutes by train from London Waterloo).
+
+------------------------------
+
+End of RISKS-FORUM Digest 14.09
+************************

@@ -1,0 +1,665 @@
+VIRUS-L Digest   Friday, 26 Jul 1991    Volume 4 : Issue 131
+
+Today's Topics:
+
+Re: HighMemory(even longer & more technical) (PC)
+Viral Use of Memory Over 640K; Trust (PC)
+Re: CARMEL TntVirus, A Trojan suspect. (PC)
+Re: Philosophy, comments & Re: long and technical (PC)
+Printer paranoia
+Virus Scan V57 and V77. (PC)
+Re: F-PROT & DOS 5.0 (PC)
+New Jerusalem - Help! (PC)
+Re: Anti-Virus software recommendation sought
+Terminology and Taxonomy
+Re: Revised Product Test- - Virex (Mac)
+Toward a Taxonomy of Malicious Programs
+Re: Self-scanning executables (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    25 Jul 91 15:11:23 +0000
+>From:    rohrer@fnacp1.fnal.gov (Keith Rohrer)
+Subject: Re: HighMemory(even longer & more technical) (PC)
+
+vasya@stack.fian.msk.su (Vasili Bykov) writes:
+>In his article rohrer@fnacp1.fnal.gov (Keith Rohrer) writes:
+>>>scanner ). It is sure that BIOS INT 13 handler resides somewhere between
+>>>segment adresses 0C000h and 0FFFFh. As soon as the execution gets into
+>>	Yeah, but what if I have an infected program (whose infection
+>>traps INT 13) in high memory?  On my machine, for one, I've got disk
+>>BIOS at CC00 and everything from D000 to EFFF is high RAM...
+>
+>Using such a technique (tracing addresses during INT 13h execution) you
+>cannot guarantee that the address you find is the same as the one which
+>is set by BIOS during POST. If you have some card installed, its
+>firmware can re-install INT 13 on itself during ROM-scan. In such a
+>case the address you get is the entry point of this firmware's routine.
+>
+>So the only thing you can guarantee is: this code is situated above
+>0C00h and below 0FFFFh memory segment (or some other values which you
+>choose). MAY THIS CODE BE A PART OF SOME VIRUS?
+>
+>[]      Well, so what if you have a high RAM ? I say, "No, in 9999
+>        cases of 10000 it is not a virus too." The reason is the
+>        principles of high memory organization.
+>
+>If you have expanded memory, that is a memory above 0A000h segment, but
+>within 1 megabyte address space, you should follow Lotus-Intel-Microsoft
+>convention named EMS (Expanded Memory Specification) in order to
+                  ^^^
+But my machine has no EMS; I have 1 Meg of memory on the motherboard,
+and the NEAT chipset allows one's 286 machine to map high memory.
+Also, on 386 machines, when a memory manager like QEMM maps high
+memory (UMB "upper memory blocks" (DOS 5.0 messed up the terminology,
+so now "high" refers to HMA...leave it to Microsoft...)) for using
+device drivers, it essentially pulls EMS memory down to map there, but
+unlike memory in the EMS page frame, UMB memory is *never* paged out.
+The processor's memory mapping lets you treat it just like regular DOS
+memory, except that it's not contiguous with the base 640K so DOS
+programs may have problems trying to use it directly.  That's where
+the "loadhi" (DOS 5's loadhigh/lh/devicehigh) commands come in: they
+put a device driver or other TSR program in a UMB.  If that program is
+already infected, unless the virus has problems being loaded in a UMB
+region, it can still take over, and in fact most drivers (and so
+probably most .COM/.EXE infecting viruses) have no problem working
+from a UMB just like they work when loaded low.
+
+>handle it. You must use EMS memory driver to do so. Usually this memory is
+>used for keeping huge amounts of data like spreadsheets. Some code may
+>be placed there too. But it *MUST NOT* be a code which handles
+>interrupts. Expanded memory is bankable, that is its total amount may
+                                    ^^^^
+Yes, when you're using EMS memory as EMS, it is paged into a "page
+frame" by the EMS handler.  The full specification, however, allows
+one to map EMS memory into any free space (possibly with the
+constraint that that space be at segment A000 or higher, I'm not
+certain)--if your EMS manager supports UMBs with EMS, it maps the EMS
+memory down to the UMB, then *never*pages*it*out*.  The only areas of
+memory one should expect to be volatile are video memory (if you've
+got 256K of video memory or more, the board bank-switches it) and the
+page frame.  Unless there's problems with the particular driver,
+loading drivers into UMBs is safe and saves low memory.
+
+>[stuff deleted]
+>if you set interrupt address to code located in expanded memory, a
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Do you mean, "located in the page frame"?  Except in rare cases where
+you have somehow turned EMS paging off (usually because you use the same
+pool of memory as XMS and EMS, and are using it all as XMS at the
+moment), putting code in the page frame is sheer insanity.
+
+>[more deleted]
+>If you have extended memory, that is a memory above 0FFFFh segment, you
+>can use it only in protected mode of 80286/386/486 processor using
+>their segment selectors mechanism. MS DOS runs in real processor mode,
+>and you cannot reach code there via real mode's interrupt table.
+True.
+
+>[deleted]
+>That's why I suggest that a code in high memory address space is not a
+>malicious one.
+
+One thing that I will agree that is if nothing is loaded high, it isn't
+a virus, especially if you stopped things from loading high by axeing
+the memory manager from your CONFIG.SYS.  A virus that's smart enough to
+infect a .COM or .EXE that's also not too smart for itself in some way,
+however, can easily be loaded high if it infects a TSR that you load
+high.
+
+>- -|- Vasili Bykov -|- Moscow -|- vasya@stack.fian.msk.su -|-
+
+	Keith
+(rohrer@fncrd0.fnal.gov)
+(Any opinions presented above can't possibly reflect the views of my
+boss, since I don't think he even knows I get netnews...)
+
+------------------------------
+
+Date:    25 Jul 91 12:42:00 -0500
+>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+Subject: Viral Use of Memory Over 640K; Trust (PC)
+
+>From:    vasya@stack.fian.msk.su (Vasili Bykov)
+> []      In case of trivial PC without high memory the answer is *NO*,
+>         surely.  For those machines anything you have above 0A000h
+>         segment is either video data or some ROM routines. ...
+
+The answer is "unlikely, but possible."  There are variants of the 512
+and Doom-II viri (and maybe others) which put executable code into
+video memory.  The problem with this method is that the code will get
+overwritten the next time a program uses graphics.  Also, network
+cards and devices like the HiCard, as well as EMS cards, put memory
+between 0A000h and the ROM BIOS.  I think the MG-2 virus uses memory
+here rather than video memory (I'm not sure -- it might use video).
+
+Regarding use of expanded (EMS) and extended memory:
+> ...You must use EMS memory driver to do so. ... Some code may be
+> placed there too. But it *MUST NOT* be a code which handles
+> interrupts. ... So if you set interrupt address to code located in
+> expanded memory, a situation when an interrupt occurs but a bank
+> where virus resides is switched off the memory space, will result in
+> a system crash.  So expanded memory is not the best place for a
+> virus.
+
+> If you have extended memory, that is a memory above 0FFFFh segment,
+> you can use it only in protected mode of 80286/386/486 processor
+> using their segment selectors mechanism. MS DOS runs in real
+> processor mode, and you cannot reach code there via real mode's
+> interrupt table.
+
+> Surely, some buffer code may be provided which resides in lower
+> memory, catches interrupts, switches into protected mode or tells
+> EMS driver to place bank with code into memory space, and gives
+> control to virus itself.  But if you take into account that
+> different computers have different high memory configuration, your
+> virus should be extremely intelligent in order to work properly with
+> any of them. A virus of size about 20 or 30 Kbytes is not the best
+> one. It would not hide for long.
+
+The part of the virus code residing in low memory would not have to be
+large at all.  If the EMS driver (EMM.SYS or whatever) is loaded, the
+interrupt handler could switch in the bank with the main virus code
+and execute whatever it wanted.  I believe I've heard of a virus which
+uses expanded memory.  I'm not sure about it, but I would appreciate a
+more knowledgeable virus researcher saying whether or not there is one.
+
+NORMALLY, the extended memory on an 80286/386/486 machine cannot be
+reached when running in real mode.  HOWEVER, there is a cheat which
+allows access to 65520 bytes (64K - 16 bytes) of extended memory just
+above segment 10000h.  Microsoft capitalized on this cheat through
+their HIMEM.SYS kludge and called it XMS (either eXtended Memory
+Specification or eXtra Memory Specification -- I forget which).  I
+don't think an interrupt could point there, but a low-memory interrupt
+handler could pass control up there while remaining in real mode.  As
+for switching to protected or another memory mode from real mode, the
+problems involved in switching back and forth between modes would
+probably keep a virus which does this from being "successful."
+
+Also,
+>From:    msb-ce@cup.portal.com (Fritz Schneider)
+> One problem that may occur is that of BIOS-shadowing. We can no
+> longer assume that the BIOS is in ROM at the time that it is
+> executed.  Many machines now copy it to faster RAM. It is possible
+> that a virus might intercept the BIOS call inside the BIOS itself
+> rather than in the interrupt table.
+
+On the machines with which I've worked that have shadow-RAM, the
+circuitry of the computer prevents writes to the shadowed BIOS, once
+the ROM BIOS has been copied into it.  A virus would not be able to
+modify the shadow-RAM.  This may not be true for all shadow-RAM
+computers, but it should be.
+
+- - - - - - - - - - - - - - - -
+On a different subject,
+>From:    padgett%tccslr.dnet@uvs1.orl.mmc.com (A. Padgett Peterson)
+> ... a response was posted to another comment that you must boot
+> cold from an infected floppy before trust is possible even if a
+> clean Int 13 (disk access) path is known.
+
+This has to be an unintentional faux pas on Padgett's part.  Trust is
+possible only if you cold boot from a KNOWN CLEAN floppy.  I'm sure
+that he would not intentionally write that -- at least he'd BETTER
+not!  ;-)
+
+Bill Walker ( WALKER@AEDC-VAX.AF.MIL ) |
+OAO Corporation                        | "Non sequitur -- your facts are
+Arnold Engineering Development Center  |  un-coordinated."
+M.S. 120                               |           -- NOMAD
+Arnold Air Force Base, TN  37389-9998  |
+
+------------------------------
+
+Date:    Thu, 25 Jul 91 19:23:06 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: CARMEL TntVirus, A Trojan suspect. (PC)
+
+cssr@hippo.ru.ac.za ( Mr S. Rahim ) writes:
+>I got hold of Carmel Antivirus package through a bulletin board. After
+>having installed it on the harddisk two weeks ago, I began to have
+>problems. This included EXE and COM files which were working before
+>Carmel came on the PC.  Some files hang up while others refuse to run.
+
+Carmel Software Turbo Anti Virus package is a commercial package.  If
+you did not purchase your copy or otherwise receive it directly from
+them, it could have a virus in it or otherwise be tampered.  TAV has
+an "immunize" feature, if I recall correctly, that works by adding
+virus marker bytes (the signatures that viruses use to see if a file
+is infected) to the end of .COM and .EXE files.  It could be that the
+files you immunized are self-checking and recognize that they have
+been modified.
+
+>When TntVirus is activated, I performed a scan of the memory with
+>McAffee Scan V80, and it reported that P1 Related virus was active in
+>memory. Another file relating to the package when run, SCAN revealed
+>that Brain was active in memory.
+
+[rest of message deleted...]
+
+TntVirus apparently does not cipher its strings in memory or flush memory
+after running.  This would account for the viruses found in memory.
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+- --
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com  (business)
+4423 Cheeney Street	 | FAX   (408) 970-9727	|
+Santa Clara, California	 | BBS   (408) 988-4004	| aryehg@darkside.com(personal)
+95054-0253  USA		 | v.32  (408) 988-5190	|
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | CompuServe:  76702,1714
+
+------------------------------
+
+Date:    Thu, 25 Jul 91 19:04:49 +0000
+>From:    johnf@apollo.hp.com (John Francis)
+Subject: Re: Philosophy, comments & Re: long and technical (PC)
+
+padgett%tccslr.dnet@mmc.com (A. Padgett Peterson) writes:
+[ . . . ]
+>	Back to the main subject, the question of authentication of a system
+[ . . . ]
+>	Given clean and authenticatable periperal paths, integrity
+>programs and scanners can be run at any later time with the ability to
+>bypass possibly untrustable elements thus rendering all currently
+>known stealth techniques useless.
+>
+>	The authentication task may then be invoked at any time before
+>or after the loading of the O/S with expectation of valid results
+>being obtained.
+
+I accept the validity of these statements.  I do not, however, accept your
+belief that you can get "clean and authenticatable periperal paths" on a PC.
+
+Yes, you could (hypothetically) save the BIOS vector adresses somewhere.
+In fact the BIOS already has these - it has to initialize the vector table.
+BUT - on 386 or better systems, I can write a "Virtual Machine" emulator
+that can fool you into believing you are running on the raw hardware.
+This means I can write the ultimate stealth system - undetectable by any
+means whatsoever (not quite true, but I don't want to give everything away).
+I can then build whatever else I want around this stealth system, protected
+by the same disguise.  Any (yes, any) authentication task that was run once
+my "Virtual Machine" virus took control would report the system to be virus
+free.  That is a really scary thought.
+
+------------------------------
+
+Date:    Thu, 25 Jul 91 10:32:11 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Printer paranoia
+
+Not virus related, but a good example of the odd thinking people get into
+when dealing with computer security:
+
+Our submission for the "Chicken Little" award for computer
+advertising:
+
+>From the July 8th edition of "Federal Computer Week", page 36:
+
+    "The PS:Refillable Cartridge can be used with nearly
+
+     all ... laser printers ... It is refillable by the
+
+     user and never leaves the user's premises, insuring
+
+     that data security is never compromised."
+
+Laser printer toner cartridges do contain the printer drum.  On
+laser toner cartridges the drum is 2 - 3 cm in diameter.  By
+dint of extraordinary effort, you should be able to reconstruct
+the last 1/3 of the last page to be printed ...
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Thu, 25 Jul 91 17:46:29 -0400
+>From:    Andrew Brennan <BRENNAAA@DUVM.OCS.DREXEL.EDU>
+Subject: Virus Scan V57 and V77. (PC)
+
+      I've an interesting problem at the center I am working for.
+   Apparently, SCAN stops checking memory for Stoned after V57.  We
+   have V57 (in normal use) and can locate Stoned in memory, but it
+   is not found on the disks - hard disks or otherwise.  After we
+   reset the machine (booting from the hard disk), we have Stoned
+   in memory again - not located on the hard disk.
+      My immediate assumption was that it was a strain of Stoned
+   that was not locatable by the old version - but the basic shape
+   of Stoned was locatable in the memory of the machine.  Upon a
+   boot from a clean disk, no Stoned anywhere.  I dug out a copy of
+   V77 (assuming/hoping that it would locate the virus on the disk)
+   only to find that V77 no longer memory-scans for Stoned.  I also
+   found that V77 was unable to find Stoned on the same harddisk.
+   We don't have V80 and I was unable to retrieve a copy via the
+   Internet as there was/is some problem out there that was not
+   allowing access outside this site - some server was down ...
+      We tried (a suggestion from an outside source) optimizing the
+   hard disk - to remove any phantom viral activities(?)  V57 still
+   finds Stoned in memory - not on the disk.  V77 doesn't look for
+   Stoned in the memory _and_ doesn't find it on the disk.  I will
+   be retrieving a copy of V80 ASAP, but I don't know exactly what
+   to think in this situation ...
+
+      Andrew.  (brennaaa@duvm)  Drexel Univ.  College of Info Studies.
+
+------------------------------
+
+Date:    Fri, 26 Jul 91 10:22:39 +1200
+>From:    Robert Davies <robert@kea.am.dsir.govt.nz>
+Subject: Re: F-PROT & DOS 5.0 (PC)
+
+TEMNGT23@YSUB.YSU.EDU (Lou Anschuetz) writes:
+>Installed DOS5.0 on my machine last night (which works well imho),
+>but ran into a problem with F-PROT.  If I attempted to leave the
+>F-PROT driver.sys in my config.sys file the machine would freeze
+>and complain that INT13 was modified (undoubtedly true).  Has
+>anyone found a work-around for this?
+>
+>Thanks in advance!
+>
+>Lou Anschuetz
+>temngt23@ysu.edu
+
+Try shifting the location of the F-Prot driver.sys in your config.sys
+file. I got the INT13 message when I first tried F-prot (the second to
+most recent version - haven't upgraded yet) but it went away when I
+moved the device statement to later in config.sys. It even loads into
+high memory.
+
+Robert
+
+------------------------------
+
+Date:    26 Jul 91 09:37:24 +1000
+>From:    coddington@rsbs0.anu.edu.au
+Subject: New Jerusalem - Help! (PC)
+
+My next-door neighbour has an Commodore Colt XT which has become
+infected with a virus ("New Jerusalem").  The hard disc has been
+treated with two virus removers, which identified the virus and
+supposedly removed it, yet the system still crashes.  After
+re-formatting the hard disc and copying fresh files from virus-free
+backup discs the virus is still there.
+
+What is the "New Jerusalem" virus,  what does it do,  and how do
+you get rid of it?
+
+Please send advice to "coddington@rsbs1.anu.edu.au" and I will pass it on.
+
+------------------------------
+
+Date:    25 Jul 91 19:21:00 +0000
+>From:    motcid!ibbotson@uunet.uu.net (Craig Ibbotson)
+Subject: Re: Anti-Virus software recommendation sought
+
+D.Ivens@deakin.OZ.AU (David Ivens) writes:
+
+>We are considering purchasing a site licence for Virus Buster from
+>Leprechaun Software.
+
+>It looks a very good package.
+
+>Any advice?
+
+Byte magazine did a fairly good article on anti-virus programs
+this month.  I don't know if they reviewed Virus Buster, but it
+sounds familiar.  I would recommend you look there for a reference.
+
+Overall, I believe they recommended ViruScan from MacAfee - this is
+a shareware program.  I recently downloaded it and tried it myself -
+I think it is very good and plan on sending in my registration.
+
+- --
+|Craig Ibbotson, Motorola, Inc.                 ...uunet!motcid!ibbotsonc|
+|Cellular Infrastructure Division, Radio Telephone Systems Group         |
+|"Is this the Big M - or are we becoming the Big A?" 			 |
+==========================================================================
+
+------------------------------
+
+Date:    25 Jul 91 23:14:38 -0400
+>From:    "Robert McClenon" <76476.337@CompuServe.COM>
+Subject: Terminology and Taxonomy
+
+Terminology 2:  Bacteria
+
+     At least two recent posts have suggested the use of the term
+"bacterium" for some sort of malicious program.  (Fortunately at least
+everyone agrees that the Emglish plural of this Latin noun is the
+Latin plural "bacteria".)  Two posts have suggested exactly opposite
+distinctions between viruses and bacteria.  Since the term "bacterium"
+is not into mainstream usage and there is not agreement within the
+computer security or anti-viral communities as to what it means, I
+suggest that its use be avoided.  There is general technical agreement
+so far that a code fragment that embeds itself in a program and
+replicates by embedding itself in other programs is a virus.  If we
+define boot records and similar automagically invoked resources as
+programs, then we have a definition that encompasses everything that
+computer security researchers normally refer to as viruses.  (In other
+words, so-called viruses can be defined as viruses.)  I suggest we
+drop any use of the term "bacteria", which merely confuses and
+complicates, and focus on distinctions between types of viruses.
+
+          Robert McClenon
+          Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    26 Jul 91 03:03:36 +0000
+>From:    kddlab!lkbreth.foretune.co.jp!trebor@uunet.UU.NET (Robert J Woodhead)
+Subject: Re: Revised Product Test- - Virex (Mac)
+
+cmcdonal@wsmr-emh03.army.mil (Chris McDonald ASQNC-TWS-R-SO) writes:
+
+>The  registration form received with the software gave one two
+>options to obtain any future upgrades to the product.  The first option  was  a
+>$75.00  Annual  Update  Service.   For  this  fee  Microcom  (then known as HJC
+>Software) would provide automatic updates for a year.  The second option was to
+>purchase  single updates for $15.00 upon notification of any VIREX new release.
+>I chose the second option given  that  VIREX  at  version  2.0  identified  and
+>repaired  all  known Macintosh viruses as of that time.  I wanted to build some
+>historical knowledge as to the frequency with which updates might occur  before
+>committing  myself  to the automatic annual fee.
+
+A simple way to determine this is scroll down the opening intro info
+that is displayed when you start the program.  At the bottom is a
+detailed revision history for Virex -- and you can see that it has
+in the past been updated more than 5 times a year.
+
+This year has been slow -- and in this business, that's the kind
+of year you want to have.
+
+The other advantage of the auto-update is that it is faster; you get
+the new disk as soon as possible, protecting you against a new virus
+you might not have heard about yet.
+
+Disclaimer : I'm the guy that Bob Capon of Microcom (then HJC) had
+to beg to write the program.  I was sure that there wasn't a market
+for it.  He called me every day for a month.  I finally did it to
+get him to stop calling.
+
+- --
++--------------------------------------------------------------------------+
+| Robert J. Woodhead, Biar Games / AnimEigo, Incs.   trebor@foretune.co.jp |
+| ``If you want to stab someone in the back, Bernard, you must first get   |
+|   behind them!'' -- Sir Humphrey Appleby on the mechanics of politics.   |
+
+------------------------------
+
+Date:    25 Jul 91 23:13:32 -0400
+>From:    "Robert McClenon" <76476.337@CompuServe.COM>
+Subject: Toward a Taxonomy of Malicious Programs
+
+William Walker proposes, borrowing from Eldar A. Musaev, the following
+taxonomy of malicious software:
+
+>Malicious Program Definitions
+>
+>The functional criteria for classifying malicious programs are:
+>I.   Replication
+>     1.  Non-replicator
+>         A program which does not copy itself.
+>     2.  Dependent Replicator
+>         A program which copies itself only when the host program
+is
+>         executed.
+>     3.  Independent Replicator
+>         A program that, once started (e.g. TSR), could copy
+>itself
+>         continuously without outside assistance.
+>
+>II.  Host Basis
+>     1.  Standalone (non-host-based)
+>         A program which does not require another program to help
+>it
+>         run and/or spread.
+>     2.  Host-based
+>         a.  Spawning
+>             A program which leaves the host program intact, but
+>runs
+>             before the host program and calls or "spawns to" it.
+>         b.  Overwriting
+>             A program which overwrites a portion of the host
+>program
+>             or deletes and replaces it entirely, so that it is
+>run
+>             instead of the original program.
+>         c.  Parasitic
+>             A program which attaches itself to the host program,
+>             leaving it functionally intact.
+
+     This scheme is extremely useful as a first step toward defining a
+taxonomy of viruses and other malicious software.  My only structural
+criticism of it is that it is based on an exhaustive multiplicative
+enumeration.  In other words, it is an N-dimensional array.  The
+basic data structure of biological (e.g., Linnaean) taxonomy is a tree
+rather than an array.  The empty slots in the array illustrate that
+the array is not the best data structure.  (In biology, the types of
+teeth often characterize mammals.  They never characterize reptiles,
+which have undifferentiated teeth, or birds, which are generally
+toothless.  The types of beaks sometimes characterize birds, but never
+mammals.)
+
+     Here is a very preliminary try at a tree-based taxonomy of
+malicious software:
+
+1.  Standalone Programs
+
+1.1  Standalone Non-replicating Programs
+
+1.1.1  Non-overwriting Trojans
+     Ex:  ARC 5.1.3
+
+1.1.2  Overwriting Trojans
+     Ex:  Twelve Tricks
+
+1.2  Standalone Replicators
+
+1.2.1     Single-System Standalone Independent Replicators
+
+     Ex:  WABBIT  (a prank at RPI which spawned multiple tasks
+until it crashed the host).  Since WABBIT is the prime
+representative of this taxon which depends on rapid reproduction,
+I propose that they be generically called rabbits.
+
+1.2.2     Multi-System Standalone Independent Replicators:  Worms
+     Ex:  Morris Internet Worm
+
+1.2.3     Multi-System Standalone User-Dependent Replicators:
+Trojan Worms
+     Ex:  CHRISTMA
+
+2.   Host-Program-Dependent Programs
+
+     (I think that all of these replicate, because otherwise they
+are either not malicious or are standalone malicious programs.)
+
+2.1  Media Infectors
+
+2.1.1     Boot-Sector Infectors
+     Ex:  Stoned
+
+2.1.2     Media Resource Infectors
+     Ex:  WDEF
+
+2.2  Operating System Infectors
+     Ex:  Lehigh
+
+2.3  Application Infectors
+
+2.3.1     Spawning Application Infectors
+     Ex:  AIDS II, Twin-351
+
+2.3.2     Overwriting Application Infectors
+     Ex:  382 Recovery
+
+2.3.3     Parasitic Application Infectors
+
+2.3.3.1   Dependent Parasitic Application Infectors
+     Ex:  Vienna
+
+2.3.3.2   Semi-dependent Parasitic Application Infectors
+     (These require invocation of an infected application to go TSR
+but then continue to infect other applications.)
+     Ex:  Jerusalem
+
+     I suggest that this or a similar tree structure is the
+appropriate way to categorize malicious software.  I admit that I
+this list is not complete and that subcategories and occasionally
+categories need to be added.  In particular, where should we put a
+flip-flop virus like Tequila?  Is it 2.1.n+1, 2.3.n+1, or 2.4?
+
+          Robert McClenon
+          Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    25 Jul 91 23:36:35 -0400
+>From:    Kevin Dean <76336.3114@CompuServe.COM>
+Subject: Re: Self-scanning executables (PC)
+
+A friend of mine, Jeff Boyd (BOYDJ@QUCDN.QueensU.CA), pointed me to
+this discussion when the subject of self-scanning executables came up
+a few weeks ago.  Last year, I developed an anti-virus algorithm that
+does a CRC check on the disk image of the running program.  This CRC
+is stored within the executable itself, so in order to work, a set of
+equations have to be solved to determine the original CRC.
+
+Cracking the algorithm is not a trivial task: a virus has one chance
+in four billion (2^32) of successfully infecting a program or, if it
+decides to fool the algorithm by changing the stored CRC, would lock
+up a 386 for hours bordering on days to find and change it.
+
+The algorithm, supporting code, and supporting executables have all
+been released to the public domain.  I have asked Jim Wright, the file
+manager for VIRUS-L, to post it on the VIRUS-L server.  In the
+meantime, if anyone would like a copy, drop me a note and I'll send
+you the package in UU-encoded form.  If anyone would like to make it
+available for FTP anywhere, drop me a note and I'll send it along.
+
+- ---- Kevin Dean ----
+76336.3114@compuserve.com
+"If the implications aren't immediately obvious, don't ask."
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 131]
+******************************************

@@ -1,0 +1,457 @@
+VIRUS-L Digest   Monday,  5 Aug 1991    Volume 4 : Issue 136
+
+Today's Topics:
+
+Re: viruses in the press
+Self-scanning executables (PC)
+Re: Philosophy, comments & Re: long and technical (PC)
+Is Dark Avenger Really here? (PC)
+Re: Self-scanning executables (PC)
+Floppy Door Close TSR? (PC)
+Re: Philosophy, comments & Re: longer and technicaller
+Re: Virus for Sale
+Re: request information (PC)
+Scan and Clean problems (PC)
+Re: Rip-off software package (PC)
+re: High memory (PC), "Stealth" (PC), Review the Literature
+re: Can such a virus be written... (PC) (Amiga)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    02 Aug 91 13:18:18 +0000
+>From:    ehviea!sun4dts.dts.ine.philips.nl!derek@phigate.philips.nl (derek)
+Subject: Re: viruses in the press
+
+paulcn@idsvax.ids.com (Paul Coen) writes:
+
+>Well, all I can say is that in a document that I wrote for the Drew
+>University Academic Computer Center (and I think that the department
+>that hands out freshman computers included it in their fresman
+>handbook) started out by saying that you should forget what you've
+>heard about viruses from the press, since too much of it is
+>inaccurate.
+
+[Lots of stuff deleted]
+
+>Paul Coen -- pcoen@drew.edu, pcoen@drew.bitnet, paulcn@idsvax.ids.com
+>Disclaimer: These ARE my opinions -- I've been taking the summer off.
+
+I NEVER buy newspapers - they are not worth the trees felled to produce
+them.
+
+2. I take TV news with a pinch of salt - they only show things that have
+   interesting pictures with them - most of the other stuff they ignore.
+
+3. Radio news is useful for the political headlines. Especially when you
+   understand several languages, and get the news from different sources.
+
+4. Even technical papers can be wrong - but if they wrote in English,
+   instead of some academicese (or whatever) we might even be able to
+   spot that! :-)
+
+Greetings from the Ancient Duchy of Brabant.
+
+Best Regards, Derek Carr
+DEREK@DTS.INE.PHILIPS.NL           Philips IE TQV-5 Eindhoven, The Netherlands
+Standard Disclaimers apply.
+
+
+------------------------------
+
+Date:    Fri, 02 Aug 91 10:18:31 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Self-scanning executables (PC)
+
+>From:    a_rubin@dsg4.dse.beckman.com
+
+>  If I disassembled/debuged some of the CRC checkers, _I_
+>probably could write a virus which checked for (some variants) of
+>those checkers and modified its infections accordingly; if I didn't
+>have source for the CRC generator, I might find it a difficult
+>mathematical problem to solve for the values to place in memory.
+
+The "stealth" viruses do not bother changing the CRC, when resident, they
+just always return the correct program so that it matches the CRC wherever
+it is stored & however it is calculated.
+
+This brings to light the inherant problem with self-checking CRC (even those
+that use DES or better) programs, they are self checking.
+
+Understanding this requires consideration of the order in which an infected
+program with a "self-checker" and infected by a "stealth" virus will execute.
+
+1) User requests program to be run
+2) CLI (typically COMMAND.COM) loads program into memory & transfers execution
+3) The virus, takes control on load since it has subverted the initial code
+   (may be only 3-5 bytes).
+4) The virus goes resident in memory, removes itself from low memory, and
+   restores original program.
+5) Virus code transfers control to original program
+6) Self checker executes - if it checks self in memory, it finds original
+   code - if checks self on disk, virus intercepts call & strips virus off
+   code first, presenting original code.
+7) Self check passes test
+
+Now consider the case where the checksum routine is resident in memory.
+
+1) User requests program to be run
+2) CLI (typically COMMAND.COM) loads program into memory & transfers execution
+3) Resident checker intercepts execution transfer and performs checksum on
+   code loaded into memory
+4) Virus is detected before going resident and execution is disallowed.
+
+Since the virus is detected before execution, "stealth" will not help it.
+
+Now there are some caveats to the above scenario to prevent "end-runs" by
+virus code, primarily in that the checker becomes resident no later than as
+part of CONFIG.SYS (better if from BIOS, but as first line in CONFIG.SYS
+is probably Good Enough. Risk increases dramatically if residence is from
+AUTOEXEC.BAT or later since viruses have been known to go straight for
+COMMAND.COM & if integrity management code is added later, "stealth" will
+have a means to go resident before the anti-virus program loads.
+
+Currently, there seem to be three schools of thought about where the checksum
+should be stored. McAfee Associates /AV switch adds about ten bytes to the end
+of an executable program. Norton Anti-Virus adds a 77 byte file to the
+directory containing the executable file. Enigma-Logic's Virus-Safe creates
+a special file in its directory that contains all checksum values.
+
+My personal preference is for the Enigma-Logic methodology since it does not
+rely on anything in the file being opened or the current directory. Self
+checking files may fail on any addition and extra clusters can add up fast.
+(These are the three products I am most familiar with - obviously there
+are others).
+
+However, ANY integrity checking is several orders of magnitude better than
+none.
+
+					Padgett
+
+------------------------------
+
+Date:    Fri, 02 Aug 91 07:48:06 -0700
+>From:    msb-ce@cup.portal.com
+Subject: Re: Philosophy, comments & Re: long and technical (PC)
+
+In a recent VIRUS-L posting davidsen@crdos1.crd.ge.COM (Wm E
+Davidsen Jr) asks:
+
+ >   Which braindead machines do that? I know about BIOS shadowing,
+ > but I don't think I've ever found one which didn't set write
+ > protect so memory maps would think it was ROM.
+
+It is not only the hardware which is providing ROM shadowing,
+but also Expanded Memory Manager programs such as QEMM and
+386max. While I sincerely hope that all such programs will set
+the memory type to read-only in the segment descriptor
+attributes, I have not done an exhaustive verification of this
+function.
+
+In reviews of memory managers it would be good for the
+reviewers to use a verification of protection of shadowed ROM
+as a pass/fail test for the packages.
+
+Fritz Schneider (msb-ce@cup.portal.com)
+
+------------------------------
+
+Date:    Fri, 02 Aug 91 09:38:00 -0500
+>From:    ROsman%ASS%SwRI05@D26VS046A.CCF.SwRI.EDU
+Subject: Is Dark Avenger Really here? (PC)
+
+Well, I have a bit of a weird one that I _suspect_ may be a false
+trip...
+
+McAfee VIRUSCAN Version 7.6V80 _sometimes_ indicates that it has found
+Dark Avenger in memory.  Doing a "DIR /W" seems to reliably clear that
+message from SCAN.  From what I under- stand about Dark Avenger this
+should not happen.  *I think* that once Dark Avenger goes resident, it
+stays.
+
+Given the fact that we have had a MAJOR infection of Dark Avenger on
+campus, we're all paranoid...
+
+Scanning the disks with the /a option (scan every file) finds nothing.
+
+Can y'all offer any suggestions?  I need to clear this one up.
+
+Oz (Rich Osman)                    INTERNET: Oz@SwRI.edu
+(512) 522-5050 (w)
+(512) 699-1302 (h, merciless machine)
+(512) 522-2572 (just the fax)
+
+------------------------------
+
+Date:    02 Aug 91 15:41:58 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Self-scanning executables (PC)
+
+I wrote:
+>  Well, this is of just as much use as a simple checksumming algorithm -
+
+Jeff Boyd wrote:
+>You either overlook or underestimate the value of it.
+
+No, I was commenting on the fact that the quality of the algorithm is
+not the important issue - simple checksumming or a complicated one-way
+hash function, it really does not matter - if the implementation does
+not catch stealth viruses it is not perfect.  Granted, it may detect
+the infection of any non-stealth virus, but unless it is (for example)
+able to catch Frodo, the actual algorithm used does not matter to me.
+
+- -frisk
+
+------------------------------
+
+Date:    02 Aug 91 18:36:03 +0000
+>From:    jesse@gumby.Altos.COM (Jesse Chisholm AAC-RjesseD)
+Subject: Floppy Door Close TSR? (PC)
+
+Folks:
+	Is there a TSR program available that scans a floppy whenever
+the floppy door closes?  Is it even possible to write one?  Are any of
+you all working on one (McAfee, Padgett, ...)?
+
+Jesse Chisholm          | Disclaimer: My opinions are rarely understood, let
+jesse@altos86.altos.com | tel: 1-408-432-6200 | alone held, by this company.
+jesse@gumby.altos.com   | fax: 1-408-435-8517 |-----------------------------
+======== This company has officially disavowed all knowledge of my opinions.
+- --
+| "Ma gavte la nata." translation: "Be so kind as to remove the cork."
+|  -- obscure Italian insult, observing that one is so full of themselves
+|     that the cause must be a cork placed in the anal orifice.
+
+------------------------------
+
+Date:    01 Aug 91 13:15:57 +0000
+>From:    davidsen@crdos1.crd.ge.COM (Wm E Davidsen Jr)
+Subject: Re: Philosophy, comments & Re: longer and technicaller
+
+PHYS169@csc.canterbury.ac.nz (Mark Aitchison, U of Canty; Physics) writes:
+
+| (5) I've run a checking program on a Sparc emulation of an AT, and noticed the
+| difference (I didn't even write the program with that system in mind) - any
+| virtual machine running under a 386 would be even easier to detect, given the
+| speed considerations - i.e. a 386 cannot emulate a 386 of the same clock speed
+| without making the extra time in hardware traps, etc obvious).
+
+  Virtual 386 is a hardware mode. I assure you that if it slowed the
+machine notably millions of people would not use the products which
+employ it, such as QEMM, 386MAX, and EMM386.
+- --
+bill davidsen	(davidsen@crdos1.crd.GE.COM -or- uunet!crdgw1!crdos1!davidsen)
+  GE Corp R&D Center, Information Systems Operation, tech support group
+  Moderator comp.binaries.ibm.pc and 386-users digest.
+
+------------------------------
+
+Date:    Fri, 02 Aug 91 15:03:46 +0000
+>From:    motcid!sapphire!dusek@uunet.uu.net (James P. Dusek)
+Subject: Re: Virus for Sale
+
+	Thats it, we could con a newsnetwork into printing an artical
+on how the author of a virus successfully sued the author of a virus
+checker because the checker used part of the virus's code to do the
+checking. Than we could nail these maggots as they try to sue! What
+ever happened to the SCA, did they get busted or something?
+
+							J.Dusek
+
+------------------------------
+
+Date:    Sat, 03 Aug 91 03:30:25 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: request information (PC)
+
+CESAR@ITESOCCI.GDL.ITESO.MX (CESAR) writes:
+>Hi, I'm write from ITESO University, in last days I wrote to
+>Mcafee@netcom.com, for solicit information abot how we can have the
+>last versions of SCAN, CLEAN, etc. Which is the cost of license?.
+>
+>But Mcafee do not answer me, How we can do it?
+
+Hello Mr. White,
+
+Attempts to contact you by the InterNet have resulted in the mail
+being bounced back by the mailer-daemon.  If you can contact us
+directly either by telephone +1 (408) 988-3832 or by fax +1 (408)
+970-9727, someone from the sales department will send you site license
+information.
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+
+- --
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com  (business)
+4423 Cheeney Street	 | FAX   (408) 970-9727	|
+Santa Clara, California	 | BBS   (408) 988-4004	| aryehg@darkside.com(personal)
+95054-0253  USA		 | v.32  (408) 988-5190	|
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | CompuServe:  76702,1714
+
+------------------------------
+
+Date:    Sat, 03 Aug 91 15:54:35 -0400
+>From:    bradshaw%cosy.uoguelph.ca@vm.uoguelph.ca
+Subject: Scan and Clean problems (PC)
+
+        With regards to those of you who have been writing to say that
+        McAfee's Scan v7.6, or 7.7, or 7.XX, don't correctly identify a
+        virus, likewise that the v 7.XX of Clean doesn't remove it
+
+        - Why don't you guys get v8.0 of it?  Maybe it works.  This isn't
+        a plug for McAfee, this is just what seems to me to be a very
+        logical thing to do.  If you are using an out-dated virus
+        detector/remover then you should not be surprised when it doesn't
+        do what you want it to do.
+
+                          Paul Bradshaw
+                          University of Guelph
+                          Computer Science
+
+------------------------------
+
+Date:    04 Aug 91 11:39:57 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Rip-off software package (PC)
+
+nl84479@eamsvm2.vnet.ibm.com (Jan R. Terpstra) writes:
+>Recently it was brought to my attention that a so called ShareWare
+>package of anti-virus utitlities is offered by Mauro Bollini of Italy
+>at US $45.  After checking a recent copy of the anti-virus package, it
+>turns out that it consists of bootlegged copies of several program's
+>from Frisk, Alan Solomon, McAfee and my own virscan.dat file.
+
+One good thing about this - we cannot sue him for operating the virus
+BBS, but it would be VERY easy to bring a lawsuit against him on the
+basis of copyright law....
+
+- -frisk
+
+------------------------------
+
+Date:    Fri, 02 Aug 91 16:34:11 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: re: High memory (PC), "Stealth" (PC), Review the Literature
+
+>From:    Rich <HOLLAND@KSUVM.BITNET>
+>>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+>>>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+
+First a comment: while the practise of crediting people with their words
+is good, this is the second time recently that I have been credited with
+someone else's words. Bill's comments and sources are well taken but they
+are his not mine, Mr. Walker was responding to an earlier posting.
+
+>I recently saw a program (and the .ASM source) which goes TSR and
+>waits for the user to execute LOGIN (.com, .exe, or .bat).  It then
+>records everything in a hidden file named TESTING<alt-255>.TMP.
+
+To apply the proper term, this is a SPOOF and such have been known in the
+mainframe world for years.
+
+>Now, taking this into account, couldn't a virus be written which would
+>place itself in that memory you were talking about, and remain undetectable
+>to the methods you were describing above?  It could scan for HIMEM.SYS,
+>QEMM, etc, and if it finds one being executed, move itself to conventional
+>memory (where it COULD be detected, but won't, since you've already scanned
+>it with the pre-D thing) and then load the memory driver?
+
+First, a TSR must take memory from somewhere and so far this has been
+fairly redily detectable (usually just with CHKDSK). Second, it must
+take control of some normally executed code. This is also detectable by
+a reasonably well-engineered integrity management routine.
+
+>One other point:  I got to thinking earlier today (uh oh!).... Since
+>you can re-write the BIOS table to intercept interrupts (e.g. int 09h
+>is intercepted by SideKick, to check for the ctrl-alt key combo),
+>this indicates that the BIOS vector is in RAM.  This is copied from
+>ROM on bootup, right?  Can't you write a driver (.sys) file to be
+>executed in config.sys which would go TSR and then warn you everytime
+>a program re-directed an interrupt?
+
+Good thinking except that DOS itself "fixes" a number of interrupts and
+adds several "features" that MicroSoft does not care to document that make
+use of conventional (i.e. documented) interrupts unnecessary. Your question
+about the interrupt table vectors indicates that you should begin with
+a review of DOS structures. (e.g. Ray Duncan's "Advanced MS-DOS" -plug)
+
+>file, nor have I seen any information on how to do it.  Can someone
+>point me in the right direction so that I can learn how to write one?
+>If no one else likes my idea, *I* at least would like it on MY
+>system....
+
+See above.
+
+- ------------------------------------------------------------
+>From:    Kevin Dean <76336.3114@CompuServe.COM>
+>Subject: Re: Self-scanning executables (PC)
+
+>I have some ideas on how to detect stealth viruses.  I'll test them out
+>as soon as I can and post the results here.
+
+Usually CHKDSK is sufficient. Some time ago I wrote a basic paper on the
+subject (6 Bytes). Though deliberately somewhat simplistic, it should give
+some ideas on how to detect "stealth" and what is necessary for "stealth"
+to operate. I believe Ken has it in the Virus-L archives on CERT.
+
+- ----------------------------------------------------------------
+>From:    Jeff Boyd <BOYDJ@QUCDN.QueensU.CA>
+Subject: Re: Self-scanning executables (PC)
+
+>The virus must intercept the calls to read the disk image, notice that
+>the file is already infected, and replace the interrupt return values
+>with "good-looking" data. Will 4096 really do this?
+
+Yes
+
+>If it can, I don't understand how anyone has ever discovered it.
+
+First, many PCs slow waaaaay down when infected, others crash a lot. Secondly,
+over 4k of RAM space disappears from CHKDSK and infected files report
+problems. The problem is that to hide, the virus has to lie to DOS and this
+is a Bad Thing. Many viruses are detectable by looking for what isn't there.
+
+						Padgett
+
+Disclosure: for financial reasons (why else?), a company I have an interest
+  in is an agent for several commercial computer security products, however
+  the revenue generated thusfar is insufficient to change my opinions. When
+  it is, I'll retire to restoring my Pontiacs.
+
+------------------------------
+
+Date:    15 Jul 91 03:12:00 +0000
+>From:    brett.simcock@f859.n681.z3.fido.oz.au (Brett Simcock)
+Subject: re: Can such a virus be written... (PC) (Amiga)
+
+Original to: acdfinn
+AA > heard that
+AA > Kickstart 2.0 has most AmigaDos commands in ROM (the ROMs
+AA > are shipping
+AA > now) but I'm not sure.  That would be great from the virus
+AA > perspective...
+
+As far as I know all the AmigaDOS commands are in ROM.
+
+- ---
+ * Origin: S.A. CENTRAL BBS, Serving South Australia Better! (3:681/859)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 136]
+******************************************

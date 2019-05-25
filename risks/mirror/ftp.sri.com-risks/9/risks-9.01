@@ -1,0 +1,456 @@
+RISKS-LIST: RISKS-FORUM Digest  Thursday 6 July 1989   Volume 9 : Issue 1
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Elevator inquest update (Walter Roberson)
+  UK Defense software standard (Sean Matthews)
+  Exxon loses Valdez data (Steve Smaha -- and Hugh Miller)
+  "Managing risk in large complex systems" (Bob Allison)
+  A "model" software engineering methodology? (Rich D'Ippolito)
+  CERT Offline (Edward DeHart)
+  Re: Audi 5000 acceleration (Dave Platt, Mark Seecof, Michael McClary)
+
+[** Net addresses are dropping like flies lately.  CSL cutover may help.  **]
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+* RISKS MOVES SOON TO csl.sri.com.  FTPable ARCHIVES WILL REMAIN ON KL.sri.com.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+FOR VOL i ISSUE j, ftp KL.sri.com[CR]login anonymous (ANY NONNULL PASSWORD)[CR]
+get stripe:<risks>risks-i.j[CR]  (OR TRY cd stripe:<risks>[CR]get risks-i.j[CR]
+  Vol summaries (i.j)=(1.46),(2.57),(3.92),(4.97),(5.85),(6.95),(7.99),(8.88).
+
+----------------------------------------------------------------------
+
+Date:       Fri, 30 Jun 89 11:07:29 EST
+From: Walter_Roberson@CARLETON.CA
+Subject:    Elevator inquest update
+
+Another two days of the testimony into the April 1st elevator fatality
+in Ottawa has revealed some interesting/ scary facts.
+  It seems that the elevator type in question had a known problem
+with potentially being able to move when only one of the two doors
+was closed. A repair which involved moving only *one* wire was known,
+and had been recommended by the manufacturer in 1978. The repair
+was not made until 4 days *after* the accident, 11 years later.
+In the meantime, the ownership of the building changed hands (in 1980),
+and the maintenance company changed (in 1988). The government inspectors
+never noticed that the change hadn't been made (there are only 2
+inspectors for the Ottawa area, which has 3000+ elevators), and the
+new repair company didn't notice it either. The owner of the company that
+checked the elevator just 1 hour before the death *was* aware of the
+change notice, but, as he put it:
+  "Are you telling me 10 years after a letter comes out... I should
+remember that?" [...]
+  "I would assume in 1980 [when the building was sold -- WDR] all those
+changes would be made, let alone 1988 [when he took over maintenance].
+I don't know of any way any elevator company could know about it all."
+
+The scary part came at the end of yesterday's article:
+
+  "The inquest was told no maintenance records were available for the
+  elevators, installed with building construction in 1973. Records are not
+  required by the ministry and are often removed by maintenance companies if
+  the contract expires in order to hinder the new contractors, Allan Maheral
+  said."
+
+         [The Ottawa Citizen, 28 June 1989, p. B1, and 29 June 1989, pp. A1-A2]
+
+  Walter Roberson <Walter_Roberson@Carleton.CA>
+
+------------------------------
+
+Date: Fri, 30 Jun 89 13:49:12 BST
+From: Sean Matthews <sean@aipna.edinburgh.ac.uk>
+Subject: UK Defense software standard
+
+I have just seen a copy of the UK department of defence draft standard
+for safety critical software  (00-55).
+
+Here are a few high (and low) points.
+
+1. There should be no dynamic memory allocation (This rules out explicit
+recursion - though a bounded stack is allowed).
+
+2. There should be no interupts except for a regular clock interupt.
+
+3. There should not be any distributed processing (i.e. only a single
+processor).
+
+4. There should not be any multiprocessing.
+
+5. NO ASSEMBLER.
+
+6. All code should be at least rigourously checked using mathematical
+methods.
+
+7. Any formally verified code should have the proof submitted as well, in
+machine readable form, so that an independent check can be performed.
+
+8. All code will be formally specified.
+
+9. There are very strict requirements for static analysis (no unreachable
+code, no unused variables, no unintialised variables etc.).
+
+10. No optimising compilers will be used.
+
+11. A language with a formally defined syntax and a well defined semantics,
+or a suitable subset thereof will be used.
+
+Comments.
+
+1. means that all storage can be statically allocated.  In fact somewhere it
+says that this should be the case.
+
+2-4 seem to leave no option but polling.  This is impractical, especially in
+embedded systems.  No one is going to build a fly by wire system with those
+sorts of restrictions. (maybe people should therefore not build fly by wire
+systems, but that is another matter that has been discussed at length here
+already).  it also ignores the fact that there are proof methods for dealing
+with distributed systems.
+
+5. This is interesting, I seem to remember reading somewhere that Nasa used
+to have the opposite rule: no high level languages, since they actually read
+the delivered binary to check that the software did what it was supposed to
+do.
+
+6-7.  All through the draft the phrase `mathematical methods' or `formal
+methods' is *invoked* in a general way without going into very much detail
+about what is involved.  I am not sure that the people who wrote the report
+were sure (Could someone from Praxis - which I believe consulted on drawing
+it up - enlarge on this?).
+
+8. this is an excellent thing, though it does not say what sort of language
+should be used.  Is a description in terms of a Turing machine suitable?
+After all that is a well understood formal system.
+
+10. Interestingly, there is no requirement that the compiler be formally
+verified, just that it should conform to international standards (though
+strictly), and not have any gross hacks (i.e. optimisation) installed.
+There is also no demand that the target processor hardware be verified
+(though such a device exists here already: the Royal Signals Research
+Establishment's Viper processor).
+
+11. seems to be a dig at Ada and the no subsets rule.  It also rules out C.
+
+Conclusions.
+
+I find the idea of the wholesale mayhem and killing merchants being forced
+to try so much harder to ensure that their products maim and kill only the
+people they are supposed to maim and kill, rather amusing.
+
+The standard seems to be naive in its expectations of what can be achieved
+at the moment with formal methods (That is apparently the general opinion
+around here, and there is a *lot* of active research in program verification
+in Edinburgh), and impossibly restrictive.
+
+An interesting move in the right direction but too fast and too soon.  And
+they might blow the idea of Formal verification by tring to force it too
+soon.  And I would very much like to see these ideas trickle down into the
+civil sector.
+
+I might follow this up with a larger (and more coherent) description if
+there is interest (this was typed from memory after seeing it yesterday)
+there is quite a bit more in it.
+
+Sean Matthews                   
+Dept. of Artificial Intelligence JANET: sean@uk.ac.ed.aipna
+University of Edinburgh           ARPA: sean%uk.ac.ed.aipna@nsfnet-relay.ac.uk
+80 South Bridge                   UUCP: ...!mcvax!ukc!aipna!sean
+Edinburgh, EH1 1HN, Scotland     
+
+------------------------------
+
+Date:  Wed, 5 Jul 89 11:58 EDT
+From: Steve Smaha <Smaha@DOCKMASTER.NCSC.MIL>
+Subject:  Exxon loses Valdez data
+
+This appeared in the 2 Jul 89 Austin (TX) "American-Statesman".
+
+"Exxon accidentally destroys data files on Alaska oil spill,"
+          by Roberto Suro, New York Times Service
+
+HOUSTON - A computer operator at Exxon headwuarters in Houston says he
+inadvertently destroyed computer copies of thousands of documents with
+potentially important information on the Alaskan oil spill.
+  A federal court had ordered Exxon to preserve the computer records along
+with all other material concerning the grounding of the Exxon Valdez in
+Prince William Sound on March 24 and the subsequent cleanup effort.
+  Les Rogers, a spokesman for the Exxon Company USA, confirmed the
+destruction of the computer records but said the oil company's lawyers
+believed other copies exist.
+  "Very early in the spill, even before the court order, Exxon took
+the initiative to instruct all its employees to save all documents
+relating to the event because of the anticipated litigation," Rogers
+said.  "We assume these instructions have been followed."
+  The computer technician, Kenneth Davis, said that it would be difficult
+and perhaps impossible to determine what documents were on destroyed
+conmputer files.
+  Exxon faces about 150 lawsuits as a result of the spill, which dumped 
+11 million gallons of crude oil into Prince William Sound, and it appears
+certain that the loss of these documents will be the subject of court
+arguments.
+  Stephen Sussman, a Houston lawyer involved in a suit against Exxon on
+behalf of Alaska fishermen, Native Americans, and others, said, "The
+destruction of these records is potentially significant to our case in
+that we will be arguing that Exxon has been negligent throughout this
+disaster and now perhaps it was negligent even in the handling of its
+own documents."
+  Davis, 33, was dismissed June 8, the day after the destruction of the
+records was discovered.
+  In several interviews, and in written statements to the Texas Employment
+Commission, Davis alleged that his superiors had been negligent in
+safeguarding the computer records and that his actions resulted from
+their failures.
+  The destroyed material included all internal communications and
+word-processing documents from both the Exxon Shipping Co., which owned
+the tanker, and the executive offices of Exxon USA.
+  Davis said that since the tapes were the only complete copy of what
+passed through those computer systems, it might be impossible to
+determine what was lost.
+
+   [The full NYT text was sent in by Hugh Miller <MILLER@vm.epas.utoronto.ca>,
+   who prefaced the text with this reference to `1984' by George Orwell:
+
+     ``I was thinking just this morning about how Winston Smith's job in
+       historical engineering would have been a lot easier if everything had
+       been kept on magnetic media, when this item appeared in today's NYT.''
+
+   To conclude, he made some comments about the difficulties of prosecuting
+   after the documents have been destroyed (with reference to Ollie and Fawn).
+   ``Want to bet Exxon doesn't use a PROFS system?''
+
+------------------------------
+
+Date: Wed Jul  5 16:40:22 1989
+From: bobal@microsoft.UUCP
+Subject: IEEE Spectrum June issue: "Managing risk in large complex systems"
+
+The June 1989 issue of IEEE Spectrum contains a series of articles discussing
+risk management techniques and failures, paying particular attention to the
+areas of aging aircraft ala the Aloha Airlanes 737 incident, the Hinsdale 
+fire which shut down phone service near Chicago, the Savannah river nuclear 
+reactors, the space shuttle, and the release of lethal chemicals in Bhopal.
+
+Perhaps because of my own particular biases, the space shuttle article was
+particularly interesting where it describes the risk of a shuttle accident also
+dooming the space station (due to the destruction of single copies of critical
+space station components).
+
+Bob Allison
+
+------------------------------
+
+Date: Mon, 03 Jul 89 14:46:23 EDT
+From: rsd@SEI.CMU.EDU
+Subject: A "model" software engineering methodology? (RISKS-8.86)
+
+In RISKS 8.86, Jon Jacky quotes Stan Shebs:
+
+  We supposedly had a "model" software engineering methodology; what I
+  remember most clearly is that half the work was done on one flavor of IBM
+  OS, and the other half done on a different flavor, and file transfer
+  between the two was tricky and time-consuming.
+
+The coupled clauses are unrelated, a compositional practice Mr. Shebs is
+apparently quite fond of.  Let's concentrate on Mr. Sheb's text to see what
+his understanding of software development is:
+
+
+  The day-to-day work was [...] writing the "Program Design" for an
+  already-written program (is that stupid or what), figuring out how to
+  compute the intersection of two polygons in space.  
+
+Without context, this is not evidence that the SE method was good or bad.
+Of course the program design should have been documented beforehand, but
+recognizing that it is necessary to have for testing and maintenance
+purposes is not stupid.  I have seen many systems where the software is very
+old (or inhereted) and must be re-documented to current standards.  What was
+the case here?
+
+
+  I suppose the greatest risk of failure derives from things that weren't
+  anticipated during testing, such as a Siberian snowdrift changing the
+  topography on a navigation map...
+
+[How does the snow get on the map?!]  One does not wait until testing to
+anticipate such contingencies.  Does Mr. Shebs think so?
+
+
+  (Regarding) statistics on software quality, the closest thing we had was
+  maybe a count of problem reports (hundreds, but each report ranged from
+  one-liners to one-monthers in terms of effort required).
+
+Sigh.  There is no mention here whether this applies to _delivered_ product
+or corrected production errors.  Is this his view of what constitutes
+quality?
+
+
+  Nothing classified, we had the odd situation that the *data* was [sic]
+  classified, but the *program* wasn't even rated "confidential"!
+
+Odd situation?  Apparently, Mr. Shebs had a single experience in the MCCR
+community.
+
+
+This article was posted to illuminate "the accuracy/quality of strategic
+weapons guidance systems", presumably by offering a coherent and reasoned
+exposition.  Instead, it presents jokes, innuendo, and unsubstantiated
+charges and conclusions in indefinite (and sloppy, such as the 1/2 inch
+diameter missile) language such as:
+
+  The difficulty of all this apparently didn't occur to anybody until after
+  the missile was working...
+
+  ...error accumulation over 2000 km is immense,... 
+
+  ...cute little cassette tapes...
+
+  The precision and formality of the software was very low, but it was
+  exhaustively tested over and over and over again.  
+
+
+Really, if Mr. Shebs's rambling demonstrates anything, it shows that the
+greatest risk is hiring inarticulate and confused programmers like himself
+who don't have the faintest idea what software engineering is.
+
+Mr. Shebs appears to come clean in only one statement:
+
+  The fragility of something like the cruise missile and its software is
+  something I've spent a lot of time wondering about, and don't really
+  have any idea.  
+
+Indeed.
+
+Rich D'Ippolito
+
+------------------------------
+
+Date: Wed, 5 Jul 89 14:19:09 EDT
+From: Edward DeHart <ecd@cert.sei.cmu.edu> [forwarded via many different paths]
+Subject: CERT Offline                        [Computer Emergency Response Team]
+
+The supply of cold water to our air-conditioners has been turned off due to a
+major break in the pipes.  The problem may not be corrected until the weekend.
+
+The lack of cold water is bad news for the computer room.  All of the systems
+are going to be turned off.
+
+For the next day or so, CERT will not be able to send or receive EMAIL via the
+Internet.
+
+We will be in the building if you need to contact us.  Our telephone number is
+412-268-7090.
+
+Please forward this information to others in your group.
+
+Thanks, Ed DeHart
+
+    [whhada yuh know; CERT needs a CERT!  The police dept's computers are 
+    down ...  Willis Ware]
+
+    [I suppose the famous detective, Air-Cool Pour-out, will investigate.  PGN]
+
+------------------------------
+
+Date: Fri, 30 Jun 89 10:40:37 PDT
+From: dplatt@coherent.com (Dave Platt)
+Subject: Re: Audi 5000 acceleration [RISKS-8.87]
+
+> The study, ``An Examination of Sudden Acceleration,'' explored ...
+>
+> However, there was evidence of minor surges of about three-tenths of the
+> Earth's gravity for 2 seconds caused by electronic faults in the idle
+> stabilizer systems of the Audi 5000 ... the surge could startle a driver
+> enough to accidentally push the accelerator instead of the brake, ...
+
+Minor??  .3G works out to roughly 10 feet/sec^2, or a zero-to-sixty
+acceleration time of about 9 seconds.  This may not be considered "full power"
+or "major" acceleration for a sports-car, but my old Volvo has difficulty
+reaching highway speed (55) in 9 seconds even if I floor the accelerator.
+
+A .3G surge for 2 seconds would accelerate a car from a standstill to somewhere
+in the neighborhood of 20 feet/second, and would carry the car about 10 feet
+forwards.  Startling?  I should say so... especially to drivers who might have
+only recently switched to the Audi from an older, lower-powered car.
+
+Even if this fault in the idle stabilizer cannot invoke "full"
+acceleration by itself, it sounds substantially dangerous in and of
+itself.  Coupled with poor pedal/linkage layout and design, it
+apparently adds up to a real hazard.
+
+Dave Platt    FIDONET:  Dave Platt on 1:204/444        VOICE: (415) 493-8805
+  USNAIL: Coherent Thought Inc.  3350 West Bayshore #205  Palo Alto CA 94303
+
+------------------------------
+
+Date: Fri, 30 Jun 89 11:39:11 PDT
+From: lcc.marks@SEAS.UCLA.EDU
+Subject: misleading Audi surge report
+
+Three-tenths of the Earth's gravity is not "minor."  That's about
+three meters per second squared.  At the end of two seconds the car
+would have travelled about six meters or twenty feet.  3m/sec^2 on
+a 1500 Kg automobile for just a moment will set it moving fast
+enough to squish or bash-in any likely obstacle (inertia, you know).
+
+I'll bet drivers are startled!  They aren't likely to accellerate
+that fast when parking...  Sixty miles per hour is about a hundred
+kilometers per hour.  That's about twenty-eight meters per second.
+At 3m/sec^2 it takes only nine or ten seconds to reach 28m/sec; the
+owners of Audi 5000's are probably pleased with the "zero to sixty
+in six seconds" performance of their cars; that's less than 5m/sec^2.
+(Many cars can't do 0-60 in less than 9 seconds flat out.)  This
+means the "surges... caused by electronic faults" are equivalent to
+accellerating away from a stop light in traffic--and only a third
+less than flooring the gas pedal to get onto the Pasadena Freeway
+in Highland Park.  Imagine if you were easing your car into your
+garage at an idle and it suddenly accellerated like you were taking
+off from a stop sign.
+
+(Before you all write to criticize the math, I'm aware that I've neglected air
+resistance and gear shifting, but I don't think this invalidates the
+discussion.)
+
+If the report does minimize the fault in the Audi's electronic controls to lay
+the blame on the driver, then we must ask whether the authors wanted to shift
+concern away from Audi where it seems to belong.  (No, I've never owned or even
+driven an Audi.)
+
+ Mark Seecof, Locus Computing Corp., Los Angeles (213-337-5218)
+ My opinions only, of course...
+
+------------------------------
+
+Date: 6 Jul 89 18:06:27 GMT
+From: michael@xanadu.COM (Michael McClary)
+Subject: Audi surges (Re: RISKS DIGEST 8.87)
+
+>However, there was evidence of minor surges of about three-tenths of the
+>Earth's gravity for 2 seconds caused by electronic faults in the idle
+>stabilizer systems of the Audi 5000
+
+Is this a missprint?  I find the characterization of a two-second, 3/10 g surge
+as "minor" to be ludicrous.
+
+This is especially true if it is the result of a malfunction in an idle speed
+control system, implying that it would occur when the vehicle was stopped.  At
+a busy intersection, for instance, with pedestrian cross-traffic or another
+stopped car just a foot or two ahead.
+
+After one second, a 3/10g surge would have moved the vehicle almost five feet
+forward, and have it traveling over 6 1/2 MPH.  By the end of the two second
+surge, if nothing is done, the car would be doing 13 MPH and have gone nearly
+twenty feet.
+
+No hypothetical "pedal misapplication" is necessary to make such a vehicle
+hazardous, and while zero-to-sixty in under ten seconds may not be full
+throttle for an Audi, it's close enough for me.
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.1
+************************

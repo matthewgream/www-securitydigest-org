@@ -1,0 +1,643 @@
+VIRUS-L Digest   Tuesday, 25 May 1993    Volume 6 : Issue 84
+
+Today's Topics:
+
+The Anti-Viral Software of MS-DOS 6 (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.org or upon request.) Please sign submissions with your
+real name.  Send contributions to VIRUS-L@LEHIGH.EDU.  Information on
+accessing anti-virus, documentation, and back-issue archives is
+distributed periodically on the list.  A FAQ (Frequently Asked
+Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@Agarne.IMS.DISA.MIL>.
+
+   Ken van Wyk
+
+------------------------------------------------------------
+
+Date:    Tue, 25 May 93 12:31:12 -0400
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: The Anti-Viral Software of MS-DOS 6 (PC)
+
+  I do not often write evaluations of AV products.  The reason I have chosen
+to do so in the case of the AV software of MS-DOS 6 is mainly that, being
+included with DOS, its importance, potential widespread use, and potential for
+being specifically targetted by virus writers far exceed those of ordinary AV
+software.
+  I'll also admit that my review is a sort of reaction to the superficial
+evaluations of AV software which I've read in places like PC Magazine, and I
+thought this would be a good chance to point out the things they miss.  (I'm
+referring, of course, to the *type* of things missed, such as security holes,
+and not to the number of details which are missed.)
+
+  The evaluation is rather long, and I thank Ken for agreeing to publish it in
+full despite its length.  There's nothing particularly revolutionary in the
+first half (although I suspect that even those who are familiar with the
+product may learn a few things that they didn't know).  In any case, those who
+don't have the patience to read it all are strongly advised to skip to the more
+interesting sections in the second half, particularly that on Security Holes.
+(The section on Bugs and the Conclusions are also important, and if you're
+looking for some amusement, try the section Peculiarities in the Documentation.
+)
+
+                                             Y. Radai
+
+[Moderator's note: As Yisrael points out, I don't normally accept
+such large postings; I prefer to post abstracts and to put the full
+text on the archive sites.  However, given the potential widespread
+interest in this topic at this time, I felt that it was worth posting
+in full.  Thanks to Yisrael for his continuing efforts!]
+
+ ------------------------------------------------------------------------------
+
+                       The Anti-Viral Software of MS-DOS 6
+                                   Y. Radai
+                       Hebrew Univ. of Jerusalem, Israel
+                          E-mail: RADAI@VMS.HUJI.AC.IL
+
+  Microsoft recently released its long-awaited Version 6 of MS-DOS, and for the
+first time DOS comes with Anti-Viral software.  The very fact that such soft-
+ware is supplied with DOS makes it likely that it will become one of the most
+widely used AV packages in the world and the de facto standard, regardless of
+its quality.  And precisely for this reason, it will be specifically targetted
+by virus writers.  If there are any weaknesses whatsoever in the software, they
+will be ruthlessly exploited by these people.  Partly for this reason, and
+partly because many reviewers of AV products seem to be quite unaware of weak-
+nesses due to security holes, much greater emphasis will be placed on such
+loopholes in this evaluation than is customary in most AV product evaluations.
+
+  Microsoft's Anti-Virus software for MS-DOS (this review will not cover Anti-
+Virus for Windows, even though it is included in the software and manual for
+MS-DOS) consists of two programs, MSAV and VSafe.  Anyone familiar with Central
+Point's AV programs, CPAV and VSafe, will immediately see the resemblance, and
+this resemblance is by no means coincidental.  (In fact, this is not the se-
+cond, but the third incarnation of what is essentially the same software, the
+original being Turbo Anti-Virus of Carmel Software Engineering, Israel.)
+Actually, Microsoft's AV software lacks several important features of Central
+Point's, such as the BootSafe program, and MSAV is not quite CPAV, but basi-
+cally we are dealing with the same software, and except where otherwise noted,
+almost everything written below about Microsoft's software applies equally well
+to Central Point's.
+  Together the two programs perform the most common AV functions: (1) scanning
+for known viruses, (2) removal of known viruses, (3) integrity checking, and
+(4) generic monitoring of program execution for suspicious activity.
+  VSafe is a resident program, while MSAV is not; thus function (4) can be
+performed only by VSafe.  On the other hand, only MSAV performs function (2).
+The other two functions are performed by both programs.  The main difference is
+that MSAV performs them on many files at a time, but only when specifically
+requested, whereas after VSafe is loaded, it performs them automatically on
+each program which is about to be executed.
+
+MSAV
+====
+  As stated above, MSAV is a non-resident program which scans for known viruses
+and disinfects infected files if desired.  Optionally, it also creates and
+verifies checksums (both options being on by default).  MSAV can be activated
+either interactively (via a menu) or in batch mode (via command-line parame-
+ters).  If it is activated without parameters, the interactive interface is
+used, although this can be suppressed, if desired, by means of the parameter
+/P.  Moreover, in interactive mode MSAV can scan only entire drives (this is in
+contrast to CPAV, with its graphic directory tree).  However, one can limit the
+scan to a desired directory or file by specifying it as a parameter of MSAV:
+                   MSAV [drive:][path]filename [options]
+Note: Although this is not mentioned explicitly, wildcard notation within the
+filename is *not* recognized.  (This fact is connected with a serious bug which
+will be described below.)
+  When used interactively, MSAV displays a simple and pleasant-looking menu
+containing five choices: Detect, Detect & Clean, Select new drive, Options, and
+Exit.  There are 9 options which can be enabled or disabled, of which the most
+important are: Create New Checksums, Verify Integrity, Anti-Stealth, and Check
+All Files.  If the user changes any of them (or if he even *enters* the main
+menu!), he will be asked, when he tries to exit MSAV, whether he wishes to save
+the new configuration.  If so, a 248-byte file named MSAV.INI will be created
+or modified accordingly.  (In addition to the nine interactive options, this
+file also includes Fast Detection, Auto Save, and Detection Only.  The last
+mentioned prevents the user from selecting the Detect & Clean option from the
+Options menu, but the other two seem to have no effect.)  Some of the options
+(e.g. Create New Checksums and Verify Integrity) refer to VSafe as well as to
+MSAV.
+
+  How good is MSAV'S scanner?  Naturally, scanning percentages have only
+recently begun to appear for MSAV, but it would seem natural to suppose that it
+would score at least as well as CPAV Ver. 1.4.  Curiously, MSAV (as shipped,
+without updates) scores lower than CPAV!  The May 1993 issue of the Virus
+Bulletin reports that whereas CPAV 1.4 detected 98.1% out of a certain rela-
+tively small suite, MSAV detects only 95.3% of the same suite.  Using a much
+larger (2,015-virus) suite, the VSUM "certification" of April 28, 1993 shows
+that CPAV 1.4 detected 59.4% and MSAV only 53.1% (9th and 10th places in a
+field of 10, in which the leader detected 93.2%).
+  Unfortunately, scanner comparisons such as this must be taken with a grain of
+salt, since if one developer has access to the test suite used in a given com-
+parison, his product will have an unfair advantage over the competition.  Also,
+some such comparisons do not use the latest version of the scan patterns in the
+case of all the scanners, creating another source of unfairness.  One should
+therefore never rely on a single comparison alone.  In another comparison
+(Virus Bulletin of January 1993), CPAV 1.4 detected 97.7% of its "In The Wild"
+suite (12-13th place out of 18 scanners) and 90.0% of its "Enlarged" suite
+(14th out of 18).  (These test suites comprised 128 and 783 viruses, resp.)  It
+is clear that MSAV would have scored even lower.
+  Similarly, preliminary results of the Virus Test Center in Hamburg show that
+MSAV detects only 61% of a suite of 2,300 viruses, compared to three other
+scanners which scored 99%, 98% and 90% (these figures are only approximate),
+and that detection is sometimes inconsistent, e.g. MSAV detects some, but not
+all, infections by V2P6 and Anthrax).
+  Not only are these results rather disappointing, but it should also be noted
+that unlike several other scanners, MSAV does not detect viruses in executable
+files which were subsequently compressed (e.g. by LZEXE or PKLite).
+
+  Speed:  Before starting its file scan, MSAV scans memory (except if asked to
+scan only a single file).  I found that this took 27 seconds on a 386SX com-
+puter.  (Another scanner which I use requires only 7 seconds for this, yet
+seems to be no less reliable.)  In my opinion this is unacceptably slow.  After
+the memory scan finished, I found that it took an additional 18.8 minutes to
+scan 40 Mb of files (with Create New Checksums and Verify Integrity both dis-
+abled).  This also seems a bit slow.  I'm quite sure that the great majority of
+users who choose to insert the line MSAV /P in their AUTOEXEC.BAT file (as sug-
+gested on p. 69 of the Upgrade manual) will soon remove it.
+
+  In general, it's quite important which setting of each option has been selec-
+ted by the developers of any product as the default, since that is the setting
+which most (unsophisticated) users will continue to use.  The Create New Check-
+sums and Verify Integrity options are on by default, a reasonable decision.
+However, the reasoning behind the defaults Anti-Stealth = Off and Check All
+Files = On is quite beyond my comprehension.
+  According to the documentation, the Anti-Stealth option causes MSAV to use
+low-level techniques to detect changes to files when integrity verification is
+performed.  Since presence of an unknown stealth virus in memory when integrity
+checking is performed could distort the results, it seems essential to enable
+this option when booting is performed from the hard disk, as it usually is.
+Yet by default, this option is off.  According to the on-line help, this choice
+of default is to avoid "a small performance penalty".  But when I tested it
+(with the Verify Integrity option enabled), I found that turning Anti-Stealth
+on actually *reduced* the file scanning time by 20 to 33%!  Perhaps there
+exists some configuration for which there is some performance penalty, but if
+so, I have been unable to find it.  Therefore, assuming that enabling this
+option actually produces the effect that it claims, it is difficult for me to
+understand why it should *ever* be disabled, let alone be disabled by default.
+  Turning now to the Check All Files option, turning it off means that only
+files with specific extensions (EXE, COM, and six others; the list is not
+customizable by the user) will be checked.  On a directory or drive with many
+non-executable files, this will save a great deal of time.  It is therefore a
+mystery to me why the default for this option is On.  It is true that there are
+a few viruses, such as Frodo, which infect certain types of non-executable
+files.  However, it wouldn't be hard to program the scanner to check such types
+of files in the special case of *those few viruses*, thus adding very little
+time to the scan.
+  To summarize, the default for the Anti-Stealth option is Off, at great risk,
+in order (supposedly) to save a little time, while the default for the Check
+All Files option is On, thus increasing the time by a large factor, even though
+this adds practically no security.
+
+  Unfortunately, if one wants to alter any of the options, this cannot be done
+from the command line.  What, then, is the user to do if he wants to temporari-
+ly alter one of the options when anything less than an entire drive is to be
+scanned (i.e. a directory or file, which, as mentioned above, can be requested
+*only* as a command-line parameter)?   One way is to activate MSAV interactive-
+ly, change options, save them, exit MSAV, then call MSAV with a path or file
+specification, and finally re-enter MSAV interactively and reset the options.
+Fortunately, there is a slightly less tedious way of doing this: The above
+mentioned file MSAV.INI is a normal ASCII file.  The user can therefore edit it
+before and after executing MSAV.  Although this is somewhat simpler, providing
+these options on the command line would be still more convenient.
+
+  When used in interactive mode, MSAV provides function keys for partially
+context-sensitive help in hypertext form (F1), and a list of viruses which MSAV
+recognizes (F9).
+  The current version of MSAV requires about 418K of memory in order to run at
+all, and about 27K more if you wish to use the Help option or see the list of
+recognized viruses.  The MSAV.EXE file is currently about 168K in size (after
+compression by LZEXE).
+
+  No scanner is worth very much if its list of scan patterns is not frequently
+updated to detect newly written viruses and new variants of old viruses.  Thus
+Microsoft had to arrange for some means of obtaining updates for MSAV and
+VSafe.  According to the manual, a user can obtain "signatures" of new viruses
+for MSAV by downloading them from a certain BBS, which turns out, unsurprising-
+ly, to be Central Point's.  However, this allows only *detection* of new vi-
+ruses, not their removal.  In order to be able to remove them, it is necessary
+to update the software.  The manual contains two coupons for obtaining Virus
+Protection Updates (one to be shipped at once, the other in 3-4 months) at a
+cost of $9.95 each for U.S. residents, much more for others.  Just how much
+*subsequent* updates will cost, or how often new versions will be made
+available, is not stated.  My guess is that the great majority of Microsoft's
+users will find it too inconvenient and/or too expensive to obtain updates
+regularly.  (To appreciate what failure to update implies, it has been estima-
+ted that close to ten companies released shrink-wrapped software infected with
+the Michelangelo virus simply because they hadn't bothered to update their AV
+software.)
+  As with any other known-virus scanner, even if updates are obtained regular-
+ly, there will necessarily be an interval of several months between the time
+that a new virus (or a sufficiently modified variant of an old one) appears and
+the time that users can obtain the update necessary to detect and remove it.
+That is one reason why *generic* detection is so important in an AV package.
+The most common generic techniques are integrity checking, resident monitoring,
+and heuristic scanning.  Microsoft supplies software for the first two mea-
+sures, and it is to these that we now turn.
+
+VSAFE
+=====
+  VSafe is a resident program which checks for several types of suspicious
+activities:
+1. Warns of attempts to low-level format the hard disk
+2. Warns of attempts to stay resident (by standard DOS methods)
+3. Warns of attempts to write to the hard disk
+4. Checks executable files for known viruses when such a file is opened
+   (by DOS) and prevents execution if found
+5. Checks diskettes for known boot-sector viruses whenever a diskette is
+   accessed, and warns the user
+6. Warns of attempts to write to the hard-disk boot sector or MBR
+7. Warns of attempts to write to a diskette's boot sector
+8. Warns of attempts to modify executable files.
+
+By default, (1), (4), (5) and (6) are on; the other options are off.
+  Regardless of the settings of the above 8 options, the program also scans
+each program which is about to be executed for known viruses (although this is
+performed in a faster and less sophisticated manner than in MSAV; in particu-
+lar, it does not use any anti-stealth techniques), scans the boot sector of the
+diskette in drive A: when Ctrl-Alt-Del is pressed, checks the hard-disk boot
+sector and the Master Boot Record when VSafe is loaded, and (optionally) per-
+forms integrity checking.
+  When VSafe finds reason to sound an alarm, it usually gives the user a choice
+between Continue, Stop, or Boot.
+  Ordinarily, VSafe will be invoked from the AUTOEXEC.BAT file.  It is customi-
+zable, i.e. the command may contain parameters to indicate changes from the
+above 8 defaults and/or to indicate additional choices such as disabling check-
+sum creation.  For example, if one wanted to add options (2) and (8) to the
+defaults, to turn option (6) off, and to disable checksum creation, he would
+write
+                            VSAFE /2+ /8+ /6- /D
+After VSafe goes resident, its menu can be called up at any time by pressing
+Alt-V.  (The hot key can be changed to any other Ctrl or Alt combination.)  Any
+of the above 8 options can be toggled on or off at that time, making this one
+of the most convenient and flexible monitoring programs available.  However, I
+find it most unfortunate that this toggling is not available for checksum
+creation and integrity checking also.  If the user wishes to unload the program
+at any time, he either presses Alt-U when the menu is up or types VSAFE /U at
+the command line.
+  It should be noted that if MSAV is activated while VSafe is resident, MSAV
+turns off the eight VSafe options (in order to prevent double scanning).  When
+MSAV finishes, it restores the original options.  (Actually, it does not
+*always* restore them; see the section Bugs below.)
+
+  In order to test the generic features of VSafe without "interference" from
+its known-virus scanner, it would ordinarily be necessary to restrict oneself
+to new viruses for which scan strings have not yet been included.  I took a
+different approach.  Many of the test viruses which I used were known, but I
+simulated unknown viruses by first zeroing out all the scan strings inside of
+VSAFE.COM.  Option 2 turned out to be quite successful; it was able to detect
+all attempts to go resident by the viruses at my disposal (even though the
+mechanism used to detect this seems to be interrupt interception rather than
+actual memory residence).  Option 8, on the other hand, performed rather
+poorly; there were several situations in which it failed to note that an
+executable had been modified.  In particular, when I deliberately allowed the
+Frodo virus (which MSAV calls the "100 Years" virus) to go resident, VSafe
+did not detect subsequent infections of files.  Due to time constraints, I was
+unable to test the other options thoroughly, but it is safe to assume that all
+options of VSafe (in fact, those of all other generic monitoring programs as
+well) can be bypassed by sufficiently clever viruses.
+
+  As in the case of MSAV, I question the choice of default options.  Why are
+Options 2, 7 and 8 off by default?  True, false alarms will be sounded by
+Option 2 if the user activates a legitimate resident program after VSafe has
+been loaded, by Option 7 if he tries to format a diskette, and by Option 8
+under some other conditions (e.g. whenever I tried to download an executable
+file to my PC by means of FTP, VSafe told me that "File xxxxxxx.xxx is about
+to be changed", even though there was no such file by that name before the
+download).  However, in my experience such false alarms were rare.  Moreover,
+if a program which is about to be executed is infected by a virus which is
+unknown to VSafe, there is no possibility of preventing it from going resident,
+of infecting another file, or of infecting a diskette's boot sector without
+Option 2, 8 (or 3), and 7, resp.  In my opinion, the best way to handle such a
+conflict is to reduce the frequency of the false alarms by making further
+checks wherever possible, and to set the defaults for such options to On.
+However, the program developers chose Off as the default settings of these
+options, apparently considering the risk of viral infection to be less than the
+annoyance of false alarms.
+
+  If expanded memory is available, VSafe will load itself there (7K of conven-
+tional memory plus 64K of EMS memory); otherwise in extended memory (23K of
+conventional plus 23K of XMS); otherwise entirely in conventional memory
+(44K).  There are parameters to prevent loading in EMS or XMS memory if the
+user so desires.
+  Usually the additional time required for VSafe to perform its checks is not
+noticed by the user.  I did notice a delay, however, whenever I pressed
+Ctrl-Alt-Del, in which case VSafe requires a few seconds to check the boot
+sector of the diskette in drive A:, but this is probably unavoidable.
+
+INTEGRITY CHECKING
+==================
+  Integrity checking means detection of modifications in files and boot re-
+cords.  In principle, implementation of such a technique should catch subse-
+quent infections due to almost any type of virus, known or unknown.  In MSAV
+and VSafe, integrity checking is optional, but enabled by default.  It can be
+controlled by the Create New Checksums and the Verify Integrity options of MSAV
+and the /D option of VSafe.  For any given file, the information recorded and
+checked by either of these programs consists of the date, time, attributes and
+size of the file, and a 16-bit checksum for it.  This information is stored in
+a database named CHKLIST.MS, 27 bytes per file (12 bytes for the name, 2 for
+the file checksum, and 13 for the other information, including a special
+checksum on the rest of the entry), in the directory in which the file resides.
+(In the following description, I will often speak only of MSAV even though
+something similar usually applies to VSafe also.)
+  If the Verify Integrity option is on and the above information already exists
+in the database, the program computes a checksum of each file in its present
+form and compares the new information against the recorded information.  If a
+mismatch is found by MSAV, an alarm is sounded and the user is given a choice
+between Update, Delete, Continue and Stop, provided MSAV is used interactively.
+  If the Verify Integrity option is on, the program performs known-virus
+scanning only if the checksums do not match, or if no checksum is stored for
+the file in question (except that if the date of the CHKLIST.MS file is older
+than the date of the MSAV.EXE file, the checksums in CHKLIST.MS are ignored,
+and re-created if Create New Checksums is on).  As a result, not only does
+integrity checking protect against unknown viruses, but checking usually re-
+quires much *less* time when Verify Integrity is on than when it is turned off.
+It would seem, then, that there is never any reason to disable integrity
+checking.
+  MSAV's implementation is such, however, that this conclusion is not entirely
+true.  One reason is the relatively large amount of disk space which the data-
+bases take up due to the unfortunate design decision to have a separate one for
+each directory.  For example, if a user has 150 directories on his disk, the
+databases will take up a minimum of 300K.  Another reason is that in practice,
+MSAV/VSafe's checksumming is not completely secure (see below), so that the
+software might erroneously decide that there is no mismatch and therefore skip
+the known-virus scan.
+  Because of the first reason, MSAV has a command Delete Checksums, available
+when the menu is up, by means of a function key (F7).  This deletes all the
+checksum databases on the current drive in order to save disk space, at the
+expense of losing the integrity checking.
+  Another MSAV option is called "Create Checksums on Floppy".  The description
+goes as follows: "When this option is selected along with Create New Checksums,
+a CHKLIST.MS file is created for each directory on a floppy disk as it is
+scanned.  This option is useful for creating checksums ... of files on floppy
+disks before write-protecting the disk."  While it is clear that the databases
+are to be created on a diskette, it is not entirely clear whether the files
+which are to be checksummed are those on the hard disk or those on that disk-
+ette.  Some reviewers of CPAV have assumed, apparently without bothering to
+test it, that the former is the intended interpretation (this could greatly
+enhance security).  However, in actuality, it is the latter which is the true
+intent.
+  Note that when a modification is detected by MSAV or VSafe, the user is left
+to decide for himself whether or not the modification is due to a virus.  There
+are other integrity checkers which apply heuristics in order to help the user
+to decide this.
+
+PECULIARITIES IN THE DOCUMENTATION
+==================================
+  Concerning the Delete Checksums command of MSAV, the on-line help contains an
+extremely curious passage: "For maximum confidence, delete the checklist files
+periodically"!  The "periodically" part makes sense only if the user keeps the
+Create New Checksums option on (something which the on-line help advises him
+*not* to do).  In that case, the databases will be built anew, except that
+meanwhile some of the files might become infected, so that the next time the
+checksums will be based on *infected* files instead of uninfected ones. How can
+*deleting the databases* possibly contribute to *confidence*?!?
+  MSAV's on-line glossary defines a checksum as "a value derived from the exe-
+cutable file's size, attributes, date, and time."  This is *not* the way the
+term is normally used.  Ordinarily, a checksum is derived from the *content*
+of the file.  In actuality, MSAV's checksums are functions of the content also
+(albeit of only a small part of it; see below).
+  The Upgrade manual (p. 64) defines computer viruses as "programs designed to
+replicate and spread".  On p. 65, viruses are divided into three types: boot
+sector viruses, file infectors, and ... "Trojan horse viruses".  The last type
+is defined as a type of virus that "is disguised as a legitimate program.  ....
+Trojan horse viruses are much more likely to destroy files or damage disks than
+other viruses."
+  Aside from the unusual description of Trojan horses as a subset of the
+viruses, there are several very confusing (if not dangerous) consequences of
+such a definition and classification: (1) It follows from this definition of a
+Trojan horse and that of a virus that all Trojan horses replicate (this is
+incorrect by any accepted definition of a Trojan horse; on the contrary, many
+people reserve this term precisely for malicious programs which do *not* re-
+plicate); (2) the reader is left with the erroneous impression that Trojan
+horses do not reside in either files or boot sectors (where *do* they reside?),
+and (3) that file and boot-sector viruses, as opposed to Trojan horses, do
+little or no damage.  (As other people use these terms, both of these types of
+viruses can do *a great deal* of damage.)
+
+BUGS
+====
+  MSAV displays the message "Invalid option" in certain cases where it is not
+at all appropriate, one example occurring if the user specifies the name of a
+non-existent file on the command line.
+  A much more serious bug is the following:  We mentioned above that if MSAV is
+activated while VSafe is resident, MSAV turns off the eight VSafe options and
+later restores them ... or rather, is *supposed* to restore them.  We also
+mentioned that while MSAV allows limiting the scan to a specified file, it does
+not support wildcard notation.  But since this shortcoming is not mentioned
+specifically in the documentation, it is natural for the user to assume that
+MSAV does support such notation.  Yet if he activates MSAV with an asterisk
+within the file specification on the command line, and the non-asterisked part
+matches at least one existing file, MSAV will display the message "Access
+denied" and return to the DOS prompt without performing any action.  But mean-
+while, MSAV has turned off the eight VSafe options.  The bug consists in the
+fact that in this case, MSAV *fails to turn the VSafe options back on again*,
+so that although VSafe is still resident, *the user is left without the pro-
+tection of these options*!
+  Finally, it seems there are bugs in detection of MtE-encrypted viruses.  The
+Virus Bulletin reports that MSAV consistently locks up after detecting 255
+samples of such viruses.  Also, Vesselin Bontchev of the VTC has found a file,
+created during generation of MtE replicants, scanning of which causes MSAV to
+hang.
+
+SECURTTY HOLES
+==============
+  By a "security hole" is meant a way of circumventing the protection which a
+program is supposed to provide against attacks.  I am aware of the following
+security holes in the generic features of VSafe and MSAV:
+
+1. It's trivial for a virus to disable VSafe.  All it has to do is load certain
+   values into the AX and DX registers and call a certain interrupt (in fact,
+   any one of three interrupts will do), and voila, VSafe either has all its
+   options disabled or it is completely unloaded from memory (depending on the
+   value loaded into AX), without the user being aware that his protection has
+   disappeared!  This trick (in its option-disabling form) is used by the
+   Tremor virus.  By their very nature, resident programs are more vulnerable
+   than non-resident ones, but to make the protection unloadable by a mere 8
+   bytes of code is making the job absurdly simple for the virus writers.
+   It's probably only a matter of time until this and several other tricks
+   mentioned below get incorporated into the various virus construction kits
+   available in the virus "underground".
+
+2. While VSafe's generic monitoring detects most viral modifications to already
+   existing executable files, it does not detect creation of a new executable
+   file (important for detecting companion viruses), modifications made to a
+   file with a *non*-executable extension, or renaming of files.  Thus a virus
+   could alter the extension of an executable file, infect it, then rename it
+   back.  Or it could create an infected file under a different name, delete
+   the original file, and rename the infected file to the original name.  The
+   Suriv viruses use this technique.
+
+3. Since the earliest that Microsoft's VSafe can be loaded is at the beginning
+   of execution of AUTOEXEC.BAT (in Central Point's software, VSafe can be
+   loaded as a device driver), it cannot be effective when the code in the
+   Master Boot Record, the DOS boot sector, COMMAND.COM, the other system
+   files, or device drivers is executed, hence it cannot prevent viruses in
+   these regions from loading themselves into memory.  (Almost all of this is
+   true of other generic monitoring programs as well.)  This would not be so
+   bad if MSAV could checksum the DOS boot sector and the Master Boot Record,
+   but it does not.  In Central Point's software, there is a program called
+   "BootSafe" which compares these two regions against previously created
+   copies.  However, for some peculiar reason, this program is not included in
+   MS-DOS 6.  As a result, *there is no protection in Microsoft's software
+   against unknown boot-record infectors*.
+
+4. Although VSafe seems capable of detecting most attempts of viruses to stay
+   resident, there are ways in which a virus could gain as much control as a
+   resident program without hooking interrupts in any sense of the term.
+   Monitoring programs such as VSafe do not prevent these.
+
+5. Since the MSAV.INI file is unencrypted and not normally checked for integri-
+   ty, a virus could modify it so as to disable options such as Verify Integri-
+   ty and Anti-Stealth.  (Since the file name is fixed, it would not be hard to
+   find the file, regardless of what directory it's located in.)
+
+6. Companion viruses (e.g. Aids-II, Twin-351, Mithrandir) do not modify exist-
+   ing files, but create new ones which get executed before the target program.
+   The integrity checking of MSAV and VSafe does not detect infection by this
+   type of virus.  (As mentioned above, the generic monitoring feature does
+   not detect it either.)
+
+7. A simple way for a virus to defeat the integrity checking is to alter the
+   checksum database, deleting the entry (name and information) for a file just
+   before infecting it.  An even simpler way is to delete the entire checksum
+   database.  The user will notice nothing unusual since if a database is de-
+   leted (and the Create New Checksums option is on), MSAV will simply start
+   creating the database anew as if one never existed, this time using the
+   *infected* files as a basis for future comparison instead of the original
+   ones!  Viruses which exploit this weakness are the Peach, Groove, and
+   Encroacher viruses.  (The Peach and Encroacher viruses are directed specifi-
+   cally against CPAV, while the Groove virus targets checksum databases of
+   certain other programs as well, but in the case of some of these programs,
+   the user will *notice* that something unusual has happened.)  It is only
+   necessary to add the name of MSAV's checksum database to make them effective
+   against MSAV also.
+
+8. A good checksum algorithm for AV use will be based on different (unknown)
+   keys (or passwords) for different users.  MSAV/VSafe's algorithm does not do
+   this.  Thus even if it were impossible to delete the checksum database or
+   any of its entries, it would still be possible for a virus writer to incor-
+   porate the checksumming code from MSAV.EXE or VSAFE.COM into his virus, so
+   that after infecting a file, it could compute the checksum of the infected
+   file and modify the checksum and file length in the database according to
+   the new values.
+
+9. In order to increase speed, MSAV and VSafe do not checksum the entire file,
+   but only its first 63 bytes.  Thus a virus which alters only other parts
+   of the file and preserves the first 63 bytes, the file size, date/time, and
+   attributes will not be detected by the integrity checking of MSAV or VSafe.
+   Almost all viruses preserve the date, time and attributes, there are viruses
+   (e.g. ZeroHunt) which preserve the file length (this is possible also by
+   other tricks not used in any current virus), and there are viruses (e.g.
+   LeapFrog) which avoid modifying the beginning of files.  Thus while I do not
+   know of any current virus which preserves *all* of these things together
+   (without depending on stealth techniques), there is no doubt that such a
+   virus can (and therefore probably will) be written.
+
+10. Even if it were made impossible to modify the checksum database, the fact
+   that the checksumming algorithm does not employ a user-dependent key is
+   still a weakness if the algorithm is a relatively trivial one, for in that
+   case it might be easy to "forge" checksums: i.e. after the virus modifies
+   a file F into a file F' it may be able to adjust some data area within F'
+   so that the result has the same checksum as the original file F.  (And even
+   if the virus writer cannot find a simple method of doing this, the fact that
+   the checksums of MSAV/VSafe are only 16 bits long may make it feasible to
+   use trial and error to find a suitable adjustment to F'.)
+
+  I do not wish to give the impression that Microsoft's (and Central Point's)
+is the only AV software having such security holes.  Nevertheless, the fact is
+that these holes could have been blocked had the software developers given
+sufficient thought to the matter.  (That this is possible is shown by the fact
+that there is at least one product whose integrity checker is almost completely
+free of the relevant security holes mentioned above.)
+  Note in particular that keeping a separate database for each directory not
+only uses up a lot of disk space, but also makes it very difficult to block
+some of these holes.  For example, were there only a single database for the
+entire drive, it would be very simple to store the checksums for the hard disk
+on a diskette, which could then be write-protected.  (Similarly, MSAV could
+give the user the choice of where to locate the database on the drive, making
+it more difficult for the virus to find the database, especially if the name of
+the database were also selectable by the user.)
+  Note also that I am not revealing any deep secrets by mentioning these
+security holes.  Most are well known to many virus writers, as is evidenced by
+the examples of existing viruses cited above which exploit them.  In fact,
+sometimes one gets the impression that the only people who *don't* know of
+these holes are the AV product developers and reviewers of AV software!  In the
+case of the former group, perhaps many of them are indeed aware of some of
+these holes, but apparently either they think that such holes are too "theore-
+tical", obscure or product specific for anyone to exploit them, or else manage-
+ment priorities are such that the developers must devote their energies to the
+graphic interface and other features which make a good impression on the public
+and the reviewers rather than to genuine security.  In other words, here as in
+so many other fields, the driving force is often sales at the expense of
+quality.
+
+CONCLUSIONS AND CONJECTURES
+===========================
+  KNOWN-VIRUS SCANNING.  This part of the software scores lower than most other
+scanners, in both percentage detected and speed.  Moreover, it cannot detect
+viruses within compressed executables.
+  GENERIC MONITORING.  VSafe supplies this in a manner which is more flexible
+than most other programs of this type.  However, there is considerable room for
+improvement in some of the monitoring capabilities, some viral tricks are com-
+pletely undetectable, and the monitoring can be completely disabled (see parti-
+cularly Security Holes 1 and 2 above).
+  INTEGRITY CHECKING.  Non-existent on boot sectors and the Master Boot Record.
+ On files, it is easily bypassed in many ways (see Security Holes 6-10 above).
+The decision to maintain a separate database for each directory is a poor one,
+not only because of the waste of disk space, but also because it greatly hin-
+ders the blocking of some of the security holes.
+
+  One of the things which differentiates a good AV program from a mediocre one
+is in whether the developers concern themselves with guessing what types of
+tricks a virus writer might adopt in order to bypass the various types of pro-
+tection, and modify their software accordingly.  Some developers have done this
+to a greater or less extent.  Most of them, including the developers of
+MSAV/VSafe, have evidently not made a sufficient effort in this direction.
+  Because of these security holes and the fact that Microsoft's software will
+probably become the de facto standard, I predict that during 1993 virus writers
+will turn more and more to viruses which target specific weaknesses of the
+generic part of the software.
+  Will the software be modified to correct these problems?  Minor bugs, probab-
+ly yes.  However, blocking some of the security holes would require such a
+radical redesign of the whole system that this is highly unlikely.  Moreover,
+if past experience is any guide, even the problems with less drastic solutions
+will take years to be corrected, if at all.  For years users complained that
+they could not use any other scanner after CPAV, since it did not bother to
+encrypt its scan strings, thus causing other scanners to detect its strings in
+memory buffers or in the CPAV.EXE and VSAFE.COM files themselves, and producing
+false alarms.  My tests indicate that this problem has finally been corrected,
+but it has taken much too long.
+  Despite suggestions to Microsoft that it include validation and/or protection
+as part of the operating system, it seems to have chosen the easy path.  In my
+opinion, it was a poor choice on Microsoft's part to adopt Central Point's AV
+software, and probably a mistake on their part to include add-on AV software at
+all.  True, many people who had never before installed AV software will now do
+so, and this seems to be a benefit.  However, they will be under the false
+impression that they are well protected.  Microsoft may shrug its collective
+shoulders; after all, since when has MS-DOS been noted for high quality?  But
+just as the software will be a tempting target for virus writers, so Microsoft
+may become a tempting target for lawsuits.  If McAfee Associates could be sued
+by Imageline for a false alarm, what is to be expected when the responsible
+party is Microsoft?
+
+ACKNOWLEDGMENTS
+===============
+  Every effort has been made to make this evaluation as accurate as possible.
+I wish to express my thanks to Yuval Sherman, head of the Israeli team develop-
+ing this software, for supplying answers to my many questions, and to Vesselin
+Bontchev of the Virus Test Center in Hamburg for his comments on an earlier
+version of this paper.  Needless to say, all opinions expressed herein (and
+errors, if any) are mine alone.
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 6 Issue 84]
+*****************************************
+

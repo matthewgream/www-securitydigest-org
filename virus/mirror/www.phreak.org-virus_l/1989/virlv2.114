@@ -1,0 +1,329 @@
+VIRUS-L Digest              Friday, 12 May 1989        Volume 2 : Issue 114
+ 
+Today's Topics:
+question on CERTUS (PC)
+Request for info and experiences on viruses on LANs (PC)
+1 byte can save us from the Ping Pong virus (PC)
+Comment on "The Computer Virus Crisis"
+Mac Virus (maybe)
+Boot Sector Protection (PC)
+VM Trojan list? (VM/CMS)
+ 
+---------------------------------------------------------------------------
+ 
+Date:    Fri, 12 May 89 09:15:34 EDT
+From:    "W. K. (Bill) Gorman" <34AEJ7D@CMUVM.BITNET>
+Subject: question on CERTUS (PC)
+ 
+     I have been asked to evaluate CERTUS 1.0 from Foundationware.
+Has anyone tried this package as an aid to virus protection, disaster
+recovery, PC security, etc.?
+     Thus far, I am not impressed. I have been able to get it to:
+ 
+     a)   Eat a set of files from a floppy that it was supposed
+          to be "registering" and "approving" to run on the test PC,
+ 
+     b)   Recognize a non-existant hard drive (D:) on a system with
+          one HD (C:) and two floppies (A: and B:),
+ 
+     c)   Abend with a "FAT creation error" when creating what they call
+          a "critical disk" during the installation.
+ 
+Does anyone have any better/worse things to say about it?  BTW: It is
+a commercial package.
+ 
+Disclaimer: It should be obvious from these comments that I am NOT
+connected with Foundationware or any of its products by blood, money,
+marriage, financial interest, political affiliation or Act of God.
+ 
+..........................................................................
+|W. K. "Bill" Gorman                               Foust Hall # 5        |
+|PROFS System Administrator   E-Mail & Message     Computer Services     |
+|Central Michigan University Encryption/Security   Mt. Pleasant, MI 48858|
+|34AEJ7D@CMUVM.BITNET       Virus Countermeasures  (517) 774-3183        |
+|_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-|
+These comments reflect personal opinions held at the time this was
+written.  Copyright (C) 1989 W. K. Gorman. All rights reserved.
+ 
+------------------------------
+ 
+Date:    Fri, 12 May 89 10:50 EST
+From:    <DAC@CUNYVMS1.BITNET>
+Subject: Request for info and experiences on viruses on LANs (PC)
+ 
+Greetings!
+ 
+We are running a Novell LAN on which we found a Terminate and Stay
+Resident (TSR) virus that infects executable files and then seems
+to be responsible for the:
+   1. failure of some infected programs to run;
+   2. executables becoming very large;
+   3. memory errors;
+   4. stack errors;
+   5. routing of files to printers; and
+   6. loss of root directory on hard disks.
+ 
+We've currently responded by:
+   1. installing a second "clean" (at least until we hooked it up)  ;)
+      server and brought down the original one; and
+   2. placed Sentry 1.8 and Flushot 1.51 into the bootup procedure
+      of all out boot disks (both floppy and hard).
+ 
+Our next steps are to:
+   1. formally release information about is going on and how to work
+      with Sentry and Flushot (up to now we've been spreading info on
+      an ad hoc basis;
+   2. clean up the original file server and put it back in service; and
+   3. find a better solution for the next time.
+ 
+In order to help find a better LAN/virus solution, I thought I would
+ask people with similar problems to write to me about their experiences
+on LANs and what their solutions are.  I will summarize and depending
+on the size of the response, either post directly to the list or place it
+in an archive.  Anyone submitting anything to me will be mailed a
+copy of the summary.
+ 
+Suggestions about additional steps we should be taking are also welcome.
+ 
+Aloha,
+danny
+*******************************************************************
+snail:  Danny Choriki, Environmental Psychology Program, CUNY
+        33 West 42nd Street, New York, NY  10036-8099
+bitnet:    dac@cunyvms1
+internet:  dac%cunyvms1.bitnet@cunyvm.cuny.edu or dangc@cunyvm.cuny.edu
+compuserv: 71470,3060
+=======================================================================
+[Since a CUNY can't talk, this must have been my idea...]
+ 
+------------------------------
+ 
+Date:     12 May 89, 13:21:53 HMT
+From:     Stanley 'Spock' Fragakis  <CSSTU011@GRCRUN11.BITNET>
+Subject : 1 byte can save us from the Ping Pong virus (PC)
+ 
+Hello virus list
+1st of all I welcome myself in this list. :-))
+ 
+I will not be surprized if I find out that there are virus designers
+in this list. The information presented by the list will help them
+create better 'killers' | I just hope they are the minority.
+ 
+I want to say a few things about the BOOT sector on PC's.
+ 
+Each time the MSDOS BIOS performs a disk access it reads the BOOT
+sector of the disk, which contains vital information such as number of
+sectors/track, sectors/cluster, number of FATs etc The information is
+used to correctly locate the requested disk sector.  The MSDOS checks
+the first byte of the BOOT sector and if that byte is E9h or EBh it
+assumes that the disk is MSDOS formatted, else the disk is assumed to
+be non-MSDOS.
+ 
+Lets see more about this.  Presence of E9h or EBh forces the MSDOS to
+USE the information contained in the boot sector (bytes/sector etc) in
+order to access the disk. Any other value makes the MSDOS to use
+'default' values, ignoring the BOOT sector.  If you study the source
+code of the Ping Pong virus you will find out that it uses the BOOT
+information to locate the FAT's, the start of disk's data area etc. In
+order to e.g. interpret the logical sector into track,head,sector
+format it needs to make a few divisions (/sectors per track etc).
+These divisions are carried out using the DIV instruction of the CPU.
+Hmmm... Here comes the big idea... What if I change e.g. the sectors
+per track value from 9 (if we have 9 sectors/track) to 0.  That would
+cause a crash when the virus tries to make the division.  The sectors
+per track value is at offset 18h of the BOOT sector.  Sounds a good
+Idea || :-) If you indeed change that value then the disk will be
+'useless' || Why ? Well the MSDOS tries to use the information
+(sectors/track) but the 0 we put makes no sense and we could get a
+'GENERAL FAILURE..' message or something like that.  Hmmm.. It seemed
+a good idea :( Can't we make something about it ?  Well of course :-)
+we can. As I mentioned above the MSDOS uses the BOOT information ONLY
+if the first byte of the BOOT sector is E9h or EBh.  Hmmm.. yes that's
+it we change the first byte of the BOOT.  Change it to what ? In fact
+giving any other value will do the trick but remember the 1st byte
+must be a valid instruction, since the BOOT sector is assumed to
+contain a small machine-language program.  If you look in a
+instuction-table you will find out that the E9h and EBh bytes are
+interpreted as JMP instructions by the CPU.  E9h is JMP FAR, so we'll
+have
+ 
+0000 E9H
+0001 xx
+0002 yy
+ 
+as the first 3 bytes of the boot sector.
+ 
+EBh is JMP short, so we'll have
+ 
+0000 EBh
+0001 xx
+0002 NOP
+ 
+as the first 3 bytes of the boot sector.
+NOTE that the 3rd byte is a NOP (90h)
+ 
+Usually the boot sector contains a JMP short i.e. EBh xx NOP
+All we have to do is swap the commands :
+ 
+0000 NOP
+0001 EBh
+0002 zz
+ 
+Note that the displacement is no longer xx (actually it is xx-1).
+ 
+Now we have a disk that CAN NOT be contaminated by the Ping Pong virus
+|| When the virus tries to contaminate the disk we have a 'DIVISION by
+zero' interruption which forces execution out of the virus code.
+Further more the virus is disabled from that time on.  (I'll not say
+more on that, since this is already getting too long but it has to do
+with a flag-byte the virus has and it does not get updated correctly
+since we have 'DIVISION BY ZERO' )
+ 
+This trick works only on non-system disks (so you can't protect a hard
+disk since a hard disk is usually a system disk).  I don't see why the
+trick shouldn't work on similar viruses.  If you have any questions
+just let me know.
+ 
+Stanley Fragakis, GREECE  (csstu011 at grcrun11)
+ 
+------------------------------
+ 
+Date:    Wed, 10 May 89 15:31:42 MDT
+From:    Chris McDonald 678-4176 <cmcdonal@wsmr-emh10.army.mil>
+Subject: Comment on "The Computer Virus Crisis"
+ 
+Several weeks ago a Virus-L subscriber provided a review of a book
+entitled "The Computer Virus Crisis."  Since I already had my copy on
+order, it was too late to cancel.  When it arrived, I read the book
+and found that I agreed with the previous subscriber.  Rather than
+repeat all his observations, I would like to add the following.
+ 
+[Ed. The review was posted by Mark Paulk <mcp@sei.cmu.edu>, who has
+just (thanks Mark!) sent me a somewhat lengthy followup to his report
+that was sent to him by the publishers of the book.  If there is
+sufficient interest in reading this followup, I can post it in a
+separate digest (it's about 26k) or put it on one of the archives.]
+ 
+1.  My dominant impression is that this book was "rushed" into print
+to take advantage of the marketplace which is "virus" sensitized
+beyond belief in some quarters, particularly the corporate world.
+There are factual inaccuracies in describing the extent of the MacMag
+World virus infection, in the actual spreading mechanism of the IBM
+Christmas bacterium, and in the actual number of persons at the
+National Security Agency involved in viral protection.  All these
+exaggerations support the "crisis" proposition of the authors.  But
+readers of Virus-L and RISKS Forum receive a much better perspective
+on the threats and protective mechanisms, than would a reader of the
+book.  Hopefully we subscribers will never take for granted what is
+now available over the INTERNET.
+ 
+2.  The authors claim that "DOS machines were relatively unaffected
+until communications and connectivity came into the picture." (page
+33) This is a debatable proposition on conceptual as well as on
+historical grounds.
+ 
+3.  The authors state more than once that mainframes are "more secure"
+and "less vulnerable" to virus attack.  Since Fred Cohen's early work
+was on mainframes, not DOS machines, and since the authors refer to
+Fred's first paper on the subject, this is just not in my mind a
+proven fact as much as it is their commentary on reported cases to
+this point.
+ 
+Chris Mc Donald
+White Sands Missile Range
+ 
+------------------------------
+ 
+Date:    Fri, 12 May 89 11:16:28 EDT
+From:    Joe McMahon <XRJDM@SCFVM.BITNET>
+Subject: Mac Virus (maybe)
+ 
+I would say that the definite test for whether or not this is a virus
+is to see if applications on the affected system can infect another.
+You might want to try this:
+ 
+1) Pick some application that's on the infected system, and copy it to
+   a floppy.
+ 
+2) Create a clean system from the "system Tools" disk (assuming you
+   haven't been using it unlocked).
+ 
+3) Put a clean copy of Virus Rx on the disk, too.
+ 
+4) Boot the clean system and run the application. See if the symptoms
+   you've been seeing occur. Set the date ahead a week or two and see
+   if anything shows up.
+ 
+5) Run Virus Rx and see if it puts up its dialog telling you that it's
+   been infected. If so, you've got something. If not, probably not.
+ 
+If nothing spreads into the System, and Virus Rx doesn't commit
+suicide when running on the "infected" system, then you've got a
+clobbered System file, not a virus. Try restoring just the System
+folder and seeing if that corrects the problem.
+ 
+If you need Virus Rx or advice, drop me a note direct.
+ 
+ --- Joe M.
+ 
+------------------------------
+ 
+Date:    Fri, 12 May 89 13:19:30 EDT
+From:    mcvax!rhi.hi.is!frisk@uunet.UU.NET (Fridrik Skulason)
+Subject: Boot Sector Protection (PC)
+ 
+Some viruses and Trojans attempt to write to the boot sector on
+diskettes. Any program intended to prevent attacks must therefore be
+able to protect the boot sector.
+ 
+It seems that there are 5 methods for writing to the boot sector.
+ 
+        1: Use INT 26.
+        2: Use INT 13.
+        3: Use INT 40.
+        4: Use the original ROM BIOS routines.
+        5: Program the PD765 directly.
+ 
+It is easy to prevent methods 1 and 2 from working, and most (all ?)
+diskette protection software packages available seem to do that. All
+BSV that I know of use one of these two methods.
+ 
+Method 3 is just as easy to prevent, but quite a few available
+software packages allow it, including Flushot (at least my version).
+ 
+Method 4 is very hard to prevent, but it is actually the main subject
+of this message (see below). No known viruses use it, but sooner or
+later they will.  I have not been able to find ANY program that
+prevented this type of attack.
+ 
+Method 5 seems to be able to work, no matter what software protection
+is used.  Fortunately, no known viruses use it.
+ 
+Now - I have written a small TSR, that attempts to prevent a program
+using method 4 from doing its task. It works on my own computer (a
+'386 HP VECTRA, running DOS 3.3), but since the method it uses is
+rather weird, I am not sure if it will interfere with something else.
+So - I am asking for volunteers to test this program, before I send it
+to the anti-viral archives.
+ 
+please E-mail me at frisk@rhi.hi.is if you are interested in receiving
+a test copy.
+ 
+------------------------------
+ 
+Date:    Fri, 12 May 1989 14:54:02 EDT
+From:    "Gregory E. Gilbert" <C0195@UNIVSCVM>
+Subject: VM Trojan list? (VM/CMS)
+ 
+Does anyone have any info on the recent "VMEXEC EXEC" trojan horse?
+Any knowledge anyone has would be appreciated.  Feel free to send it
+directly to me if you prefer.  Have a good weekend.
+ 
+P.S.  Ben Yalow requests reports on this trojan horse.  He is a BITNET
+      technician and can be contacted at YBMCU@CUNYVM on BITNET and
+      YBMCU@CUNYVM.CUNY.EDU on Internet.
+ 
+------------------------------
+ 
+End of VIRUS-L Digest
+*********************

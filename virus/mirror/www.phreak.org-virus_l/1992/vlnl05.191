@@ -1,0 +1,810 @@
+VIRUS-L Digest   Tuesday,  1 Dec 1992    Volume 5 : Issue 191
+
+Today's Topics:
+
+Re: Form virus infection in Germany (PC)
+Re: Form virus infection in Germany (PC)
+Re: FDISK /MBR and FORM Virus (PC)
+Display bug in SCAN 97-B (Was: Re: Mystery Virus (PC))
+Technical Information in V-L (PC)
+Re[2]: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: MtE detection tests (part 4/5) (PC)
+Developing and marketing antiviral software (PC)
+old McAfee Press Release on MtE (PC)
+Re: WARNING: Clean V97 and Freddy (PC)
+Version-number of scan (PC)
+Re: Bug in F-Prot2.06a (PC)
+Re: Comment on the MtE wars (PC)
+Re: AMIGA viruses? (Amiga)
+Re: Things that keep me awake at night
+source for tools
+CHRISTMA Data (CVP)
+Re: Trailer for EICAR'92 conference, Munich 7th to 9th December 1992
+Correction to; Trailer for EICAR'92 conference
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 25 Nov 92 09:26:48 -0700
+From:    martin@cs.ualberta.ca (Tim Martin; FSO; Soil Sciences)
+Subject: Re: Form virus infection in Germany (PC)
+
+cfsc-hga-gc-mis@augsburg-emh1.arm (david hanson) writes:
+
+>Question:  Outside of using a commercial anti-virus package,
+>           is there any way of eliminating this virus "manually"
+>           (ie. editing sectors on the disk)??
+
+There are two parts to eliminating the virus.  The first is to put a
+correct boot sector back onto the infected floppy, or into the
+infected DOS boot sector of the hard disk.  The second, if you are a
+sticker for thoroughness, is to recover the disk cluster that the
+virus has marked <BAD>, where the second part of the body of the
+virus, and the clean boot sector, are hidden.
+
+On floppies it is easy to clean the boot sector, if it has been
+infected.  Get a clean boot sector from the same format of diskette.
+Programs like Padgett's fixfbr do the job very well, and don't require
+getting all that technical.  It can be done quite easily with debug,
+too, but then it is a bit more technical.  To restore the boot sector
+of a DOS hard disk partition is a bit trickier, because the data
+fields in the boot sector that say what the partition's
+characteristics are will differ from partition to partition -- there
+aren't simply four standard partition sizes.  In this case,you might
+have to search the FAT for the cluster that is marked bad, and look
+there for your original boot sector.  But here I am getting beyond my
+knowledge level.  I don't recall, first, whether FORM uses a fake
+<BAD> cluster to hide in, on hard disks, or if that is only done on
+floppies.  It may be that when it infects a hard disk partition, the
+boot sector is saved in the same area of unused sectors that stoned et
+al. use.  Second, I don't recall whether FORM keeps the boot sector's
+data fields in place, in the virus, in which case you could get them
+from there.  And I'm afraid I don't have time to test it out.  But if
+you look around a bit with Norton Utilities, or some such, you might
+be able to figure it out, and let me know.
+ 
+Tim.
+
+ -------------------------------------------------------------
+  Tim Martin                   *
+  Spatial Information Systems  *   These opinions are my own:
+  University of Alberta        *      My employer has none!
+  martin@cs.ualberta.ca        *
+ -------------------------------------------------------------
+
+------------------------------
+
+Date:    25 Nov 92 13:02:16 +0000
+From:    duck@nuustak.csir.co.za (Paul Ducklin)
+Subject: Re: Form virus infection in Germany (PC)
+
+    [..stuff about FORM..]
+>Question:  Outside of using a commercial anti-virus package,
+>           is there any way of eliminating this virus "manually"
+>           (ie. editing sectors on the disk)?
+
+SYS C: should do the trick for hard drives. Or, if you want to 
+have a go with NU, DISKEDIT or similar, then you'll find the
+original boot sector in its hiding place -- which is the last
+physical sector on your drive, if I remember correectly. Just go 
+to [maxtrack-1.maxhead-1.maxsect] and have a look -- you should 
+find your boot sector there...or thereabouts.
+
+You'll also find, thereabouts, somehwat less than savoury mention 
+of a lady named Corinne!
+
+- -- 
+- --..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--
+Paul Ducklin                                       duck@nuustak.csir.co.za
+
+  CSIR Computer Virus Research Lab * Box 395 * Pretoria * 0001 S Africa
+
+------------------------------
+
+Date:    25 Nov 92 12:56:02 +0000
+From:    duck@nuustak.csir.co.za (Paul Ducklin)
+Subject: Re: FDISK /MBR and FORM Virus (PC)
+
+Thus spake gscobie@castle.edinburgh.ac.uk (G J Scobie):
+>Thanks for all the info regarding FDISK /MBR.  However, I attempted to
+>disinfect a PS/2 Model 55 with the FORM virus using a coldboot from my
+>DOS 5.0 disk created for such a purpose, ran FDISK /MBR and then ran
+>F-PROT 2.05 and it still reported FORM as being present in the boot
+>sector.  Using SYS.COM, then running F-PROT again showed the disk to
+>be clean.  Unfortunately I don't have the kit - or indeed the time -
+
+Not surprising. FDISK /MBR refreshes the partition record [0.0.1], or
+Master Boot Record, of your hard drive. Form, however, is a "DOS" boot
+sector virus -- on your hard drive, it lives in the boot record of the
+logical drive C:. SYS C:, as you noticed, refreshes the logical boot
+sector, and thus obliterates Form. FDISK doesn't touch the viral
+code...F-PROT was telling you the truth.
+
+- -- 
+- --..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--
+Paul Ducklin                                       duck@nuustak.csir.co.za
+
+  CSIR Computer Virus Research Lab * Box 395 * Pretoria * 0001 S Africa
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 20:29:45 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Display bug in SCAN 97-B (Was: Re: Mystery Virus (PC))
+
+Hello Patrick Ryan,
+
+VIRUSCAN Version 97-B will report "Virus removed." after scanning memory
+when run on DOS 3.x PC's.  This has been fixed in VIRUSCAN V99, which is
+available by anonymous ftp from WSMR-SIMTEL20.Army.Mil and its mirror sites,
+the garbo.uwasa.fi site and the mcafee.com site.
+
+Regards
+
+Aryeh Goretsky
+Technical Support
+
+/IN REPLY TO/
+sauron@femto.engr.mun.ca (Patrick Ryan) writes:
+[...deleted...]
+>doesn't find anything.  SCANV97B, however, reports "Virus Removed"
+>while scanning, but "No viruses found" when finished.  HELP!!!!
+
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 16:01:06 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Technical Information in V-L (PC)
+
+Recently a reader (no names) made the comment that there does not seem
+to be much technical information posted on viruses other than
+signature strings. IMHO that is definately a "bottom duck". In the
+time that I have been active there has been a tremendous amount of
+information published - a few of the author's of a-v products have
+even told me that the information published was the inspiration for
+their products.
+
+Just from memory some of this included:
+
+a) a simple matrix driven algorithm for computing checksums individualized
+   to each PC.
+b) how to block ANSI bombs including the exact offset (61h) in DOS
+   5.0 ANSI.SYS of the byte to change.
+c) BIOS source code for detection of every MBR replacing virus (seen recently
+   in a commercial a-v product)
+d) Full description of FDISK /MBR
+e) Explicit removal instructions for the DIR-II
+f) Explicit recovery instructions for the AIDS Trojan
+g) Explicit recovery information for the MusicBug Virus (thought impossible
+   for some time).
+
+Further, several times in the past I have published a "suggested
+reading" list mostly of books I have found at BookStop, Walden Books,
+or B. Dalton's (plug) that, if studied with enthusiasm, would leave
+the reader with a much better understanding of the architecture than
+that of most virus writers. You'll even be able to spot all of the
+mistakes in the "Little Black Book".
+
+For that matter the best learning tool I know of comes free with DOS -
+DEBUG.  Though generally I use MASM now even for MBR code, often the
+first pass of a new program is done just with DEBUG - once the
+principle is proven, I back it through SOURCER (plug) and use WordStar
+and MASM thereafter (double plug).
+
+Finally, there is the FAQ. Again IMHO if all the virus-writer-wannabes
+would read the FAQ first they might give up before ever starting. As
+has been said before, many, many times, There are only a limited
+number of vulnerable points in a PC and if you block them and check
+the blockers dynamically, the success rate for a virus goes waaaaay
+down. It is only the fact that a PC has NO, Zip, Zero defenses as
+delivered (well there are some BIOSes...) that encouraged viruses in
+the first place.
+
+In fact if the anti-virus writer is devious enough to plan ahead for
+possible directed attacks and leave some easily detected holes
+(remember Tim ?), eventually the virus writer will realize that there
+really is a "home team advantage" after wasting a lot of time.
+
+Then we get to the Network and a real chance to protect ourselves in
+spite of the Turing problem since a client-server environment is a
+dual-state machine that has capabilities beyond any single-state
+machine. In fact a client-server environment is potentially stronger
+than a 3090, VAX 9000, or even a Multics machine (emphasis on the
+"potentially").
+
+In short, please review the literature.
+
+						Warmly,
+							Padgett
+
+ps i.e. base canard
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 16:22:26 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re[2]: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Stefano Turci, in response to Otto wrote:
+> OS> 2. infer from that algorithm the set of all decryptors that can possibly
+> OS>    be produced from the MtE (of course not as a huge list of detailed
+> OS>    code sections, but rather as a comparably moderate list of possible
+> OS>    features, or patterns), and prove that the set is indeed produced by
+> OS>    the algorithm,
+
+>In fact my program searches for "clues", but you cannot be absolutely
+>sure.
+
+No, you can never be absolutely sure.  The MtE is a set of linkable
+modules.  Specifically, it links an independent random number
+generator though one is provided.  You can't prove for modules not yet
+written.
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 16:27:22 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Vesellin responds and asks:
+>mcafee@netcom.com (McAfee Associates) writes:
+
+>> Are you sure?  I can see two opposing schools of thought forming here:
+>> One of "all or nothing" detection (the binary operation school of
+>> thought), and one of "percentages" of detecting (the analog school of
+>> thought)?  Without getting too far off track, here, I believe that
+
+>I would like to ask all those who belong to the second school of
+>thought: Will you really want to reply for virus protection on a
+>program that misses one infected file in every N? Especially if you
+>know that there are programs that -don't- miss any files infected by
+>this virus? If yes, then for what values of N? One infection missed in
+>every 50? In every 100? In every 1,000? In every 10,000?
+
+Vesselin, this is obviously governed by 1) whether there's money at
+stake and 2) whether you own one of those that manages 100% detection.
+
+The idea right now regarding MtE is, because the files can't readily be
+repaired, if someone is actually hit by MtE, they WILL require help.
+And, as has been pointed out in a different posting, they call in the
+big guns.  And the big guns bring along different tools, presumably tools
+which will detect 100%.
+
+Certainly it is better to have 100% than 99% than 50%.  There is no
+debate there.  And 100% is always the goal.  But remember yet another
+comment elsewhere, all this must be weighed against the common scenario
+that an antivirus program is run most often in a virus-free environment
+and must not be intrusive.
+
+It is fair in an academic environment to compare the standalone MtE
+detector with the full blown anti-virus package claiming to detect MtEs.
+But it is not fair to make this comparison in a commercial environment
+without a whole bunch of factors which are not covered (speed, size, ease
+of use, ...).
+
+Therein lies the debate.  There is no right or wrong.
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 16:27:19 -0500
+From:    Jimmy Kuo <cjkuo@ccmail.norton.com>
+Subject: Re: MtE detection tests (part 4/5) (PC)
+
+The tests conducted by Vesselin on NAV 2.1 were based on a beta
+version I had given him the first day of September.  We are attempting
+to get the real product to him so he might be able to redo the tests
+and update the results.  And I understand we are still not successful.
+We'll keep trying.
+
+I can confidently state that the shipped version of NAV 2.1 does far
+better than the results he gathered from the beta version.  I might
+jokingly say that the version we shipped detects 101% of MtEs (false
+ids) for which a patch is now being distributed.
+
+Anyway, the results are not representative of the shipped product.
+
+If Vesselin responds to this posting, I hope he acknowledges that the
+diskette I gave him is clearly labeled "NAV 2.1 beta 14" (the beta
+being the symbol form).  And I do acknowledge he tested with the
+latest version he had available.  :-)
+
+Jimmy Kuo                                       cjkuo@ccmail.norton.com
+Norton AntiVirus Research
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 21:40:59 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Developing and marketing antiviral software (PC)
+
+You write:
+">>" indicates I write:
+
+>> The article (I wish I knew which one) could have have said that.  It
+
+>I think I could find you a copy of the article, if you are
+>interested...
+
+If you could just give me the magazine name (it is a magazine,
+correct?) I can probably locate a copy over here.
+
+>> >of the competitive scanners were used in those tests and that he was
+>> >quoted saying that he wants his competitors to show worse results in
+>> >such tests. To do otherwise might be worthless from the economical
+>
+>> I think its fairly easy to guess that John McAfee would like his programs 
+>> to do better then anyone else's in a test.  I'm sure that is hardly
+>> unique, though.
+
+>Don't change the wording. The article quoted him saying that he wants
+>his competitors to show worse results, not him to show better
+>results... This is not quite equivalent.
+
+While the wording is not quite equivalent, the end result would be the
+same.  In any case, this does not mean that John McAfee had done this.
+If he had, it would be very likely that we would be sued or at least
+enjoined from using any such reports.
+
+
+>> If possible, would you mind sending me a copy of any such reports?  (Only
+>> on McAfee Associates software, that is).  Thank you.
+
+>I am doing so since some time. I am sending a copy of the reports to
+>Igor Grebert, as you have advised me.
+
+I think you may have sent some to Igor and some to me.  Since Igor
+sometimes works away from the office, I may not have a chance to
+immediately talk to him about email you've sent, or vice-versa.
+
+>> PS:  SCAN V99 should be available about the time you read this.  I'd
+>>      be very interested in hearing how it does--the MtE-based virus
+>>      detector was rewritten.  AG
+>
+>Got it and did the tests. Will post the results, but in a separate
+>message; the subject line for this one is not appropriate...
+
+It does seem to have generated some additional message threads.
+
+Regards,
+
+Aryeh Goretsky
+Technical Support
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Thu, 26 Nov 92 02:43:38 -0500
+From:    tyetiser@umbc3.umbc.edu (Mr. Tarkan Yetiser)
+Subject: old McAfee Press Release on MtE (PC)
+
+   Hello Everyone,
+   
+From: mcafee@netcom.com (McAfee Associates) writes:
+Subject: Re: Being forthcoming...
+
+>>users, would you please share with the readers of this newsgroup the
+>>press release from McAfee Assoc., dated May 11, '92 and titled "Dark
+>>Avenger Mutation Engine No Threat to Protected PCs", with the contact
+
+>No, I won't.  However, if you'd like, I'm sure that you can contact
+>William (Bill) McKiernan for a copy.  Bill can be reached at telephone
+
+>Aryeh Goretsky
+
+Well, I happened to have saved a copy of it some time ago. Here it is:
+ ------------ cut here -----------------------------------------------
+
+FOR IMMEDIATE RELEASE
+
+                                         Contact:  William S. McKiernan
+                                                   (408) 988-3832
+
+    Dark Avenger Mutation Engine No Threat to Protected PCs
+
+   Santa Clara, CA -- May 11, 1992 -- McAfee Associates confirmed today
+that users of its suite of VIRUSCAN anti-virus products have nothing to
+fear from the new generation of mutating or polymorphic viruses.
+
+   McAfee Associates, the nation's leading anti-virus software company,
+has been swamped with calls from concerned corporate PC users worried
+about the threat of the so-called Dark Avenger Mutation Engine.
+"Actually, we cracked this engine some months ago and have been shipping
+product capable of detecting the Mutation Engine since March", said
+William S. McKiernan, vice president, McAfee Associates.
+
+   The Dark Avenger Mutation Engine, which first appeared on European
+bulletin boards a few months ago, is a new kind of virus threat. In the
+past, viruses such as the Jerusalem or the recent Michelangelo strain
+had distinct, single identities that made them relatively easy to detect
+and control. "The Mutation Engine, however, can be used by virtually
+anyone to create a mutating virus which is very difficult to detect,"
+said McKiernan. "The fact that it is widely available on bulletin boards
+makes it that much more freightening."
+
+   The Mutation Engine uses encryption techniques to avoid detection.
+Before a virus can become active it needs to decrypt itself. Ordinarily
+the code used for this decryption remains constant, allowing the use of
+standard byte matching techniques for detection. The Mutation Engine,
+however, uses a special algorithm to generate a completely variable
+decryption routine each time. "The result is that no three bytes remain
+constant from one sample to the next," said Igor Grebert, senior
+programmer at McAfee Associates. "This makes detection using conventional
+string-matching techniques impossible."
+
+   VIRUSCAN, however, has no such problem. According to McKiernan, the
+downloadable shareware contains a new generation of virus detection
+algorithm capable of statistical and numerical analysis. It detects
+the Mutation Engine by "sensing" its presence rather than by attempting
+to actually spot it in a byte-for-byte string comparison. VIRUSCAN
+consistently detected all iterations of the Mutation Engine in tests
+done at McAfee, McKiernan said.
+
+   Santa Clara-based McAfee Associates first received reports of the
+Mutation Engine early this year. It is believed that the Engine is
+a product of the Bulgarian virus creator responsible for the original
+conventional Dark Avenger virus.
+
+   Though some viruses using the Mutation Engine have already appeared
+in the U.S., the engine is not expected to present a widespread problem
+for some time, McKiernan said. Typically the McAfee "early warning"
+network identifies new viruses months before they are a threat to the
+U.S. market.
+
+   Nevertheless, the PC world has reacted emotionally to the presence
+of the Mutation Engine. "It is clear that the game is forever changed,"
+said columnist Steve Gibson in a recent issue of the computer journal
+InfoWorld. "The sophistication of the Mutation Engine is amazing and
+staggering."
+
+   The presence of the Mutation Engine on bulletin boards may be more
+of a threat than the virus itself. "You no longer have to be particularly
+clever or experienced to use it," said McKiernan. "Now if you have a
+modem you can be in the virus business overnight and the potential for
+proliferation is a sobering thought."
+
+   McKiernan said that conventional viruses are turning up at a rate of
+10 to 20 per week. "We expect that the Mutation Engine will increase this
+problem exponentially for those with unprotected systems," he said.
+ --------------------- the end -----------------------------------------
+
+   I just would like to point out the date of the release. You figure :-)
+   
+Regards,
+Tarkan Yetiser
+VDS Advanced Research Group
+P.O. Box 9393
+Baltimore, MD 21228, U.S.A.
+tyetiser@umbc5.umbc.edu
+
+------------------------------
+
+Date:    26 Nov 92 08:49:16 +0000
+From:    frisk@complex.is (Fridrik Skulason)
+Subject: Re: WARNING: Clean V97 and Freddy (PC)
+
+sapao@dcc.ufmg.br writes:
+
+>Clean v97 does not work disinfecting the Freddy virus. Scan v97 reports:
+>  The Jeru [Jeru] virus was found...                                          
+                                   
+
+It is not surprising that it does not disinfect the file properly when
+SCAN cannot even identify it.  Freddy is NOT a Jerusalem variant.
+Attempting to remove it with a Jerusalem-specific disinfection routine
+is certain to produce some strange results to say the least.
+
+To take one fundamental difference - Freddy appends itself to .COM
+files, instead of adding its code to the beginning.
+
+- -frisk
+
+------------------------------
+
+Date:    Thu, 26 Nov 92 08:54:12 -0500
+From:    KARGRA@GBA930.ZAMG.AC.AT
+Subject: Version-number of scan (PC)
+
+At first I need to tell, this NO FLAME. I'm just curios. Mr. Goretsky
+wrote, that the number after the "V" tells how many viruses are found
+by the version.  That seems somehow strange. Do you invent a new virus
+in order to skip a versionnumber which was already used by a trojan?
+Currently I assume, you just wait for the next virus to appear, then
+add it to the update, and skip the trojan's number. Is this the right
+way to see things ?
+
+Alfred
+##############################################################################
+Alfred Jilka             #
+Geologic Survey, Austria # Shall I raise the white towel or throw the flag ???
+KARGRA@GBA930.ZAMG.AC.AT #
+##############################################################################
+
+------------------------------
+
+Date:    26 Nov 92 14:08:16 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Bug in F-Prot2.06a (PC)
+
+voorhis@aecom.yu.edu (Adrienne Voorhis) writes:
+
+>      Using a 486/33 with 8 meg of ram, and using QEMM, I executed
+> XTreeGold 2.5 from within DESQView/X.  I then select F-Prot2.06a from
+> the command line within XTree (which now shows 405,744 bytes available
+						 ^^^^^^^
+> in convetional memory.)  After getting the F-Prot menu, I select
+> "Viruses," then "Information."  When I then select any virus, I find
+> myself out of F-Prot with the message "Out of Memory Error," and back
+> at the command line for XTree.  As I said, hardly a pure example...
+
+The amount of your free conventional memory is the problem. F-Prot
+2.06a requires about 450 Kb free memory. When I am running DesqView, I
+have about 350 Kb free memory in a DOS window. F-Prot is able to
+detect that it might not be enough and outputs a warning. Obviously,
+the 396 Kb of free memory that you have are not enough either, but
+they are too close to the limit and the program does not detect that.
+
+BTW, F-Prot is still able to work when there is not enough memory. I
+mean, to work as a scanner, in command-line mode. The functions that
+need a lot of memory are the heuristic analyzer and the virus help
+database. So, if you are not using them, you should have no problems.
+
+But I agree that not detecting the fact that the amount of free memory
+is not enough is a bug and has to be fixed.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 14:22:50 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Comment on the MtE wars (PC)
+
+tck@bend.ucsd.edu (Kevin Marcus) writes:
+
+> >> If you have a disasssembler, or even debug, you can spend a few hours
+> >> and figure out how to take care of a variety of infections.
+> >
+> >And you'll end up with yet another unreliable MtE detector... :-)
+
+> What other methods would you suggest to make a more reliable detector,
+> then?
+
+There are several possibilities.
+
+The most reliable one is to write an 80286 emulator and to interpret
+the decryptor of the virus, until it has decrypted itself, then use a
+standard scanning technique on the decrypted virus body. As far as I
+know, UTScan uses this, and also an anti-virus program, written by the
+Russian anti-virus researcher Eugene Kaspersky. The drawbacks of this
+method are that it tends to be slow.
+
+Another methods is to use some kind of heuristics, in order to sieve
+out those files that are obviously not infected and then apply careful
+analysis on the rest. I believe that F-Prot and Dr. Solomon's
+FindVirus do something like that, but I am not certain.
+
+A third method is to write a finite automate that can recognize all
+possible decryptors, generated by the MtE. It's rather difficult to do
+it, since it requires a very detailed analysis of the MtE and deep
+understanding of what it does. Furthermore, you have to combine this
+method with a simple scan string search, in order to spot the
+unencrypted replicants, because they don't have decryptors. I believe
+that the MTE.AVR module for TbScan/HTScan by Frans Veldman does
+something like that.
+
+A fourth method is to look for the instruction in the decryptor that
+actually performs the decryption. It is either a direct XOR, or the
+xor function is performed in the registers (sometimes - using a
+combination of NOT, NEG, etc.) and the result is MOVed at the
+appropriate place. This is achieved with a relatively limited set of
+addressing modes (unlike the V2P6Z, where almost all possible
+addressing modes are used), so it's relatively easy to spot. The fact
+that the decryptor always ends in a JNZ backwards helps to reduce the
+false positives. The program CatchMtE does something like that.
+
+A fifth method was told to me by Gary Watson (all my attempts to
+contact him by e-mail failed). You could scan the first few bytes of
+the files for a JNZ backwards (the decryptor seems to never exceed 161
+bytes), make sure that no instruction before it jumps after it, then
+modify this JNZ to an instruction that points to your own code, so
+that you receive control on every decryption loop, and then execute
+the code. This is extremely dangerous, because if the virus writer
+knows that you are actually transferring control to his code, he could
+do a lot of nasty things to you... Just interpreting the code (the
+first method) is much safer.
+
+There are certainly other methods to do it. If anybody knows something
+that I have missed, it would be nice to see it described here. For
+instance, I am interested which method exactly is used by the IBM
+scanner - it detects the MtE-based viruses very reliably...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 14:01:47 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: AMIGA viruses? (Amiga)
+
+rem@buitc.bu.edu (Robert Mee) writes:
+
+> I have recently been volunteering with a local cable public access
+> channel and was wondering if anybody has a current list of AMIGA
+> viruses and their symptoms, and solutions.
+
+64 of the about 150 existing Amiga viruses are described in the
+Amiga section of the Computer Virus Catalog, published by VTC-Hamburg.
+It is free and can be obtained by anonymous ftp. Get the file
+
+ftp.informatik.uni-hamburg.de:/pub/virus/texts/catalog/amigavir.zip
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    25 Nov 92 13:23:15 +0000
+From:    duck@nuustak.csir.co.za (Paul Ducklin)
+Subject: Re: Things that keep me awake at night
+
+Thus spake AMN@vms.brighton.ac.uk (Anthony Naggs):
+>ACTIVE MONITORS:
+>Require:    some detailed knowledge of viruses.
+>Result:     detect 'virus like' behaviour.
+>Usage:      resident.
+>Failings:   may not recognise new viruses.
+>Purpose:    sentry system, useful for all PCs - very few false alarms
+                                                 ^^^^^^^^^^^^^^^^^^^^^
+Wot?
+
+Breaking the rules is par for the course under DOS. If it weren't then
+we shouldn't have tools to sort directories, defrag discs and other
+wonderful features every powerutility set's got these days.
+
+Also, tunnelling viruses don't really display "virus like" behaviour.
+Active monitors have their place, but as for "useful for all PCs" --
+I sincerely doubt it.
+
+- -- 
+- --..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--
+Paul Ducklin                                       duck@nuustak.csir.co.za
+
+  CSIR Computer Virus Research Lab * Box 395 * Pretoria * 0001 S Africa
+
+------------------------------
+
+Date:    Wed, 25 Nov 92 14:46:32 -0500
+From:    hobbit@ftp.com (*Hobbit*)
+Subject: source for tools
+
+It's been stated many times in the past why source for scanners is
+kept a deep secret.  Does the same thinking generally apply to
+integrity checkers?  It occurs to me that a given integrity checker
+should not rely on secrecy of its own checksumming algorithm, for
+instance, for its "security" -- rather, algorithms should be freely
+distributable [because someone will soon figure it out anyway!] and
+the security mechanism should be based on some seed key which is
+unique to a given system -- in short, a type of encryption technology
+in which a virus would need to know the "key" to try to defeat the
+integrity checking mechanism.
+
+The related question, I suppose, is this: are there any integrity
+checking packages floating around the net that include full source?
+'Twould make *me* feel better about running it, anyway...
+
+_H*
+
+------------------------------
+
+Date:    Thu, 26 Nov 92 06:08:24 -0500
+From:    "David Smith" <davidsmith@vnet.ibm.com>
+Subject: CHRISTMA Data (CVP)
+
+rslade@sfu.ca says:
+
+>However, numerous reports state that once CHRISTMA had mailed itself off, the
+>'origional' message erased itself.
+
+While this may be the case the CHRISTMA virus used a users nicknames
+file to fi nd user ID's to send itself to. It stands to reason that
+the majority of users will have nicknames for users who have nicknames
+for them. Therefore ( if you f ollow the above ) any userwho sent on
+the CHRISTMA virus would be bound to rec eive it again by return
+whether it had erased itself or not.
+
+David Smith
+
+------------------------------
+
+Date:    25 Nov 92 13:05:34 +0000
+From:    duck@nuustak.csir.co.za (Paul Ducklin)
+Subject: Re: Trailer for EICAR'92 conference, Munich 7th to 9th December 1992
+
+>Time to remind you all about this year's conference held by the European
+>Institute for Computer Antivirus Research.
+
+Yes, NetLanders, see you there. 
+
+[Don't forget that conference delegates will get an outstanding
+ side-benefit -- viz: the opportunity to sample Hacker Beer!]
+- -- 
+- --..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--
+Paul Ducklin                                       duck@nuustak.csir.co.za
+
+  CSIR Computer Virus Research Lab * Box 395 * Pretoria * 0001 S Africa
+
+------------------------------
+
+Date:    Thu, 26 Nov 92 09:43:00 +0000
+From:    Anthony Naggs <AMN@VMS.BRIGHTON.AC.UK>
+Subject: Correction to; Trailer for EICAR'92 conference
+
+Sorry folks, a had a typo in the organiser's details, they should be:
+        Phone:  +49 721 96 20 11        (Germany: 0721 96 20 11)
+        Fax:    +49 721 962 01 99       (Germany: 0721 962 01 99)
+
+Anthony Naggs
+Software/Electronics Engineer                   P O Box 1080, Peacehaven
+(and virus researcher)                          East Sussex  BN10 8PZ
+Phone: +44 273 589701   (UK: 0273 589701)       Great Britain
+Email: (c/o Univ of Brighton) amn@vms.brighton.ac.uk  or  xa329@city.ac.uk
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 191]
+******************************************

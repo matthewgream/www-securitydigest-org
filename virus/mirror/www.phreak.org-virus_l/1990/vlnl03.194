@@ -1,0 +1,414 @@
+VIRUS-L Digest   Wednesday,  5 Dec 1990    Volume 3 : Issue 194
+
+Today's Topics:
+
+Obtaining McAfee programs (PC)
+New files on MIBSRV (PC)
+STONED again (Was Re: How safe are FTP sites from viruses? (PC))
+LZEXE - a possible anti virus application (PC)
+Help! Anybody here of this virus? (PC)
+AntiVirus Plus (PC)
+Virus Scanning Products & PKZIP -AV Option.
+University Policy
+PKZIP Auto-Verification feature.. (PC)
+UK Computer Crime Unit
+Need info on McAffee AVS (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Tue, 04 Dec 90 08:06:00 -0400
+From:    Bob Martin <ACSMARTIN@EKU.BITNET>
+Subject: Obtaining McAfee programs (PC)
+
+Folks,
+
+John McAfee, et.al. has released the latest version of their anti-virus
+programs. The release numbers are Scanv71, Cleanp71, & Vshld71. I
+believe the release date was 01-Dec-1990.
+
+For those of you that are concerned about getting ONLY McAfee's programs
+- -- the number to his BBS is --> 408 988-4004  -- there are eight 2400
+baud lines.
+
+I will also be happy to send the files across the net, but that may
+asking too much from the network.... :)
+
+[Ed. Also, see next message...]
+
+Bob Martin -- Eastern KY U
+Bitnet: Graphics@eku.bitnet  or Acsmartin@eku.bitnet
+
+------------------------------
+
+Date:    Sat, 01 Dec 90 23:14:23 -0600
+From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New files on MIBSRV (PC)
+
+The following files have been made available for anonymous FTP at
+mibsrv.mib.eng.ua.edu (130.160.20.80) in the directory
+pub/ibm-antivirus:
+
+cleanp71.zip  -  McAfee's CleanUp program v71
+scanv71.zip   -  McAfee's Scan v71
+netscn71.zip  -  McAfee's NetScan v71
+vshld71.zip   -  McAfee's VirusShield v71
+
+These files were downloaded from Homebase on December 1, 1990 at 19:30.
+- ----------
+Don't wear earmuffs in a land of rattlesnakes.
+- ----------
+James Ford -  JFORD@UA1VM.UA.EDU, JFORD@MIBSRV.MIB.ENG.UA.EDU
+              THE University of Alabama (in Tuscaloosa, Alabama  USA)
+
+------------------------------
+
+Date:    Fri, 30 Nov 90 10:45:00 +0100
+From:    "Nick FitzGerald" <CCTR132@csc.canterbury.ac.nz>
+Subject: STONED again (Was Re: How safe are FTP sites from viruses? (PC))
+
+In Virus-L V3 #190 Patrick Ryan <sauron@stretch.cs.mun.ca> wrote:
+
+I am getting a little impatient with the rapidly proliferating
+mythinformation about STONED in this list, so please excuse the tone
+of this posting.
+
+>maven@rata.vuw.ac.nz (Jim Baltaxe) writes:
+>
+>>     Just a reminder that the Stoned virus is a boot sector invader
+>>     and executes only when a machine is booted from an infected disk.
+>>     Simply running _any_ program whether FTP'd or not will not result
+>>     in activating this virus. Therefore, there must have been another
+>
+>Are you SURE?  I would disagree... the lab in our building has Stoned
+>infections occurring very frequently, and not all of them are due to
+>people booting from infected disks.  If that WERE the case, how would
+>it spread to a floppy from hard drive?
+
+**ARE YOU SURE??** If so then you must have a new variant of STONED,
+and it's a miracle that your virus scanners find it because most of
+them *ONLY* look in the boot sector for STONED, because **STONED IS A
+__BOOT SECTOR__ INFECTOR**.  (I seriously doubt that the code
+fragment/s the scanners search for would remain unchanged in such a
+mutant, but it is possible.)
+
+Attempting to boot off **ANY** Stoned-infected disk will install STONED.  The
+infected disk **DOES __NOT__** have to be a system disk.
+
+REPEAT:
+Attempting to boot off **ANY** Stoned-infected disk will install STONED.
+
+In answer to Patrick's question re spreading from HD to floppy:
+
+When executed (at bootup), STONED reserves 2K at top of memeory, takes
+over the BIOS interrupt 13H vector, checks if clock ticks mod 8 is
+zero (and if booting from floppy?) and outputs "Your PC is now
+Stoned!" if so, checks for hard disk to infect (if booting from
+floppy), then loads and executes the original master boot record
+(which it hid somewhere relatively safe when the disk was first
+infected.)  (At this point bootup will fail if you have an infected
+non-system disk in A:, but the virus will remain active if you insert
+a system disk in A: or open the drive door and allow bootup to proceed
+from your HD.)  Any subsequent calls to INT 13H, requesting READ or
+WRITE functions, result in the viral code being activated first.  The
+virus then checks the disk in A: for a STONED infection, if a
+non-infected disk is found the virus infects that disk, then returns
+control to the original INT 13H code.  This means that doing a DIR on
+a clean floppy in an infected machine will result in the disk being
+infected.
+
+The important thing about STONED (and probably most other boot sector
+infectors) is that re/booting with *ANY* infected disk in A: (doing
+the three fingered salute while you have a data disk in A: - who
+hasn't done this??)  will result in the virus going resident.  If you
+have a non-infected HD it will normally be infected at this point.
+When people say they booted off a clean HD, but now have a virus, if
+it is a boot sector infector you can bet your life savings that they
+had a floppy in A: with the door closed.  What they mean is that the
+system *loaded* off the HD - they *booted* off A:.
+
+Now for some speculation: It is conceivable that a trojan could be
+written to spread the STONED (or any other) virus.  At execution,
+apart from doing whatever the prog was supposed to do, it would have
+to do what the virus it harboured does when infecting/installing
+itself.  I have neither seen nor heard of such a beast, but it is
+possible that executables could spread virii that *by themselves* only
+spread through boot sector mechanisms.
+
+Readers who aren't already aware may be interested to know that Jim
+Baltaxe was one of the people at Victoria University involved in
+diagnosing and identifying the STONED virus.
+
+- ---------------------------------------------------------------------------
+ Nick FitzGerald, PC Applications Consultant, CSC, Uni of Canterbury, N.Z.
+ Internet: n.fitzgerald@csc.canterbury.ac.nz        Phone: (64)(3) 642-337
+
+------------------------------
+
+Date:    Tue, 04 Dec 90 14:19:12 -0500
+From:    tfarrell@lynx.northeastern.edu
+Subject: LZEXE - a possible anti virus application (PC)
+
+I use a program on my hard drive called LZEXE. It is a shareware
+program from France, used to compress EXE files so that they take up
+less disk space. It often achieves approximately 50% savings, and
+still allows you to run the program. It decompresses the file directly
+into memory at an astounding speed. If you have a 286 or better, you
+probably wouldn't even notice the loss of time. The really neat part,
+though, is that it includes a self-check into every file compressed
+with the utility, so that if the file has been changed it will notify
+you. This would detect the presence of a virus in the software.
+
+	The program is easy to use, and can also compress COM programs
+if they are converted to EXE's. I would be willing to file transfer it
+to anyone who wants it directly from my PC. I've been using it for
+about 6 months now without problem, and it passes the latest SCAN I
+have, so I think it's safe to assume it's clean. Anyway, if you want
+to file transfer it from me, send me E-mail at my above listed address
+and we can make arrangements. I support most standard transfer
+protocols.
+			Tom Farrell
+
+------------------------------
+
+Date:    04 Dec 90 20:48:09 +0000
+From:    gregs@cs.washington.edu
+Subject: Help! Anybody here of this virus? (PC)
+
+We've discovered what looks like a virus on our DOS PC's, and would like
+any feedback from anybody familiar with the following symptoms:
+
+1. io.sys size increased by 66 bytes;
+2. io errors create four files that loop endlessly,
+   i.e. a.bat to b.bat to c.bat to d.bat to a.bat;
+3. non-movable blocks inserted on the hard drive: is this a worm?
+
+Please respond by email.
+
+Thanks,
+Greg Sharp
+gregs.cs.washington.edu
+
+------------------------------
+
+Date:    Tue, 04 Dec 90 12:04:25 -0800
+From:    p1@rlyeh.wimsey.bc.ca (Rob Slade)
+Subject: AntiVirus Plus (PC)
+
+I received AntiVirus Plus today for review, and find that the related
+files INST.EXE, PRE_INST.EXE and PREVENT1.EXE are all considered (by
+F-PROT) to be infected with the 4096 virus.  SCAN gives no alarms.  I
+assume, pending further tests, that Techmar is using the same search
+string that frisk is.
+
+------------------------------
+
+Date:    04 Dec 90 17:07:00 -0400
+From:    "DRCV06::OPER1" <oper1%drcv06.decnet@drcvax.af.mil>
+Subject: Virus Scanning Products & PKZIP -AV Option.
+
+> abvax!iccgcc.decnet.ab.com!herrickd@uunet.UU.NET writes:
+
+>>>Does Authenticate Verification really do something that is not
+>>>subvertible?  Forgive my skepticism.  What does it say it does?
+
+> p1@rlyeh.wimsey.bc.ca (Rob Slade) writes:
+>>>Subject: ZIPping with -AV (PC)
+
+>>>      oper1%drcv06.decnet@drcvax.af.mil (DRCV06::OPER1)
+>>>suggests that files could be garanteed safe if the authors used the -AV
+>>>switch when ZIPping the files.  What is to prevent anyone from infecting
+>>>the file, and then reZIPping the infected files ... with -AV on?
+
+>>>A genuine, authentic infection ...
+
+	Well I forgot a few things.
+1).  PKZIP with -AV option is only available in the USA so only people
+     with the USA version could ZIP files with this option.  I don't know
+     if PKUNZIP (overseas) can handle ZIP files that have the AV on.
+
+2).  The PKZIP that the VIRUS SCANNER author uses would be registered
+     to him/her with his/her name and a unique Serial #.
+     So even if someone unzipped the file and rezipped it with -AV
+     option the name & serial number would be different.  So you
+     could tell if the zip file was tampered with even if it
+     was without malicous intent.
+
+PS.  The PKZIP -AV option is only available to REGISTERED USERS.
+
+Glenn.
+
+------------------------------
+
+Date:    Tue, 04 Dec 90 15:28:07 -0700
+From:    rtravsky@UWYO.BITNET (Richard W Travsky)
+Subject: University Policy
+
+If you are part of a university site (as mine is),  I have a question or two
+about your virus policy.
+
+- - In the broadest sense,  what _is_ your policy?  Is it written down as a
+  statement by your computer center?  (If so,  would it be possible to obtain
+  a copy?)
+
+- - If you use scanners/disinfectors,  do you distribute them or do you only use
+  them yourselves in response to a call from a user?
+
+- - If you do distribute scanners/disinfectors,  what sort of support do you give
+  for the packages?  (Documentation,  training,  etc.)
+
+- - How do you respond to calls from users?  Personal visits (for things like
+  networks or hard drives),  have them come by in person (like for a diskette)?
+
+- - Do you have penalties for users caught knowingly spreading a virus?
+
+- - What packages do you use/recommend?  Are they commercial or
+  shareware/public_domain?  (We're on a budget here;  guess which kind we're
+  likely to use...)  Which have worked the best?
+
+- - Anything you'd like to add.
+
+Thank you for your time!  If you respond to the list,  please cc: me so that
+I won't have to wait for the digest.
+
+Richard Travsky                        Bitnet:   RTRAVSKY @ UWYO
+Division of Information Technology     Internet: RTRAVSKY @ CORRAL.UWYO.EDU
+University of Wyoming                  (307) 766 - 3663 / 3668
+
+------------------------------
+
+Date:    Tue, 04 Dec 90 15:09:26 -0800
+From:    Charles <USERQS88@SFU.BITNET>
+Subject: PKZIP Auto-Verification feature.. (PC)
+
+There seems to be a common misconception floating around that just anybody
+can use the auto-verification feature of PkZip.
+
+This just isn't so!
+
+In the documentation that comes with PkZip, it states that you have to get
+in touch with Phil Katz, and give him some information about your company's
+name; he will then send you a corresponding verification key that you
+apply to the programs you are pkzipping..  This key is kept private, so in
+effect, the whole system is a public-key cryptography system.
+
+Someone mentioned earlier that a trojan version of PkZip was released by
+someone.  This trojan version reported that the auto-verification key was
+correct, and the software was intact.  There are two ways this could have
+happened:
+   1) The correct verification key was discovered, allowing any zip file
+      to be stamped with Phil Katz's own signature, in which case, I'd be
+      worried about the security, or...
+   2) The self-extracting archive was modified to ignore the signature, and
+      report "All's well!".
+The second method can be tested by using PkZip 1.1 to test the signature,
+instead of 'PkZip 1.2' (the trojan version).
+
+Does anybody know the workings of the AV system, or more importantly, how
+big the signature is, and whether two different signatures produce the same
+result?
+
+And as an aside, does anybody know how secure the PkZip encryption method is;
+since the US Government insisted on the encrypting version of PkZip staying
+within the boundaries of the US, one would suspect that it is pretty good.
+
+>From the desk of: Charles Howes
+  USERQS88@SFU.BITNET - USERQS88@cc.sfu.ca  (Expires soon)
+  c275387@csil.cs.sfu.ca  (ditto)
+In Canada, 1-604-531-5623  (Will never expire!)
+
+Note: Students don't have opinions.  :-)
+ Simon Fraser University, Burnaby, BC, Canada
+
+------------------------------
+
+Date:    Tue, 04 Dec 90 16:32:42 -0700
+From:    rtravsky@UWYO.BITNET (Richard W Travsky)
+Subject: UK Computer Crime Unit
+
+From:    Stephen Carter <stevedc@syma.sussex.ac.uk>:
+> davidf@cs.hw.ac.uk (David J Ferbrache) writes:
+> > The UK police have established a central "Computer crime unit" who are
+> > interested in monitoring all infections by computer viruses within the UK.
+> ...
+> > They are keen for any person, organisation or company infected by a
+> > virus to report the infection. This will allow the construction of a
+> > picture of the damage caused by the virus infection, and provide
+> > useful background material for a prosecution if the author is ever
+> > located.
+> ...
+> Eh?  Silly.  Surely if they are really serious about this they'd get a
+> feed off the net and read this newsgroup!
+
+They may have a feed.  Even if they don't, not every company or
+organization that uses pcs/macs will have a feed.  Besides, reading
+the list isn't the same as filling out a report to the police...
+Consider also many do not report such things (for one reason or
+another - such as not knowing who to report it to) and if nothing else
+this will elicit the scope of infections.
+
+> Anyway, can we really believe that 'they' take any computer crime seriously
+> when such a small unit is set up, in which BTW at least 3 of the 4 officers
+> by all accounts only serve in it for a relativley short period of time...
+
+Sounds like first they'd want to gather statistics to see how much of
+problem it is before justifying more people and resources.
+
+P.S. Do they get to wear neat uniforms?
+
+Richard Travsky                        Bitnet:   RTRAVSKY @ UWYO
+Division of Information Technology     Internet: RTRAVSKY @ CORRAL.UWYO.EDU
+University of Wyoming                  (303) 766 - 3663 / 3668
+
+------------------------------
+
+Date:    04 Dec 90 19:03:01
+From:    mlbarrow@ATHENA.MIT.EDU (Michael L Barrow)
+Subject: Need info on McAffee AVS (PC)
+
+Hello fellow netters:
+
+I am a student consultant in the Micro support division of Information
+Services at MIT. After doing an anti-viral software (AVS) evaluation, we
+decided that McAffee was the best. We were able to get a price deal if
+our computer store purchases in groups of 100.
+
+Unfortunately, the store does not think anyone will buy that many
+packages. They wanted to buy in groups of 25. The McAffee rep wouldn't
+go that low (I don't blame him), so the computer store wants to buy from
+the second choice (ViSpy) because they'll sell in groups of 25.
+
+I think that McAffee's product is by far superior to anything else that
+we have evaluated. I also think that there are a lot of people out there
+that like McAffee as well as myself. This is where you people might be
+able to help me!
+
+If you like McAffee (or even if you don't) please send me email
+(mlbarrow@eagle.mit.edu) telling me why you like or dislike McAffee's
+package. If you dislike McAffee, please tell me which package you're
+using and why you selected this package. I am willing to compile all the
+responses and make them available to those that want 'em.
+
+Thanks in advance for your cooperation & happy hunting!
+
+- -- Michael Barrow
+   (mlbarrow@eagle.mit.edu) != (mlbarrow@mit.edu || mlbarrow@athena.mit.edu)
+   "The views expressed here do not necessarily represent those of the
+Massachusetts Institute of Technology or any subset thereof, except me!"
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 194]
+******************************************

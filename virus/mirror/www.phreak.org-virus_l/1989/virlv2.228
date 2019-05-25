@@ -1,0 +1,321 @@
+
+VIRUS-L Digest   Tuesday, 31 Oct 1989    Volume 2 : Issue 228
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Fri 13 virus in Taiwan
+Checksum programs
+New Variant of WANK Worm (VAX/DECnet)
+
+[Ed. This VIRUS-L issue is going out early to get the WANK notice out
+in a reasonably timely manner.]
+
+---------------------------------------------------------------------------
+
+Date:    Tue, 31 Oct 89 08:02:54 -0500
+From:    Elliott Parker <3ZLUFUR%CMUVM.BITNET@VMA.CC.CMU.EDU>
+Subject: Fri 13 virus in Taiwan
+
+     The following is from "The Free China Journal" (19 Oct 89):
+
+     Head:  Phantom Virus Unseen In ROC
+
+     The "Friday the 13th" computer virus that was supposed to wipe
+     out the world's IBM-compatible computer systems failed to
+     materialize in Taiwan.
+
+          Mitac, Inc., one of Taiwan's leading computer companies
+     reportedly discovered some of its personal computers were infected
+     by the virus, but a spokesman said the virus not the one called
+     "Friday the 13th."
+
+          No attack was reported in other computer companies, including
+     Acer Inc., Eten Technology, Kuo Chiao, HP or Digital.  Computer
+     systems in local banks and securities firms worked well on Oct. 13.
+
+          The post office in Taipei was thrown into panic when it was
+     discovered none of its computers worked.  But it was determined the
+     breakdown was caused by the motor of a disk drive.
+
+- ------------------------------------------------------------------------
+Elliott Parker                   BITNET: 3ZLUFUR@CMUVM
+Journalism Dept.                 Internet: eparker@well.sf.ca.us
+Central Michigan University      Compuserve: 70701,520
+Mt. Pleasant, MI 48859           BIX: eparker
+USA                              UUCP: {psuvax1}!cmuvm.bitnet!3zlufur
+
+------------------------------
+
+Date:    Tue, 31 Oct 89 14:47:32 +0200
+From:    Y. Radai <RADAI1%HBUNOS.BITNET@VMA.CC.CMU.EDU>
+Subject: Checksum programs
+
+  Bob McCabe writes:
+>  While working out the algorithm for this check it struck me
+>that it should be possible to work out a scheme by which any
+>program could check itself at load time for infection.  ....
+>Presently, I am working on a system of prime number coding in
+>which the CRC check of the EXE file is compared with a encoded
+>CRC. The coding of the CRC would be done with a large prime
+>number, chosen at random from a table.
+
+  Fine, just be aware that dozens of people have done it before you.
+(There must be at least 30 such programs for the PC alone.)  But I
+don't mean to discourage you; some such programs are much better than
+others.  And if you can think of a better way of doing it, more power
+to you.
+  In my opinion, the most important requirements on a checksum program
+are:
+(1) For any given file it must yield a different checksum on each com-
+    puter.
+(2) Even if the checksum algorithm and checksum length are known,
+    without knowledge of the key (the generating polynomial in the
+    case of a CRC algorithm), it should be impossible to modify a file
+    in such a way that the checksum remains unchanged.
+(3) It must be able to checksum the boot sector and partition record
+    (in PC terminology) in addition to arbitrary files.
+(4) It should check file sizes as well as checksums.
+(5) It must be convenient to specify and update the list of files to
+    be checksummed.
+(6) A naively written checksum program (and most of them are, unfortu-
+    nately, of this type) will contain loopholes which a clever virus
+    creator can exploit to introduce a virus despite the checksumming.
+    The author of the checksum program must therefore try to think of
+    every such loophole and plug it.
+(7) It must be reasonably fast.
+
+  While almost every author concerns himself with (7), there are lots
+of programs (e.g. FSP) which do not satisfy most (or even any) of the
+other requirements.
+
+  Btw, I'm curious to know what importance you attach to making the
+number prime.
+
+  John Sangster comments on Bob's posting as follows:
+>                                         it is fairly well known that
+>since the CRC process is linear over the binary field (commonly called
+>"GF(2)" by algebraists), it is little more than a high school algebra
+>exercise to make your desired changes to the program, then make a few
+>more bits' worth of additional changes (determined by simple linear
+>algebra over GF(2)) which restore the CRC bits to their former value so
+>that they will still perfectly match the bits recovered from the
+>encrypted CRC -- thus defeating the protection scheme.
+
+  This is a common opinion, but is incorrect in the current context.
+You can restore the CRC to its former value *only if you know the ge-
+nerating polynomial*.  But condition (1) above, when implemented with
+a CRC algorithm, is usually fulfilled by either selecting the genera-
+tor randomly when the checksum base is initially set up, or by letting
+the user select it personally.  In this situation, the above tech-
+nique is useless.
+
+  In the majority of cases, this technique would not work even if the
+generator were known, since the viral code will increase the size of
+the file (unless the virus is restricted to infecting particular files
+having unused space, as in the case of the Lehigh virus).  Since a
+checksum program should also compare the *sizes* of the files (re-
+quirement (4) above), the change would be detected.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI1@HBUNOS.BITNET
+
+------------------------------
+
+Date:    Tue, 31 Oct 89 08:56:00 -0500
+From:    TENCATI@NSSDCA.GSFC.NASA.GOV (SPAN SECURITY MGR. (301)286-5223)
+Subject: New Variant of WANK Worm (VAX/DECnet)
+
+============================================================================
+INTER-NETWORK MEMORANDUM                               SPAN MANAGEMENT OFFICE
+=============================================================================
+                                                                  30-OCT-1989
+
+TO:     ALL SPAN SYSTEM MANAGERS
+
+FROM:    SPAN MANAGEMENT OFFICE
+    GODDARD SPACE FLIGHT CENTER  CODE 630.2
+    GREENBELT, MD. 20771
+    (301)286-7251
+
+SUBJ:   SECURITY GUIDELINES TO BE FOLLOWED IN LATEST WORM ATTACK
+
+                            ----------
+
+A variant of the 16-Oct worm has been restarted on the DECnet internet.
+This worm is a slightly modified copy of the original worm that infected
+the networks last week.  The method of attack is identical to the last
+except that this version calls itself OILZ_nnnn instead of NETW_nnnn.
+
+This variant of the worm changes the password of the account it
+penetrates unlike its predecessor which only changed passwords if it
+penetrated a privileged account.
+
+The effect of this modification is that if the DECNET account is breached
+(Userid DECNET, Password DECNET), changing of the password will disable
+further *INBOUND* network connections to the node, effectively removing it
+from the network.  THIS IS THE PRIMARY WAY IN WHICH THE CURRENT WORM IS
+ACHIEVING SUCCESS.
+
+The previous precautions and guidelines issued by this office are still
+applicable and valid.  The following 5 procedures should be implemented on
+all DECnet nodes to ensure that the worm cannot gain access to your node.
+
+                            ----------
+
+1) The current worm has been modified to attack the default DECNET account
+   first. It attempts to enter the default DECNET account with user=DECNET
+   and password=DECNET.  This is the default set up.  IT MUST BE CHANGED.
+   To change it, two things have to be done:
+
+    $MCR AUTHORIZE
+    UAF> mod DECNET /pass=<something>     !anything BUT "DECNET"
+    UAF> mod DECNET /flag=lockpwd/nobatch/prclm=0
+    UAF> exit
+
+   Then, to match default access control information in the executor (so
+   MAIL and NML will still work):
+
+    $MCR NCP
+    NCP> set executor nonpriv pass <something> !NOTE this MUST match what
+                            you set in AUTHORIZE!
+
+   The above changes will not effect operation of your system, but will
+   prevent the worm from entering via your default DECNET account.
+
+2)  DISABLE THE TASK OBJECT
+
+    The TASK Object MUST be removed from your DECnet database.
+    There are two methods by which you can accomplish this:
+
+    1. In SYSTARTUP.COM/SYSTARTUP_V5.COM, after the call to
+       @SYS$MANAGER:STARTNET, insert the following line:
+
+        $ MCR NCP CLEAR OBJECT TASK ALL
+
+           THIS COMMAND MUST BE EXECUTED *EACH TIME* THE NETWORK
+       IS STARTED OR RESTARTED.  DOING IT AT BOOT-TIME ALONE
+           IS NOT SUFFICIENT.
+
+    2. Instead of option 1, the following commands can be issued
+       ONCE from a privileged account to permanently change the
+       information in the DECnet database for the TASK object:
+
+       $ MCR NCP SET OBJECT TASK PASSWORD <type an INCORRECT password>
+       $ MCR NCP DEF OBJECT TASK PASSWORD <type an INCORRECT password>
+
+
+      If for some reason you MUST have a TASK object, please call the
+      SPAN network office at (301)286-7251.
+
+
+3a) Protect SYS$SYSTEM:RIGHTSLIST.DAT so that it is has no protection bits
+   set for the WORLD category of users. This is how the attacking worm
+   determines who your valid users are.  There is some discussion about
+   this approach, it apparently works on 4.7 thru 5.1-1 systems, reports
+   from systems testing this approach say it breaks under V5.2.  So there
+   are 2 other approaches, set an ACL on RIGHTSLIST.DAT disabling NETWORK
+   access, or using a logical name to point to RIGHTSLIST.
+
+                              **NOTE**
+   THE ACL APPROACH MAY REQUIRE A REBOOT TO PURGE THE OLD RIGHTSLIST.DAT
+   ON V4.7 SYSTEMS.
+
+ b) Place an ACL on RIGHTSLIST.DAT to prevent network access of your user names
+.
+   For V5.X:
+
+   SET ACL SYS$SYSTEM:RIGHTSLIST.DAT /ACL=(IDENTIFIER=NETWORK,ACCESS=NONE)
+
+   Version 4.X systems have a more difficult time of it since the file
+   locked by other images.  The suggested way of protecting it is from
+   the SYSTEM account to:
+
+      SET DEFAULT SYS$SYSTEM:
+      COPY RIGHTSLIST.DAT *.TEMP
+      SET ACL RIGHTSLIST.TEMP /ACL=(IDENTIFIER=NETWORK, ACCESS=NONE)
+      RENAME RIGHTSLIST.TEMP *.DAT
+
+   On completion, make sure that the protection is correct (W:R).
+
+   You should purge the file as soon as possible.  However, you may
+   not be able to purge until the system has either been rebooted or
+   OPCOM  has been stopped and restarted.
+
+ c) The logical name approach relies on "hiding" RIGHTSLIST.DAT and defining
+   a system wide logical name that points to it.  Network access does not
+   translate this logical name.
+
+   $RENAME SYS$SYSTEM:RIGHTSLIST.DAT any_old_file_you_want.dat
+
+   $DEFINE/SYSTEM/EXEC    RIGHTSLIST any_old_file_you_want.dat
+
+         As long as the logical symbol RIGHTSLIST points to the *real*
+     file, it doesn't matter what you name it, or where it is.
+     The worm EXPECTS it to be in SYS$SYSTEM:RIGHTSLIST.DAT.
+
+4) If possible, verify that none of your users are using their username for
+   their password.  Chances are that if they were, you'd have a worm
+   running on your node right now though. The SPAN office has a toolkit
+   available which contains a program that can be used for this purpose.
+   Contact NCF::NETMGR for details.
+
+5) Place an ACL on the default BATCH QUEUE of Version 5.x systems.
+
+   SET ACL SYS$BATCH/OBJECT=QUEUE  /ACL=(IDENTIFIER=NETWORK, ACCESS=NONE)
+
+   ACLS  are not supported on batch queues in Version 4.  It is
+   suggested remote Batch be disable by inserting the following command as
+   the first command in SYS$SYSTEM:NETSERVER.COM:, after the label LOOP:
+
+      $ DEFINE SYS$BATCH NO_SUCH_QUEUE
+
+   This will prevent the command from ever getting the correct queue.
+
+                            ----------
+DEC also recommends that certain SYSGEN parameters be modified in
+order to thwart an attack technique the worm utilizes. The SPAN
+management supports these suggested modifications:
+
+    $MCR SYSGEN
+    USE CURRENT
+    SET LGI_BRK_TERM 0
+    SET LGI_BRK_TMO 3600
+    SET LGI_HID_TIM 86400
+    WRITE ACTIVE
+    WRITE CURRENT
+    EXIT
+    $
+
+If you have been attacked by this worm, please send the node name/number
+that the attack came from and if possible, the username of the attacker.
+
+Send this information your local Routing Center Manager and to NCF::NETMGR
+on SPAN, 6277::NETMGR on HEPnet/Other nodes on the DECnet Internet.
+
+The SPAN Management office also has a new version of ANTI_WANK.COM which can
+be started in a node's batch queue to search-out and report/destroy worms
+which may be running on a node.  For copies of this procedure, send mail to
+NCF::NETMGR.
+
+REMINDER -  The NSI Networking Users Group (Formerly SPAN Data System Users
+         Working Group - DSUWG) is meeting at Goddard Space Flight Center
+        on NOV 13-15.  All members of the SPAN community are invited
+        to attend.  For information, contact Valerie Thomas, SPAN
+        Project Manager at (301) 286-4740, or send mail to NCF::THOMAS.
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

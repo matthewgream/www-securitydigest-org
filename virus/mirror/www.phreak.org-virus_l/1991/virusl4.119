@@ -1,0 +1,601 @@
+VIRUS-L Digest   Tuesday,  9 Jul 1991    Volume 4 : Issue 119
+
+Today's Topics:
+
+Re: Words
+Re: vscan() - Virus and hack resitance (Warning!)
+Virus simulations - a bad idea ? (PC)
+HTSCAN15, TBSCAN28, TBSCNX29, VS910630 uploaded to SIMTEL20 (PC)
+Re: Can such a virus be written .... (PC)
+Re: Software pricing
+Encoded strings
+Re: DOS 5.0 & FPROT116 (PC)
+Re: Demo Disk from Mainstay (Mac)
+Re: DOS 5.0 & FPROT116 (PC)
+Stoned virus and DIR command (PC)
+re: Self scanning executables (pc)
+re: PC Plus (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    05 Jul 91 20:33:09 +0000
+>From:    vail@tegra.com (Johnathan Vail)
+Subject: Re: Words
+
+p1@arkham.wimsey.bc.ca (Rob Slade) writes:
+
+   vail@tegra.com (Johnathan Vail) writes:
+
+   > virus - a piece of code that is executed as part of another program
+   >     and can replicate itself in other programs.  The analogy to real
+   >     viruses is pertinent ("a core of nucleic acid, having the ability to
+   >     reproduce only inside a living cell").  Most viruses on PCs really are
+   >     viruses.
+   >
+   > worm - a program that can replicate itself, usually over a network.  A
+   >     worm is a complete program by itself unlike a virus which is part of
+   >     another program.  Robert Morris's program, the Internet Worm, is an
+   >     example of a worm although it has been mistakenly identified in the
+   >     popular media as a virus.
+   >     bomb.
+
+   Question:
+
+   Given that under these definitions boot sector infectors, "spawning"
+   viri and items such as Mac's WDEF are excluded from "virus", does that
+   make them all "worms"?
+
+   If so, you will have to define "most viruses on PCs", since many of
+   the more successful PC viri are BSI's.
+
+Unless I am misunderstanding how these work I would still classify them
+as viri since they "infect" already existing useful code and depend on
+those programs being executed before the virus code can get an
+execution thread.
+
+I am open to suggestions on wording and mistakes I may have made.  I
+plan on posting a revision soon with the comments and additions I have
+ recieved.
+
+ jv
+
+"Imagine what it would be like if TV actually were good. It would be the end
+ of everything we know."  -- Marvin Minsky
+ _____
+|     | Johnathan Vail | n1dxg@tegra.com
+|Tegra| (508) 663-7435 | N1DXG@448.625-(WorldNet)
+ -----  jv@n1dxg.ampr.org {...sun!sunne ..uunet}!tegra!vail
+
+------------------------------
+
+Date:    Sat, 06 Jul 91 07:33:03 +0000
+>From:    mrs@netcom.com (Morgan Schweers)
+Subject: Re: vscan() - Virus and hack resitance (Warning!)
+
+Ralf.Brown@B.GP.CS.CMU.EDU sas:
+>vaitl@ucselx.sdsu.edu (Eric Vaitl) wrote:
+>}
+>}    Earlier, I sent out a net posting with some code that was in
+>}error. Here is the is the (hopefully) correct code. When added to your
+>}own programs, I believe it will make them virus and hack resistant. Any
+>}feedback would be appreciated.
+>
+>I hate to burst your bubble, but your code is essentially useless
+>against viruses.  The only viruses it would catch are the few which
+>indiscriminately clobber executables, and those are very easy to spot
+>anyway (the program stops working once infected).  Most viruses attach
+>themselves such that they get control first; before passing control to
+>the original program, they remove any changes made to the beginning of
+>the executable and then jump there.  As a result, these viruses leave an
+>unmodified memory image.  To self-scan itself, a program must go out to
+>disk and read the executable file, not memory.
+>
+>On the other hand, your function will work just fine to detect someone
+>going in and modifying one or more bytes of the program's code.
+
+Greetings,
+    Thanks Ralf!  I'll say pretty much the same thing...  Plus a few
+suggestions.  The code posted has *NO* effect on almost any viruses.
+It will catch hacks, but if someone is playing with a debugger on your
+program, they can bypass that too.
+
+    As a *PERSONAL* recommendation (this is *NOT* an official
+recommendation) I would suggest looking at the MKAWARE (aka AWARE)
+program.  It looks to be a solidly useful piece of code.  As I recall,
+it should be available under Simtel20...  As to *WHERE*, I don't know.
+Try looking at the Index.
+
+    (Or you could call archie and look for 'aware')
+
+    It does a CRC check on the file that was executed.  The only
+drawback to this involves Stealth viruses.  These are viruses which
+hide themselves before executing your program.  These will not be
+caught by *ANY* checksumming or CRCing system, nor any scanning system
+unless any one of those three are run from a known clean,
+write-protected system disk.  However (and thankfully) these are not
+common.
+
+    Obviously, it will not protect against BSI's (Boot Sector
+Infectors) either, but those aren't necessarily dangerous to the
+program you are releasing.
+
+    As a side comment, please PLEASE note in your documentation that
+your program is self-checking.  The reason for this is that the
+program may come up with an alarm when a third-party validation code
+is added.  Often problems like this can be headed off by warning the
+user in the first place that the program checks itself.
+
+    Furthermore, I'll point out that length-checking is not always
+that good an idea.  If a file is transmitted via XMODEM or sometimes
+even YMODEM, it gets padded to a length divisible by 128.  This means
+that the filelength expected is no longer accurate.
+
+    As a result, of course, full file checksums/CRCs may not work either.
+
+    This is another reason to use archiving programs!  (These problems
+never should happen with any archiving programs, since the correct
+size is always stored.)
+
+    All in all, it's good to see people taking an active interest in
+protecting their programs from the development stage on.  If more
+people (can you say MickySoft?  I knew you could!) took this
+viewpoint, I'd be happily out of a job.  *grin*
+
+    I love my job, but I really don't like the things which caused it
+to come around.  That being viruses.
+
+                                                  --  Morgan Schweers
+
+P.S.  Actually, in all honesty, MicroSoft has been reasonably intelligent
+    in it's self-checking on occasion.  (See MS Word.)  It's just too bad
+    that it's not implemented more across the board, and it's also too bad
+    that there aren't reasonably *SOLID* file protections, like most
+    operating systems have.  I look towards DOS 6.0 with hope, but not
+    expectations.
+- --
+mrs@netcom.com   |   Morgan Schweers   |  Happiness is the planet Earth in your
+ms@gnu.ai.mit.edu|   These messages    |  rear view mirror.  --  Jeff Glass
+Kilroy Balore    |   are not the       +--------------------------------------
+Freela           |   opinion of anyone.|  I *AM* an AI.  I'm not real...
+
+------------------------------
+
+Date:    Sat, 06 Jul 91 13:48:08 +0000
+>From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Virus simulations - a bad idea ? (PC)
+
+I recently got an E-mail message from Doren Rosenthal, the author of a
+virus simulator program.  It seems he has written a program which
+generates files which contain various signature strings from various
+viruses.
+
+He asked me if I would provide him with a list of the signatures I
+use.  As I find his program totally useless, and capable of doing more
+harm than good I refused.
+
+My reply is included below, but I would like to hear others opinions
+on virus simulators, in particular this one.
+
+- -frisk
+
+- ------------------------- reply to Mr. Rosenthal.
+
+Well, I am sorry to disappoint you, but frankly I don't think your
+virus simulator is a good idea at all.
+
+Even if you included the signatures from my virus scanner, which I am
+not willing to give to you, this would not guarantee that my scanner
+would detect your "simulated" viruses.  At least my 'Quick' scanner
+would not find any of them unless the signatures were located at the
+correct location in the file, and my 'Full' scanner would report each
+file as infected by a new variant.
+
+The major reason I do not think the program is a good idea is the
+total inability to handle non-signature based scanners.  Algorithmic,
+and in particular hash-method scanners will not detect anything in the
+files.
+
+And in fact, I don't care if my program detects your "simulated"
+viruses or not.  My scanner is designed to detect real viruses, not
+simulations.
+
+- -frisk
+
+------------------------------
+
+Date:    Fri, 05 Jul 91 17:21:10 +0200
+>From:    jeroenp@rulfc1.leidenuniv.nl (Jeroen Pluimers HB304 tel. 4298)
+Subject: HTSCAN15, TBSCAN28, TBSCNX29, VS910630 uploaded to SIMTEL20 (PC)
+
+I have uploaded to SIMTEL20:
+
+pd1:<msdos.trojan-pro>
+HTSCAN15.ZIP    HTScan virus scan v1.5; needs VSyymmdd.ZIP
+TBSCAN28.ZIP    Thunderbyte Virus Scan 2.8; needs VSyymmdd.ZIP
+TBSCNX29.ZIP    Thunderbyte XScan v2.9 TSR; needs VSyymmdd.ZIP
+VS910630.ZIP    Virus Signatures for TBSCAN(X)/HTSCAN - 910630
+
+Jeroen W. Pluimers
+jeroenp@rulfc1.LeidenUniv.nl  (Sun SPARC station IPC, Sun OS 4.1.1)
+pluimers@rulcri.LeidenUniv.nl (VAX 3400, VMS 5.4)
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 11:37:00 +1200
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: Can such a virus be written .... (PC)
+
+mfr3@cunixb.cc.columbia.edu (Matthew F Ringel) writes:
+> PJML@ibma.nerc-wallingford.ac.uk (Pete Lucas) writes:
+>>until the virus has had a look at whats there. Of course the write-protect
+>>notch/slide is 99.99% effective in my experience at preventing any
+>>illicit writes; you would, of course, have write-protected any diskette
+>>you put in the drive before doing the hypothetical DIR command, wouldnt
+>>you?
+>
+> Speaking of that...
+> 	Is it possible for a virus to circumvent an IBM's
+> write-protection of a disk (if the disk is protected in the stndard
+> way of covering the notch), or is it something physical that no piece
+> of software can get around?
+>
+ 1. Remember that write-protect tabs on a diskette won't stop your computer
+    getting a virus from an infected diskette,
+ 2. Yes, it is possible for a very special type of virus to infect your PC
+    when you do a DIR command; as was mentioned before, it is only possible
+    if you have ANSI.SYS loaded, and such viruses tend to be obvious - both
+    in terms of what goes on the screen and unusually long delays. I doubt
+    a "serious" virus writer would be any more keen to use this technique
+    than writing a virus in Interactive COBOL! (There are quite a few factors
+    stacked against such viruses succeeding, not the least of which is the
+    high chance of tracing back the actual floppy to its source).
+ 3. The question of write-protection failing was thrashed out a while ago.
+    In summary: yes, some drives/diskettes/tabs fail to correctly protect
+    from writing. Not enough to have a virus base its existance on the
+    problem, and certainly nothing to do with anything the virus can control
+    (no loophole in the design, simply some photo-sensors pick up light when
+    they shouldn't). I've only come across one machine like that personally,
+    so you shouldn't lie awake at nights worrying. But you might like to TEST
+    your machine, and perhaps test new brands of diskette when they have some
+    tabs that seem significantly different to anything you've used before.
+    But probably the only people that will find such precautions useful are
+    those who deal with a lot of computers - e.g. a friend of mine works for
+    a computer maintence company, and has found he needs to test his write
+    protected diskettes regularly (because he works with MANY computers, some
+    are faulty in various ways, and the impact of his diagnostics diskettes
+    transferring infections to other clients is a worry, and yes, he did get
+    an infection on a write-protected disk once).
+
+Mark Aitchison.
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 12:17:00 +1200
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: Software pricing
+
+There needs to be both free and charged software; there are very good
+reasons for having both...
+
+(1) the computer-using public as a whole suffer from viruses. It would
+help me if the majority of PC's had enough protection to stop or
+detect the common viruses, to reduce the chances of an epidemic.
+Avoiding a plague out there reduces the effort I need to make to
+reasonably protect my own computer systems.  I really think there
+should be good software to do this, for free (preferrably built into
+the operating system). In fact there is some pretty good software
+already, but of course keeping up with the latest viruses is an
+expense for those who produce it, and not knowing how well it performs
+against new viruses (not rare ones though) is a worry for its users.
+
+(2) Some people will always demand higher protection than others. For
+most of us, it is enough to demand that (Cost of it
+happenning)*(probability) is low, but there are some cases where you
+really can't stand to have any virus, and that's not just on
+life-support computers, but many "serious" systems, where it is worth
+paying $30 for protecting a computer.
+
+(3) The underlying problem with SCAN that was stated by an earlier
+poster was that universities (for example) must obtain a site license,
+i.e. pay for ALL machines to have the software, when the majority of
+PC users will be in the first category, and only a minority in the
+second. That's a separate question to "Is $xx per PC good value?".
+
+(4) There should be a free database of virus information, available to
+all users (and a-v writers), and it should try to standardise on
+naming, etc. But whoever compiles it need not put the time into
+analysing the viruses. I know this can take a lot of time and
+therefore deserves financial returns. Instead, people could contribute
+analyses, listings, etc to supplement the summary - in whatever form
+they think will sell. Having a non-commercial, complete virus library
+and free summary/identification system would help everybody; having a
+compatible set of useful information (e.g. how to disinfect!) would be
+worth money to many people, and that is where, to be fair, the
+charging should come in.
+
+Mark Aitchison.
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 06:30:06 -0700
+>From:    Eric_Florack.Wbst311@xerox.com
+Subject: Encoded strings
+
+[From:    "zmudzinski, thomas" <zmudzinskit@imo-uvax5.dca.mil]
+>>  > As Ross [Greenburg] has pointed out, no matter how well strings are
+> encrypted, eventually someone will break the code, and then it is a
+> trivial matter to write a virus that circumvents that package.
+
+should not go uncontested.  This paraphrase contains two (mathematical,
+not grammatical) infinitives, "no matter how well ... encrypted" and
+"eventually".  If I can play with one infinitive, let alone two, I can
+probably prove the world is flat (well, it _is_, locally) or some such.
+- -=-=
+
+Of course . But, one point I implied but did not specificly state, is being
+passed over altogether, here. That being:
+
+That while most people who are writing Virus prevention/removal
+routines are expirenced programmers, we make a large mistake when we
+assume that the idiots are quite so expirienced. I would venture a
+guess that a goodly portion of the virus idiots (The bad guys) would
+be thwarted by any encryption above the trivial level.
+
+You see, while I agree with Ross that :
+>>   The bad guys can certainly break
+>> whatever coding scheme I use, thereby using the string list just as if
+>> it were not encoded at all.
+
+.....I would submit that many of the different strains we've been
+seeing are bad copies of the original code, often times being a simple
+string change that one could have invoked using a disk editor, right
+on the EXE or COM file, without ever seeing the source code.... thus
+furthering the idea that much of what we see in the way of virus
+programming (as opposed to anti-virus programming) is created by less
+than expirienced programmers.  Ouch! Run on sentences were my problem
+all through school, too. Anyway, such people would be thwarted by
+encryption out of hand, thus significantly reducing the amount of
+viral strains in the wild.
+
+Standard disclaimers apply.
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 12:40:00 -0400
+>From:    "Ignorance HATES Knowledge..........!!" <ACSMARTIN@EKU.BITNET>
+Subject: Re: DOS 5.0 & FPROT116 (PC)
+
+>A user recently posted this on our BBS.  Has anyone else experienced this?
+>
+>"I was wondering if any one has experienced a problem with FPROT116.
+>Since I installed it with msdos ver 5.00 it hangs my system with the
+>message Virus Alert!! Int 13 has been changed. I have tested and no
+>virus is found. If I disable f-driver in my config.sys file everything
+>is ok. All other programs associated with this program works fine. Any
+>thoughts or suggestions?"
+>
+>I am not familiar enough with FPROT116 or DOS 5.0 to make an
+>intelligent comment.  Any help will be appreciated.
+>
+>- -- Steve Clancy
+
+Without getting into all the reasons why this was a problem.... The
+way to fix it for me anyway... Was to boot from a floppy -- then erase
+ALL the files the the SUBDIR -- \F-prot ......  I put them back from a
+fresh disk then rebooted from the hard disk. Worked just fine.....
+
+tell your user not to use the command LOADHIGH with the F-* TSRs as
+it'll hang the system. The device driver will work fine with the
+DEVICEHIGH command in the config.sys.
+
+Sorry this is short, I'm sure someone else will provide a description as
+to why this occurs -- I just wanted to get you an answer....
+
+Bob Martin -- Eastern KY U. -- Academic Computing -- 606 622-1995
+bitnet: Acsmartin@eku  or   graphics @eku
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 12:01:30 +0800
+>From:    bcarter@claven.idbsu.edu
+Subject: Re: Demo Disk from Mainstay (Mac)
+
+>Date:    Wed, 03 Jul 91 20:58:05 +0000
+>From:    robs@ux1.cso.uiuc.edu (Rob Schaeffer)
+>Subject: Demo Disk from Mainstay (Mac)
+>
+>The demo disk from Mainstay has nVIR attached to the archive.  It
+>seems to not be able to spread, but it is there.
+>
+>Disinfectant nicely removes the virus.
+>
+>I would be curious to know why the virus doesn't spread.
+
+It could be that it is only an nVIR stem, put there to prevent nVIR from
+actually infecting the file.  It could also be the remnant of an incomplete
+removal.
+                                     <->
+Bruce Carter, Courseware Development Coordinator      bcarter@claven.idbsu.edu
+Boise State University, Boise, ID  83725              duscarte@idbsu.bitnet
+(This message contains personal opinions only)        (208)385-1250@phone
+
+------------------------------
+
+Date:    08 Jul 91 13:19:11 +0000
+>From:    adelgado@academ01.mty.itesm.mx (Ing. Alfredo Delgado Garza)
+Subject: Re: DOS 5.0 & FPROT116 (PC)
+
+SLCLANCY@UCI.BITNET (Steve Clancy) writes:
+
+   A user recently posted this on our BBS.  Has anyone else experienced this?
+
+   "I was wondering if any one has experienced a problem with FPROT116.
+   Since I installed it with msdos ver 5.00 it hangs my system with the
+   message Virus Alert!! Int 13 has been changed. I have tested and no
+   virus is found. If I disable f-driver in my config.sys file everything
+   is ok. All other programs associated with this program works fine. Any
+   thoughts or suggestions?"
+
+   I am not familiar enough with FPROT116 or DOS 5.0 to make an
+
+I had the same troubles, i fixed it by puting the device=f-driver.sys
+as the last line in my config.sys.
+
+It looks like the SMARTDRVR.SYS takes the int 13 causing that message.
+
+Alfredo Delgado.
+
+------------------------------
+
+Date:    08 Jul 91 14:51:00 -0500
+>From:    "William Walker C60223 x4570" <walker@aedc-vax.af.mil>
+Subject: Stoned virus and DIR command (PC)
+
+1From:    Mike Ramey <mramey@u.washington.edu>
+> Discovered several grad students had diskettes infected with Stoned.
+> Experiments confirmed that a DIR command on these diskettes caused
+> Stoned to become resident in RAM.  I do not know how or when Stoned
+> moves to the fixed-disk partition sector/boot record.
+
+IMHO, Stoned was already resident in RAM before executing the DIR
+command.  I ran the following test using a clean hard drive and a
+Stoned-infected diskette in drive A:
+
+     SCAN C: /M
+          "No viruses found."
+     DIR A:
+     SCAN C: /M
+          "No viruses found."
+
+However, the following WILL put Stoned in memory (though not really
+active):
+
+     SCAN C: /M
+          "No viruses found."
+     DISKCOPY A: A:
+     SCAN C: /M
+          "Found Stoned Related Virus [Stoned] active in memory."
+
+So will this:
+
+     SCAN C: /M
+          "No viruses found."
+     NU A:
+          [Norton Utilities 4.51 - look at boot sector, then exit by
+           pressing F10]
+     SCAN C: /M
+          "Found Stoned Related Virus [Stoned] active in memory."
+
+This is due to the same problem with MS-DOS which caused the PRODIGY
+scare and the abuse which was recently heaped upon Ross GreenbErg:
+MS-DOS does not clear resources (memory or disk) before reusing them.
+If you want it done, you've got to do it yourself.  However, as
+indicated by the first test, DIR does not load the boot sector into
+memory in the first place.  I would be interested in seeing your
+results with a SCAN /M (or equivalent), DIR, SCAN /M sequence of
+tests.
+
+One interesting note:  In an attempt to make a "defanged" version of
+Stoned (with which to train users in using antivirus software), I
+changed some disk write commands to disk resets and one CALL to NOP's,
+and got this:
+     SCAN A: /M
+          "Found Azusa Virus [Azusa] in boot sector."
+Are they really that close?
+
+Bill Walker ( WALKER@AEDC-VAX.AF.MIL ) |
+OAO Corporation                        |     "That's not a bug,
+Arnold Engineering Development Center  |      that's a feature!"
+M.S. 120                               |          - Anonymous
+Arnold Air Force Base, TN  37389-9998  |
+
+------------------------------
+
+Date:    08 Jul 91 16:17:14 -0400
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: re: Self scanning executables (pc)
+
+As I'm sure hordes of other folks will point out, Eric Vaitl's nice
+little self-checker does *not* compute a CRC (as the comments say),
+but only a simple add-em-up checksum.  A CRC (Cyclic Redundancy Check)
+is somewhat more complex than than, no?
+
+Also, checking the memory image of the program isn't really the right
+defense against viruses; most viruses restore the memory image to
+normal before passing control to the infected program, so I think
+programs incorporating this method will not actually notice the
+typical virus infection.  (Although I'm not entirely positive how
+Turbo C does memory allocation, so I may be missing something there.)
+
+Self-checks need to check the on-disk copy of the executable, not the
+in-memory copy (and of course even then they are subject to fooling if
+there's a stealth virus around).
+
+A nice effort, though, and such idea-sharing is certainly a Good Thing!
+
+DC
+
+------------------------------
+
+Date:    Mon, 08 Jul 91 19:49:52 +0100
+>From:    xa329@city.ac.uk
+Subject: re: PC Plus (PC)
+
+I feel the need to respond to James Nash's advert for PC Plus, as none
+of the British magazines have yet shown themselves reliable in
+providing objective reviews of anti-virus software.  I had hopes that
+Personal Computer World might have been able to produce something, but
+these disappeared when most of their best contributors left during the
+management/ journalist union dispute of December 1989.
+
+Most of the reviews I have seen have suffered from undisclosed interests.
+
+Several considerations may have influenced Mark Hamilton's review in
+PC PLUS:
+*   journalists don't generally maintain their own libraries of viruses for
+    testing, in this case the 100% detection rate of Bates Associates
+    product indicates that Jim Bates' virus collection was used.
+*   Hamilton writes for the Virus Bulletin; this publication is owned
+    by Sophos.
+*   RG Software has just been announced as the new distributor for the
+    Virus Bulletin in the USA.
+*   Microcom's Virex-PC is the commercial version of Flushot+, in one
+    edition that I saw the documentation included an acknowledgement from
+    the author of code contributed by Mark Hamilton.
+
+I am not suggesting that Mark Hamilton has deliberately misrepresented
+the products of these companies, but that these relationships should be
+kept in mind when reading the review.
+
+One error of fact is that Sophos's Sweep isn't "the only [anti-virus]
+product in this country to have been granted a UKL1 certificate by the
+Government's Computer and Electronic Security Group".  PC Security's
+Eliminator gained UKL1 certification earlier this year, as reported in
+Virus Bulletin January 1991.
+
+Declaration of interests: I work at Thecia System Ltd, we produce an
+anti-virus product called Virus Clean, which was not invited for inclusion
+in Hamilton's review.
+
+Thanks for your time,
+Anthony Naggs
+
+(Reply to: xa329@uk.ac.city or phone me at Thecia Systems: 0273 623500)
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 119]
+******************************************

@@ -1,0 +1,621 @@
+precedence: bulk
+Subject: Risks Digest 23.66
+
+RISKS-LIST: Risks-Forum Digest  Friday 14 January 2005  Volume 23 : Issue 66
+
+ACM FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+Peter G. Neumann, moderator, chmn ACM Committee on Computers and Public Policy
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <http://www.risks.org> as
+  <http://catless.ncl.ac.uk/Risks/23.66.html>
+The current issue can be found at
+  <http://www.csl.sri.com/users/risko/risks.txt>
+
+  Contents:
+A Comedy of Errors (Leslie Lamport)
+30,000 personal records stolen in GMU server compromise (James Bauman)
+New FBI software not usable (NewsScan)
+Wal-Mart Stung in $1.5 Million Bar-Code Scam (Evan Schuman via Monty Solomon)
+Attack on T-Mobile (NewsScan)
+Risks of /pseudo-?/random alphanumeric generation (Joe Thompson)
+Risks of lenient parsing (Jim Horning)
+Heisenberg at work?  Ranking cardiologists (David Lesher)
+Ticket not in computer system: your insurance rates may increase 
+  (Joyce Scrivner)
+eBay open invitation to phishing scammers (Thomas L. Jones)
+Honest, General, it was only a little glitch (Jeremy Epstein)
+Microsoft AntiSpyware beta - quick review (Rob Slade)
+Re: Why adding more security measures may make systems less secure (Ron Bean)
+Re: New Year's Privacy Resolutions (Erling Kristiansen)
+REVIEW: "Net Crimes and Misdemeanors", J. A. Hitchcock (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+
+----------------------------------------------------------------------
+
+Date: Wed, 5 Jan 2005 09:55:36 -0800
+From: Leslie Lamport 
+Subject: A Comedy of Errors
+
+The TLA+ specification language uses a common notation in which
+strings are enclosed in double-quotes.  Special characters within a
+string, such as double-quote and backslash, are quoted by preceding
+them with a backslash.  Thus, the string consisting of the five
+characters a " b \ c is written "a\"b\\c".  The string "a\"b"
+appearing in a specification should traverse the following circuitous
+path if it is printed by the model checker:
+
+1. The parser should convert the string "a\"b" to the list 
+   ('a', '"', 'b') of the three characters a " b.
+
+2. The printing routine should convert ('a', '"', 'b') 
+   to the string "a\"b".
+
+3. The pretty-printer, which inserts spaces and line breaks to format
+   the output, should leave the string "a\"b" unchanged.
+
+In the current version, none of these steps is performed correctly.
+Instead, they do the following:
+
+1. The parser converts the string "a\"b" to the list 
+   ('a', "\", '"', 'b') of the four characters a \ " b.
+
+2. The printing routine, which should covert ('a', "\", '"', 'b') 
+   to "a\\\"b", instead converts it to "a\"b".
+
+3. The pretty printer, which should leave the string "a\"b" 
+   unchanged, instead prints it as "a\".
+
+What is remarkable is that these three transformations are performed
+by code written by three different people.  The programmers are all
+PhD researchers at different institutions--one at a university and the
+other two at two different industrial research labs. 
+
+Quoted characters are one of only two special cases that occur in
+handling strings.  (The other, the empty string, should be handled
+automatically by any competently-written code.)  Yet three different
+people forgot about that case when writing code.  (I presume that the
+first transformation is done in two steps--the first identifying the
+string and the second converting it to a list--and the programmer
+forgot about quoted characters only in the second step.)
+
+This comedy of errors shows that smart people can overlook even
+obvious cases.  One hopes that, had this been production code written
+by professional programmers rather than research-project code written
+by researchers, then so simple an error would have been caught.  But
+programs contain many problems that are not so simple.  This incident
+points out the limitation of code reviews.  It also calls into
+question the use of multi-version programming as an alternative to
+verification for building highly reliable systems.
+
+  http://lamport.org
+
+------------------------------
+
+Date: Tue, 11 Jan 2005 14:59:32 -0500
+From: James Bauman <James.Bauman@safety-kleen.com>
+Subject: 30,000 personal records stolen in GMU server compromise
+
+The server at George Mason University in Virginia was compromised by
+crackers who stole personal information ("names, photos, Social Security
+numbers and (campus ID) numbers of all members of the Mason community who
+have identification cards") on 30,000 students, faculty, and staff.
+
+The mega-risk here is obvious -- tens of thousands of people who may become
+victims of identity theft, one of the fastest growing crimes in America.
+
+A system alert is posted on the University web site -->
+http://www.gmu.edu/prod/alerts/supportcenter/index.jsp?ID=1157
+
+For more details, see http://news.com.com/2100-7349_3-5519592.html
+
+------------------------------
+
+Date: Thu, 13 Jan 2005 08:49:59 -0700
+From: "NewsScan" <newsscan@newsscan.com>
+Subject: New FBI software not usable
+
+A new FBI computer system called Virtual Case File, designed to help agents
+share information to ward off terrorist attacks, may have to be discarded
+because it doesn't work as designed. The agency will be soliciting proposals
+for new software from outside contractors for new software. Sen.  Judd Gregg
+(R-N.H.), chairman of the Senate appropriations subcommittee, calls the
+development "a stunning reversal of progress" and adds: "If the software has
+failed, that sets us back a long way. This has been a fits-and-starts
+exercise, and a very expensive one for a very long time.  There are very
+serious questions about whether the FBI is able to keep up with the
+expanding responsibility and the amount of new dollars that are flowing into
+it. We have fully funded it at its requested levels." Science Applications,
+the company that developed the system, says it "successfully completed"
+delivery of the initial version of the Virtual Case File software last
+month.  [*Los Angeles Times* 13 Jan 2005, NewsScan Daily, 13 Jan 2005]
+  http://www.latimes.com/technology/la-na-fbi13jan13,1,2171776.story?
+  coll=la-headlines-technology
+http://www.latimes.com/technology/la-na-fbi13jan13,1,2171776.story?coll=la-headlines-technology
+
+  [VCF is part of a four-year, $.5 billion overhaul of the FBI's
+  ``antiquated'' computer systems.  PGN]
+
+------------------------------
+
+Date: Fri, 7 Jan 2005 01:49:49 -0500
+From: Monty Solomon <monty@roscom.com>
+Subject: Wal-Mart Stung in $1.5 Million Bar-Code Scam
+
+By Evan Schuman January 5, 2005
+
+In a scheme that leveraged a little technology but relied on inattentive
+cashiers, Tennessee authorities have arrested two couples on charges that
+they used bogus bar codes to steal at least $1.5 million from hundreds of
+stores--some belonging to Wal-Mart--in 19 states. The group is slated to
+appear in court Wednesday.
+
+Although the accused are said to have spent a lot of time and effort
+organizing colleagues in various parts of the country, the technology
+portion of their scheme was quite simple. They are accused of visiting a
+retailer and purchasing a low-priced item. The group would then scan the bar
+codes and simply print out duplicate bar codes, said Thomas Dean, the
+assistant Sumner County (Tennessee) district attorney who is assigned to the
+case.
+
+The accused--Michael Poore, 29, and Julie Marie Simmons, 35, also known as
+Julie Poore; and Dewey Howerton, 39, and Laura Howerton, 39--would then go
+back to the store, tape the duplicate bar code on a higher-priced item and
+purchase the more expensive item at the lower scanned price, Dean said in an
+eWEEK.com interview.
+
+One of the accused, according to the police complaint, would then remove the
+bogus tag and try to return the item to the store for the full purchase
+price. Instead of cash, the defendants would often ask for gift cards, Dean
+said. "Wal-Mart will more quickly put it on a gift card than hand you cash,"
+he said.  ...
+  http://www.eweek.com/article2/0,1759,1748274,00.asp
+
+------------------------------
+
+Date: Thu, 13 Jan 2005 08:49:59 -0700
+From: "NewsScan" <newsscan@newsscan.com>
+Subject: Attack on T-Mobile
+
+A network vandal broke into the network of wireless carrier T-Mobile over a
+seven-month period and read e-mails and personal computer files of hundreds
+of customers -- including those of the Secret Service agent investigating
+the hacker himself. The online activities of the vandal, 21-year-old
+computer engineer Nicolas Lee Jacobsen of Santa Ana, were traced to a hotel
+where he was staying in Williamsport, N.Y. Although Jacobsen was able to
+view the names and Social Security numbers of 400 customers (all of whom
+were notified in writing about the break-in), customer credit card numbers
+and other financial information never were revealed, and T-Mobile says it
+"immediately took steps that prevented any further access to this system."
+[AP, 12 Jan 2005; NewsScan Daily, 13 Jan 2005]
+  http://www.siliconvalley.com/mld/siliconvalley/10633193.htm
+
+------------------------------
+
+Date: Thu, 6 Jan 2005 13:50:16 -0500
+From: Joe Thompson <kensey@gmail.com>
+Subject: Risks of /pseudo-?/random alphanumeric generation
+
+The Cabbage Patch doll, known to legions of kids from the 80s on, comes with
+"adoption paperwork" including a unique, randomly-generated serial number.
+However, apparently the company's random number generator was, from a
+certain point of view, a little too random:
+
+Girl Gets Cabbage Patch Doll With Obscene Message
+http://www.10news.com/news/4050756/detail.html
+
+Apparently, purely by chance -- or so the company insists, at any rate --
+one serial number included a six-letter string commonly considered obscene,
+especially so in the context of children's toys.  The slide show on the
+linked new story page has a shot of the string in question (with the first
+letter helpfully covered up to avoid further offense).  That it was given as
+a Christmas gift seems particularly unfortunate.
+
+Many are the tales of large computer systems where user account names
+are fully or partially randomized to avoid embarrassing formations
+from pieces of names or other data.  Even in such cases, some basic
+filtering is needed; in fact given the audience for the product I'm
+surprised no one at Play-Along has realized this in twenty years.
+People easily forget that 0000, 1111, 2222, etc. are as random as any
+other four-digit string in certain contexts.
+
+------------------------------
+
+Date: Fri, 07 Jan 2005 4:26 PM
+From: Jim_Horning@McAfee.com
+Subject: Risks of lenient parsing
+
+Yesterday I had a frustrating experience trying to help track down a
+problem in a post to a blog I subscribe to,
+<http://www.cra.org/govaffairs/blog/index.php>. It ended happily enough
+when we were able to locate a syntax error in the HTML of the post, but
+not before we had explored several blind alleys.
+
+For the gory details, see
+http://horning.blogspot.com/2005/01/risks-of-lenient-parsing.html 
+
+So what is the lesson? There was clearly a syntax error, so what we got is
+what we deserved, right? I think not.
+
+Given the frequency of errors in HTML, it would be unreasonable for
+renderers to refuse to display pages with errors. (There is an error
+somewhere in my blog post on this that I am still looking for.) However, we
+stumbled around blindly because *none* of the browsers we were using gave
+any hint that there was a syntax error on the page. Each just silently
+"corrected" the error. Unfortunately, but predictably, they didn't all
+"correct" it in the same way, meaning that Peter and his testers were
+consistently getting one result, and I was consistently getting another.
+
+I contend that *all* of the browsers were wrong not to indicate clearly the
+presence of a syntax error. A friendly browser would even have made some
+attempt to indicate the approximate location on the page of the error.
+
+Although it was published more than thirty years ago, I think my advice on
+"What the Compiler Should Tell the User" (in *Compiler Construction, an
+Advanced Course*, F. L. Bauer and J. Eickel (eds.), Springer-Verlag,
+pp. 525-548, 1974) is still pertinent to those who build compilers and other
+formal language interpreters. Those who do not study the past are very
+likely not to learn its lessons, and therefore to repeat old mistakes, such
+as silently "correcting" syntax errors.
+
+------------------------------
+
+Date: Tue, 11 Jan 2005 07:52:25 -0500 (EST)
+From: David Lesher <wb8foz@nrk.com>
+Subject: Heisenberg at work?  Ranking cardiologists
+
+Cardiologists Say Rankings Sway Choices on Surgery, Marc Santora, 11 Jan 2005
+	
+  An overwhelming majority of cardiologists in New York say that, in certain
+  instances, they do not operate on patients who might benefit from heart
+  surgery, because they are worried about hurting their rankings on
+  physician scorecards issued by the state, according to a survey released
+  yesterday. 
+
+I am reminded of the {alleged} quota scheme in the FBI. For years, no agent
+would willingly undertake terrorism cases, as such are long, time consuming
+and fraught with failure. Stick to the meat & potatoes of doofus
+bankrobbers, and you'll get promoted.
+
+So the PHB's made terrorism cases carry more weight... Result?  Now
+jaywalking and felony mopery are charged as terrorism...
+
+------------------------------
+
+Date: Thu, 06 Jan 2005 16:19:07 -0600
+From: Joyce Scrivner <kscriv@earthlink.net>
+Subject: Ticket not in computer system: your insurance rates may increase
+
+<http://www.boingboing.net/2005/01/05/a_kafka_day_at_the_l.html>http://www.boingboing.net/2005/01/05/a_kafka_day_at_the_l.html
+
+Mark Frauenfelder: In November, my wife, Carla Frauenfelder, was driving
+home when a Los Angeles Police officer pulled her over. He ticketed her for
+making an illegal left turn.
+
+The next day, with her ticket in hand, I entered the url for the website 
+listed on the ticket (lasuperiorcourt.com). I wanted to pay the fine and 
+sign her up for driving school so our car insurance rates wouldn't 
+increase. The website couldn't find the ticket. I tried searching for it 
+both by entering the ticket number and by entering my wife's driver license 
+number. No luck. So I called the phone number on the ticket. The woman who 
+answered said there was no record of the ticket. She said my wife would 
+have to drive to the ticket office on Penfield St, in Chatsworth to take 
+care of it.
+
+So, my wife drove there on January 5th and showed the woman at the counter 
+the ticket. The woman entered the ticket number and nothing came up. She 
+scratched her head for a minute, and then noticed that the police officer 
+forgot to write a date on the ticket. Apparently, that screws everything up.
+
+The woman told my wife what the fine is (about $135), but told her that she 
+could not accept payment for the fine, because the ticket is not in the 
+database. My wife is not allowed to attend driving school, either, because 
+the ticket isn't in the database.
+
+The woman instructed my wife to call the court every day week, to find out
+if the ticket had been entered into the computer yet. Once it shows up, she
+is supposed to drive to the ticket office the very next day to take care of
+it. And once the ticket has been entered, she is going to be hit with a
+penalty and possibly a warrant for her arrest, because once the information
+goes into the computer it'll see that she hasn't paid the fine yet, and it
+will be flagged as delinquent. My wife will then have to explain the
+situation to another helpful city employee.
+
+My wife asked the woman how it long will take for the ticket to be entered 
+into the computer system. The woman said she had no idea. My wife asked her 
+if she is going to have to call every day week for the next several years. 
+She shrugged and said "Well, it might take a week, it might take six 
+months, I don't know."
+
+My wife asked again if she could just pay the fine and have it apply to the 
+ticket when it finally does show up. Woman: "Nope."
+
+I'm at a loss for what to do here. If you have a good idea please 
+<mailto:mark@boingboing.net>email me and let me know if you do!
+
+------------------------------
+
+Date: Sun, 2 Jan 2005 05:23:20 -0500
+From: "Thomas L. Jones" <DrJones@alum.mit.edu>
+Subject: eBay open invitation to phishing scammers
+
+Recently I received an e-mail from eBay.com involving something called = "My
+Messages." The e-mail directs the user to click on a link and enter = his or
+her password. Thus it is indistinguishable from a phishing scam, = and
+eBay.com will have only itself to blame when its customers fall = victim to
+scammers.
+
+Thomas L. Jones, Ph.D., Computer Science
+
+cc:  Federal Trade Commission <reportphishing@antiphishing.org>
+
+------------------------------
+
+Date: Thu, 13 Jan 2005 8:18:22 -0500
+From: Jeremy Epstein <jeremy.epstein@cox.net>
+Subject: Honest, General, it was only a little glitch
+
+As has been widely reported, the DoD's missile interceptor test failed
+miserably in December, building on a rather impressive history of failures.
+According to Pentagon brass, the problem was "with an automated pre-launch
+check of the communications flow between the interceptor and the main flight
+control computer. Detecting too many missed messages, the system shut down
+automatically, as designed.  [so] the Pentagon will increase the pre-launch
+tolerance for missed messages. [General] Obering said the tolerance level
+was set too low; increasing it will not risk a flight guidance failure".
+
+Well, that makes me feel better.  The system ran into problems, so it
+generated errors.  Rather than figuring out what the problem was, let's
+ignore the errors.  Not unlike turning up the radio in your car so you can't
+hear it falling apart.
+
+The general went on to say "Statistically, it's a very rare occurrence and
+most likely would not happen again."
+
+Gee, I feel safer every minute.
+
+http://www.cnn.com/2005/TECH/01/12/missile.defense.ap/index.html
+
+------------------------------
+
+Date: Fri, 7 Jan 2005 13:49:15 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: Microsoft AntiSpyware beta - quick review
+
+The beta version of Microsoft's Anti-Spyware program (purchased from Giant)
+is available at
+http://www.microsoft.com/downloads/details.aspx?familyid=321cd7a2-6a57-4c57-a8bd-dbf62eda9671&displaylang=en&Hash=5BMW635
+
+The beta version is about a 6.4 meg download, and can be downloaded as a
+file in order to copy and install it onto other machines.  That's very nice,
+and a departure from Microsoft's often heavy-handed approach.
+
+Installing offers you a few options: do you want to set it to automatically
+update (I did), do you want it to install real-time protection (I did: so
+far it hasn't interfered with much, but I haven't used it much, either), and
+do you want to join Spynet.  Spynet is not an invitation to join a kind of
+corporate CIA, but will report on "suspect" files.  There is a fair amount
+of information on what it collects, if you ask for it.  It seems to send
+information about file sizes and an MD5 hash back to HQ, but not, seemingly,
+the suspect file itself.  In any case, there wasn't enough information on
+what it *doesn't* collect for me to feel comfortable, so I turned it off.
+(I hope.)
+
+The installation seems to default to a reasonably protected mode: the
+defaults are for auto updating, real-time protection, and scheduled scans
+(although the schedule is for 2 am).
+
+When you start up the program, it is initially set for a quick scan.  I
+changed that to a full scan, which took about half an hour on my machine.
+
+>From a quick test, the MS antispyware, at least in beta, falls between
+Spybot S&D and Adaware in terms of detection.  Spybot is fairly
+conservative, and only deals with stuff that is pretty certain to be
+spy/adware, whereas Adaware will detect a bunch of other stuff.  The MS
+product detected one copy of BackWeb (inactive) that Spybot had not, and
+detected about 38 copies of 15 versions of other stuff from my samples
+directory.  (Adaware quarantined about 60.)  The items detected all seem to
+have a least some remote access component, even if it is rather limited
+(such as BadTrans.B, that drops a keylogger).  Oddly, it only detected two
+of my extensive collection of Bagles.
+
+You can ask the program to deal with individual threats in different ways,
+although seemingly not individual files.  (As a researcher, I like that.  In
+terms of protection, I'm not as sure.)  The options are to remove,
+quarantine, ignore, or always ignore.  The program usually defaults to
+quarantine, although some threats are considered more serious, and marked to
+remove.  The explanation of "always ignore" is not detailed enough, as far
+as I am concerned: does this mean always ignore this particular file, or
+always ignore this threat?
+
+You can also specify certain directories to scan, or to ignore.  Again, as a
+researcher I really appreciate the ability to tell it so ignore my sample
+directory.  Unfortunately, this option doesn't work properly: it scans
+directories you tell it to ignore, regardless.  When I told it to scan
+*only* my sample directory, it seemed to scan a fair amount of other stuff
+as well.  Again, from a protective standpoint, this is probably a good
+thing.
+
+At the moment, after a very quick test, I'd provisionally recommend the use
+of the MS/Giant antispyware program, at least in fairly restricted and
+manual mode.  I'd be interested in hearing from others who have tested the
+real-time operations more extensively, and particularly from anyone who has
+tested the Spynet capabilities, and what information is returned thereby.
+
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: Wed, 29 Dec 2004 00:17:01 -0500
+From: rbean@shell.core.com (Ron Bean)
+Subject: Re: Why adding more security measures may make systems less secure
+
+"Don Norman" <norman@nngroup.com> writes in RISKS-23.63:
+
+> 4: The Dedicated Worker problem.  If the security or safety requirements
+> get in the way of doing the work, then the most dedicated workers will
+> defeat them.
+
+> Note, the most obvious response of security and safety people is "more
+> training is necessary."
+
+There is training, and then there is operant conditioning.  If defeating a
+safety and/or security system results in an "attaboy" for increased
+productivity, the employee is being "trained" to defeat the system,
+regardless of anything that may have been said in the official training
+session.
+
+The only way I see around this is to _continually_ emphasize the value of
+safety/security systems, and to somehow downplay the all-too-obvious value
+of defeating them (possibly by making them less awkward to use-- don't
+assume this is impossible).
+
+A lot of safety training focuses on reviews of "one in a million" accidents
+that actually happened, so people will remember why the safety systems are
+there in the first place. The book "Construction Failure" by Feld & Carper
+(Wiley 1997) notes that many construction accidents are caused by
+"unexpected" weather conditions, that statistically are not "unexpected" at
+all. This may be true of computer security issues as well.
+
+It would also help if the security message were coming from the people
+responsible for production rather than from a separate department. In many
+companies, the people in charge of safety and/or security are seen purely as
+obstacles, because they don't seem to be of any help when it comes to
+actually getting things done.
+
+------------------------------
+
+Date: Thu, 06 Jan 2005 21:14:53 +0100
+From: Erling Kristiansen <erling.kristiansen@xs4all.nl>
+Subject: Re: New Year's Privacy Resolutions (Peek, RISKS 23.65)
+
+Bernard Peek sets as a goal "Every ad a wanted ad". But he thereby excludes
+those people who feel that "Every ad an unwanted ad".  For those of us who
+belong to this group, Rotenberg's Resolution seems a better starting point.
+
+Peek advocates the view that the more complete trail of your actions you
+leave, the better can advertising be targeted. I would like to ask: What
+kind of trail am I supposed to leave in order to get the message across that
+I do not want any unsolicited ads at all? The only answer I can think of is:
+Leave as little trail as possible. Which is exactly what Rotenberg suggests.
+
+------------------------------
+
+Date: Mon, 10 Jan 2005 15:33:56 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "Net Crimes and Misdemeanors", J. A. Hitchcock
+
+BKNTCRMD.RVW   20041016
+
+"Net Crimes and Misdemeanors", J. A. Hitchcock, 2002, 0-910965-57-9,
+U$24.95/C$37.95
+%A   J. A. Hitchcock
+%C   143 Old Marlin Pike, Medford, NJ   08055
+%D   2002
+%G   0-910965-57-9
+%I   Information Today Inc.
+%O   U$24.95/C$37.95 609-654-6266 custserv@infotoday.com
+%O  http://www.amazon.com/exec/obidos/ASIN/0910965579/robsladesinterne
+  http://www.amazon.co.uk/exec/obidos/ASIN/0910965579/robsladesinte-21
+%O   http://www.amazon.ca/exec/obidos/ASIN/0910965579/robsladesin03-20
+%P   359 p.
+%T   "Net Crimes and Misdemeanors"
+
+This book is not about net crimes in general, but about cyberstalking
+and online harassment.
+
+Chapter one details Hitchcock's own experience with cyberstalking and
+harassment, an extremely unpleasant case of deliberate personal attack
+by fraudsters she had exposed.  Three other cases are briefly
+described in chapter two, along with some basic advice on header
+analysis.  Spam is delineated, and some helpful sites for dealing with
+it are listed, in chapter three (which also contains the usual, not
+terribly useful, suggestions for keeping your address off the net). 
+Chapter four lists some urban legends and chain letters, which are
+hardly criminal material.
+
+Chapter five lists various types of online scams, but really only
+addresses credit card theft.  The utility of the advice varies: the
+book suggests that you only deal with vendors with a professional
+looking website (hardly a guarantee of virtue), but also gives fairly
+detailed descriptions of indicators for a secure HTTP (HyperText
+Transfer Protocol) session.  Online auction fraud is covered in
+chapter six, from the perspective of both buyer and seller.  The story
+of adoption fraud, in chapter seven, is particularly distressing. 
+Chapter eight give some account of identity theft, but the initial
+"case" is more related to harassment, and the material never really
+looks at more usual identity theft situations.  More cases of
+cyberstalking are listed in chapter nine, with not as much helpful
+content.  Chapter ten discusses trolls, flames--and more harassment.
+
+Chapter eleven examines chat and harassment.  Other means of
+harassment are discussed in chapter twelve.  Child exploitation is
+reviewed in chapter thirteen.  Chapter fourteen looks at various
+issues in the workplace.  Statements from various law enforcement
+personnel are given in chapter fifteen--along with an odd mention of
+the Sam Spade program.  Harassment at universities is covered in
+chapter sixteen.  There is a terse mention of the PGP program in
+seventeen.  Chapter eighteen describes viruses and firewalls, but not
+very well.  Tips on investigating harassment are in chapter nineteen.
+
+The book does provide some helpful resources on certain topics.  It
+could have provided more, if it didn't keep returning to the same
+topic over and over again.
+
+copyright Robert M. Slade, 2004   BKNTCRMD.RVW   20041016
+rslade@vcn.bc.ca      slade@victoria.tc.ca      rslade@sun.soci.niu.edu
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: 29 Dec 2004 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.   Mailman can let you subscribe directly:
+   http://lists.csl.sri.com/mailman/listinfo/risks
+ Alternatively, to subscribe or unsubscribe via e-mail to mailman your 
+ FROM: address, send a message to
+   risks-request@csl.sri.com
+ containing only the one-word text subscribe or unsubscribe.  You may
+ also specify a different receiving address: subscribe address= ... .
+ You may short-circuit that process by sending directly to either
+   risks-subscribe@csl.sri.com or risks-unsubscribe@csl.sri.com
+ depending on which action is to be taken.
+
+ Subscription and unsubscription requests require that you reply to a
+ confirmation message sent to the subscribing mail address.  Instructions
+ are included in the confirmation message.  Each issue of RISKS that you
+ receive contains information on how to post, unsubscribe, etc.  
+
+   INFO     [for unabridged version of RISKS information]
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> SPAM challenge-responses will not be honored.  Instead, use an alternative
+ address from which you NEVER send mail!
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+   <http://www.CSL.sri.com/risksinfo.html>
+ The full info file may appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+ *** NOTE: Including the string "notsp" at the beginning or end of the subject
+ *** line will be very helpful in separating real contributions from spam.
+ *** This attention-string may change, so watch this space now and then.
+=> ARCHIVES: ftp://ftp.sri.com/risks [subdirectory i for earlier volume i]
+ <http://www.risks.org> redirects you to Lindsay Marshall's Newcastle archive
+ http://catless.ncl.ac.uk/Risks/VL.IS.html gets you VoLume, ISsue.
+   Lindsay has also added to the Newcastle catless site a palmtop version
+   of the most recent RISKS issue and a WAP version that works for many but
+   not all telephones: http://catless.ncl.ac.uk/w/r
+ <http://the.wiretapped.net/security/info/textfiles/risks-digest/> .
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    <http://www.csl.sri.com/illustrative.html> for browsing,
+    <http://www.csl.sri.com/illustrative.pdf> or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 23.66
+************************

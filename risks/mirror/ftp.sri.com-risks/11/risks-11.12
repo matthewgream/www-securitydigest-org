@@ -1,0 +1,518 @@
+Subject: RISKS DIGEST 11.12
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Sunday 17 February 1991  Volume 11 : Issue 12
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+Re: PWR system "abandoned..." [Darlington] (Richard P. Taylor, Nancy Leveson)
+More on very reliable systems (Jerry Leichter)
+Saudi air controllers (Donald Saxman via Peter da Silva)
+Re: Enterprising Vending Machines (Marc Donner)
+Visa voided purchase woes (Jane Beckman)
+Credit enquiries appear to expose client lists to competitor's scrutiny
+    (Janson)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.
+ FTP VOL i ISSUE j: ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR> (where i=1 to 11, j is always TWO digits. Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye" logs out.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: 	Fri, 15 Feb 91 12:16:49 EST
+From: Richard.P.Taylor@nve.crl.aecl.ca
+Subject:  Re: PWR system "abandoned..." [Darlington nuclear plant]
+
+Some of the details of the situation regarding the Darlington nuclear power
+plant's computerized shutdown systems referred to in the Nucleonics Week
+article quoted by M. Thomas (RISKS 11.08) are given in a previous Nucleonics
+Week article of May 24, 1990.  I will try to summarize that article and
+include some further details from the Atomic Energy Control Board's (AECB)
+review process and licensing decision.
+
+That article correctly indicates that the problems with these shutdown systems
+were that the software is difficult to verify and difficult to modify.  These
+difficulties caused both delays and extra cost.  The article also mentions
+briefly that the software "will have to be rewritten because it is not
+designed so changes can be easily incorporated."  This requirement was placed
+on Ontario Hydro by the AECB as part of the licensing decision.  To quote that
+AECB licence:  "The Board ... has concluded that the existing shutdown system
+software, while acceptable for the present, is unsuitable in the longer term,
+and that it should be redesigned.  Before redesign is undertaken, however, an
+appropriate standard must be defined."
+
+What led to this conclusion was an extensive and thorough analysis of the
+software.  The original software submitted by Ontario Hydro for AECB review
+was obviously very complex and convoluted.  The introduction of digital
+computers had been taken as an opportunity to add additional complexity and
+new monitoring functions to the shutdown systems over and above previous
+analog and hybrid systems.  The AECB was concerned about how such software
+could be reviewed and demonstrated to be safe.  Dave Parnas was contracted to
+advise the AECB, and Nancy Leveson was contracted to advise Ontario Hydro.
+Nancy Leveson's advice resulted in a hazard analysis by Ontario Hydro and some
+revisions to the code for better fault detection and safety.  The review
+method eventually chosen by the AECB was strongly based on Dave Parnas' work
+and involved rewriting the software requirements in "A-7 style" event and
+condition tables, deriving similar format "program-function tables" from the
+source code, and comparing the two sets of tables.
+
+It should be pointed out that the software was not designed with such a
+verification process in mind.  When Ontario Hydro safety analysts and AECB
+reviewers (myself included) tried to verify this software, we encountered many
+problems simply because the designers and programmers had not expected to have
+their work verified by mathematical techniques.  Nor could they have; the
+decision to do such a verification was made after the software was designed
+and coded.  Nevertheless, the techniques were successfully applied to the
+software for the two shutdown systems.  Since automated tools were not
+available, most of the work had to by done manually, and to compensate for
+human error, all verifications were independently reviewed.  The AECB's audit
+of this process constituted a second independent review of the most critical
+30-40% of the software.
+
+Despite the difficulties, the AECB did eventually license the Darlington
+reactor.  The NW article of May 24 quotes Zygmond Domaratzki of the AECB:  "At
+the end of the long tedious process we went through to review the
+software....(W)e don't have any reservations about its ability to shut down
+the reactor in an emergency."  The other result of this process was
+considerable assurance that the software would not perform any unintended,
+unsafe actions.  Every part of the code was analyzed, some unintended actions
+were discovered, but all actions were determined to be safe.
+
+The current situation is that Ontario Hydro and Atomic Energy Canada Limited
+(AECL) are developing methods for specifying, designing and verifying safety
+critical software.  These methods will be applied to the development and
+verification of some prototype systems before they are adopted for general
+use, and for the redesign of the Darlington shutdown systems.  The goal of
+these methods is to make software easier to modify and easier to verify and
+review.  The AECB is monitoring this process closely.
+
+The AECB also is working (with the help of Dave Parnas and Wolfgang
+Ehrenberger of GRS in Germany) to develop Canadian standards for safety
+critical software in nuclear power plants.  We are monitoring international
+developments in this area to ensure that Canadian standards are on par with
+the rest of the world.
+
+A separate, but related issue is to find a method of predicting the reliability
+of the software.  I hope to join that RISKS discussion again shortly.
+
+Richard P. Taylor, AECB, Canada                       taylorrp@nve.crl.aecl.ca
+
+*I have tried to be brief and informative rather than simply quoting published
+material.  Any misquotes or additional material are strictly my own
+interpretation and should not be taken as the position of the AECB.  All the
+usual disclaimers apply.  Please also note that the AECB is distinct and
+separate from AECL even though I get my e-mail via an AECL address.
+
+------------------------------
+
+Date: Sun, 17 Feb 91 16:00:18 -0800
+From: Nancy Leveson <nancy@murphy.ICS.UCI.EDU>
+Subject:  Re: PWR system "abandoned..."
+
+   > According to the report, "Ontario Hydro faced a similar situation at its
+   > Darlington station, in which proving the safety effectiveness of a
+   > sophisticated computerized shutdown system delayed startup of the first 
+   > unit through much of 1989. Last year, faced with regulatory complaints 
+   > that the software was too difficult to adapt to operating changes, Hydro 
+   > decided to replace it altogether". [ I hope that Dave Parnas or Nancy 
+   > Leveson can fill in the details here.]
+
+This is not exactly the situation as I understand it.  Although I have not been
+directly involved for a while, I do have contact with people at Ontario Hydro.
+
+It is true that granting of a low-power testing license for the reactor was
+delayed due to questions about how to certify the software.  Both Dave and I
+were consulting on this -- Dave for the Atomic Energy Control Board (the
+government agency) and me for Ontario Hydro.  Dave and I disagreed about what
+OH had to do to ensure the safety of the shutdown software, and they ended up
+having to satisfy both of us.
+
+Very briefly, my major requirements were that the software be subjected to a
+hazard analysis, including a software fault tree analysis.  A few other minor
+suggestions involved such things as rewriting the code slightly so that it was
+easier to read and review.
+
+A paper on the results of the software hazard analysis (using Software Fault
+Tree Analysis) was just presented at the PSAM (Probabilistic Safety Assessment
+and Management) Conference in L.A. two weeks ago.  The Software Fault Tree
+Analysis took 2 man months.  There were no "errors" found, but they did make 42
+changes to the code as a result of what they learned by doing it (e.g., changed
+the order of some statements to make it more naturally fault tolerant and added
+assertions to detect hazardous states at various points in the code).  They
+reported to me (and in the PSAM presentation) that they liked the software
+fault tree analysis technique, have used it on some other control system
+software, and are planning to use it again in the future.  A little more about
+this can be found in my current CACM paper on how to build safety-critical
+software.
+
+Dave required that they rewrite their requirements specification in the A-7
+style and that they do a "handproof" of the code using functional abstraction
+from the code (called Program Function (PF) Tables).  This was quite costly and
+painful in comparison with the fault tree analysis (at PSAM I was told that the
+PF tables took 30 man years), but it is also more complete.  I heard that a few
+errors were found in the specification (not in the code) as a result -- but
+this may not be correct.  I have also heard from several people at Ontario
+Hydro that they are not happy with the prospect of having to repeat the PF
+analysis when changes are made in the code (which the AECB has decreed), and
+some have suggested getting rid of the software altogether to avoid having to
+go through this type of PF table analysis again.
+                                                            nancy
+
+------------------------------
+
+Date: Fri, 15 Feb 91 11:46:08 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: More on very reliable systems
+
+Dr. Tanner Andrews writes:
+	) The theory here is that running 100 units for 100 hours gives you
+	) the same information as running one unit for 10000 hours.
+	The theory is crocked.  It builds heat slowly. The actual behavior:
+		100 hours:	a little warm
+		200 hours:	case is softening
+		250 hours:	case melts
+		257 hours:	catches fire
+	The times and failure modes will vary, depending on the type of
+	device in question.
+
+He's just re-discovered the problem of correlated failures, which was what
+my whole article was about.  I gave a very similar example concerning digital
+watches.
+
+Martyn Thomas asks:
+
+	How can we have confidence that the means by which we have combined
+	the n-versions [of an n-version program] (for example, the voting
+	logic) has a failure probability below 1 in 10^9?
+
+Clearly, we can't.  If your view of an n-version program is that it just
+produces some numbers that you somehow combine to get some other number,
+you've got a problem.  But the real issue is how you build reliable systems
+that somehow affect the real world.
+
+Consider the brake system in an automobile.  It is divided into independent
+halves from the master cylinder on; the halves control diagonally opposite
+pairs of wheels.  Either half can stop the car, and failures that affect both
+are "unlikely".  Now suppose we wished to build a computer-controlled brake.
+We might try to get reliable operation by having redundant computers and a
+voter which then applied all four brakes.  But it would make much more sense
+to have a pair of independent computers controlling diagonally opposite pairs
+of wheels.  The "voter" is then the car itself, and physical laws guarantee
+that if either vote says "stop", the car stops.  (This actually comes full
+circle to a comment I made a number of months back about the significance of
+physical laws in mechanical systems, and the lack of such "enforced by the
+universe" laws in digital systems.)
+
+This is a HARD problem, there's no denying that!
+
+	How can we be sure that our analysis of the upper bound on failure
+	correlation among modules is accurate? How accurate does it need to be
+	- does it need to have a probability of less than 1 in 10^9 that it is
+	grossly wrong? (By "grossly wrong" I mean wrong enough to invalidate
+	the calculation that the overall system meets the "1 in 10^9" figure).
+	This would seem impossible.  Consider, for example, the probability
+	that the common specification is wrong.
+
+We can never be SURE.  Try and come up with any analysis that makes you SURE
+(with high probability) that your car will stop when you hit the brakes - or,
+for that matter, that the sun will rise tomorrow.  The language of mathematics
+is very misleading here:  Mathematics deals with models of the world, not the
+world itself.  There is no certainty, even of probabilistic estimates, in the
+world.  But we have to muddle on.
+
+I'm not knowledgeable enough in statistical theory to comment on how one
+even measures the correlation, much less what the appropriate tests and
+sample sizes are.  On the other hand, fairly small experiments showed the
+FAILURE of the independence hypothesis for naive n-version programming.
+
+Also, it's worth commenting on an assumption about testing that many people
+make implicitly:  That only tests that do NOT use special knowledge about
+the system being tested are acceptable.  In fact, hardly anything is ever
+tested that way - it's just not practical.  It requires too many tests and
+takes too long, often longer than the useful lifetime of the object under
+test.
+
+Consider, for example, computing MTBF for disks.  People ask how a manufactu-
+rer can come up with an estimate of 100,000 hours on a fairly new product.
+The answer is two-fold:  For failures that occur essentially at random during
+the lifetime of a disk, testing a number of disks in parallel gives you a
+valid estimate.  For failures related to aging - i.e., those whose probability
+goes up as time in service goes up - there are a variety of "accelerated
+aging" techniques.  Almost anything that's the result of a chemical reaction
+(e.g., deterioration of lubricants) will proceed faster if you run the device
+at higher temperatures.  Similarly, Dr. Andrews's slow heating will occur much
+faster in a higher temperature environment.  Many kinds of mechanical failures
+are due to CHANGE in temperature; a common test environment cycles the tempe-
+rature repeatedly.  Similar considerations apply to humidity.  Vibration
+stresses can be easily applied.  Someone asked about bearing failure after
+many thousands of hours.  It may take a bearing thousands of hours to fail,
+but the failure process doesn't suddenly happen - subtle changes are going
+on in the bearing and the lubricants over that period of time.  A close
+examination - much more than a "yes, it's still turning" determination - will
+find chemical and physical changes:  Breakdown of the lubricant, migration of
+metal into the lubricant (whether in macroscopic (chips of metal) or micro-
+scopic (disolved metal) quantities), scoring of the bearing races, changes in
+metal crystal structure.  We have a huge amount of experience with these kinds
+of systems, and know what their plausible failure modes are.  Are we always
+right?  No, of course not - but again, we have to muddle through.
+
+Paul Ammann writes:
+
+	>	1.  Testing (whether by explicit test in a lab or by actual
+	>		use in the field) of very large numbers of copies of
+	>		the system 
+	>	2.  Functional decomposition of the system into a number of
+	>		modules such that failure can occur only when ALL the
+	>		modules fail. 
+
+	The first technique assesses performance directly, and can be applied
+	to any system, regardless of its construction.  As Jerry points out,
+	various assumptions must be made about the environment in which the
+	testing takes place.  The second technique estimates performance from
+	a predictive model....
+
+	I am uncomfortable with merging the issues of direct measurement with
+	those of indirect estimation.  The difficulties in 1 are primarily
+	system issues; details of the various components are by and large
+	irrelevant. In technique 2 the major issue is the failure relationship
+	between components.
+
+I don't believe the distinction is sharp.  Again, most type 1 testing is NOT
+a naive "try it for a while and see what happens"; one designs tests based on
+assumptions about plausible failure modes.  This is, in effect, a predictive
+model:  We predict that we've isolated all the important contributors to
+system failure.  If we're careful, we even TEST that prediction:  After all
+our tests are complete, we check to see how many failures were the results of
+causes we did not include in designing our tests.  If there are too many, we
+may have to go back and do it again.
+
+Conversely, we can simply build the system from what we think are independent
+modules and then do brute force testing for overall reliability.
+
+	The Eckhardt and Lee model (TSE Dec 1985) makes it clear that
+	performance prediction is much more difficult.  To evaluate a
+	particular type of system, one must know what fraction of the
+	components are expected to fail over the entire distribution of
+	inputs.  The exact data is, from a practical point of view, impossible
+	to collect.  Unfortunately, minor variations in the data result in
+	radically different estimates of performance.  For a specific system,
+	it is not clear (to me, anyway) what an appropriate "upper bound of
+	failure correlation among modules" would be, let alone how one would
+	obtain it.
+
+See my earlier comments.  I don't believe there is any magic solution to this
+problem; just as in the design of physical artifacts, it's something we'll
+just have to learn about and solve on a case by case basis.
+
+	>                       Either technique can be used to get believable
+	>failure estimates in the 1 in 10^8 (or even better) range.  Such
+	>estimates are never easy to obtain - but they ARE possible. Rejecting
+	>them out of hand is as much a risk as accepting them at face value.
+
+This statement came out sounding stronger than I intended.  I don't believe we
+have the capability today to build a computer-based system for which we could
+believe error estimates of this sort.  Nor do I see any techniques available
+today that could provide such an estimate.  However, I don't see any funda-
+mental reason to belive that such techniques could not exist.
+
+BTW, it's also worth considering just how strong such a guarantee is, and in
+particular how many of the systems we already deal with in the world are much,
+much riskier.  If I remember the numbers right, about 30,000 people die in
+car accidents every year.  If we do some really stupid estimating, and assume
+that everyone in the US (about 3*10^8 people) gets into a car once a day, then
+my chance of dying in a car accident is 1 in 10^4 each year.  Not a very
+reliable system, is it?
+
+In fact, I've always found it interesting how much more we demand from digital
+systems than we demand from mechanical ones.  For example, we always reassure
+beginners that no incorrect input to a program can physically harm the
+machine.  And yet, consider what will happen to your car should you take it
+down the highway at 60mph and then suddenly shift into reverse.  Does this
+bother you?  Does it make you afraid to drive?
+							-- Jerry
+
+------------------------------
+
+Date: Fri, 15 Feb 1991 13:58:51 GMT
+From: peter@taronga.hackercorp.com (Peter da Silva)
+Subject: Saudi air controllers
+
+The following message was posted on a local bulletin board.
+ 
+Msg#:28798 *HOUSTON SHOUTS*
+02-14-91 22:23:32 (Read 10 Times)
+From: DONALD SAXMAN
+  To: HELGA
+Subj: WRITE YOUR CONGRESSMEN
+
+(This message is really for anyone).  It was recently brought to my attention
+that the Saudi Arabian government has replaced American traffic controlers in
+the Desert Shield war zone with native Saudis. This was done partly to appease
+Saudi nationalists and partly because some of the American military air traffic
+controlers were women. (Saudi and other Islamic military pilots aren't
+particularly fond of being directed by women, but they can live with it.  Saudi
+civilian pilots reportedly would refuse to even listen to instructions fro
+female air traffic controlers, pretending they didn't exist).  Anyway, the
+Saudi controlers may or may not be as good at their job as the Americans. But
+they reportedly don't speak English very well. (Sidebar: English is supposed to
+be the international air traffic control language, but there are some holdouts
+that don't follow this standard. Many of these are Islamic countries, although
+Saudi Arabia apparently does use English-speakers.) Anyway, UN Coalition forces
+are already having trouble coordinating operations.  Pilots who operate from
+outside of the war zone, like refuelers or B-52s, are particularly at risk.
+Anyway, there has been a suggestion made that users write their Congressmen and
+complain about this situation.  It couldn't hurt.
+   
+If anyone out there has Usenet or Fidonet access, I'd appreciate them 
+forwarding this message so that it gets as wide exposure as possible.
+
+               (peter@taronga.uucp.ferranti.com)
+
+------------------------------
+
+Date: Fri, 15 Feb 91 15:16:37 -0500
+From: DONNER@IBM.COM
+Subject: Enterprising Vending Machines
+
+Grand Central Terminal in New York City has a number of ticket vending machines
+that permit travellers who don't want to stand in long lines to purchase
+tickets.  I had an unpleasant experience with one of them a while ago.  I
+arrived at the terminal before the 6:00AM opening of the ticket offices with
+the intention of taking a 6:10AM train.  Not knowing that the ticket offices
+would open at 6 (it's not posted) I went to one of the ticket machines and
+pressed the code for my destination.  It told me to insert $8.60.  The signs on
+the front of the machine informed me that I could use bills of any denomination
+up to and including $20.  Having only $20s on me (bless the cash machine) I
+inserted one of them.  The light at the little window where tickets and change
+are delivered flashed just as if it was delivering my ticket (I'd used the
+machine before and I knew what to expect) but nothing came out.  My money
+wasn't returned, I got no ticket, and I got no change.  Deciding that putting
+another $20 into the machine wasn't wise, I wandered around the main concourse
+looking for someone in authority for a few minutes until the ticket windows
+opened.
+
+I explained the situation to the ticket agent (after buying a ticket to my
+destination) and he said "Oh, yes, it does that if you put a 20 in for a
+purchase less than $10," and gave me a form to fill out requesting a refund.  A
+few weeks later I received a letter from some official of the rail line
+asserting that they hadn't found any excess $20 bills in their machines and
+implying that I had been attempting to cheat them out of money.  He also
+asserted that there were instructions on the machine explaining not to use $20
+bills when less than $10 worth of tickets was being purchased.  I had looked
+for such indications on the occasion of my loss and not found them, though on
+my next visit to the station after receiving the letter I found that little
+signs saying that had, in fact, been glued to the face of the machine in the
+intervening time.
+
+I wrote another letter suggesting that when the machine detected this problem
+it could print out a receipt on ticket stock and give it to the user so that he
+would have documentation for his loss.  This letter, which included several
+other suggestions for simple, inexpensive solutions to the problem, evoked a
+rather hostile letter in response.  At that point I gave up, though I did
+fantasize about blowing the machine up for several weeks after.
+
+Marc Donner
+
+------------------------------
+
+Date: Thu, 14 Feb 91 17:39:41 PST
+From: jane@wombat.UUCP (Jane Beckman)
+Subject: Visa voided purchase woes
+
+I had heard that having to have a purchase voided out can tie up credit block 
+allocations for a while, but here's my experience of last Friday that 
+illustrates what can happen when Murphy really gets rolling...
+
+I had a moderately sized chunk of cash I needed to pay for with my VISA card, 
+over at the local Pay 'n Save.  Half the staff was out sick and the checkers 
+who were in were overworked.  The checker opens a new register and runs my 
+card through.  Nothing happens.  She finds that the printer for the reader is 
+turned off.  She turns it on.  Still nothing.  So she runs the card through 
+again.  This time, everything acts as normal until it goes to print out a 
+register slip for me to sign.  The paper on the printer jams.  
+
+Much swearing later, she tries to get into the register to void the purchase, 
+and finds that it has billed me TWICE for the amount of purchase, once for 
+when the printer was off, once for when the printer jammed.  The register 
+doesn't know how to handle this, and refuses to void the second charge.  She 
+has to go find the manager, who manages to consult the reference manual and 
+get the printer voided.  
+
+Okay, now that things are finally (theoretically) working, they run my card 
+through again.  It comes back declined.  Why?  The two rather largish sums 
+that were voided are stuck in my credit allocation, of course.  Of course it 
+went through, the first two times.  I suppose I could have written a check 
+at that point, but I decided to stubborn it out.  (Besides, I was interested 
+in finding out what could be done, now.) 
+
+The salesgirl calls the VISA number, hoping she can get a manual override.  
+A mechanical voice wants her to punch in the store code.  She doesn't have it.
+She hangs up, goes to another person, gets the store code.  She calls again, 
+punches in the store code, then is asked for the credit card number.  I'm 
+sorry, says the other end, that credit is declined.  Click.  She gets the 
+manager.  He punches things in, and manages to get a real human being, and 
+tries to explain what's going on to the credit authorization person.  That 
+it was okayed the first two times, but now (with two voided charges on the 
+allocation) it's topped my credit limit.  I'm sorry, says the credit drone, 
+but I am not authorized to okay that credit authorization, despite what you 
+tell me.  That can only be done by the credit card company.  Fine, says the 
+manager, do you have a number for Citibank?  Call the customer service number 
+on the back of the card, she suggests.  He calls the number, and explains to 
+the Citibank service representative what has gone on.  The Citibank rep says 
+that if he puts the card through one more time, he can manually override the 
+declined credit order.  They put my card through one more time.  The credit 
+goes through.  I get a slip to sign.  
+
+However, you can bet I will be looking at my next bill very carefully.  Also, 
+the override was obviously a once-only, and the credit is still set aside, 
+somewhere, as I tried to use my card for a small purchase, this week, and it 
+was declined.  That second charge is still in the system, somewhere.    Some 
+time, someone is going to have to program the system to accept voids.
+
+   --Jane Beckman   [jane@swdc.stratus.com]
+
+------------------------------
+
+Date: Thu, 14 Feb 91 18:57:34 EST
+From: janson@ATHENA.MIT.EDU
+Subject: Credit enquiries appear to expose client lists to competitor's scrutiny
+
+I have become sensitive to my exposure due to electronically compiled and
+disseminated personal data, but, until recently, i had never considered
+ways in which the users of such data expose themselves to possible losses.
+I was both amused and disconcerted to learn that a company which uses
+a credit reference service makes it easier for a competitor to target
+customers through traces which are maintained by the credit agency.
+
+This last week i received in the mail, from MCI, an offer for a
+rebate in exchange for electing them as my long distance carrier.
+   [Ignore for the present discussion ethical issues
+   raised by the particular incentive mechanism which MCI employed.]
+I had expected, and did receive, a number of enquiries from various alternative
+carriers at the time when equal access provisions went into effect in this
+area. I was, however, perplexed as to why they chose to target me now.
+
+It took a bit of reflection, but i finally concluded that one focus of
+MCI's current mailing is the holders of ATT Universal cards.
+   [MCI used an address which gave them away.]
+Not really the kind of thing which one company would deliberately give to a
+competitor. So i called ATT to ask what happened.  I was informed that they
+knew the likely path which the information had traveled, but that once they had
+made a credit enquiry, they were powerless to preventing MCI from approaching
+the credit agency and obtaining a list of those people for whom ATT had
+requested credit histories.
+
+------------------------------
+
+End of RISKS-FORUM Digest 11.12
+************************
+

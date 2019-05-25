@@ -1,0 +1,266 @@
+17-Mar-86 10:53:11-PST,12519;000000000000
+Mail-From: NEUMANN created at 17-Mar-86 10:51:22
+Date: Mon 17 Mar 86 10:51:22-PST
+From: RISKS FORUM    (Peter G. Neumann, Coordinator) <RISKS@SRI-CSL.ARPA>
+Subject: RISKS-2.28
+Sender: NEUMANN@SRI-CSL.ARPA
+To: RISKS-LIST@SRI-CSL.ARPA
+
+RISKS-LIST: RISKS-FORUM Digest,  Monday, 17 Mar 1986  Volume 2 : Issue 28
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risks of commission vs. risks of omission (Dave Parnas and Peter G. Neumann)
+  The TIME is RIPE -- a clock problem (Peter Neumann)
+  Mailer Gone Mad? (Landrum)  
+  Money Talks (Matthew Kruk)
+  Another discourteous modem (Glenn Hyatt)
+  Will the modem discussions ever hang up? (Rob Austein)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@SRI-CSL.ARPA, Requests to RISKS-Request@SRI-CSL.ARPA.)
+(Back issues Vol i Issue j stored in SRI-CSL:<RISKS>RISKS-i.j.  Vol 1: MAXj=45)
+
+----------------------------------------------------------------------
+
+Date: Sat, 15 Mar 86 17:30:09 pst
+From: Peter G. Neumann <Neumann@SRI-CSL.ARPA>
+To: RISKS@SRI-CSL.ARPA
+Subject: Risks of commission vs. risks of omission
+
+Dave Parnas in a private note to me has raised a set of concerns involving
+the actions and inactions of a particular system.  Those concerns seem very
+important to RISKS, and so I quote him here (with his permission).
+
+  "What about the difference between risks of commission and risks of
+  omission?  Whenever we speak of a risk it is shorthand for the risk of some
+  specific danger.  I consider a risk to be one one of commission if the
+  danger is that the system will perform some action from a finite set of
+  "bad" things.  A risk is one of omission if the danger is that the system
+  does not perform the task that it was built to perform.  I think risks of
+  commission are less difficult to deal with than risks of omission for two
+  reasons: (1) for risks of commission one can do specific "backward" analysis
+  to look for ways that that danger could occur, (2) for risks of commission
+  one can include checks and hardware to prevent the danger.  Risks of
+  omission are often insurmountable because confidence that they will not
+  occur requires a proof of "correctness" or at least a proof of certain
+  aspects of correctness.  Do the readers of the forum agree with this
+  distinction and evaluation?  Can they site save examples of successful
+  software with a severe risk of the omission type?"  [Dave Parnas]
+
+There are several comments that I would like to make, and then I'll turn this
+open to the Forum.
+
+The finite set of "bad" things may be incomplete.  An example in the
+security community is the multilevel security property -- NO FLOW of
+information downward to a lower level of security or laterally to another
+compartment at the same security level.  This is the property upon which
+various security kernels are based.  However, it represents only a portion
+of the "bad things" that must be prevented.  Furthermore, proving the NO
+FLOW property for a few dozen kernel functions is not enough if the entire
+machine language is accessible via assembly language!
+
+Yes, the former may seem easier to deal with -- at least superficially.
+However, the errors of commission are insidious in that it is very hard to
+GUARANTEE their absence.  In many cases the set of properties ("bad things")
+is already stated negatively ("X MAY NOT HAPPEN", as in the case of the NO
+FLOW property), and applies only abstractly.  Even even if you can
+demonstrate that a particular interface (e.g.,a security kernel) satisfies
+the desired set of properties (that is, the design satisfies the properties
+and the code and hardware together are consistent with the design), the set
+of properties may incomplete.  Thus, "correctness" arguments are relevant in
+the errors of commission as well -- down to and including the hardware.
+
+Dave reminds us of Martin Moore's example of the range safety shuttle
+destruct system.  
+
+  "Here there are risks of both kinds.  There is a risk that the system may
+  destroy a shuttle that performs properly.  There is also a risk that it may
+  not destroy a shot that should be destroyed because it is about to crash in
+  Miami's heavily populated area.  Martin described how many measures could be
+  taken to make the commission risk less likely.  Physical control of data
+  paths was one of those measures.  However, it is much harder to see how we
+  can make sure that the destruct system will perform.  We would need some
+  correctness arguments or extensive testing to have faith that it would
+  perform when it should."  [Dave Parnas]
+
+The risks of omission are also insidious in that the model of what must be
+done may be incomplete.  While the distinction between errors of commission
+and omission is valuable, I suspect that there are essentially equivalent
+problems with each, but this is probably of little help in practice.  Both
+types of risks must be considered.  Furthermore, in some cases, a given
+problem may involve both types of errors.
+
+Peter
+
+   [Perhaps a survey of the disaster list (e.g., RISKS-2.1) might be in
+    order, but I want to get this issue out without further delay.  PGN]
+
+------------------------------
+
+Mail-From: NEUMANN created at  7-Dec-84 09:46:27
+Date: Fri 7 Dec 84 09:46:27-PST                        [WRONG!]
+From: Peter G. Neumann <Neumann@SRI-CSL.ARPA>
+Subject: The TIME is RIPE -- a clock problem 
+To: RISKS@SRI-CSL.ARPA                                 [NOT THE REAL TIME!  
+                                           MORE LIKE Mon 14 Mar 7:50AM PST] 
+
+Somehow the time-of-date clock on my system got reset to 7 Dec 1984 last
+night around 10:40 PM PST, while I was logged in.  I was apparently the only
+user on the system at the time, but I was doing nothing unusual.  Could it
+have been a dropped bit (despite parity) (I haven't had the patience to do
+the calculation of the time difference)? or a time-dependent software
+glitch?  At any rate, it is something I had never seen before, and it seems
+quite relevant to RISKS.  
+
+The side-effects of such a clock burp could be very painful.  (1) A
+delete-by-date of older-dated versions of a file results in deletion of the
+newest versions actually created.  (2) All of the messages in my mailboxes
+were marked as UNSEEN.  In a mailbox with hundreds of messages, that is a
+nuisance.  (3) In clock-dependent asynchronous systems, all hell could break
+loose.  (Recall the first shuttle launch delay.)  (4) All sorts of other
+things might stop working.  (I wonder if anyone ever runs a system in the
+virtual past in order to keep the SCRIBE time-bomb from going off, to avoid
+paying UNILOGIC for another year!) PGN]
+
+      [I waited to send this issue out until the clock had been corrected,
+       in order to minimize further side-effects, notably confusion.]   
+Peter
+
+------------------------------
+
+Date: 14 Mar 86 14:12 EST
+From: Landrum @ DDN1.ARPA
+Subject: Mailer Gone Mad?  
+To: neumann @ sri-csl.arpa
+
+Comment: Found this in my mailbox.  Something appears to have gone awry!!
+
+Taylor Landrum
+         Forwarded message:  
+         -----------------------------------------------------
+  Date:  Thu 6 Mar 86 22:27:50-PST
+  From: RISKS @ SRI-CSL.ARPA
+  Subject:  RISKS-2.23
+  Sender:  NEUMANN@SRI-CSL.ARPA
+  cc:
+  Text: LTC Elderd,
+
+  I just got another issue of Bar Code News in the mail, and it had an
+  insert on something called "ID EXPO", which is sponsored by Bar Code News,
+  and is billed as "the conference and exposition of automatic identification
+  and keyless data entry".  It will be held at the civic auditorium/Brooks
+  Hall in San Francisco, 19-21 May.
+
+  ...
+                                      - Jim Jack
+ 
+  -------------END OF FORWARDED MESSAGE(S)-------------
+
+     [I omit the rest of the message, and hope that Jim Jack does not mind
+     my including this here.  I hope you see that someone's mailer has 
+     committed A MONSTROUS SCREW-UP.  The header information is precisely
+     that of RISKS-2.23, and Landrum@DDN1 was on the list to receive that
+     issue.  But it is clear that the message received was truncated after
+     some of the header stuff (notice the TO: field is missing!) and the
+     text of another message concatenated.  PGN]
+
+------------------------------
+
+Date: Sun, 16 Mar 86 15:43:34 PST
+From: Matthew_Kruk%UBC.MAILNET@MIT-MULTICS.ARPA
+To: RISKS@CSL.ARPA
+Subject: Money Talks
+
+The following article appeared in the Vancouver Sun (Vancouver,
+B.C.), Saturday, March 15th:
+
+            New bills will prove that money can talk
+
+  OTTAWA - It costs six cents to make, wears out in about a year,
+  and is an oddball in the U.S., where today it's only worth $1.43.
+
+  Someday it will even be able to talk - in both offical languages.
+
+  It's the new Canadian $2 bill, announced today by the Bank of
+  Canada, which has redesigned the deuce - and its $5 pal - for
+  introduction later this year.
+  ...
+  The new bills will also have a feature to assist the
+  visually-impaired distinguish denominations.
+
+  Don Bennett, a spokeman for the Bank of Canada, said the new bills
+  will have a code printed into them which, when inserted into an
+  electronic device, will activate a synthesized "voice" which will
+  speak the denomination.
+
+  Bennett said the bank is continuing development work on the
+  device, but field tests, which included Vancouver, were recently
+  completed.
+
+  Bennett said it will be the end of the decade before the devices
+  are in wide-spread use although some may be available by 1987. The
+  target cost is below $50.
+  ...
+
+My curiousity is how "fool-proof" are these codes (I have not seen
+what the codes look like but I suspect something similar to that
+imprinted on personal checks) and devices. Does anyone know of
+something similar? Will money not only "talk" but "lie" too?
+
+    [I am reminded of the BART and METRO fare cards.  Although the remaining
+     fare is encrypted, the magnetic stripe is trivial to copy.  Since the
+     encoded signature of the $2 bill will be identical for all $2 bills, in
+     principle it should be easy to copy -- perhaps onto an OLD $1 that has 
+     no such markings, although that is not such a great loss.  What about
+     higher denominations?  (Holograms embedded in the bill to prevent 
+     forgeries (as in credit cards) would not help the blind much.)  If you
+     were blind, would you have any confidence in a machine that tells you
+     that the bill you have just been given by a well-known shyster is a 
+     perfectly good $1000 bill?  PGN]
+
+------------------------------
+
+Date:     Sat, 15 Mar 86 17:03:51 EST
+From:     Glenn Hyatt <hyatt@dewey.udel.EDU>
+To:       risks@sri-csl.ARPA
+Subject:  Another discourteous modem
+
+The other day, someone finally reached me who had been trying
+for several days.  I have a second phone line into my house
+that I use only for data -- no telephone attached -- and it
+seems she had gotten that phone number instead of the one I
+always use for voice.  Usually I am either using the data line
+or the modem is turned off, so she kept getting a busy signal
+or no answer.  Once, though, someone -- my modem, left on for
+once -- answered.  It beeped, so she left a message, taking it
+for an answering machine.  Took me for the sort who never
+returns phone calls.
+
+------------------------------
+
+Date: Sat, 15 Mar 1986  19:19 EST
+From: Rob Austein <SRA@XX.LCS.MIT.EDU>
+To:   RISKS-REQUEST@SRI-CSL.ARPA
+Subject: Will the modem discussions ever hang up?
+
+Peter,
+
+I suggest that if you are as tired of modem stuff as you sound, you
+just redirect anybody who wants to talk further to TELECOM@XX.  Lag
+time to the various parts of the net is bad enough that you will still
+be getting this crud for weeks if you don't put a lid on it.
+
+--Rob
+         [I'm not tired of the topic itself, but I think our readers may grow
+          a little weary of the seemingly endless variations on the theme. 
+          However, I think I may turn up my REJECT RATIO a little more.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

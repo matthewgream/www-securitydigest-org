@@ -1,0 +1,654 @@
+precedence: bulk
+Subject: Risks Digest 25.25
+
+RISKS-LIST: Risks-Forum Digest  Sunday 3 August 2008  Volume 25 : Issue 25
+
+ACM FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+Peter G. Neumann, moderator, chmn ACM Committee on Computers and Public Policy
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <http://www.risks.org> as
+  <http://catless.ncl.ac.uk/Risks/25.25.html>
+The current issue can be found at
+  <http://www.csl.sri.com/users/risko/risks.txt>
+
+  Contents:
+"Software bug" downs AA baggage handling at JFK (PGN)
+Intermittent network card causes air traffic control problems
+  (Steven M. Bellovin)
+Crypto box failure causes MTA credit card processing failure
+  (Steven M. Bellovin)
+200,000 medical records sent to wrong patients, some with SSNs (George Mannes)
+DNA Database Searches (jared)
+Another GPS error story (Gene Spafford)
+Electronic voting: Indications of Sanity? (Geoff Newbury)
+Risks of Inflation: new Zimbabe bank notes (Jim Reisert)
+Bruce Schneier: Inside the Twisted Mind of the Security Professional
+  (jidanni)
+Details of DNS Flaw Leaked (Kim Zetter via Monty Solomon)
+Apple Fails to Patch Critical Exploited DNS Flaw (Rich Mogull via
+  Monty Solomon)
+Fascinating phishing attack: valid links, dangerous toll-free number
+  (Jonathan Kamens)
+Re: San Francisco FiberWAN and Terry Childs (Jeff Williams)
+Re: ComCast in Concrete?  MAC addresses (Tanner Andrews)
+REVIEW: "Internet Denial of Service", Jelena Mirkovic et al. (Rob Slade)
+REVIEW: "AVIEN Malware Defense Guide for the Enterprise", David Harley et al.
+  (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Wed, 30 Jul 2008 14:45:16 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: "Software bug" downs AA baggage handling at JFK
+
+  [TNX to Lauren Weinstein for spotting this one.  PGN]
+
+American Airlines had a baggage problem at JFK that caused many bags to miss
+their intended flights, despite that fact that 35 flights were delayed up to
+an hour and one-half.  Beginning at 4:45am, the software controlling the
+baggage sorting operations malfunctioned, and bags had to be sorted by hand.
+
+http://travel.latimes.com/daily-deal-blog/index.php/baggage-snafu-hits-a-2395/
+
+------------------------------
+
+Date: Sun, 27 Jul 2008 10:42:26 -0400
+From: "Steven M. Bellovin" <smb@cs.columbia.edu>
+Subject: Intermittent network card causes air traffic control problems
+
+According to http://www.techcentral.ie/article.aspx?id=12346 an
+intermittent failure in a network card caused problems for the air
+traffic control system in Ireland.  Apparently, the fact that the
+failure was intermittent was enough to confuse the fail-over
+mechanisms.  The trouble lasted for about six weeks before it was
+diagnosed.  "Thales ATM stated that in ten similar Air Traffic Control
+Centres worldwide with over 500,000 flight hours (50 years), this is
+the first time an incident of this type has been reported."
+
+--Steve Bellovin, http://www.cs.columbia.edu/~smb
+
+------------------------------
+
+Date: Thu, 31 Jul 2008 17:08:26 -0400
+From: "Steven M. Bellovin" <smb@cs.columbia.edu>
+Subject: Crypto box failure causes MTA credit card processing failure
+
+Many people buy MetroCards -- mag stripe swipe cards for riding New York
+City subways and buses -- using credit cards.  For a few days, though, this
+wasn't working well during rush hour; credit card transactions were being
+rejected.  They finally figured it out: one of the crypto units to protect
+credit card numbers in transit had failed.  There was another unit, but it
+couldn't handle peak loads by itself, so transactions timed out and hence
+failed.
+http://cityroom.blogs.nytimes.com/2008/07/31/mta-blames-encryption-for-metrocard-problems/
+
+There are a few lessons here.  One, of course, is that headline writers
+shouldn't be trusted to get technical details right.  Saying "M.T.A.  Blames
+Encryption for MetroCard Problems" is just wrong -- the MTA didn't blame
+encryption, they blamed the failure of a particular unit.
+
+More substantively, there were two serious problems with the technical
+design of the system.  First, there was insufficient redundancy; failure of
+a single unit left the system unable to handle the load.  Second, there was
+no notification to the administrators of the failure of the unit.  Once they
+figured it out, they were able to cope -- they had a spare available -- but
+they didn't know that there was a failure.
+
+--Steve Bellovin, http://www.cs.columbia.edu/~smb
+
+------------------------------
+
+Date: Tue, 29 Jul 2008 11:29:39 -0400
+From: "George Mannes" <gmannes@gmail.com>
+Subject: 200,000 medical records sent to wrong patients, some with SSNs
+
+[Source: Andy Miller, *The Atlanta Journal-Constitution*, 29 Jul 2008; PGN-ed]
+A change in a computer system was "not properly tested";
+Private medical data exposed;
+Insurance benefit letters sent to wrong addresses by Blue Cross and
+Blue Shield reveal claim histories, open door to ID theft.
+http://www.ajc.com/news/content/news/stories/2008/07/29/bluecross.html?cxntnid=amn072908e&cxntlid=homepage_tab_newstab
+
+BC&BS sent an estimated 202,000 benefits information letters containing
+personal and health information -- identities, ID numbers, and service
+details -- to the wrong addresses last week, Some letters also contained
+SSNs.  This situation seems to be in violation of HIPPA (the U.S. Health
+Insurance Portability and Accountability Act of 1996).
+
+------------------------------
+
+Date: Thu, 24 Jul 2008 20:49:55 -0600
+From: jared <jared@netspace.net.au>
+Subject: DNA Database Searches
+
+An article "How reliable is DNA in identifying suspects?" recently appeared.
+http://www.latimes.com/news/local/la-me-dna20-2008jul20,0,1506170,full.story.
+The lead is:
+
+  A discovery leads to questions about whether the odds of people sharing
+  genetic profiles are sometimes higher than portrayed.  Calling the finding
+  meaningless, the FBI has sought to block such inquiry.
+
+The article illustrates two computer risks.  The first is that data is not
+free.
+
+Each jurisdiction operates its own DNA database but relies on American
+federal CODIS (Combined DNA Index System) to search across multiple
+databases. Defense lawyers are interested in determining group
+statistics. DNA comparisons are apparently made based on how many of 13 loci
+are similar. They want to know, for example, how many people in the database
+match in 9, 10, 11, 12 or even 13 loci.  (Reportedly some prosecutors cite
+less than 13 loci matching as a 'DNA evidence'.)
+
+> FBI officials argue that, under their interpretation of federal
+> law, use of CODIS is limited to criminal justice agencies. In their
+> view, defense attorneys are allowed access to information about
+> their specific cases, not the databases in general.
+
+A court order was made for a search of one state's database. The article
+reports an FBI employee said that the search could lead to the database
+being disconnected from CODIS. There was a warning that the search could
+corrupt the state database. In the end neither event occurred.
+
+The second risk is an overloading of the database's intent. The tricky bit
+of the search results is that closely related people may match very well but
+the database, as one might expect, doesn't have this information.
+
+As a note, the article illuminates many of the usual statistical risks.
+
+------------------------------
+
+Date: Sat, 26 Jul 2008 18:41:07 -0400
+From: Gene Spafford <spaf@cerias.purdue.edu>
+Subject: Another GPS error story
+
+Sat-nav driver's 1600-mile error: A DOZY trucker driving from Turkey to
+Coral Road in Gibraltar ended up at Skegness.  Gibraltar is considered part
+of the UK by the Sat-Nav systems.
+
+http://www.thesun.co.uk/sol/homepage/news/weird/article1447400.ece
+
+------------------------------
+
+Date: Thu, 31 Jul 2008 12:59:01 -0400
+From: "R. G. [Geoff] Newbury" <newbury@mandamus.org>
+Subject: Electronic voting: Indications of Sanity?
+
+Indications of Sanity? A politician likes *paper* ballots..
+http://www.theregister.co.uk/2008/07/30/debra_bowen_usenix_keynote/
+
+  [YES.  California Secretary of State Debra Bowen was the keynote speaker
+  at Usenix Security on 30 Jul 2008 in San Jose.  She really wowed the
+  audience with her candor, clarity, and relevance.  We owe her our enormous
+  gratitude for spearheading the Summer 2007 Top To Bottom Review of voting
+  machines (with reports on software analyses, documentation, penetration
+  testing, and accessibility), for following up on it, and generally for
+  being one of the nation's first high government officials to really grasp
+  the significance of the risks that we have been discussing here for so
+  many years relating to elections -- indeed, since RISKS-1.01.  Her efforts
+  are now beginning to be emulated in Ohio and other states.  PGN]
+
+------------------------------
+
+Date: Thu, 24 Jul 2008 17:01:15 -0700 (PDT)
+From: Jim Reisert AD1C <jjreisert@alum.mit.edu>
+Subject: Risks of Inflation: new Zimbabwe bank notes
+
+http://www.huffingtonpost.com/2008/07/24/zimbabwes-money-worth-mor_n_114838.html
+
+"One major commercial bank said its automated teller machines are not
+configured to dispense multi-zero withdrawals and freeze in what it called a
+"data overflow error." Software writers are busy writing programs to try to
+overcome the problem."
+
+Jim Reisert <jjreisert@alum.mit.edu>, http://www.ad1c.us
+
+------------------------------
+
+Date: Fri, 25 Jul 2008 20:20:20 +0800
+From: jidanni@jidanni.org
+Subject: Bruce Schneier: Inside the Twisted Mind of the Security Professional
+
+[Bruce Schneier's WiReD.com article cited below by jidanni outlines the
+Security Mindset espoused by Tadayoshi Kohno in an undergraduate course on
+computer security at the University of Washington.  It's worth reading.
+Security need not be in the eyes of the beholder.  It should be in the eyes
+and ears and fingers and mind of the attackers.  PGN]
+
+http://www.wired.com/politics/security/commentary/securitymatters/2008/03/securitymatters_0320
+
+------------------------------
+
+Date: Sun, 27 Jul 2008 11:33:10 -0400
+From: Monty Solomon <monty@roscom.com>
+Subject: Details of DNS Flaw Leaked
+
+Kim Zetter's WiReD.com blog, Details of DNS Flaw Leaked; Exploit Expected by
+End of Today, 22 Jul 2008
+http://blog.wired.com/27bstroke6/2008/07/details-of-dns.html
+
+Despite Dan Kaminsky's efforts to keep a lid on the details of the critical
+DNS vulnerability he found, someone at the security firm Matasano leaked the
+information on its blog yesterday, then quickly pulled the post down. But
+not before others had grabbed the information and reposted it elsewhere,
+leading Kaminsky to post an urgent 0-day message on his blog reading,
+"Patch. Today. Now. Yes, stay late."
+
+Hackers are furiously working on an exploit to attack the vulnerability. HD
+Moore, creator of the Metasploit tool, says one should be available by the
+end of the day.
+
+Earlier this month, Kaminsky, a penetration tester with IOActive, went
+public with information about a serious and fundamental security
+vulnerability in the Domain Name System that would allow attackers to easily
+impersonate any website -- banking sites, Google, Gmail and other web mail
+websites -- to attack unsuspecting users.
+
+Kaminsky announced the vulnerability after working quietly for months with a
+number of vendors that make DNS software to create a fix for the flaw and
+patch their software. On July 8, Kaminsky held a press conference announcing
+a massive multivendor patch among those vendors, and urged everyone who owns
+a DNS server to update their software.
+
+But Kaminsky broke one of the fundamental rules of disclosure in announcing
+the bug. He failed to provide details about the flaw so system
+administrators could understand what it was and determine if it was serious
+enough to warrant an upgrade to their systems.
+
+Kaminsky promised to reveal those details next month in a presentation he
+plans to give at the Black Hat security conference in Las Vegas. But he said
+he wanted to give administrators a 30-day head start to get their systems
+patched before he provided details that could allow hackers to create an
+exploit to attack the systems.
+
+Kaminsky asked researchers not to speculate about the bug details in the
+meantime and to trust that it was a serious issue. Some did as he asked. But
+many security researchers took his coyness as a challenge to uncover the
+details Kaminsky was holding back.  ...
+
+------------------------------
+
+Date: Sun, 27 Jul 2008 11:25:51 -0400
+From: Monty Solomon <monty@roscom.com>
+Subject: Apple Fails to Patch Critical Exploited DNS Flaw
+
+Rich Mogull, TidBITS, 24 Jul 2008, http://db.tidbits.com/article/9706
+
+On 08 Jul 2008, a massive security patch was released by dozens of vendors
+for a major vulnerability in DNS [1] (Domain Name Service), discovered by
+security researcher Dan Kaminsky. DNS [2] is one of the fundamental
+underpinnings of the Internet; translating domain names (like tidbits.com)
+into IP addresses (like 192.168.0.12). Because DNS is so core to the
+functioning of the Internet, this vulnerability is perhaps the most
+significant security problem to face the Internet in the last decade.
+
+All users who connect to Mac OS X servers for DNS lookups are at risk: Apple
+has not yet provided a patch, unlike dozens of other companies that make or
+distribute operating systems or DNS server software.
+
+Apple was clearly distracted by the largest set of launches in its history:
+the iPhone 3G, the iPhone 2.0 software, the .Mac-to-MobileMe transition, and
+the App Store. Nonetheless, their customers are now in danger and Apple
+needs to respond immediately.
+
+All companies that provide DNS service to their customers should have
+already updated their DNS servers. Many have not. You can determine whether
+your ISP is at risk by visiting Kaminsky's site and clicking Check My DNS
+[3]. If the site says your DNS is at risk of being poisoned, contact your
+ISP or your company's IT department immediately.  ...
+
+------------------------------
+
+Date: Wed, 30 Jul 2008 15:20:05 -0400
+From: "Jonathan Kamens" <jik@kamens.brookline.ma.us>
+Subject: Fascinating phishing attack: valid links, dangerous toll-free number
+
+A phishing message in my spam folder caught my eye today, so I decided to
+take a closer look at it.
+
+It claimed to be from CapitalOne.  It had a legitimate sender address, a
+legitimate Subject line ("Please Call Us Regarding Recent Restrictions"),
+and convincing-looking content that was mostly lifted straight from a real
+CapitalOne email message.  Most importantly, all of the links in the message
+were legitimate links pointing at capitalone.com URLs.
+
+The only text in the message that was not boilerplate was this:
+
+>Please Call Us Regarding Recent Resctriction [sic]
+>
+>This is not a promotional e-mail. Please call us
+>immediately at (866) 496-5027 regarding recent activity on
+>your Capital One Card. We're available 24/7 to take your
+>call.
+>
+>Please disregard this e-mail if you've already call us
+>since the date this e-mail was sent.
+>
+>We appreciate your prompt attention to this matter.
+>
+>Thank you
+>Capital One Card Fraud Prevention Security Department
+
+Here's what makes this phishing message different from others I've seen: the
+"hook" is the phone number, not the links in the email body.
+
+Here's what you hear, recited in a female, synthesized voice, when you call
+the number shown above:
+
+>Welcome to the the card activation center.  Please remember
+>that we will never ask for your personal information such
+>as your social security number, passwords, card numbers,
+>etc. via email.  Please enter your card number followed by
+>the pound key.
+>
+>[doesn't matter what you enter here]
+>
+>Please enter your personal identification number associated
+>with this card followed by the pound key.
+>
+>Please enter your four-digit expiration number [sic]
+>(months year) followed by the pound key.
+>
+>Please hold while your card is activated.
+>
+>The card number, personal identification number or
+>expiration date doesn't match with our records.
+>
+>[starts over]
+
+Obviously, whoever set up this toll-free number is collecting card numbers,
+expiration dates and PINs, which they will then either sell or use to obtain
+cash advances from ATMs.
+
+I wish there were somewhere I could report this scam to get the toll-free
+number taken down, but I honestly have no idea who would be interested in
+doing something about this and able to act quickly.
+
+------------------------------
+
+Date: Wed, 23 Jul 2008 15:36:59 -0700
+From: Jeff Williams <jeffw@lmi.net>
+Subject: Re: San Francisco FiberWAN and Terry Childs (RISKS-25.23,24)
+
+San Francisco is a tech powerhouse -- the local daily paper is not.  This
+has led to a lack of good information about one of the most interesting tech
+stories of the year: the showdown between a contractor and city
+administrators over proper handling of network security.
+
+Some of you may have already seen this (via Slashdot):
+http://www.infoworld.com/article/08/07/18/30FE-sf-network-lockout_1.html
+
+It's an article based on a confidential 3rd party who had a ringside seat.
+
+The risk?  Some tech jobs seem to carry the risk that they can ruin your
+life (I don't mean figuratively).  Large corporations and governments wield
+an enormous power to punish and seemingly no power to understand the nuance
+and complexity of technical risk.  Under this situation being a jerk could
+be a felony at some job sites.  We can stand in judgment of when it makes
+sense to let go of a fight with your manager, but how many of us would stand
+up to what we see as a terrible wrong in a way that could ruin us
+professionally?
+
+That a politically ambitious DA has made this a publicity grabbing event
+seems to open a serious can-of-worms for ordinary technical workers.  The
+San Francisco DA is inadvertently creating the blueprint for handling nasty
+tech employee disputes.  Today she has the sheriff saying that Childs set
+the system up for "meltdown" at the next routine maintenance.  The inside
+story seems to be that he didn't want to store the router configs into flash
+at the remote sites.  When pressed the sheriff acknowledges that the system
+is up.  This might not be the best way to run a shop, but is it a actual
+crime to not write configs to flash?  Does the DA even know what flash is?
+(Maybe she knows but has decided to make an example of what happens when you
+stand up to your manager.)
+
+It seems arbitration would have helped here.  Would a system of neutral
+party dispute resolution go a long way to reducing system cost and
+preserving careers in the tech field without introducing drastic measures
+such as full-blown unionization?  Like other professionals, maybe tech
+workers should carry general liability insurance where the carrier offers
+arbitration as a front-line defense against arrest and/ or lawsuit. (And
+funds to defend yourself if something goes wrong.)
+
+------------------------------
+
+Date: Thu, 24 Jul 2008 09:48:13 -0400 (EDT)
+From: tanner andrews <tanner@payer.org>
+Subject:  Re: ComCast in Concrete?  MAC addresses
+
+> [MAC addresses are unchangeable once set at factory]
+
+Not so.  The default is hard to change, because it is set
+in the part, but for operation you can change it as you
+will.
+
+For instance, though my network boards on my firewalls will occasionally get
+zapped by lightening, the ISP does not know that.  The ISP believes that my
+MAC addresses are some that I made up years ago and continue to use.
+
+Thus, when I get zapped and put in a new board, the ISP re-assigns the same
+IP address I had before.  If I do not do this, they will pick a new address.
+
+Not all operating systems support easy changing of the MAC address, so your
+mileage may vary.
+
+  [Several other messages on this topic, but we are drifting in relevance.
+  PGN]
+
+------------------------------
+
+Date: Thu, 31 Jul 2008 12:03:22 -0800
+From: Rob Slade <rmslade@shaw.ca>
+Subject: REVIEW: "Internet Denial of Service", Jelena Mirkovic et al.
+
+BKNTRDOS.RVW   20080420
+
+"Internet Denial of Service", Jelena Mirkovic et al, 2005,
+0-13-147573-8, U$39.99/C$57.99
+%A   Jelena Mirkovic
+%A   Sven Dietrich
+%A   David Dittrich dittrich@u.washington.edu
+%A   Peter Reiher
+%C   One Lake St., Upper Saddle River, NJ   07458
+%D   2005
+%G   0-13-147573-8
+%I   Prentice Hall
+%O   U$39.99/C$57.99 800-576-3800 416-293-3621 201-236-7139
+%O  http://www.amazon.com/exec/obidos/ASIN/0131475738/robsladesinterne
+  http://www.amazon.co.uk/exec/obidos/ASIN/0131475738/robsladesinte-21
+%O   http://www.amazon.ca/exec/obidos/ASIN/0131475738/robsladesin03-20
+%O   Audience i+ Tech 2 Writing 2 (see revfaq.htm for explanation)
+%P   372 p.
+%T   "Internet Denial of Service: Attack and Defense Mechanisms"
+
+Chapter one is an introduction to the book itself, rather than the
+topic, asserting that the work is intended for an audience of system
+administrators, corporate managers, and those dealing with public
+policy.  The topic is defined in chapter two, which notes that denial
+of service (DoS) is not like other security risks where intrusion or
+use (or misuse) of resources is the aim, but prevention of the
+legitimate use of a system.  Much of the material concentrates on
+distributed denial of service (DDoS), and the text mentions the
+inherent risk of DoS where a service is being provided.  The structure
+and logical flow of the content is not always obvious, but the
+information is reasonably clear and readable.  The history of DoS
+attacks, starting with the early, simple assaults intended to gain
+status and notoriety and progressing through to the recent complex and
+financially motivated offensives, is covered in chapter three.  There
+is discussion of the fact that the structure of the Internet works
+against many protective measures and hinders efforts to collect
+digital forensic evidence.  Chapter four examines the process,
+technology, and tools of DDoS attacks.
+
+Defence is contemplated in chapter five, along with the intrinsic difficulty
+presented by the need for availability, the possibility of attacking either
+the computer-based service or the network-based communications, and a poor
+authentication and tracking infrastructure.  The deliberation does note that
+defence can be attempted in many layers, from secure application development
+to overt reaction.  A detailed analysis of some defensive approaches is
+provided in chapter six, which assessment is also valuable in terms of
+business continuity planning.  Chapter seven has a listing and review of
+various research projects on defence.  Legal issues are catalogued in
+chapter eight: most of the content is general, but there is a fair amount
+that is specific to the United States.  Chapter nine summarizes major
+points, and speculates on future trends.
+
+This is a thorough overview of a topic that is covered poorly, if at all, in
+most of the security literature.  Availability has come very late to add
+depth to the C-I-A (Confidentiality, Integrity, Availability) triad, and
+therefore DoS attacks are still misunderstood as mere nuisance.  The problem
+is growing, and this material should be of greater interest to those charged
+with protecting both corporate assets and the public infrastructure.
+
+copyright Robert M. Slade, 2008   BKNTRDOS.RVW   20080420
+rslade@vcn.bc.ca     slade@victoria.tc.ca     rslade@computercrime.org
+victoria.tc.ca/techrev/rms.htm blogs.securiteam.com/index.php/archives/author/p1/
+
+------------------------------
+
+Date: Thu, 24 Jul 2008 11:10:25 -0800
+From: Rob Slade <rmslade@shaw.ca>
+Subject: REVIEW: "AVIEN Malware Defense Guide for the Enterprise", David
+  Harley et al.
+
+BKAVNMDG.RVW   20080420
+
+"AVIEN Malware Defense Guide for the Enterprise", David Harley et al,
+2007, 978-1-59749-164-8, U$59.95
+%A   David Harley David.A.Harley@gmail.com
+%A   Ken Bechtel
+%A   Michael Blanchard
+%A   Henk K. Diemer
+%A   Andrew Lee
+%A   Igor Muttik
+%A   Bojan Zdrnja
+%C   800 Hingham Street, Rockland, MA   02370
+%D   2007
+%G   1-59749-164-0 978-1-59749-164-8
+%I   Syngress Media, Inc.
+%O   U$59.95 781-681-5151 fax: 781-681-3585 www.syngress.com
+%O  http://www.amazon.com/exec/obidos/ASIN/1597491640/robsladesinterne
+  http://www.amazon.co.uk/exec/obidos/ASIN/1597491640/robsladesinte-21
+%O   http://www.amazon.ca/exec/obidos/ASIN/1597491640/robsladesin03-20
+%O   Audience i+ Tech 2 Writing 2 (see revfaq.htm for explanation)
+%P   540 p.
+%T   "AVIEN Malware Defense Guide for the Enterprise"
+
+The preface and introduction stress that this work is a collaborative
+effort, combining the views of a number of AVIEN (Anti-Virus Information
+Exchange Network) and AVIEWS (Anti-Virus Information and Early Warning
+System) members, trying to avoid the blind spots that result from
+perspectives limited to one individual or company.
+
+Chapter one outlines the history of AVIEN, noting the tensions between the
+(rather small) community that has concentrated on research about malware and
+protection against the various threats and the general user population.
+(The general user population includes, for various reasons, many of the
+producers and vendors of antivirus products.)  It is noted (although not
+stressed) that AVIEN concentrates on protection of medium to large
+companies, and this point is important in regard to protective approaches.
+A brief, historically-oriented, look at malware and related issues, in
+chapter two, tries to eliminate common confusion and sets a groundwork for
+further discussion.  The Web is now a major source of security
+vulnerabilities, but the malware literature has seldom considered the
+problem as a specific category, so chapter three's excellent overview of the
+related technologies and exploits is particularly welcome.  Botnets are a
+major threat (or threats: they are used in a variety of ways), and there is
+a good examination of the major associated concepts in chapter four.
+Unfortunately, the material is somewhat loosely structured and may be
+confusing to some readers, and occasionally emphasizes specific (and
+sometimes dated) technologies rather than the basic ideas.  Chapter five
+examines the often-asked question of who writes malware, bringing up a good
+deal of interesting material.  The text itself may be of scant use to system
+administrators, although the points made in the summary do indicate trends
+of concern.
+
+Chapter six turns to protective measures, covering not just the usual
+antiviral technologies, but advising on layered defence, with the attendant
+required planning and management.  Outsourcing, of security functions in
+general, and antiviral protection in particular, is reviewed in chapter
+seven, with attention paid to both the dangers and the conditions,
+agreements, and other factors that might provide success.  Chapter eight's
+look at security awareness training and user education seems to be intended
+to promote the idea, but is weaker in providing solutions than other areas
+of the book, concentrating primarily on the difficulties and failures.
+
+A variety of tools that might be used in malware analysis, ranging from
+system information utilities through debuggers to online virus detectors,
+are listed in chapter nine.  Chapter ten considers aspects of evaluating
+antiviral products, and makes a good, general guide.
+
+Chapter eleven notes that the AVIEN organization is changing, and feels like
+a promotional item to get the reader to become involved, but the lack of
+detail of what the institution might become does not seem calculated to
+appeal to busy administrators.
+
+The book contains a tremendous wealth of information and references to
+specific resources and studies.  This is not surprising, given the
+background of the authors, and would, alone, make the text worthwhile.
+Overall this work provides a solid overview and compendium of advice on the
+current malware situation, and should be a required starting point for
+anyone protecting corporate assets in the current, highly threatening,
+environment.
+
+copyright Robert M. Slade, 2008   BKAVNMDG.RVW   20080420
+rslade@vcn.bc.ca     slade@victoria.tc.ca     rslade@computercrime.org
+http://victoria.tc.ca/techrev/rms.htm
+
+------------------------------
+
+Date: Thu, 29 May 2008 07:53:46 -0900
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The ACM RISKS Forum is a MODERATED digest, with Usenet equivalent comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.   The mailman web interface can
+ be used directly to subscribe and unsubscribe:
+   http://lists.csl.sri.com/mailman/listinfo/risks
+ Alternatively, to subscribe or unsubscribe via e-mail to mailman
+ your FROM: address, send a message to
+   risks-request@csl.sri.com
+ containing only the one-word text subscribe or unsubscribe.  You may
+ also specify a different receiving address: subscribe address= ... .
+ You may short-circuit that process by sending directly to either
+   risks-subscribe@csl.sri.com or risks-unsubscribe@csl.sri.com
+ depending on which action is to be taken.
+
+ Subscription and unsubscription requests require that you reply to a
+ confirmation message sent to the subscribing mail address.  Instructions
+ are included in the confirmation message.  Each issue of RISKS that you
+ receive contains information on how to post, unsubscribe, etc.
+
+=> The complete INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, etc.) is online.
+   <http://www.CSL.sri.com/risksinfo.html>
+ The full info file may appear now and then in RISKS issues.
+ *** Contributors are assumed to have read the full info file for guidelines.
+
+=> .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> SPAM challenge-responses will not be honored.  Instead, use an alternative
+ address from which you NEVER send mail!
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+ *** NOTE: Including the string "notsp" at the beginning or end of the subject
+ *** line will be very helpful in separating real contributions from spam.
+ *** This attention-string may change, so watch this space now and then.
+=> ARCHIVES: ftp://ftp.sri.com/risks for current volume
+     or ftp://ftp.sri.com/VL/risks for previous VoLume
+ <http://www.risks.org> redirects you to Lindsay Marshall's Newcastle archive
+ http://catless.ncl.ac.uk/Risks/VL.IS.html gets you VoLume, ISsue.
+   Lindsay has also added to the Newcastle catless site a palmtop version
+   of the most recent RISKS issue and a WAP version that works for many but
+   not all telephones: http://catless.ncl.ac.uk/w/r
+ <http://the.wiretapped.net/security/info/textfiles/risks-digest/> .
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    <http://www.csl.sri.com/illustrative.html> for browsing,
+    <http://www.csl.sri.com/illustrative.pdf> or .ps for printing
+==> Special Offer to Join ACM for readers of the ACM RISKS Forum:
+    <http://www.acm.org/joinacm1>
+
+------------------------------
+
+End of RISKS-FORUM Digest 25.25
+************************

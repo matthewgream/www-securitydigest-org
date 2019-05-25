@@ -1,0 +1,567 @@
+RISKS-LIST: RISKS-FORUM Digest  Monday, 7 December 1987  Volume 5 : Issue 71
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  The Amiga VIRUS (by Bill Koester)  (Bernie Cosell)
+  Radar's Growing Vulnerability (PGN)
+  Computerized vote counting (Lance J. Hoffman)
+  United Airlines O'Hare Sabotage? (Chuck Weinstock)
+  Re: Whistle-blowers who (allegedly) aren't (Jeffrey Mogul)
+  In Decent Alarm (Bruce N. Baker)
+  Need for first-person anonymous reporting systems (Eugene Miya)
+  Apollo 11 computer problems (Michael MacKenzie)
+  Interconnected ATM networks (Win Treese)
+  Can you sue an expert system? (Gary Chapman, Jerry Leichter, Bruce Hamilton)
+  What this country needs is a good nickel chroot (Bob English)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+Volume summaries for each i in max j: (i,j) = (1,46),(2,57),(3,92),(4,97).
+
+----------------------------------------------------------------------
+
+Date:     Mon, 7 Dec 87 0:25:23 EST
+From: Bernie Cosell <cosell@WILMA.BBN.COM>
+To: risks@csl.sri.com
+Subject:  The Amiga VIRUS (by Bill Koester)
+
+From: bill@cbmvax.UUCP (Bill Koester CATS)
+Newsgroups: comp.sys.amiga
+Subject: Amiga VIRUS
+Date: 13 Nov 87 19:32:05 GMT
+Organization: Commodore Technology, West Chester, PA
+
+                   THE AMIGA VIRUS - Bill Koester (CATS)
+
+When I first got a copy of the Amiga VIRUS I was interested to see
+how such a program worked. I dissassembled the code to a disk file and
+hand commented it. This article will try to pass on some of the things
+I have learned through my efforts.
+
+       1) Definition.  2) Dangers.  3) Mechanics 4) Prevention
+
+1. - Definition.
+
+   The Amiga VIRUS is simply a modification of the boot block of an existing
+DOS boot disk. Any disk that can be used to boot the Amiga (ie workbench)
+has a reserved area called the boot block. On an Amiga floppy the bootblock
+consists of the first two sectors on the disk. Each sector is 512 bytes long
+so the boot block contains 1024 bytes. When KickStart is bringing up the
+system the disk in drive 0 is checked to see if it is a valid DOS boot disk.
+If it is, the first two sectors on the disk are loaded into memory and
+executed. The boot block normally contains a small bit of code that loads
+and initializes the DOS. If not for this BOOT CODE you would never see the
+initial CLI. The normal BOOT CODE is very small and does nothing but call
+the DOS initialization. Therefore, on a normal DOS boot disk there is plenty
+of room left unused in the BOOT BLOCK.
+
+   The VIRUS is a replacement for the normal DOS BOOT CODE. In addition to
+performing the normal DOS startup the VIRUS contains code for displaying
+the VIRUS message and infecting other disks. Once the machine is booted from
+an infected disk the VIRUS remains in memory even after a warm start.
+Once the VIRUS is memory resident the warm start routine is affected, instead
+of going through the normal startup the VIRUS checks the boot disk in drive
+0 for itself. If the VIRUS in memory sees that the boot block is not
+infected it copies itself into the boot block overwriting any code that was
+there before. It is in this manner that the VIRUS propagates from one disk
+to another. After a certain number of disks have been infected the VIRUS
+will print a message telling you that Something wonderful has happened.
+
+2. - Dangers.
+
+   When the VIRUS infects a disk the existing boot block is overwritten.
+Since some commercial software packages and especially games store special
+information in the boot block the VIRUS could damage these disks. When the
+boot block is written with the VIRUS, any special information is lost
+forever. If it was your only copy of the game then you are out of luck
+and probably quite angry!!
+
+3. - Mechanics.
+
+   Here is a more detailed description of what the virus does. This is
+intended to be used for learning and understanding ONLY!! It is not the
+authors intention that this description be used to create any new strains of
+the VIRUS. What may have once been an innocent hack has turned into
+a destructive pain in the #$@ for many people. Lets not make it any worse!!
+
+   a.)   Infiltration.
+
+            This is the first stage of viral infection. The machine is
+         brought up normally by reading the boot block into memory. When
+         control is transferred to the boot block code, the virus code
+         immediately copies the entire boot block to $7EC00, it then JSR's
+         to the copied code to wedge into the CoolCapture vector. Once
+         wedged in, control returns to the loaded boot block which performs
+         the normal dos initialization. Control is then returned to the
+         system.
+
+   b.)   Hiding Out.
+
+            At this point the system CoolCapture vector has been replaced
+         and points to code within the virus. When control is routed through
+         the CoolCapture vector the virus first checks for the left mouse
+         button, if it is down the virus clears the CoolCapture wedge and
+         returns to the system. If the left mouse button is not pressed
+         the virus replaces the DoIO code with its own version of DoIO
+         and returns to the system.
+
+   c.)   Spreading.
+
+            The code so far has been concerned only with making sure that
+         at any given time the DoIO vector points to virus code. This is
+         where the real action takes place. On every call to DoIO the virus
+         checks the io_Length field of the IOB if this length is equal to
+         1024 bytes then it could possibly be a request to read the boot
+         block. If the io_Data field and A4 point to the same address
+         then we know we are in the strap code and this is a boot block
+         read request. If this is not a boot block read the normal
+         DoIO vector is executed as if the virus was not installed. If we
+         are reading the boot block we JSR to the old DoIO code to read
+         the boot block and then control returns to us. After reading,
+         the checksum for the virus boot block is compared to the checksum
+         for the block just read in. If they are equal this disk is already
+         infected so just return. If they are not equal a counter is
+         incremented and the copy of the virus at $7EC00 is written to
+         the boot block on the disk. If the counter ANDed with $F is equal
+         to 0 then a rastport and bitmap are constructed and the message
+         is displayed.
+
+   d.)   Ha Ha.
+
+            < Something wonderful has happened >
+            < Your AMIGA is alive!!! >
+            < and even better >
+            < Some of your disks are infected by a VIRUS >
+            < Another masterpiece of the Mega-Mighty SCA >
+
+4. - Prevention.
+
+   How do you protect yourself from the virus?
+
+      1) Never warm start the machine, always power down first.
+         (works but not to practical!)
+
+      2) Always hold down the left mouse button when rebooting.
+         (Also works, but only because the VIRUS code checks for
+          this special case. Future VIRUS's may not!)
+
+      3) Obtain a copy of VCheck1.1 and check all disks before use.
+         If any new virus's appear this program will be updated and released
+         into the public domain. VCheck1.1 was posted to usnet and will
+         also be posted to BIX.
+         ( Just like the real thing the best course of action is
+           education and prevention!)
+
+Bill Koester -- CBM  >>Amiga Technical Support<<
+                     UUCP  ...{allegra|burdvax|rutgers|ihnp4}!cbmvax!bill 
+		     PHONE  (215) 431-9355
+
+------------------------------
+
+Date: Mon 7 Dec 87 13:52:21-PST
+From: Peter G. Neumann <NEUMANN@csl.sri.com>
+Subject: Radar's Growing Vulnerability
+To: RISKS@KL.SRI.COM
+
+For readers of SCIENCE, the 27 November 1987 issue (p. 1219) has a nice article
+by Stephen Budiansky (titled asa the Subject line above) on the problems of
+defensive radars.  ``As weapons become smarter, they learn to "see" radar beams
+as pathways to their target, gaining an advantage over defensive systems.''
+The caption on a picture of the smoking HMS Sheffield says that it ``was hit in
+the Falkland Islands war in 1982 when its radars attracted a rocket launched
+from a fighter plane 20 miles way.''  (RISKS readers will recall that the
+British investigation concluded that the Sheffield's own radars were jammed by
+a communcation back to London that was being held at the time.)
+
+------------------------------
+
+Date:         Mon, 7 Dec 1987 14:22 EST
+From: Lance J. Hoffman <LANCE%GWUVM.BITNET@WISCVM.WISC.EDU>
+Subject:      Computerized vote counting
+To: <RISKS@csl.sri.com>
+
+I have just completed a study of computerized vote-counting systems.  The
+report, based on a workshop of experts in election administration and
+computer security, presents recommendations to improve the security and
+reliability of computerized vote-counting systems.  The recommendations are
+organizational, not technical, because that is where the most important
+problems lie.  However, five focus papers are included, including one by
+Willis Ware on "A Computer Technologist's View".  For a free copy, please
+send a snail mail or email request with your complete snail mail address to
+
+                Election Computer Security Project
+                Dept of Electrical Engineering & Computer Science
+                The George Washington University
+                Washington DC 20052
+
+Lance Hoffman   (LANCE@GWUVM.BITNET)
+
+------------------------------
+
+To: risks@csl.sri.com
+Subject: United Airlines O'Hare Sabotage?
+Date: Mon, 07 Dec 87 17:36:28 EST
+From: Chuck Weinstock <weinstoc@SEI.CMU.EDU>
+
+On December 3, I was traveling from California to Pittsburgh via Chicago on
+United.  My inbound flight came in at an E gate and my outbound left from a
+new C gate.  If an agent hadn't been there to greet the plane, I wouldn't
+have known it because the monitors were out.  I got to the C terminal and
+the monitors there were on but unreadable due to jiggle (all of them.)  I
+went to a pay phone and could not get a dial tone (on any of them.)  I
+boarded my flight and we sat for an extra 20 minutes because "a cable had
+been cut" and thus they were unable to calculate the amount of fuel to load.
+I surmised that this was a landside cable and that all of the above events
+were somehow related.
+
+I decided to call United today and learned that my surmise was true.
+Multiple fires in the basement of terminal 2 caused both AT&T and United
+wires to be severed.  The former knocked out the pay phones, and the latter
+the airline's ability to communicate with it's computers across town.
+
+It also seems that, at the new terminal at least, there is an automatic,
+underground fueling system which shut off once it detected a fire. Technicians
+were able to override the interlock once they determined that there was no
+danger due to the fire, and the pilots apparently had to do fuel calculations
+manually.  Given that United has a new computerized baggage routing system at
+O'Hare, I'm really surprised that my luggage made the connection ok.
+
+175 flights were delayed on Thursday and Friday morning.  Officials suspect
+arson though the United spokesman I talked to could not suggest a motive.
+Full phone service to the terminal was not restored until Friday evening.
+United is awaiting licensing of a microwave system in the near future to leave
+themselves less vulnerable to this sort of sabotage.
+
+------------------------------
+
+From: mogul@decwrl.dec.com (Jeffrey Mogul)
+Date:  7 Dec 1987 1646-PST (Monday)
+To: RISKS@kl.sri.com
+Cc: decvax!utzoo!henry@decwrl.dec.com
+Subject: Re: Whistle-blowers who (allegedly) aren't
+
+Henry Spencer writes:
+    Maybe I am just being picky about this, but it still makes me see red when
+    I see Boisjoly described as a "whistle-blower".  Boisjoly is the man who
+    could have blown the whistle BUT DIDN'T, and seven astronauts died as a
+    result.  Boisjoly was the engineer who told MT management "don't launch",
+    was told "put on your management hat", did so, and changed his expert
+    professional opinion 180 degrees to match his hat color...
+
+I recently saw a videotape of Boisjoly's appearance at MIT.  I think Henry is
+somewhat confused; Boisjoly made it quite clear that it was another person
+(higher up in the management structure) who was told to "put on your
+management hat" and who in fact reversed his engineering opinion (and, as I
+recall, that was enough to overrule the other engineers).  True, Boisjoly did
+not blow the whistle (i.e., go outside Morton Thiokol) at this point, but he
+says that he and other engineers were quite upset at the time, and he referred
+to a notebook entry he made that night expressing his fear about the next
+day's launch and his unease at the management actions.
+
+What he did blow the whistle on was a coverup by Morton Thiokol of the
+long trail of engineering dissent over the previous year or so, due
+mostly to Boisjoly and several colleagues.
+
+It is hard, even in hindsight, to say that Boisjoly himself did not do all he
+should have done on the eve of the launch, and is therefore criminally liable
+(I'll agree that his management was at fault).  Who could he have gone to with
+just a few (nighttime) hours before the launch, with no irrefutable evidence,
+and no support from either his management or from NASA?  (It has been
+suggested that NASA was under pressure from the White House to launch in time
+for the State of the Union speech that day; Boisjoly wouldn't have found many
+politicians willing to delay the launch!) In hindsight, most people would
+agree that he was right to object, but at the time he would have been rather
+isolated.
+
+I think it is important to stress that Boisjoly (if his own account is
+trustworthy) was not "turning state's evidence after the fact," but rather
+blowing the whistle on a coverup of his internal dissent.
+                                                            -Jeff Mogul
+
+P.S.: This videotape is fascinating and a lot more damning of both
+NASA and Morton Thiokol than my summary is.  It's also quite sad; in
+the process of urging a room full of MIT students to be prepared to
+blow whistles, Boisjoly also conveys the strong personal costs of doing
+so.  I'll try to find out how people can obtain a copy.
+
+------------------------------
+
+Return-Path: <BNBAKER@KL.SRI.COM>
+Date: Mon 7 Dec 87 10:46:49-PST
+From: Bruce N. Baker <BNBaker@KL.SRI.COM>
+Subject: In "Decent Alarm"? (Re: Mariner 1 or Apollo 11? in RISKS-5.70)
+To: neumann@csl.sri.com
+
+The idea of a "decent alarm" conjures up all sorts of images and fantasies for
+me, but perhaps Brent Chapman meant "descent alarm".
+                                                       Bruce
+    [Skunked again.  Thanks for descenting.  PGN]
+
+------------------------------
+
+Date: Mon, 7 Dec 87 09:16:59 PST
+From: Eugene Miya <eugene@ames-nas.arpa>
+To: risks@kl.sri.com
+Subject: Need for first-person anonymous reporting systems
+
+The Mariner and F4 canopy (not computer related) stories appear to be
+indicative of certain types of bureaucracies.  While I investigate the
+Mariner story (I have two leads at the moment), I think that it appears to
+me that normal academic reporting and publication procedures fail us in
+these matters.  Bureaucracies don't like negative subjects to be remembered
+(almost, I just remembered today is Dec. 7).
+
+If we are ever going to progress out of the software muck, we are going to
+have to come up with mechanisms to replace all of our ancedotal information
+with better information.  This has to be separate from any type of watch-dog
+enforcement like "Golden Fleeces," ombudsmen or Inspector Generals.  We have
+to throw out hearsay.  Perhaps an anonymous Email system (lots of inherent
+problems) to a third party? I don't know, but it's something to think about.
+
+--eugene miya
+
+------------------------------
+
+Date: Mon, 7 Dec 87 12:11:57 EST
+From: mm@purdue.edu (Michael MacKenzie)
+Subject: Apollo 11 computer problems
+To: risks@csl.sri.com
+
+Exerpt from Apollo, Expeditions to the Moon,
+Scientific and Technical Information Office, NASA, Washington D.C., 1975
+
+During the landing of Apollo 11
+
+Michael Collins:
+
+At five minutes into the burn (6000 feet above the surface)
+... "Program alarm", barks neil, "Its a 1202", what the hell is that?
+I don't have the alarm numbers memorized for my own computer, much less
+for the LM's  I jerk out my checklist and start thumbing through it, but before
+I can find 1202 Houston say, "Roger, we're GO on that alarm" no problem
+in other words.  My checklist says 1202 is an "executive overflow" meaning
+simply that the computer has been called upon to do too many things at
+once and is forced to postpone some of them.  A little farther, at just
+3000 feet above the surface the computer flashes 1201, another overflow
+condition, and again the ground is superquick to respond with assurances.
+
+------------------------------
+
+From: treese@ATHENA.MIT.EDU
+Date: Sun, 6 Dec 87 22:22:52 EST
+To: risks@csl.sri.com
+Subject: Interconnected ATM networks
+
+[Based on an article in the _Boston_Globe_, 12/5/87, p.1]
+
+In Massachusetts now, there is a great deal of competition for ATM networks.
+BayBanks is by far the largest, and many other banks have joined together
+in a network to compete with BayBanks in sheer number of machines.  BayBanks
+recently joined NYCE, a network of ATM's in New York.  The Bank of Boston
+also joined, so now Bank of Boston cards work in BayBanks machines.
+
+When the Globe contacted BayBanks, they refused to acknowledge it until
+told that the Globe had photographed an editor actually using a Bank of Boston
+card in a BayBanks machine.  Pressed further, a BayBanks spokesperson
+admitted that it worked, and said that they didn't know NYCE was active yet.
+
+	Win Treese
+	MIT Project Athena
+
+------------------------------
+
+Date: Mon, 7 Dec 87 10:28:51 PST
+From: chapman@russell.stanford.edu (Gary Chapman)
+To: Risks@csl.sri.com
+Subject: Litigation over an expert system
+
+I am not an attorney, but I worked as a consultant in product liability cases
+for eight years, and I have some comments on the question posed in RISKS about
+whether one can sue for damages caused by the use of an expert system.
+
+First, who do you sue?  Answer:  everybody.  As long as the parties mentioned
+in the case of a financial analyst expert system are individuals or distinct
+corporate entities, they can be sued and they probably will be.  This is why in
+large product liability cases the defendants can be numerous--in cases
+involving DES, for example, (the drug, not the encryption system) there are
+literally hundreds of defendants.  There does not even have to be a real legal
+basis for suing a defendant; it becomes incumbent on the defendant to convince
+the court that there is no legal basis for the lawsuit in a motion for summary
+judgment.  There are even attorneys who specialize in finding defendants who
+can be sued--for example, in one case I know about, which involved a high
+school football player who had been paralyzed from a tackle injury during a
+game, a special attorney was brought in to find potential defendants, and the
+plaintiff wound up suing the NCAA, which had drafted the rules for playing
+football that were used by the plaintiff's school district.
+
+One of the few ways in which a person or a corporation can be guaranteed
+protection from litigation is an indemnity agreement, or indemnity clause in a
+contract, which explicitly says that in the event of a lawsuit, one of the
+contracting parties will pick up the legal defense of the other, including all
+expenses and all judgments.  These are pretty rare.
+
+It is correct to assume that a disclaimer, or a warning, or a "terms of
+agreement" document such as is commonly found in software packages, is no
+protection against a lawsuit or a judgment against the developer.  It is up to
+a judge or jury to decide whether the warning was adequate, whether it was
+relevant to the damages, and even whether it was presented to the user in a way
+that was likely to have actually "warned" the consumer about the use which
+produced the damages.  For example, in a couple of cases I worked on, the
+plaintiffs brought in a psychologist who specialized in the visual impact of
+signs--she consulted with municipal transportation systems on how to design
+signs on subways that would get across essential information, for example.
+This psychologist would frequently testify that a warning on a product was
+ineffective because of the way it was packaged or designed.  It is hard to
+estimate the effect of her testimony on a jury--sometimes the plaintiff won,
+sometimes the defense won.  But this is an illustration of what one is likely
+to be up against in a case involving large damages.
+
+In another illustration, it often comes up in product liability cases involving
+drugs that the warnings issued by drug companies and published in a standard
+reference work called the Physicians' Drug Reference, or PDR, are so dense and
+so full of information that they no longer convey a "warning" that is
+intelligible to anyone.  Nevertheless, if the drug companies fail to include
+any particular bit of information then they may be liable for failing to
+provide a warning for something they knew about.
+
+A jury may award a defendant a judgment even when there was a warning or a
+terms of agreement document.  The defendant may then appeal the judgment based
+on a claim that the defendant did everything in his power to avoid the
+damages--for example, a lawn mower company put a big, nasty looking warning on
+some part of the lawn mower that said don't do such and such because you may
+get your hand caught in there and lose some fingers, but the plaintiff did it
+anyway and for some reason the jury decided he should get some money from the
+defendant.  But appeals are expensive, and it's likely that the defendant and
+the plaintiff will settle the case for some dollar figure, and perhaps the
+money will be paid by an insurance company.  There is not much one can do to
+predict what a jury will decide, even in the most straightforward cases.  I
+remember asking one juror why she voted the way she did, and she said that she
+understood that she was supposed to give *someone* some money, and she thought
+the defendant could pay more than the plaintiff could.  A jury may also decide
+that a warning could have been better, but that the plaintiff was also at least
+partially responsible for his injury through "contributory negligence," so the
+dollar amount of the judgment may be lower because of this.
+
+In California, where I live, there is a goofy law that if one of the defendants
+in a multi-party suit is judged to have been responsible in any way, that
+defendant is liable for the percentage of responsibility, no matter how small.
+In other words, if the jury decides that defendant A is 99% responsible, and
+defendant B is only 1% responsible, and the judgment is $10 million, defendant
+B has to pay the plaintiff $100,000.
+
+I don't know of any cases of product liability involving damages alleged to
+have occured because of the use of an expert system, but the law is likely to
+be the same for such cases as it is for any other product liability case.
+
+------------------------------
+
+Date: Mon, 7 Dec 87 10:53 EST
+From: "Jerry Leichter (LEICHTER-JERRY@CS.YALE.EDU)"
+ <LEICHTER@VENUS.YCC.YALE.EDU>
+Subject: re:  Can you sue an expert system
+To: risks@csl.sri.com
+
+In RISKS-5.69, Barry Stevens becomes another in a long line of people to raise
+the question "If an expert system gives bad advice, who can I sue?"  I find it
+extremely disturbing that this is considered an interesting question by
+ANYONE, let alone by technically sophisticated people.  It is a symptom of the
+pervasiveness of our misplaced trust in buzzwords and, more generally, in
+computers:  If the computer said it, it MUST be right.
+
+We have no idea how to build an expert system with anything you would want to
+call "understanding" or "responsibility" - or even "intelligence" - in any but
+the most narrow sense.  There is no indication that we will be able to build
+such a system any time soon.  An expert system is a clever way of encoding a
+textbook and some guidelines.  If well designed, it happens to be a lot easier
+to use than the typical textbook - but then again there are good textbooks and
+poor textbooks.  It should make no more sense to sue an expert system than it
+does to sue a textbook.  It should make no more sense to sue a vendor of
+expert systems than it does to sue a publisher or a bookstore because of
+inaccurate information in one of the books they sell.  It should make no more
+sense to sue the "knowledge engineer" who did the fairly routine work of
+organizing data from a group of experts into an expert system than it would to
+sue an editor of an encyclopedia.  Finally, it should make no more sense to
+sue the expert who contributed to an expert system than it does to sue the
+author of an encyclopedia article.
+
+As a general rule, it's almost impossible to sue someone for advice offered
+in a book.  You need a much closer relationship with the expert - the expert
+has to hold himself up not just as an expert "in general", but as an expert in
+your particular problem.  In paying for him to work on your particular prob-
+lem, you are creating expectations and obligations that go far beyond what
+you can expect from an author of a book.
+
+In our litigious society, someone WILL sue over the advice given by an expert
+system.  They'll sue everyone they can.  They may even win, eventually.  If
+they do it will be a sign that enough advertising, enough magazine articles,
+enough speeches on how "intelligent" expert systems are have been given that
+the courts have decided that people are legimately entitled to view this claim
+as more than mere "seller's talk".  The first such case to be upheld is likely
+to see the death of the expert systems business:  We do not know how to build
+expert systems that can come close to living up to the expectations being
+raised for them.  No one will be able to afford the resulting liabilities.
+From my point of view, if it ever came to that, it would be a result richly
+deserved by an industry that has lived on hype.  What disturbs me is that it's
+unlikely the legal system, should it ever start on this path, will draw quite
+the distinctions we in the business draw between expert systems and other
+kinds of applications.  Would you like to be personally liable because the
+database program you wrote didn't deal with spelling errors and as a result
+someone missed an incorrectly-typed reference in an on-line catalog and was
+somehow injured as a result?
+
+There is SO much hype about computers and their miraculous powers, and SO much
+of a willingness to believe it on the part of the public, that I think we as
+professionals have an obligation to tell people, at every opportunity, just
+how limited our real abilities are, and are likely to remain in the forseeable
+future.  Speculations about the legal liabilities of AI's are fine as philo-
+sophy, but as anything more than speculation about possible futures, they are
+uninformed about either the technical or legal realities.  If they lead people
+to place their trust in such systems inappropriately, then can be downright
+dangerous.
+							-- Jerry
+
+------------------------------
+
+Date: 7 Dec 87 11:49:47 PST (Monday)
+Subject: Re: Can you sue an expert system?
+From: "Bruce_Hamilton.OsbuSouth"@Xerox.COM
+To: portal!cup.portal!Barry_A_Stevens@Sun.COM
+cc: RISKS@KL.SRI.COM, "Bruce_Hamilton.OsbuSouth"@Xerox.COM
+
+No new law needed here.  I'm a layman, not a legal scholar, but it seems to me
+that an "expert system" is precisely analogous to a book.  The only difference
+with a book is that you have to do all the "if-then" calculations yourself
+("if your net worth according to this formula is > X, then turn to page
+Y...").
+                                   Bruce
+
+------------------------------
+
+Date:    Mon, 30 Nov 87 12:33:02 PST
+From:    Bob English <lcc.bob@SEAS.UCLA.EDU>
+To:      RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@KL.SRI.COM>
+Subject: What this country needs is a good nickel chroot (Re: RISKS-5.63)
+
+> From: "Joseph G. Keane" <jk3k+@andrew.cmu.edu>
+> Subject: Re: "UNIX setuid stupidity" (RISKS-5.57)
+> The designers of UNIX considered that a trusted program may wish to allow 
+> operations only on a certain part of the directory tree.  So they provided 
+> the `chroot' system call, ...   --Joe
+
+Chroot doesn't work very well.  Since the super-user can create device inodes,
+it can access or modify any disk area, regardless of the limitations enforced
+by the new root.  'Chroot', by itself, will not prevent a determined invader
+from penetrating to the rest of the system.  It does, however, prevent
+penetrations based solely on moving through ".."
+                                                        --bob--
+     [To those of you who contributed on this topic, I STILL have a backlog
+     of messages waiting for me to sort out the wheat from the chaff.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

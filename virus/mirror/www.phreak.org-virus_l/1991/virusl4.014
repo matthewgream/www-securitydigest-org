@@ -1,0 +1,608 @@
+VIRUS-L Digest   Thursday, 24 Jan 1991    Volume 4 : Issue 14
+
+Today's Topics:
+
+Problem with virus checker (PC)
+Plastique - 2900 virus report (PC)
+Re: Query - Disinfectant vs. Virex (Mac)
+Amiga virus - Reaper? (Amiga)
+Re: Query - Disinfectant vs. Virex (Mac)
+Stoned virus in partition table (PC)
+Mac virii & System 7.0 (Mac)
+PD Virus programmes (PC)
+New virus 1586? (PC)
+Little interest for authentication program
+Mcaffee Associates
+Re: Stone-2 (PC)
+Anyone seen Norton's Antivirus? (PC)
+security awareness funding
+Stoned here (PC)
+more on STONED (PC)
+Text in MLTI virus (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Mon, 21 Jan 91 13:51:48 -0500
+>From:    Brian J. Peretti <PERETTI%auvm.auvm.edu@VM1.gatech.edu>
+Subject: Problem with virus checker (PC)
+
+A friend of mine is using the McAfee virus scan program on his computer.
+ When
+he attempts to run the program, however, the program does not run.  As soon
+as
+the line with the phone number comes up, some funny characters come onto the
+screen and then the c: prompt reappears.  Whenever he puts a clean disk into
+ the computer, the disk, when scanned on another machine, the stoned virus
+is
+on the disk.  Does anyone have an answer to this problem?
+
+Thanks,
+Brian J. Peretti
+
+The usual disclaimers apply to this query
+
+------------------------------
+
+Date:    Mon, 21 Jan 91 16:12:19 +0000
+>From:    DNBA1712G@SYSA.BIRMINGHAM-POLY.AC.UK
+Subject: Plastique - 2900 virus report (PC)
+
+I have received the following disassembly report from Jim Bates
+of Bates Associates, publisher of a UK virus information service.
+Considering his previous work for the PC community on the AIDS
+trojan, I don't think he will object to inclusion of all or part
+of this report in Virus-L.
+
+Jim Bates can be contacted on (UK) 0533 883490
+                 (International) 44 533 883490
+or by mail:
+
+Bates Associates,
+Treble Clef House,
+Wgston Magna,
+Leicester LE8 1SL,
+England.
+
+
+PLASTIQUE-2900 VIRUS
+
+
+The Plastique Virus is Parasitic on COM & EXE files but excludes
+COMMAND.COM.  The infection method is slightly unusual in that
+COM files have the virus code prepended to the file, while EXE
+files have it appended.  In either case, the infective length is
+2900 bytes and no stealth capabilities exist to mask this
+increase in file length.  After infection, file attributes and
+date/time settings are partially encrypted but allows the
+extraction of a recognition string.
+
+This virus becomes resident in high memory by using the DOS
+Terminate and Stay Resident function 31H.  During installation a
+timing routine determines the processing speed and this is used
+for sound effects later.
+
+As it becomes resident, INT 21H is intercepted by a special
+handler which will cause file infection on function requests
+4B00H & 3D00H, these correspond to Load & Execute, and Open File
+for Read Only.  The DOS Critical Error handler (INT 24H) is
+bypassed during the infective cycle to avoid error messages.
+
+On a random basis, virus installation after 20th Sept. 1990 may
+cause other handlers to be installed which will produce certain
+sound effects and may result in execution of the trigger
+routine.
+These handlers are as follows:-
+One of two INT 08 - Timer Interrupt handlers are installed
+(chances are even of either one being installed).
+
+Handler 1 increments the timer counter and slows processing
+progressively up to a limit decided during installation timing.
+
+Handler 2 also increments the timer counter and makes "explosion"
+noise about every 4.5 minutes.
+
+An INT 09 - Keyboard Interrupt handler is installed which will
+intercept a Ctrl-Alt-Del key sequence and then act according to
+which INT 08 handler is installed.  If Handler 1 is present then
+the trigger routine is activated.  If Handler 2 is present then
+Non-volatile RAM is overwritten with OFFH bytes.  The INT 09
+handler also counts keypresses, and after 4000 keypresses, an
+error will be forced on the next disk write request to INT 13H.
+
+An INT 13H - Disk Access handler is installed which intercepts
+write requests and forces an error according to the condition of
+a flag.  The error consists of putting -1 into DX (Head & Drive)
+and completing the call.  The routine then returns without
+setting the relevant flags so that the caller is not aware that
+his data has NOT been written.
+
+The Trigger routine occurs immediately on execution of ACAD.EXE,
+otherwise during a Ctrl-Alt-Del sequence from within INT 09
+handler if INT 08 Handler 1 is installed and the timer counter
+has reached a predetermined limit.  The actual routine checks if
+there is a floppy disk in drive A:, if so it overwrites head 0 of
+all tracks with the contents of memory from address 0000:0000.
+Processing continues similarly for floppy in drive B:, zapping it
+if possible.  Then the "explosion" routine is set to occur as
+both the first and second fixed disk drives are overwritten on
+all heads and tracks.  Finally a loop overwrites the contents of
+CMOS by direct port access.
+
+The virus recognises itself in memory by issuing an INT 21H with
+4B40H in the AX register.  If the virus is resident, the call
+returns with 5678H in AX.  Recognition on disk is by examining
+the word at offset 12H in the target file.  If this word is 1989H
+then the file is assumed to be infected.
+
+The recognition string for the Plastique virus is as follows :-
+
+        B840 4BCD 213D 7856 7512 B841 4BBF 0001
+
+and this will be found at offset 82CH into the virus code.
+
+(attributed to Jim Bates Jan.1991)
+
+
+------------------------------
+
+Date:    22 Jan 91 18:22:49 +0000
+>From:    CAH0@gte.com (Chuck Hoffman)
+Subject: Re: Query - Disinfectant vs. Virex (Mac)
+
+ratzan@rwja.umdnj.edu (Lee Ratzan) writes:
+> There is some discussion here about the relative merits of
+> Disinfectant 2.4 versus Virex 1.3 .
+
+I currently run Disinfectant 2.4 and Virex 2.84.  I have run both
+products for about a year and a half.  I can't tell you what the first
+release was of each which I ran.  Both John Norstadt (Disinfectant)
+and Microcom (Virex) do an excellent job of providing updates soon
+after we seen reports of new viruses.  Virex meets my needs, and I run
+Disinfectant because I can do so for no additional cost, and a few
+times Disinfectant has been first with protections against a new
+virus.  In the past, John Norstadt has written well of Virex.
+
+- - Chuck Hoffman, GTE Laboratories, Inc.  |  I'm not sure why we're here,
+cah0@bunny.gte.com                       |  but I am sure that while we're
+Telephone (U.S.A.) 617-466-2131          |  here, we're supposed to help
+GTE VoiceNet: 679-2131                   |  each other.
+GTE Telemail: C.HOFFMAN                  |
+
+------------------------------
+
+Date:    22 Jan 91 21:21:30 +0000
+>From:    diamond@hubcap.clemson.edu (David Lee)
+Subject: Amiga virus - Reaper? (Amiga)
+
+The other day I discovered a boot block on one of my games with the
+ascii text
+
+Reaper One on the Amiga
+
+Is this a virus? If so which amiga virus is it?
+
+
+Thanks,
+
+   David C Lee                      "I hold a cup of wisdom but there
+   Clemson University     //         is nothing within..."
+   Clemson,SC           \X/ Amiga
+                                                  -Kate Bush
+   diamond@hubcap.clemson.edu
+
+  "...And what you gonna do, brother, when HULKAMANIA runs wild on
+   you!"
+         -the Hulkster
+
+------------------------------
+
+Date:    23 Jan 91 00:07:54 +0000
+>From:    lev@amarna.gsfc.nasa.gov (Brian S. Lev)
+Subject: Re: Query - Disinfectant vs. Virex (Mac)
+
+
+Hi, all...
+
+I was "volunteered" to handle Mac "security" (read: virus protection)
+here at Goddard roughly a year ago, and after some research and
+consultation with a number of local gurus decided to throw in my lot
+with Disinfectant.  Admittedly the primary reason was that it was FREE
+(and it worked!), so there were no problems with licensing X copies.
+I just wanted to add my 2 cents' worth to RD Francis' message...
+
+>As far as I know, from the standpoint of reliability, both products
+>are completely reliable.
+
+Ditto here -- if I put a disk into a Mac with either one of these programs
+(assuming Virex has been updated!), I feel confident that it's safe.
+
+>                          The only differences visible to the user are
+>minor cosmetic differences in implementing the interface, the
+>commercial vs. PD issue, and the cost.
+
+One other factor: in general, I find Disinfectant less "obtrusive", in
+that the scan is fast and silent, and you don't have to worry about
+interruptions unless you *need* one, i.e., to tell you a file's been
+infected.
+
+
+>                                        By commercial vs. PD, I mean
+>that some people would prefer to use a commercial product
+>that they have to pay to get upgrades for because that prodcut's
+>creators are more motivated to keep the program up-to-date, and less
+>likely to drop support.  Personally, I recommend Disinfectant; John
+>Norstad's done a great job, his updates are usually the first I hear
+>of the existance of a new Mac virus, and his support for the product
+>has been wonderful.
+
+I will heartily second that!  Again, I'm not out to "plug" any product, and
+I
+feel equally confident about the safety of my files with either Virex OR
+Disin-
+fectant, but the upgrades to the latter 1) come faster, 2) are more readily
+available, 3) are trustworthy, 4) THEY WORK, and 5) don't cost diddly squat
+beyond your network connection (or a blank floppy if you get it from
+someone).
+
+Here at Goddard, I now distribute what's called "MacSecure" (now at vers.
+3.0).
+It's a single (800K) floppy containing Disinfectant (the most recent version
+available, as soon as we're able to lay hands on it), a reallllly good
+Hyper-
+Card stack put together by Joe McMahon (one of my colleagues here) that
+tells
+you all kinds of good stuff about viruses, how they work, how to "kill"
+them,
+and reviews virus fighters, and a smaller "MacHelper" stack that I threw
+together to give hints & tips and explain what some of those ugly Sad Macs
+and
+Mac Bombs mean...  I know that an unfortunate number of users ignore and/or
+discard the HyperCard stacks, but Disinfectant continually gathers raves
+from
+MacSecure users -- and that now includes several NASA centers, a number of
+NASA-affiliated contractors, several local computer sites... and after a
+series
+of VERY unexpected phone calls, the (then-known-as) Operation Desert Shield!
+
+Again, Virex *is* good stuff -- but thank you thank you thank you John
+Norstad!
+
++---------------------------------------------------------------------------
+-
+|  Brian Lev/STX                           (301)286-9514   (FTS)888-9514
+    |
+|  NASA Goddard Space Flight Center        DECnet: SDCDCL::LEV  (6153::LEV)
+ |
+|  Advanced Data Flow Technology Office    TCP/IP: lev@dftnic.gsfc.nasa.gov
+ |
+|  Code 930.4                              BITNET: LEV@DFTBIT
+               |
+|  Greenbelt, MD  20771                    TELENET: [BLEV/GSFCMAIL]
+         |
+|     X.400 Address: (C:USA,ADMD:TELEMAIL,PRMD:GSFC,O:GSFCMAIL,UN:BLEV)
+     |
++---------------------------------------------------------------------------
+-
+|   "The ability of a network to knit together the members of a sprawling
+   |
+|   community has proved to be the most powerful way of fostering scienti-
+  |
+|   fic advancement yet discovered."  -- Peter Denning
+                      |
++---------------------------------------------------------------------------
+-
+|     DISCLAIMER: THESE STATEMENTS ARE MY OWN AND *NOT* NASA'S OR STX'S!
+    |
++---------------------------------------------------------------------------
+-
+
+------------------------------
+
+Date:    23 Jan 91 02:26:37 +0000
+>From:    brinkley@cs.utexas.edu (Paul Brinkley)
+Subject: Stoned virus in partition table (PC)
+
+I work in the CS Student Lab at UT Austin.  Doing a routine check on
+the IBM compatibles, I found the Stoned virus on the partition table.
+This sounds harmless enough, but this virus is VERY much stuck there.
+I've done a low- level format, high-level format, and repartitioned
+the disk, and Stoned is still there.  Someone at the lab suggested
+using a Norton utility called ZeroDisk; unfortunately we don't have a
+copy of Norton Utilities available in the lab.  Anybody have any
+ideas?  E-Mail or postings would be appreciated.
+
+Paul Brinkley
+brinkley@cs.utexas.edu
+
+------------------------------
+
+Date:    Tue, 22 Jan 91 23:13:53 -0500
+>From:    st871184@pip.cc.brandeis.edu
+Subject: Mac virii & System 7.0 (Mac)
+
+     I hope this hasn't been discussed already, but I'm curious about
+the net world's thoughts about what will happen to all the viruses (Virii)
+we know and hate when system 7.0 comes out (in the first quarter of 1991?)
+
+     I had a couple of thoughts (based on no evidence whatsoever) of what
+might happen, ranging from the hopeful to the nightmarish.  If anyone
+(like anti-virus authors?) has been playing with 7.0 beta versions and
+viruses,
+I think the net world would be interested in your wisdom.
+
+(Wishful thinking) System 7 will be so different that existing viruses
+will not be able to spread, but neither will they cause any problems at all.
+
+The current crop of viruses (excepting WDEF) will not spread, because they
+will immediately cause infected applications to crash.
+
+Viruses will spread, but will frequently cause System 7 to crash.
+
+     Obviously, I've simplified things a bit (mainly because I am not a mac
+guru by any means), but I still think that the subject is one we should
+worry
+about after we finish worrying about _when_ system 7 comes along.
+
+     Jeremy   (internet address: st871184@pip.cc.brandeis.edu)
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 08:24:59 +0700
+>From:    Mike Such <aeba-im-o-d1@berlin-emh1.army.mil>
+Subject: PD Virus programmes (PC)
+
+Hi,
+
+I'm trying to find a public domain programme (if possible not memory
+resident) that detects and perhaps removes viruses.
+
+It must be PD - not shareware.
+
+Thanx
+
+Mike
+- --
+Michael Such          AEBA-IM-O-D1@BERLIN-EMH1.ARMY.MIL
+Network Analyst       Tel: (ETS) 332-8019 - FAX 6452
+Berlin, Germany       I love it when a LAN comes together
+
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 03:41:00 -0600
+>From:    csas400@vax1.mankato.msus.edu
+Subject: New virus 1586? (PC)
+
+Hello,
+
+        I'm new to this group and I'm not familiar with the protocols in
+anouncing the discovery(sic.) of a new virus...but here goes anyway.
+
+Virus attributes:
+        1. IBM pc/xt/at/ps2
+        2. Changes files date/time.
+        3. Changes files size.
+                filename        noVir           Vir     Difference
+                command.com     37637           39223   1586
+                simcity.exe    191845          193431   1586
+                share.exe       10301           11879   1578
+        4. Hooks to following interupts:
+                22H     Terminate     xxxx:0147
+                24H     Critical err  xxxx:05Bf
+                2EH     Execute cmd   xxxx:02B8
+                FFH     User def.     0002:F000
+        5. Due to the interupts it attaches to during any program
+                termination, disk error, or DOS command the virus
+                finds the first *.com or *.exe file in the directory
+                not attacked and ataches itself and also checks to see
+                if it's active in memory if not it installs itself.
+        6. Attaches to .com and .exe (.bin not tested)
+        7. Can be identified in executables with following hex codes.
+                0E B0 00 E6 20 B8 24 35 CD 21  (taken from virus)
+If someone (reputable [ie. has written vir.pro. programs before]) would like
+to tackle this hobbie of killing and detection of this virus I'll send you a
+copy.
+
+Better yet if someone has alread done so TELL ME WHERE TO FIND IT.  I'm
+desperate for a solution; deletion is (to me) not a good solution.
+
+
+                                   Jeffrey E. Hundstad
+                                   AS/400 System Administrator
+                                   Mankato State University
+                                   j3gum@vax1.Mankato.MSUS.EDU
+                                   CSAS400@vax1.Mankato.MSUS.EDU
+                                   vax1.Mankato.MSUS.EDU (134.29.1.1)
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 16:19:00 +0700
+>From:    "TANELI HUUSKONEN, DEPT MATH, HELSINKI, FINLAND"
+<HUUSKONEN@cc.helsink
+          i.fi>
+Subject: Little interest for authentication program
+
+A couple of weeks ago I posted a notice telling that I'd be willing to write
+a
+shareware implementation of some one-way cryptographic method for checking
+the
+authenticity of anti-viral software packages, if there was enough interest.
+Well, I didn't get too many responses, so I think I'll just drop the idea.
+
+- ------------------------------------------------------------------------
+Taneli Huuskonen                 :    huuskonen@cc.helsinki.fi         :
+- ---------------------------------:    huuskonen@finuh.bitnet           :
+Don't tell my boss I wrote this  :                                     :
+- ------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 15:39:08 +0700
+>From:    Mike Such <aeba-im-o-d1@berlin-emh1.army.mil>
+Subject: Mcaffee Associates
+
+Hi,
+
+Does anybody have the E-mail address of McAffee Associates?
+
+I'm trying to find out the site licenses for Scan and Clean.
+
+Thanx
+
+Mike
+- --
+Michael Such          AEBA-IM-O-D1@BERLIN-EMH1.ARMY.MIL
+Network Analyst       Tel: (ETS) 332-8019 - FAX 6452
+Berlin, Germany       I love it when a LAN comes together
+
+------------------------------
+
+Date:    23 Jan 91 11:02:16 -0500
+>From:    "David.M.Chess" <CHESS@YKTVMV.BITNET>
+Subject: Re: Stone-2 (PC)
+
+Tim Trimble <timt@ashtate.A-T.COM>:
+>We have had the stone virus pop up here with one or two incidents but
+>was able to catch it with the McAfee software.  So the suggestion of
+>the stone virus not being in the states yet can be considered false.
+
+The Stoned virus is definitely common in the States; but
+the "Stoned 2" (a variant, not identical to the Stoned)
+has only been seen in Australia/New Zealand.  The
+various U.S. "Stoned 2" reports that we heard awhile back
+all, as far as I know, turned out to be due to the
+signature confusion that I mentioned earlier: some
+scanners would report the "Stoned 2" when scanning
+a disk with the usual Stoned virus on it.           DC
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 11:38:00 -0400
+>From:    <SANTO@SENECA.BITNET>
+Subject: Anyone seen Norton's Antivirus? (PC)
+
+I was wondering if anybody has seen or used the Norton Antivirus?  Is
+it any good? What techniques are used to detect and remove viruses?
+What type of preventative measures are used?
+
+I hope it doesn't use checksumming. I find that checksumming adds time to
+our already slow XT's in the micro lab.
+
+SANTO@SENECA.BITNET
+Santo Nucifora
+Seneca College of A.A.T
+North York, Ontario (Do I have to include Canada or is Ontario well know?)
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 11:58:27 -0500
+>From:    Lee Ratzan <ratzan@rwja.umdnj.edu>
+Subject: security awareness funding
+
+I seem to recall that some organization (government or industry) has
+offered grant funding to provide insight or evaluate security
+awareness issues for certain special environments. Does anyone know
+anything about such a RFP? Can anyone suggest an agency which may be
+so interested?
+
+Lee Ratzan
+Univ of Medicine/Dentistry of NJ
+675 Hoes Lane
+Piscataway, NJ 08854
+908-463-4171
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 09:34:44 -0800
+>From:    "Paul W. Kittle" <MDLPKI@LLUVM.BITNET>
+Subject: Stoned here (PC)
+
+I would like to confirm the Ashton-Tate comment about the Stoned Virus.  It
+tur
+ned up here at Loma Linda University Medical Center yesterday 1/22/91 on a
+patr
+on access terminal.  It was (more or less) discovered by a foreign doctor
+who w
+as having trouble downloading medical data from our computerized network.
+
+I ran the McAfee scan and confirmed the STONED virus was indeed there.  It
+did
+not show up on the novell network to which the workstation is attached.
+
+I have a feeling it may have come from a DFI VGA video driver fresh from the
+wr
+apper (for more info, read Computer shopper last month or month prior -
+"ATTACK
+ of the KILLER VIRUS" where they report similar problem.)  Can't yet varify
+thi
+s as exact source of infection.
+
+PAUL
+
+"I LABOR TO BE BRIEF - AND MANAGE TO BE OBSCURE."  - HORACE
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 10:11:15 -0800
+>From:    "Paul W. Kittle" <MDLPKI@LLUVM.BITNET>
+Subject: more on STONED (PC)
+
+Scratch earlier comments re:  VGA driver diskette.  Virus has so far been
+track
+ed to a public resident's computer in hospital department.  We fear it may
+also
+be coming from a public computer in student's resident hall.  Oh, Well!
+ There
+goes the neighborhood...
+
+PAUL - LOMA LINDA U MEDICAL CENTER/MEDICAL LIBRARY & INFORMATION CENTER
+
+     "NEVER BACKUP MORE THAN YOU WANT TO RE-INPUT..."
+
+------------------------------
+
+Date:    Wed, 23 Jan 91 23:37:00 -0400
+>From:    Paul Coen <PCOEN@DRUNIVAC.BITNET>
+Subject: Text in MLTI virus (PC)
+
+>The MLTI virus contains this text - clearly a reference to the "Eddie"
+>virus, but what does "RED DIAVOLYATA" mean ?  (I want to emphasize
+>that "Dark Avenger" is the name of the author of the "Eddie" virus -
+>not the name of the virus itself.)
+
+Well, I can't help you with the RED DIAVOLYATA, aside from the rather
+obvious point that it seems to be the "name" of the author.
+
+>       Eddie die somewhere in time!
+
+This, however, is rather interesting.  "Eddie" is the name of the "mascott"
+of the heavy metal group, Iron Maiden.  Eddie sort of looks like a decayed,
+mutilated corpse.  This becomes less of a stretch of meaning because
+"Somewhere in Time" is the name of an Iron Maiden album from the early
+eighties.  I guess Western heavy metal music really IS popular in Eastern
+Europe.  Not to imply that people who like heavy metal are virus writers,
+of course :-).  I just thought I'd point out the interesting cultural link
+there.
+- --
+Paul Coen       Drew University Academic Computer Center
+                pcoen@drunivac.bitnet  pcoen@drunivac.drew.edu
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 14]
+*****************************************
+
+

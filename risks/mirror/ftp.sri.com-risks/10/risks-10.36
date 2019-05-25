@@ -1,0 +1,405 @@
+Subject: RISKS DIGEST 10.36
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Wednesday 12 September 1990 Volume 10 : Issue 36
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Railway Safe Working - large analogue systems (Skillicorn)
+  Re: BMW Heading Control System (A. L. Bangs)
+  Re: Robustness of RISC architectures (Andy Glew, Dave Sill, Andrew Taylor, 
+    Henry Spencer, Peter Holzer, Robert Cooper, Dik T. Winter)
+  Re: Computers and Safety (Peter Holzer)
+  Re: Software doesn't wear out? (Bob Estell)
+  Re: Software bugs "stay fixed" (Peter da Silva)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+cd sys$user2:[risks]<CR>GET RISKS-i.j <CR>; j is TWO digits.  Vol summaries in 
+risks-i.00 (j=0); "dir risks-*.*<CR>" gives directory; bye logs out.
+ALL CONTRIBUTIONS ARE CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+The most relevant contributions may appear in the RISKS section of regular
+issues of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 11 Sep 90 15:30:07 EDT
+From: skill@qucis.queensu.ca
+Subject: Railway Safe Working - large analogue systems
+
+One area in which safety and reliability of analogue systems is well-understood
+is railway safe working. Risks readers will certainly find L.T.C. Rolt's book
+"Red for Danger" interesting and instructive. It covers the development of safe
+working in the U.K.  from the first railways to the late Sixties (my edition
+anyway).  There are many good examples of risks unnoticed, risks fixed badly,
+re-appearing risks, and the work it takes to make people realize the risks and
+then pay the price of fixing them.
+
+Given the long experience in the U.K with safety in railway systems, you might
+wonder why accidents such as Purley happen. It puzzles me too.  BR has the
+technology to detect, on the train, the state of trackside signals, but only
+uses it, in the first instance, to inform the driver.  In Australia (at least
+NSW) signals are equipped with a small handle which pivots up when the signal
+is at red and contacts a trip on the brake system if a train attempts to pass
+it. The driver cannot subvert the systemin motion, although he can reset the
+system and proceed once the train has fully stopped. This can only be done from
+outside the train (by climbing down to the trip and manually resetting it).
+This seems to be much more consistent with the rest of the safe working system,
+where signal box interlocks are implemented by requiring two largish pieces of
+metal to occupy the same space for conflicting events to occur. The only
+failure mode here is severe deformation of the metal rods.
+
+Of course, this kind of absolute block working is not always appropriate.  In
+places where it is common to want to pass a red signal (dense suburban) extra
+arms are installed between signals. These drop in sequence at a rate which
+reduces the train speed to around 20 km/h.  Again there is no way to go faster
+without overunning a raised arm.
+
+Suburban trains have the usual dead-man's throttle handle (the throttle must be
+pressed down continuously for it to work on the brakes not to be applied), but
+long distance diesels have a vigilance button which must be pressed every sixty
+seconds to keep the brakes off. It's a good thing that brakes are applied
+automatically because it is commonly believed that old hands can press this
+button even when sleeping. I've observed the automaton-like way that drivers
+press this button and I have no doubt that it happens. So I remain surprised
+that BR didn't seem to believe that train crew vigilance could be a problem.
+
+Mind you, it all seems very safe compared to Canada where express passenger
+trains are managed using CTC and walkie-talkie radios. I've seen passenger
+trains following one another, separated by a few hundred yards, and relying
+purely on the vision of the driver in the second train. Authorized by radio, no
+hardware protection.
+                                          -David Skillicorn
+
+------------------------------
+
+Date: Tue, 11 Sep 90 09:57:21 EDT
+From: BANGS A L <abg@stc06.ctd.ornl.gov>
+Subject: Re: BMW Heading Control System
+
+Michael Snyder's message about the Road Runner problem, i.e., that the system
+may not be able to cope with roads that go into mountains, can be a serious
+one.  If people rely on the system enough that they tend to take their hands of
+the wheel and stop watching the road, then they could get in big trouble if
+they suddenly come to a construction site.  Especially if they are moving along
+quickly in their BMW :-)
+
+In other words, if the system is good enough to give people confidence, but is
+not good enough to deal with all possible situations, then it is risky.
+
+Alex L. Bangs, Oak Ridge National Laboratory/CESAR, Autonomous Robotic Systems
+
+------------------------------
+
+Date: Wed, 12 Sep 90 10:57:51 CDT
+From: aglew@dual.crhc.uiuc.edu (Andy Glew)
+Subject: Re: Robustness of RISC architectures (Minow, RISKS-10.35)
+
+>Last August, a note posted to info-vax@kl.sri.com showed how user-mode
+>code can crash a RISC (reduced instruction set) architecture machine.
+>[...]  several RISC architectures could be crashed, but none of the CISC
+>(complex...) architectures that were tried.
+
+Let's dispose of the supposition that this is a RISC/CISC issue.  Arne
+Helme <arne@sfd.uit.no> reposted "crashme" to the comp.arch newsgroup,
+and obtained a flurry of reports:
+
+80386, '386 protected mode unix => system crash		Peter da Silva
+80386, '286 protected mode unix => system crash		Peter da Silva
+DG Aviion (88K),  DG/UX 4.30 	=> no crash    	    	?
+decsystem 5200 Ultrix V3.1A 	=> crash	    	Arne Helme
+sun 4 SPARC station sunOS4.03c 	=> crash	    	Arne Helme
+MIPS R[236]000 RISC/os 4.50 	=> no crash    	    	Charlie Price
+Sun-3/50 SunOS 4.1 		=> unkillable cpu-bound process 	
+    	    	    	    	    	    	    	Andrew Taylor
+
+Obviously, some RISCs crashed, some CISCs crashed, some RISCs
+survived, some CISCs survived.
+
+The problem most likely is an OS bug. Chris Torek remembers the discussion as
+follows: "on all the machines that crashed *except one*, it was a bug in the OS
+and not in the chip.  The one exception?  A CISC."
+
+------------------------------
+
+Date: Tue, 11 Sep 90 13:14:55 GMT
+From: de5@de5.CTD.ORNL.GOV (Dave Sill, Oak Ridge National Laboratory)
+Subject: Re: Robustness of RISC architectures (Minow, RISKS-10.35)
+
+>... One person, commenting on
+>this, noted that one of the ways to speed up RISC architectures is to allow
+>certain (possible) instruction sequences to have undefined behavior, and to
+>let that behavior include "wedging" the machine.  However, CISC architecture
+>specifications make sure that every possible instruction (i.e., every pattern
+>of bits that can be loaded into the instruction register) returns the machine
+>to a known -- viable -- state.
+
+One person said that, but is it true?  I find it hard to believe that excluding
+undefined behavior would necessarily exact a performance penalty.  Further,
+another person in that same discussion said that the types of bugs causing the
+RISC machines to crash were typical of early hardware bugs in CISC machines
+too, and that the reason the RISC machines were crashing was because the simply
+weren't as thoroughly debugged as the CISC machines.
+
+I don't know who's right, but both explanations seem equally plausable.  It
+seems premature to lose sleep over RISC robustness at this point.
+
+Dave Sill (de5@ornl.gov), Martin Marietta Energy Systems, Workstation Support
+
+------------------------------
+
+Date: Tue, 11 Sep 90 15:50:05 +1000
+From: Andrew Taylor <andrewt@cs.su.oz.au>
+Subject: Robustness of RISC architectures
+
+I don't believe this is a RISC versus CISC issue. The "execute-random-data"
+program found an *OS* bug in both our (RISC) MIPS boxes and our CISC Sun 3/50s.
+
+On the MIPS the behaviour of some instruction in the conditional branch format
+is undefined. If there is an illegal FP instruction in the delay slot of such
+an undefined branch instruction. The FP instruction traps to the OS which
+determines the FP instruction is in a delay-slot and tries to calculate
+the branch destination. The OS routine called to do this detects the branch
+instruction is undefined but does the wrong thing, it calls "panic" halting
+the machine. Trivial to fix.
+
+On our SUN 3/50s (running SunOS 4.1) some random code sequences result
+in a cpu-bound process which can not be killed. Rebooting is the only solution.
+
+Its possible that OS bugs are more prevalent on RISCs because their OSs are
+younger.
+
+Andrew
+
+------------------------------
+
+Date: Tue, 11 Sep 90 12:28:09 EDT
+From: henry@zoo.toronto.edu
+Subject: Re: Robustness of RISC architectures
+
+In fairness, it should be noted that most of these crashes appear to have
+been the result of *software* problems:  the operating system was not
+prepared to cope with this bizarre situation when the hardware noticed it.
+
+>... one of the ways to speed up RISC architectures is to allow
+>certain (possible) instruction sequences to have undefined behavior, and to
+>let that behavior include "wedging" the machine...
+
+Very few RISC designers (none that I know of, in fact) are that stupid.
+Yes, RISC architectures often state that the results of certain sequences
+are undefined, but wedging the machine is *not* considered a legitimate
+result.  (Not in a machine meant to support multi-user systems, at any
+rate; the rules are different for some of the more specialized processors.)
+Claims to the contrary are the result of ignorance or ulterior motives.
+
+This is simply a question of proper design, not of RISC vs CISC.  Certain
+early and buggy releases of a certain CISC processor were notorious for
+bugs in the protection system, e.g. circumstances in which a memory
+fetch would be done with "system" permissions when it was initiated
+from "user" state, or vice-versa.  This was mostly a result of the great
+complexity of the processor and its interactions with memory management;
+a similar problem would have been rather less likely on a RISC machine.
+So it cuts both ways.
+
+>... CISC architecture
+>specifications make sure that every possible instruction (i.e., every pattern
+>of bits that can be loaded into the instruction register) returns the machine
+>to a known -- viable -- state.
+
+It is necessary to understand that "known" and "viable" are two different
+criteria, analogous to the frequently-mentioned-on-Risks distinction between
+correct functioning and safe functioning.  It is not necessary that the result
+of violating the rules be precisely defined and the same for all variants of a
+particular architecture; what is required is merely that none of the possible
+results endanger system integrity.
+
+                          Henry Spencer at U of Toronto Zoology    utzoo!henry
+
+------------------------------
+
+Date: 11 Sep 90 16:56:22 GMT
+From: hp@vmars.UUCP (Peter Holzer)
+Subject: Re: Robustness of RISC architectures (Minow, RISKS-10.35)
+
+This was shown to be a OS bug on the DECstations (The OS could not correctly
+resume a process that trapped just after a delayed branch and instead of 
+killing the process panicked). One person also reported that his 386 (a CISC 
+processor) could be crashed with the same program (He did not say which 
+UNIX he used, however. My 386 running 386/ix did not crash).
+
+And talking of VAXes. You can crash a VAX under ULTRIX by loading the frame
+pointer with a negative value and then trapping into the OS. 
+
+Peter J. Holzer, Technische Universitaet Wien   hp@vmars.tuwien.ac.at
+                                                ...!uunet!mcsun!tuvie!vmars!hp	
+
+------------------------------
+
+Date: Tue, 11 Sep 90 16:08:59 EDT
+From: rcbc@cs.cornell.edu (Robert Cooper)
+Subject: Re: Robustness of RISC architectures
+
+Many RISC architectures have a notion of a well-defined instruction 
+stream, and undefined instruction sequences may exhibit undefined
+behaviour. Whether this is a real RISK, as usual, depends on a host
+of other factors and assumptions relating to the total system of which the
+RISC processor is only a part. Here are a few that come to mind:
+
+ o You are not supposed to write (much) assembly code on a RISC. Therefore
+   if the compiler is "safe" (i.e. never generates illegal instruction
+   sequences) , and object code is protected read-only, executing undefined
+   instruction sequences is unlikely. Note that a "safe" compiler need
+   not be correct. This idea is not new: these assumptions were necessary
+   for the B5000/B6000 series of Burroughs computers of the '60s which had
+   unsafe user-mode object code but relied on certified compilers.
+
+ o If the processor is used in a single user application (e.g. an
+   embedded application) then there is little difference between just the
+   application program failing and the whole processor failing. Both
+   may result in byzantine failures for instance.
+
+ o One can question the complexity needed for operating system and compiler
+   software as a result of the RISC approach. OS code must perform much
+   more work on traps and interrupts than on a typical CISC machine,
+   and compiler optimizations are required to realize most of the 
+   performance benefits of RISC. Clearly these are not impossible
+   requirements but my experience suggests that it takes several years
+   *after* a RISC machine is introduced for the OS and compiler software
+   to become robust.
+
+A particularly bad scenario could be a multi-user university computer that is
+used for a student compiler writing course and for payroll!
+                                                             -- Robert Cooper
+
+------------------------------
+
+Date: 11 Sep 90 23:46:17 GMT
+From: dik@cwi.nl (Dik T. Winter)
+Subject: Re: Robustness of RISC architectures
+
+Martin Minow writes about a program consisting of random bytes:
+ >                                                         Further discussion
+ > showed that several RISC architectures could be crashed, but none of the
+ > CISC (complex...) architectures that were tried.
+There was more than one report of a CISC machine that crashed.  The blame
+was lain by some at the (possibly undefined) behaviour of some instruction
+sequences of RISC machines, but no proof was given.  It is much more likely
+that the machines crash because of bugs in the operating system.  (I know
+at least one sequence of bytes that will crash a Sun 4 in some situations,
+but I also know that it is due to an OS bug.)
+
+The risk is obvious, one part of the system gets the blame, while nobody
+looks at the remainder of the system.
+
+dik t. winter, cwi, amsterdam, nederland   dik@cwi.nl
+
+   [There seemed to be enough novel in each of the preceding 7 messages
+   that they are all included.  I hope you are not all suffering from the
+   bRISC fRISC.     RISKS OF RISCs, I guess...   PGN]
+
+------------------------------
+
+Date: 11 Sep 90 16:11:29 GMT
+From: hp@vmars.UUCP (Peter Holzer)
+Subject: Re: Computers and Safety (RISKS-10.34)
+
+Robert Trebor Woodhead <trebor@foretune.co.jp> writes:
+
+>J.G. Mainwaring discourses about GOTO's and the infamous C BREAK
+>(as in "Here is where your program will BREAK!")
+
+>It has long been my opinion (which as we all know, carries the force
+>of law in several of the smaller West African countries.. ;^) that the
+>EXIT() command pioneered in UCSD PASCAL was an ideal compromise.
+
+>EXIT(a) exited you from enclosing procedure "a", which made it most
+>convenient for getting out of incredibly convoluted nested structures
+>without making them hugely more convoluted.  It was the equivalent of
+>a restricted GOTO to the end of the current procedure, with the extra
+>ability to exit any enclosing procedure (even PROGRAM, the whole
+>kit-n-kaboodle).  It gave you the the same abilities as 90% of GOTO
+>use, but you always knew exactly what it was going to do, and thus
+>it was much less dangerous than BREAK.
+
+I do know what break does: It gets me out of the enclosing switch statement
+or loop. This is much less powerfull then EXIT, which does not just leave
+this procedure (like C return) but eventually other procedures as well, which
+is more than you can do with goto in C (You would have to use setjmp/longjump)
+to do this.
+
+Comparing EXIT with break does not make sense. It is a generalized return
+(Handy with those nested procedures you have in Pascal).
+
+The danger of break is not that it leaves the switch or loop, but that you
+can leave it out were it would belong:
+
+switch (a) {
+case A:
+	/* code */
+case B:
+	/* more code */
+	break;
+default:
+	/* even more code	*/
+}
+
+Now should there be a break just before 'case B:' ? You have to understand
+the algorithm to answer the question.
+
+This can happen with EXIT just as easily.
+
+Peter J. Holzer, Technische Universitaet Wien   hp@vmars.tuwien.ac.at
+                                                ...!uunet!mcsun!tuvie!vmars!hp	
+
+------------------------------
+
+Date: 11 Sep 90 08:23:00 PDT
+From: "FIDLER::ESTELL" <estell%fidler.decnet@scfd.nwc.navy.mil>
+Subject: Re: Software doesn't wear out?
+
+Software doesn't wear out?  Doesn't that depend on your definitions?
+
+Example: I use a program, duly protected by both copyright, and trade secret 
+(of portions not disclosed in the copyright process).  I use that program 
+under terms of a valid contract.  The program quits working some first of a 
+month, because the contract has expired.  I order up a new copy.  When it 
+comes, it is *not* necessarily backwards compatible with my extant data files.
+
+Now, is my program "broken" [worn out] or not?  It may function well by the
+*current* definitions of the vendor; but it does not get my work done any 
+longer.  (At least, not until I "make the problem fit the new too.")
+That sounds like a car that won't start, or run; but no, the trouble 
+is *not* covered by the 5/50 warranty either.  Sorry.  (Or, perhaps better 
+analogy, the car won't run; and the necessary repair part is no longer made.)
+
+Apparently, "failure" has varied appearances, in the eye of the designer, (and
+perhaps the programmer), the vendor, and the user.
+                                                               Bob
+
+------------------------------
+
+Date: Sat Sep  8 11:15:29 1990
+From: peter da silva <peter@ficc.ferranti.com>
+Subject: Re: Software bugs "stay fixed" (RISKS-10.33)
+
+>      extraneous code he doesn't understand, doesn't see how it could work, or
+>      whatever and in an attempt to clean up the program, deletes or changes
+>      it.  This turns out to be programmer A's bug fix, and the old bug is
+>      reintroduced.
+
+In this situation it seems likely that Programmer A merely covered up or made
+allowances for the bug. A real bug fix would have redesigned the code so the
+condition that equired the obscure code didn't occur. The original comment is
+that fixed bugs stay fixed. Patched bugs can (and often do) resurface.
+
+Peter da Silva    +1 713 274 5180.    peter@ferranti.com
+
+------------------------------
+
+End of RISKS-FORUM Digest 10.36
+************************

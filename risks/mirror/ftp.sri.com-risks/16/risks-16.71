@@ -1,0 +1,684 @@
+ Subject: RISKS DIGEST 16.71
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 5 January 1995  Volume 16 : Issue 71
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See other issues for further information, disclaimers, etc.       *****
+
+  Contents:
+A Whole Bunch of Date-Time Stuff (Fred Ballard, Paul Robinson, John
+  Cavanaugh, Dave Moore, Chuck Karish, Jerry Leichter, Richard Schroeppel,
+  Craig Everhart, Erann Gat, Wayne Hayes, Walt Farrell, Stanley F. Quayle,
+  Marc Horowitz, Peter Capek, Lars Wirzenius, Phil Rose, David Jones, 
+  Jonathan I. Kamens, Andrew W Kowalczyk, Barry Jaspan, Joe Morris,
+  Lord Wodehouse)
+ 
+----------------------------------------------------------------------
+
+Date: 05 Jan 95 00:08:23 EST
+From: Fred Ballard <72400.1525@compuserve.com>
+Subject: Adopting Programming Improvements
+
+I'm glad to see (and embarrassed as well) that, as Walter Murray describes in
+RISKS-16.70, ANSI COBOL addressed the problems I described with COBOL dates in
+RISKS-16.69 in the 1985 standard.
+
+He further says that, "Now it's up to COBOL programmers to learn and start
+using what the language provides."
+
+That brings me to the subject of how fast improvements are actually adopted.
+I attended a meeting where Gerald Weinberg (author of _The Psychology of
+Computer Programming_, among many other excellent books) spoke.  He told a
+story illustrating how long it takes to introduce improvements.  It was
+determined in the nineteenth century that surgeons could drastically reduce
+the mortality rate among their patients by washing their hands before
+operations.  It took a full generation of surgeons from the older, who
+couldn't be bothered, to the younger, who wouldn't do it any other way, for
+the improvement to find widespread use.  (What's really frightening is a
+radio story I just heard on a children's burn unit in Russia that mentioned
+a doctor there who could not be persuaded to wash his hands between
+examining patients' dressings.)
+
+All in all, I think we face the same thing in computer programming.  (For
+instance, in my case, although I'm not currently using COBOL, I should have
+checked a current manual before commenting.  Should the opportunity arise, I
+will welcome and use the improvements.)  I'm pessimistic about wide
+improvements in programming techniques and how fast they spread to
+programmers in information systems software and applications.  I'll give
+some examples:
+
+o In the area of reuse (and sticking with dates), in the 4GL I use, the
+ADDATE function correctly adds to and subtracts from dates before its epoch
+date, but allowed arithmetic operations (addition and subtraction) on the
+same dates fail.
+
+o In program control, because the 4GL formerly lacked a generalized loop
+structure, GOTOs had to be used to construct them and were also used to code
+spaghetti bowls of code throughout the 1980s and 1990s, ignoring the
+precepts of structured programming introduced at least as early as 1968.
+
+o The use of modularization is haphazard; in one instance, a manager
+dismissed the coupling and cohesion of structured design from the early
+1970s as impenetrable.  (Well, actually he said he never got it and didn't
+want to get it.)
+
+o Code inspections, programming teams, and software metrics are never used
+or even mentioned.
+
+o Data hiding has been impossible in the 4GL because all variables have had
+global scope.  When local variables were introduced in the current version,
+they can only be automatically allocated variables whose use is restricted
+in many commands.  Most programmers haven't missed local variables and
+welcome everything being global.
+
+o Object-oriented development is viewed as a distant, experimental
+possibility.
+
+>From what I've seen, most of the improvements in programming from the last
+quarter century of computing science are still viewed as tentative innovations:
+usually unexplored, unknown, or unused.  
+
+------------------------------
+
+Date: Thu, 05 Jan 1995 03:23:19 -0500 (EST) 
+Subject: Mea Culpa!
+From: Paul Robinson <paul@tdr.com>
+
+As too many people have informed me, in regards to the message regarding
+dates and times, Unix (and the C language) return the number of seconds
+since 1970 as the date field.
+
+  [... and POSIX and Standard C systems, etc.  This was noted, in many
+  messages NOT included in RISKS, including those by (among others),
+    karish@mindcraft.com (Chuck Karish)
+    jepstein@cordant.com (Jeremy Epstein)
+    Marc Horowitz <marc@MIT.EDU>,
+    "Barry Jaspan" <bjaspan@cam.ov.com>,
+    scotte@center.uscs.com (L. Scott Emmons),
+    jra@IntNet.net (Jay Ashworth)
+  Just for kicks, I surveyed the 30 messages that were candidates for
+  this issue, and 10 of the DATE: fields had two-character fields.  PGN]
+
+Someone else informed me that under VM, one can issue a form of the DIAG
+instruction and get the time since a certain epoch.  (There is an issue
+here which the person who pointed it out to me may be unaware of;  DIAG is
+a privileged instruction if you were running under anything EXCEPT VM, so
+the only place you can use that instruction is for stuff that runs in
+machine emulation.)
+
+Someone else informed me that in assembly language on a Decsystem 20, you 
+can get the date and the time in a single call.  I neved used assembly on 
+a DEC 20, so I was unaware of this.
+
+Someone else pointed out that my comparison on a 386 DX 40 isn't quite the
+same as conditions on other computer systems because a 386/40 is a
+relatively recent development in what is available for the average person,
+e.g. the old mainframe computers used to only accept batch jobs and a job
+might take hours or {days} to run.  I remember my days of punching jobs on
+cards some twelve or fifteen years ago, and waiting 20 minutes to 1/2 an
+hour for a job to complete.  Cheap terminal access made card punch access
+obsolete.
+
+------------------------------
+
+Date: Thu, 29 Dec 1994 12:30:04 -0600 (CST)
+From: johnc@msc.edu (John Cavanaugh)
+Subject: Re: Year 2000 date problems already happening now
+
+Indeed, year 2000 date problems have already been happening for quite
+some time.  The first report I remember seeing was in a Computerworld
+article in 1975, when some programs that did projections 25 years ahead
+started failing.
+
+John Cavanaugh, Minnesota Supercomputer Center, Inc., 1200 Washington Ave. S
+Minneapolis, MN  55415   johnc@cray.com  +1 612 337-3556
+
+------------------------------
+
+Date: Wed, 4 Jan 1995 09:56:20 -0500 (EST)
+From: Dave Moore <davem@garnet.spawar.navy.mil>
+Subject: Re: Dates in a 4GL
+
+I just wanted to point out that this system of time storage will differ
+from World Time (UTC) by the number of leap seconds prior to the stored
+time.  Currently this is 10 or 11 seconds.  The most recent leap second
+was added the end of June 94.  I expect that most non-real-time
+applications don't care about 10+ seconds.  However it's interesting to
+note that the internal storage is in milliseconds.  This difference can 
+become quite critical in real-time applications.
+
+------------------------------
+
+Date: 4 Jan 1995 22:52:34 GMT
+From: karish@mindcraft.com (Chuck Karish)
+Subject: Re: Dates and Times Not Matching in COBOL
+
+>This sort of issue pops up so rarely that it's not something one thinks
+>about much.  In fact, a lot of reports print date only, so the time doesn't
+>matter one way or the other.
+
+And this is exactly why we discuss this sort of issue in RISKS: because
+people don't think about this sort of issue much.  As a buyer of computing
+services, are you happy to have a bug report answered with "Aw, that almost
+never happens!"?  Or maybe "Nobody cared much thirty years ago; why worry
+now?"
+
+Chuck Karish   Mindcraft, Inc.  415 323 9000 x117  karish@mindcraft.com
+
+------------------------------
+
+Date: Wed,  4 Jan 95 18:04:40 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: Date and time
+
+In a recent RISKS, Paul Robinson makes two points I'd like to disagree with.
+
+The first is minor.  Mr. Robinson lists a variety of operating systems, all of
+which he says return the date and time separately, thus leaving programs open
+to the danger that, if they sample across a midnight boundary, they may get
+a time from one day and a date from another.  All the OS's he lists are rather
+old.  All versions of Unix since the very beginning have returned, on request,
+a unified date/time value, represented as the number of seconds since a fixed
+time (in 1970).  Even the usual ASCII converted date/time routine returns a
+string containing both time and date.
+
+Similarly, VMS, since it was first introduced, has used a unified date/time
+value, this time a (64-bit) value indicating 100-nanosecond "ticks" since a
+fixed time (in 1858).
+
+While I don't have the appropriate documentation here to check, I'd bet that
+such recent designed systems as Windows NT and OS/2 also use a combined
+offset.
+
+He is right about MSDOS, however.  Once a toy, always a toy.
+
+The second point is more significant, even if the particular application is
+trivial.  He points out that the problem can only arise if the program happens
+to execute the first of the call in a short period of time just before mid-
+night - a period determined by the time needed to issue the two calls one
+after another.  He estimates, then measures, this interval, and computes the
+fraction of 24 hours that it represents.  This fraction he claims is the
+probability of seeing the bug.
+
+Probabilistic arguments can sound very convincing, but are all too often very
+poorly made - so poorly made as to be essentially meaningless.  This argument
+is an example of that class.  What Mr. Robinson has calculated is the proba-
+bility that a program which runs at times evenly distributed throughout the
+day will happen to get caught by such a bug.  However, I submit that there are
+almost no programs with this property.  Many programs are much more likely to
+run during the day than near midnight; many never run at midnight at all.
+They will have essentially no chance of seeing a problem.  On the other hand,
+there exist programs that regularly run near midnight - programs that roll
+files over for the new day, for example.  Their probability of seeing the
+problem are much, much higher - though without more information, it's impos-
+sible to estimate the real probability.
+
+Probabilistic arguments look strong because they look so objective.  However,
+there's often a great deal of subjectivity in estimating the underlying dis-
+tributions on which the calculations are based.  We need only recall the
+orders of magnitude that distinguished the Intel and IBM estimates of the
+probability of running into the Pentium divide bug.  Intel assumed the divi-
+sors and dividends were chosen at random from all possible 64-bit values.  IBM
+made various assumptions, such as that the divisors and dividends were the
+best representations of numbers that, in decimal, had one digit before and
+two digits after the decimal point.  There are completely different distribu-
+tions, and the resulting "objectively calculated" probabilities are wildly
+different.  Which is "right"?  Both, and neither.  Both correctly describe a
+possible use of a Pentium.  Neither exactly describes any likely real set of
+calculations performed by any real Pentium user.  Which one is more useful?
+Ah, well that all depends on what you are trying to do.
+
+Finally, I'll point out that the underlying problem - of accurately reading a
+field that cannot be accessed atomically - recurs at multiple levels.  Many
+contemporary chips provide a 64-bit hardware-updated clock, but can only
+access its value 32 bits at a time.  Reading such a clock requires care!
+Leslie Lamport published an algorithm a couple of years back - essentially
+the trick that others have mentioned, of reading high order, then low order,
+then high order again, and retrying if the high order bits changed - that can
+be proved to get the correct time without requiring interlocking.  The proof
+is non-trivial.
+							-- Jerry
+
+  [And don't forget the delightful old SRI stuff, which Lamport, Shostak,
+  Pease, Rushby, and others have contributed to, showing that the
+  old-faithful three-clock fault-tolerant algorithms do not work under
+  Byzantine fault modes; you need FOUR clocks!  PGN]
+
+------------------------------
+
+Date: Wed, 4 Jan 1995 16:32:59 MST
+From: "Richard Schroeppel" <rcs@cs.arizona.edu>
+Subject: Getting Date & Time in synch
+
+Walter Murray <walterm@hprctbs3.rose.hp.com>:
+  Fred Ballard pointed out the risk of a COBOL program running near midnight...
+
+I used it in 1969 in assembly code written under ITS, which had separate
+Date and Time calls.  I think I read about it in Datamation.
+
+At the hardware level, the manual for the IBM 360 discussed (in 1965) the
+64-bit clock, a new feature of the architecture.  The clock was represented
+as two 32bit words in memory, and was automatically updated by the hardware,
+every X microseconds.  The application programmer might read the clock value
+while the hardware was propagating a carry to the high word, and the program
+would see mismatched upper & lower data.  The manual promised that, if you
+used a certain Move instruction to read the clock, the hardware would hold
+off clock ticks while the Move completed.  Moreover, the same promise applied
+if you were Moving a new value into the clock memory.
+
+This problem's been around a long time.
+
+Rich Schroeppel   rcs@cs.arizona.edu
+
+
+------------------------------
+
+Date: Thu,  5 Jan 1995 10:57:44 -0500 (EST)
+From: Craig_Everhart@transarc.com
+Subject: Re: Dates and Times Not Matching in COBOL (Robinson)
+
+I have to interpret this line of reasoning as having been intended to draw
+flames--if not by Mr. Robinson, then by our beloved editor/moderator.  I can
+make the Pentium analogy as well as most folks, and this one is far easier
+to understand.
+
+One of the big reasons for the RISKS list effort is to allow us to
+understand what we're buying in to when we allow machines to do our work for
+us.  To the extent that we trust machines to do the right thing, we had
+better see to it that they do.  To the extent that we cannot trust such
+machines, we need to be aware of the likelihood of problems, and adjust our
+trust accordingly.
+
+There are so many time-based calculations going on all the time, that it
+boggles the mind to imagine the impact of this carelessness.  So many of
+these calculations are embedded so deeply that you'll never bother to
+verify them.
+
+So what if you're charged for another day of rent, even for an expensive
+object?  So what if you're charged another day's interest on money?  Or
+so what if it happens, as long as it's not likely to happen to you but
+rather to somebody else? 
+
+(What is wrong with this attitude?)
+
+I'm reminded of a story told me by a buddy some time around 1974, wherein he
+had labored hard and long to isolate the cause of a machine freeze-up that
+hit his timesharing system (a Sigma, I think) once every few days.  He had
+finally traced the problem to a race condition that would have been solved
+by inverting the order of two machine instructions.  Upon reporting this to
+the manufacturer's engineers, they answered with ``but that problem will
+almost never happen, so it's not worth fixing,'' regardless of the periodic
+machine freezes that it had in fact caused.
+
+		Craig
+
+------------------------------
+
+Date: Wed, 4 Jan 95 19:06:13 PST
+From: gat@aig.jpl.nasa.gov (Erann Gat)
+Subject: Re: Dates and times not matching in COBOL
+
+135 REM NOW COUNT NUMBER OF ACTIONS IN ONE SECOND
+140 J = 0 : T1$=TIME$ : D1$=DATE$
+150 T$=TIME$ : D$=DATE$
+160 J = J+1 : IF T$=TIME$ THEN 160
+
+Paul Robinson <paul@tdr.com> writes:
+
+> ... but how many people worry about an error that *might* happen
+> once every 16.9 years?
+
+A lot of Pentium users were pretty upset about a bug that was purported
+to turn up only every 27,000 years.  Paul's blase attitude about this
+problem is particularly ironic in light of the fact that his BASIC
+benchmark program contained a bug:
+
+135 REM NOW COUNT NUMBER OF ACTIONS IN ONE SECOND
+140 J = 0 : T1$=TIME$ : D1$=DATE$
+150 T$=TIME$ : D$=DATE$
+160 J = J+1 : IF T$=TIME$ THEN 160
+                               ^^^ Should be 150
+
+I didn't check the Pascal version.
+
+Erann Gat      gat@jpl.nasa.gov
+
+------------------------------
+
+Date: 	Wed, 4 Jan 1995 18:09:17 -0500
+From: Wayne Hayes <wayne@csri.toronto.edu>
+Subject: Re: Dates and Times Not Matching in COBOL  (Robinson)
+
+Once ever 16.9 years *per computer*.  That means that with just 17
+computers, the error *might* occur once per year.  17000 computers, and it's
+probably happening once a day somewhere in the world.  Obviously it's not,
+though, otherwise we would've heard about it sooner, but that's not the
+point.
+
+The point is program correctness.  This is a trivial problem to fix, and so
+it should be fixed.  The low probability of it happening will be little
+consolation when your VISA card gets 2 months worth of interest rather than
+just 1, or the life support system issues an overdose because it finds a
+discrepancy of 86,399 seconds between two readings occurring 1 second apart,
+at midnight.
+
+  [There were numerous comments on the 16.9-ness monster, a few of which
+  are included for diversity.  Others, omitted here, include those from
+    Duncan Booth <Duncan@rcp.co.uk>, 
+    "Stanley F. Quayle" <QUAYLE@scriptel.com>,
+    "Jonathan I. Kamens" <jik@cam.ov.com>
+    "Peter Capek 914-784-6721" <capek@watson.ibm.com>
+       the last three of whom noted the Intel similarities
+       (e.g., once in 27,000 years).  PGN]
+
+------------------------------
+
+Date: Thu, 5 Jan 95 09:41:22 EST 
+From: "Walt Farrell" <wfarrell@VNET.IBM.COM> 
+Subject: Dates and Times Not Matching in COBOL
+
+IBM's MVS and its predecessors (at least for the last 20-25 years) have always
+returned the date and time in a single system call.  Whether the COBOL
+compiler has made that information available in one call is another question.
+But when the system's TIME service is used, you can get both the time and the
+date with one invocation.
+
+Paul further detailed some experiments he ran to see how severe the problem
+might be of having a program running that makes two requests, one just
+before midnight and the other just after midnight.  His conclusion, for a
+program written in Pascal, was that:
+
+> ... but how many people worry about an error that *might* happen
+>once every 16.9 years?
+
+I'm afraid this conclusion ignores the multi-programming aspects of today's
+systems.  When multiple programs are running, one program may be suspended
+by the operating system to service a program with a higher priority.  It's
+conceivable that a program might be suspended for several seconds (or even
+minutes if it has a very low priority and the system is running many
+programs of higher priority) such that the first request could occur well
+before midnight, then the program would be suspended until after midnight.
+
+  -- Walt
+
+------------------------------
+
+Date: Thu, 05 Jan 1995 10:46:36
+From: "Stanley F. Quayle" <QUAYLE@scriptel.com>
+Subject: RE:  Dates and Times Not Matching in COBOL
+
+I've done a lot of process control work, and while I'd *NEVER* use COBOL for
+such an application, it's important to eliminate windows of failure.  Why
+live with Murphy's Law when you can prevent it?
+
+Stanley F. Quayle  Scriptel Holding Inc.  4145 Arlingate Plaza, Columbus, OH
+43228 quayle@scriptel.com  +1 614 276-8402           
+
+------------------------------
+
+Date: Thu, 05 Jan 1995 00:15:37 EST
+From: Marc Horowitz <marc@MIT.EDU>
+Subject: Re: Dates and Times Not Matching in COBOL (Robinson)
+
+You're using a reasonably modern PC, which is, relatively speaking, a really
+fast machine.  I've used timesharing machines which were so overloaded that
+simple jobs took hours.  I wouldn't be at all surprised to find out that
+seconds or even minutes elapsed between "consecutive" date and time
+requests.  This is still unlikely, but I wouldn't stake my million-dollar
+application on it.
+
+1/6200 is also substantially more likely than the 1/10^9 which is
+often cited for "critical" applications.
+
+		Marc
+
+------------------------------
+
+Date: Thu, 5 Jan 95 01:47:13 EST
+From: "Peter Capek (TL-863-6721)" <capek@watson.ibm.com>
+Subject: Date and Time not matching...  (2)
+
+The Rexx programming language includes separate built-in functions for
+obtaining the date and time.  However, the defined semantics for these is
+that the first call to either within a clause (informally: statement) causes
+a record to be made which is then used for ALL calls to these functions
+within that clause.  Hence, if multiple calls to DATE and/or TIME are made
+in a single clause, they are guaranteed to be consistent with one another.
+             Peter Capek
+
+------------------------------
+
+Date: Thu, 5 Jan 1995 15:32:31 +0200
+From: Lars Wirzenius <wirzeniu@cc.helsinki.fi>
+Subject: Split up date and time calls vs an atomic operation (Robinson)
+
+Paul Robinson suggested in RISKS-16.70 that COBOL has separate statements
+for getting the date and time "[b]ecause most operating systems separate the
+request for time from the request for date".
+
+To me, this indicates that most operating systems have not been designed
+with reliability in mind (or if they have, then they are buggy in this
+regard).  One example of an operating system that does provide the date and
+time of day in a single call is Unix; it's interface has been copied to the
+C language.  Even when the operating system does not provide an atomic time
+call, it's not a good idea for a language to _mandate_ the split calls,
+since this always puts the burden on the language user.  In C, for instance,
+if the operating system does not support an atomic call, the time() function
+can hide this by using a "do { get date1; get time; get date2; } while
+(date1 != date2);" loop as suggested by an earlier RISKS entry.  The C
+programmer then gets an atomic operation anyway.  This is the approach to
+take for all systems and languages, and I'm glad to hear the COBOL now does
+take it.
+
+In addition to the race condition introduced by separate date and time of
+day calls in an operating system, remember that if the operating system
+returns the date, then it must know something of calendars.  A very simple
+understanding of the Gregorian calendar is simple to code (one needs a table
+containing the lengths of months, and a simple formula that tells whether a
+year is a leap year).  Even so, there are a lot of programs that can't
+handle it correctly.  A more complete understanding of calendars in general
+(not just the Gregorian one) would need a lot more code, which is better
+kept outside the kernel.  I think the Unix design, where the kernel keeps
+track of some universal time and the programs convert this into dates and
+local time as they wish, is the best solution.
+
+Lars.Wirzenius@helsinki.fi  (finger wirzeniu@klaava.helsinki.fi)
+Publib version 0.4: ftp://ftp.cs.helsinki.fi/pub/Software/Local/Publib/
+
+------------------------------
+
+Date: Thu, 5 Jan 95 14:30:34 GMT
+From: pvr@wg.icl.co.uk (Phil Rose)
+Subject: re Dates and Times not matching (Robinson)
+
+One more example: ICL's VME provides them.
+
+Surely that's the whole point about RISKS: Yes, it mayn't happen very often,
+but will do so and in safety critical situations will probably do so at the
+most dangerous time. (Sodd's law aka Murphy's law)
+
+Anyway, Mr Robinson's analysis overlooks one important fact - jobs do not
+always run randomly. If I set a job to start at 5 minutes to midnight to do
+some housekeeping or such and it tends to run for 4 min 59.9 secs +/- 0.1
+sec before reading the date and time it is probably much more likely to fall
+over this problem than if I set it off to run randomly after I go home. It's
+a problem with reliability calculations - they tend to assume life is
+random!
+
+Phil Rose pvr@wg.icl.co.uk P.V.ROSE@UK03.wins.icl.co.uk G3ZZA
+
+------------------------------
+
+Date: 	Thu, 5 Jan 1995 11:11:32 -0500
+Subject: Atomic time/date access
+From: David Jones <dej@eecg.toronto.edu> (Robinson)
+
+The Unix gettimeofday() and AmigaDOS CurrentTime() calls return both time
+and date.  Both these systems combine time and date into a single 32-bit
+number (which has other problems, which I'll get to later).
+
+He then goes on to estimate the probability of a time/date rollover error
+by running tests on GW-BASIC on a MS-DOS machine.  This environment allows
+reasonably well-controlled execution time behavior.  In contrast, heavily
+loaded Unix systems short on real memory may swap your program out between
+the time and date instructions, leading to a window of vulnerability much
+larger than the 1/3023 s window that he gives.
+
+Unix isn't completely off the hook.  Most systems use a signed integer for
+time/date values.  The highest value that can be stored in such an integer
+is 2^31-1, which corresponds to Mon Jan 18 22:14:07 2038 EST.  So Unix gives
+us another 38 years.
+
+David Jones, M.A.Sc student, Electronics Group (VLSI), University of Toronto
+           email: dej@eecg.toronto.edu, finger for PGP public key
+
+------------------------------
+
+Date: Thu, 5 Jan 1995 12:16:53 -0500
+From: "Jonathan I. Kamens" <jik@cam.ov.com>
+Subject: Re: Dates and Times Not Matching in COBOL (Robinson)
+
+From the start, the UNIX concept of time has been the elapsed time since
+January 1, 1970, the "UNIX system time".  Any UNIX program which needs to
+get the current time or the current date from the system does so by first
+asking for the UNIX system time (using time(3) (time(2) on older systems) or
+gettimeofday(2) and then using a UNIX library function to convert it into
+the appropriate human-interpretable data (current date, current time, etc.).
+The operation of getting the UNIX system time is atomic, and always has
+been.
+
+Just so that people don't think I'm claiming that UNIX was the first to get
+this right, I'll point out that Multics had similar functionality -- a
+function for getting the current system time as a 72-bit binary number,
+functions for converting that number into human-readable representations,
+and a function for converting a human-readable date string into such a
+72-bit binary number.
+
+Just so that people don't think I'm claiming that no one has gotten it
+right since UNIX, I'll point out that MacOS uses the same concepts,
+although it has the different problem of assuming that the system time
+is always local time (i.e., it has no concept of time zones).
+
+The fact that the current date and the current time are intertwined
+and should not be treated separately by an operating system trying to
+achieve reliability is not new knowledge, and the technology to "do it
+right" is not new technology.  Just because COBOL and DOS got it wrong
+doesn't mean that we should live with it being done wrong.
+
+Jonathan Kamens  |  OpenVision Technologies, Inc.  |   jik@cam.ov.com
+
+------------------------------
+
+Date: Thu, 5 Jan 95 11:27 EST
+From: Andrew W Kowalczyk <AKOWALCZ+aLIFDR1%Allstate_Corp+p@mcimail.com>
+Subject: COBOL date at midnight issue (Ballard)
+
+Regarding Fred Ballard's suggestion of bracketing the time of day inquiry
+between two date inquiries.
+
+In the various large organizations I have worked for I have never seen a
+"production" "batch" program that relies on the system date for any
+processing decisions or calculations.  Nearly all programs use a "run date"
+which is entered as a parameter or is in a common file read by all programs
+that need a date.
+
+Besides addressing the "after midnight" problem it also allows retroactive
+processing when problems happen or anticipatory runs to spread out workloads
+or compensate for postal delays.
+
+Of course there is the problem of entering the wrong control date. A clever
+approach is to utilize the system date as a reasonableness check on the
+entered control date (this would be especially likely to catch the common
+error we all commit of not incrementing the year digits in our head until
+sometime in February :) )
+
+As we replace these old systems with real time client-server
+systems then the use of system date and time becomes more
+enticing - but then we confront the headache of which clock to
+use on a network of processors.
+
+Also a potential risk in relying on programming language
+facilities that return the date and time in a single request -
+how do we know that the language implementors have applied Fred
+Ballard's carefulness to the extraction - as Paul Robinson points
+out: most of the underlying operating systems would require
+separate calls.
+
+Andy Kowalczyk  Allstate Life Insurance Company - Direct Response
+3100 Sanders Road  Suite N3A  Northbrook, IL 60062-9266 voice: (708)402-4457
+
+------------------------------
+
+Date: Thu, 5 Jan 95 12:33:00 EST
+From: "Barry Jaspan" <bjaspan@cam.ov.com>
+Subject: Re: Dates and Times Not Matching in COBOL (Robinson)
+
+[...]
+
+Paul is missing one of the basic lessons of RISKS (even though he states the
+source of the problem): the coupling of seemingly unrelated events.  The
+probability distribution of the time of day at which jobs run is not flat.
+There are a LOT of batch jobs out there in the world that run automatically
+at "midnight."  This bug will almost certainly occur eventually, probably
+already has, and with a frequency much higher than once every 16.9 years.
+Maybe it will even happen on the A320 he is flying in...
+
+Barry
+
+------------------------------
+
+Date: Thu, 05 Jan 1995 13:11:19 -0500
+From: Joe Morris <jcmorris@mwunix.mitre.org>
+Subject: Dates and times (Robinson, RISKS-16.70)
+
+MS-DOS certainly has the problem, but OS/360 and its successors (including
+MVS) don't.  I can't speak for the other systems cited.
+
+In the OS/360 world, the time and date have always been available in the
+single operating system call SVC 11 (optionally through the TIME macro).
+Time is returned in GPR0; date in GPR1.  Optionally, on S/370 and later
+systems the program can use the SVC 11 call to obtain the 64-bit TOD clock
+and do its own conversion to date-and-time.  (The TOD clock, maintained by
+the hardware, gives time from 0000 hours 1 January 1900 and is the datum
+from which all time and date information on the system are derived.)
+
+Of course, none of this makes any difference if the language in use doesn't
+provide a mechanism for the application to retrieve both time and date
+returned by the same OS invocation.
+
+Joe Morris / MITRE
+
+------------------------------
+
+Date: Thu, 5 Jan 1995 11:02:12 +0000 (GMT)
+From: Lord Wodehouse <w0400@ggr.co.uk>
+Subject: Midnight rollover risks
+
+As much as the various contributors who have worked to show that the chances
+of a problem with the time/date at midnight are less than 1 in 10*6 in any
+one day, I am afraid that if one was depending on the software to fly a 747,
+that would not be a great comfort!
+
+However I have seen a wonder example of such a problem with a large VAX
+cluster of six machines. The batch subsystem and job controller runs on all
+the CPUs. Jobs set to run at midnight will be started by the first machine
+to reach midnight and to schedule the job. However the job may well not run
+on that machine, but on another. If the clocks are not in step and they
+_never_ are, that machine may resubmit the job to run the next midnight. The
+result - well as opposed to one job running once at midnight, you can end up
+with lots of them and unless the code handles this, the data files can
+become interesting. As machines get faster, the jobs can run quicker, so the
+window for such a problem becomes more significant. With an old 11/750,
+getting the job to start might take seconds, while a 6660 it might take less
+than 1/100th of a second. So with the 11/750 cluster. the clocks can be a
+few seconds adrift, while with 6660's, that margin is much smaller.
+
+Lord John - The Programming Peer  +44 181 966 2109   w0400@ggr.co.uk
+
+------------------------------
+
+End of RISKS-FORUM Digest 16.71
+************************

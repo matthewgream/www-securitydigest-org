@@ -1,0 +1,516 @@
+ 6-Jan-87 20:10:12-PST,26694;000000000000
+Mail-From: NEUMANN created at  6-Jan-87 20:08:26
+Date: Tue 6 Jan 87 20:08:26-PST
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.36 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest, Tuesday, 6 January 1987  Volume 4 : Issue 36
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  A Heisenbug Example from the SIFT Computer (Jack Goldberg)
+  More Heisen-debugs (Don Lindsay)
+  The Conrail train wreck (PGN)
+  Software glitches in high-tech defense systems (from Michael Melliar-Smith)
+  Computer program zeroes out fifth grader; Computerized gift-wrap (Ed Reid)
+  Videocypher, DES (Jerry Leichter)
+  More on the possible DES crack (David Platt)
+  Campus LANs (James D. Carlson, Don Wegeng, Henry Spencer)
+  Engineering Ethics (Chuck Youman)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+Date: Tue 6 Jan 87 11:25:55-PST
+From: Jack Goldberg <JGOLDBERG@CSL.SRI.COM>
+Subject: A Heisenbug Example from the SIFT Computer
+To: RISKS@CSL.SRI.COM
+
+The following hardware bug was found in the debugging of the SIFT
+fault-tolerant computer.  The memory was built of static RAM chips, in which
+the memory cells were flip-flops.  Due to a defect in manufacture, the
+cross-coupling of the flip-flops in some of the cells was capacitive rather
+than conductive.  The effect was that the cells behaved perfectly when
+exercised ("observed") frequently, but when information was stored and not
+revisited, the charges on the cross-coupling capacitors would leak off and
+the flip-flop would become unstable, perhaps switching state.  The quality
+of the accidental capacitors was high, so it would take about twenty minutes
+of inactivity (non-observation) for the event to occur.  The debugging
+problem was compounded by the fact that numerous chips suffered from the
+same manufacturing defect.  I won't enumerate all the hypotheses that were
+tried before the phenomenon was identified.
+
+A similar phenomenon has been found in logic circuits, associated with charge 
+that may accumulate at unused gate inputs that were not properly connected
+to a holding potential.  I am aware of some painful debugging experience
+that that form caused in another fault-tolerant computer development.
+
+The Heisenberg Risk is evident and easily generalized beyond the chip level
+(one can imagine analogs at the program level).  It has substantial
+implications for risks to system dependability, because it subverts several
+conventional models of testing.  First, a person who is testing a defective
+system usually assumes that the defect is due to a fault in the system, that
+the fault is static, that there is some test (or test sequence) that will
+reveal it, and that when the test is applied, the fault will be revealed
+more or less immediately as an observable error.  This phenomenon says that
+there may be some latency in the manifestation of a fault, and that the
+latency may occur not only after a test sequence has been applied, but after
+any element of the sequence has been applied.
+
+A second subversion is to the standard practice of testing during
+manufacture.  Chip manufacturers simply cannot afford to let chips stand in
+their expensive testers for the time it would take to reveal such phenomena,
+and system manufacturers also have practical time limits for their test
+exercises.  In practice, such faults, hopefully rare, must be found and
+coped with at other points in the system lifecycle.
+
+------------------------------
+
+Date: Sun 4 Jan 87 22:09:32-EST
+From: LINDSAY@TL-20B.ARPA
+Subject: More Heisen-debugs
+To: risks@CSL.SRI.COM
+
+I recently encountered a particularly infuriating Heisenbug. A large program,
+when given a large input, was just mysteriously dying. Of course, I ran it
+under the debugger. The mystery deepened: the program returned quietly
+to the debugger. I say "mystery" because the call stack had been
+unwound, and yet my breakpoints at the various exits were not reached.
+
+My first reaction was to place a trail of breakpoints, with the idea of
+seeing how far it got. Some results were obtained, but each time I tried to
+refine the result, with a new set of breakpoints, the problem seemed to have
+moved elsewhere.
+
+The clue came when I tried to read some of the debugger's online documentation.
+The (VMS 4.1) debugger refused to talk, and instead gave me a message about
+a lack of resources. Aha ! The next step was to have an operator increase
+my resource allocation ( actually, my maximum number of IO operations ). I
+logged out, I logged in, and the problem was gone.
+
+I have harsh words to say about an operating system which will kill a job,
+without leaving any evidence that it did so. But, I leave these words to your 
+imagination.
+
+I have also had the privilege of a debugging session, done through the
+communications software which was being debugged. In this case, I have
+advice to novices. << Keep notes. Good ones. >> Trust me.
+
+Naturally, the hardware world has its share of these things. At one point,
+PDP-8 maintainers knew that the fix for a certain kind of crash, was to
+wave your hands near the backplane. (I am NOT kidding. Ask very old DEC hands.)
+
+And then there was the hobbyist 8080 board whose clock worked, but only when a 
+scope probe was applied to the clock line. Turned out that the capacitance of 
+the scope probe overcame the cigar ash under the CPU socket ...
+
+Don Lindsay
+
+------------------------------
+
+Date: Tue 6 Jan 87 19:16:38-PST
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: The Conrail train wreck
+To: RISKS@CSL.SRI.COM
+
+It is too early to write the definitive piece on this, but there are various
+conflicting reports.  The advance warning signal (back two miles on the main
+track) may or may not have indicated GO (an up-bar) instead of CAUTION (a
+slant-bar); the crossing locomotive engineer ran his stop signal; the cab
+crew of the Conrail train had bypassed the emergency alarm that is supposed
+to go off if they run a signal (as suggested by a PBS interview this evening, 
+which indicated that three separate safety systems would have had to fail
+simultaneously).  Stay tuned for the interpretation of the "event recorder".
+
+------------------------------
+
+Date: Tue 6 Jan 87 19:30:06-PST
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Software glitches in high-tech defense systems
+To: RISKS@CSL.SRI.COM
+
+An article by Steve Johnson in the San Jose Mercury News (4 Jan 87)
+listed a new bunch of problems.
+
+  * A multimillion-dollar satellite network called "MILSTAR", which is
+    supposed to link the president and top generals with tactical field
+    units in wartime, is months behind schedule because of software
+    troubles... (Lockheed)
+  * A computerized system intended to help direct artillery fire for 
+    soldiers at Fort Ord in Monterey County and other army bases is beset
+    with software delays.
+  * Two computer projects intended to make it easier to keep track of
+    equipment inventories at the Naval Supply Center in Oakland [CA] and
+    similar installations elsewhere have been held up because of software
+    development problems.
+  * Researchers at SRI International in Menlo Park a few years ago were
+    hired to analyze a new "over-the-horizon backscatter" radar system that
+    was supposed to detect attacking planes.  They found numerous software
+    errors that meant months of delays in the system.
+
+Elsewhere, the Air Force and Navy have had to postpone changes for the F-16C
+and F-18 fighter jets because of software hitches...  Similar problems
+have hurt... "LANTIRN" ... and "AMRAAM".  [The article also talks about SDI,
+software costs escalating, and the shortage of (competent) engineers.]
+
+"If we can't get substantial increase in (software) productivity, there is
+just absolutely no way we can produce the amount of software the defense
+industry needs in the next few years." (Dorothy McKinney, manager of the
+software engineering department at Ford Aerospace (FACC) in Palo Alto.
+
+                 [Thanks to Michael Melliar-Smith for bringing this one in.]
+
+------------------------------
+
+Date: Tue 6 Jan 87 19:46:17-PST
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: Computer program zeroes out fifth grader; Computerized gift-wrap
+To: RISKS@CSL.SRI.COM
+
+Edward Reid dug into his archives for this one, from the Gadsden County
+Times (FL), 25 Oct 1984.  One extra blank space between a fifth grader's
+first name and his last name resulted in his getting a ZERO score on the
+sixth-grade placement test.  Despite protests from his parents, he was
+forced to reenter fifth grade.  It was six weeks into the new school year
+before the test was finally regraded manually and the error detected.  (The
+boy cried and wouldn't eat for days after he got the original score of
+ZERO.)
+
+Edward also produced a clipping from the Philadelphia Inquirer, 5 Dec 1986.
+Computer printouts of the San Diego Unified School District's payroll
+somehow did not make it to the shredder, instead winding up as Christmas
+gift-wrapping paper in a local store (Bumper Snickers).  [Perhaps some of
+the bumper crop wound up in the NY Mets' victory parade?]
+
+------------------------------
+
+Date:  5 JAN 1987 12:32:58 EST
+From: LEICHTER-JERRY@YALE.ARPA
+To: risks@csl.sri.com
+Subject:  Videocypher, DES
+
+Dave Platt mentions a Radio Electronics article concerning the breaking of
+the Videocypher system, and speculates about the implications.
+
+This whole issue got hashed around in sci.crypt a couple of weeks ago.  The
+Radio Electronics article contains a LOT of nonsense, in its claims about the
+illegality of breaking DES in particular.  Also, the claims that DES itself
+has been broken are not credible.
+
+The Videocypher system has at least two vulnerabilities:  Each box contains a
+chip with a fixed key in it (the same in every box) which, if known, would
+allow anyone to determine actual working keys and intercept transmissions.
+Also, independent of the cryptography, the box itself makes a decision as to
+whether to allow you to see a particular channel.
+
+This allows at least to avenues of subversion:  Open a box and read the key
+from the embedded chip, or take a box and change its decision procedure so
+that it allows you to see channels you are not supposed to be able to see.
+(As I understand it, given a valid subscriber key, any box CAN extract the
+key for ANY channel - it just refuses to work on channels it is not supposed
+to see.)
+
+With enough equipment, it is possible to open up a chip, dissolve off the
+epoxy it's embedded in, and read the contents of any PROM with a scanning
+electron microscope.  I gather there ARE techniques for protecting chips
+against this sort of probing, but they may be too expensive for boxes that
+are supposed to sell for a couple of hundred dollars.  (They may also
+involve booby traps that would be considered too dangerous in consumer
+equipment.)
+
+Meanwhile, "rsk" speculates about the vulnerabilities of campus local area
+networks.  This is a REAL concern.  Ethernet, and all other LAN's I'm aware
+of, are completely open to anyone who can gain physical access to them.
+Listening in to any conversation is easy; spoofing is only a little harder.
+Yes, problems will arise.
+
+The solution is the use of well-understood cryptographic techniques.  As far
+as I know, while these techniques are understood, there have as yet been few
+implementations, mainly because of the expense involved.  (For many years,
+billions of dollars a day were transfered "by wire" over telephone lines
+with no real protection, cryptographic or otherwise.  It's only in the last
+couple of years that concern about security, and technology, have reached
+the point that these lines have been protected.)
+
+I expect we will see a re-hash of the OS/360 hacker phenomenon.  (OS/360 had
+so many security holes that many people broke into it.  It was never really
+fixed, just replaced.)
+							-- Jerry
+
+------------------------------
+
+Date: Tue, 6 Jan 87 09:46:20 PST
+From: dplatt@teknowledge-vaxc.arpa (David Platt)
+To: risks@csl.sri.com, security@rutgers.arpa
+Subject: More on the possible DES crack
+
+I just got a copy of the 2/87 issue of Radio-Electronics, which
+contains brief descriptions of several of the systems that have
+"cracked" the VideoCypher II scrambling system.
+
+The systems described are all "software" approaches that fall into what
+I described as "way #1"... they work by cloning copies of an authorized
+subscriber number.  At least one has found a way to crack the "tiered
+distribution" feature of VideoCypher, thus permitting someone who has
+paid for only one service to successfully view several others.
+
+None of the systems described so far actually involve a "cracking" of
+DES itself... they're all methods of copying an existing (valid) key
+from one decoder to another.  It appears that the MA-Com folks did take
+some steps to conceal the subscriber number information (which
+generates the actual key dynamically, I believe), but that their steps
+were not sufficient.  Apparently, the subscriber-number is stored in
+the battery-backed RAM in a small TI microprocessor, and there's no
+direct way to query it; during operation, though, it's apparently
+possible to trace the signals on some of the micro's pins and "catch"
+the subscriber number as it flys by.  Someone has found a way to do
+this and to "download" the number into the micro in another decoder...
+thus permitting the "cloning" of an authorized number.
+
+So, the vulnerability of the VideoCypher II system appears to boil down
+to the fact that its "innards" aren't sufficiently guarded against
+probing and/or modification.  If, for example, the box had been
+provided with a cover-removal switch that would signal the micro to
+erase its subscriber number, it might have been more difficult to
+"crack".
+
+A description of several "hardware" approaches is promised for next
+month.  I'll summarize once I get my hands on an issue.
+
+------------------------------
+
+Date: Sun,  4 Jan 87 17:30:26 est
+From: jc37#@andrew.cmu.edu (James D. Carlson)
+To: risks@csl.sri.com
+Subject: Campus LANs
+
+I am a student at Carnegie-Mellon University (Senior, EE) and I therefore
+speak only for myself, not the Academic Computing Center.
+
+First of all, in our system there are (basically) two types of files:  local
+and network.  Local files, like the password file, are only rarely
+transmitted over the network, and network files are maintained on the file
+servers.  The password file, when transmitted, is in an encoded form anyway.
+You will never see a raw password floating around the packets, at least they
+tell me so.  Because of the way the network operates, it would be a lot
+easier to get into the file servers themselves (false authentication, and so
+forth) than to pick the information up on the net.
+
+To the second part, the University's obligations, I think that they are the
+same as with large computers.  If you used the computer to create a paper,
+then lost it before the due date, tough! You knew the risks when you
+requested the account.  As to the "wrongful" obtaining of information, such
+as test questions, anyone who keeps highly sensitive information on a
+computer in unencoded form gets what he deserves.  This is not US Mail, and
+the same rules cannot apply here.
+
+BTW, the Andrew system here is not quite complete (despite what the wire
+services may be saying), and the main convenience of the system is that its
+use is free, possibly because of the bugs.  We have many other systems
+around that are MANY times faster, more secure, and more often even
+*working*, like the IBM 3083 ...
+
+------------------------------
+
+Date: 5 Jan 87 17:30:20 EST (Monday)
+Subject: Re: Risks Involved in Campus Network-building
+To: RISKS@CSL.SRI.COM
+From: Don Wegeng <Wegeng.Henr@Xerox.COM>
+
+I agree with Rich Kulawiec that a campus wide LAN is certainly subject
+to a large number of potential security risks, but it seems to me that
+such risks are present in any open computing environment. If an
+instructor keeps a draft of an exam online, but does not read protect
+the file, then any knowledgeable student with access to the system is
+capable of making a copy of the exam. There are similar risks associated
+with print spools, mail files, etc.
+
+The presence of an LAN may make it difficult to detect some kinds of
+security violations, but this isn't a new problem. Any computer
+communications link that passes through uncontrolled space is subject to
+the same kinds of risks as a campus network. The technology exists to
+protect such links. I do not know whether the implementors of campus
+networks have made use of this technology, but it's certainly a
+reasonable question to ask.
+                                             Don
+
+------------------------------
+
+From: hplabs!pyramid!utzoo!henry@ucbvax.Berkeley.EDU
+Date: Tue, 6 Jan 87 16:53:46 pst
+To: pyramid!CSL.SRI.COM!RISKS
+Subject: Risks Involved in Campus Network-building
+
+It can get worse.  Consider someone who is angry at the administration,
+perhaps having just flunked out, been expelled, or whatever.  There is
+some sophistication involved in doing things like watching the network
+for passwords etc.  There is little or no sophistication needed to just
+run some copper between the network cable and a 110V wall socket.  Not
+only does this disrupt the network, it probably destroys a great deal of
+equipment, and creates a serious safety hazard.  Good luck identifying
+the culprit, too!  In most networking setups this would probably be
+utterly untraceable once the connection was broken.
+
+I see reason for worry about newer, cheaper local-networking schemes that
+tend to run the network cable itself onto a board on each computer's
+backplane.  Traditional thick-wire Ethernet is costly, but its transceivers
+do provide thousands of volts of isolation between network and computer.
+A disastrous fault on the network will only destroy transceivers.  Fiber
+networks likewise provide inherent isolation.
+
+The same problem exists, on a more modest scale, with existing setups
+involving RS232 cables.  There the wiring is (probably) not a shared
+resource, but the electronics on the other end are.  If your computer
+facility casually runs RS232 cabling all over the building (as we do),
+remember that this means your computer is plugged into a net of wire
+with exposed pins in all kinds of places.  RS232 interfaces are seldom
+opto-isolated, which is what would be needed to defend against electrical
+flaws in such setups.
+
+That net of wiring also makes a dandy lightning antenna.  That's one
+reason, by the way, why a separate-box modem is almost always a better
+idea than one that plugs into a backplane slot -- more isolation between
+phone line and computer.
+				Henry Spencer @ U of Toronto Zoology
+				{allegra,ihnp4,decvax,pyramid}!utzoo!henry
+
+     [Thanks.  Enough on this topic for now?  We seem to have plateued.  PGN]
+
+------------------------------
+
+To: risks@csl.sri.com
+Subject: Engineering Ethics
+Date: Fri, 02 Jan 87 11:47:56 -0500
+From: Chuck Youman <m14817@mitre.ARPA>
+
+The December 28 op-ed section of the Washington Post included an article
+titled "The Slippery Ethics of Engineering" written by Taft H. Broome, Jr.
+He is director of the Large Space Structures Institute at Howard University
+and chairman of the ethics committee of the American Association of
+Engineering Societies.  The article is too long to include in its entirety.
+Some excerpts from the article follow:
+
+ Until now, engineers would have been judged wicked or demented if they
+ were discovered blantantly ignoring the philosopher Cicero's 2,000-year-old
+ imperative:  In whatever you build, "the safety of the public shall be 
+ the highest law."
+
+ Today, however, the Ford Pinto, Three-Mile Island, Bhopal, the Challenger,
+ Chernobyl and other technological horror stories tell of a cancer growing
+ on our values.  These engineering disasters are the results of willful
+ actions.  Yet these actions are generally not seen by engineers as being
+ morally wrong. . . Some engineers now espouse a morality that explicitly
+ rejects the notion that they have as their prime responsibility the
+ maintenance of public safety.
+
+ Debate on this issue rages in the open literature, in the courts, at public
+ meetings and in private conversations. . . This debate is largely over four
+ moral codes--Cicero's placement of the public welfare as of paramount
+ importance, and three rival points of view.
+
+ Significantly, the most defensible moral position in opposition to Cicero
+ is based on revolutionary ideas about what engineering is.  It assumes that
+ engineering is always an experiment involving the public as human subjects.
+ This new view suggests that engineering always oversteps the limits of
+ science.  Decisions are always made with insufficient scientific information.
+
+ In this view, risks taken by people who depend on engineers are not merely
+ the risks over some error of scientific principle.  More important and
+ inevitable is the risk that the engineer, confronted with a totally novel
+ technological problem, will incorrectly intuit which precedent that worked
+ in the past can be successfully applied at this time.
+
+ Most of the codes of ethics adopted by engineering professional societies
+ agree with Cicero that "the engineer shall hold paramount the health,
+ safety and welfare of the public in the performance of his professional 
+ duties."
+
+ But undermining it is the conviction of virtually every engineer that totally
+ risk-free engineering can never be achieved.  So the health and welfare of
+ the public can never be completely assured.  This gets to be a real problem
+ when lawyers start representing victims of technological accidents.  They
+ tend to say that if an accident of any kind occurred, then Cicero's code
+ demanding that public safety come first was, by definition, defiled, despite
+ the fact that such perfection is impossible in engineering.
+
+ A noteworthy exception to engineer's reverence for Cicero's code is that of
+ the Institute of Electrical and Electronics Engineers (IEEE)--the largest
+ of the engineering professional societies.  Their code includes Cicero's,
+ but it adds three other imperitives opposing him--without giving a way to
+ resolve conflicts between these four paths.
+
+ The first imperative challenging the public-safety-first approach is called
+ the "contractarian" code.  Its advocates point that contracts actually exist
+ on paper between engineers and their employers or clients.  They deny that
+ any such contract exists--implied or explicit--between them and the public.
+ They argue that notions of "social" contracts are abstract, arbitrary and
+ absent of authority.
+
+ [The second imperative is called] the "personal-judgment" imperative.  Its
+ advocates hold that in a free society such as ours, the interests of business
+ and government are always compatible with, or do not conflict with, the 
+ interests of the public.  There is only the illusion of such conflicts. . .
+ owing to the egoistic efforts of:
+
+ -Self-interest groups (e.g. environmentalists, recreationalists);
+
+ -The few business or government persons who act unlawfully in their own
+  interests without the knowledge and consent of business and government; and
+
+ -Reactionaries impassioned by the loss of loved ones or property due to
+  business-related accidents.
+
+ The third rival to public-safety-first morality is the one that follows 
+ from the new ideas about the fundamental nature of engineering.  And they
+ are lethal to Cicero's moral agenda and its two other competitors.
+
+ Science consists of theories for claiming knowledge about the physical world.
+ Applied science consists of theories for adapting this knowledge to individual
+ practical problems.  Engineering, however, consists of theories for changing
+ the physical world before all relevant scientific facts are in.
+
+ Some call it sophisticated guesswork.  Engineers would honor it with a
+ capitalization and formally call it "Intuition." . . . It is grounded in
+ the practical work of millenia, discovering which bridges continue to stand,
+ and which buildings.  They find it so compelling that they rally around its
+ complex principles, and totally rely on it to give them confidence about what
+ they can achieve.
+
+ This practice of using Intuition leads to the conclusion put forward by
+ Mike Martin and Roland Schinzinger in their 1983 book "Ethics in Engineering":
+ that engineering is an experiment involving the public as human subjects.
+
+ This is not a metaphor for engineering.  It is a definition for engineering.
+
+ Martin and Schinzinger use it to conclude that moral relationships between
+ engineers and the public should be of the informed-consent variety enjoyed
+ by some physicians and their patients.  In this moral model, engineers would
+ acknowledge to their customers that they do not know everything.  They would
+ give the public their best estimate of the benefits of their proposed 
+ projects, and the dangers.  And if the public agreed, and the engineers 
+ performed honorably and without malpractice, even if they failed, the public
+ would not hold them at fault.
+
+ However, most engineers regard the public as insufficiently informed about
+ engineering Intuition--and lacking the will to become so informed--to assume
+ responsibility for technology in partnership with engineers (or anyone else).
+ They are content to let the public continue to delude itself into thinking
+ that engineering is an exact science, or loyal to the principles of the
+ conventional sciences (i.e., physics, chemistry).
+
+Charles Youman (youman@mitre)
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

@@ -1,0 +1,321 @@
+VIRUS-L Digest   Monday,  6 Nov 1989    Volume 2 : Issue 232
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+Missing 200K Trojan Horse? (PC)
+The Brain Virus (PC)
+Virus List - Notes (Mac)
+Digital signatures for virus protection
+Re: Greg Gilbert's virus list (Mac)
+Re: Identify Ashar Virus
+Re: Identify Ashar Virus
+Morris to be tried
+
+---------------------------------------------------------------------------
+
+Date:    Fri, 03 Nov 89 14:03:35 -0500
+From:    Peter Jaspers-Fayer <SOFPJF%UOGUELPH.BITNET@IBM1.CC.Lehigh.Edu>
+Subject: Missing 200K Trojan Horse? (PC)
+
+   I know this is probably not a virus (SCANV45 does not see anything),
+but it DID seem to migrate from one PC to another.  What happened was
+that someone called me saying that they were missing about 200K of RAM,
+even after disabling CONFIG.SYS & AUTOEXEC.BAT.  He reported that
+re-SYS-ing the HD fixed the problem, and we closed it... But then someone
+(who had been trading CD-ROM software with the 1st guy) complained about
+exactly the same symptoms.  I managed to grab a copy of the DOS startup
+files, and found only ONE difference between the IBMDOS.COM on their HD
+and the one on the original DOS 3.1 diskette.  3 bytes were changed.
+DEBUG output follows:
+
+- -N IBMDOS.HD  * This is the hidden file Ibmdos.com on the hard disk.
+- -L
+- -D 6AC0
+303F:6AC0  03 8B 37 43 43 26 88 56-00 26 88 76 01 53 51 52   ..7CC&.V.&.v.SQR
+303F:6AD0  E8 41 B0 26 B8 00 20 36-3B 06 36 00 76 04 36 A3   .A.&.. 6;.6.v.6.
+303F:6AE0  36 00 5A 59 5B 8C D8 5E-1F 26 89 76 12 26 8C 5E   6.ZY[..^.&.v.&.^
+303F:6AF0  14 1E 56 FE C6 FE C2 8E-D8 83 C5 20 E2 C3 5E 1F   ..V........ ..^.
+- -U 6AD0
+303F:6AD0 E841B0        CALL 1B14
+303F:6AD3 26            ES:
+303F:6AD4 B80020        MOV  AX,2000            <----------- Huh?
+303F:6AD7 36            SS:
+303F:6AD8 3B063600      CMP  AX,[0036]
+303F:6ADC 7604          JBE  6AE2
+- -Q
+- -N IBMDOS.FPY * This is the hidden file Ibmdos.com on the original floppy
+- -L
+- -D 6AC0
+303F:6AC0  03 8B 37 43 43 26 88 56-00 26 88 76 01 53 51 52   ..7CC&.V.&.v.SQR
+303F:6AD0  E8 41 B0 26 8B 46 02 36-3B 06 36 00 76 04 36 A3   .A.&.F.6;.6.v.6.
+303F:6AE0  36 00 5A 59 5B 8C D8 5E-1F 26 89 76 12 26 8C 5E   6.ZY[..^.&.v.&.^
+303F:6AF0  14 1E 56 FE C6 FE C2 8E-D8 83 C5 20 E2 C3 5E 1F   ..V........ ..^.
+- -U 6AD0
+303F:6AD0 E841B0        CALL 1B14
+303F:6AD3 26            ES:
+303F:6AD4 8B4602        MOV  AX,[BP+02]         <----------- Huh ?
+303F:6AD7 36            SS:
+303F:6AD8 3B063600      CMP  AX,[0036]
+303F:6ADC 7604          JBE  6AE2
+- -Q
+- -------------------------------------------------------------------------
+
+   I do not have any idea how the file got changed.  The date-stamps were
+changed (in both cases).  The attribute flags (Sys, R/O, Hidden, Arch all
+set) were not changed.  SOMETHING re-wrote 3 bytes of IBMDOS.COM, even
+though it was R/O, and the write was such that the date-stamp was changed
+to the current date.  As far as we can tell, the missing 200K was the only
+symptom.  The CD-ROM stuff they were working on was using the
+Microsoft-Extensions software, plus the usual .SYS files for CDs.
+
+Does anyone have any ideas what happened here?
+
+ /PJ
+                     -------------------------------
+Notices you don't want to find printed on the back of your computer:
+"NO USER SERVICEABLE PARTS INSIDE",  "SOME ASSEMBLY MAY BE REQUIRED",
+and everyone's favorite "BATTERIES NOT INCLUDED".
+
+------------------------------
+
+Date:    Fri, 03 Nov 89 14:52:43 -0600
+From:    HISLE@VAX1.UMKC.EDU
+Subject: The Brain Virus (PC)
+
+Can anyone refresh me on the damage that the "Brain" virus can do to a
+diskette.  I have infected diskettes as identified by IBM's VIRSCAN.
+Any information is appreciated.  HISLE@VAX1.UMKC.EDU
+
+------------------------------
+
+Date:    Fri, 03 Nov 89 16:16:33 -0500
+From:    Joe McMahon <XRJDM%SCFVM.BITNET@VMA.CC.CMU.EDU>
+Subject: Virus List - Notes (Mac)
+
+I believe that the Peace virus appeared first - at least it was the first
+discussed, with nVIR and Scores following, in that order. I keep repeating
+this, but no one ever seems to see it:
+
+         ----  There is no such thing as a SNEAK virus !!!  ----
+
+This was simply a convenient name for a particular virus-like code
+pattern that Bob Woodhead's "Interferon" program looked for - for
+those who are interested, an immediate branch out of CODE 0 to some
+other CODE segment.  There is no specific virus called SNEAK, and
+there never has been. Bob has mentioned before that he's sorry he used
+this unfortunate appelation.  Me, too. Please, tell your friends,
+there's no such thing. If you read the Interferon documentation, this
+is all explained in it.
+
+As to the San Jose Flu, I've never heard of it, and I don't believe
+that it's ever been discussed here. If you have more details, I'd like
+to see them.
+
+Everything else looks OK. Thanks for taking the time, Greg.
+
+ --- Joe M.
+
+------------------------------
+
+Date:    Fri, 03 Nov 89 16:58:48 -0800
+From:    well!rsa@apple.com (RSA Data Security)
+Subject: Digital signatures for virus protection
+
+The most effective method available to detect *any* change to a
+program is through the use of digital signatures.  A "message digest"
+(much more mathematically secure than a checksum) is encrypted with
+the private key of a public key cryptosystem (the private key may be
+yours or someone you trust).  The verification process is then as
+follows:
+
+- -     recompute the message  digest
+- -     decrypt the encrypted message digest with the public key
+        of the "signer" - the public key need not be secret
+- -     compare the two
+
+If they match, the file is unaltered.  No one can recompute and
+attach a mailicious signature since only the signer holds the private
+key.  One paper by Maria Pozzo & Terry Gray of UCLA in January 1987
+describes in detail how an operating system can use digital
+signatures based on public key cryptosystems to execute only
+"trusted" programs.
+
+Since no one can "forge" a signature, it is possible that
+software developers can "sign" their programs, essentially taking
+responsibility for their contents.  This would provide a strong
+incentive for the publisher to ensure a program was clean before
+signing it.  Note: there are simple, effective ways to validate
+public keys before using them to verify signatures.
+
+There are inexpensive commercial products available now for DOS, Mac
+OS, UNIX and VMS that do exactly this.  They use a *secure* message
+digest algorithm which is 60 times faster than DES on 32 bit
+machines.  The digest size is 128 bits (anything less is *not*
+cryptographically secure - there are a number of papers on the
+subject).
+
+Simple uses of DES has even been shown to be unsafe for checksums; it
+is vulnerable to attacks based on the birthday paradox which says
+that as the number of *useful* message variants approaches the square
+root of the total number of possible checksums (2^64 with DES), the
+probability that an attacker can match a checksum with a useful
+modified message exceeds 50%.  Since (at least in DOS) you can add
+any number of bits to the end of a program without affecting its
+execution, programs are particularly vulnerable.
+
+Disclaimer: RSA Data Security designs, develops and markets the
+above mentioned software.
+
+Jim Bidzos
+
+------------------------------
+
+Date:    Sat, 04 Nov 89 09:17:38 -0500
+From:    dmg@lid.mitre.org (David Gursky)
+Subject: Re: Greg Gilbert's virus list (Mac)
+
+In Virus-L V2 #231, "Gregory E. Gilbert" <C0195%UNIVSCVM.BITNET@VMA.CC.CMU.EDU>
+writes about a list of Mac Viruses.  Greg's list contains several noteworthy
+errors.
+
+1 -- SNEAK is not a virus.  SNEAK is a term Robert Woodhead uses to denote code
+     that is suspicious, but is not part of any known virus.  For example, if
+     you run Interferon 3.1 on Tops 2.1, you will get a SNEAK warning because
+     of the way Tops is written.
+
+2 -- The "San Jose Flu" was an early name given to Scores.  Scores was first
+     detected by Dave Lavery over at NASA Headquarters here in Washington DC.
+     Two weeks after being found at NASA (thus the name "NASA Virus"), it was
+     found in the San Jose area (hence the name "San Jose Flu").  Both were
+     found to be the same virus.
+
+     Scores gets its name from a file it creates in the System Folder entitled
+     "Scores"
+
+3 -- While not a mistake per se, Greg should point out that the Dukakis Virus
+     is a virus directed at applications built with Hypercard (in Apple
+     paradigm:  Hypercard Stacks).  Dukakis presents no threat (in a strict
+     interpretation of the term) to other applications.  [In other words,
+     Dukakis can only infect Hypercard Stacks, but not applications such as
+     Excel, Versaterm, Canvas, and so on.]
+
+David Gursky
+Member of the Technical Staff
+Special Projects Department, W-143
+The MITRE Corporation
+
+------------------------------
+
+Date:    06 Nov 89 03:38:42 +0000
+From:    munnari!stcns3.stc.oz.AU!dave@uunet.UU.NET (Dave Horsfall)
+Subject: Re: Identify Ashar Virus
+
+In article <0007.8911032030.AA16863@ge.sei.cmu.edu>,
+    SHERIFF@steffi.acc.uncg.edu writes:
+
+| When we run Viruscan 0.7V42 on an infected disk, here is what we see:
+|
+| Disk B: contains 1 directories and 5 files.
+|  ld viruses found.  "
+|
+| Please also observe that the number of viruses found is oddly noted.
+
+Obviously the result of a `printf("... %ld viruses found.", ...)'
+without the `%'.  Doesn't do much to inspire confidence in the
+program's author, does it?
+
+On another note, I'm curious to learn just how generic the virus
+problem is.  We've seen the Internet worm, the DECNET worm, the
+Christmas Tree virus, many PC/Macintosh/Amiga viruses etc etc.
+
+Anyone seen a CP/M virus yet?  My home system is a CP/M-80 box,
+and I need to know whether to worry or not :-)
+
+- --
+Dave Horsfall (VK2KFU),  Alcatel STC Australia,  dave@stcns3.stc.oz.AU
+dave%stcns3.stc.oz.AU@uunet.UU.NET,  ...munnari!stcns3.stc.oz.AU!dave
+
+------------------------------
+
+Date:    06 Nov 89 11:06:05 +0000
+From:    wsinrn@urc.tue.nl (Rob J. Nauta)
+Subject: Re: Identify Ashar Virus
+
+In article <0007.8911032030.AA16863@ge.sei.cmu.edu> SHERIFF@steffi.acc.uncg.edu
+ writes:
+>When we run Viruscan 0.7V42 on an infected disk, here is what we see:
+>
+>" Found Pakistani Brain Virus in boot sector.
+>  Found Ashar Virus in boot sector.
+>
+>Disk B: contains 1 directories and 5 files.
+> ld viruses found.  "
+>
+>Please also observe that the number of viruses found is oddly noted.
+
+That's something I noticed too. On a disk with the pingpong virus, viruscan
+0.7V42 says (and some earlier versions did too)
+  Found pingpong virus in bootsector
+  Found pingpong virus-Version B in bootsector
+
+Disk A: contains 1 directories and xx files.
+  ld viruses found.
+The ld viruses found is an interesting bug... Also bootsector viruses seem ti
+be reported twice.
+
+Greetings
+Rob
+
+------------------------------
+
+Date:    Mon, 06 Nov 89 07:03:15 -0500
+From:    Kenneth R. van Wyk <krvw@SEI.CMU.EDU>
+Subject: Morris to be tried
+
+
+>From the Washington Post -- 5 November 1989:
+
+U.S. Judge Rules Computer `Worm' Case to Be Tried  (Associated Press)
+
+   SYRACUSE, N.Y. -- A federal judge ruled Friday that the case of
+a former graduate student accused of unleasing a "worm" program into
+thousands of computers nationwide can go to trial.
+
+   U.S. District Judge Howard Munson rejected pleas from the lawyer
+for Robert T. Morris Jr. to dismiss a felony computer-fraud charge
+on the grounds that information leaked by the Justice Department
+would prevent him from receiving a fair trial.  Munson set the trial
+to begin Nov. 29.
+
+   Morris's lawyer, Thomas Guidoboni, contended the Justice Department
+improperly revealed to a reporter before Morris was indicted in
+July that Morris had given a statement to prosecutors and that the
+department was considering whether he should be allowed to plead
+guilty to a misdemeanor.
+
+   In November 1988, a "worm" program that prosecutors said Morris
+created clogged a network of about 6,000 computer shared by colleges,
+research centers and the military.  It took several days to cleanse
+the network of the program, which multiplies out of control.
+
+   Morris, 24, of Arnold, Md., became the first person in the country
+to be charged criminally under the 1986 Computer Fraud and Abuse Act
+when he was indicted on a charge of gaining unauthorized access to
+computers and causing losses in excess of $1,000.  He faces up to
+five years in prison and a $250,000 fine if convicted.
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

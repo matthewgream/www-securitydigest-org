@@ -1,0 +1,839 @@
+
+Date: Thu, 11 Apr 91 23:12:39 EDT
+From: Terry Gauchat <trgauchat@tiger.waterloo.edu>
+
+You may direct enquiries to me, but my email is disappearing and
+(hopefully) changing to a new address soon (as yet unknown).
+
+                                            University of Waterloo
+                          CS492 : Social Implications of Computers
+                                             Term Research Project
+
+                                   Computer Assisted Vote Tallying
+          An Overview of the Problems, Implications, and Solutions
+                                                               
+                                             for Prof. Robin Cohen
+
+               prepared by Terry Gauchat, Toronto, Ontario, CANADA
+                                                    March 25, 1991
+Abstract
+
+This report discusses the implications of using computers for vote
+tallying for all levels of government elections and referendums.
+Numerous historical examples of problems with election systems are
+given (with some emphasis on the Computer Election Systems'
+_Votomatic_ product).  Also, a classification of types of voting
+systems and the key issues involved with their use is presented.
+Current standards documentation (particularly the U.S. Federation
+Election Commission's _Voting System Standards_) and legislation
+is briefly, but critically examined.
+
+I conclude that current computerized vote tallying systems are
+seriously deficient, but if most of the recommended standards are
+followed a good system can be implemented.  I wrap-up by
+recommending a specific design for a vote recording/tallying
+system.
+
+Table of Contents
+
+1. Introduction . . . . . . . . . . . . . . . . . . . . . . .    
+     1.1. Scope
+     1.2. Other Uses for Computers in Elections
+     1.3. Why Computerize the Voting Process?
+     1.4. Extent of Computerized Vote Tallying
+     1.5. The Trouble With CES
+     1.6. Overview of this Report
+
+2. Voting System Differences  . . . . . . . . . . . . . . . .    
+     2.1. Regular Paper Ballot
+     2.2. Computer-Readable Ballot
+     2.3. Direct-Recording Electronic
+     2.4. Degree of Count Centralization
+
+3. Key Issues & Their Implications  . . . . . . . . . . . . .   
+     3.1. Election Fraud
+     3.2. Count Errors
+     3.3. Vote Integrity
+     3.4. Privacy & Secrecy
+
+4. Standards & Legislation  . . . . . . . . . . . . . . . . .   
+     4.1. Responsibility
+     4.2. Federal Election Commission Standards Document
+     4.3. Government Produced Systems
+     4.4. Legislation
+
+5. Conclusions & Recommendations  . . . . . . . . . . . . . .   
+
+References  . . . . . . . . . . . . . . . . . . . . . . . . .   
+
+     =======================================
+
+1. Introduction
+
+1.1. Scope
+
+This report examines the implications of using computers for vote tallying for
+all levels of government elections and referendums.  Most of the examples cited
+are from the United States, which has rather complicated voting regulations for
+many types of elections.  This report focuses on the acts of presenting,
+completing, and counting ballots.  Automated systems are currently being used
+for each of these functions.  The report also refers to experimental
+innovations such as phone-in voting.
+
+1.2. Other Uses for Computers in Elections
+
+Besides the acts of ballot casting and counting, computers are being used in
+other parts of the election process.  In the early phases of campaigns,
+computer applications have been so successful that they are growing market
+niches.[1] Political candidates maintain extensive databases containing
+information about voters in their districts.  Political parties use computers
+to generate mailing lists to raise funds and support.  This type of targeting
+has been criticized because it allows politicians to tell _half-truths_ in
+customized letters which present only issues that are important to a particular
+constituent, while omitting unfavourable topics.  On the side of the voter, the
+_I VOTE_ system (Informed Voting Through Education) assists the user to match
+his/her views on issues with those of the candidates.  Voting based on I VOTE
+would "strip the campaign's rhetoric and television imagery, decrease voter
+apathy, and increase informed voting."[2] Computers are also being used to
+improve the registration and enumeration process.  Keeping accurate voters
+lists is important, since voters must be told which polls to vote at.  A
+logical extension to this idea is an on-line voter list system which would
+permit a voter to vote at _any_ polling place in a district (or, with respect
+to Federation of Students elections, at any faculty/residence voting station on
+campus).
+
+Of all the uses for computers in elections, computerized vote _tallying_ is the
+function of greatest concern in democratic societies.  Unfortunately, this
+process has also been plagued with the most problems and many have yet to be
+resolved.
+
+1.3. Why Computerize the Voting Process?
+
+Hand counting votes on ballots is a laborious and time-consuming process.  Due
+to human factors, the procedure is error-prone and many redundancies have
+always been included in manual count systems.  Experts agree that "the job of
+counting votes seems perfectly suited to the computer; it's a classic DP
+application involving the repetition of a simple task, adding up the number of
+marks or holes found on a stack of voting cards."[3] However, the task is
+actually a rather difficult computing problem due to the differences and
+complexities of each precinct's voting rules.  In addition to listing different
+candidates and issues to be voted on, there are often interlocking restrictions
+imposed.  There may be requirements for specific numbers of votes in a category
+depending on what was selected in another or on what political party the voter
+is registered in.  Effective security against fraud is also a necessary and
+complex component of a voting system.
+
+One cynic said,
+
+     "Why would anyone want to computerize voting?  Doing so
+     only increases the risk of fraud, by reducing the number
+     of people involved in the process. (_The best deterrent
+     to crime   witnesses._)  Elections don't happen often
+     enough that saving money can count for much   in fact, I
+     believe around here ballot counters are unpaid
+     volunteers.  Rapidity of the count?  Who cares whether
+     the results are known in two hours or two days?  Sounds
+     like yet another scheme to enrich computer companies at
+     the public's expense."[4]
+
+Notwithstanding this opinion and admitting that the vote tallying process is
+inherently complex and in danger of fraudulent manipulation, it can be shown
+that computers can do more than just increase the speed of vote tabulation.
+Although care must be taken, customized software may be written to make the
+vote casting and counting process _user-friendly_ and _bullet-proof_ due to the
+power and flexibility of technology available today.  Also, computers can
+assist with the election auditing process (e.g., automatically compare
+consolidated vote counts with total number of voters in each precinct) by
+faithfully maintaining more audit trails than would be manageable with manual
+systems.  However, it is important that the government does not implement such
+technology without ensuring that it is trustworthy.  Since the old manual
+system was understandable, a large number of human checks and balances
+prevented problems.  Now, "technical skills are involved in the vote-counting
+process and this alienates most of the poll workers from the results.  An air
+of mystery surrounds the computer, and in at least one state, workers
+_rubber-stamped_ the results without examining them."[5]
+
+1.4. Extent of Computerized Vote Tallying
+
+According to the U.S. Federal Election Commission, in the 1984 presidential
+election, 65% of all votes cast were tabulated by computer[6] (not including
+computer assisted counting of normal paper ballots, or the use of purely
+mechanical lever-type voting machines still used at that time by about 30% of
+American voters).  Less than 10% of the votes were cast using pencil mark-sense
+technology (the only system used minimally in Canada
+ see Toronto 1988 civic elections), and less than 5% were cast
+using electronic direct recording systems.[7]  Nine out of twenty
+votes (44.2%) were cast using the _Votomatic_ pre-scored punch
+card system and counted with equipment from one company, Computer
+Election Systems (bought in 1986 by the Business Records
+Corporation, the sole and wholly owned subsidiary of Cronus
+Industries, Dallas)[8].  It was estimated that Cronus/BRC/CES
+held between 60% and 80% of U.S. market share in voting
+systems,[9] much to the dismay of Jim Mattox, Texas attorney
+general who exclaimed "One thing is clear: one company in the
+United States should not have as big an impact on elections as
+this company has got ... The right to vote is too sacred."[10]
+
+In some areas where the choice must be permitted by law, as many as 30% of
+voters have requested regular paper ballots in preference to the
+computer-readable alternative.[11] Nevertheless, the use of computerized vote
+tallying systems is likely to increase (nearing the 100% level), though it is
+unlikely that the Cronus/BRC/CES Votomatic system will continue to be used.
+
+1.5. The Trouble With CES
+
+A report to the Illinois Board of Elections in September 1985 revealed that 28%
+of the voting systems tested before elections contained errors.[12] General
+problems with computerized vote tallying systems, including hardware
+limitations and other inherent difficulties will be discussed later in this
+report.  While researching material for this project, however, it became
+evident that most of the anguish experienced with respect to automated voting
+is directly attributable to the widespread use of products from _Computer
+Election Systems_ (CES, later bought by Cronus Industries' Business Records
+Corp., BRC), as described above.  This company has been the target of numerous
+lawsuits and accusations of election fraud.
+
+A 1980 evaluation of CES's Votomatic system said the system "is based on
+seriously outmoded computer technology"; it was "a security nightmare, open to
+tampering in a multitude of ways"; that "tampering with the tabulation element
+is not only easy, but virtually encouraged"; and "the tampering that could be
+performed by an imaginative and determined individual is only hinted at."[13]
+Four examiners recommended that the state of Pittsburg deny the system
+certification this recommendation was ignored, and hence, Votomatic continued
+to be used.[14] An Indiana consulting firm analyzed CES's program on behalf of
+one of the losing candidates who is suing CES.  The problems they found
+include:
+     -    The translation between the Hollerith punch card
+          code and characters was nonstandard.  The 1971 NCR
+          system which the software ran on did not use
+          standard EBCDIC.
+     -    The contents of memory were continually being
+          redefined.  Numerous variables and fields were
+          overlaid in memory.  The same memory locations were
+          re-used for the vote counts of different races.
+     -    There was a total lack of structure.  The program
+          contained no PERFORM UNTIL (DO-loop) statements but
+          had numerous GOTOs.
+     -    The program interacted heavily with the operator,
+          who can operate the console switches to examine and
+          modify any part of the memory or program after each
+          set of data is tallied.  The program made it easy
+          for the operator to turn off error logging and
+          audit trails.
+     -    There was heavy use of control cards in the data
+          deck to redefine data fields, raising the
+          possibility that a _knowledgable_ voter could punch
+          a control card and drop it into the ballot envelope
+          to change the program's processing of election
+          results.
+     -    CES sends _updates_ to election personnel before
+          each election.
+     -    The program did not correctly count _crossover
+          votes_, in which, for example, a voter punches a
+          vote for a straight Democratic ticket and punches
+          votes for several individual Republicans.  Before
+          an election in West Virginia, newspaper publicity
+          specifically said that such votes were allowed, yet
+          the program failed to count them.[15] 
+This list of problems does not include deficiencies in the Votomatic punch
+cards and booklet system which are described later in this report.  Nearly
+every precinct which used the CES product and experts who studied it discovered
+additional problems.[16]
+
+That these systems were used extensively and may continue to be used is
+incredible.  CES's _first attempt_ lasted far too long.  The fortunate result
+of these publicized problems is persistent demand for strict standards for all
+future voting systems.
+
+1.6. Overview of this Report
+
+The following sections of this report examine computer assisted vote tallying
+in more detail.  First, the distinct varieties of voting systems are described,
+as categorized on the basis of ballot type and amount of count centralization.
+Next, the four key social issues with respect to computerized vote tallying are
+explained, along with a look at the implications of these issues.  Finally, an
+examination of professionally recommended standards and legislation is
+presented, followed by my own conclusions on this topic.
+
+2. Voting System Differences
+
+Voting systems can be categorized based on the type of ballot used (if any) and
+the amount of count centralization in the polling hierarchy.
+
+2.1. Regular Paper Ballot
+
+Historically, the most common form of secret ballot is a simple slip of paper
+listing the candidate's names or referendum items, each with a box (or two
+boxes: _yes_ and _no_) where the voter can place a handwritten 'X' to indicate
+his vote.  These ballots are read and counted manually by poll workers who
+often employ redundancy checks.  These precinct poll workers now generally use
+some type of computer to assist with the tabulation (e.g., spreadsheet
+software), or to consolidate results from several districts into a total count.
+With _computer assisted tabulation_, the most common problem is data entry
+error.  For example, in September 1988, "a computer entry error apparently
+increased the vote count of the incumbent Lieutenant Governor of Delaware.  The
+correct number of votes in one district was 28 but the operator keyed in 2828
+by mistake."[17]
+
+2.2. Computer-Readable Ballot
+
+In order to increase the efficiency of counting votes, replacing the human
+reader with an automated reader is one possible solution.  The ballot should be
+easy to complete by voters.  It should also be human interpretable in order to
+allow the voter to check his vote and provide the basis for a manual recount.
+The ballot/reader combination must also be able to report votes consistently
+and accurately.  Unfortunately, computer-readable ballot systems have been
+plagued with problems due to poor design, lack of voter education, incomplete
+procedure guides and contingency plans, and insufficiently advanced technology.
+
+Computer-readable ballots can be classified into three categories: (a)
+Mark-Sense: The ballots used are printed with the choices along with a bubble
+which must be filled in with a pencil to indicate a vote.  Mark-sense ballots
+are like the ticket number selection system used for Lotto 6/49 type lotteries.
+This sort of ballot was used in the Toronto November 1988 civic (municipal)
+elections, but not without significant problems.  The machines, purchased at a
+cost of $1.6 million, failed to read 1,408 ballots due to improperly printed or
+cut cards.[18] The system, supplied by the (U.S.) Business Records Corporation
+(BRC/CES), was overly sensitive: "Any variance of 25 thousandths of an inch
+would cause the machine to reject a ballot."  Officials decided to recount all
+142,107 ballots by hand as well as by machine (the rejected ballots were not
+separated during the first count).[19]
+
+(b) Pre-Scored Punch Card: These ballots (popularized by CES in the U.S.) may
+be similar to the mark-sense cards, with the only difference being that the
+voter punches out a pre-scored hole in the card rather than marking it with a
+pencil.  The primary problem with these ballots is the question of how to count
+cards improper punches ("The punched-out scraps have come to be called _chad_
+... Sometimes, a chad does not break completely free from the card and becomes
+a _hanging chad_, and sometimes voting-holes are merely indented by the voter's
+stylus."[20]).  Even when examined manually it may be difficult to interpret
+the voter's intentions, and the chad present on a card may actually change
+between count and recount.  "The inexact science of divining what the voter
+intended ... has been called _chadology_."[21]
+
+In order to allow more flexibility, the Votomatic system uses generic cards
+which are inserted into a booklet with a page listing the items to be voted on
+and a plastic template exposing the holes that may be punched.  These booklets
+add to the problem, as "the ballot pages could easily be shuffled or replaced
+[and] blank punch-card ballots were easy to obtain."[22] In the case of
+Votomatic, an additional security failure exists because the same reader used
+for counting ballots can be used to read control cards.
+
+(c) Machine Punched Card: To avoid the chad problems of a pre-scored ballot
+card, voting stations may provide normal unpunched cards and a type of
+key-punch machine.  The voter prepares the card by inserting it into the
+machine and pressing appropriate keys to vote.  This increases the likelihood
+of the ballot being computer _readable_.  The punched card, however, should
+still be human readable as well.  To my knowledge, this type of key-punch
+system has not been used extensively.
+
+2.3. Direct-Recording Electronic
+
+Direct-recording (ballot-less) voting systems have been in use for nearly a
+century, ever since the invention of the lever-type mechanical counting
+machines invented prior to 1900 and manufactured by the Automatic Voting
+Machine Company, or its rival, the Shoup Voting Machine Company.  By 1928, a
+lever machine was used by about one of every six American voters.[23] These
+machines keep count by using gears for ones, tens, hundreds, etc., and can
+display or print the total for a voting official.  Now, these machines are
+being replaced with fully electronic equivalents (referred to as DRE machines).
+Though these may be fairly unsophisticated devices, at least one company
+(Nixdorf Computer Corporation, Germany) includes TV displays with touch
+sensitive screens.  The screens clearly display the choices to the voter and
+simplify the selection process.[24] Supposedly, the voter can be immediately
+warned of _illegal_ voting combinations and given a chance to correct the
+displayed ballot.
+
+There are two significant drawbacks to direct-recording electronic systems.
+First, since there is no physical ballot involved, _real_ recounts are
+impossible this can be disastrous if memory, tape, or disk failures occur.
+Secondly, the voter must trust that the machine recorded his vote properly and
+that it is not subsequently altered.  According to Roy Saltman of the (U.S.)
+National Bureau of Standards' Institute for Computer Sciences and Technology,
+"the fact that the voter can see his or her choices on a display, or even
+receives a printout of the choices made, does not prove that those were the
+choices actually recorded by the machine."[25]
+
+2.4. Degree of Count Centralization
+
+The voting process involves a polling hierarchy.  Voters vote at voting
+stations at precincts (polling places) which report to an election district
+office (to give a district total), and these in turn report to another central
+location (ward office?).  The actual vote tallying CPUs may be located at any
+or several of the stages, and count consolidation between stages can be done
+either by paper or electronic (phone and modem) reporting.  For example,
+mark-sense and punched-card systems often require the ballots to be locked in
+boxes at the precincts and then trucked to the central computer facilities for
+a designated set of precincts.  Conversely, DRE machines may contain
+microcomputers which maintain a local count, or they could be terminals
+networked to a precinct computer or a more centralized and powerful election
+district computer.  When transferring counts or ballots to the central location
+for consolidation, security must be employed to protect the results from
+tampering (e.g., electronic transfers should be encrypted).
+
+Full centralization and fully electronic consolidation of poll results is
+apparently the most efficient, since it requires none or minimal computer
+hardware at the precinct level and limits technician requirements.  However,
+this increased efficiency is acquired at the cost of public trust.  According
+to Eva Waskell, who organized a two-day conference in 1986 on the potential of
+computer fraud in voting, "the centralized counting system takes control away
+from precinct poll workers who would otherwise provide an additional level of
+control.  Furthermore, centralization makes rigging easier a single computer
+operator can be bribed rather than the dozens or hundreds of poll workers
+involved in ordinary elections."[26] Election officials like Audrey Piatt,
+Virginia, are also very cautious about central count systems: "If we ever did
+use a central counting procedure and the Virginia legislature is a long way
+from allowing the transportation of uncounted ballots you can bet there would
+be a very stringent test to check it before the election."[27]
+
+Extensions to the concept of count centralization may permit voters to vote
+from any polling place, or even from home via a touch-tone phone, computer
+terminal, or fax machine.  The fundamental problem will continue to exist
+essentially, centralization increases the amount of trust that must be placed
+in the computer system, as the number of audit trails (e.g., sub-totals for
+precincts, sub-districts, etc.) are reduced significantly.
+
+3. Key Issues & Their Implications
+
+3.1. Election Fraud
+
+The public and political candidate's number one concern with respect to new
+voting procedures, is election fraud.  Studies of computer crime and computer
+limitations have shown that "no computer program can be made completely secure
+against fraud."[28] As has been shown earlier, computerized voting systems to
+date (particularly, the CES/BRC products) have had very little security and
+minimal audit procedures.  The running systems were open to tampering.  Methods
+of electronic ballot box stuffing are numerous, and include the use of software
+with hidden code designed to alter vote counts only after initial _standard_
+testing, the use of a computer console or control cards to change count
+variables during a tally, and/or modification of the card reader or
+interception of the electronic transmission of ballot data.
+
+In many cases a detailed audit trail and random manual recounts can help detect
+fraud (except for fraud involving physically modified or replaced ballots!).
+Election fraud concerns have encouraged the development of stricter testing,
+auditing, and run-time security standards.  Officials wish to be able to
+examine source codes of proprietary software which is normally kept secret in
+order to retain Trade Secret protection.  Political candidates which have
+financial relationships with producers of voting systems are likely to be
+suspected if fraud occurs.
+
+3.2. Count Errors
+
+Also due to inadequate audit procedures, it is difficult to both _detect_ tally
+errors and then _determine_ if the error is entirely innocent or deliberately
+and fraudulently caused.  The large numbers of errors that have been detected
+cause speculation that a proportionally greater number probably remain hidden.
+It has been stated by reviewers of computer tallied election results that "the
+data provided are insufficient to demonstrate the correctness of the results
+provided."[29] Stories of mysterious election results are common.  For example,
+a review of 1984 election counts showed that President Reagan received 159
+votes in the Trinity River Bottom precinct this Texas district was inhabited
+only by squirrels, rabbits, and fish.  Terry Elkins, a political researcher
+said "The computer invented those numbers no one lives there, so the fish must
+have voted."[30]
+
+Errors may be caused by faulty hardware, software, or input data.  Faulty input
+data results from mistakes made by voters or poll officials when completing
+ballots or consolidating totals.  It is unreasonable to demand that an election
+system be error free, rather, controls should be incorporated which help detect
+and trace errors.  For example, the system should compare the number of votes
+cast with the sum of the total votes for each candidate this implies that
+_undervotes_ (choices left blank) must also be tallied.  Once again, the
+ability to recount ballots manually is an important last resort to guarantee
+that a reliable result can be reported.  This assumes that at least a human
+readable error-free ballot is created and securely stored.
+
+3.3. Vote Integrity
+
+The concept of vote integrity includes ensuring that the vote count is safe
+from fraud and undetected errors.  In addition to these two factors, voting
+systems must also ensure that each voter does not lose his voting right due to
+a lost, rejected, or miscounted ballot.  Computer storage failures in DRE
+systems could wipe out hundreds of votes in an instant.  Bugs in voting systems
+have caused ballots in certain configurations to be disallowed, even though
+such configurations were publicly declared legal according to local
+regulations.  Cries of discrimination occurred when the majority of votes
+rejected in one election came from wards where most of the voters are
+black.[31]
+
+Many of these problems occur because the American election system is inherently
+complex.  Voting systems must be able to properly interpret votes which involve
+such intricacies as write-in candidates, cross-over endorsements, split
+precincts, straight party or group voting, N of M selection, undervoting,
+multi-card ballots, and more.[32]
+
+Careful system design, backup procedures, and complete testing of all legal
+vote configurations can help to guarantee vote integrity and the preservation
+of the voting right.  Voting systems should separate (or store) ballots
+uncounted for any reason, so that they may be examined by an election official.
+Voting systems must appear trustworthy to the average voting citizen and be
+usable with minimal education.  A DRE system in Holland 1986 was questioned
+because "several voters were confused by the layout of the buttons and
+inadvertently chose the wrong candidate by pushing the button at the wrong side
+of the candidate's name."[33] The problem of interpreting hanging-chad on
+Pre-Scored ballot cards (discussed above) is a similar threat to vote
+integrity.  These problems may be attributed to _voter error_, but in any case,
+misinterpretation of the voter's intentions is serious.
+
+3.4. Privacy & Secrecy
+
+In most countries, the right to vote is qualified by the right to have a secret
+ballot.  While voting, a citizen must have privacy so as not to feel coerced
+into voting a particular way, and afterwards, his security is ensured because
+the ballot cannot be traced back to him.  Secrecy, however, makes detailed
+auditing difficult, since it is impossible to verify a ballot against the
+voter's intentions after the election.
+
+Developing computerized voting systems which ensure privacy and secrecy is not
+difficult.  Convincing the public that this is so, however, presents a problem.
+Especially if computers are used for both enumeration and voting, the ability
+for the system to permanently link voter and vote becomes obvious.  Attempts to
+implement _phone-in_ voting are doomed to failure because of the necessity of
+tracking voters (to ensure only one vote per registered citizen), the public's
+awareness of phone tracing technology, and the need for each family member to
+vote in privacy (only one person is allowed in a voting booth, but many may
+share the home phone).
+
+Voter education may help increase confidence that ballots are kept secret.  The
+audit problem may be circumvented with the use of a _numbered receipt system_,
+in which the voter receives a copy of his vote which can be compared to a list
+published after the election.  Discrepancies could be reported through
+anonymous receipt drop-off.[34]
+
+4. Standards & Legislation
+
+4.1. Responsibility
+
+It makes sense that the responsibility for ensuring that computerized vote
+tallying systems are trustworthy lies with the government.  Before each state,
+province, or other type of voting district purchases and implements a
+computerized vote tallying system, supposedly it is examined and _certified_ by
+local election administrators.  Clearly, these examinations have not been
+sufficient and more stringent, nation-wide standards are required.  In the
+United States, the task of developing standards has been brought to the
+National Bureau of Standards (who previously prepared computer systems
+standards for the U.S. General Accounting Office), and the Federal Election
+Commission, National Clearinghouse on Election Administration.  These
+institutions hired consultants to examine the issues and make specific
+recommendations.  In addition, concerned citizens such as Ms. Waskell, feel
+that "the Federal Government, using election powers outlined in the
+constitution, should mandate that all vendors conform to NBS standards."[35]
+
+
+4.2. Federal Election Commission Standards Document
+
+In January (revised April) 1990, the National Clearinghouse on Election
+Administration (a department of the U.S. Federal Election Commission) published
+a 300 page document entitled _Voting System Standards_ (developed by consultant
+Robert Naegele).  The major portion of this document is entitled "Performance
+and Test Standards for Punchcard, Marksense and Direct Recording Electronic
+Voting Systems".  The document also contains sections on standards
+implementation, system escrow requirements, and evaluation of independent test
+authorities.
+
+According to the preface,
+     "These standards specify general performance criteria,
+     as well as detailed test criteria.  Essentially, they
+     address what a voting system should reliably do, not how
+     the system should meet this requirement.  It is not the
+     intent of the standards to impede the design and
+     development of new, innovative equipment by vendors.
+     Furthermore, the standards ought not force vendors to
+     price their voting systems out of the range of the local
+     jurisdictions."[36]
+
+The document deals mainly with the common sense items that vote tallying
+systems to date have failed to properly provide.  Included are minimal security
+specifications (procedures for preparation, election conduct, and poll
+closing), specific _always-on_ audit reports, electronic consolidation function
+descriptions, documentation requirements, multi-level and independent party
+testing procedures (size of test runs, comparing test results between runs and
+between product upgrades), structured coding guidelines and limitations
+(high-level language must be used), etc.  Specific size and printing standards
+for computer-readable ballot cards are given, but very little is mentioned on
+the design of the user interfaces for DRE terminals.
+
+Some of the specifications given seem overly detailed and restrictive (and
+hence are likely to be ignored if a choice is given).  Hardware test criteria,
+for example, includes drop test descriptions which are difficult to understand.
+For example, instructions for one test contained the following condition:
+     "If the horizontal distance from the centre of gravity
+     of the test item to the pivotal axis formed by the two
+     supported corners is appreciably greater or less than
+     half the distance between the pivot axis and the
+     elevated edge, then the height to which the unsupported
+     edge is to be raised shall be adjusted so that the
+     product of the vertical distance travelled by the centre
+     of gravity from release to impact and the weight of the
+     test item is maintained at 200 foot-pounds."[37]
+These details increase the size of the standards document considerably, and
+thus the document does not focus on what appear to be the key issues (presented
+earlier).
+
+The use of _escrow agreements_ is recommended.  The software producer should be
+required to provide a copy of the source and object code to be held by an
+escrow agent in case examination is required at a later date.  Ideally, the
+escrow agent should immediately verify that the software meets the FEC
+standards.  Along with sample escrow agreements, the document describes escrow
+procedures, such as how to confirm that escrow copies match production copies.
+
+This document (nor any other official document according to my knowledge) makes
+no specific recommendations on DRE systems versus computer-readable ballots.
+Extensive training of election adminstration in computer technology and
+security issues was recommended, however.
+
+I have been unable to find any equivalent or similar voting system standards
+documentation in Canada perhaps the U.S. FEC document can be used here as a
+starting point.
+
+4.3. Government Produced Systems
+
+Some people believe that the government should actually commission and
+supervise the development of a computerized vote tallying system, and
+subsequently makes its use mandatory for all elections.  While the cost would
+be tremendous, this might ensure that a proper system is put in place and the
+software would be completely available for public inspection.  However, the
+government prefers to allow free enterprise and competition to develop the best
+product.  Considering that election regulations vary significantly from state
+to state, the use of one system nation-wide is probably infeasible.
+
+4.4. Legislation
+
+As mentioned above, many people think that the FEC or NBS standards should be
+made compulsory.  Presently, however, the adoption of these standards is
+voluntary, and each state may decide which specific set of requirements to
+legislate.
+
+Some legislation is important in order to prevent conflicts with other laws.
+Escrow agreements, for example, can conflict with Trade Secrecy laws.  Texas
+has implemented the following law:
+     "Copies of the program codes and the user and operator
+     manuals and copies or units of all other software and
+     any other information, specification, or documentation
+     required by the Secretary of State relating to an
+     approved electronic voting system and its equipment must
+     be filed with the Secretary.  The program codes and all
+     other software on file with the Secretary of State under
+     this section are not public information."[38]
+
+Some regulations might actually do more harm than good.  Recounts of Toronto's
+1988 mark-sense ballots were made difficult by a law which states that all
+ballots must be read in the same fashion as on election day i.e., by the
+machines which may be faulty![39] Other regulations permit physical ballots to
+be destroyed after as few as 61 days after the election.[40]
+
+To address the concern of inauditability of ballot-less DRE systems, Kurt Hyde
+had the following resolution passed at the 1988 New Hampshire State Republican
+Convention,
+     "Computerized voting equipment must either produce a
+     manually recountable ballot for the voter's inspection
+     prior to electronically casting the voter's ballot or
+     use as its input a ballot which can be used in a manual
+     recount."[41]
+
+In general, legislation is, as usual, far behind the capabilities and problems
+of the technology.  Hopefully, the NBS and FEC will keep their standards
+documentation up-to-date and encourage the use of these guides nationally.  It
+is likely that a local government with nowhere else to turn will choose to use
+these standards as certification criteria.
+
+5. Conclusions & Recommendations
+
+This study has revealed that current computerized vote tallying systems are
+seriously deficient in addressing the issues of security against fraud,
+assurance of reliability, and maintenance of vote integrity.  The widely used
+Votomatic system from CES/BRC is the ultimate _bad example_, as it clearly
+demonstrated the bulk of the problems.
+
+The FEC document, _Voting System Standards_, is a good first-attempt at
+providing strict guidelines for computerized vote tallying systems.  Although
+its emphasis on trivial details lessens its focus on some of the more important
+issues, it provides sufficient minimal specifications for a much safer voting
+product than exists today.  It is recommended that jurisdictional governments
+(including Canadian) voluntarily adopt as many of these standards as
+applicable.  More work by the NBS and FEC is required, however.  Specifically,
+a recommendation between DRE and computer-readable ballot systems would be
+useful, and the innovation of telephone voting should be addressed.
+
+In my opinion, with technology available today, the best voting system might be
+as follows:[42]
+     -    It should be a DRE type system, employing a
+          touch-sensitive display screen, in order to allow
+          _user-friendly_ ballot presentation and subsequent
+          checking for conformity to voting regulations.
+          Every voter must at least press the CAST button on
+          this system (to count non-votes).
+     -    When the voter presses the CAST button, the system
+          immediately checks the validity of the vote and
+          displays error messages as appropriate.  The user
+          may then correct his/her ballot.
+     -    If the ballot is correct, it is printed on official
+          paper in a form that is both human and
+          machine-readable, and displayed in a window, where
+          it may be examined by the voter.  The voter may
+          choose to accept this ballot, in which case it
+          falls into a secure ballot box, else it falls into
+          a rejected ballot box and the voter may start over.
+     -    Accepted ballots are recorded electronically as in
+          current DRE systems (tally maintained and reported
+          locally, and also consolidated electronically).
+     -    The paper ballots are available for random auditing
+          (samples are selected, counted, and matched with
+          the DRE counts), and official recounts.  Counts of
+          these paper ballots can be done by either/both
+          computer-readers and human-readers.  Perhaps a
+          serial numbered copy of this paper ballot may be
+          given to the voter for additional safety.
+     -    Applicable standards from the FEC document would be
+          incorporated into this system (software design,
+          run-time security, minimum audit reports, etc.).
+     -    This system should be used as widely as possible,
+          in order to minimize voter re-education
+          requirements.
+
+What I am suggesting is an easy to use system with a secure paper backup
+procedure.  Of course, certain details have yet to be considered for example,
+we must make sure that the paper ballots cannot be tampered with while being
+counted.
+
+In conclusion, regardless of the opinions of certain cynics, I believe that
+computers can be extremely useful in the election process and that a _good_
+voting system is possible.  The bad experiences of the past should not be
+allowed to prohibit the use of technology in the future.  Hopefully we have
+learned that with functions as important as the unalienable right to vote, the
+social implications of using computers must be considered first, and then great
+care must be taken when implementing the automated systems.
+
+     =======================================
+
+NOTES
+
+     [1] Karen A. Frenkel, "Computers and Elections" in
+Communications of the ACM, Oct 1988, p. 1176.
+     [2] Patrick Flanagan, "Computer-Aided Voting: Big Help or Big Brother?" in
+Computer Decisions, Oct 1988, p. 60-64.
+     [3] John W. Verity, "Machine Politics" in Datamation, 1 Nov 1986, p. 54.
+     [4] Andrew S. Beals, "Why would anyone want to computerize voting?" in
+_Forum on Risks to the Public in Computer Systems_ (electronic newsgroup
+"comp.risks"), 19 Mar 1986, p. 18 [page numbers for _Forum..._ refer to page
+numbering in "Articles From Usenet COMP.RISKS Archives" compiled by Terry
+Gauchat.
+     [5] Tom Forester, and Perry Morrison, _Computer Ethics_, The MIT Press,
+Cambridge Massachusetts, 1990, p. 104.
+     [6] Gregory Witcher, "Use of Computers in Elections Raises Security
+Questions" in _Boston Globe_, 23 Aug 1986, p. 17.
+     [7] Ronnie Dugger, "Annals of Democracy: Counting Votes" in
+_The New Yorker_, 7 Nov 1988, p. 43.
+     [8] Ibid., p. 42.
+     [9] Ron Newman, "Computerized Voting No Standards and a Lot of Questions"
+[Summary of talk by Eva Waskell, computer programmer, independent science
+writer, on potential of fraud in voting.] in _Forum..._, 14 Apr 1986, p. 34.
+     [10] Dugger, p. 45.
+     [11] Ibid., p. 57.
+     [12] Forester et al., p. 105.
+     [13] Willie Schatz, "Yes, Virginia, There is an Answer" [Quoting Michael
+Shamos.] in _Datamation_, 1 Nov 1986, p. 60.
+
+     [14] Ibid.
+     [15] Newman, p. 35.
+     [16] See Dugger.
+     [17] Forester et al., p. 105.
+     [18] Sean Fine, "Machine Misses 1,408 Votes. Toronto Clerk Wants Recount"
+in _The Globe & Mail_, 19 Nov 1988.
+     [19] Mark Brader, "Troubles with Automatic Vote Counting in Toronto"
+[referring to _Toronto Star_, 22 Nov 1988] in _Forum..._, 22 Nov 1988, p. 12.
+     [20] Dugger, p. 54.
+     [21] Ibid.
+     [22] Ibid., p. 58.
+     [23] Ibid., p. 46.
+     [24] Ibid., p. 108.
+     [25] Ibid.
+     [26] Forester et al., p. 104.
+     [27] Schatz, p. 60.
+     [28] Dugger, p. 45.
+     [29] Ibid., p. 105.
+     [30] Witcher, p. 17.
+     [31] Charles Youman, "More on Missouri Voting Decision" [Quoting from
+article "Decision Threatens Punch-Card Elections" in _St. Louis Post-Dispatch_,
+24 Dec 1987] in _Forum..._, 6 Jan 1988, p. 25.
+     [32] National Clearing House on Election Administration, Federal Election
+Commission (NCH/FEC, U.S. Government, Washington D.C.), Robert J. Naegele,
+consultant, "Performance and Test Standards for Punchcard, Marksense and Direct
+Recording Electronic Voting Systems" in _Voting System Standards_, 1990, p. 97.
+     [33] Eke van Batenburn, "Confusing Input Request in Automatic Voting
+Systems" in _Forum..._, 3 Dec 1989, p. 24.
+     [34] Mike McLaughlin and others, "Voting Receipts" in _Forum..._, 4 Mar
+86, p. 43.
+     [35] Newman, p. 37.
+     [36] NCH/FEC, p. xvii.
+     [37] Ibid., p. 75.
+     [38] Ibid., Section 3., p. 13.
+     [39] Fine.
+     [40] Newman, p. 37.
+     [41] Kurt Hyde, "NH State Republican Convention Computerized Voting
+Standard Resolution" in _Forum..._, 21 Nov 1988, p. 50.
+     [42] Based on ideas presented by Tom Benson, Kurt Hyde, Jim McGrath,
+others in _Forum..._, Mar 1986, pp. 44-51.
+
+     =======================================
+
+REFERENCES
+
+Dugger, Ronnie, "Annals of Democracy: Counting Votes" in _The New
+     Yorker_, 7 November 1988, pp. 40-108.
+
+Fine, Sean, "Machine Misses 1,408 Votes. Toronto Clerk Wants
+     Recount" in _The Globe & Mail_, 19 November 1988.
+
+Flanagan, Patrick, "Computer-Aided Voting: Big Help or Big
+     Brother?" in _Computer Decisions_, October 1988, p. 60-64.
+
+Forester, Tom, and Morrison, Perry, _Computer Ethics_, The MIT
+     Press, Cambridge Massachusetts, 1990, pp. 104-7.
+
+Frenkel, Karen A., "Computers and Elections" in _Communications of
+     the ACM_, October 1988, pp. 1176-83.
+
+Hunter, Nell, "System Helps Atlanta County Keep Pace with its
+     Voters" in _Government Computer News_, 7 November 1988,
+     p. 85.
+
+National Clearing House on Election Administration, Federal
+     Election Commission (U.S. Government, Washington D.C.),
+     Naegele, Robert J., consultant, _Voting System Standards_,
+     (includes "Performance and Test Standards for Punchcard,
+     Marksense and Direct Recording Electronic Voting Systems", "A
+     Plan for Implementing the FEC Voting System Standards",
+     "System Escrow Plan for the Voting System Standards Program",
+     and "A Process for Evaluating Independent Test Authorities"),
+     1990.
+
+Neumann, Peter G., "Risks in Computerized Elections" in
+     _Communications of the ACM_, November 1990, p. 170.
+
+Saltman, Roy G., "Accuracy, Integrity and Security in Computerized
+     Vote-Tallying" in _Communications of the ACM_, October 1988,
+     pp. 1184-93.
+
+Schatz, Willie, "Yes, Virginia, There is an Answer" in
+     _Datamation_, 1 November 1986, pp. 60-1.
+
+Tchashchin, Kirill, "Moscow: Bid Awarded for Computerized Voting
+     System in Perm. (Dzerzhinsky Industrial Association Wins
+     Contract with Supreme Soviet)" in _Newsbytes_, 12 April 1990.
+
+Till, Larry, "Automated Voting System Under Fire (Optech III-P,
+     from Business Records Corp.)" in _Computing Canada_, 5
+     January 1989, p. 9.
+
+Various, _Forum on Risks to the Public in Computer Systems_
+     (electronic newsgroup "comp.risks"), moderator Neumann, Peter
+     G.  See also: "Articles From Usenet COMP.RISKS Archives"
+     compiled by Gauchat, Terry, 1986-1990.
+
+Verity, John W., "Machine Politics" in _Datamation_, 1 November
+     1986, pp. 54-61.
+
+Witcher, Gregory, "Use of Computers in Elections Raises Security
+     Questions" in _Boston Globe_, 23 August 1986, p. 17.

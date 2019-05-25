@@ -1,0 +1,631 @@
+VIRUS-L Digest   Monday, 17 Aug 1992    Volume 5 : Issue 140
+
+Today's Topics:
+
+Macintosh virus rumors (Mac)
+Re: Strange MBR (PC)
+Re: f-prot 2.04c ??? (PC)
+windows multitasking and viruses (PC)
+Re: I Need an unattended scanner (PC)
+help, high weirdness (PC)
+Re: MS-DOS 6.0 with Anti-Virus ? (PC)
+Re: I Need an unattended scanner (PC)
+Re: 4096 (frodo) false alarm? (PC)
+F-Prot 2.04c (PC)
+Waldo ?? (PC)
+Re: Jerusalem virus (CVP)
+Re: Floptical Disk Update
+"Viruses Get the Boot", Information Week 10 Aug. pg 15 (PC)
+Re[1]: Windows, Multitasking, & Viruses (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 17 Aug 92 14:07:06 -0400
+From:    Kenneth R. van Wyk <krvw@cert.org>
+Subject: Macintosh virus rumors (Mac)
+
+Over the weekend, numerous reports of a potential new Macintosh virus,
+(tentatively) named "Aliens 4" have been floating around the networks.
+After speaking with the originator of the report and having received
+numerous (5 and counting, so far) cross-postings of the preliminary
+reports, I would like to stress the need for calm, rational response
+to this problem.  A couple of critical facts:
+
+o The virus, if indeed it is a virus, has not yet been isolated and
+  analyzed.
+o As such, the preliminary reports were based on rough, empirical
+  observations, and may well be incorrect and/or incomplete.  At the
+  very least, these preliminary reports are not sufficient to
+  disinfect any systems.
+
+I am sure that we (as a community) are all grateful for the work that
+is being done to isolate and analyze this virus, but until more
+information is known about it, we must be careful to not jump to
+conclusions, since this only serves to promote panic.
+
+Everything posted about the virus until it has been properly analyzed
+is strictly conjecture.  For this reason, I will NOT be re-posting any
+of the preliminary bulletins to VIRUS-L/comp.virus until the virus has
+been analyzed.
+
+Calmly,
+
+Ken
+
+Kenneth R. van Wyk
+Moderator VIRUS-L/comp.virus
+Technical Coordinator, Computer Emergency Response Team
+Software Engineering Institute
+Carnegie Mellon University
+krvw@CERT.ORG       (work)
+ken@THANG.PGH.PA.US (home)
+(412) 268-7090  (CERT 24 hour hotline)
+
+------------------------------
+
+Date:    Thu, 13 Aug 92 20:06:42 -0400
+From:    "Nick FitzGerald" <CCTR132@csc.canterbury.ac.nz>
+Subject: Re: Strange MBR (PC)
+
+*********************************************************************
+phil@cs.utexas.edu (Philip Smolen) wrote:
+
+>I noticed a machine with a strange MBR at work recently.  The first 16
+>bytes look like this:
+>EA 05 00 C0 07 E9 99 00 02 6F 79 00 F0 E4 00 80
+>
+>The machine I found this on refused to boot.  SCAN could not find
+>anything unusual.  Glancing at the code it looks like it was made for
+>a boot sector or MBR.  The first instruction, for example, is jmp
+>07C0:0005.  (On bootup this translates to jump to the next
+>instruction.  After DOS has loaded normally, this translates to crash
+>and burn.)
+>
+>Has anyone seen anything like this?  Does anyone know what could have
+>caused this?
+
+Yep - I see something -quite- similar to this all the time.  Compare:
+
+Phils MBR:        EA 05 00 C0 07 E9 99 00 02 6F 79 00 F0 E4 00 80
+My diskette:      EA 05 00 C0 07 E9 99 00 00 1A 03 00 C8 E4 00 80
+
+My diskette happened to be the first sample of a Stoned infected
+diskette I could lay my hands on.  The first difference between these
+two is at offset 8 - this is the byte Stoned uses to decide whether it
+is booting from a floppy - 00h - or a HD - 02h.  Without digging out the
+rest of my disassembly notes (which are at home), I can't clearly
+comment on the significance of the other differences.
+
+You may have a new Stoned-based boot sector infector or a disk which has
+been "innoculated" against Stoned.  I find the latter less likely, as
+it's only necessary to have the first four bytes of the MBR match Stoned
+to fool its infection check (for what it's worth, such "inoculations"
+are not a good idea).
+
+If it's a virus, save a copy of the MBR to a disk file and only
+give/send copies to reputable anti-virus researchers like Frisk, McAfee,
+the VTC in Hamburg, etc.  Look through the first few physical sectors of
+the HD.  You should (?) find a copy of the original MBR stashed away
+somewhere.  The failure to boot may be because the virus isn't correctly
+locating/loading/executing the original MBR, or may be due to corruption
+of the original MBR.  If you find an apparently OK copy of the original
+MBR, copy it back to absolute sector 0,0,1.  If you have DOS 5.0 and the
+viral MBR still has a good intact partition table (booting from a floppy
+allows you normal access to your HD), you can, instead, use the
+undocumented:
+
+      FDISK /MBR
+
+to re-write the MBR's bootstrap code.  Corruption of the original MBR is
+common with Stoned and related viruses on HD's that were partitioned
+with pre-DOS 3.0 versions of FDISK, as it did not reserve all of the
+first track for the MBR; thus Stoned overwrites part of the FAT when
+stashing away its "safe" copy of the original MBR on such machines.
+(That's fairly garbled - if you don't understand some of it or for more
+detailed help, mail me.)
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ Nick FitzGerald, PC Applications Consultant, CSC, Uni of Canterbury, N.Z.
+ n.fitzgerald@csc.canterbury.ac.nz    (64)(3)  642-337 Voice,  642-332 FAX
+
+------------------------------
+
+Date:    14 Aug 92 17:00:59 +1200
+From:    "Nick FitzGerald" <CCTR132@csc.canterbury.ac.nz>
+Subject: Re: f-prot 2.04c ??? (PC)
+
+dab6@po.CWRU.Edu (Douglas A. Bell) writes:
+> I found f-prot2.04c on wuarchive.wustl.edu in the pub/MSDOS_UPLOADS
+> directory.
+>
+> Is it for real ?  Its release date is 8/12/92, and that's today.
+
+Four things:
+
+1.  Frisk very recently said that this version, maybe renamed to 2.05,
+might be released RSN.
+
+2.  Was that really the filename?  Kind of a giveaway if it was.  8-)
+
+3.  Why do large ftp sites use inadequate OS's, ftp implementations or
+whatever?  Upload directories should be able to be made "write-only"
+so the "world-at-large" can't do silly things through them, like "dir"
+and "get".  One of the hacked, so-called PKZIP 2.x's was widely spread
+from ftp sites' upload dirs.
+
+4.  Why do people make -posts- like Douglas's when something like this
+happens?  You don't have to look far through the digests/newsgroup to
+find Frisk's Email address - indeed, you don't have to look far in the
+F-PROT package for the same info.  Think about the process people - if
+Frisk announces a new version and it's not already uploaded he and the
+site moderator will be inundataed with messages saying "Where's it
+gone?", "I couldn't find it", etc, etc.  It takes a finite amount of
+time from upload to inform the moderator to having it moved to its
+final resting place, and it had just been uploaded.  If this is a
+trojan, Douglas has just told the world that 2.04c is "out" - the
+implicit warning that he hasn't seen a release announcement will be
+ignored by a disconcertingly large number of users (they will want to
+be the first to d/l it from an ftp site and u/l to their favourite BBS
+so they get the kudos of being up with the play - and the u/l
+credits). Better he had shut up in public and talked with Frisk in
+private, letting Frisk make the appropriate decisions regarding
+warning the ftp site moderators, etc, etc.  Don't give me any horse
+puckey responses about "freedom of speech" and "the public's right to
+know", either.
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ Nick FitzGerald, PC Applications Consultant, CSC, Uni of Canterbury, N.Z.
+ n.fitzgerald@csc.canterbury.ac.nz    (64)(3)  642-337 Voice,  642-332 FAX
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 07:42:36 -0400
+From:    C20260@prime-a.plymouth.ac.uk
+Subject: windows multitasking and viruses (PC)
+
+I've just read Padgetts comments on the need for scanners to be
+reloadable when running with netware, windows etc. My immediate
+response is YES! he's absolutely right. In fact I recently emailed
+FRISK on the topic of Netware and Virstop, and was pleased to see in
+his mailing in this bulletin to the effect that Windows support should
+be coming soon. We are making increasing use of both Netware and
+Windows, and the problems described by Padgett are very real. In some
+areas we can overcome our main problem, boot sector viruses, by remote
+booting, but this option is not suitable in all cases, and doesn't
+help with file infectors. The frustrating thing is that products like
+NAV and CPAV which provide Windows support ( and NAV seems to cope
+with a Netware connection) have such mediocre tsr scanners as to be
+practically useless. (Yesterday my evaluation copy of CPAV allowed a
+Campana/telecom-boot infection to go ahead).
+
+Keith Selmes, University of Plymouth Computing Service.
+Do I need a disclaimer in th U.K. ?
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 12:30:20 -0400
+From:    jp_torunski@chezrob.pinetree.org (JP Torunski)
+Subject: Re: I Need an unattended scanner (PC)
+
+cass8806@elan.glassboro.edu (KYLE CASSIDY) writes:
+> that i can set to scan the disk when i'm not around (like at 3 in the
+> morning) i'm running windows and i leave the machine on 24 hours. are there
+
+The easiest way would be to scan when you know you won't use the computer
+anymore that day (ie right before bed).
+
+                                        JP
+
+JP Torunski             |       jp_torunski@chezrob.pinetree.org
+Straight out of Stittsville, Ontario
+Chez Rob's Int'l Mail Exchange 613/230-5307 (data)
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 23:00:04 +0000
+From:    hurd@sfu.ca (Peter L. Hurd)
+Subject: help, high weirdness (PC)
+
+Hi, I've been having strange hassles with my machine lately, symptoms
+include;
+1)  Inability to boot from a floppy.  It boots from c: always, no error
+message if I leave a non-bootable floppy in there, and no booting from
+a bootable.
+2)  Keyboard spaceyness, it gets to thinking that the shift is down, so
+even numbers show up as @#$%^, and the alt ,and ctrl keys don't quite
+do what I expect them to (usually happens in WP5.1)
+3)  My default settings in WP5.1 just reset, my Canadian WP expects US
+lexicon, and other things reset to original.
+4) QEMM sent me this error twice when loading F-PROT (or was it
+VIRSTOP?)
+
+EXCEPTION 13 @ 29FF:0000  ERROR CODE 0000
+AX=4904  BX=8BD6  CX=FF13  DX=FF56  SI=8DFF  DI=8C9F  BP=0094
+DS=A673  ES=0498  SS=A673  SP=984E  FLAGS=7006
+
+INSTRUCTION: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+5)  VSHEILD sent me this once
+
+VSHEILD 4.9V93
+Sorry an impossible internal error occurred
+Error code is 8522
+
+6) F-PROT 2.04b and Scan 93 find nothing, although vshield found an
+[emp] on a floppy and f-prot concurred, but I think I got that one
+before it had a chance to do anything.  F-prot heuristic search
+reports that the shareware utility Directory control DC106f.zip
+searches for executables.
+
+Problems 4 & 5 occurred without any changes to the programs or
+autoexec.bat files, and dissapeared without any changes.
+
+Is it viral? ( He asks the impossible to answer question )
+thanks for any help or advice.
+- --
+- -- Pete Hurd, hurd@sfu.ca          |   Truth never set anyone free,
+Behavioural Ecology Research Group |   it is only doubt which will
+Dept.Biol.Sci., Simon Fraser Univ. |   bring mental emancipation.
+Burnaby B.C. V5A 1S6 Canada        |               -- Anton LaVey
+
+------------------------------
+
+Date:    Sat, 15 Aug 92 04:57:33 +0000
+From:    as789@cleveland.Freenet.Edu (Francisco J. Diaz)
+Subject: Re: MS-DOS 6.0 with Anti-Virus ? (PC)
+
+Yep, I have confirmes thia with a BETA tester and programmer from
+Microsoft down here in their Caribbean branch and he told me that
+it will include Disk Compression and Antivirus utilities, as well
+as a set of very ppopular backup, defrags and others utilites
+from well known companies...To be exact he mentioned CPAV, Double
+Disk, Symantec and Central Point as the main players in the new OS
+as well as enhancements in the OS overall...I'll keep his name
+anonymous because he's a good guy and don't want to get him fired
+from his job....:-)
+- --
+|     Francisco J. Diaz Rivera     |                           |
+|     University of Puerto Rico    | If the shoe fits, buy it! |
+|  "I hate calculus classes!" :-)  |           - Imelda Marcos |
+|     STUD137@CUTB.UPR.CLU.EDU     |                           |
+
+------------------------------
+
+Date:    17 Aug 92 10:16:25 +1200
+From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: I Need an unattended scanner (PC)
+
+cass8806@elan.glassboro.edu (KYLE CASSIDY) writes:
+> 	I'm using V-shield93 right now, and i'm wondering if i should use
+> this in conjunction with a more sophisticated scan program, but i'd like one
+> that i can set to scan the disk when i'm not around (like at 3 in the
+> morning) i'm running windows and i leave the machine on 24 hours. are there
+> programs that do this?
+
+Look for the program WCRON, which lets you schedule programs to be run
+under MS Windows. I think it came out in comp.binaries.ibm.pc in
+volume 15, and it is on at least wuarchive for anonymous ftp in
+/mirrors2/win3/util.
+
+Of course, the problem is to get a decent scan when running under
+windows, since there are some restrictions on raw disk accesses and
+what happens to the warning message if it does find a problem, but (I
+think) you should do fairly well with other programs in the Vshield
+family.
+
+I think there's still room for an automatic virus scanner/change
+detector that runs "in the background" - even as part of a screen
+saver? Anyone got one of those?? As the complexity of virus detectors
+increases (to cope with lots of new and sophisticated viruses) I
+suspect that scan-as-you-load programs will have to go, while
+change-detect-as-you-load (or as part of disk compressiuon schemes, as
+padgett suggested), and scan-as-you-write-to-disk or scan-when-idle
+systems will be more popular.
+
+Mark Aitchison.
+
+------------------------------
+
+Date:    Mon, 17 Aug 92 05:56:25 +0000
+From:    nyh@gauss.technion.ac.il (Nadav Har'El)
+Subject: Re: 4096 (frodo) false alarm? (PC)
+
+frisk@complex.is (Fridrik Skulason) writes:
+> nyh@gauss.technion.ac.il (Nadav Har'El) writes:
+>
+> >is the way they return since I got the computer.  Also, I used f-prot
+> >after using scan ant it came to the same conclusions - frodo in
+> >memory, but when rebooting from a clean diskette, there was no frodo
+> >in memory but no files infected as well.
+>
+> I see two possibilities.
+>
+>    Try running a scanner and scan all files, not just executables - you
+>    might have an "infected" data file - or a file that has been renamed.
+>
+>    DOS reads data from the disk in whole sectors, and there is a possibility
+>    that you have a file that was infected once, it was cleaned, but a virus
+>    fragment might be in the "dead" area between the file and the end of
+>    the sector, and the scanners might be finding this in some disk buffer.
+
+Thanks for the answer.
+
+I scanned also data files, with the same results. You and Aryeh
+Goretsky from McAfee both suggested that a virus leftover must be in
+an unused portion of the disk. I scanned my disk with some antivirus
+program which supports scanning the whole disk, not just files (I
+forgot which program, I think it was tbscan or htscan). It reported 2
+4096 infections on an unused portion of the disk, which supports your
+suspicion.
+
+I tryed using a disk optimizer like Aryeh Goretsky suggested, but it
+didn't help.  Does anyone know of a program to clear every unused
+portion of the disk (i.e.  parts of sectors after eof, and totally
+unused sectors)? Of course I can backup the whole hard disk, format
+it, and restore the files back, but that would be a very long job.
+
+Such a program might be an interest to other people too, since I don't
+suppose I am the only one suffering from this phenomena. Writing such
+a program should be trivial for people with knowledge how to directly
+access disk sectors, like disk optimizer writers, which,
+unfortunately, I'm not one of.
+
+- --
+Nadav Har'El                         | ######  ########     # | <-- Sorry if
+Email: nyh@gauss.technion.ac.il      |      #       #       # |    you can't
+Department of Mathematics, Technion  |      #       #       # |    read Hebrew.
+Israel Institute of Technology       | ########     #  ###### |    Nadav. ;)
+
+------------------------------
+
+Date:    Mon, 17 Aug 92 10:11:49 +0000
+From:    gerald@vmars.tuwien.ac.at (Gerald Pfeifer (Prak Gusti))
+Subject: F-Prot 2.04c (PC)
+
+Three days ago I downloaded F-Prot 2.04c (fp-204c.zip) from the net.
+
+The 'Program - Performance' info in the interactive shell boosts a
+much higher number of viruses and virus-families to be detected than
+under version 2.04a.  The documentation, however, does *not* mention
+any advances/extensions/...  (The documentation files seem to be
+nearly unchanged since 2.04a)
+
+So I wonder, what really has changed and what the newly detected
+viruses are!  Does anyone know?
+
+Thanks,
+
+  Jerry, sign of the mouse
+
+PS: Besides, does anyone know the rational behind F-Prot's version numbers?
+...............................................................................
+. Gerald Pfeifer (Jerry)                 Technical University Vienna, Austria .
+. gerald@kongo.vmars.tuwien.ac.at                                             .
+...............................................................................
+
+------------------------------
+
+Date:    Mon, 17 Aug 92 18:39:15 +0000
+From:    treeves@magnus.acs.ohio-state.edu (Terry N Reeves)
+Subject: Waldo ?? (PC)
+
+Anyone know of a virus/trojan/joke/ etc that self-identifies as Waldo?
+
+I have not seen it, unfortunately I have only a sketchy report of a
+message seen periodically on a pc running windows 3.1 & corel draw
+2.0.  I ma told a "waldo virus" is identified. Unfortunately I can't
+even be sure the word virus was in the actual message.
+
+f-prot 2.04c finds nothing not even with heuristic scan. (two false +
+only) scan 93 ditto.
+
+Anyone??
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 09:46:22 -0400
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Jerusalem virus (CVP)
+
+Robert Slade writes, concerning the Jerusalem virus:
+>>>                        ....  In an effort to avoid anti-semitism, it
+>>>was referred to by its "infective length" of 1813 bytes.  For COM
+>>>files.  ....
+>>
+>>I agree with almost everything here, but I think it's a bit presump-
+>>tuous to conclude that the reason for the name "1813" had anything to
+>>do with avoiding anti-semitism.  ....
+>
+> True.  However I *do* recall a message (in the early days before V-L)
+> by one Y. Radai complaining that it was unfair and possibly
+> anti-semitic to call it the Israeli virus ...  :-)  ....
+
+Sorry, but your recollection is not too accurate.  I never used the
+term "anti-semitic" in anything I ever wrote on viruses, and I never
+complained about the Jerusalem virus being called the "Israeli" virus.
+(Quite the opposite!  I even submitted a report on the virus in
+_Computers & Security_, entitled "The Israeli PC Virus".)  The only
+complaint I made concerning its name was against calling it the "PLO"
+virus, and this not because of anti-semitism, but simply because there
+was never the slightest shred of evidence for the PLO's having a hand
+in it.  The whole story about "terrorist" authorship was apparently
+invented by a journalist in the NY Times of 31 Jan 1988, and his
+reason for advancing that hypothesis was nothing more than the
+coincidence of dates (as I determined through personal correspondence
+with him).
+
+Hmm, on the other hand, since June 92 we now have the Palestinian
+virus (the author calls it the "M.S Jurusalem Virus" and claims to be
+a "Palestinian Boy").  For those unfamiliar with this virus, it's a
+non-resident virus which prepends 15392 bytes to COM/EXE files, writ-
+ten in Pascal.  It displays a political message, but claims "to avoide
+making any damage to your files" (this is apparently not always true).
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 14:55:44 +0000
+From:    exuptr@exu.ericsson.se (Patrick Taylor)
+Subject: Re: Floptical Disk Update
+
+padgett%tccslr.dnet%uvs1@uvs1.orl.mmc.com (A. Padgett Peterson) writes:
+
+>The other advantages should be obvious: mail/fax/bbs system that only
+>spins when needed. OS/2 on a single floppy (compressed). No more
+>hour-long swap-the-floppy installations.
+
+Of course, there's probably a Murphy law like "as soon as you get a larger
+media, someone figures out a reason to use even larger installations".
+ ----------------------------------------------------------------------------
+    "This must be Thursday.  I never could get the hang of Thursdays"
+                                                       - D Adams
+  - Patrick Taylor
+    Ericsson Network Systems
+    exuptr@exu.ericsson.se                       "Don't let the .se fool you"
+    alternately, exuptr@ZGNews.Lonestar.Org
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 10:17:57 -0400
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: "Viruses Get the Boot", Information Week 10 Aug. pg 15 (PC)
+
+Once again the old "Hardware vs Software" question arises (as  an
+aside, I *suspect* that the patent referred to in the article  is
+the same one that I examined a couple of years ago. It *might* be
+effective against some viruses but the description was too  vague
+totell).
+
+Just  to clear the air, IMHO the only hardware needed to  prevent
+viruses  is BIOS ability to select the primary boot disk  as  the
+hard  drive instead of a floppy. *Everything* else necessary  can
+be done as well by software.
+
+Further,  for  the  paranoid, MFM, RLL, and SCSI  drives  can  be
+hardware  write  protected  either at the controller  or  with  a
+physical device on the cable connecting drive and controller (IDE
+is more difficult) - but nowhere else.
+
+While  hardware on the bus or attached to a port *could*  prevent
+or  at least detect the majority of the known viruses, they  will
+fail  a  directed  attack by a  professional  (or  professionally
+written viruses).
+
+Why ? Because the PC architecture is a single-state machine. Even
+though  there  is  a  "protected" mode, what  can  be  done  with
+software  can be undone with software and the only  link  between
+ANY  hardware  device on the bus (or a port) that  does  not  use
+dedicated cabling is software.
+
+So  far  I  have  only seen one  true  disk  hardware  device  as
+described above. It had a separate hardware control panel and  an
+internal  board.  While  it  was "on"  the  bus  (for  power  and
+reporting only, software commands would not be accepted), it also
+physically  separated the disk cable between the  controller  and
+the drive. This will work so long as a virus does not get  "help"
+from the user.
+
+ANY other hardware device that relies on software for control  is
+subvertable  by  software. Period. Of course there  is  no  virus
+known  today  that  could do this, but to  me,  the  question  is
+*could* it be done.
+
+Consider a BIOS extension (the only major change made to the  IBM
+BIOS description since the PC was introduced). After POST  (power
+on  self test), the BIOS scans the region from segment  C000h  to
+EE00h  for a BIOS extension signature indicating that a  hardware
+device with on-board ROM is present. Early PC users will remember
+the  first  drive controllers loaded at segment C800h  and  using
+DEBUG  to  G C800:5 for a low level format using  the  controller
+ROM.
+
+Such extensions work invisibly by redirecting one or more of  the
+BIOS interrupts (contained in the Interrupt table at location 0:0
+in RAM) from the BIOS to their own ROM code. A hardware antivirus
+device  would have to work in the same way (for a  more  complete
+description,  refer to either the Phoenix BIOS book for  the  PC-
+XT/AT or one of the early IBM PC Hardware Manuals).
+
+A directed attack could simply patch the Interrupts back and  the
+hardware  device would be bypassed - the only hard part would  be
+finding the real interrupt vector but several mechanisms (such as
+tunneling) could be used for this.
+
+Consequently,  IMHO,  against  a  directed  attack,  a   hardware
+solution other than as outlined above (e.g. anything that  claims
+to work on "any PC" or "on any port" or "just by inserting in any
+available  slot")  would  need a lot of  explaining.  Again  IMHO
+software could be just as (in)secure without using a slot or port
+or dedicated upper memory (today, the address area from C000h  to
+FFFFh  is just as valuable as the "lower 640") and I have yet  to
+see hardware that could be sold as inexpensively as software.
+
+The  bottom  line ? The IBM-PC, for all of its 486/66  power  and
+gigabyte hard disks, etc. etc. etc. Has had no real architectural
+changes since Oct. 27, 1982. It was not designed to be multi-user
+or  to have any integrity management. It will happily attempt  to
+execute  *anything*  it is told to. This is what makes a  PC  (or
+clone  or...) 100% compatible and the streets are  littered  with
+"PC"s that thought they could be different.
+
+Anti-virus  software that succeeds does so by making the  minimum
+intrusion on the system (why Scanners are so popular -  integrity
+management  programs are *much* more difficult to write - my  MBR
+routines  were  hard  enough, replacement DBRs are  an  order  of
+magnitude  more  difficult  &  it is  incredible  just  how  many
+different  & conflicting OSs there are).  Hardware,  particularly
+pure hardware that claims to stop "any" virus, would be unlikely.
+
+Warmly,
+
+Padgett
+
+------------------------------
+
+Date:    Fri, 14 Aug 92 10:51:50 -0400
+From:    "zmudzinski, thomas" <ZMUDZINSKIT@uvax6.disa.mil>
+Subject: Re[1]: Windows, Multitasking, & Viruses (PC)
+
+> "Gauntlet" was the first of Clint Eastwood's comedies.
+
+Yeah, but "The Good, the Bad, and the Ugly" was the movie that made
+him an international singing star!  NOT!
+
+BTW, the "Baker & Byrd" morning show [WASH-AM radio] used to include a
+character called "Clint" that was a dead-ringer.  "Clint" used to end
+every other sentence with "punk!" and interact violently with other
+characters.  Mr. Eastwood's lawyers "suggested" that they stop doing
+"Clint", so he's been replaced with "Sean", a rough-hewn, balding
+actor with a definite Scotish brogue.  (Mr. Connery's lawyers haven't
+found out about "Sean".  Yet!)
+
+/z/
+
+UTTERLY-USELESS-PSEUDO-CRYPTOGRAPHIC-SIGNATURE-CHECKSUM: 42
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 140]
+******************************************
+
+

@@ -1,0 +1,270 @@
+16-Sep-86 15:42:54-PDT,13785;000000000000
+Mail-From: NEUMANN created at 16-Sep-86 15:40:35
+Date: Tue 16 Sep 86 15:40:35-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS-3.56
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest, Tuesday, 16 September 1986  Volume 3 : Issue 56
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Massive UNIX breakins at Stanford (Brian Reid)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.
+  Summary Contents in MAXj for each i; Vol 1: RISKS-1.46; Vol 2: RISKS-2.57.)
+
+----------------------------------------------------------------------
+
+From: reid@decwrl.DEC.COM (Brian Reid)
+Date: 16 Sep 1986 1519-PDT (Tuesday)
+To: Peter G. Neumann <Neumann@csl.sri.com>   [FOR RISKS]
+Subject: Massive UNIX breakins at Stanford
+
+    Lessons learned from a recent rash of Unix computer breakins
+
+Introduction
+   A number of Unix computers in the San Francisco area have
+   recently been plagued with breakins by reasonably talented
+   intruders. An analysis of the breakins (verified by a telephone
+   conversation with the intruders!) show that the networking
+   philosophy offered by Berkeley Unix, combined with the human
+   nature of systems programmers, creates an environment in which
+   breakins are more likely, and in which the consequences of
+   breakins are more dire than they need to be.
+
+   People who study the physical security of buildings and military
+   bases believe that human frailty is much more likely than
+   technology to be at fault when physical breakins occur. It is
+   often easier to make friends with the guard, or to notice that he
+   likes to watch the Benny Hill show on TV and then wait for that
+   show to come on, than to try to climb fences or outwit burglar
+   alarms.
+
+Summary of Berkeley Unix networking mechanism:
+
+   The user-level networking features are built around the
+   principles of "remote execution" and "trusted host". For example,
+   if you want to copy a file from computer A to computer B, you
+   type the command
+	   rcp A:file B:file
+   If you want to copy the file /tmp/xyz from the computer that you
+   are now using over to computer C where it will be called
+   /usr/spool/breakin, you type the command
+	   rcp /tmp/xyz C:/usr/spool/breakin
+   The decision of whether or not to permit these copy commands is
+   based on "permission" files that are stored on computers A, B,
+   and C. The first command to copy from A to B will only work if
+   you have an account on both of those computers, and the
+   permission file stored in your directory on both of those
+   computers authorizes this kind of remote access. 
+
+   Each "permission file" contains a list of computer names and user
+   login names. If the line "score.stanford.edu reid" is in the
+   permission file on computer "B", it means that user "reid" on
+   computer "score.stanford.edu" is permitted to perform remote
+   operations such as rcp, in or out, with the same access
+   privileges that user "reid" has on computer B.
+
+How the breakins happened.
+
+   One of the Stanford campus computers, used primarily as a mail
+   gateway between Unix and IBM computers on campus, had a guest
+   account with user id "guest" and password "guest". The intruder
+   somehow got his hands on this account and guessed the password. 
+   There are a number of well-known security holes in early releases
+   of Berkeley Unix, many of which are fixed in later releases.
+   Because this computer is used as a mail gateway, there was no
+   particular incentive to keep it constantly up to date with the
+   latest and greatest system release, so it was running an older version
+   of the system. The intruder instantly cracked "root" on that
+   computer, using the age-old trojan horse trick. (He had noticed
+   that the guest account happened to have write permission into a
+   certain scratch directory, and he had noticed that under certain
+   circumstances, privileged jobs could be tricked into executing
+   versions of programs out of that scratch directory instead of out
+   of the normal system directories).
+
+   Once the intruder cracked "root" on this computer, he was able to
+   assume the login identity of everybody who had an account on that
+   computer. In particular, he was able to pretend to be user "x" or
+   user "y", and in that guise ask for a remote login on other
+   computers. Sooner or later he found a [user,remote-computer] pair
+   for which there was a permission file on the other end granting
+   access, and now he was logged on to another computer. Using the
+   same kind of trojan horse tricks, he was able to break into root
+   on the new computer, and repeat the process iteratively.
+
+   In most cases the intruder left trojan-horse traps behind on
+   every computer that he broke into, and in most cases he created
+   login accounts for himself on the computers that he broke into.
+   Because no records were kept, it is difficult to tell exactly how
+   many machines were penetrated, but the number could be as high as
+   30 to 60 on the Stanford campus alone. An intruder using a
+   similar modus operandi has been reported at other installations.
+
+How "human nature" contributed to the problem
+
+   The three technological entry points that made this intrusion
+   possible were:
+
+      * The large number of permission files, with entirely
+	too many permissions stored in them, found all over the campus
+	computers (and, for that matter, all over the ARPAnet).
+
+      * The presence of system directories in which users have write
+	permission.
+
+      * Very sloppy and undisciplined use of search paths in privileged
+        programs and superuser shell scripts.
+
+
+Permissions: Berkeley networking mechanism encourages carelessness.
+
+   The Berkeley networking mechanism is very very convenient. I use
+   it all the time. You want to move a file from one place to
+   another? just type "rcp" and it's there. Very fast and very
+   efficient, and quite transparent. But sometimes I need to move a
+   file to a machine that I don't normally use. I'll log on to that
+   machine, quickly create a temporary permission file that lets me
+   copy a file to that machine, then break back to my source machine
+   and type the copy command. However, until I'm quite certain that
+   I am done moving files, I don't want to delete my permission file
+   from the remote end or edit that entry out of it. Most of us use
+   display editors, and oftentimes these file copies are made to
+   remote machines on which the display editors don't always work
+   quite the way we want them to, so there is a large nuisance
+   factor in running the text editor on the remote end. Therefore
+   the effort in removing one entry from a permission file--by
+   running the text editor and editing it out--is high enough that
+   people don't do it as often as they should. And they don't want
+   to *delete* the permission file, because it contains other
+   entries that are still valid. So, more often than not, the
+   permission files on rarely-used remote computers end up with
+   extraneous permissions in them that were installed for a
+   one-time-only operation. Since the Berkeley networking commands
+   have no means of prompting for a password or asking for the name
+   of a temporary permission file, everybody just edits things into
+   the permanent permission file. And then, of course, they forget
+   to take it out when they are done.
+
+
+Write permission in system directories permits trojan horse attacks.
+
+   All software development is always behind schedule, and
+   programmers are forever looking for ways to do things faster. One
+   convenient trick for reducing the pain of releasing new versions
+   of some program is to have a directory such as /usr/local/bin or
+   /usr/stanford/bin or /usr/new in which new or locally-written
+   versions of programs are kept, and asking users to put that
+   directory on their search paths. The systems programmers then
+   give themselves write access to that directory, so that they can
+   intall a new version just by typing "make install" rather than
+   taking some longer path involving root permissions. Furthermore,
+   it somehow seems more secure to be able to install new software
+   without typing the root password. Therefore it is a
+   nearly-universal practice on computers used by programmers to
+   have program directories in which the development programmers
+   have write permission. However, if a user has write permission in
+   a system directory, and if an intruder breaks into that user's
+   account, then the intruder can trivially break into root by using
+   that write permission to install a trojan horse.
+
+Search paths: people usually let convenience dominate caution.
+
+   Search paths are almost universally misused. For example, many
+   people write shell scripts that do not specify an explicit search
+   path, which makes them vulnerable to inheriting the wrong path.
+   Many people modify the root search path so that it will be
+   convenient for systems programmers to use interactively as the 
+   superuser, forgetting that the same search path will be used by
+   system maintenance scripts run automatically during the night.
+   It is so difficult to debug failures that are caused by incorrect
+   search paths in automatically-run scripts that a common "repair"
+   technique is to put every conceivable directory into the search
+   path of automatically-run scripts. Essentially every Unix
+   computer I have ever explored has grievous security leaks caused
+   by underspecified or overlong search paths for privileged users.
+
+Summary conclusion: Wizards cause leaks
+
+   The people who are most likely to be the cause of leaks are
+   the wizards. When something goes wrong on a remote machine, often
+   a call goes in to a wizard for help. The wizard is usually busy
+   or in a hurry, and he often is sloppier than he should be with
+   operations on the remote machine. The people who are most likely
+   to have permission files left behind on stray remote machines are
+   the wizards who once offered help on that machine. But, alas,
+   these same wizards are the people who are most likely to have
+   write access to system directories on their home machines,
+   because it seems to be in the nature of wizards to want to
+   collect as many permissions as possible for their accounts. Maybe
+   that's how they establish what level of wizard that they are. The
+   net result is that there is an abnormally high probability that
+   when an errant permission file is abused by an intruder, that it
+   will lead to the account of somebody who has an unusually large
+   collection of permissions on his own machine, thereby making it
+   easier to break into root on that machine.
+
+Conclusions.
+
+   My conclusions from all this are these:
+      * Nobody, no matter how important, should have write permission
+	into any directory on the system search path. Ever.
+
+      * Somebody should carefully re-think the user interface of the
+	Berkeley networking mechanisms, to find ways to permit people to
+	type passwords as they are needed, rather than requiring them to
+	edit new permissions into their permissions files. 
+
+      * The "permission file" security access mechanism seems
+        fundamentally vulnerable. It would be quite reasonable
+	for a system manager to forbid the use of them, or to 
+	drastically limit the use of them. Mechanized checking is 
+	easy.
+
+      * Programmer convenience is the antithesis of security, because
+	it is going to become intruder convenience if the programmer's 
+	account is ever compromised. This is especially true in
+        setting up the search path for the superuser.
+
+
+
+Lament
+   I mentioned in the introduction that we had talked to the
+   intruders on the telephone. To me the most maddening thing about
+   this intrusion was not that it happened, but that we were unable
+   to convince any authorities that it was a serious problem, and
+   could not get the telephone calls traced. At one point an
+   intruder spent 2 hours talking on the telephone with a Stanford
+   system manager, bragging about how he had done it, but there was
+   no way that the call could be traced to locate him. A few days
+   later, I sat there and watched the intruder log on to one
+   Stanford comptuer, and I watched every keystroke that he typed on
+   his keyboard, and I watched him break in to new directories, but
+   there was nothing that I could do to catch him because he was
+   coming in over the telephone. Naturally as soon as he started to
+   do anything untoward I blasted the account that he was using and
+   logged him off, but sooner or later new intruders will come
+   along, knowing that they will not be caught because what they are
+   doing is not considered serious. It isn't necessarily serious,
+   but it could be. I don't want to throw such people in jail,
+   and I don't want to let them get away either. I just want to
+   catch them and shout at them and tell them that they are being
+   antisocial.
+
+Brian Reid
+DEC Western Research and Stanford University
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+
+-------

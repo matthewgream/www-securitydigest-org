@@ -1,0 +1,373 @@
+Subject: RISKS DIGEST 11.73
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 28 May 1991  Volume 11 : Issue 73
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents: 
+Viper (Brian Randell)
+Maintenance of constants (Douglas W. Jones)
+The RISKS of Posting to the Net (Mark Thorson = mmm)
+Re: Risks of posting on the NET (Jim McLeod, Ellen Spertus, Mike Olson)
+Re: Replicated Errors (Robert McClenon)
+Re: Are fuzzy controls risky? (Rob Horn)
+AT&T billing problem: "computer error" (Charles P Pfleeger)
+Caller ID in commercial applications (Walter Roberson)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others ignored!  REQUESTS to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 11, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Tue, 28 May 91 17:44:52 BST
+From: Brian.Randell@newcastle.ac.uk
+Subject: Viper
+
+From the UK national newspaper, The Independent, 28 May 1991 - reprinted in its
+entirety.   Brian Randell
+
+MOD IN ROW WITH FIRM OVER CHIP DEVELOPMENT
+
+A British company that hoped to market one of the world's most sophisticated
+computer chips is to be wound up next week amid acrimonious allegations about
+the Ministry of Defence's role in commercialising a technology developed at
+taxpayers' expense.
+
+The episode highlights the continuing failure of the Ministry of Defence to
+foster civilian spin-offs for the products of its military research and
+development programme, which last year cost the taxpayer some (pounds) 2.2bn.
+Throughout most of the past decade, the Government has spent more money on
+defence than on civil research and development.
+
+The chip, known as Viper, was designed by scientists at the Royal Signals
+Research Establishment in Malvern. It is the most advanced chip, designed for
+use in "safety critical" applications - such as nuclear reactor shutdown
+systems, driverless trains or aircraft controls - where lives depend upon
+faultless operation.
+
+When the Worcester-based company Charter Technologies goes into voluntary
+liquidation on 4 June, no British company will be left able to provide
+potential customers with software to program the Viper chip or provide back-up
+support for its use. The company issued a writ against the Ministry of Defence
+this year for alleged negligent misrepresentation of the chip's capabilities
+and of its potential market.
+
+The ministry denies the company's allegations and lodged a defence. The MoD had
+required the company to post security of (pounds) 75,000 to cover the
+ministry's legal costs should Charter Technologies have lost its legal action.
+The company ceased trading on 2 May 1991 and is no longer pursuing its legal
+action.
+
+Digby Dyke, managing director of Charter Technologies, said yesterday that the
+company was forced to seek voluntary liquidation after the MoD declined to
+extend or renew other contracts, unconnected with the dispute over the chip,
+and because of the losses incurred over the Viper project.
+
+When the chip was developed in the late 1980's, the then director of the Royal
+Signals Research Establishment, Nigel Hughes, described it as "the first
+commercially available microprocessor with a proven correct design".  Modern
+microprocessor chips contain such complex circuitry that it is often not
+possible to demonstrate that the design is completely free of error. As a
+result, microprocessor developers are increasingly turning to the use of formal
+mathematics to verify that designs are free of errors.
+
+In 1987, the MoD granted a licence to Charter Technologies to develop software
+to exploit the chip's capabilities. But this January, the company issued a writ
+alleging that the chip's design had not been proven, and as a result its money,
+manpower and time were wasted. The company was alleging, in effect, that the
+mathematics were not exhaustive.
+
+Although Viper was developed by the MoD and released for commercialisation four
+years ago, and although a new defence procurement standard for safety-critical
+equipment, known as 00-55, appears to favour mathematically proven designs,
+Kenneth Carlisle, the Under-Secretary of Defence Procurement, told the House of
+Commons last week that "Viper is not currently used in any safety-critical
+computer systems controlled by the MoD".
+
+The only civilian customer for the technology has been the Australian National
+Railway Commission, which at the end of 1988 adopted Viper as the core of a new
+signalling system. The Australians have now gone so far with developing the
+system that they would have difficulty switching to another technology.
+
+Computing Laboratory, The University, Newcastle upon Tyne, NE1 7RU, UK
+Brian.Randell@newcastle.ac.uk   PHONE = +44 91 222 7923 FAX = +44 91 222 8232
+
+------------------------------
+
+Date: Tue, 28 May 91 12:18:48 CDT
+From: Douglas W. Jones <jones@cs.uiowa.edu> 
+Subject: Maintenance of constants
+
+In RISKS-08.19, I described a situation where, due to the cost of modifying
+a contract, it was less expensive to maintain dead code than to eliminate
+the dead code.  As a result of this story, I have been approached with a
+similar story from AT&T; the employee who passed on the story asked that I
+not mention anyone's name.  Here is the story:
+
+It seems that the current generation of electronic switching systems coming out
+of AT&T are controlled by upwards of a million lines of C code.  One of the
+results of this is the need to maintain the constants in the program.
+
+You might think that constants are constants, so this should be simple, but
+this is not so.  There are two problems that make this a headache big enough to
+require significant manpower.
+
+Problem 1) Not all C constants are inherently constant.  Consider string
+constants.  These are just arrays of characters with appropriate initial
+values.  Once such an array is passed to a procedure, the fact that it is
+constant is no longer known.  Of course, on some computers, memory protection
+mechanisms could be used to make all strings read-only, but this is outside the
+scope of the C language and would introduce the possibility of errors in
+constant usage stopping a system that is not allowed to stop.  Thus,
+programmers must be dedicated to auditing every use of every constant that is
+stored in memory to assure that it is used as a constant.
+
+Problem 2) Because C has a very weak type system, named numeric constants are
+used instead of enumerated types.  As a result, it is quite possible to use the
+wrong constant and never detect it because the constant has the right value.
+For example, if one enumeration is (Red, Green, Blue), and another is (Apple,
+Bananna, Cantalope), your program may run correctly with MyColor = Cantalope,
+but later, when you add BlueBerry to the second enumeration, the value of
+Cantalope (which was 2) has changed to 3, and your program will stop working
+correctly.
+
+Pascal and Ada are both able to enforce the constancy of constants at compile
+time, and they go a long way towards eliminating problems with constants that
+coincidentally have the same value.  (The latter problem cannot be completely
+eliminated in any language.)
+
+As I understand the story, there is an actual team of programmers at AT&T who
+are responsible for auditing constant usage, and nothing else.
+                      					         Doug Jones
+
+------------------------------
+
+Date: Tue, 28 May 91 16:56:40 PDT
+From: mmm@cup.portal.com
+Subject: The RISKS of Posting to the Net (RISKS-11.71, -11.72)
+
+Brinton Cooper <abc@BRL.MIL> wonders how I got access to the information on the
+destruct system of the Poseidon and Polaris A3.  It was in a book that was
+published by Lockheed as a training manual.  The book had no classification
+markings, in fact the one place in the book where it referred to classified
+information was a pointer to a separate, classified document which I did not
+have.  I found it at a sale of used books.  It is not too uncommon to find
+classified material in used bookstores, though I repeat this was _not_
+classified.
+
+Phil Agre <phila@cogs.sussex.ac.uk> asks whether I had any moral qualms about
+talking to the FBI.  Judging from his letter and most of the e-mail I've
+received, it's apparent that many people consider the FBI to be the enemy of
+the Constitution and the Bill of Rights, rather than one of its defenders.
+Sure, there have been abuses in the past -- and there will be abuses in the
+future -- but perhaps you need to be reminded that we live in a world of spies,
+thieves, cutthroats, skinheads, Mafiosi, and Scientologists, and often our
+first and only line of defense is the FBI.  Sometimes they make mistakes, like
+in the case of Steve Jackson Games, but do we help the situation by keeping the
+FBI men ignorant?  I think ignorance is part of the reason why these abuses
+sometimes occur.
+
+In the particular case of censorship, this particular FBI man was interested in
+how the net works and what relation it might have to criminal activity.  He
+explicitly stated that the FBI was _not_ interested in censoring anyone's
+speech.  When I told him about the recent discussion in alt.forgery, where
+people were asking how we could discuss forgery without discussing the
+committing of a crime, the reaction of the FBI man was "Well, you can write a
+book about forgery."  My impression was that he was very sensitive to the
+distinction between free speech and crime.  Just about the last words he said
+to me were "It's a free country."
+
+If the only thing keeping the net free of censorship is the ignorance of the
+powers-that-be, that is not much of a defense at all.  In fact, I think it
+would be naive to assume that potential censors aren't already aware of the
+net's existence.  Uunet has revealed that they have sold compiled Usenet
+traffic on tape to the FBI.  FCC men and telco security [people] are known to
+read the Telecom Digest.  God only knows who reads RISKS.
+
+Mark Thorson   (mmm@cup.portal.com)
+
+------------------------------
+
+Date:     Tue, 28 May 91 9:21:08 EDT
+From: "Jim McLeod, ISSM, USAAPGSA" <jmcleod%apg-9@APG-9.APG.ARMY.MIL>
+Subject:  Re:  Risks of posting on the NET (Moonen, RISKS-11.72)
+
+If and when a relative or friend of someone who boasts of such antics is a
+casuality of an airline bombing or other terrorist act, I hope he remember that
+his actions probably helped the terrorists and that he might be an accessory to
+murder of innocent men, women and children.  If what he said about NSA is true,
+then did he ever stop to THINK that the time spent assessing phony "keywords"
+can prevent the investigation of an actual terrorist plan to commit an
+atrocity?  I am as concerned about privacy and computer risks as the next
+person, but I get frosted reading such comments.  Such an individual would
+probably be the first to blame "Big Brother" for not preventing the slaughter.
+[Disclaimer implied]
+
+------------------------------
+
+Date: Tue, 28 May 91 14:06:48 -0400
+From: erspert@ATHENA.MIT.EDU
+Subject: Re: The RISKS of Posting to the Net (Moonen, RISKS-11.72)
+
+> Arghh. That's all we need now. Next thing, someone who says potentially
+> dangerous words on the net, like say, ehh... blue box (Get that guys, BLUE
+> BOX), or ehh... assassination of BUSH, will get a visit from our beloved Big
+> Bro. 
+
+Actually, it has already happened.  A few years ago, I heard that
+someone who had posted something to the net about assassinating the
+president was visited by the FBI.  
+
+I suppose that this message will also end up in front of some government
+worker.  :-(
+					Ellen Spertus
+
+------------------------------
+
+Date: Tue, 28 May 91 11:29:08 PDT
+From: mao@postgres.Berkeley.EDU (Mike Olson)
+Subject: Re:  The RISKS of Posting to the Net
+
+In RISKS-11.72, Phil Agre <phila@cogs.sussex.ac.uk> takes mmm@cup.portal.com to
+task for disclosing "dangerous" information about the Internet to an FBI agent.
+While I sympathize with Agre's concerns, I think it's important to maintain
+some perspective.  Censoring one another in our dealings with the government is
+no different from having the government censor us directly.
+                                                        Mike Olson, UC Berkeley
+
+------------------------------
+
+Date: 27 May 91 22:53:40 EDT
+From: Robert McClenon <76476.337@compuserve.com>
+Subject: Replicated Errors
+
+I respectfully submit that Neil Rickert is completely and very seriously wrong
+as to whether sendmail is primarily responsible for the replicated error
+messages.  He would place the burden of preventing malicious software from
+taking over networks primarily on network users and only secondarily on network
+managers.  The moral burden of preventing malicious software of course falls
+primarily on users and only secondarily on network managers.  Malicious acts
+that take over networks by users are immoral.  The primary moral responsibility
+for the Morris worm rests with Morris, and he was convicted of computer abuse.
+But the primary pragmatic responsibility for preventing network abuse rests
+with network managers, since there is always a risk of a malicious user.
+Morris only exploited known vulnerabilities in sendmail and other software.
+
+The message that Mark E. Davis disseminated was, because of the oddities of
+sendmail, an accidental INTERNET WORM.  Anything that can be done accidentally
+can be done INTENTIONALLY.  Network managers have a pragmatic and a moral
+responsibility to prevent worms and other malicious programs and malicious
+messages from taking over their networks.  To attempt to shift this
+responsibility entirely to users overlooks the fact that not all users are
+moral. Someone could have released a message with a malformed header on purpose
+to flood the Internet with error messages.  The primary problem is not with the
+user (Davis or anyone else).  It is with the software.  What Rickert says is a
+robust programming practice is simply not that if networks have finite
+capacity.  Fair is correct.  The error should be halted and sent back to the
+user, or sent forward without comment, or corrected and sent forward.
+Otherwise a WORM is possible.
+
+------------------------------
+
+Date: Tue, 28 May 91 14:59 EST
+From: HORN%HYDRA@sdi.polaroid.com
+Subject: Are fuzzy controls risky?
+
+Regarding the recently asked question about whether to trust a fuzzy logic
+based controller for nuclear power plants.  I think the correct answer is that
+they should be trusted as much (or as little) as you would trust any
+controller.  There is no guarentee that a control system is stable or accurate.
+This applies to both crisp and fuzzy controllers.  The mathematical theory for
+robust control is better developed, but you must do the analysis before you
+assume stability or accuracy.
+
+Software engineers often make the mistake of skipping this step.  Many are
+unaware that there is a large, well-developed branch of engineering called
+system control theory.  Just because the control laws are precise does not mean
+they will be accurate or stable.  Often the mathematics are inherently unstable
+and no amount of precision in the software can overcome this.  The instability
+is not a software problem (as assumed by many programmers); it is inherent in
+the mathematics of the control laws.  These must be analyzed and shown to be
+appropriate.
+
+Fuzzy control stability is not as well developed a theory, but the mathematics
+of fuzzy control are quite deterministic.  Stability and accuracy criteria may
+be more work to evaluate.  The control problem is usually simplified
+considerably for the fuzzy domain, so the resulting controller may be as easy
+to analyze as the precise controller or perhaps even easier.
+
+The nuclear power plant is an example of a situation where both may be
+appropriate.  Consider the sub-problem of measuring the temperature
+distribution within the core.  If you can assume thermal equilibrium, then a
+scattering of temperature measurements, plus the knowledge of conductivity of
+the components, plus the knowledge of the shape of the power distribution
+allows you to compute the temperatures, energy flows, and power generation
+throughout the entire core.  If you cannot assume thermal equilibrium (e.g.
+startup and shutdown), you must also have the heat constants of the materials,
+the prior temperature distribution history, and the power generation to compute
+the temperature.  So without equilibrium, you need two previously unnecessary
+inputs and one previously computed output must now be measured (somehow).
+These added measurements may drive the control laws beyond the regime where
+they can be analyzed, and they may also just be unavailable.  Power generation
+distribution can be very tricky to measure directly.  It is possible that the
+fuzzy solution is the alternative that remains mathematically tractable.
+
+Then again, they may just be chasing the fad of the week.  I see a lot of
+``fuzzy'' systems being invented for marketing and PR reasons.
+
+Rob Horn       horn%hydra@polaroid.com
+
+------------------------------
+
+Date: Tue, 28 May 91 15:58:11 -0400
+From: Charles P Pfleeger <pfleeger@TIS.COM>
+Subject: AT&T billing problem: "computer error"
+
+I recently encountered an AT&T billing error on our phone bill, which the AT&T
+office acknowledged as a computer error on their part.  There was a call from
+DC to NY which showed no rate code (E for evening, D for day, N for
+night/weekend), showed 15.5 in the "minutes" column (when all other entries in
+that column were integers, and [here was the real clue] cost $16.00, when
+similar (night rate) calls to NY were much less.  I have heard from one other
+person who had similar problem.  AT&T cheerfully resolves these matters when
+called, but I don't know if they are planning to adjust bills for people who
+don't complain.
+
+------------------------------
+
+Date: Mon, 27 May 91 19:06:22 -0700
+From: web!roberson@igc.org
+Subject: Caller ID in commercial applications
+
+People have been warning that with automatic caller identification, all
+sorts of strange and possibly undesirable cross-referencing will become
+common. I have just run across my first reference to a mass-market
+commercial program which will use caller identification in this manner.
+
+The product is TeleCenter 2.0, developed by Northern Telecom. The
+advicle [advertisement in the form of an article] in a recent MacWeek
+[V5 N20, May 21/91, pg 27]  said, in part,
+
+  "Features such as caller ID and TeleCenter's address book can be
+  triggered from another application. For example, using caller ID, an
+  order-entry application could automatically retrieve customers'
+  addresses and buying preferences when they call to make an order."
+
+Walter Roberson             roberson@web.apc.org
+
+------------------------------
+
+End of RISKS-FORUM Digest 11.73
+************************

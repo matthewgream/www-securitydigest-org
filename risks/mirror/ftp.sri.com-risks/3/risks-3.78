@@ -1,0 +1,392 @@
+ 9-Oct-86 15:56:49-PDT,19820;000000000000
+Mail-From: NEUMANN created at  9-Oct-86 15:54:14
+Date: Thu 9 Oct 86 15:54:14-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS-3.78 DIGEST
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest,  Thursday, 9 October 1986  Volume 3 : Issue 78
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  On models, methods, and results (Bob Estell)
+  Fault tolerance vs. verification experiments (Nancy Leveson)
+  The second Tomahawk failure (PGNeumann)
+  Re: Overrides and tradeoffs (Eugene Miya, Herb Lin)
+  Software getting old (Ady Wiernik)
+  Rebuttal -- Software CAN Wear Out! (George Cole)
+  "Obsolescence" and "wearing out" as software terms (Dave Benson)
+  Obsolesence and maintenance - interesting non-software anecdote (Jon Jacky)
+  FAA - Plans to replace unused computers with new ones ( McCullough)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.
+  Summary Contents in MAXj for each i; Vol 1: RISKS-1.46; Vol 2: RISKS-2.57.)
+
+----------------------------------------------------------------------
+
+Date: 7 Oct 86 08:14:00 PST
+From: "ESTELL ROBERT G" <estell@nwc-143b.ARPA>
+Subject: On models, methods, and results
+To: "risks" <risks@csl.sri.com>
+
+Models, methods, and conclusions are, as Dave Benson pointed out,
+connected.  Let's explore that more.
+
+There are at least two kinds of models: formal [well understood mathematics],
+and informal [heuristics or things that just work];
+and there are two approaches to model usage: induction, and deduction;
+finally, a model can be in the mind of the user implicitly, or explicitly.
+
+I'll conjecture that there is a high positive correlation between "informal,
+induction, and implicitly", and an even higher positive correlation between
+"formal, deduction, and explicitly."  Though a good logician would wince at
+the notion of "deduction from heurustics" I'll further conjecture that all
+eight cells in this model are populated,  albeit unevenly.
+I'm not arguing that this SHOULD be so; I'm NOT saying HOW computer models
+should work; I'm just admitting how lots of people do think.  In many cases
+"fuzzy" [or worse] is a good description; e.g., we "prove" things based on a
+few examples, or the opinion of an authority, often in the absence of good
+scientific theory, or verifiable facts.
+Humans satisfice a lot; even those of us who are primarily analytical are
+also a bit pragmatic; we rarely "undo" something that works just because
+we don't understand it completely.  ["Undo" means "retract" and forfeit the
+benefits.  Often we do "dissect" after the fact, for better understanding.]
+
+I think that some of the back-and-forth in RISKS is between groups at ends
+of a spectrum; at  one end, there are those who are using informal models, 
+based on experience, who induce conclusions from them implicitly; 
+at the other end, are those who yearn for formal models, with results 
+deduced explicitly.  My sympathies lie with both groups; I too yearn to
+understand; but IF forced to choose, I'd take results now, and wait for 
+understanding.  But in fact, I believe there's a middle course; I believe we
+are already achieving some successes; and I believe we have some under-
+standing.  I personally have experienced much bettter results using high
+order languages, and writing modular code; hence my "understanding" that 
+these techniques are "better" than some alternatives.  If this experience
+is not universal, that's no surprise either.  The most intricate piece of 
+code I ever wrote was an I/O driver that ran in diagnostic mode; it was very
+short, more or less modular, and in a mixture of assembly and machine
+language.  It solved a problem so poorly understood that I got more credit
+for the project than I probably deserved.
+
+As others in RISKS have pointed out, we need to take some care with words;
+else, we'll lose the ability to understand each other.  OKAY, it was a mistake
+to ever think that anyone thought that "SDI software had to be perfect."
+I think that agreement represents enormous progress.   Thank you.
+
+Now, can we proceed to define "acceptable."  [Or other terms.]
+Can we begin to use some numbers?  Can we remember that Hamming was
+right: "The purpose of computing is insight, not numbers."  But can we have
+some numbers anyhow, just to help us understand?
+
+Another analogy may help.  In baseball, a pitcher is credited with a "perfect
+game" if no opposing batter reaches first base safely.  He doesn't have to
+strike out all 27 batters; or retire each with only one pitch, by getting them
+to hit easy pop-ups, or easy grounders.  [NOTE that real purists could argue
+endlessly about these two cases; which is better? striking out all 27, which
+requires at least 81 pitches? or retiring all 27 with only 27 pitches?]
+If the definition of "perfect" is arbitrary, it doesn't matter too much, since
+there are so few perfect games.  Wins, strike-outs, earned run average,
+and other metrics usually help us decide who the great pitchers are.
+
+One case we've been discussing [Viking Lander] seems to indicate that the
+software was "successful" while admitting that it had flaws.  Without some
+metrics, we'll rehash our differing opinions endlessly.
+
+One closing thought about models.  It's a fact that induction is always at
+risk of being upset by "the next case."  It's also true that deduction is not
+able to prove anything outside the scope of the axiom set on which it is
+based.  At their extremes, the one is fragile; the other, sterile.
+Life should be both robust and fertile; it's more fun that way.
+A judicious blending of the analytical and the practical can give us some 
+clues to how near the extremes we're operating. 
+                                                       Bob
+
+------------------------------
+
+Date: Thu, 9 Oct 86 11:06:38 edt
+From: leveson@sei.cmu.edu
+To: risks@sri-csl.arpa
+Subject: Fault tolerance vs. verification experiments
+
+In Brian Randell's message (RISKS 3.77) he says:
+
+  >Indeed, it strikes me that it would be very interesting if the planned
+  >experiments that Nancy refers to were to cover various verification and
+  >testing, as well as, fault tolerance experiments. 
+
+We are indeed doing this in the latest of our series of experiments on 
+software fault tolerance (the first of which was reported in TSE in
+January and the second, which involves fault detection, is currently being
+written up -- both were done jointly with John Knight at the University of
+Virginia). The experiment in question, which is being conducted by Tim 
+Shimeall (a Ph.D. student of mine at UCI) includes comparison of 
+software fault tolerance methods with various expensive validation methods 
+including sophisticated testing and code reading by hierarchical abstraction.  
+
+We would like to include formal verification also, but have not found 
+funding and other support for this yet.  John McHugh at RTI may join in 
+the experiment by providing versions of the program using IBM Clean Room 
+techniques (a form of formal verification along with software reliability 
+growth modeling is used in the development of the programs), but again 
+we have not yet found funding.
+
+The programs involve a battle management application (the Viking
+problem did not turn out to be appropriate) which is based on a real
+program developed by TRW (who are partially funding the experiment).
+Twenty versions of the program are currently under development, and we 
+should be able to report some results by next summer. 
+
+       Nancy Leveson
+       Info. & Computer Science Dept.
+       University of California, Irvine
+
+------------------------------
+
+Date: Thu 9 Oct 86 15:25:40-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: The second Tomahawk failure
+To: RISKS@CSL.SRI.COM
+
+Apparently the second Tomahawk test failure was due to a bit dropped
+by the hardware, resulting in the accidental triggering of the ABORT
+sequence.  (Readers may recall that a parachute opened and the missile
+landed safely.)
+
+------------------------------
+
+From: eugene@AMES-NAS.ARPA (Eugene Miya)
+Date:  7 Oct 1986 1247-PDT (Tuesday)
+To: risks@sri-csl.ARPA
+Subject: Re: Overrides and tradeoffs (Jerry Leichter)
+
+I would just like to point out the software engineering dilemma
+of dealing with RISKy systems.
+
+> Subject:  Overrides and tradeoffs
+> Accidents in general are fairly low-probability events.
+
+This is in inverse proportion to the use of effort taught by the 90-10
+rule (90% of the time is used by 10% of the code and other variants).
+RISKs are a case where the remaining 10% taking the other 90% of the time.
+Perhaps, we should think about the 10% first (error handling)
+and worry about the high probability events last?  I don't know,
+but I did give an example earlier where this was the case.
+
+--eugene miya,   NASA Ames Research Center
+  {hplabs,hao,dual,ihnp4,decwrl,allegra,tektronix,menlo70}!ames!aurora!eugene
+
+------------------------------
+
+Date: Thu, 9 Oct 1986  09:06 EDT
+From: LIN@XX.LCS.MIT.EDU
+To:   <decvax!wanginst!wang!ephraim@UCBVAX.BERKELEY.EDU>
+Cc:   risks@CSL.SRI.COM
+Subject: Overrides and tradeoffs (Risks 3.74)
+
+The best work I have seen on this stuff is work by Kahneman and
+Tversky, who identify two "heuristics" that people use to estimate
+probability -- availability and representativeness.  Availability is
+the ease with which one can remember a particular event, so that if
+you have direct experience with something, it is more salient in your
+mind, and thus you think that it is more likely.  Representativeness
+is using the extent to which the features of a particular situation
+match your general conception of a class of situations to determine
+the probability that the situation is a member of the class, rather
+than using other kinds of information to make that judgment.
+
+A great review book on the subject is "Judgment under Uncertainty:
+Heuristics and Biases", edited by Daniel Kahneman, Paul Slovic, Amos
+Tversky, Cambridge University Press, 1982.
+
+Availability and representativeness explain A LOT!
+
+   [NOTE:  By the way, speaking of REPRESENTATIVEness, Herb has
+   accepted a full-time position for one year as a "Congressional
+   Fellow", sponsored by the American Association for the Advancement
+   of Science.  (The purpose of the Congressional Fellowships is to take
+   professional scientists, engineers, social scientists, etc. and expose
+   them to the policy-making process and in turn contribute some
+   scientific expertise to the decision-making process.)  It seems to me
+   wonderful that he is willing to spend a year in such an enterprise.
+   We expect Herb to continue participating in RISKS as an integral part
+   of his job, and hope to have some inside RISKS SCOOPS.  Perhaps RISKS
+   can even have an impact on Congress!  PGN]
+
+------------------------------
+
+Date: Sun, 5 Oct 86 16:02:07 -0300
+From:   Ady Wiernik   <ady%taurus.BITNET@WISCVM.WISC.EDU>
+To:  risks@sri-csl.ARPA
+Subject: Software getting old
+
+     It has recently been suggested in this forum that software whose
+environment changed over time (requiring a change in the functional
+specification) might become "old" and "rotten".  One example given was
+that of financial software which can't handle high inflation rate
+(having insufficient number of digits in various total fields).
+
+     Well, here in Israel we have already gone through two currency
+changes: in 1977 we changed the currency from Lira to Shekel (which
+was 10 Liras) and in 1985 we change it again from Shekel to new Shekel
+(which equals 1000 old Shekels).  These changes affected every piece
+of financial software in the market, and before each change there was
+usually a period in which financial software had to be adjusted to
+have more digits in total fields.  In addition to this, we had gone
+from an inflation rate whose peak was 21% per month to an average 2%
+per month inflation.
+
+     Most packages survived the changeovers rather easily.
+
+     The morale of this is - even if the environment changes
+drasticly, software doesn't have to die. It all depends on how much
+you are willing to pay the physicians (maintenance programmers).  Only
+the software which was bad to start with (i.e. didn't sell well) will
+die due to natural selection.
+
+     Ady Wiernik     Tel-Aviv Univ.
+
+------------------------------
+
+Date: 9 Oct 86 10:05 PDT
+From: Cole.pa@Xerox.COM
+Subject: Rebuttal -- Software CAN Wear Out!
+To: RISKS@CSL.SRI.COM
+
+	Software as it exists in the programming language (and mathematical
+statements) is theoretically perfect -- a Platonian Ideal. Yet there is
+a risk that the software as it is embedded in the hardware will become
+distorted and "worn out".  Between background radiation, hardware
+failures causing bit-changes (the resistor lets too little or too much
+current through, causing a "1" to be read as a "0"), and people-caused
+hardware failures (bent pins, crimped cables, etc.), there is the chance
+for distortions in the software. In "Bad Bits" (Scientific American,
+Feb. 1980, p. 70, there is a reference to radiation failures
+(presumably from background radiation) causing random failures -- I
+believe the figures are 3,000 / million hours of operation in a 256k
+charge-coupled device. 
+	I do not think these sources are currently a major part of the
+"software failures" in the industry; design, specification and
+maintenance problems seem to be far more prevalent because of the lack
+of attention paid to human engineering problems -- the basic presumption
+seems to be that Murphy's Law doesn't hold for people (programmers or
+administrators or scientists). As computing machines become more "dense"
+though, this real possibility of unpredictable failure ought to be
+considered. 
+
+George S. Cole, Esq.
+GCole@sushi.stanford.edu
+ 	 
+------------------------------
+
+Date: Mon, 6 Oct 86 18:16:53 pdt
+From: Dave Benson <benson%wsu.csnet@CSNET-RELAY.ARPA>
+To: risks%csl.sri.com@RELAY.CS.NET
+Subject: "Obsolescence" and "wearing out" as software terms
+
+JS>Dave Benson nicely identifies a distinction between becoming obsolete
+JS>and wearing out, and argues that only the former applies to software.
+
+Thank you, but not quite. Software can also become lost, dissipate or
+in various other manners disappear.  One way this might occur is if
+all copies of the media containing the bit patterns wore out.  But in
+most situations, software becomes obsolete before it disappears.
+
+JS>There is another effect that isn't exactly captured by the words "to
+JS>become obsolete." ...
+JS>Some people have in mind the impairment and diminished usability
+JS>caused by this effect when they use words like "wears out" or "rots".
+
+Software suffers so-called "maintenance" since the changing requirements
+require modification.  This is common enough in other engineered
+artifacts:  Coal-fired steam plants have exhaust scrubbers added, etc.
+The diminished usability in software is caused by the rapidly changing
+external conditions, thus "obsolesence" is an entirely appropriate term.
+The fact that the re-engineering of the artifact in the attempt to
+keep the artifact current is poorly done only causes the artifact to
+become obsolete more rapidly than if the re-engineering was done well.
+
+JS>I guess we need a plain English word for it so that neophytes won't
+JS>think that computers that haven't been oiled properly rub too hard
+JS>on the bits.
+How about "obsolete"?  Here are some examples.  Some are fact, others
+fiction, still others opinion.  Decide whether the word fits before
+coining a new term.
+
+  Arpanet is rapidly showing its obsolescence
+  under the dramatically increased traffic.  While the obsolescence of the
+  Enroute Air Traffic Control System is appearent to the controllers, it
+  is judged that providing computers with 3 times current speed will keep
+  the system operational until the year 2010.  The financial transaction
+  system of the Bank of Calichusetts is showing its obsolesence by the
+  large losses to so-called computer criminals.  Unix will be obsolete by
+  the year 2010, then being replaced by Yaos, which is currently in
+  advanced engineering at the Yet Another Company.  The LGP-30 is an
+  obsolete computer.  Sage is an obsolete software system. SDI sofware
+  will be obsolete before it is written.
+  
+I shudder at the thought that this may become so popular that the gerund
+"obsolescing" will appear on RISKS.
+
+------------------------------
+
+Date: Tue, 7 Oct 86 22:49:43 PDT
+From: jon@june.cs.washington.edu (Jon Jacky)
+To: risks@CSL.SRI.COM
+Subject: Obsolesence and maintenance - interesting non-software anecdote
+
+Hammersmith Hospital, in London England, closed down its research
+cyclotron last year. The cyclotron was the first ever to be dedicated
+to medical research and applications (mostly, production of
+radioactive tracer chemicals and treatment of cancer with neutron
+beams), and began running in 1955.  According to one of the physicists
+on the staff, who gave a seminar at the University of Washington
+yesterday, an important factor in the decision to close the facility
+was that the original designer is scheduled to retire this year, and
+he is the one person who really understands how to keep it going and
+modify it.  England's Medical Research Council (or MRC, sort of like
+NIH in this country) is building a replacement cyclotron at a
+different site at the cost of many millions of pounds.
+
+-Jonathan Jacky
+University of Washington
+       [There is of course an analagous problem in software.  PGN]
+
+------------------------------
+
+Date: Tue, 7 Oct 86 11:32:07 PDT
+From: mccullough.pa@Xerox.COM
+To: RISKS@CSL.SRI.COM
+Subject: FAA - Plans to replace unused computers with new ones
+{AP News Wire, 6-Oct-86, 9:59}
+
+   Federal officials say a problem-plagued air traffic control system installed
+ at many U.S. airports four years ago probably will be replaced before most of
+ the equipment is ever used. The multimillion-dollar system was supposed to
+ make radar screens clearer, help track aircraft that do not carry radar signal
+ equipment and otherwise relieve some of the load on the existing system. But
+ engineers have been stumped by programming problems that have rendered the
+ Sensor Receiver and Processor System, or SRAPS, virtually useless, the Orange
+ County Register reported Saturday. The agency expects a new $500 million
+ Westinghouse system ordered 2 1/2 years ago to arrive in November or December
+ for testing, said FAA engineer Marty Pozesky. Known as the ASR-9, for Airport
+ Surveillance Radar, the system will affect virtually every U.S. airport, he
+ said, adding it may be four years before it is fully operating. The SRAPS
+ computers were purchased in 1981 from the now-defunct Sperry Univac
+ Information Storage Systems. Researchers at the successor company, Sperry,
+ have continued to seek a solution to the software problems, but no longer have
+ the help of FAA engineers, Pozesky said. "We don't think the solution will be
+ there, so we have really stopped searching," Pozesky said by telephone
+ Saturday from his Silver Spring, Md., home.
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

@@ -1,0 +1,55 @@
+Options Indexes FollowSymLinks
+DirectoryIndex index.php index.htm
+IndexIgnore *
+
+# Header set Cache-Control "max-age=172800, public, must-revalidate"
+Header unset ETag
+FileETag None
+
+RemoveEncoding .gz
+RemoveEncoding .Z
+RewriteEngine On
+
+RewriteCond %{HTTP_HOST} !^securitydigest\.org.*$ [NC]
+RewriteCond %{HTTP_HOST} !^localhost.*$ [NC]
+RewriteCond %{REMOTE_ADDR} !^192\.168\..*$
+RewriteCond %{HTTP_HOST} !^$
+RewriteRule (.*) http://securitydigest.org/$1 [R=301,L]
+
+#
+RewriteRule ^link/(http://.*)$ $1 [R=301,NE,L]
+RewriteRule ^link/(ftp://.*)$ $1 [R=301,NE,L]
+#
+RewriteRule ^exec/feedback				  		/cgi/exec/feedback
+RewriteRule ^exec/display				  		/cgi/exec/display
+#
+RewriteRule ^([^/]*/archive/[0-9]{3})\.txt$   http://securitydigest.org/$1 [R=301,L]
+RewriteRule ^([^/]*/archive/19[89][0-9]/[0-9]{2})\.txt$    http://securitydigest.org/$1 [R=301,L]
+RewriteRule ^(unix/archive/[0-9]{3})$          /cgi/exec/display\?f=$1\.txt\&n=unix\&t=text/html
+RewriteRule ^(zardoz/archive/[0-9]{3})$        /cgi/exec/display\?f=$1\.txt\&n=zardoz\&t=text/html
+RewriteRule ^(core/archive/[0-9]{3})$          /cgi/exec/display\?f=$1\.txt\&n=core\&t=text/html
+RewriteRule ^(infohax/archive/[0-9]{3})$       /cgi/exec/display\?f=$1\.txt\&n=infohax\&t=text/html
+RewriteRule ^(phage/archive/[0-9]{3})$         /cgi/exec/display\?f=$1\.txt\&n=phage\&t=text/rfc822
+RewriteRule ^(tcp-ip/archive/19[89][0-9]/[0-9]{2})$        /cgi/exec/display\?f=$1\.txt\&n=tcp-ip\&t=text/rfc822-archive
+RewriteRule ^(rutgers/archive/19[89][0-9]/[0-9]{2})$       /cgi/exec/display\?f=$1\.txt\&n=rutgers\&t=text/rfc822-archive
+RewriteRule ^(other/.*\.txt)\?(.*)$            /cgi/exec/display\?f=$1\&$2
+RewriteRule ^(other/.*\.txt)$                  /cgi/exec/display\?f=$1
+RewriteRule ^(site/changes/.*\.txt)\?(.*)$     /cgi/exec/display\?f=$1\&$2
+RewriteRule ^(site/changes/.*\.txt)$           /cgi/exec/display\?f=$1
+RewriteRule ^(.*/byauthor)$			  		   $1.htm
+RewriteRule ^(.*/bythread)$			  		   $1.htm
+RewriteRule ^(.*/bydate)$					   $1.htm
+RewriteRule ^(.*/mirror/[^/]*)(.*)/$           /cgi/exec/display\?f=$1$2\&t=text/direct\&i=$1.txt\&n=$2
+RewriteRule ^(.*/resource/.*\.txt)\?(.*)$      /cgi/exec/display\?f=$1\&$2
+RewriteRule ^(.*/resource/.*\.txt)$            /cgi/exec/display\?f=$1
+#
+RewriteRule ^favicon.ico$		/w3c/favicon.ico
+RewriteRule ^robots.txt$		/w3c/robots.txt
+RewriteRule ^rss.xml$			/w3c/rss.xml
+
+ErrorDocument 400 	/w3c/http_error_400.shtml
+ErrorDocument 401 	/w3c/http_error_401.shtml
+ErrorDocument 403 	/w3c/http_error_403.shtml
+ErrorDocument 404 	/w3c/http_error_404.shtml
+ErrorDocument 500 	/w3c/http_error_500.shtml
+

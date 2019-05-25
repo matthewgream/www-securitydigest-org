@@ -1,0 +1,306 @@
+RISKS-LIST: RISKS-FORUM Digest  Tuesday 12 December 1989   Volume 9 : Issue 54
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Mariner I [once more] (Mark Brader and Fred Webb)
+  Re: Software tool (indent) munges code 
+    (Mark Moraes [2x], Joe Dellinger, Amos Shapir)
+  Re: SSA software maintenance (Dan Franklin)
+  Re: Don't Give Social Security Numbers to Girlfriends (Will Martin)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, and nonrepetitious.  Diversity is welcome.
+CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive "Subject:" line
+(otherwise they may be ignored).  REQUESTS to RISKS-Request@CSL.SRI.COM.
+TO FTP VOL i ISSUE j:  ftp CRVAX.sri.com<CR>login anonymous<CR>AnyNonNullPW<CR>
+  cd sys$user2:[risks]<CR>get risks-i.j .  Vol summaries now in risks-i.0 (j=0)
+
+----------------------------------------------------------------------
+
+Date: Tue, 12 Dec 89 02:53:54 EST 
+From: Mark Brader <msb@sq.sq.com>
+Subject: Mariner I [once more]
+
+The new Usenetoid newsgroup alt.folklore.computers (a.f.c) has been
+having a discussion of the Mariner 1 space probe failure in 1962 due to
+a missing "-" (Arthur C. Clarke: "The most expensive hyphen in history."
+The vehicle cost $18,500,000.) which was discussed at length in
+Risks in November and December 1987.
+
+As was discussed in Risks, a popular but apocryphal version of this story
+-- even appearing in computer textbooks -- is that a "." was substituted
+for a "," in a FORTRAN DO statement, converting it to an assignment.
+But no contemporary evidence was ever cited to support that story.
+
+Now the a.f.c discussion began with exactly that apocryphal story;
+someone has posted the old Risks discussion to clean that up.  But this
+time one thing is different.  Someone else has posted giving a likely
+explanation of the FORTRAN DO version of the story.  Notice, by the
+way, that it did not cost even one spacecraft, let alone the billion
+dollars claimed in one of the textbooks.
+
+Fred Webb (fwebb@bbm.com) writes in alt.folklore.computers:
+
+   Subject: Fortran story - the real scoop
+   Summary: I was there!
+
+   ...
+   This kind of thing is a common Fortran bug, so there are probably
+   many different stories going around with a similar theme.  Some
+   of them are probably true.  I do know of one such instance that
+   really did happen, at Nasa.
+
+   I worked at Nasa during the summer of 1963.  The group I was
+   working in was doing preliminary work on the Mission Control
+   Center computer systems and programs.  My office mate had the
+   job of testing out an orbit computation program which had been
+   used during the Mercury flights.  Running some test data with
+   known answers through it, he was getting answers that were close,
+   but not accurate enough.  So, he started looking for numerical
+   problems in the algorithm, checking to make sure his tests data
+   was really correct, etc.
+
+   After a couple of weeks with no results, he came across a DO state-
+   ment, in exactly the form ... indicated above.  After changing the
+   . to a , the program results were correct to the desired accuracy.
+   Apparently, the program's answers had been "good enough" for
+   the sub-orbital Mercury flights, so no one suspected a bug until
+   they tried to get greater accuracy, in anticipation of later
+   orbital and moon flights.  As far as I know, this particular
+   bug was never blamed for any actual failure of a space flight,
+   but the other details here seem close enough that I'm sure this
+   incident is the source of his version of the story.
+
+Sent to Risks by Mark Brader, SoftQuad Inc., Toronto  
+
+   [See RISKS-8.75 for the missing `bar' in `R dot bar sub n' expression that 
+   contributed to the loss of Mariner I; details from Paul Ceruzzi.  PGN]
+
+------------------------------
+
+Date: 	Tue, 12 Dec 89 21:45:30 EST
+From: Mark Moraes <moraes@csri.toronto.edu>
+Subject: Re: Software tool (indent) munges code
+
+In RISKS-9.50, lai@east.Berkeley.EDU (Nick Lai) comments that indent
+has an insidious bug under BSD and SunOS. He is wrong about the bug
+under BSD and SunOS, right about the bug if his compiler is ANSI
+compliant, but definitely right in pointing out the risk.
+
+- On Unix systems, pcc derived C compilers will interpret that code
+exactly as indent did, generating a warning in the process, so indent's
+behaviour would not change the intent of the code. (Like the
+compilers, indent should probably warn the user) Therefore, for old
+style C, indent's behaviour is NOT wrong. Most old compilers would
+have treated that code the way indent did, so indent just made the
+code clearer.
+
+- With ANSI C compilers, the =op style syntax is obsolete. This is one
+of the QUIET CHANGEs in the proposed ANSI C standard -- see section
+3.1.5 (Operators) of the Rationale (my copy is dated Oct 31,1988 -- the
+section number may have changed since)
+
+So, if the programmer wrote
+        x=+1;
+
+ANSI C compilers would interpret this to mean "assign the
+value +1 to x". (GNU C version 1.34 on a Sun3 interprets it this way
+*EVEN* with the -traditional flag)
+
+K&R1 C compilers would interpret this to mean "increment x by 1"
+pcc derived compilers also complain with something like:
+"foo1.c", line 7: warning: old-fashioned assignment operator
+"foo1.c", line 9: warning: ambiguous assignment: assignment op taken
+I don't know if other K&R1 compilers complain this way.
+(Note that Ultrix 3.1 compilers also follow K&R1 and complain)
+
+indent as distributed with BSD and SunOS silently assumes K&R1 C behaviour
+and converts it to
+        x += 1;
+
+GNU indent version 1.1 assumes ANSI C behaviour and converts it to
+        x = +1;
+Ultrix 3.1 indent does this too (even though their compiler still
+follows K&R1!)
+
+People converting programs from old C to ANSI C should check all code
+(using grep or some similar tool) to make sure sequences of the form
+"=op" are converted to "= op" or "op=" depending which is meant! (And
+make some suggestions on programming style to the person who wrote the
+code originally)
+
+------------------------------
+
+Date: 	Wed, 13 Dec 89 01:29:49 EST
+From: Mark Moraes <moraes@csri.toronto.edu>
+Subject: Re: Software tool (indent) munges code
+
+Beverly Erlebacher <erlebach@turing.toronto.edu> points out that SunOS4.0
+compilers also follow ANSI, and interpret =op as = op, compiling silently if op
+is a unary operator. But SunOS4.0 indent works like SunOS3.x/BSD indent and
+indents according to the old rules, making it op=. So for SunOS in my previous
+note, please read SunOS3.x.
+
+------------------------------
+
+Date:  Wed, 13 Dec 89 02:54:02 PST
+From: joe@hanauma.stanford.edu (Joe Dellinger)
+Subject: Fun and Games with Indent
+
+	You think the fun and games with statements like "x=-5;" are bad?
+It is MUCH worse than that! Here is how the following line of code mutates
+with each successive application of 4.3BSD lint (this happened to me):
+
+Original:	x = .5;
+				A typical piece of C code from a scientific
+				application.
+1st iter:	x =.5;
+				Uh... still valid, but NOT an improvement.
+2nd iter:	x .= 5;
+				Now it's a syntax error!
+Converged:	x.= 5;
+				At this point it's stable: a good-looking
+				valid piece of code has become a bad-looking
+				syntax error!
+
+	Fortunately Convex's "lint" has these bugs fixed. It's a very useful
+tool, WHEN IT WORKS.
+
+------------------------------
+
+Date: 13 Dec 89 16:32:47 GMT
+From: amos@taux01.nsc.com (Amos Shapir)
+Subject: Re: comments on Unix INDENT program (Lai, RISKS-9.50)
+
+Simson L. Garfinkel in RISKS-9.53 writes:
+>Actually, indent is merely changing the old-style C code (x =- 1) to the new
+>style. (x -= 1).  Careful programmers always put in whitespace between
+>assignment and varibles for this reason.  Some compilers will flag
+>(x=-1) as a warning because it is ambigious.
+
+This case is a typical example of what RISKS is all about: the purpose of
+"indent" is to change/add *white space* so the outcome is nicer and more
+readable; it has no business "merely changing" the code in a way that might
+change its meaning.
+
+Since in old-style C the term (x=-1) was ambiguous, "indent" may issue a
+warning or do nothing, but not try to guess which of the possible ways to add
+blanks is the correct one, and certainly not rewrite it without indicating in
+any way that it did.
+
+Another aspect of RISKS is that in this case "indent" was run on a
+program written in new-style C, in which that term had only one meaning
+- which is different from the one assumed.  In essence, "indent" was
+used to process input written in a language different from the one it
+was designed for, but similar enough to confuse an innocent user.
+
+Amos Shapir, National Semiconductor (Israel) P.O.B. 3007, Herzlia 46104, Israel
+
+------------------------------
+
+Date:     Tue, 12 Dec 89 0:00:43 EST
+From: Dan Franklin <dan@WILMA.BBN.COM>
+Subject:  Re: SSA software maintenance
+
+The news about the SSA being unable to reprogram its computers in time
+for the catastrophic health care bill repeal comes as no surprise to
+anyone who's read "Nations at Risk: the Impact of the Computer
+Revolution" by Ed Yourdon (1986, YOURDON Press).
+
+   Indeed, the SSA problems are not unique, and are no reflection on the
+   energy, talent or dedication of its staff -- but rather the
+   accumulation of old hardware, old software, and a general lack of
+   understanding on the part of Congress of the difficulties of dealing
+   with massive volumes of data.  For the SSA, massive means 446 billion
+   [bytes] of disk storage to service 650,000 inquiries each day.  It
+   means 113 tons of computer printouts per month; 380 million wage
+   reports per year, and 40 million checks per month.  As former
+   commissioner John A. Svahn says, only a "daily miracle" gets the
+   monthly checks out on time.  Having worked with the SSA computer
+   people, I can personally testify to their enormous energy and
+   professionalism, and I firmly believe that the $478 million five-year
+   modernization program approved by Congress in 1982 will eventually
+   (though not in five years) get the organization back in control.
+
+The demurral about the time needed has unfortunately now been vindicated.
+
+There's more on p. 432:
+
+   o  Calculating the cost-of-living increase for 50 million recipients of
+      Social Security benefits takes 20,000 hours of computer time on older
+      computer systems within the SSA.  [That's 1.44 seconds per recipient!]
+   
+   o  When the SSA upgraded its computer systems in 1981 from five-digit chechs
+      to six-digit checks, it required 20,000 man-hours of work and 2,500 hours
+      of computer time to modify 600 separate computer programs.
+   
+   o  The morale in the SSA maintenance group was so bad at one point that one
+      of the programmers was caught urinating on a disk pack...
+   
+   Before you laugh too loudly at this, remember that the SSA has one of
+   the better MIS organizations in the country.  They deal with
+   gargantuan volumes of data, and they work in a political environment
+   that defies imagination -- but they get the job done, and they get the
+   checks out each month...
+
+True, an incorrect check is lots better than no check at all!
+
+These passages are used to help illustrate one of the book's points, which is
+that large information systems all over the U.S. are suffering badly, and that
+problems with these systems are a significant factor keeping us from being more
+competitive.  He makes a persuasive case; the book is worth reading (though
+redundant towards the end).
+                                          	Dan Franklin
+
+------------------------------
+
+Date:     Tue, 12 Dec 89 9:02:17 CST
+From: Will Martin <wmartin@STL-06SIMA.ARMY.MIL>
+Subject: Re:  Don't Give Social Security Numbers to Girlfriends
+
+Re: ... the Inter-Tect investigative agency in Houston promises to
+verify ...  appearance in newspaper articles...
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Hmmm... Interesting. I wonder if they include a copy of the article?
+I've been on the front page of the St. Louis Post-Dispatch twice in my
+life (that I know of :-); once was a picture of me playing the oil drum
+in the Washington University Motley Marching Band (we were spelling out
+"Columbus, Ohio, is a mighty fine town" in script and I was dotting the
+"i" [I forget which one]) about 25 years ago. The other was just this
+summer, when a letter to the editor I wrote about changing the date of a
+street festival prompted the paper to make a survey and they mentioned my
+name in the article about the results [my idea lost :-(]. I suppose the
+kind of article they are really looking for is "Mr. X was convicted of
+drugs and weapons charges in Superior Court today" and not such "light"
+coverage, but I would hope they would get positive as well as negative
+results in such an investigation.
+
+But what do they do in cases of relatively common names? I know my name shows
+up in various unusual contexts -- there was a "William Martin" who worked for
+the CIA and defected to the Soviets some years back, and the "Man Who Never
+Was" -- a famous masquerade deception designed to fool the Germans regarding
+the Normandy invasion -- was named "William Martin".  I'm sure there have been
+other "William Martin"s in this city whose names have shown up in newspaper
+articles as being involved in various nefarious activities -- how would the
+researchers know who was who? I'm guessing the articles have been scanned in
+for a computerized text search to make this practical, but then this is just a
+string-matching exercise without any other clues (pictures, SSNs, identifying
+marks, whatever) to narrow the field. It seems of marginal utility unless the
+name is really unusual.
+
+Wonderingly,
+Will
+
+   [Don't bet on "William Martin" not being enough to catch you, unless you are
+   willing to get caught in a Martingale and can afford to get blown away.
+
+      For the novice, a martingale is a betting scheme -- such as continually
+      doubling up if you lose, which probabilistically leads to the so-called
+      "Gambler's Ruin" problem.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest 9.54
+************************

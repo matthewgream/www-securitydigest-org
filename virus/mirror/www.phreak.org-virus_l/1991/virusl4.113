@@ -1,0 +1,991 @@
+VIRUS-L Digest   Monday,  1 Jul 1991    Volume 4 : Issue 113
+
+Today's Topics:
+
+Software pricing
+System 7 Keyboard Trouble (Mac)
+Ross Bashing? Not at all...
+My 2 cents (Mac)
+Beta Testing / DS "bug" report. (PC)
+Re: Software Upgradable BIOS (PC)
+Words
+Re: McAfee on VSUM accuracy and Microcom (PC)
+So, you think you're pretty safe, eh? (general)
+Two versions of SCANV80.ZIP? (PC)
+Requirements for Virus Checkers (PC)
+Self-Modifying SETVER.EXE (PC)
+Re: Can such a virus be written ... (PC)
+Re: Ross-bashing
+Encrypted strings
+doom2:reply (PC)
+Disinfectant 2.5 (Mac)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Fri, 28 Jun 91 14:58:17 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Software pricing
+
+I think I've missed something somewhere. $30/year for a single user
+Hypercard stack of virus information (a very good one though I liked
+it better as a flat ASCII file), $350/year for a soft cover anti-viral
+magazine, and people are b*tch*ng about $1500/2 years with unlimited
+updates to license software for 10 technicians to service (one would
+expect) 10,000 PCs ? $0.15/pc ? They even give telephone support! The
+answer is simple: if you don't like the price, buy something else (or
+nothing), there are plenty of alternatives.
+
+Better yet, write your own software and support it yourself, that just
+takes learning and effort.
+
+Problem is not many people today seem to have heard of John Galt or
+TANSTAAFL.
+
+						Bemusidly,
+
+								Padgett
+
+------------------------------
+
+Date:    Fri, 28 Jun 91 16:06:20 -0400
+>From:    Joe McMahon <XRJDM@SCFVM.GSFC.NASA.GOV>
+Subject: System 7 Keyboard Trouble (Mac)
+
+In re the report of Mac hardware trouble discovered in conjunction
+with System 7 installation:
+
+I believe this is caused by somebody unplugging ADB devices and
+plugging them back in again while the power's on. This can blow the
+ADB chip.
+
+As far as I know, there are no software-controllable voltages/currents
+to chips anywhere in the machine (exclusive of predetermined control
+signals).
+
+I think this is merely a coincidence. Do other machines which use the
+same hard disk develop the trouble? Do other machines develop this
+trouble when a program from the damaged one is run on them? If neither
+of these is true, you don't have a virus, you have a hardware failure.
+
+ --- Joe M.
+
+------------------------------
+
+Date:    Fri, 28 Jun 91 13:21:05 -0700
+>From:    Eric_Florack.Wbst311@xerox.com
+Subject: Ross Bashing? Not at all...
+
+Hi, Padgett:
+
+
+Remember the Prodigy STAGE.DAT controversy a few months ago ? It all
+started when someone scanned the disks before installing the *P*
+upgrade and discovered a host of virus names and strings inside the
+.DAT file. Why ? My thought is that *P* needed to create a contiguous
+fixed-size file on disk and did it the simplest way possible: by just
+creating a giant memory buffer (without putting anything in it) and
+copying it to disk to create the STAGE.DAT file. Whatever happened to
+be in memory at the time was just swept along.
+
+=-=-=
+
+Right. But in this case, since the resulting data was to be writen to
+disk it would have made sense to use CALLOC, as opposed to MALLOC as
+they seem to have.  In *P*'s case, clearing the RAM /before/ use would
+hgave been the way to go.  Matter of fact, there's still some question
+to my mind why they didn't go this route. I can find no practical
+objection to doing so. Given that they must have thought of this
+point, I have to assume they had some reason other than trivial
+perfomance increases for not wanting to clear out the RAM in question.
+
+But, we digress... you are most correct when you mention that clearing
+RAMbefore scanning would crash the system and/or not report.  Because
+of this I'm not suggesting that pre-clearing the RAM for scanners and
+such... I'm merely suggesting clearing the already allocated RAM,
+/after/ the thing is done. You say:
+- -=-=-
+When the second scanner loaded, it should have overwritten the RAM Ross was
+using......
+=-=-=
+
+Well, for the first time in recent memory I'm going to disagree with
+you, Padgett, for two reasons: Ross' program may not be using the same
+area of RAM as John's. Given the diversity of anti=viral programs out
+there, who knows where a program is going to leave it's signitures?
+Would you have anti-viral writers clear all of RAM before scanning to
+accomidate other such writers?  Clearly, the best way to accomplish
+compatibility and reliability is for each writer to clean up their own
+'mess'. You suggest:
+=-=-=-=
+
+If the decrypted strings were kept in a buffer area at the front of
+the program and followed by the executable code that (hopefully) does
+not match anyone else's viral signatures, any other scanner that
+follows should overwrite all the strings before starting.
+- -=-=-=
+Bad move. You're assuming that everyone will use the same buffer area.
+As for the strings (you hope) not being the same, isn't this where we
+started this merry-go-round? Obviously, they /are/ the same, in many
+cases, and that's where this problem started.
+
+My best regards to you.
+E
+
+------------------------------
+
+Date:    Fri, 28 Jun 91 17:09:00 -0400
+>From:    "Mark Nutter, Apple Support" <MANUTTER@grove.iup.edu>
+Subject: My 2 cents (Mac)
+
+Regarding all the recent flap about "can a virus infect a PC just by doing a
+DIR of a floppy?"---
+
+Looks to me like the original rumor was inspired by an incomplete
+understanding of how the WDEF virus works on the Mac.  Since I have
+seen some references to the Mac "executing the Desktop file" etc., I
+thought I would try and clarify how WDEF worked.  Hopefully, this will
+help clear up matters for both Mac users (who have to deal with it)
+and PC users (who don't, but might be interested anyway).
+
+The Mac OS allows any file to have a resource "fork", which is
+essentially a simple database of menus, icons, code, configuration
+settings, etc., that is associated with the data.  All executable code
+is stored as a resource, but not all resource files/forks necessarily
+contain executable code.
+
+In systems prior to System 7.0, the Finder maintains an invisible
+resource file called "Desktop", which is not supposed to contain any
+executable resources.  (Finder is the program that lets you launch
+programs, copy files, look at disk directories, etc.)  What WDEF did
+was to copy an executable resource into the Desktop file.  This
+resource was a resource of type "WDEF" (hence the name of the virus).
+WDEF resources are supposed to contain code for drawing customized
+windows, but this resource contained a virus which installed itself
+and then called the standard WDEF code to actually draw the window.
+The loophole exploited by the virus was that whenever the Mac OS needs
+a resource, it searches ALL open resource files, beginning with the
+last resource file to be opened.
+
+Step by step: 1) user inserts WDEF infected disk. 2) Finder opens the
+disk's Desktop file [note: no infection yet]. 3) user double-clicks on
+a disk or folder icon to open up a window, 4) Finder looks for a WDEF
+resource to actually draw the window, starting with the most-recently
+opened file, 5) since the infected Desktop was the most recently
+opened resource file, Finder executes the viral WDEF resource instead
+of the standard System resource.  Infection occurs in step 5.
+
+Observations: as of System 7.0, Finder no longer keeps any resources
+in its Desktop files, thus under System 7.0 and future systems, the
+loophole exploited by WDEF will no longer exist.  Users of pre-7.0
+systems can be protected against WDEF (and other viruses that exploit
+this loophole) by obtaining a copy of the FREE anti-viral utility
+GateKeeper Aid and/or the Disinfectant INIT (also free).  These
+utilities are available by anonymous ftp from sumex-aim.stanford.edu
+in the info-mac/virus directory.  Also, if by any chance you think you
+have a Desktop-infecting virus and you haven't got GateKeeper or
+Disinfectant handy, you can easily disinfect it yourself without any
+special hardware or software: just reboot the Mac and hold down the
+Command and Option keys.  This signals the Finder to erase the old
+Desktop file and re-construct it from the contents of the disk.  You
+will lose any Get Info comments you may have (does anybody really use
+those?), but you will also eradicate any *DEF viruses that may be
+lurking on the disk.  Holding down Command/Option also works while
+inserting new floppy disk.
+
+- -----------------------------------------------------------------------------
+Mark Nutter                                                      MANUTTER@IUP
+Apple Support Manager
+Indiana University of Pennsylvania
+G-4 Stright Hall, IUP
+Indiana, PA 15705
+"You can lead a horse to water, but you can't look in his mouth." - Archie B.
+=============================================================================
+
+------------------------------
+
+Date:    Fri, 28 Jun 91 17:17:57 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Beta Testing / DS "bug" report. (PC)
+
+I am just wondering if anyone has ever really had the experience of doing
+a full V&V (verification and validation) process on any software ? The
+amount of testing required is mind boggling (back in 1980 on a military
+program involving a 4 Mhz embedded computer that could address a whopping
+32K, the estimate was that it would take the better part of a century to
+test every possible combination).
+
+Having just discovered an obscure anamoly in DISKSECURE, let's use this for
+an example:
+
+DISKSECURE replaces the MBR of a hard disk with code (horrors !). It is
+designed as a "technology demonstrator" to go resident before DOS loads
+and detect/prevent MBR and Boot Record infections while preventing bypass
+via a floppy boot.
+
+It has been out "in the real world" for about six months and I have received
+two reports and one possible of a problem. It seems that in an XT with
+a 32 MB RLL disk (i.e. ST-238) using a Western Digital WD1002A-27X (NOT a
+WD1002-27X, only the "A" version reported) with the 62-000094-002 BIOS when
+jumpered to "translate" mode (makes the 615 track, 26 sector per track RLL
+drive look like a 940 track, 17 sector/track MFM drive), the controller writes
+17 bytes of "something" to the MBR in a normally unused area.
+
+The WD folks I have talked to think it might be related to the "translate"
+mode (they promised to look into it and get back to me RSN) and I have not
+been able to decipher the 160+K of assembly language SOURCER provided me
+of the WD BIOS yet.
+
+The real "hooker" is that I added code to version 0.95 to read back the MBR
+after DS installs and validate itself. Problem is it passes. I asked the people
+(both over 1000 miles from me) to turn off any cacheing and reduce the buffers
+to 1 (minimum DOS will accept). It still passes. But on the next boot, the
+seventeen bytes are changed and the validation DS does on itself when booted
+fails. For joy.
+
+The point I am trying to make is that these kinds of obscure problems are going
+to crop up in any code. I am told that the demos of 123/W crashed
+repeatedly, Windows UAEs are legion, and have lost track of the letter
+revisions of most major wordprocessing software.
+
+In the antiviral world, the general level of the code is so good that we get
+hung up when two different scanners, both of which work perfectly well on
+their own, disagree with each other. For me, I am very pleasently astounded
+that there are not more conflicts, false positives, or false negatives
+considering the incredible array of equipment and viruses out there - the
+talent that goes into any of the products is just incredible - and they all
+get updated at least quarterly. And somebody always finds fault. Publicly.
+
+So sure, I try to prod the manufacturers into the "next generation" by pointing
+out what can be done & sometimes get a bit abrasive when my instinct tells
+me that a wrong path is being taken - I've seen too many quotes that management
+can seize on to say "we don't need protection", but then it is difficult to
+conduct a meaningful discussion by remote control and no-one has any free time
+at conferences.
+
+Now, in the best of all possible worlds, MicroSoft and Digital Research would
+sponsor a week-long offsite for anti-viral researchers to get together once
+a year in a think-tank atmosphere for brainstorming. And if you believe the
+that will ever happen, I have this bridge up north......
+
+
+							Padgett
+
+	  Somewhere west of Orlando - Tourist capital of the world
+
+------------------------------
+
+Date:    28 Jun 91 20:00:38 +0000
+>From:    vail@tegra.com (Johnathan Vail)
+Subject: Re: Software Upgradable BIOS (PC)
+
+   ingoldsb%ctycal@cpsc.ucalgary.ca (Terry Ingoldsby) writes:
+
+   > It is not even necessary to place it under hardware control, rather if
+   > the hardware incorporates an interlock that requires a special,
+   > possibly unique, code, then the viruses could bash at it forever
+   > (almost) without success.
+   >
+   > For example if each machine thus manufactured were assigned a unique
+   > value in EPROM (which could not be read by the CPU), say of length 64
+   > bits, then the user could be queried, by the software upgrade program,
+   > to enter the key.  If the key matched, the EAROM would be modified,
+   > otherwise nothing would happen.
+
+
+The answer to the problem is simply to have a portion of uncorruptable
+boot code.  This would allow the same level of protection available
+with rock bound BIOS today.
+
+This can be implemented in normal EPROM or a reserved portion of the
+flashrom.
+
+jv <<-- "Always Mount a Scratch Monkey"
+
+ _____
+|     | Johnathan Vail | n1dxg@tegra.com
+|Tegra| (508) 663-7435 | N1DXG@448.625-(WorldNet)
+ -----  jv@n1dxg.ampr.org {...sun!sunne ..uunet}!tegra!vail
+
+------------------------------
+
+Date:    28 Jun 91 19:50:32 +0000
+>From:    vail@tegra.com (Johnathan Vail)
+Subject: Words
+
+Many months ago there was a small thread about various terminology and
+several people suggested that I compile a list.  Here is that list.
+This is a first draft and comments and additions are welcome.
+
+Email responses are encouraged to reduce group traffic and I will
+summarize the changes.
+
+Thanks, jv
+
+
+Law of Stolen Flight: Only flame, and things with wings.
+                      All the rest suffer stings.
+ _____
+|     | Johnathan Vail | n1dxg@tegra.com
+|Tegra| (508) 663-7435 | N1DXG@448.625-(WorldNet)
+ -----  jv@n1dxg.ampr.org {...sun!sunne ..uunet}!tegra!vail
+
+
+________________
+
+virus - a piece of code that is executed as part of another program
+    and can replicate itself in other programs.  The analogy to real
+    viruses is pertinent ("a core of nucleic acid, having the ability to
+    reproduce only inside a living cell").  Most viruses on PCs really are
+    viruses.
+
+worm - a program that can replicate itself, usually over a network.  A
+    worm is a complete program by itself unlike a virus which is part of
+    another program.  Robert Morris's program, the Internet Worm, is an
+    example of a worm although it has been mistakenly identified in the
+    popular media as a virus.
+
+
+trojan (horse) - This is some (usually nasty) code that is added to a
+    harmless program.  This could include many viruses but is usually
+    reserved to describing code that does not replicate itself.
+
+
+time bomb - This is code or a program that checks the systems clock in
+    order to trigger its active symptoms.  The popular legend of the time
+    bomb is the programmer that installs one in his employer's computers
+    to go off in case he is laid off or fired.
+
+
+magic cookie - This is a usually benign feature added to a product by
+    the programmer without official knowledge or consent.  One example of
+    the is the 'xyzzy' command in Data General's AOS operating system.
+    Another is the "RESIST THE DRAFT" message in an unused sector of Apple
+    Logo.
+
+
+back door - This is an undocumented feature added to a product which
+    can allow those who know about it to gain access to things that are
+    otherwise protected.  The original Tempest video game was supposed to
+    have a key sequence that would allow the author of the firmware to get
+    free games in an arcade.  Some military systems are rumored to have
+    back doors in their software that prevents their being used against
+    the countries that built them.
+
+
+stealth virus - This is a type of virus that attempts to hide its
+    existence.  A common way of doing this on IBM PCs is for the virus to
+    hook itself into the BIOS or DOS and trap sector reads and writes that
+    might reveal its existence.
+
+
+mixed terms - Many of the above terms can apply to the same piece of
+    code.  For example a virus can replicate itself but not "do its
+    dirty work" until a certain time.  It could be said to contain a time
+    bomb.
+
+------------------------------
+
+Date:    Sat, 29 Jun 91 01:27:44 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: McAfee on VSUM accuracy and Microcom (PC)
+
+BLSCOLLO@OCC.BITNET (Bonnie Scollon) writes:
+[stuff deleted]
+>This is not true. As the college virus tracker, I try to keep
+>up-to-date copies of most anti-viral products. Of course, I can obtainn
+>copies of McAfee'ssoftware but when I try to pay the fee, I get back a
+>form letter saying they will not sell a single copy to a college -- we
+>must spend thousands to obtain a site license for ALL our PC's,
+>whether we would install the programs or not. If this is not a refusal
+>to sell, I would not know what else to call it.
+[rest of message deleted]
+
+Hello Bonnie,
+
+McAfee Associates policy on licensing is based on the concept that the
+software is owned by whoever paid for it.  If a home user registers
+with payment made by a business then the order is returned along with
+a note stating that businesses must license the software if they wish
+to use it.
+
+In order to accomodate the different requirements of businesses, we
+have three kinds of licenses available.  Service Industry Licenses are
+for technicians who will use the software on any number of systems.
+This kind of licensed is based on the number of copies to be used by
+the technicians.  The software must be removed from the machine after
+use.Small Business Licenses are for businesses with less then fifty
+PC's.  We have two types of SBL's: a license for VIRUSCAN, CLEAN-UP,
+and VSHIELD for computers or workstations; and a license for NETSCAN
+for a file server or servers.  This allows small businesses without a
+network to cut costs and add NETSCAN when the time comes.  Finally, we
+have the Site Licenses, which are for businesses with 100 PC's or more
+and go in increments of 100.  For Site Licenses, the VIRUSCAN,
+VSHIELD, CLEAN-UP, and NETSCAN programs can be purchased either
+separately or together.  We're flexible on how a site is defined: it
+does not necessarily have to be an address, but can be all the
+computers in a world-wide department or for a division of a company,
+and so forth.  We also have corporate licenses available that cover
+all the computers a business owns plus any and all added during the
+license, increment licenses by pro-rating the amount already paid, and
+offer educational discounts.
+
+If you would like to discuss your situation further, I would recommend
+that you contact McAfee Associates directly at (408) 988-3832 and ask
+for the sales department.
+
+It has been our policy to provide access to our software and technical
+support for five days without charge, and, if necessary, extend this.
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- -
+McAfee Associates	 | Voice (408) 988-3832	| mcafee@netcom.com
+4423 Cheeney Street	 | FAX   (408) 970-9727	| (Aryeh Goretsky)
+Santa Clara, California	 | BBS   (408) 988-4004	|
+95054-0253  USA		 | v.32  (408) 988-5190	| mrs@netcom.com
+ViruScan/CleanUp/VShield | HST   (408) 988-5138 | (Morgan Schweers)
+
+------------------------------
+
+Date:    Sat, 29 Jun 91 17:53:17 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: So, you think you're pretty safe, eh? (general)
+
+Note in passing Bill Hancock's editorial in the "Digital Review" of June
+17, 1991.  Bill describes his recent encounter with a virus (unnamed, but
+apparently fairly new) in their computer lab.  Bill is no slouch; he is a
+highly competent technical lecturer.  The machines are all protected with
+an antivirus program (also unnamed, but it appears to be a resident
+scanner, perhaps VSHIELD.)
+
+The virus infected the diagnostics programs that he tried to fix the
+problem with.  Seemingly, the first indication he had was when a word
+processor stopped working.  (Again, unnamed, but the description seems
+consistent with Word Perfect.)
+
+The piece is a good description, and, while I could wish he had made some
+more helpful points about the level of risks in various situations (eg.
+letting your scanner get out of date), his checklist for recovery is
+thorough, if a little overblown.
+
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    Sat, 29 Jun 91 17:54:42 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+Subject: Two versions of SCANV80.ZIP? (PC)
+
+I retrieved SCANV80.ZIP from the wuarchive.wustl.edu mirror of
+SIMTEL20, but when I went to repost it on a local board found a
+different version.  Both versions appear to be authentic, with some
+minor differences in text files:
+
+Deep Cove version:
+Searching ZIP: SCANV80.ZIP
+Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+- ------  ------   ----- -----   ----    ----   ------  ----  ----
+ 17598  Implode   6962  61%  06-24-91  16:20  ac0b595f --w  AGENTS.TXT
+  4026  Implode   1961  52%  05-24-91  15:23  02f06c2c --w  README.1ST
+  5576  Implode   2288  59%  06-24-91  05:30  325e105d --w  REGISTER.DOC
+ 87437  Implode  47087  47%  06-24-91  03:47  eece6261 --w  SCAN.EXE
+ 28786  Implode  10695  63%  06-24-91  21:27  931869b9 --w  SCANV80.DOC
+  6495  Implode   1895  71%  10-31-89  16:16  0449b09d --w  VALIDATE.COM
+  2844  Implode   1406  51%  02-14-91  14:25  aa330b57 --w  VALIDATE.DOC
+ 24639  Implode   6532  74%  06-24-91  04:08  ce521c6f --w  VIRLIST.TXT
+- ------          ------  ---                                 -------
+177401           78826  56%                                       8
+
+SIMTEL version:
+Searching ZIP: SCANV80.ZIP
+Length  Method   Size  Ratio   Date    Time   CRC-32  Attr  Name
+- ------  ------   ----- -----   ----    ----   ------  ----  ----
+ 17598  Implode   6962  61%  06-24-91  16:20  ac0b595f --w  AGENTS.TXT
+  3952  Implode   1942  51%  06-25-91  10:16  8643da95 --w  README.1ST
+  5600  Implode   2307  59%  06-25-91  10:29  8858f474 --w  REGISTER.DOC
+ 87437  Implode  47087  47%  06-24-91  03:47  eece6261 --w  SCAN.EXE
+ 28777  Implode  10695  63%  06-25-91  11:18  678dddbb --w  SCANV80.DOC
+  6495  Implode   1895  71%  10-31-89  16:16  0449b09d --w  VALIDATE.COM
+  2844  Implode   1406  51%  02-14-91  14:25  aa330b57 --w  VALIDATE.DOC
+ 24320  Implode   6494  74%  06-25-91  11:15  64c446d0 --w  VIRLIST.TXT
+  9785  Implode   4205  58%  06-25-91  11:19  3a5d3c03 --w  NETSCN80.DOC
+ 25050  Implode   8650  66%  06-25-91  10:34  39dc87eb --w  VSHLD80.DOC
+- ------          ------  ---                                 -------
+211858           91643  57%                                      10
+
+It seems the only differences are found in:
+              README.1ST
+              REGISTER.DOC
+              SCANV80.DOC
+              VIRLIST.TXT
+with the addition of two files:
+              NETSCN80.DOC
+              VSHLD80.DOC
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      (SUZY) INtegrity         |  turn it on."
+User               Canada V7K 2G6           | Richards' 2nd Law
+Security                                    | of Data Security
+
+------------------------------
+
+Date:    30 Jun 91 00:53:46 -0400
+>From:    Robert McClenon <76476.337@CompuServe.COM>
+Subject: Requirements for Virus Checkers (PC)
+
+     Ross Greenberg says:
+
+> EVERYBODY: Never accept a problem with a piece of code: the
+> vendor can't fix it if they don't know there is a problem.
+
+     The second clause is true but sadly irrelevant.  I wish every
+developer were as attentive as Ross is to complaints.  I wish every
+vendor were as responsive as Ross and Microcom are.  For those reasons
+the first clause is good advice in general but not worth fighting
+over.
+
+     Ross was responding to my mention of two programs which
+required that I disable Virex-PC.  The first was a game which hogs
+conventional memory.  My thanks to Ross for reducing the size of
+his TSR.  The second was a fax program which has interrupt
+conflicts with Virex-PC.  Don't ask me why this fax program takes
+over multiple interrupts.  I don't know either, and consider its
+use of multiple interrupts to be evidence of strange design.  Ross
+suggests I contact technical support at Microcom.  I did.  But I
+don't think there is a problem with Virex-PC.  I also tried
+contacting the technical support people with the developer of the
+fax program.  They didn't understand.  I might as well have been
+talking to robots.  They told me that obviously I wasn't supposed
+to run the two programs at once.  If I had bought the program as
+commercial software I would have asked for my money back at this
+point.  But I didn't.  It was included with my modem as a package
+deal.  Sometimes unpriced software is worth what you paid for it.
+(Sometimes it is worth less, sometimes more.)
+
+     There always must be a way to disable resident software, even
+if it is not the fault of the resident software.  I did it by
+writing a .BAT file which creates a dummy file; AUTOEXEC.BAT checks
+for it and if it finds it suppresses the load of Virex-PC.
+Maybe my dog doesn't like a guest who never bathes and says mean
+things to the dog.  As a result, the dog barks all the time.  The
+dog is trying to warn me and is doing his job.  But if I have a
+reason to have the guest in my house, I may have to put the dog in
+the back yard.  It is not the fault of the dog but of the guest.
+There must always be a way to disable resident software.
+
+
+          Robert McClenon
+          Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    30 Jun 91 00:52:45 -0400
+>From:    Robert McClenon <76476.337@CompuServe.COM>
+Subject: Self-Modifying SETVER.EXE (PC)
+
+     Padgett's comments are well-taken.  I would rather that SETVER
+modified itself than that it modified something else.
+
+     I am willing to concede that perhaps the use of an
+undisciplined coding technique such as self-modification is
+understandable for a program such as SETVER which deals with
+undisciplined situations.
+
+     I would have appreciated a warning from SETVER that it was
+modifying itself.  Given the length of the message it produces when
+executed, another line saying "SETVER is about to rewrite itself"
+would not have been too much to ask.  Actually, I would suggest
+that any other program which modifies itself should notify the
+user.  There are other reasons than anti-viral compatibility to
+warn a user of self-modification, such as the need to take a new
+backup.
+
+          Robert McClenon
+          Neither my employer nor anyone else paid me to say this.
+
+------------------------------
+
+Date:    Sun, 30 Jun 91 12:47:52 +0000
+>From:    ao@elixir.lne.kth.se (Anders Ohlsson)
+Subject: Re: Can such a virus be written ... (PC)
+
+	Hello all!
+
+Quite interresting subject. After reading the last few postings
+on the subject, I decided to test it. Here's what I found out.
+
+Not only is it possible to write such a virus. In fact, you could put
+any virus on a diskette, hide the file containing it and then do a
+little editing using Norton Utilities or whatever.
+
+One of you mentioned that the sizes and dates would be shifted to the
+left. True. But...
+
+I edited the volume label, and this was (in my eyes) a little less
+obvious since all you will see when you DIR the disk is:
+
+		Volume in drive A is
+		Volume Serial Number is 4711-4711
+		Directory of  A:\
+
+		README              49 91-06-30   13.58
+		        1 File(s)    1456640 bytes free
+
+I sure wouldn't notice the missing volume label. Would you?
+
+All you have to do is edit the said volume label, and as somebody
+pointed out, make some assumptions on what the user is going to do
+next...
+
+I think that many (including me) would read the README file...
+
+So, all you have to do is to redefine the "t"-key (as in type)!
+
+The ANSI sequence would for example execute a hidden file on the disk
+in A:.
+
+The hidden executable file could then in turn do a few things.  I
+haven't tried these, and I don't think that any of them are
+impossible...
+
+	1. Clear the volume label
+	2. Erase whatever the ANSI sequence typed on the screen
+	3. Redefine the "t" to mean "t"
+	4. Install whatever virus you like
+
+I tried a little more harmless thing. A batch file that prints out a
+little message, and it works just fine.
+
+	Your turn...
+					- Anders Ohlsson
+					- ao@elixir.lne.kth.se
+
+------------------------------
+
+Date:    Sun, 30 Jun 91 15:26:02 +0000
+>From:    kforward@kean.ucs.mun.ca (Ken Forward)
+Subject: Re: Ross-bashing
+
+padgett%tccslr.dnet@mmc.com (A. Padgett Peterson) writes:
+> Allright, enough already. So there was a conflict between two SCAN
+> programs that caused a "false positive" when one was run immediately
+> following another....
+
+Eeek!  My apologies if I contributed to this thread by reporting a
+Taiwan3 false positive. My intent certainly was not to flame Ross or
+his VIRx product; in retrospect I should have made that perfectly
+clear in my posting.
+
+As I see it, posting re a false positive is informative; it could
+perhaps save somebody some grief. Padgett, maybe somebody saw those
+warnings and decided they didn't need to low-level format their hard
+drive !  :-) :-)
+
+With thanks to Ross, Padgett and the many others who make our
+computing lives more secure,
+- ---------------------------------------------------------------------------
+     Kenneth Forward             |   "...the large print give'th, and
+     MUN Dept of Physics         |    the small print take'th away..."
+     kforward@kean.ucs.mun.ca    |                         -Tom Waits-
+- ---------------------------------------------------------------------------
+
+------------------------------
+
+Date:    Sun, 30 Jun 91 14:57:11
+>From:    c-rossgr@microsoft.COM
+Subject: Encrypted strings
+
+>From:    Eric_Florack.Wbst311@xerox.com
+>
+>>Sigh.  Look, I simply didn;t remove the strings from memory.  What's your
+>>point?
+
+>Exactly this:False trips cause problems for both you and the person
+>whose machine if falsely diagnosed as being infected.  Such false
+>trips cost both of you income.
+
+Nothing personal,Eric, but don't teach Grandpa how to suck eggs?
+
+>Allow me to explain that one of the things I do for a living is such
+>testing.  IMHO, interfacing with other, similar products , where
+>possible, (even if only for direct a/b comparison) is part of a
+>complete test.
+
+In order for a second program to pick up on this a false positive,
+machines had to be configured in a certain way, program had to be run
+in a certain order, etc.  My beta testers did not.  It's a problem,
+yes, but it's a problem that any professional developer of these
+products realizes that he's gonna run into from time to time.  You
+deal with as quickly as you can, you try not to have scanner du'jour,
+and you spend more time dealing with lots of postings from detractors
+who do not understand the problem as completely as, perhaps, we do.
+
+>>And, sometimes, a minor mistake is make and is blown way out of proportion.
+
+>Sorry, Ross, if you thought my posting was blowing your error out of
+>proportion, but I honestly don't see how. Recall, please, that this
+>thread started with a general post was directed at all of us for input
+>on a specific problem.
+
+We have already given the problem more verbiage than it deserves. The
+problem was fixed in Version 1.5.  If you want to continue to discuss
+problems with an outdated version, you are welcome to do so, but I'm
+done with this topic.
+
+Ross
+
+- ---------------------------
+
+>
+>Date:    Thu, 27 Jun 91 11:52:28 -0700
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+>Subject: doom2:reply (PC)
+
+
+>The "my scanner is better than your scanner, nyaah" school of
+>evaluation misses a vital point: any two scanners are better than
+>either alone.  Even though I feel that Ross's product is one of the
+>best on the market, and I use it myself for my own testing and
+>protection, I would hate to see the day when it became the only one
+>available.
+
+Wisw choice!  Wouldn't want you using one of them inferior products! :-)
+
+>  As Ross has pointed out, no matter how well strings are
+>encrypted, eventually someone will break the code, and then it is a
+>trivial matter to write a virus that circumvents that package.
+>However, with a number of scanner packages on the market (and even I
+>don't have them all), the author of a virus can never know which
+>package his code will have to go up against.
+
+As a point of fact:  I have heard of a program floating about that
+will take a subject virus and a subject scanner and will determine
+*exactly* what the search string being used by that scanner for that
+particular virus is.  And that it does this without dis-asming the
+scanner at all -- simply by running it and playing some games with
+the subject virus.
+
+I agree with Rob entirely: use more than one scanner.  Mine, of course!
+And, somebody else's.   I like Frisk's, Jim Bates',and Ray Glath's myself.
+(I like mine better! :-) )
+
+Ross
+
+------------------------------
+
+Date:    Sun, 30 Jun 91 14:57:11
+>From:    c-rossgr@microsoft.COM
+Subject: doom2:reply (PC)
+
+>From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+>
+>The "my scanner is better than your scanner, nyaah" school of
+>evaluation misses a vital point: any two scanners are better than
+>either alone.  Even though I feel that Ross's product is one of the
+>best on the market, and I use it myself for my own testing and
+>protection, I would hate to see the day when it became the only one
+>available.
+
+Wisw choice!  Wouldn't want you using one of them inferior products! :-)
+
+>  As Ross has pointed out, no matter how well strings are
+>encrypted, eventually someone will break the code, and then it is a
+>trivial matter to write a virus that circumvents that package.
+>However, with a number of scanner packages on the market (and even I
+>don't have them all), the author of a virus can never know which
+>package his code will have to go up against.
+
+As a point of fact: I have heard of a program floating about that will
+take a subject virus and a subject scanner and will determine
+*exactly* what the search string being used by that scanner for that
+particular virus is.  And that it does this without dis-asming the
+scanner at all -- simply by running it and playing some games with the
+subject virus.
+
+I agree with Rob entirely: use more than one scanner.  Mine, of
+course!  And, somebody else's.  I like Frisk's, Jim Bates',and Ray
+Glath's myself.  (I like mine better! :-) )
+
+Ross
+
+------------------------------
+
+Date:    Fri, 28 Jun 91 14:53:28 -0600
+>From:    j-norstad@nwu.edu (John Norstad)
+Subject: Disinfectant 2.5 (Mac)
+
+Disinfectant 2.5
+================
+
+June 28, 1991
+
+Disinfectant 2.5 is a new release of our free Macintosh anti-viral
+utility.
+
+Version 2.5 detects the new C strain of the ZUC virus, recently discovered
+in Italy. See the section on the ZUC virus in the 2.5 online manual for
+details.
+
+Version 2.5 also recognizes the MDEF D virus. We do not believe that the D
+strain of MDEF was ever released to the public. Disinfectant recognizes it
+anyway, just in case it was inadvertently released. See the section on
+MDEF in the 2.5 online manual for details.
+
+Neither of these two viruses is malicious, and we have no reason to believe
+that either of them is widespread.
+
+It is no longer possible to support the old 64K ROMs or operating system
+versions prior to 6.0 in Disinfectant. Beginning with version 2.5,
+Disinfectant requires a Mac 512KE or later model and system 6.0 or later.
+These restrictions are necessary because Apple's Macintosh Programmer's
+Workshop, which we use to develop Disinfectant, no longer supports the old
+ROMs or old systems.
+
+Version 2.5 corrects an error which sometimes caused Disinfectant to crash
+after printing the online manual, especially on HP DeskWriter printers.
+
+The online manual contains a new section titled "System 7 Notes." This
+section discusses important issues regarding viruses, Disinfectant, and
+System 7. It also describes our plans for Disinfectant 3.0. This new
+section is reproduced in full below.
+
+Disinfectant 2.5 is available now via anonymous FTP from site
+ftp.acns.nwu.edu [129.105.113.52].  It will also be available soon on
+sumex-aim.stanford.edu, rascal.ics.utexas.edu, comp.binaries.mac,
+America Online, CompuServe, GEnie, Delphi, BIX, MacNet, Calvacom,
+AppleLink, and other popular sources of free and shareware software.
+
+Macintosh users who do not have access to electronic sources of free and
+shareware software may obtain a copy of Disinfectant by sending a self-
+addressed stamped envelope and an 800K floppy disk to the author at the
+address given below. People outside the US may send an international postal
+
+reply coupon instead of US stamps (available from any post office). Please
+use sturdy envelopes, preferably cardboard disk mailers.
+
+People in Western Europe may obtain a copy of the latest version of
+Disinfectant by sending a self-addressed disk mailer and an 800K floppy
+disk to macclub benelux. Stamps are not required. The address is:
+
+   macclub benelux
+   Disinfectant Update
+   Wirtzfeld Valley 140
+   B-4761 Bullingen Belgium
+
+System 7 Notes
+==============
+
+Disinfectant 2.5 works properly with Apple's new System 7, provided you
+remember the following three special rules:
+
+1. Leave the Disinfectant INIT in the System Folder proper. Do not move
+the INIT to the new Extensions Folder.
+
+2. If you try to repair an infected file, Disinfectant may tell you that
+the file is busy and recommend that you "try again without MultiFinder."
+However, you can't turn off MultiFinder in System 7. If this situation
+occurs, restart your Mac using the 800K "Disk Tools" startup floppy that
+comes with System 7 (or any other startup disk which contains an old
+System 6 startup System with MultiFinder turned off). Then run
+Disinfectant again.
+
+3. There is one small problem with Disinfectant's custom get file dialog
+with which you can select a folder to be scanned. Don't try to select
+anything in the Desktop level in this dialog. Disinfectant may crash or
+scan the wrong object.
+
+We are working on a new version 3.0 of Disinfectant which will fix all
+three of the problems mentioned above. Following are some other features
+planned for Disinfectant 3.0.
+
+Version 3.0 will take full advantage of the new facilities available in
+System 7, including Balloon help, color icon families, anti-viral and
+other Apple events, icon dropping in the Finder, and proper placement of
+the Preferences file and the Disinfectant INIT file in the new Preferences
+and Extensions folders respectively.
+
+Version 3.0 will eliminate the restriction that the INIT must load last.
+The INIT will be renamed "Disinfectant Extension."
+
+Version 3.0 will include a new "Upgrade" command which, in the future,
+will make it possible for people to download very small upgrade files
+instead of entire new versions of the program.
+
+The version 3.0 online manual will include a very thorough discussion of
+all the issues regarding viruses and Disinfectant as they relate to
+System 7.
+
+We hope to release version 3.0 later this summer.
+
+You should also be aware that System 7 is completely immune to the
+"Desktop file" viruses (WDEF and CDEF.) These viruses never activate,
+spread, or cause any damage under System 7. Both hard disks and floppy
+disks are immune to these viruses under System 7. Since the Disinfectant
+INIT detects and blocks viruses when they first try to attack your system,
+and since the Desktop file viruses never attack under System 7, the
+Disinfectant INIT will not detect them under System 7. The Disinfectant
+application, however, will still detect and remove the Desktop file
+viruses.
+
+You should also be aware of a problem with System 7's new file sharing
+feature. If you share a folder and permit write access to it by granting
+the "make changes" privilege with the new "Sharing" command, it is possible
+
+for files in the shared folder to become infected by a virus over the
+network, even if you have the Disinfectant INIT installed on your Mac. The
+INIT will, however, prevent the virus from spreading to your non-shared
+folders. It will also completely block any attempt by the virus to execute
+it's viral code on your Mac or cause any damage to your Mac.
+
+We have always had the problem of viruses spreading over a network to files
+
+in writable folders on dedicated AppleShare file servers. With System 7's
+new file sharing, this has now also become a problem on personal Macs.
+
+Virus infection over the network is only one of many serious security
+problems with writable shared folders. Writable shared folders are
+inherently insecure, and no kind of anti-viral or other security software
+can prevent damage to their contents. To minimize these problems, we
+recommend that you limit write access to your shared folders to only
+trusted individuals. Never grant write access to guests (any user.) The
+only way to eliminate the problems completely is to never grant the "make
+changes" privilege to anyone except yourself.
+
+
+John Norstad
+Academic Computing and Network Services
+Northwestern University
+2129 Sheridan Road
+Evanston, IL 60208 USA
+
+Internet: j-norstad@nwu.edu
+Bitnet: jln@nuacc
+America Online: JNorstad
+CompuServe: 76666,573
+AppleLink: A0173
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 113]
+******************************************

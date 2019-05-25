@@ -1,0 +1,579 @@
+VIRUS-L Digest   Monday, 23 Oct 1989    Volume 2 : Issue 219
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc., and sent to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, document, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@SEI.CMU.EDU.
+ - Ken van Wyk
+
+Today's Topics:
+
+CERT_Advisory_Ultrix_3.0
+CERT_Advisory_DECnet_WORM
+DECnet Worm on the loose
+Nuclear Killers?
+Quirks in shrink wrapped software (PC)
+Jerusalem Virus (PC)
+nVIR A help request (Mac)
+Disk Killer in Montreal (PC)
+nVIR problems
+Disk Killer in Montreal (followup)
+DARK AVENGER WARNING (PC)
+DARK AVENGER WARNING (PC)
+
+---------------------------------------------------------------------------
+
+Date:    Tue, 17 Oct 89 15:24:39 -0400
+From:    Edward DeHart <ecd@cert.sei.cmu.edu>
+Subject: CERT_Advisory_Ultrix_3.0
+
+
+                             CERT Advisory
+                            October 17, 1989
+                        DEC/Ultrix 3.0 Systems
+
+Recently, the CERT/CC has been working with several Unix sites that have
+experienced breakins.  Running tftpd, accounts with guessable passwords
+or no passwords, and known security holes not being patched have been the
+bulk of the problems.
+
+The intruder, once in, gains root access and replaces key programs
+with ones that create log files which contain accounts and passwords in
+clear text.  The intruder then returns and collects the file.  By using
+accounts which are trusted on other systems the intruder then installs
+replacement programs which start logging.
+
+There have been many postings about the problem from several other net
+users.  In addition to looking for setuid root programs in users' home
+directories, hidden directories '..  ' (dot dot space space), and a modified
+telnet program, we have received two reports from Ultrix 3.0 sites that
+the intruders are replacing the /usr/bin/login program.  The Ultrix security
+hole being used in these attacks is only found in Ultrix 3.0.
+
+Suggested steps:
+        1) Check for a bogus /usr/bin/login.  The sum program reports:
+                27379    67     for VAX/Ultrix 3.0
+
+        2) Check for a bogus /usr/etc/telnetd.  The sum program reports:
+                23552    47     for VAX/Ultrix 3.0
+
+        3) Look for .savacct in either /usr/etc or in users' directories.
+           This may be the file that the new login program creates.  It
+           could have a different name on your system.
+
+        4) Upgrade to Ultrix 3.1 ASAP.
+
+        5) Monitor accounts for users having passwords that can be found in
+           the /usr/dict/words file or have simple passwords like a persons
+           name or their account name.
+
+        6) Search through the file system for programs that are setuid root.
+
+        7) Disable or modify the tftpd program so that anonymous access to
+           the file system is prevented.
+
+If you find that a system that has been broken into,  changing the password
+on the compromised account is not sufficient.  The intruders do remove copies
+of the /etc/passwd file in order to break the remaining passwords.  It is best
+to change all of the passwords at one time.  This will prevent the intruders
+from using another account.
+
+Please alert CERT if you do find a problem.
+
+Thank you,
+Ed DeHart
+Computer Emergency Response Team
+Email: cert@sei.cmu.edu
+Telephone: 412-268-7090 (answers 24 hours a day)
+
+------------------------------
+
+Date:    Tue, 17 Oct 89 15:46:06 -0400
+From:    Edward DeHart <ecd@cert.sei.cmu.edu>
+Subject: CERT_Advisory_DECnet_WORM
+
+
+                            CERT Advisory
+
+                          October 17, 1989
+
+                     "WANK" Worm On SPAN Network
+
+
+On 16 October, the CERT received word from SPAN network control that a
+worm was attacking SPAN VAX/VMS  systems.  This worm affects only DEC
+VMS systems and is  propagated via DECnet protocols,  not TCP/IP protocols.
+If a VMS system had other network connections, the worm was not programmed
+to take advantage of those connections.  The worm is very similar to last
+year's  HI.COM  (or Father Christmas) worm.
+
+This is NOT A PRANK.  Serious security holes are left open by this worm.
+The worm takes advantage of poor password management, modifies .com files,
+creates a new account, and spreads to other systems via DECnet.
+
+It is also important to understand that someone in the future could launch
+this worm on any DECnet based network.  Many copies of the virus have been
+mailed around.  Anyone running a DECnet network should be warned.
+
+R. Kevin Oberman from Lawrence Livermore National Labs reports:
+     "This is a mean bug to kill and could have done a lot of damage.
+     Since it notifies (by mail) someone of each successful penetration
+     and leaves a trapdoor (the FIELD account), just killing the bug is
+     not adequate.  You must go in an make sure all accounts have
+     passwords and that the passwords are not the same as the account
+     name."
+
+The CERT/CC also suggests checking every .com file on the system.  The
+worm appends code to .com files which will reopen a security hole everytime
+the program is executed.
+
+An analysis of the worm appears below and is provided by R. Kevin Oberman of
+Lawrence Livermore National Laboratory.  Included with the analysis is a
+DCL program that will block the current version of the worm.  At least
+two versions of this worm exist and more may be created.  This program
+should give you enough time to close up obvious security holes.
+
+If you have any technical questions or have an infected system, please
+call the CERT/CC:
+
+Computer Emergency Response Team
+Email: cert@sei.cmu.edu
+Telephone: 412-268-7090 (answers 24 hours a day)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+                          Report on the W.COM worm.
+                               R. Kevin Oberman
+                            Engineering Department
+                    Lawrence Livermore National Laboratory
+                               October 16, 1989
+
+The following describes the action of the W.COM worm (currently based on the
+examination of the first two incarnations). The replication technique causes
+the code to be modified slightly which indicates the source of the attack and
+learned information.
+
+All analysis was done with more haste than I care for, but I believe I have all
+of the basic facts correct.
+
+First a description of the program:
+
+1. The program assures that it is working in a directory to which the owner
+(itself) has full access (Read, Write,Execute, and Delete).
+
+2. The program checks to see if another copy is still running. It looks for a
+process with the first 5 characters of "NETW_". If such is found, it deletes
+itself (the file) and stops its process.
+
+                                     NOTE
+A quick check for infection is to look for a process name starting with
+"NETW_". This may be done with a SHOW PROCESS command.
+
+3. The program then changes the default DECNET account password to a random
+string of at least 12 characters.
+
+4. Information on the password used to access the system is mailed to the user
+GEMPAK on SPAN node 6.59. Some versions may have a different address.
+
+5. The process changes its name to "NETW_" followed by a random number.
+
+6. It then checks to see if it has SYSNAM priv. If so, it defines the system
+announcement message to be the banner in the program:
+      W O R M S    A G A I N S T    N U C L E A R    K I L L E R S
+    _______________________________________________________________
+    \__  ____________  _____    ________    ____  ____   __  _____/
+     \ \ \    /\    / /    / /\ \       | \ \  | |    | | / /    /
+      \ \ \  /  \  / /    / /__\ \      | |\ \ | |    | |/ /    /
+       \ \ \/ /\ \/ /    / ______ \     | | \ \| |    | |\ \   /
+        \_\  /__\  /____/ /______\ \____| |__\ | |____| |_\ \_/
+         \___________________________________________________/
+          \                                                 /
+           \    Your System Has Been Officically WANKed    /
+            \_____________________________________________/
+
+     You talk of times of peace for all, and then prepare for war.
+
+7. If it has SYSPRV, it disables mail to the SYSTEM account.
+
+8. If it has SYSPRV, it modifies the system login command procedure to
+APPEAR to delete all of a user's file. (It really does nothing.)
+
+9. The program then scans the accounts logical name table for command
+procedures and tries to modify the FIELD account to a known password
+with login form any source and all privs. This is a primitive virus,
+but very effective IF it should get into a privileged account.
+
+10. It proceeds to attempt to access other systems by picking node numbers at
+random. It then used PHONE to get a list of active users on the remote system.
+It proceeds to irritate them by using PHONE to ring them.
+
+11. The program then tries to access the RIGHTSLIST file and attempts
+to access some remote system using the users found and a list of
+"standard" users included with the worm. It looks for passwords
+which are the same as that of the account or are blank. It records all
+such accounts.
+
+12. It looks for an account that has access to SYSUAF.DAT.
+
+13. If a priv. account is found, the program is copied to that account and
+started. If no priv account was found, it is copied to other accounts found on
+the random system.
+
+14. As soon as it finishes with a system, it picks another random system and
+repeats (forever).
+
+Response:
+
+1. The following program will block the worm. Extract the following code
+and execute it. It will use minimal resources. It create a process named
+NETW_BLOCK which will prevent the worm from running.
+- -------
+Editors note:  This fix will work only with this version of the worm.
+Mutated worms will require modification of this code; however, this
+program should prevent the worm from running long enough to secure
+your system from the worms attacks.
+- -------
+==============================================================================
+$ Set Default SYS$MANAGER
+$ Create BLOCK_WORM.COM
+$ DECK/DOLLAR=END_BLOCK
+$LOOP:
+$ Set Process/Name=NETW_BLOCK
+$ Wait 12:0
+$ GoTo loop
+END_BLOCK
+$ Run/Input=SYS$MANAGER:BLOCK_WORM.COM/Error=NL:/Output=NL:/UIC=[1,4] -
+    SYS$SYSTEM:LOGINOUT
+==============================================================================
+- -------
+Editors note:  This fix might only work if the worm is running as SYSTEM.
+An earlier post made by the CERT/CC suggested the following:
+        $ Run SYS$SYSTEM:NCP
+        Clear Object Task All
+        ^Z
+
+You must then edit the file SYS$MANAGER:STARTNET.COM, and add the line
+
+        CLEAR OBJECT TASK ALL
+
+AFTER the line which says
+
+        SET KNOWN OBJECTS ALL
+
+This has the side-effect of disabling users from executing any command
+procedure via DECnet that the system manager has not defined in the
+DECnet permanent database.
+- ---------
+2. Enable security auditing. The following command turns on the MINIMUM
+alarms. The log is very useful in detecting the effects of the virus left by
+the worm. It will catch the viruses modification of the UAF.
+$ Set Audit/Alarm/Enable=(ACL,Authorization,Breakin=All,Logfailure=All)
+
+3. Check for any account with NETWORK access available for blank passwords or
+passwords that are the same as the username. Change them!
+
+4. If you are running VMS V5.x, get a copy of SYS$UPDATE:NETCONFIG_UPDATE.COM
+from any V5.2 system and run it. If you are running V4.x, change the username
+and password for the network object "FAL".
+
+5. If you have been infected, it will be VERY obvious. Start checking the
+system for modifications to the FIELD account. Also, start scanning the system
+for the virus. Any file modified will contain the following line:
+$ oldsyso=f$trnlnm("SYS$OUTPUT")
+It may be in LOTS of command procedures. Until all copies of the virus are
+eliminated, the FIELD account may be changed again.
+
+6. Once you are sure all of the holes are plugged, you might kill off
+NETW_BLOCK. (And then again, maybe not.)
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+------------------------------
+
+Date:    Mon, 16 Oct 89 21:10:00 -0700
+From:    "Richard Johnson" <JOHNSON_RJ@CUBLDR.COLORADO.EDU>
+Subject: DECnet Worm on the loose
+
+
+PLEASE NOTIFY ALL YOUR SITES...THERE IS A WORM ON THE LOOSE WITHIN THE
+
+                               DECNET INTERNET
+
+What we know:
+
+It is called W.COM and moves by generating psuedo random node numbers.
+It contains a set of default names like SYSTEM, FIELD, etc, it gets more
+user names from rightslist.dat and apparently (we don't know for sure)
+tries username = password to gain access.
+
+It attempts to access your node via both the default DECnet account/TASK 0 and
+a list of 81 canned userid's
+
+If successful on your node, it will change the passwords of accounts it
+has broken into and attempt to start up a batch job to continue its quest.
+
+It runs AUTHORIZE and generates a listing of your usernames.  To this
+list, it appends 81 other userid's it will try.  It then tries to
+penetrate each account in it's list using both a null password and the
+userid as the password. If an account is penetrated then the worm runs
+under the penetrated account and do the following:
+
+        o submit a batch job to attack other nodes
+        o changes the user's password
+        o sends a confirmation banner to a central node
+
+What you can do quickly to protect yourself:
+
+
+- -- disable TASK 0 if you have it running
+
+- -- make sure that the DECnet account's UAF record does not have access to
+ BATCH
+
+- -- make sure that the DECnet account UAF record has /PRCLM=1 set
+
+- -- protect SYS$SYSTEM:AUTHORIZE.EXE so that WORLD has NO access
+
+- -- Create an empty W.COM;32767 in the DECnet Default account and protect
+
+- -- WATCH FOR PROCESSES BEGINNING WITH "NETW_"
+
+- -- Use "NCP> SHOW KNOWN LINKS" command to show your connections, then
+   verify your "local users" to ensure that they are not running in BATCH
+   mode - if so, it's a possible penetration.
+
+*NOTE THESE MEASURES DO NOT PROTECT AGAINST USERS WHO HAVE THEIR PASSWORDS THE
+ SAME AS THEIR USERID'S.
+
+More details to follow.
+
+Ron Tencati
+SPAN Security Manager
+(301)286-7251
+
+------------------------------
+
+Date:    Tue, 17 Oct 89 00:16:00 -0400
+From:    "Barry L. Newton" <NEWTON@ENH.NIST.GOV>
+Subject: Nuclear Killers?
+
+At risk of pointing out the obvious, the "Nuclear Killers" reference
+in the current SPAN worm echoes items from this morning's news about
+protesters in Florida attempting to disrupt the launch of a *nuclear
+powered* shuttle payload.  Seems they're afraid of a Challenger-like
+disaster spreading plutonium over half the state.
+
+With all due respect to NASA, I'd probably be worried myself if I
+lived nearby.
+
+Barry L. D. Newton
+Standard disclaimer applies
+
+------------------------------
+
+Date:    Tue, 17 Oct 89 10:12:00 -0500
+From:    Beware of programmers bearing screwdrivers! <TUCKER@UNLVAX3.BITNET>
+Subject: Quirks in shrink wrapped software (PC)
+
+Just yesterday, as I was installing Lotus Freelance Plus, I began to
+notice inconsistencies between Copyright registration procedures and
+safe anti-virus practices.  The following is extracted from the manual
+"Getting Started" on page 1-9.
+
+" Step 1. Run FL_FIRST
+
+  The FL_FIRST program validates your copy of Freelance Plus.  All
+  users must run this program before backing up or using the Freelance
+  Plus diskettes. "
+
+Because this registration step involves writing the user and company
+name to the original master, it is necessary to write-enable the disk
+and put it in the machine.  However, being at the head of the
+anti-virus campaign for the university, I noticed that this really
+doesn't allow for safe security practices.  ALL documentation that I
+have read or written to defend systems against viruses suggests that
+all shrink wrapped software be write-protected and backed up before
+that software is installed on the system, thereby insuring that you
+will have at least one copy of everything that isn't infected by a
+virus.
+
+Assuming that my system has viruses, then I could safely say that
+there is a good chance my Lotus Freelance Plus masters are also
+infected.  Thanks Lotus for your insight on making my system secure...
+
+Gregory Tucker- Microcomputer Assistant
+UNL Computing Resource Center
+Bitnet: tucker@unlvax3, tucker@unoma1, tucker@unlvax1
+Internet: tucker@crchpux.unl.edu, tucker@engvms.unl.edu
+Noisenet: (402)472-5761
+Snailnet: 326 Administration
+          Lincoln, NE 68588-0496
+
+
+------------------------------
+
+Date:    Tue, 17 Oct 89 13:38:00 -0500
+From:    <CTDONATH%SUNRISE.BITNET@VMA.CC.CMU.EDU>
+Subject: Jerusalem Virus (PC)
+
+Can anyone give details about what the Jerusalem Virus does? It's
+floating around a PS/2 cluster here, and I want to know how dangerous
+it really is.  It seems to delete files one at a time on Friday 13,
+becomes memory resident, slows down the system slightly, and
+occasionally puts a black spot on the screen. I would like details
+without having to dissect a copy of it...
+
+
+------------------------------
+
+Date:    18 Oct 89 16:48:29 +0000
+From:    david@CS.UCLA.EDU (David Dantowitz)
+Subject: nVIR A help request (Mac)
+
+I found the MAC nVIR A on a disk using some of the MAC virus detection tools,
+but can't get rid of it (using disinfectant).   Another program warns me that
+I have a problem with file: ZSYS MACS -- System -- System folder
+
+David
+David Dantowitz
+david@cs.ucla.edu             "Curb your dogma"
+
+------------------------------
+
+Date:    Fri, 20 Oct 89 03:11:12 -0400
+From:    RREINER%YORKVM1.BITNET@VMA.CC.CMU.EDU
+Subject: Disk Killer in Montreal (PC)
+
+Three 5.25" DSDD floppies in my possession are reported by ViruScan
+0.7V42 to be infected with the Disk Killer virus.  Since my system
+is reported to be clean by ViruScan, and these were the disks I had
+with me on a recent visit to Montreal, I am assuming that that is
+where the infection came from.  I am in the process of notifying
+the owners of the machines with which these disks had contact, and
+will post again when the source is identifed.
+
+Alan Roberts' statement in VIRUS-L of 26 Sept 89 is the only information
+I have been able to find on Disk Killer.  Any info will be appreciated.
+
+ Richard J. Reiner . BITNET ...... rreiner@vm1.yorku.ca ..... (daily) ..
+.................... old BITNET .. rreiner@yorkvm1 .......... (daily) ..
+.................... Internet .... grad3077@writer.yorku.ca . (daily) ..
+.................... Compu$erve .. 73457,3257 ............... (rarely) .
+
+------------------------------
+
+Date:    20 Oct 89 08:25:05 +0000
+From:    atama@blake.acs.washington.edu (Kakogawa)
+Subject: nVIR problems
+
+
+We have a network in the Microcomputer lab with more than 20 Macintoshes
+ connected to it. We have been experiencing a severe bout of nVIR. It is
+usually nVIR-A or nVIR-B infecting the system or finder of the startup
+diskettes. It has also spread, we believe, extensively among users before
+we were alerted to it. The problem:
+
+We were told that the DA VirusDetective did not always detect the viruses
+probably. I haven't checked this personally. We started using SAM ... in the
+meanwhile because disinfectant crashed the multifinder periodically. Today we
+found that a diskette was reported by disinfectant to be virus-free BUT SAM ...
+reported it as being infected and we had it "repair"ed using SAM....
+
+I have forgotten the full name for the antiviral program SAM.... Can anyone
+who is better informed enlighten us
+a) Why Disinfectant(V 1.2) didn't warn us?
+b) Is SAM whatever it is, better or is it just seeing ghosts (unlikely?)?
+c) We have Vaccine on the network. Why did it not alert us at the beginning?
+Actually, we caught on because vaccine eventually warned us. By that time
+so many diskettes and the network itself had become infected that we had it
+shut down.
+d) Is it true that the DA VirusDetective is not as fully reliable (at least
+for nVIR strains) as it should be?
+
+Soma
+Consultant, Microcomputer lab
+Health Sciences Building, UW
+
+PS. Please respond as completely as you can. If you feel this is a legitimate
+concern please respond on the net. If someone has already done it, but you
+have alternatives/insights please respond by e-mail. I'll summarize if I get
+any/many good replies. Thanks for your time.
+
+------------------------------
+
+Date:    Sat, 21 Oct 89 00:41:30 -0400
+From:    RREINER%YORKVM1.BITNET@VMA.CC.CMU.EDU
+Subject: Disk Killer in Montreal (followup)
+
+I have now confirmed that the virus I reported in VALERT-L this morning
+is indeed Disk Killer.  The boot sector signature, and the message texts
+stored elsewhere on the disk, match those reported in VIRUS-L on
+26 September by Alan Roberts.  There is one discrepancy: while
+Alan reports that the message texts are stored at sector 152 (presumably
+decimal) on floppy disks, on the infected disks in my possession they
+are at sector 354 decimal (0x162).  This may therefore be a new strain.
+
+I have not yet been able to trace the source of the infection; I will
+post again if I succeed.
+
+ Richard J. Reiner . BITNET ...... rreiner@vm1.yorku.ca ..... (daily) ..
+.................... old BITNET .. rreiner@yorkvm1 .......... (daily) ..
+.................... Internet .... grad3077@writer.yorku.ca . (daily) ..
+.................... Compu$erve .. 73457,3257 ............... (rarely) .
+
+------------------------------
+
+Date:    Sat, 21 Oct 89 18:35:16 -0700
+From:    portal!cup.portal.com!Alan_J_Roberts@SUN.COM
+Subject: DARK AVENGER WARNING (PC)
+
+    A number of disturbing reports about scanning systems infected with
+the Dark Avenger virus have just been substantiated by Kevin Harrington
+at U.C. Davis and Morgan Schweers in Glen Cove N.Y.  It seems that the virus
+infects any and every executable file that is opened for read or write.
+Thus, if a system is scanned by VIRUSCAN or IBM's VIRSCAN, the virus begins
+an uncontrollable infection of the system, resulting in corruption of
+virtually everything in the system.  This turns what might have been a modest
+disinfection task into a total nightmare.  VIRUSCAN version 45 has corrected
+this problem by checking for the active virus in memory before attempting to
+do a system scan.  Dave Chess and Art Gilbert at IBM have been made aware of
+the problem (according to John McAfee) and a fix for their VIRSCAN program
+should be forthcoming.  If you are using either of these products please get
+the fixed version before scanning any system suspected of harboring this
+virus.  If you are unable to do this, then scan only a floppy diskette
+first.  This will risk only the files on your floppy.  If you have a "clean"
+system master, then of course re-boot first to start from a clean system.
+The problem most infected installations have, however, is finding a
+guaranteed clean system disk, so proceed cautiously.  The safest thing,
+again, is to use the updated versions of these programs.
+Alan Roberts
+
+------------------------------
+
+Date:    Sat, 21 Oct 89 18:46:28 -0700
+From:    portal!cup.portal.com!Alan_J_Roberts@Sun.COM
+Subject: DARK AVENGER WARNING (PC)
+
+    ViruScan (version 43 and below) and Virscan (IBM's scanning program)
+SHOULD NOT BE USED if a Dark Avenger infection is suspected.  These programs
+cause an uncontrollable spread of the virus when they are used.  The virus
+infects every executable file when the files are opened.  Both of these
+programs open ALL executables, thus the virus saturates the system when it
+is scanned.  VIRUSCAN version 45 has fixed this problem, and IBM will,
+presumably, issue a new Virscan version shortly.  Kevin Harrington of
+U.C. Davis and Morgan Schweers of Glen Cove, NY have reported that scanning
+systems infected with this virus have turned what would have been a moderate
+disinfection task into a monumental problem.  If anyone does have this virus,
+the M-DAV disinfector on HomeBase will remove it and repair the damage.  The
+board number is 408 988 4004.
+Alan
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

@@ -1,0 +1,1064 @@
+VIRUS-L Digest   Wednesday,  9 Dec 1992    Volume 5 : Issue 199
+
+Today's Topics:
+
+Administrivia: Duplicates and missing digests (sigh)
+virus signatures (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Fake Dir-II (PC)
+Re: Untouchable (PC)
+Re: Trojan detection/protection (PC)
+Re: AntiViral SW Leftovers (PC)
+VSHIELD, VIRSTOP, ... comparison ? (PC)
+RE: Dangerous bug in CHKDSK that comes with MS-DOS 5.0 (PC) (fwd)
+Integrity Management (PC)
+Re: Filler virus (PC)
+Odd Virus? HELP (PC)
+Not a stupid OS/2 Question (OS/2)
+Re: ViruScan v99 and OS/2 (OS/2)
+Re: Potentially stupid question (OS/2) (PC)
+FC on virus creation
+Re: Integrity Management
+Re: Second generation problems (Philosophy)
+A user's view of IBM's antivirus/2 (OS/2)
+Survey
+CLEAN-UP, VSHIELD, & WSCAN 99 uploaded to Simtel20 (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Wed, 09 Dec 92 14:55:02 -0500
+From:    Kenneth R. van Wyk <krvw@cert.org>
+Subject: Administrivia: Duplicates and missing digests (sigh)
+
+In the last VIRUS-L digest, there were a couple of messages that were
+inadvertantly duplicated from a previous digest.  Due (I believe) to a
+mailer glitch, these entries had been sent to me multiple times.
+Sorry for any inconvenience.
+
+While on the subject of mailer glitches, some of you have been
+noticing duplicate or missing digests.  Taking a SWAG, I'd say that
+these are due to the same mailer glitch.  The problem(s) is being
+looked into.  Again, sorry for any inconvenience.
+
+I'll be updating the archives on cert.org as soon as Issue 199 goes
+out, so feel free to look there for any missing digests.
+
+These things would, of course, explain why my incoming VIRUS-L queue
+is so long.  I keep doing the same work over and over.  :-)  Now,
+let's see if _this_ one comes back to me...
+
+Cheers,
+
+Ken
+
+Kenneth R. van Wyk
+Moderator VIRUS-L/comp.virus
+Technical Coordinator, Computer Emergency Response Team
+Software Engineering Institute
+Carnegie Mellon University
+krvw@CERT.ORG       (work)
+ken@THANG.PGH.PA.US (home)
+(412) 268-7090  (CERT 24 hour hotline)
+
+------------------------------
+
+Date:    Sun, 06 Dec 92 18:57:02 -0500
+From:    Kayvon Z. Sadeghi <KSADEGH@auvm.american.edu>
+Subject: virus signatures (PC)
+
+Does anybody know where I can find a file that contains the signatures
+of different viruses?  I found a zip file somewhere in the net, but
+apparently there is something wrong with the file and I can't unzip
+it.
+
+thanks in advance
+k1
+- ---
+- ------------------------------------------------------------------------
+PUSH, if that doesn't work
+PULL, if that doesn't work
+we're probably CLOSED
+- ------------------------------------------------------------------------
+Kayvon Sadeghi                    k.sadeghi@ieee.org
+Voice:202/244-0789
+
+------------------------------
+
+Date:    Fri, 04 Dec 92 09:03:00 +0000
+From:    Stefano_Turci@f108.n391.z9.virnet.bad.se (Stefano Turci)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Hello Fridrik,
+
+in your message dated 25-11-92 you wrote:
+
+ FS> However, one very strange thing....according to your information, my
+ FS> scanner reports the files it finds to be infected with "MtE (?)", but not
+ FS> "MtE" - now...this usually means that it finds a MtE signature string -
+ FS> taken from the decrypted virus engine, instead of using an algorithmic
+ FS> approach.  That implies that the converted files contain a non-encrypted
+ FS> MtE engine.
+
+You are right, in fact the converted files contained a non-encrypted copy of 
+Mte.
+       _
+Ciao. /\\
+     _\\
+     \/teve.
+
+- --- Mercurio 1.10
+ * Origin: Move fast in the tunnels of the underground. (9:391/108)
+
+------------------------------
+
+Date:    Fri, 04 Dec 92 09:36:00 +0000
+From:    Stefano_Turci@f108.n391.z9.virnet.bad.se (Stefano Turci)
+Subject: Fake Dir-II (PC)
+
+Hi Fridrik,
+
+I have discovered a strange behaviour when I scan a little file using
+F-prot 2.  06a.
+
+This is what appears on the screen:
+
+- -----------------------------------------------------------------
+F-PROT anti-virus program - Version 2.06a - November 1992
+Copyright (c) 1990-1992, Frisk Software International
+Loading virus information.
+C:\0\GM4.COM  Possibly a new variant of DIR-II
+- -----------------------------------------------------------------
+
+F-prot says that it is possibly a new variant of Dir-II, and it doesn't say 
+that the file is infected by Dir-II, however I am a little worry about it 
+because.....I am the author of that program. :-)
+
+I wrote that program using assembler, and I found the piece of source code 
+that produces the above warning:
+
+- ------------------------------------------------        
+        mov     bx,offset message
+        mov     cx,46d
+decrypt:
+        xor     byte ptr [bx],0ffh
+        inc     bx
+        loop    decrypt
+- ------------------------------------------------
+
+This is a simple routine that decrypts a string.
+
+Once compiled the bytes inside the exec are:
+
+- -----------------------------------
+BB 03 01 B9 2E 00 80 37 FF 43 E2 FA
+- -----------------------------------
+
+The program is 487 bytes long.
+
+I can only suppose that the virus uses a very similar decrypting routine, 
+however I think there is something wrong in the way used by F-prot to search 
+for new variants of Dir-II.
+
+In fact F-prot still announces a possibly new version of Dir-II even if I 
+create a only-12 bytes long file and fill it with those bytes above mentioned.
+
+Of course a fake alarm is better than a true infection, but if my clients will 
+use F-prot to scan their own hard disks I'll be ruined !  :-)
+
+
+       _
+Ciao. /\\
+     _\\
+     \/teve.
+
+- --- Mercurio 1.10
+ * Origin: Move fast in the tunnels of the underground. (9:391/108)
+
+------------------------------
+
+Date:    Mon, 07 Dec 92 10:05:22 -0500
+From:    Y. Radai <RADAI@vms.huji.ac.il>
+Subject: Re: Untouchable (PC)
+
+  I agree with almost everything in Vesselin Bontchev's reply to Rick
+Wirthlin on Untouchable.  However, there was one passage which re-
+quires clarification:
+
+>             There are about 17 ways a virus can infect a file, and the
+> generic disinfector can handle about one third of them. The authors
+> have promised to achieve about two thirds soon.
+
+The number of infection methods now recognized by UT is between 10
+and 14, depending on how one counts them.  (Like "number of known
+viruses", it's not a well-defined concept.)
+
+  Regardless of the exact number, there's a strong possibility that
+Vesselin's first statement above will be misinterpreted by some
+readers, who might think that being able to handle only "one third of
+them" (i.e. of the *infection methods*) implies being able to
+disinfect only one-third of the *viruses*.  In case anyone did get
+this impression, the percentage of viruses which can be disinfected by
+UT (as estimated by the authors, not according to the marketing hype)
+is about 99% on the common viruses, and greater than 90% on other
+viruses.
+
+                                     Y. Radai
+                                     Hebrew Univ. of Jerusalem, Israel
+                                     RADAI@HUJIVMS.BITNET
+                                     RADAI@VMS.HUJI.AC.IL
+
+
+------------------------------
+
+Date:    07 Dec 92 18:24:50 +0000
+From:    tck@fold.ucsd.edu (Kevin Marcus)
+Subject: Re: Trojan detection/protection (PC)
+
+YUNSANJ@YaleVM.YCC.Yale.Edu (Lou) writes:
+>With my limited understanding of this subject, i assume that a trojan
+>is NOT technically a virus but a programming modification that alters
+>programs and causes them to run harmfully. I even saw a trojan batch
+>file in Digital Free Press (volume 1, issue 4) which would *gasp* do
+>an absolute write to the first 9 sectors of my Hard drive! How
+>malicious! I was wondering, how do i protect myself? is there a
+>version of McAfee's V-Shield for Trojans? and if i do get hit, how do
+>i go about recovering?!
+
+You don't recover, usually.  McAfee's Scan identifies a few of the
+trojans that are ou there, including, for example, the Twelve Tricks 
+trojan.  F-Prot identifies FAR more trojans, but these are virus scanners,
+and not trojan scanners, so you shouldnt' be expecting them to.
+ 
+A Trojan is pretty mcuh a program that does some unwanted action while you
+think it's doing something good.  For example, if you ran some word
+processor, and it started deleting your files, then you would be the
+victim of a trojan.  
+ 
+Many trojans use absolute sector writes, like the trojan you mentioned
+because they're relatively easy to code, others make a mess of your
+hard drive by making directories, files, or changing other file
+related things.
+ 
+I have seen two programs designed to create trojans, the VCL, which
+generates some buggy code, and the trojan construction kit.  The trojan
+kit is explicitly dangerous because you don't need a compiler for it,
+and it comes with a time bomb faciltity, to change real programs into
+time bombs.  The first version of this program is very buggy, but the
+second seems to work well.  None of the anti-virus programs that I
+have used detected anything from this program.
+ 
+A long time ago I wrote a generic trojan scanner, TSCAN, which will
+identify smoe trojans that use absolute sector writes.  The problem
+with it is that a lot of programs do that, legitimately, like the
+Norton Utilities, FORMAT.COM, and hard drive optimizers....  I am
+working on another version which will provide far better results to
+be released after my MtE detector.
+
+- -- 
+|| Kevin Marcus, Computer Virologist.  (619)/457-1836; RE-xxx, TSCAN       ||
+|| INET: tck@bend.ucsd.edu       []-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]
+||       tck@fold.ucsd.edu       || All I wanted was a Pepsi...            ||
+||       datadec@watserv.ucr.edu ||       And she wouldn't give it to me...||
+
+------------------------------
+
+Date:    07 Dec 92 13:32:38 -0500
+From:    739chan1@gw.wmich.edu
+Subject: Re: AntiViral SW Leftovers (PC)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+> Luca Parisi asks about a leftover string "Carmel" plus other oddities
+> in files.
+> 
+> It is my understanding that the Central Point Anti-Virus program was
+> originally obtained from a company called "Carmel" in Isreal with 
+> an interesting background. I *suspect* this is the source.
+
+    There was a product called Turbo Anti Virus (TNTVirus) produced by
+a Carmel company in Israel. It was VERY similar to CPAV. Now that you
+mentioned it, I must agree that CPAV was based on it. The original
+program offered on-the-fly checksums, which it had previously appended
+to the files to be checked. I would think they's include the company
+name, i.e. "Carmel".
+
+Lemming.
+
+------------------------------
+
+Date:    Mon, 07 Dec 92 14:42:18 -0500
+From:    Mike Ramey <mramey@u.washington.edu>
+Subject: VSHIELD, VIRSTOP, ... comparison ? (PC)
+
+I have found Robert Slade's quick comparison (and his longer reviews)
+of several anti-viral programs very helpful; they prompted me to try
+F-PROT and VIRx, in addition to the McAfee suite of programs which I
+have been using for several years.
+
+Is it possible that the three of you (McAfee, Frisk, and Slade) could
+cooperate to produce a point-by-point comparison of VSHIELD and
+VIRSTOP?
+
+One of my questions is this: VSHIELD intercepts a keyboard reboot and
+checks for the presence of an infected diskette in the boot diskette
+drive; it does not allow booting from a (boot-sector?) infected
+diskette.  Does VIRSTOP have this function?  What other differences
+are there?
+
+- -Mike Ramey, 685-0940, 171 Wilcox,  U W Civil Eng, FX-10, Seattle WA 98195.
+
+------------------------------
+
+Date:    Mon, 07 Dec 92 16:27:37 -0500
+From:    Mike Ramey <mramey@u.washington.edu>
+Subject: RE: Dangerous bug in CHKDSK that comes with MS-DOS 5.0 (PC) (fwd)
+
+How can you tell if you have MS-DOS version 5.00a or not ?
+
+I called Microsoft and requested the updated version for my computer
+labs, even tho' we have not encountered the failure conditions yet.  I
+was told that in MS-DOS version 5.0a, the date on COMMAND.COM is
+11-11-91.  I have not yet received the updated version, so I cannot
+confirm that.  (My current DOS-5 COMMAND.COM date is 4-09-91.)  If I
+learn anything different, I will post it.
+
+- -Mike Ramey, 685-0940, 171 Wilcox,  U W Civil Eng, FX-10, Seattle WA 98195.
+
+>From: bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+>Newsgroups: comp.virus
+>Subject: Dangerous bug in CHKDSK that comes with MS-DOS 5.0 (PC)
+>Date: 2 Nov 92 18:11:33 GMT
+
+> (This is NOT an official report from Microsoft or AT&T. It's just
+>  my own friendly posting to try to help)
+> 
+> Program: chkdsk
+> O/S    : MS-DOS 5.0
+> 
+> Symptoms: Users running chkdsk with the /f option have 256 copies
+>           of the FAT written onto their hard disk starting at the
+>           first copy of the FAT. The result being that all directory
+>           information and a significant amount of the data in the data 
+>           area are irrecoverably destroyed.
+> 
+> Affected users: Any users using 256 sector FAT's. 
+> 
+> How to tell if you're at risk: 
+> 
+>           Run chkdsk WITHOUT the '/f' option and check the 
+>           "Total allocation units on disk". If this number is
+>           more than 65280, you're at risk. DO NOT USE CHKDSK TO
+>           CORRECT ANY DISK PROBLEMS if this is the case. You'll
+>           trash your disk.
+> 
+> Solution: Call Microsoft and request the 5.00A upgrade. They know
+>           about the problem and they've fixed it. They've also done
+> 	  some diddling with the following programs: (though I don't
+>           know what they did to them.)
+> 
+> 	deloldos.exe	diskcomp.com	diskcopy.com
+> 	doshelp.exe	dosshell.exe	dosswap.exe
+> 	emm386.exe	expand.exe	format.com
+> 	himem.sys	mirror.com	qbasic.exe
+> 	recover.exe	setver.exe	undelete.exe
+> 	xcopy.exe
+> 
+> Apparently, the only place that Microsoft posts information of
+> known bugs is on CompuServe in something they called the Microsoft
+> Knowledgebase. If there's anyone out there who regularly reads this
+> forum on CIS, maybe you'ld like to volunteer to cross-post to this
+> group? 
+
+------------------------------
+
+Date:    Mon, 07 Dec 92 16:27:49 -0500
+From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+Subject: Integrity Management (PC)
+
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+
+>OK, but you still didn't answer my question. My question was aimed
+>towards those who think that they can live with imperfect detection.
+>Note, I didn't say imperfect MtE detection - after all, the current
+>MtE-based viruses are not spread at all.
+
+For one, I cannot live with imperfect detection. What I can live with
+is 100% detection but a lesser identification (not wrong identification
+but "this file has been changed"). An interesting case in point is
+Vern Buerg's "LIST" which carries all of its data internally. One test I
+use is to change a color or filter (going from wrap(W) to non-wrap (w)
+changes bytes at offset 2Ah & 2Bh in version 6.1a) & see if anybody notices
+- - some don't.
+
+Seems like we should be about due for some "next generation" products,
+products that can detect a one-byte change in any program but are smart
+emough to know that a one byte change is not likely to be a virus.
+
+Other expected "features" would be:
+
+1) Multilevel validation - secondary programs that validate whether or not
+   the protection program is working properly.
+
+2) TSR awareness - what programs are expected to change memory allocations
+   and which are not.
+
+3) Interrupt path verification & recovery.
+
+4) DOS locations, sizes, and expected values specific to the particular PC.
+
+5) Ability to temporarily disengage certain functions for maintenance without
+   having to remove the entire package.
+
+6) Partitioning support.
+
+7) Ability to detect an attempt to write to an executable
+
+8) Novell/Pathworks/LAN Man/LAN Server/Vines support
+
+>As far as I know, Prof. Eugene Spafford and a few others from Purdue
+>University are working on a platform-independent user-programmable
+>scanner. It will be released in source, free of charge. Initially it
+>will have routines to access Unix file systems, but since it will be
+>written in C++, nothing will prevent other people from writing the
+>appropriate interface to DOS, MacOS, AmigaDOS, or whatever. As you see
+>- - no deep secrets.
+
+The problem is that a platform independant management program is going to have
+a hard time detecting platform-dependant low-level attacks. Consider
+for a moment malicious software that tries to go resident in the disk buffers.
+To work it must recognize the differences between buffers used by DOS 3.x
+and those of higher versions. So must an integrity management routine.
+
+Gene & Co. at Purdue are doing important work but it must be realized that
+you cannot get all of the way with a platform-independant solution. A
+long way certainly & would work on a PC with Jerusalem & Sunday, but how 
+about a low-level infection such as MICHELANGELO or FORM ? These depend on
+the platform.
+
+Of course the real answer might be for a generic "kernel" with attachable
+platform-specific modules that are assembled on installation. Not difficult,
+just different.
+
+>> It occurs to me that a given integrity checker
+>> should not rely on secrecy of its own checksumming algorithm, for
+>> instance, for its "security" -- rather, algorithms should be freely
+>> distributable [because someone will soon figure it out anyway!] and
+
+I agree but take it one step further, again the algorithm should be
+tailored to the specific machine and use a different seed on each - this
+in no way weakens the algorithm but gives each PC a different signature
+for a particular file. Break one machine and "malware" must start all over 
+again on the next.
+
+>In general, that's true, but there are still some "trade secrets"...
+>:-) Like fast file access, how to implement intelligent file checking
+>(i.e., only selected parts of the files), anti-stealth techniques,
+>etc.
+
+Most of these are just examples of "bypass DOS" since it is what is
+slow or "stealthed" and are evident to anyone who fanatically studies the
+architecture (admittedly not many do). Of course we all have our notebooks
+like mine on DOS boot record requirements but I do not consider it secret,
+just incomplete and not fully verified.
+
+IMHO the real problem is that there are no standrds. What we are dealing
+with is a multi-billion dollar garage industry that "just growed". Just
+as a trivial example, no-one would buy a PC that isn't "100% compatable"
+yet how many in the audience know *exactly* what that means ? (no
+peeking). Is a PS/2 "100% Compatable" ? A Zenith 248 ? Careful now.
+
+I postulate that every manufacturer has a different idea of just what
+"100% compatable" is and that no-one really is (nor would they want to 
+be), yet how many Anti-Virals are sold as "one size fits all" ? At
+least some are starting to say DOS 3.x & higher and not 2.0 any more.
+
+Of course open standards will require the giving up of some secrets
+by the manufacturers, mostly those involving undocumented "back doors",
+but these are not really secret any more and the manufacturers claims
+(mostlt Microsoft's) of "if we document them, we'll have to support them".
+Just do not ring true. All the documentation needs is a note that
+"this function may be superceeded". But like an MtE detector, incomplete
+documentation is worse than none at all.
+
+					Enough,
+
+						Padgett
+
+
+ps obscure Bug report: SCAN v99 occasionally hangs with a "data read error"
+   when scanning a large number of files with the /A switch on a SuperStor
+   Pro compressed disk in a Zenith 386/sx desktop. This happens only
+   occasionally and was only on certain Harvard Graphics data files but 
+   always on the same ones (HG can read them just fine though & v95 had
+   no problem). Aryeh has been  notified.
+
+------------------------------
+
+Date:    07 Dec 92 23:50:57 +0000
+From:    tck@fold.ucsd.edu (Kevin Marcus)
+Subject: Re: Filler virus (PC)
+
+>>        Scan 99 detected "Filler" active in the memory of my computer.
+>>When I booted from a write-protected floppy the nasty virus was not
+>>found, no matter how many times I tried.  By the way, I have CPAV
+>>constantly running and it did not detect anything wrong.
+>
+>I've been reading in lots of places lately about Filler being detected
+>in memory and not being able to find it anywhere on disk.  Always, it
+>turns out that the user is running CPAV.  Seems a version of CPAV must
+>be leaving a signature of Filler in memory for everyone else to ID.
+>
+>BTW, you will not (or should not  :-)  ) see this conflict with NAV.
+>NAV does a more sophisticated search through memory with knowledge of
+>where viruses store themselves.
+>
+Hmm.  That doesn't sound like the most brilliant thing.  It doesn't take
+too long to search through memory, and it's easy for a varient to move
+to a different place in memory.  Or pick a random spot.
+ 
+And, yes, the problem is that CPAV does leave signatures in memory.  And,
+it explicitly says NOT to use it with any other AV software.
+
+
+- -- 
+|| Kevin Marcus, Computer Virologist.  (619)/457-1836; RE-xxx, TSCAN       ||
+|| INET: tck@bend.ucsd.edu       []-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]-[]
+||       tck@fold.ucsd.edu       || All I wanted was a Pepsi...            ||
+||       datadec@watserv.ucr.edu ||       And she wouldn't give it to me...||
+
+------------------------------
+
+Date:    Tue, 08 Dec 92 00:45:11 +0000
+From:    ctoth@magnus.acs.ohio-state.edu (Christopher M Toth)
+Subject: Odd Virus? HELP (PC)
+
+	Before backing up my hard drive last friday, I ran NAV to make
+sure I wasn't going to make backup copies of any virus. NAV told me
+that it had detected the Pakistani virus and another one called the
+Brain virus. First of all, I thought the Pakistani virus was only a
+floppy disk infector. Anyway, I exited NAV after the warning and tired
+using NAV again as a second check, well, this time NAV comes up with
+NO viruses on my hard drive. But when I checked my directory, I
+noticed that some of my files(50-60%) had their dates changed to dates
+ranging from 1955 to 1965. Can anyone help me out here??
+
+Thanks!! 
+
+- -Chris
+
+- -- 
+Christopher M. Toth             | "... We travel in the dark of a new moon
+The Ohio State University       | A starry highway traced on the map of the sky
+Columbus State                  | Like lovers and heroes,
+CIS/History/Classics/ect..Major | Lonely as the eagle's cry..." -Peart
+
+------------------------------
+
+Date:    05 Dec 92 20:16:00 +0000
+From:    @fuug.fi:kari.laine@compart.fi (Kari Laine)
+Subject: Not a stupid OS/2 Question (OS/2)
+
+To straighten things up.
+
+S&S International Ltd. IS shipping an OS/2 version of Toolkit.
+Actually they have been doing it for some time now.
+
+And guess what - it even works (heh).
+
+Kari Laine
+
+------------------------------
+
+Date:    Sun, 06 Dec 92 21:53:54 +0000
+From:    vess@Cadence.COM (Vess Kavalov)
+Subject: Re: ViruScan v99 and OS/2 (OS/2)
+
+Brian_Hampson@f115.n101.z9.virnet.bad.se (Brian Hampson) writes:
+>There is an apparent problem with SCAN 9.0V99 running in a DOS session
+>under OS/2 using HPFS file system
+>
+>Here is what it reported:
+>
+>- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>
+>C:\>scan d: /nomem
+>SCAN 9.0V99 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+>Scanning for known viruses.
+>
+>
+>Sorry, I can't scan drive d:!
+>
+> No viruses found.
+>
+>C:\>scan c: /nomem
+>SCAN 9.0V99 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+>Scanning for known viruses.
+>
+>
+>Sorry, I can't scan drive c:!
+>
+> No viruses found.
+>=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+>
+>It can't FIND my Hard Disks...disconcerting.
+>
+>Here, on the OTHER hand, is what scan97B reported:
+>
+>- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+>C:\>scan97 d: /nomem
+>SCAN 8.9B97 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+>Scanning for known viruses.
+>
+>Scanning Volume: DDRIVE
+>
+>Disk D: contains 28 directories and 696 files.
+>
+> No viruses found.
+>
+>C:\>scan97 c: /nomem
+>SCAN 8.9B97 Copyright 1989-92 by McAfee Associates.  (408) 988-3832
+>Scanning for known viruses.
+>
+>Scanning Volume: OS2
+>Disk C: contains 119 directories and 2827 files.
+>
+> No viruses found.
+
+With me this happens only on HPFS partitioned volumes Anyway, they
+have SCAN for os/2 (beta) and it seems to work fine with me. There is
+just one problem - it hangs from time to time when you scan your
+system volume, but they ensured me that this problem has been fixed
+already though not released yet. (Let us hope it will happen soon.)
+
+Regards.
+
+------------------------------
+
+Date:    Sun, 06 Dec 92 21:55:36 +0000
+From:    vess@Cadence.COM (Vess Kavalov)
+Subject: Re: Potentially stupid question (OS/2) (PC)
+
+KDC@ccm.UManitoba.CA (Ken De Cruyenaere 204-474-8340) writes:
+>I am not too familiar with OS/2 but am told its going to be very
+>popular soon :-(.
+>Our antiviral software (F-PROT) doesn't seem to run well under OS/2.
+> (It eventually hangs up when scanning, saying
+>   "ERROR SCANNING DRIVE D:")
+>
+>  McAfee SCAN (V99) apparently  gets the same results.
+>
+>My question:
+> What are people running OS/2 using/running as anti-viral software?
+
+Well , I use SCAN for os/2.
+
+------------------------------
+
+Date:    Sun, 06 Dec 92 07:04:19 -0500
+From:    fc@turing.duq.edu (Fred Cohen)
+Subject: FC on virus creation
+
+I am surprised that so many well respected Virus-L readers and writers
+failed to understand the implication of creating 1500 viruses per day
+that are not detected by existing scanners.  The point is that the
+number or percentqge of viruses detected is not as important as the
+eff of the product.
+
+	Of the CARO collection of over 1500 viruses, only a small
+portion have ever been found at a substantial number of sites, and
+many are collector-only viruses that have never appeared in the wild.
+
+	I am quite astounded by the concept that creating viruses in
+the privacy of my home should offend anti-virus types.  In fact, I
+have had automated virus generation systems running for several years.
+At one point, I was trying to create ecosystems by randomly generating
+tens of thousands of candidates per day, many of which were successful
+viruses.  Why does this offend other researchers?  And I take it from
+some of the comments that these researchers have NEVER created a virus
+of their own to explore the concept!  It's sad that people who have
+never tried it feel free to condemn it.  Or have they done it and
+simply don't have the integrity to admit it?
+
+	ASP has already introduced one virus-based commercial product
+(which has never been detected as a virus by any scanner) which
+operates quite well, and we are in the process of creating another
+virus-based product designed to operate in LANs.  Our users don't seem
+to be offended by the optimization of resource utilization, automated
+distribution and installation, high reliability, and small space used
+by our products based on viruses, but it seems to offend the
+anti-virus community that all of their overblown claims about all
+viruses being bad are being undercut by benevolent viruses that are
+safe and reliable.  In fact, most of our viruses work on far more
+systems than most virus defenses, and they don't spread where they are
+not supposed to go.  They are easy to control and remove, they are
+compatable with every DOS based system we have seen to date, and they
+have never generated any unintended side-effects.  Kinda blows the
+whole "all viruses are bad" thing, huh!
+
+	NEW PRODUCT ANOUNCEMENT - BENEVOLENT VIRUSES IN LANS
+	AUTOMATE MUCH OF LAN MANAGEMENT - ANTI-VIRUS COMMUNITY
+	SHUDDERS - SCANNER PRODUCTS MUST ADAPT TO DIFFERENTIATE
+	BETWEEN KNOWN GOOD VIRUSES AND VARIENTS CREATED BY BAD
+	VIRUS WRITERS - FOR DETAILS CONTACT ASP
+
+p.s. considering the people who agree with my recent postings, I may
+have been wrong - nah - you know you're not saying much when everyone
+agrees with you - the lemmings to the sea thing and all.
+FC
+
+------------------------------
+
+Date:    07 Dec 92 13:12:45 -0500
+From:    "Ross M. Greenberg" <72461.3212@CompuServe.COM>
+Subject: Re: Integrity Management
+
+ >Date:    Wed, 02 Dec 92 13:41:35 -0500
+ >From:    padgett@tccslr.dnet.mmc.com (A. Padgett Peterson)
+ 
+>...Have just noticed that one of the major anti-virus houses has completed
+>the addition of effective integrity management with the ability to
+>use a single file for storage of all data for checking by their TSR
+>instead of relying on snippets on the end of each program.
+ 
+C'mon now, Padgett: my own Virex-PC code has had this ability for
+something like two years.  Heck, even Flu_Shot+ has had that since Day
+One (well, since version 1.1, at least) which means that it's been
+available for about four years by this time...
+ 
+Ross
+
+------------------------------
+
+Date:    07 Dec 92 23:13:05 +0000
+From:    ygoland@edison.SEAS.UCLA.EDU (The Jester)
+Subject: Re: Second generation problems (Philosophy)
+
+padgett@tccslr.dnet.mmc.com (A. Padgett Peterson) writes:
+>Second generation problems are the ones that only become apparent when
+>a "fix" for the first generation problem is applied e.g. Some BIOSes
+>allow selection of C: as the boot drive. Sometimes you *want* to boot
+>from A: (to remove disk cacheing so that disk defragmentation can take
+>place) but do not want to change the CMOS & boot several times to do
+>so.
+
+I think we can cut off your problem at the pass. Its a matter of the
+greatest good for the greatest number. Most people do not ever need to
+boot from the A drive, the exception being when their system crashes.
+Since this is hopefully rare, having to go into the CMOS to change the
+boot from C to A (which itself should be rare since the system is
+supposed to be smart enough to know that it can't boot from the
+crashed C drive) isn't that big a deal. Now there are certain people,
+who for a variety of reasons, do need to boot from disk on a fairly
+regular basis. From a security point of view the gate is already open.
+Giving them a button to press (in the case of having a key based
+override to boot from A instead of C) or just automatically booting
+from A isn't really a big difference. Its the floppy itself that is
+the problem. For the minority of the people who actually need to boot
+from floppy, I would recomend they just set their system to boot from
+A and make sure there aren't any disks in the disk drive that they
+don't already know about.
+
+				Yaron (The Jester) Goland
+- -- 
+ 			The Jester
+"Freedom isn't Free"-The U.S. Army
+"Nothing is too wonderful to be true"-Faraday
+"If I knew it all, what would I be doing HERE?"-The Jester
+
+------------------------------
+
+Date:    07 Dec 92 06:41:08 +0000
+From:    ygoland@edison.SEAS.UCLA.EDU (The Jester)
+Subject: A user's view of IBM's antivirus/2 (OS/2)
+
+NOTE:The following review does NOT judge the virus detecting abilities
+of antivirus/2. I do not have sufficent time and resources to do this
+sort of testing. Hopefully Vessilin will do this as he is the only
+source I would trust.
+
+	A User's View of IBM's antivirus/2
+
+This product is a big leap in the right direction, unfortunatly it
+lept so far it fell over the edge. The program tries to make virus
+detection and handling as painless as possible. It's features include
+an automated checking utility that lets you set a daily, weekly,
+monthly, one time, or only on bootup, setting to run a virus check.
+The virus checker has a full range of options for choosing which files
+to check. In addition the virus checker maintains an integredity
+database, so you can choose to only check files which have been
+altered. In addition, once your options are set, activating a virus
+check manually is very easy. The virus program screen has a nice big
+button in the middle marked "Check for viruses". In addition the
+standard set up codes are good and when installed (a truly painless
+process) the program will automatically do the first system check.
+
+The manuals say that the program uses straight scanning, fuzzy
+scanning (where codes simliar to the ones in the database are looked
+for), Heurisitic Scanning (method is unspecified), and integrity
+management. Exactly what information is recorded about a file is
+unclear but I took my hex viewer and examined their database file.  It
+has the names of all the files checked (which in my case is well over
+3000) in an unencrypted and very orderly format, the information kept
+on each file is only a couple bytes and I was able to determine that
+it includes the file size. I don't know if it is using any sort of
+checksum in addition to this, but whatever the file is recording its
+very very orderly. This means that a directed attack should have an
+EXCELLENT chance of working.
+
+Besides the fact that the database file is unencrypted, another
+complaint I have regarding the integrity management is that unlike my
+favorite integrity manager, Integrity Master by Wolfgang Stiller, this
+program does not list all files that have changed and how they have
+changed. (On a related note, if Stiller had made an OS/2 version of
+his program, I wouldn't have had to buy IBM's) I have a feeling the
+reason this wasn't done was to make the program 'more friendly'.
+However IBM shot itself in the foot. Right now when you run a virus
+check you only get a message if something goes wrong, nothing else
+shows up. Thats great! In addition, a file is created everytime you do
+a check listing specifics of how the search was done and any
+interesting things that might have happened (such as being unable to
+open a file). This file is easy to reach from within the viral program
+and only people who care need look at it. If IBM had just added a list
+of changed files, I wouldn't be complaining.
+
+In conclusion, IBM's AntiVirus/2 is the friendliest anti-viral program
+I have seen. Its easy to install, set up, and use. But it's integrity
+Management features leave alot to be desired.
+
+				Yaron (The Jester) Goland
+- -- 
+For some reason unintelligible to me, Lord Acton's dictum that
+"Power tends to corrupt and absolute power corrupts absolutely"
+is rarely raised in connection with judges, who...possess power
+..that comes [close] to being absolute"-Judge Bork
+
+------------------------------
+
+Date:    06 Dec 92 17:33:38 +0000
+From:    jay@info.umd.edu (Jay Elvove)
+Subject: Survey
+
+
+I hope I'm not out of line by posting this questionnaire to this group
+(I've already posted it to the Novell LISTSERV and have gotten a fair
+number of responses back).  I am doing a study of computer viruses as
+part of a Masters management project and as background for a proposal I
+am developing for my employeer (the University of Maryland at College
+Park).  I seek feedback from other organizations as to how they
+perceive the threat from computer viruses and what, if anything, they
+are doing about it.  I would appreciate it more than I can say if you
+could take a few minutes to fill out the questionnaire and send it back
+to me via e-mail (fax and snail mail are ok, too).  I hope to have the
+results tallied by the end of the year.  I'd be delighted to share them
+with you.  Simply attach a message so stating to your survey response.
+Please respond to me directly, not to this list.
+
+Thank you all very much, in advance
+
+Jay Elvove
+
+     ----------cut here----------cut here----------cut here----------
+
+                         Virus Questionnaire
+
+Please answer each of the following questions by circling the response
+(or placing an X to the immediate right of your choice if you are
+responding on-line), filling in the blank, or responding in full to the
+question, as appropriate.  There are several questions whose answers
+depend on whether you are responding from a College/University
+(Coll/Univ) or a non-academic organization (non-acad).  Please answer
+these question by selecting choices from the line that pertains most
+closely with your workplace.
+
+1.   How many PCs do you use or oversee?
+
+    1          2-4       5-9        10-19      20-49       50+
+
+2.   Which of the following best describes your PC computing
+     environment?
+
+    standalone   open lab   restricted lab   departmental LAN   combination
+
+3.   Approximately what percent of the above computers are used by each
+     of the following?  Please choose your answers from one line only.
+
+   (Coll/Univ) faculty    staff        grad student    undergraduate    other
+   (non-acad)  clerical   accounting   technical       administrative   other
+
+4.   In your opinion, how serious a threat do viruses pose to your
+     computing environment?
+
+    extreme         very       moderate       little     none
+
+5.   Within the last six months, how many incidents of computer viruses
+     have you seen?
+
+    1     2-4       5-9        10-19       20-49       50+       none
+
+     If the answer to the previous question was one or more, please
+     answer the following four question:
+
+     (a)   What virus(es) have you seen?
+
+
+
+     (b)   What was the extent of the damage, if any?
+
+
+
+     (c)   How long did it take to remove or otherwise recover from the
+	   virus(es)
+
+
+
+     (d)   Which of the following groups has been the source of the
+           greatest number of viruses?
+
+    (Coll/Univ) faculty    staff       grad student   undergraduate    other
+    (non-acad)  clerical   accounting  technical      administrative   other
+
+6.   Whether or not your computer environment has been exposed to
+     viruses in the past, in your opinion, which of the following
+     groups is most likely to be a source of viruses within your
+     environment today?
+
+    (Coll/Univ) faculty    staff       grad student   undergraduate    other
+    (non-acad)  clerical   accounting  technical      administrative   other
+
+7.   In your opinion, how are computer viruses most likely to be
+     transmitted?
+
+
+
+8.   Which regimen most closely approximates how often you scan your
+     PC(s) for viruses?
+
+    boot-up       daily      weekly       monthly       rarely       never
+
+9.   How many of your PCs use TSR programs to detect viruses?
+
+    1         2-4       5-9        10-19       20-49        50+     none
+
+10.  How often do you back up your files?
+
+    daily      weekly          monthly        rarely          never
+
+11.  What procedures are in place in your environment to address the
+     threat of viruses (i.e., regular scanning, using TSR programs,
+     backing up files, user education, official policies, etc.)?
+     Please list specific anti-virus products in use.
+
+
+
+
+
+12.  Which best describes your role within your organization?
+
+    (Coll/Univ) faculty    staff       grad student   undergraduate    other
+    (non-acad)  clerical   accounting  technical      administrative   other
+
+                     -------------------------
+
+    Please attach a separate sheet if you would like to provide further
+    comments.  If you would be willing to answer additional questions
+    in person or by phone, or if you would like me to get back to you
+    regarding your comments, please let me know.  Be sure to include
+    your name and phone number.  Please return the survey to:
+
+     Jay Elvove
+     c/o Academic Software
+     Computer Science Center             phone:     (301)403-4608
+     University of Maryland              fax:       (301)403-4628
+     College Park, MD 20742-2411         email:     jay@info.umd.edu
+
+Thank you very much for your help with this survey.
+- -- 
+
+Jay Elvove       jay@info.umd.edu
+c/o Academic Software
+Comp. Sci. Center, Univ. of Md., College Park
+
+------------------------------
+
+Date:    Sat, 05 Dec 92 12:37:26 -0500
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: CLEAN-UP, VSHIELD, & WSCAN 99 uploaded to Simtel20 (PC)
+
+I have uploaded to WSMR-SIMTEL20.Army.Mil:
+
+pd1:<msdos.trojan-pro>
+CLEAN99.ZIP     CLEAN-UP V99 virus disinfector
+VSHLD99.ZIP     VSHIELD V99 virus prevention TSR
+WSCAN99.ZIP     WSCAN V99 VIRUSCAN for Windows 3.x
+
+
+WHAT'S NEW
+
+     Version 99 of the VIRUSCAN (SCAN, CLEAN, NETSCAN, VSHIELD, and
+WSCAN) series of programs adds detection of 90 new viruses, bringing
+the total to 865 viruses, or counting variants, 1561.
+
+WSCAN has been updated to reflect the new /AD (scan all local drives)
+switch added in VIRUSCAN.
+
+VSHIELD has one new option added, the /CF {filename} switch.  When run
+with this switch, VSHIELD will check files for unknown viruses using a
+recovery & validation data file created by VIRUSCAN.  Thanks to Martin
+Kiff for this suggestion.
+
+CLEAN-UP has new disinfectors added for the Ontario, Tabulero,
+Walkabout, Npox 2.0, and Npox 2.1 viruses, as well as a new
+remover for the FORM virus.
+
+The VIRUSCAN and NETSCAN programs are already available from this site
+so they have not been sent a second time.  Version 98 was skipped
+because  of a report of a Trojan horse from San Francisco, Calif.
+
+VALIDATION DATA FOR THE VIRUSCAN V99 PROGRAMS
+
+Following is the validation data for the various programs.  Please
+remember that I send these programs directly to the WSMR-SIMTEL20.Army.Mil
+and garbo.uwasa.fi sites directly by myself.  If you download the programs
+from either site, or from any site that mirrors them, there is no need to
+worry about tampering.
+
+
+CLEAN-UP V99 (CLEAN.EXE)            S:110,878  D:12-01-92   M1: 1477  M2: 1D5F
+NETSCAN V99 (NETSCAN.EXE)           (not released on Internet)
+NETSCAN B99 (NETSCAN.EXE)           S:84,181   D:11-17-92   M1: 9701  M2: 07AB
+SCAN FOR WINDOWS V99 (WINSTALL.EXE) S:15,575   D:11-23-92   M1: 5D84  M2: 1892
+SCAN FOR WINDOWS V99 (WSCAN99.EXE)  S:90,238   D:11-23-92   M1: 8C0D  M2: 09D2
+VIRUSCAN SCANV99 (SCAN.EXE)         S:86,205   D:11-16-92   M1: 843C  M2: 16E0
+VSHIELD VSHLD99  (VSHIELD.EXE)      S:45,576   D:12-01-92   M1: B7EE  M2: 037E
+
+Regards,
+
+Aryeh Goretsky
+McAfee Associates Technical Support
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 199]
+******************************************

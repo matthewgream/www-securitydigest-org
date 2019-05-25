@@ -1,0 +1,436 @@
+Subject: RISKS DIGEST 18.54
+
+RISKS-LIST: Risks-Forum Digest  Monday 21 October 1996  Volume 18 : Issue 54
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+A new attack on DES (Adi Shamir)
+"Key Recovery" Replaces "Key Escrow" in Encryption Plan (Edupage)
+Apology/Explanation for BBN-Planet outage (John Hight)
+Snail causes Liechtenstein's cable TV system to fail (Henning Holtschneider)
+Re: Rats take down Stanford ... (William Hugh Murray)
+Re: Computers miss $1.2M in ATM withdrawals (William Hugh Murray)
+Re: Health Info Database Misused (William Hugh Murray)
+People Security versus Computer Security (Li Gong)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Fri, 18 Oct 1996 16:58:50 +0200
+From: Shamir Adi <shamir@wisdom.weizmann.ac.il>
+Subject: A new attack on DES 
+
+You have recently referred in RISKS [18.50, 18.52] to the ingenious new
+attack against public key cryptosystems developed at Bellcore. All the
+published information on the subject (including Bellcore's press release)
+stress that the attack is not applicable to secret key cryptosystems.  Well,
+Eli Biham and I have just released a research announcement in which we show
+that an extension of the attack can, under the same realistic fault model,
+break almost any secret-key algorithm, including DES, multiple DES, IDEA,
+etc. The attack on DES was actually implemented on a PC, and it found the
+key by analysing fewer than 200 ciphertexts generated from unknown
+cleartexts.
+
+Adi Shamir
+
+= = = = = =
+
+Research announcement: A new cryptanalytic attack on DES
+
+Eli Biham                                 Adi Shamir
+Computer Science Dept.                    Applied Math Dept.
+The Technion                              The Weizmann Institute
+Israel                                    Israel
+
+                 18 October 1996
+                     (DRAFT)
+
+In September 96, Boneh Demillo and Lipton from Bellcore announced an
+ingenious new type of cryptanalytic attack which received widespread
+attention (see, e.g., John Markoff's 9/26/96 article in the New York Times).
+Their full paper had not been published so far, but Bellcore's press release
+and the authors' FAQ (available at
+http://www.bellcore.com/PRESS/ADVSRY96/medadv.html) specifically state that
+the attack is applicable only to public key cryptosystems such as RSA, and
+not to secret key algorithms such as the Data Encryption Standard (DES).
+According to Boneh, "The algorithm that we apply to the device's faulty
+computations works against the algebraic structure used in public key
+cryptography, and another algorithm will have to be devised to work against
+the nonalgebraic operations that are used in secret key techniques." In
+particular, the original Bellcore attack is based on specific algebraic
+properties of modular arithmetic, and cannot handle the complex bit
+manipulations which underly most secret key algorithms.
+
+In this research announcement, we describe a related attack (which we call
+Differential Fault Analysis, or DFA), and show that it is applicable to
+almost any secret key cryptosystem proposed so far in the open literature.
+In particular, we have actually implemented DFA in the case of DES, and
+demonstrated that under the same hardware fault model used by the Bellcore
+researchers, we can extract the full DES key from a sealed tamperproof DES
+encryptor by analysing fewer than 200 ciphertexts generated from unknown
+cleartexts.  The power of Differential Fault Analysis is demonstrated by the
+fact that even if DES is replaced by triple DES (whose 168 bits of key were
+assumed to make it practically invulnerable), essentially the same attack
+can break it with essentially the same number of given ciphertexts.
+
+We would like to greatfully acknowledge the pioneering contribution of Boneh
+Demillo and Lipton, whose ideas were the starting point of our new attack.
+
+In the rest of this research announcement, we provide a short technical
+summary of our practical implementation of Differential Fault Analysis of 
+DES. Similar attacks against a large number of other secret key cryptosystems
+will be described in the full version of our paper.
+
+TECHNICAL DETAILS OF THE ATTACK
+
+The attack follows the Bellcore fundamental assumption that by exposing a
+sealed tamperproof device such as a smart card to certain physical effects
+(e.g., ionizing or microwave radiation), one can induce with reasonable
+probability a fault at a random bit location in one of the registers at some
+random intermediate stage in the cryptographic computation. Both the bit
+location and the round number are unknown to the attacker.
+
+We further assume that the attacker is in physical possession of the
+tamperproof device, so that he can repeat the experiment with the same
+cleartext and key but without applying the external physical effects. As a
+result, he obtains two ciphertexts derived from the same (unknown) cleartext
+and key, where one of the ciphertexts is correct and the other is the result
+of a computation corrupted by a single bit error during the computation. For
+the sake of simplicity, we assume that one bit of the right half of the data
+in one of the 16 rounds of DES is flipped from 0 to 1 or vice versa, and
+that both the bit position and the round number are uniformly distributed.
+
+In the first step of the attack we identify the round in which the fault
+occurred.  This identification is very simple and effective: If the fault
+occurred in the right half of round 16, then only one bit in the right half
+of the ciphertext (before the final permutation) differs between the two
+ciphertexts. The left half of the ciphertext can differ only in output bits
+of the S box (or two S boxes) to which this single bit enters, and the
+difference must be related to non-zero entries in the difference
+distribution tables of these S boxes.  In such a case, we can guess the six
+key bit of each such S box in the last round, and discard any value which
+disagree with the expected differences of these S boxes (e.g., differential
+cryptanalysis). On average, about four possible 6-bit values of the key
+remain for each active S box.
+
+If the faults occur in round 15, we can gain information on the key bits
+entering more than two S boxes in the last round: the difference of the
+right half of the ciphertext equals the output difference of the F function
+of round 15.  We guess the single bit fault in round 15, and verify whether
+it can cause the expected output difference, and also verify whether the
+difference of the right half of the ciphertext can cause the expected
+difference in the output of the F function in the last round (e.g., the
+difference of the left half of the ciphertext XOR the fault).  If
+successful, we can discard possible key values in the last round, according
+to the expected differences.  We can also analyse the faults in the 14'th
+round in a similar way.  We use counting methods in order to find the key.
+In this case, we count for each S box separately, and increase the counter
+by one for any pair which suggest the six-bit key value by at least one of
+its possible faults in either the 14'th, 15'th, or 16'th round.
+
+We have implemented this attack on a personal computer.  Our analysis
+program found the whole last subkey given less than 200 ciphertexts,
+with random single-faults in all the rounds.
+
+This attack finds the last subkey.  Once this subkey is known, we can
+proceed in two ways: We can use the fact that this subkey contains 48 out of
+the 56 key bits in order to guess the missing 8 bits in all the possible
+2^8=256 ways. Alternatively, we can use our knowledge of the last subkey to
+peel up the last round (and remove faults that we already identified), and
+analyse the preceding rounds with the same data using the same attack. This
+latter approach makes it possible to attack triple DES (with 168 bit keys),
+or DES with independent subkeys (with 768 bit keys).
+
+This attack still works even with more general assumptions on the fault
+locations, such as faults inside the function F, or even faults in the key
+scheduling algorithm.  We also expect that faults in round 13 (or even prior
+to round 13) might be useful for the analysis, thus reducing the number of
+required ciphertext for the full analysis.
+
+OTHER VULNERABLE CIPHERS
+
+Differential Fault Analysis can break many additional secret key
+cryptosystems, including IDEA, RC5 and Feal.  Some ciphers, such as Khufu,
+Khafre and Blowfish compute their S boxes from the key material.  In such
+ciphers, it may be even possible to extract the S boxes themselves, and the
+keys, using the techniques of Differential Fault Analysis.  Differential
+Fault Analysis can also be applied against stream ciphers, but the
+implementation might differ by some technical details from the
+implementation described above.
+
+------------------------------
+
+Date: Fri, 18 Oct 1996 09:21:58 -0400 (EDT)
+From: Edupage Editors <educom@elanor.oit.unc.edu>
+Subject: "Key Recovery" Replaces "Key Escrow" in Encryption Plan (Edupage)
+
+The latest government proposal for encryption software controls touts a new
+approach called "key recovery."  This provision would allow law enforcement
+officials to rebuild, or "recover" the mathematical key to encoded messages
+with the help of third-party code-breakers.  The new policy reflects
+suggestions made in a National Research Council report released earlier this
+year.  Under the Clinton plan, encryption keys would be expanded from 40
+bits to 56 bits in products to be exported, provided the company agrees to
+the key recovery process.  In addition, authority to issue licenses for
+overseas sales of such products would move from the State Department, where
+they're handled as "munitions," over to the Commerce Department.  The
+Business Software Alliance, however, is still not completely happy with the
+compromise.  "We expect to go back to Congress," says a BSA spokeswoman.
+"Although the announcement was clearly a step in the right direction, it's
+not at all what the industry was looking for in its entirety."  (*Investor's
+Business Daily* 17 Oct 1996 A4; Edupage 17 October 1996)
+
+------------------------------
+
+Date: Fri, 18 Oct 1996 10:15:41 -0700
+From: John Hight <hight@std.sri.com>
+Subject: Apology/Explanation for BBN-Planet outage
+
+Here's the official apology and explanation of the BBN-Planet outage last
+week.  I'm a little put off by Paul Gudonis's offer for credit for two days
+of service in his last paragraph.  As everyone knows, the cost of not being
+able to do business is vastly greater than the cost of keeping up our single
+T1 line here at SRI.
+
+John Hight  SRI International  hight@sri.com
+
+>Date: Wed, 16 Oct 1996 16:26:29 -0500
+>To: affected-sites@bbnplanet.com
+>From: Paul Gudonis <pgudonis@bbnplanet.com>
+>Subject: Palo Alto Power Outage
+>
+>This letter is to our customer administrative and technical contacts
+>who were affected by the outage last week at BBN Planet's Palo Alto
+>POP.  I know how detrimental even a short outage of Internet service
+>is to your business; I have spoken to many of you and understand how
+>drastic an impact the lengthy outage on Friday had.  I want to
+>communicate what we know about the cause of the outage and what steps
+>we took and are taking.
+>
+>BBN Planet's Palo Alto POP is collocated at Stanford University's data
+>center.  This facility, in addition to handling the University's data
+>systems, hosts systems for the Stanford University Hospital.  Stanford
+>has redundant power systems, drawing on both Stanford's co-generation
+>facility and PG&E power. Stanford has had continuous power at this
+>facility for over 10 years, including during earthquakes and during
+>the brownout that the western region experienced in August.
+>
+>The equipment that switches between these power sources failed last
+>Thursday at 7 pm PDT.  Battery backup allowed us to continue powering
+>equipment through 9 pm PDT.  Stanford's power was restored at 12:30 am
+>PDT Friday. BBN restored service to the majority of customers affected
+>by 1:20 PDT.  Stanford's power failed again at 6 am PDT.  Due to the
+>previous outage, the backup batteries were not fully recharged at this
+>point and BBN Planet's power was lost.
+>
+>Two backup generators were ordered and in place by 2 pm PDT.  One
+>generator was required for the cooling systems, the second for the POP
+>equipment.  When the generators started running, one failed.  To avoid
+>further failures, two additional generators were ordered and one was
+>in place by 3:30 pm PDT.  As the second generator was being started
+>up, main power was restored to Stanford at 4:30.  Over the next hour,
+>the temperature in the POP was stabilized, the POP equipment was
+>restarted and service restored to customers.
+>
+>>From the time the first outage occurred, BBN Planet field service staff
+>remained on site.  I was personally at the Palo Alto facility to ensure
+>that our local staff had any resources -- internal or external --
+>required to restore service to you as quickly as possible.  At both
+>headquarters and our Western Region offices, additional staff were
+>recruited to personally call each customer and inform them of our
+>plans.  Our 800 632 7638 line was updated as new information was
+>available.
+>
+>I am proud of dedication the BBN Planet staff showed in addressing
+>customer concerns and striving to restore service as fast as possible.
+>However, none of us are satisfied with our performance.  Although the
+>redundant power at Stanford had performed with 100% reliability for
+>the last 10 years, we are taking additional steps to ensure that power
+>outages do not impact our customers. The generators will be kept on
+>site to avoid further outages until they are replaced with a permanent
+>generator.  They are being manned 7 x 24 to ensure we can start them
+>up before the batteries are exhausted.
+>
+>While BBN Planet's staff did its best to contact customers, we were
+>not able to call as often or as early as we, or you, would like.  We
+>will have an operational Emergency Broadcast System in place in
+>December that will allow us to contact all affected customers within a
+>few minutes.  We'll update you as this service comes on line.
+>
+>We have also made substantial investments in our network
+>infrastructure to deliver the service quality that you expect.  In the
+>last six months, we deployed a high-capacity national backbone with
+>redundant facilities, expanded our server operations, and implemented
+>new systems for customer support.  We are continuing to install more
+>capacity, more redundancy, and new systems to meet your evolving
+>needs.  We'll keep you informed of these improvements.
+>
+>We are automatically issuing credits for two days of service to all
+>customers who lost service due to the Palo Alto power failure.  We
+>have made significant investments and continue to strive to be the
+>most reliable Internet Service Provider.  After this incident, we have
+>a ways to go to regain your confidence, but will make every effort to
+>do so.
+>
+>Regards,
+>
+>
+>Paul R. Gudonis
+>President
+>BBN Planet
+
+------------------------------
+
+Date: Fri, 18 Oct 1996 22:30:16 +0200 (MET DST)
+From: Henning Holtschneider <hh@hhome.farside.net>
+Subject: Snail causes Liechtenstein's cable TV system to fail
+
+As far as I can see from the archives, this is the slowest animal ever to
+make it into the RISKS gallery of "rodent"-caused outages ;-)
+
+According to a local newspaper, Soccer fans in Liechtenstein were unable
+to watch the last couple of minutes of a soccer match between the French
+team of Auxerre and Switzerland's Zuerich Grasshoppers when a snail
+crawled into a socket. The resulting short-circuit caused the entire cable
+TV network of Liechtenstein to fail. 
+
+Henning Holtschneider * Bauernkamp 41 * 44339 Dortmund * Germany
+hh@hhome.farside.net
+
+  [Don't forget the GraceHopper bug, although it 
+  had the potential for higher speed.  PGN]
+
+------------------------------
+
+Date: Fri, 18 Oct 96 11:03 EST
+From: William Hugh Murray <0003158580@mcimail.com>
+Subject: Re: Rats take down Stanford ... (RISKS-18.53)
+
+PGN's request for redundancy brings to mind the story of the infrastructure
+computer center in Trumbull, Connecticut.  It is an old story but bears
+repeating.
+
+Seems that a squirrel got into a transformer and brought down the external
+power supply.  The UPS kicked in, engine generators came on line, and the
+center operated in this mode for about an hour and a half.  At the end of
+that time the external power was restored.  The external power, the UPS, and
+the engine generators went inot a deadly embrace.  The whole thing came down
+and would not come back up.
+
+I take two lessons from this.  First, redundancy adds some complexity and a
+lot of redundancy adds a lot of complexity.  At some point the redundancy
+begins to introduce failure modes and failure events that would not have
+exited in its absence.  There is an upper bound to such redundancy.
+
+Second, test redundant systems through to resumption of normal operations.
+In this case, the operators had tested to ensure that the redundant systems
+would come online in the event of a failure of the primary system.  They had
+not tested to see what would happen when the primary system was restored to
+normal operation.
+
+Who would have even thought about it?  I confess that I would not have.
+
+William Hugh Murray, New Canaan, Connecticut
+
+------------------------------
+
+Date: Fri, 18 Oct 96 11:03 EST
+From: William Hugh Murray <0003158580@mcimail.com>
+Subject: Re: Computers miss $1.2M in ATM withdrawals (Fenner, RISKS-18.53)
+
+Some older readers of RISKS may recall the Franklin National Bank.  An
+officer, speculating in foreign currency, lost fifty million dollars, a
+small percentage of the bank's capital.  While the bank was able to keep
+this peculation secret for ninety days, it inevitably leaked and the leak
+resulted in an article in the Wall Street Journal.  In the next ninety days
+the bank lost a billion and a half dollars in deposits and ultimately
+failed.
+
+The lesson that most bankers take from the story is that publicity about
+losses is often worse than the losses themselves.  In the electronic era,
+bank runs do not involve panic stricken crowds in the streets.
+
+William Hugh Murray, New Canaan, Connecticut
+
+------------------------------
+
+Date: Fri, 18 Oct 96 11:03 EST
+From: William Hugh Murray <0003158580@mcimail.com>
+Subject: Re: Health Info Database Misused (Fickeisen, RISKS-18.53)
+
+> a public health worker took a laptop and disks with confidential lists
+
+This story would be very troubling if true.  Just as troubling is the
+failure to provide a complete citation.  In the absence of such citations,
+this story is merely hearsay, another modern myth.
+
+I am reminded of the rumors, for example, of viruses, that are more
+destructive than the thing that they report.  Another example is the report
+that Lexis/Nexis would return social security number for name.
+
+In the electronic era, when gossip and rumors spread with unprecedented
+speed, it essential to know the primary source and to err on the side of not
+repeating that which you do not know first-hand to be both true and
+important.
+
+William Hugh Murray, New Canaan, Connecticut
+
+------------------------------
+
+Date: Fri, 18 Oct 1996 21:52:29 -0700
+From: Li Gong <li.gong@Eng.Sun.COM>
+Subject: People Security versus Computer Security
+
+Once again we are reminded that computer security should be considered
+within a wider context that includes people security.  The *Manchester
+Guardian Weekly* (vol.155, no.14, for week ending Oct.6, 1996) in its
+Washington Post section (p.16) reported that a spy named Robert Chaegon Kim
+in the Washington D.C. area had been able to gather sensitive information
+and pass it on to a South Korean embassy official.  The report said that
+
+	"... Kim was an ideal source ... His computer work in what is
+	known as a SCIF (Secure Compartmented Information Facility) behind
+	two secure doors at the Office of Naval Intelligence afforded him
+	extraordinary access to a wide range of classified studies and
+	analysis by many intelligence agencies."
+
+The report went on to say that "Kim routinely removed the classified labels"
+before sending out the files.  One might reasonably argue that the computer
+system was a significant help for Kim to do his "job".  Bob Morris often
+says that "there will always be a Walker", and he is proven correct so far!
+
+Li Gong, JavaSoft, gong@eng.sun.com
+
+------------------------------
+
+Date: 15 Aug 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.54 
+************************

@@ -1,0 +1,542 @@
+Subject: RISKS DIGEST 14.52
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Wednesday 21 April 1993  Volume 14 : Issue 52
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+The Clipper Chip: A Technical Summary (Dorothy Denning)
+CPSR calls for public debate on encryption initiative (Dave Banisar) 
+Clipped Wings-- The Economic Impediment to the Clipper Chip... (Peter Wayner)
+Letter to Clinton, re: the encryption proposal (Carl Ellison)
+Hacking turnpike signs (Paul Schmidt)
+Re: Head-on train collision in Berlin (Joseph T Chew)
+Pliers Found Attached To Discovery Shuttle SRBs (Marc Schwartz)
+Re: Columbia and Discovery Shuttle Problems (Stephen E. Bacher)
+Badge entry and forgotten badges (anonymous)
+
+ The RISKS Forum is a moderated digest discussing risks; comp.risks is its 
+ Usenet counterpart.  Undigestifiers are available throughout the Internet,
+ but not from RISKS.  Contributions should be relevant, sound, in good taste,
+ objective, cogent, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with appropriate, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  **PLEASE** INCLUDE YOUR NAME & INTERNET FROM: ADDRESS,
+ especially .UUCP folks.  REQUESTS please to RISKS-Request@CSL.SRI.COM.     
+
+ Vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 14, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+
+ For information regarding delivery of RISKS by FAX, phone 310-455-9300
+ (or send FAX to RISKS at 310-455-2364, or EMail to risks-fax@cv.vortex.com).
+
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Wed, 21 Apr 93 19:21:48 EDT
+From: denning@cs.cosc.georgetown.edu (Dorothy Denning)
+Subject: THE CLIPPER CHIP: A TECHNICAL SUMMARY
+
+                     THE CLIPPER CHIP: A TECHNICAL SUMMARY
+                               Dorothy Denning
+                           Revised, April 21, 1993
+
+INTRODUCTION
+
+On April 16, the President announced a new initiative that will bring
+together the Federal Government and industry in a voluntary program
+to provide secure communications while meeting the legitimate needs of
+law enforcement.  At the heart of the plan is a new tamper-proof encryption
+chip called the "Clipper Chip" together with a split-key approach to
+escrowing keys.  Two escrow agencies are used, and the key parts from
+both are needed to reconstruct a key.
+
+
+CHIP CONTENTS
+
+The Clipper Chip contains a classified single-key 64-bit block
+encryption algorithm called "Skipjack."  The algorithm uses 80 bit keys
+(compared with 56 for the DES) and has 32 rounds of scrambling
+(compared with 16 for the DES).  It supports all 4 DES modes of
+operation.  The algorithm takes 32 clock ticks, and in Electronic
+Codebook (ECB) mode runs at 12 Mbits per second.
+
+Each chip includes the following components:
+
+   the Skipjack encryption algorithm
+   F, an 80-bit family key that is common to all chips
+   N, a 30-bit serial number (this length is subject to change)
+   U, an 80-bit secret key that unlocks all messages encrypted with the chip
+
+The chips are programmed by Mykotronx, Inc., which calls them the
+"MYK-78."  The silicon is supplied by VLSI Technology Inc.  They are
+implemented in 1 micron technology and will initially sell for about
+$30 each in quantities of 10,000 or more.  The price should drop as the
+technology is shrunk to .8 micron.
+
+
+ENCRYPTING WITH THE CHIP
+
+To see how the chip is used, imagine that it is embedded in the AT&T
+telephone security device (as it will be).  Suppose I call someone and
+we both have such a device.  After pushing a button to start a secure
+conversation, my security device will negotiate an 80-bit session key K
+with the device at the other end.  This key negotiation takes place
+without the Clipper Chip.  In general, any method of key exchange can
+be used such as the Diffie-Hellman public-key distribution method.
+
+Once the session key K is established, the Clipper Chip is used to
+encrypt the conversation or message stream M (digitized voice).  The
+telephone security device feeds K and M into the chip to produce two
+values:
+
+   E[M; K], the encrypted message stream, and 
+   E[E[K; U] + N; F], a law enforcement field , 
+
+which are transmitted over the telephone line.  The law enforcement
+field thus contains the session key K encrypted under the unit key U
+concatenated with the serial number N, all encrypted under the family
+key F.  The law enforcement field is decrypted by law enforcement after
+an authorized wiretap has been installed.
+
+The ciphertext E[M; K] is decrypted by the receiver's device using the
+session key:
+
+   D[E[M; K]; K] = M .
+
+
+CHIP PROGRAMMING AND ESCROW
+
+All Clipper Chips are programmed inside a SCIF (Secure Compartmented
+Information Facility), which is essentially a vault.  The SCIF contains
+a laptop computer and equipment to program the chips.  About 300 chips
+are programmed during a single session.  The SCIF is located at
+Mykotronx.
+
+At the beginning of a session, a trusted agent from each of the two key
+escrow agencies enters the vault.  Agent 1 enters a secret, random
+80-bit value S1 into the laptop and agent 2 enters a secret, random
+80-bit value S2. These random values serve as seeds to generate unit
+keys for a sequence of serial numbers.  Thus, the unit keys are a
+function of 160 secret, random bits, where each agent knows only 80.
+  
+To generate the unit key for a serial number N, the 30-bit value N is
+first padded with a fixed 34-bit block to produce a 64-bit block N1.
+S1 and S2 are then used as keys to triple-encrypt N1, producing a
+64-bit block R1:
+
+        R1 = E[D[E[N1; S1]; S2]; S1] .
+
+Similarly, N is padded with two other 34-bit blocks to produce N2 and
+N3, and two additional 64-bit blocks R2 and R3 are computed:  
+
+        R2 = E[D[E[N2; S1]; S2]; S1] 
+        R3 = E[D[E[N3; S1]; S2]; S1] .
+
+R1, R2, and R3 are then concatenated together, giving 192 bits. The
+first 80 bits are assigned to U1 and the second 80 bits to U2.  The
+rest are discarded.  The unit key U is the XOR of U1 and U2.  U1 and U2
+are the key parts that are separately escrowed with the two escrow
+agencies.
+
+As a sequence of values for U1, U2, and U are generated, they are
+written onto three separate floppy disks.  The first disk contains a
+file for each serial number that contains the corresponding key part
+U1.  The second disk is similar but contains the U2 values.  The third
+disk contains the unit keys U.  Agent 1 takes the first disk and agent
+2 takes the second disk.  Thus each agent walks away knowing
+an 80-bit seed and the 80-bit key parts.  However, the agent does not
+know the other 80 bits used to generate the keys or the other 80-bit
+key parts.  
+
+The third disk is used to program the chips.  After the chips are
+programmed, all information is discarded from the vault and the agents
+leave.  The laptop may be destroyed for additional assurance that no
+information is left behind.
+ 
+The protocol may be changed slightly so that four people are in the
+room instead of two.  The first two would provide the seeds S1 and S2,
+and the second two (the escrow agents) would take the disks back to
+the escrow agencies. 
+
+The escrow agencies have as yet to be determined, but they will not
+be the NSA, CIA, FBI, or any other law enforcement agency.  One or
+both may be independent from the government.
+
+
+LAW ENFORCEMENT USE
+
+When law enforcement has been authorized to tap an encrypted line, they
+will first take the warrant to the service provider in order to get
+access to the communications line.  Let us assume that the tap is in
+place and that they have determined that the line is encrypted with the
+Clipper Chip.  The law enforcement field is first decrypted with the
+family key F, giving E[K; U] + N.  Documentation certifying that a tap
+has been authorized for the party associated with serial number N is
+then sent (e.g., via secure FAX) to each of the key escrow agents, who
+return (e.g., also via secure FAX) U1 and U2.  U1 and U2 are XORed
+together to produce the unit key U, and E[K; U] is decrypted to get the
+session key K.  Finally the message stream is decrypted.  All this will
+be accomplished through a special black box decoder.
+
+
+CAPSTONE: THE NEXT GENERATION
+
+A successor to the Clipper Chip, called "Capstone" by the government
+and "MYK-80" by Mykotronx, has already been developed.  It will include
+the Skipjack algorithm, the Digital Signature Standard (DSS), the
+Secure Hash Algorithm (SHA), a method of key exchange, a fast
+exponentiator, and a randomizer.  A prototoype will be available for
+testing on April 22, and the chips are expected to be ready for
+delivery in June or July.
+
+
+ACKNOWLEDGMENT AND DISTRIBUTION NOTICE.  This article is based on
+information provided by NSA, NIST, FBI, and Mykotronx.  Permission to
+distribute this document is granted.
+
+------------------------------
+
+Date: Fri, 16 Apr 1993 16:43:02 EST    
+From: Dave Banisar <banisar@washofc.cpsr.org>
+Subject: CPSR calls for public debate on encryption initiative
+
+April 16, 1993					    Washington, DC
+
+
+               COMPUTER PROFESSIONALS CALL FOR PUBLIC 
+           DEBATE ON NEW GOVERNMENT ENCRYPTION INITIATIVE
+
+	Computer Professionals for Social Responsibility (CPSR) today called
+for the public disclosure of technical data underlying the government's
+newly-announced "Public Encryption Management" initiative.  The new
+cryptography scheme was announced today by the White House and the National
+Institute for Standards and Technology (NIST), which will implement the
+technical specifications of the plan.  A NIST spokesman acknowledged that the
+National Security Agency (NSA), the super-secret military intelligence agency,
+had actually developed the encryption technology around which the new
+initiative is built.
+
+	According to NIST, the technical specifications and the Presidential
+directive establishing the plan are classified.  To open the initiative to
+public review and debate, CPSR today filed a series of Freedom of Information
+Act (FOIA) requests with key agencies, including NSA, NIST, the National
+Security Council and the FBI for information relating to the encryption plan.
+The CPSR requests are in keeping with the spirit of the Computer Security Act,
+which Congress passed in 1987 in order to open the development of non-military
+computer security standards to public scrutiny and to limit NSA's role in the
+creation of such standards.
+
+	CPSR previously has questioned the role of NSA in developing the
+so-called "digital signature standard" (DSS), a communications authentication
+technology that NIST proposed for government-wide use in 1991.  After CPSR
+sued NIST in a FOIA lawsuit last year, the civilian agency disclosed for the
+first time that NSA had, in fact, developed that security standard.  NSA is
+due to file papers in federal court next week justifying the classification of
+records concerning its creation of the DSS.
+
+	David Sobel, CPSR Legal Counsel, called the administration's apparent
+commitment to the privacy of electronic communications, as reflected in
+today's official statement, "a step in the right direction."  But he
+questioned the propriety of NSA's role in the process and the apparent secrecy
+that has thus far shielded the development process from public scrutiny.  "At
+a time when we are moving towards the development of a new information
+infrastructure, it is vital that standards designed to protect personal
+privacy be established openly and with full public participation.  It is not
+appropriate for NSA -- an agency with a long tradition of secrecy and
+opposition to effective civilian cryptography -- to play a leading role in the
+development process."
+
+	CPSR is a national public-interest alliance of computer industry
+professionals dedicated to examining the impact of technology on society.
+CPSR has 21 chapters in the U.S. and maintains offices in Palo Alto,
+California, Cambridge, Massachusetts and Washington, DC.  For additional
+information on CPSR, call (415) 322-3778 or e-mail <cpsr@csli.stanford.edu>.
+
+------------------------------
+
+Date: Tue, 20 Apr 1993 14:23:39 -0400
+From: Peter Wayner <pcw@access.digex.com>
+Subject: Clipped Wings-- The Economic Impediment to the Clipper Chip...
+
+If all of the privacy concerns about the Clipper chip magically disappeared,
+the chip will still encounter widespread economic resistance.  Why? Because
+almost everything can be done cheaper in software and the secrecy surrounding
+the algorithm effectively prohibits software implementations.
+
+Why would a computer designer add a high-speed encryption chip to the machine?
+Even if the chips cost about $25 in large quantities, they could still add
+about $100 to the final cost after everyone takes their markups.  The computer
+designer must ask whether people are willing to spend extra to buy a box when
+the clone manufacturer in the garage down the street isn't going to be putting
+one in.
+
+Adding encryption in software is a different proposition.  There is a one-time
+cost of engineering and a small extra cost for increased support.  Once the
+code is written, the manufacturing costs do not increase.  Also, software can
+retrofit machines for no extra cost and add widespread compatibility after the
+update is finished.  This is why Novell, Apple and Microsoft choose to add
+encryption software in their latest rev of the system software.
+
+It is not even clear that the standard has much of a chance in the phone
+system.  DSP chips and digital designs are becoming more and more part of
+cellular standards.  Why pay extra for another chip if it can be done in the
+DSP? Weight and power consumption are important considerations for these
+applications.
+
+I'm sure that the algorithm designers and NSA committee considered the RISKS
+of exposing the algorithm.  Scrutiny weakens the code because it makes it
+easier for people to attack the system.  It is obvious that the committee
+tried to consider some of the economic RISKS involved in promulgating a "Big
+Brother" standard.  That is why they arranged for the chips to be presented as
+a fait accompli as part of AT&T's latest phones.  But they face an uphill
+battle against the forces of economics.
+
+--Peter Wayner
+
+------------------------------
+
+Date: 17 Apr 1993 19:27:47 GMT
+From: cme@ellisun.sw.stratus.com (Carl Ellison)
+Subject: Letter to Clinton, re: the encryption proposal
+
+I mailed the following letter to the President today:
+
+To: 0005895485@MCIMAIL.COM (White House)
+Subject: Second thoughts about your encryption proposal
+
+						17 April 1993
+
+Dear Mr. President --
+
+Since writing my initial reaction I have given considerable second thought to
+your encryption proposal, announced yesterday.  I must withdraw my initial
+partial support for your plan, pending the release of further details.
+
+My initial assumption was that you were mandating the replacement of every
+telephone handset in the USA with one which would digitize the person's voice
+and encrypt it.  I assumed that this replacement would start with cellular
+handsets and proceed through wireless and wired -- in order of severity of
+vulnerability.  Given that the government would mandate such a change and that
+that change would interfere with the FBI's current ability to tap voice
+telephone calls on the public networks, it made sense to propose an encryption
+method which would allow the FBI to continue in court-ordered wiretaps --
+specifically via key escrow.
+
+While it would be beneficial from the point of view of improving the
+privacy and security of citizens from illegal eavesdropping, I now believe
+that this proposal is far too costly to undertake at this time.  The
+federal government is facing a huge debt and deficit and the private sector
+is far from thriving.  The proposal to pay for some of this equipment with
+funds from civil forfeiture adds insult to injury, since abuses of civil
+forfeiture have led me to conclude that law enforcement's right to such
+funds should be severely restricted if not removed.
+
+If this proposal is only for limited use of such encryption, then it does
+little to advance the cause of citizen's privacy and it is in direct
+competition with existing products which already service the small market
+of citizens who are aware of their vulnerability and who are willing to pay
+for assurance of their privacy.  It is especially disturbing that the press
+release suggests that this proposal is not merely a call for action but an
+already designed implementation which some agency of the administration is
+attempting to impose upon the American people.  The talent exists in the
+private sector to address these security concerns.
+
+Meanwhile, there is a danger that the key escrow provision is intended to
+imply that all cryptosystems used by citizens in the lawful course of their
+daily personal and business lives must include key registration.  This
+would be an unacceptable erosion of our current rights, especially of the
+fundamental right of privacy which you supported so strongly during your
+campaign.  Legislation to this effect would be unenforceable.  It would be
+easily and frequently broken -- leading to the danger that some law
+enforcement officer with a private grudge would have an easy method of
+filing a criminal complaint against the innocent victim of his grudge.  A
+requirement for key registration would also come directly into conflict
+with certain uses of cryptography in advanced computer system design.  In
+those cases, both key registration and use of some government-designed chip
+are unacceptable.
+
+Meanwhile, there is the additional danger that this proposal would serve as
+a vehicle for advancing the FBI's wiretap proposal which was rejected by
+Congress last year and which I oppose on several grounds.
+
+I look forward to full technical details of your proposal and to a public
+debate on its merits.
+
+Sincerely,
+
+Carl M. Ellison
+      Senior Technical Consultant - Advanced Development Group
+      Stratus Computer Inc.
+      55 Fairbanks Boulevard
+      Marlborough MA  01752-1298
+
+      TEL: (508) 460-2783
+      FAX: (508) 624-7488
+      E-mail: cme@sw.stratus.com
+              cme@vos.stratus.com
+-- 
+ - <<Disclaimer: All opinions expressed are my own, of course.>>
+ - Carl Ellison                                        cme@sw.stratus.com
+ - Stratus Computer Inc.       M3-2-BKW                TEL: (508)460-2783
+ - 55 Fairbanks Boulevard ; Marlborough MA 01752-1298  FAX: (508)624-7488
+
+------------------------------
+
+Date: Fri, 16 Apr 93 10:59:38 EDT
+From: prs@titan.hq.ileaf.com (Paul Schmidt)
+Subject: Hacking turnpike signs
+
+Sometime last week, electronic sign boards along Interstate 95 in Connecticut
+were hacked to say "You all suck." These boards are normally used to announce
+construction, fog, and whatnot.  Apparently it was several hours before State
+Police and the Highway Department were able to clear the messages. Well, it
+happened again a day or two ago, with a different message attacking the
+Governer. A teenager has been caught; he said that there was no password on
+the Highway Department's computer system.
+
+I originally heard this on a short news blurb on WHJY, a rock station in
+Providence RI, so I'm sure the accuracy is all you would expect it to be.
+Confirming reports welcomed!
+
+I'm just waiting for the day that the speed limit signs go electronic.
+They'll probably only allow two digits, though...
+
+------------------------------
+
+Date:     Wed, 14 Apr 93 13:16:36 PDT
+From: jtchew@Csa3.LBL.Gov (Joseph T Chew)
+Subject:  Re: Head-on train collision in Berlin (RISKS 14:50)
+
+In RISKS 14:50, dww@math.fu-berlin.de (Debora Weber-Wulff) writes:
+
+DWW> ...The computer reacted by setting the outbound signal
+DWW> correctly to "halt".  The overseer believed that this 
+DWW> was a defect in the system, and overrode the signal...
+DWW> without telephoning anyone to investigate the supposed error.
+
+The last line, of course, explain the proximate cause and points a flashing
+red arrow toward the root cause.  I read RISKS 14:50 just a couple of days
+after a lessons-learned article on "lockout/ tagout" in Occupational Safety
+OBSERVER, a newsletter from the Department of Energy's Office of Safety and
+Quality Assurance.  (Lockout/tagout is a set of rules and procedures meant to
+keep electricians and others who work with stored energy from releasing it
+through themselves.)
+
+The article pointed out, strenuously, that the cardinal rule of lockout/tagout
+is, "*never* remove a tag affixed by someone else."  When you have virtual
+"tags" affixed by a computer, and operators who perhaps were not exposed to
+the subset of technical endeavors where the lockout/tagout discipline is used,
+you have a risk added to another risk!
+
+The irony, of course, is that the computer system took the right action but
+was subverted by its user.  I doubt that there will ever be a system so
+sophisticated that some dumb bunny can't cause a disaster.  The lesson:
+designers of man-in-the-loop systems have to understand operator psychology,
+and owners of such systems have to provide appropriate training that accounts
+for such risks and then maintain a culture that places importance on avoiding
+them.
+
+--Joe
+
+------------------------------
+
+Date:  Thu, 15 Apr 93 17:15 EDT
+From: SchwartzM@DOCKMASTER.NCSC.MIL
+Subject: Pliers Found Attached To Shuttle SRBs
+
+In this morning's (4/15) Minneapolis Star-Tribune was a small blurb on a new
+problem discovered on the recent Discovery shuttle mission.  Apparently, the
+crew that goes out to pickup the Solid Rocket Boosters (SRBs) after they come
+back down to the ocean via parachute, noted a pair of pliers still "attached"
+to one of the SRBs.  They did not say if they were "jammed" in to some spot or
+if they were in fact holding on to something.  If the latter, one would have
+to assume that they are probably "Vise-Grips" or a generic version of them.  I
+can see the commercial advertisements now....  "The pliers that grip so tight,
+they will keep holding on even through the G-Forces of a space shuttle
+launch".
+
+Apparently NASA is scrambling to figure out what went wrong.  One would
+think so given the sensitivity to another possible failure of the SRBs.
+
+Marc Schwartz Director of Clinical Services Summit Medical Systems, Inc.
+Minneapolis, MN.
+
+------------------------------
+
+Date: 14 Apr 1993 14:34:30 -0400 (EDT)
+From: "Stephen E. Bacher" <seb@draper.com>
+Subject: Re: Columbia and Discovery Shuttle Problems
+
+>From: viking@iastate.edu (Dan Sorenson)
+>Subject: Re: Columbia and Discovery shuttle problems (RISKS-14.47)
+>
+>           The "fix" is to bypass the sensor, fooling the computer into
+>thinking the valve is properly closed.
+
+Love it - a high-tech implementation of the venerable
+"black tape" remedy well known to Car Talk listeners.
+
+You know:
+Q: "My Check Engine / alternator / oil pressure light just came on."
+A: "Get some black tape..."
+
+Steve Bacher (Batchman)                 Draper Laboratory
+Internet: seb@draper.com                Cambridge, MA, USA
+
+------------------------------
+
+Date: Thu, 15 Apr 93 12:17:31 XXT
+From: [Anonymous]
+Subject: Badge entry and forgotten badges
+
+I work for a large company with badge entry systems for all buildings
+and all internal labs.  This is normally great, because I can get into
+my building any time I want, day or night, and I can get into the labs
+that I need to use, but it keeps me out of places I don't belong.  It
+also does the same for others.
+
+About once a year, however, I forget my badge.  This is not a problem
+for the normal person who comes in after 8:00 in the morning when the
+building is open and there is a receptionist, but I carpool from quite
+a distance away, before traffic gets heavy, and I get in about 6:45.
+
+This morning was one of those rare occasions when I forgot my badge.
+No problem, each building has a phone at the front door that rings
+through directly to security.  I picked it up and told them that I
+needed to get into the building.  They asked me a few questions, like
+what is my name, my badge number, my phone extension and two or three
+other such pieces of information, then they opened the door remotely
+and I was let into the building.
+
+As I was walking to my office, I realized that all of the information I
+was required to give them is contained on-line in our computer network
+and anyone with access to a workstation could get this information
+about anyone in the company in just a few seconds.  I'm not recommending
+that the database be changed, because it is a great aid to employee
+intercommunication.  However, I expect that I could easily get into
+some building where I don't belong by gathering this information about
+someone who works in that building.  I don't even need to know a name
+to get this information, the database allows searches by building.
+
+Not too long ago, when I needed to be let in a building, someone from
+security would come by, check a photo ID, such as a drivers license,
+then let me in with a key.  Even though my company has become much more
+security conscious during the 5 years I've worked here, I believe it is
+a security risk to allow building entry based solely on information
+given over the phone that is contained in a computer database readily
+accessible to anyone who can access the network.  I'm going to
+recommend a change to this procedure.
+
+------------------------------
+
+End of RISKS-FORUM Digest 14.52
+************************

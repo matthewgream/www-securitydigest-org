@@ -1,0 +1,500 @@
+VIRUS-L Digest   Tuesday, 30 Oct 1990    Volume 3 : Issue 176
+
+Today's Topics:
+
+Removing Joshi virus (PC)
+ABS Virus (PC)
+LANs
+Re: Signatures
+The Virus in Society & Request for book references
+Ogre Virus Warning. Australia. (PC)
+Mcafee programs for university environment (Registration) (PC)
+Virus, NetWare & law suits
+Bitnet Worm spotted... (IBM VM/CMS)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+---------------------------------------------------------------------------
+
+Date:    Thu, 18 Oct 90 19:17:54 -0400
+From:    MMCCUNE@sctnve.bitnet
+Subject: Removing Joshi virus (PC)
+
+I would like to thank the members of the Virus-L, Fidonet and Interlink virus
+conferences for there feedback on this program. Earlier, I posted a remover
+for the Joshi Virus that didn't check for the virus before trying to remove
+it. I have now added several checks to the new version of the program....
+
+ mov ah,0h
+ mov dx,80h
+ int 13h          ;Reset hard disk
+ mov cx,1h
+ mov bx,200h
+ mov ax,201h
+ int 13h          ;Load sector 1 of partition table into memory
+ or ah,ah         ;Check for a read error
+ jnz read_error
+ es:
+ cmp w[bx],1feb   ;See if partition table is infected
+ jnz no_virus
+ mov cx,000ah
+ mov ax,301h
+ int 13h          ;Save copy of partition record
+ or ah,ah         ;See if there was a write error
+ jnz write_error
+ mov cx,9h
+ mov ax,201h
+ int 13h          ;Load sector 9 of partition table into memory
+ or ah,ah         ;Check for a read error
+ jnz read_error
+ cmp w[bx+1fe],0aa55h   ;Checks for a valid partition record
+ jnz no_remove
+ mov cx,1h
+ mov ax,301h
+ int 13h          ;Write sector 9 over sector 1 (in partition table)
+ or ah,ah         ;Check for a write error
+ jnz write_error
+ mov ah,9h
+ lea dx,remove_message
+ int 21h
+ int 20h
+ no_virus:
+ mov ah,9h
+ lea dx,virus_message
+ int 21h
+ int 20h
+ no_remove:
+ mov ah,9h
+ lea dx,no_remove_message
+ int 21h
+ int 20h
+ read_error:
+ mov ah,9h
+ lea dx,read_message
+ int 21h
+ int 20h
+ write_error:
+ mov ah,9h
+ lea dx,write_message
+ int 21h
+ int 20h
+ remove_message:
+ db 'Joshi Removed$'
+ virus_message:
+ db 'Joshi not found$'
+ no_remove_message:
+ db 'Joshi can not be removed!$'
+ read_message:
+ db 'Read Error$'
+ write_message:
+ db 'Write Error$'
+
+This program will remove the Joshi virus from the hard disk. McAfee's
+SCANV64 or above will detect it. The virus can also be detected by
+looking at the partition table with a HEX editor such as Norton
+Utilities. First, cold boot (turn the machine off) off a clean, write
+protected diskette. Then look at the partition record (Track 0, Head
+0, Sector 1). If the first two bytes are Hex EB 1F, the hard disk is
+infected.
+
+The virus also does some other things to make itself detectable. When
+the date is set to 1-05-(any year), a green screen with the words
+"TYPE HAPPY BIRTHDAY JOSHI" appear on the screen. The machine will
+halt until the message is typed.
+
+Also, CHKDSK will show 6k less memory than is available on an
+unifected system .
+
+Probably the most annoying bug in the virus is that it won't allow you
+to format a diskette while it is active in memory; the system will
+give a "bad track 0" error.
+
+To use, first boot off an unifected diskette (this is very important).
+Then type RMJOSHI. This will remove the virus from the hard disk. It
+will leave traces of the virus in the partition table but the virus
+will be disabled and the system will be returned to normal.
+
+ RMJOSHI will give four messages:
+
+ Joshi Removed   - The virus was found and removed from the partition table
+                   of the hard disk.
+ Joshi not found - Either the virus is active in memory or the hard disk is not
+                   infected.
+ Joshi can not   - Either the partition record is corrupted or you have a new
+ be removed        variation of the virus.
+
+ Read Error      - The program aborted because there was an error reading the
+                   hard disk.
+ Write Error     - The program aborted because there was an error writing to
+                   the hard disk.
+
+When dealing with viruses, there is always a danger of losing
+programs or data.  Thus, I offer no warranty on these programs. They
+may be freely distributed as long as they are not altered in any way.
+I can be reached on the FIDONET virus echo, the INTERLINK virus echo
+and VIRUS-L digest. I can also be reached on BITNET as
+MMCCUNE@SCT.NVE. It is free to use by all private individuals
+(Institutions please contact me first).
+
+ Mike McCune.
+
+------------------------------
+
+Date:    Sat, 22 Oct 90 11:59:16
+From:    MUSTAFA T. ALGHAZAL <DEVMTG12@SAKFU00.BITNET>
+Subject: ABS Virus (PC)
+
+Any body can send me any information to remove a virus called ( ABS
+VIRUS ) infected one of our IBM PCs in KFU.This virus seems to be a
+version of (C) Brain since it gives its name to the hard disk volume.
+We tried to remove it using Macafee 67 virus ,but it does not recogize
+it.  Thanks a lot ,,,
+
+------------------------------
+
+Date:    29 Oct. 1990
+From:    Padgett Peterson <padgett%tccslr.dnet@uvs1.orl.mmc.com>
+Subject: LANs
+
+In issue 175 Bob Bosen writes:
+
+>In view of the general disregard of security
+>issues demonstrated by most LAN vendors so far, it will not be
+>surprising if viruses develop that can cross these server-operating
+>system boundaries by exploiting known bugs or by deceiving system
+>operators into granting executable control to decoy programs. But so
+>far, I have heard of no such thing.
+
+Unfortunately, we have. The Internet worm carried code for both SUN
+and VAX ULTRIX machines, detected the architecture of the target
+machine, and propagated accordingly. Similarly, I have an MS-DOS
+trojan that supposidly (I have not yet checked it out) detects a
+Windows environment and makes sure it is run on boot-up. Consequently,
+it does not have to infect anything else. Like many boot and partition
+sector infectors that are more worm than virus, it is targetted at a
+specific environment, however the potential for a MIRV is there.
+
+Consequently, I agree with Mr. Bosen that to say that dissimilar
+client/ server architectures is safety enough is folly.
+
+							Padgett
+
+<I'm not worried about the infections that are known - it's the ones I
+can imagine that give me heartburn>
+
+------------------------------
+
+Date:    30 Oct 90 13:14:26 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: Re: Signatures
+
+DKAZEM@NAS.BITNET (Don Kazem) writes:
+>I have couple of questions:
+>
+>Is there any way to obtain the signatures of all known viruses?
+
+Depends on what you mean by "signature", as the term has two different
+meanings..
+
+	A: The signature the virus itself uses to mark files or boot sectors
+	   as infected. Example: Jerusalem 'SuMsdos' signature at the end of
+	   .COM files.
+
+	B: The signature string used by virus scanning program to check if
+	   a virus is present.
+
+Now if you mean (A), the answer is yes, apart from the fact that
+several viruses, ('405' for example) do not check if files are
+infected, and therefore they have no signature.  If (B), the answer is
+also yes, except that it is not possible to provide any string at all
+for some of the latest viruses.  The Phoenix fanily (Phoenix, Proud,
+1226 and Evil) from Bulgaria is one example, the Whale is another.
+
+In either case, no 100% complete lists are available, simply because
+no virus researcher has a copy of all known or reported viruses. Even
+the best virus collections only contain 250-270 variants.
+
+>What is the correct definition of an encrypted virus?
+
+Encrypted viruses - my favourite subject at the monemt (I just wrote a
+4-page article about them for the Virus Bulletin) - are a bit hard to
+define.
+
+We have viruses, like 'Brain', where only a single text string or so
+is encrypted.
+
+We have the following viruses, where the first part of the virus code
+performs a decryption of the rest:
+
+	Pretoria:      simple XOR operation wit a fixed value
+	July 13th:     simple XOR with a fixed value
+	Slow:          simple XOR with a fixed value
+	Cascade:       complex XOR
+	Datacrime II:  complex XOR - slightly self-modifying
+	800:           simple XOR
+	Syslock/Macho: complex XOR
+	1260/Casper:   complex XOR, self-modifying
+	Suomi:	       simple XOR, self-modifying
+	Phoenix family:simple XOR, self-modifying
+
+In addition to the above viruses, Mark Washburn, the author of '1260'
+(according to the list by Patricia Hoffman), has also written some
+other encrypted 'research' viruses: V2P2, V2P6 and V2P6Z.
+
+And finally we have the Whale, where most of the code is devoted to
+implementing multiple layers of encryption. [And the rest is devoted
+to driving virus-researchers insane.... :-( ]
+
+Without doubt a formal definition could be written, to cover the
+encrypted viruses, but I'll leave that to somebody else...
+
+- -frisk
+
+- --
+Fridrik Skulason      University of Iceland  |
+Technical Editor of the Virus Bulletin (UK)  |  Reserved for future expansion
+E-Mail: frisk@rhi.hi.is    Fax: 354-1-28801  |
+
+------------------------------
+
+Date:    Mon, 29 Oct 90 18:31:08
+From:    microsoft!c-rossgr@uunet.uu.net
+Subject: The Virus in Society & Request for book references
+
+>...infected?  How did you react the first time you were infected?  Does
+>anyone else share hostile feelings toward virus creators such as those
+>expressed by Ross Greenberg in the Flushot documentation?  Or, was
+>that just hype to sell software?  Why do people create virues anyway?
+
+Not hype, John.  There are a limited number of hours in the day and in
+a life.  I'm pretty sure that the virus writers of the world think
+they're having a wonderful time.  But, as I hate anyone who wastes my
+time, I've also taken a strong dislike to anyone who wastes another's
+time.  The computing field is no longer as open as it once was.  A
+field that I love working in no longer is a "trustworthy" one.
+
+So, yes, I still have nothing but hostile feelings to the virus
+writers of the world.  I might rewrite my documentation one day so it
+does not appear to come from such a crazy man...but the feelings are
+still there.
+
+Ross M. Greenberg
+ Author, FLU_SHOT+ & Virex-PC
+
+- -Not affiliated with account sponser
+
+=====
+Subject: Request for book references
+
+>Hello.  For the author writng a book on viruses for college students,
+>I would suggest Pamela Kane's "V.I.R.U.S. Protection - Vital
+>Information Resources Under Siege", copyright 1989 by Ms. Kane and
+>Bantam Books, ISBN 0-553-34799-3.  It is basic; stresses fundamentals
+>that all PC users wwould be wise to keep clearly in mind.  "When all
+>else fails, return to the fundamentals."
+
+Additionally, Pam Kane's book is an interesting chronicle of the beginning
+of the whole anti virus industry.  Good reading.  And, on top of all that,
+Pam's a lovely lady, too!
+
+>A related issue - Virus-L digest entries frequently refer to McAfee's
+>products, especially the SCAN products, for detecting viruses.  Much
+>less frequently, reference is made to one or two other detection
+>products.  Certainly there must be others out there, aren't there?
+
+Aside from the Panda Utility you mention, Ray Glath has a decent
+little scanner, called VISpy.  Very nice product.  My own entry into
+the scanner olympics is a totally commercial package, Virex-PC.  There
+is, however, a demo of the product (sans disinfectors) called
+"SCANDEMO" on most BBS systems and "SCANVX" over on Compuserve.  It's
+a fast little puppy and, even though a demo package that will fill
+your screen with reminders that you should buy the full package, it's
+still a damned fine scanner -- even if I say so myself.
+
+You can get a copy of it, also, in the new release of FLU_SHOT+,
+Version 1.81, released just a few days ago.  Version 1.8 had a pretty
+silly bug in it that V1.81 kills.
+
+Ross M. Greenberg
+ Author, FLU_SHOT+ & Virex-PC
+
+- -Not affiliated with account sponser
+
+------------------------------
+
+Date:    30 Oct 90 14:46:51 +0000
+From:    ZSINCREEVY@qut.edu.au
+Subject: Ogre Virus Warning. Australia. (PC)
+
+VIRUS WARNING.
+
+Copies of the August edition of PC-TODAY, published in England, have
+been found to contain the Ogre virus on the enclosed "PowerMenu"
+Diskette. This edition has only recently arrived in Australia.
+
+Emlyn Creevy
+Computer Virus Information Group
+Information Security Research Center
+Queensland University of Technology
+Queensland, Australia.
+
+------------------------------
+
+Date:    Mon, 29 Oct 90 18:06:54 -0600
+From:    Chris Taylor <C1CS@SDSUMUS.BITNET>
+Subject: Mcafee programs for university environment (Registration) (PC)
+
+Would someone kindly send me the information on the registration of
+Mcafee's virus protection programs.  Specifically for registration in
+a university setting.  Please reply to me directly at C1CS@SDSUMUS
+
+Thank you very much.
+                                    ..
+ .---------------------------------m--m--------------------------------.
+ : Chris Taylor : "He is no fool who gives what he cannot keep to gain :
+ : C1CS@SDSUMUS :  what he cannot lose."--Jim Elliot                   :
+ :---------------------------------------------------------------------:
+ : South Dakota     : "Weebles wobble, but they don't fall down."      :
+ : State University : "Does a carrot have a square root?"              :
+ : Computing Center : "I march to the beat of a different pacemaker."  :
+ '---------------------------------w--w--------------------------------'
+                                    ''
+
+------------------------------
+
+Date:    Mon, 29 Oct 90 04:46:00 -0500
+From:    Jon David <David@DOCKMASTER.NCSC.MIL>
+Subject: Virus, NetWare & law suits
+
+Back in June I received what purported to be a "Novell virus." I
+contacted Greg Drusdow, president of NUI (NetWare Users
+International), and he arranged with Novell to provide test facilities
+at their Paramus, NJ offices.  Testing was done by myself and Jay
+Nickson (creater of Quarantine, an anti-virus product for Novell
+LANs), with Greg as an advisor/observer.
+
+Our tests showed the virus bypassing server write protection
+(read-only status has not proven to be too effective against most
+viruses), but further enabling nodes to write to the server without
+the write privilege.  (This last was viewed as bypassing Novell
+security, a potentially more critical event that the viral
+activities.)
+
+Jay, Greg and I met at Novell at around 8:30 on the morning of July
+11th.  We conclusively demonstrated the above, first to ourselves,
+then to designated Novell representatives, and made a full verbal
+report to Provo by 5:30 in the afternoon.  All three of us were there
+on our own time, no monies requested, none offered.  NUI had the
+results of our tests put out on NetWire the next day, and I sent an
+appropriate note to Ken van Wyk (which was on VALERT-L on the 12th,
+and reprinted in next VIRUS-L).
+
+Based on either or both the NetWire and/or VALERT-L/VIRUS-L notices, I
+got some calls from media reps.  I (and the others) repeated what
+happened, and one story (in Network World) got printed on the subject.
+(A second story, this one in LAN Magazine, dealt with LAN security and
+also mentioned virus issue.)
+
+The three of us gave of our time and energies to try to be of help to
+NetWare users, to test things out before crying wolf (or virus).  To
+say that Novell was less than enthusiastic about our efforts is an
+understatement.
+
+(It is important to note at this time that the three of us stayed at
+Novell until 11:30PM that first evening, and that Jay and I billed for
+our time then spent to run tests at Novell's request; further, I spent
+a year in Provo one day around the end of August, and I billed for my
+time.  Nothing new regarding the virus behavior arose during either of
+these two periods.)
+
+I have received a note from the Novell Corporate Counsel.  Seems that
+they've read some stuff they don't care for, stuff with my name (as a
+source, not author).  Using phrases such as breach of contract and
+false and defamatory statements, it seems that, if I don't shut up,
+they're going to sue my butt off.
+
+In order to protect myself I am assembling as comprehensive a
+collection of Novell security problems - both virus and all other - as
+possible.  (I do, of course, prefer virus problems, but
+about-to-be-sued beggers can't be chosers.)  All potentially damaging
+[to Novell] reports will be verified, and once an appropriately nasty
+set of stuff (that can be reporduced at will) is assembled, I will
+pass it on to a highly respected security/virus expert for release to
+the public.
+
+I urge any of you with knowledge of Novell security and/or virus
+problems to get information thereof to me ASAP.  E-mail is, of course,
+the quickest way, but, if you have trouble sending, want to remain
+anonymous, or for some other reason[s] do not want to e-contact me, my
+address is
+
+    63 Hamilton Avenue
+    Tappan, NY 10983-1002 (USA)
+
+and my phone number (say hello to my answering computer if I'm not
+there) is
+
+    (914)359-5566.
+
+Please make your information as detailed as possible - hardware,
+IPX/shell versions, node OS, NetWare version, sequence of events, etc.
+(Remember, I have to be able to reporduce what you report.)
+
+Jon David
+
+(I don't mind trying my best ...  I do mind being tried for it!)
+
+------------------------------
+
+Date:    Mon, 29 Oct 90 12:25:36 -0500
+From:    Valdis Kletnieks <VALDIS@VTVM1.CC.VT.EDU>
+Subject: Bitnet Worm spotted... (IBM VM/CMS)
+
+For the joy and edification of those who track such things, I'd like to
+report that a verified worm has been spotted on Bitnet.
+
+Known Salient Points:
+
+The filename/filetype is "TERM MODULE".  In the spool area, it is 42 records
+long.  On a minidisk, it is 3 records, recfm V, lrecl 2904.  The datestamp
+on the copy I received for analysis is 10/08/90 05:57
+
+The program started as a Rexx exec to "pretty-print" the CP QUERY NAMES
+command with nicknames, etc.
+
+Some (as yet unidentified) clown then added code to do the following:
+(a) it sends a copy of itself to everybody in your NAMES file
+(b) It sends a copy of 'ALL NOTEBOOK' to yourself (kind of pointless..)
+
+It was then fed into a program to convert it to MODULE format.
+The MODULE is apparently just a "front end" to the Rexx interpreter -
+there is no readily visible "dangerous" code. I will be completing a
+disassembly of the module header shortly, but do not expect any suprises.
+If I find any, I will post a followup...
+
+Due to stylistic differences, I am convinced that the programmers for
+parts (1) and (2/3) are different people.
+
+The date on the MODULE is 10/08/90, and there haven't been many sightings
+that I know of.  Apparently, it hasn't reached "critical mass" on the
+network yet.
+
+                                  Valdis Kletnieks
+                                  Computer Systems Engineer
+                                  Virginia Polytechnic Institute
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 176]
+******************************************

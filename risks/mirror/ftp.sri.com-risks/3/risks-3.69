@@ -1,0 +1,340 @@
+28-Sep-86 22:55:37-PDT,18705;000000000000
+Mail-From: NEUMANN created at 28-Sep-86 22:53:32
+Date: Sun 28 Sep 86 22:53:32-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS-3.69 DIGEST
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest,  Sunday, 28 September 1986  Volume 3 : Issue 69
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Confidence in software via fault expectations (Dave Benson)
+  More on Stanford's UNIX breakins (John Shore, Scott Preece)
+  F-16 simulator (Stev Knowles)
+  Deliberate overrides? (Herb Lin)
+  Viking Landers -- correction to RISKS-3.68 (Courtenay Footman)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.
+  Summary Contents in MAXj for each i; Vol 1: RISKS-1.46; Vol 2: RISKS-2.57.)
+
+----------------------------------------------------------------------
+
+Date: Sat, 27 Sep 86 18:14:48 pdt
+From: Dave Benson <benson%wsu.csnet@CSNET-RELAY.ARPA>
+To: risks%csl.sri.com@CSNET-RELAY.ARPA
+Subject:  Confidence in software via fault expectations
+
+A partial reply to Estell's nice piece on "Reliability, complexity
+and confidence in SDI software" as well as other comments about
+fault rates in large software:
+
+(1)  The bathtub curve for reliability of engineered artifacts is usually
+considered to be composed of three distinct phenomena,
+	(i) The early failures caused by manufacturing defects,
+	(ii) The "random" failures of components for "unknown" reasons
+		(These may be judged as defects in the design, allowed
+		 to lower the cost of the product),
+	(iii) Wearout failures near the end of the product life.
+Type (i) failures give the initial declining failure rates during "burn-in",
+type (ii) failures during the useful product life, and type (iii) failures
+occur at the design-life limit.  This bathtub curve is not applicable to
+software since the usual definition of a large software product includes
+many different releases. Perhaps a software product should be compared to
+several different models of the same car, toaster, airplane, etc.  The
+bathtub curve describes the sum of manufacturing defects, design defects,
+and wear.  Software ordinarily has no manufacturing defects and the
+usual way ordinary backups are done insures that most software does not
+wear out before it becomes obsolete.  Perhaps the Viking 1 Lander software
+failure could be classified as a "wearout" due to inadequate preventative
+maintenance, but this seems to be streching a point.
+	So software ordinarily fails from design defects and design defects
+only.  These are considered so important that we classify such defects
+into specification, design and implementation defects.  The point here is
+that none of these are manufacturing or wear failures.
+
+(2) The defect rate models for software all attempt to describe a process
+of redesigning the software after the discovery of failures, repeatedly,
+in a never-ending cycle of testing (either formally or via users discovering
+problems) and "maintenance" (which is actually redesigning a new model of
+the software upon discovery of problems--with so-called enhancements
+thrown in to confuse the issues).  I shall now give a crude approximation
+to all of these models.  Let all realize I have abstracted the essential
+features of these models to the point of unusability in QA practice.  The
+essense is enough to make my point.
+	We assume that the original release of the software has a load of
+N design defects and that defects are discovered and instantly and
+flawlessly reworked with a rate constant, a, according to the formula
+	R(t) = N*exp(-a*t)
+where exp() is the exponential function, t is a measure of software use
+(time, person-years, cpu cycles consumed, ...) and R(t) is the remaining
+number of design faults in the reworked software.  This formula clearly
+illustrates that for any t>=0, if R(t) is not zero, then more faults
+remain.  In words, some faults mean yet more faults.
+	The more detailed versions of this essential idea do, approximately,
+describe the process of removing faults from a continuing sequence of
+releases of a software product.  Bev Littlewood has a nice survey of these,
+together with some practical suggestions, in a recent IEEE Trans.
+on Software Engineering--perhaps last Jan or Feb issue.  In any case, we
+may see that the essential feature of "some faults imply more faults"
+is used in practice to estimate remaining design fault loads in
+software.  The models have this feature because this seems theoretically
+sound and the actual data is not inconsistent with this class of models.
+	
+(3) If faults are not repaired when discovered, there is data suggesting
+that software failures may be viewed as type (ii), supra:  Singpurwalla
+and Crow have a nice paper suggesting that faults are evidenced as
+failures with a periodicity sufficiently good to make interesting Fourier
+analysis of the failure data.  We may take this as suggesting that some failures
+imply more failures at regular times in the future.
+
+(4) Good designs have few faults and evidence few failures.  In software
+this means few releases are necessary to correct faults.  However, many
+software products interact primarily with that most flexible of
+io devices, people, People quickly adjust to the ideosyncracies and
+failures of the software they use.  In my opinion, Unix (Reg. Trademark,
+AT&T) and derivatives is successful because its ideosyncracies and failures
+are somehow "human", but not because of low failure rates.
+	Good software designs start with a low initial number of faults.
+Good design practices seem to lead to better software.  But one simply
+requires more data than currently exists to say much definite about the
+advantages of Ada vs. a more traditional practice.  Furthermore, new
+software is likely to be "more complex" than old software--leading to
+perhaps the same MTTF.  Highly reliable software appears to be engineered
+in much the same manner as any other highly reliable engineered artifact:
+By repeatedly designing similar artifacts, obtaining experience with
+their use, and then redesigning anew.
+
+(5) Thus many of us are extremely dubious about the claims made for SDI
+(and thus its driving software).  Without the ability to test in actual
+practice, there is no compelling reason to believe any claims made for
+the reliability of the software.  This point has been made several times,
+by several people, on RISKS and I'll not repeat the argument.  It seems
+that the onus of compelling evidence lies with those who claim SDI "will
+work."  So far I've found no evidence whatsoever to support the claim
+that ANY new military software works in its first adversarial role:  i.e.,
+in the face of enemy action or a good, determined, simulation thereof.
+I'd appreciate reliable evidence for such.  The claim for 100,000 line
+programs which work reliably requires supporting evidence.  I am perfectly
+prepared to believe that the 28th yadbm (yet another data base manager)
+works reliably.  I'm not prepared to simply accept such claims for
+military software.  An example:  JSS is a C3I system for the defense of
+North America against bomber attack.  JSS is currently receiving some kind
+of "independent operational" test in Colorado.  Workers at Hughes kept
+careful records of defect rates during development, and reported that
+certain of the standard models alluded to above failed to predict
+defect rates at the next step of in-house testing.  Will I ever be able
+to learn what the results of the "independent operational" test are?
+I doubt it.  All I might be able to learn is whether the US adopts the
+system or not.  I'm highly dubious about the reliability of JSS, despite
+the adoption of reasonably current SE practices.  And recall, JSS is
+the nth yac3i.
+
+(6) Controlling complexity is a wonderful idea.  But what does one
+do in the face of a truely complex world, in which complex decisions
+must be made?  One designs complex software.  Recall that the Enroute
+Air Traffic Control System has so far exercised only a minute fraction
+of all the paths through it, despite being installed at about 10 sites
+for about 10 years.  At the current rate one might get to 90% path
+coverage by the year 2200?  Yet every time you fly on a commercial
+aircraft, you implicitly trust this system.  I suggest you trust it
+because it has been used operationally for 10 years and the enroute
+controllers view it as trustworthy.  The fault rate is low enough
+and the controllers flexible enough and the enroute mid-air near
+collision rate is low enough that everyone is satisfied enough.  No
+mathematics and little statistics here--just actual operational
+experience.
+
+(7) Software types need to adopt rather more of a Missouri attitude:
+Show me that it works.  Part of the problem is defining what "works"
+means.  Thats what makes the Viking Lander experiences so compelling.
+Everyone can easily agree that the software worked the only two
+times it was called upon to land the craft.  One might think that
+military software experiences should be equally compelling to the 
+senses.  So consider the Navy's Aegis experiences...   The result of
+actual data suggests that SDI software is unbuildable as a highly
+reliable program.  I repeat my call for serious, professional
+papers on military software which worked the first time.  So far I
+can only conclude than none such exist.  Thereby I think I am
+entitled to discount any claims for the "quality" of military
+software in actual, operational practice.  The logical, rational
+conclusion is that, with no data supporting claims for military
+software working in first use, and only data such as the Sgt. York
+and Aegis, SDI software will not work the first and only time
+it might be called upon to function.
+
+------------------------------
+
+To: seismo!sri-csl.arpa!risks
+Subject: Re: Brian Reid's follow-up on Stanford's UNIX breakins
+Date: 28 Sep 86 10:51:16 EST (Sun)
+From: John Shore <epiwrl!shore@seismo.CSS.GOV>
+
+Brian is quite right.  The job of an engineer is to build systems that
+people can trust.  By this criterion, there exist few software engineers.
+                                                          js
+
+------------------------------
+
+Date: Fri, 26 Sep 86 10:26:33 cdt
+From: "Scott E. Preece" <preece%ccvaxa@GSWD-VMS.ARPA>
+To: RISKS@CSL.SRI.COM
+Subject: Follow-up on Stanford breakins: PLEA
+
+Brian Reid speaks eloquently to important issues.  Virtually
+everything he says in this note makes perfect sense and should be
+taken to heart by everyone designing systems.  BUT...
+
+What he says now is not exactly what he said the first time;
+when, I assure him, some of us were listening.  His first note
+did in fact attribute blame, to the networking code and to the
+student involved (under the general rubric of 'wizards').
+
+The designer of the gelignite-handled screwdriver has clearly got a
+responsibility when the screwdriver is (incorrectly) used to pound on
+something and explodes.  The designer has little responsibility when the
+screwdriver is used (incorrectly and maliciously) as a sharp object to stab
+a co-worker during a fight.  If the screwdriver is used to hit someone over
+the head in a fight, and explodes, the responsibility is a lot more muddled.
+It is not at all clear how far the designer's responsibility for protecting
+us from mistakes extends to protecting us from temptation.
+
+Is a car manufacturer morally liable for its cars being capable of going 120
+mph, creating the potential for more serious accidents when they are used
+inappropriately?  Is the manufacturer of autodial modems responsible because
+they make it possible for system crackers to try many more phone numbers per
+hour than manually dialled modems?
+
+Had Brian made slightly less attempt to de-jargonize his original posting
+and said ".rhosts" instead of "permission files", which could refer to quite
+a few different things ina BSD system, I would have taken a different
+impression of his complaint away from that original posting.  I agree
+strongly that .rhosts files are a danger that administrators should be able
+to turn off, preferably on a host by host basis.
+
+It should still be noted that .rhosts files are there for a reason and that
+that reason is perfectly valid and the provision of .rhosts capabilities
+perfectly reasonable IN THE APPROPRIATE SITUATION.  A campus-wide network of
+machines under diverse administrators may not be such a situation; I would
+hate to see the capabilities taken out of the system simply because there
+may be inappropriate situations.  Ftp and telnet are still provided as well
+as the r-utilities.
+
+As our moderator has said, fault rarely lies on one head.  I agree with
+Brian that the designer (of systems OR screwdrivers) has a strong
+responsibility to consider both unintentional and intentional misuses of her
+systems and to watch for aspects of her designs that could raise the
+consequences of such misuses.  The strongest responsibility is to make the
+limits of appropriate use obvious to the user, by packaging, documentation,
+and whatever other steps may be necessary.  If on mature reflection it still
+seems likely the user will be unaware of the problem (who reads
+documentation on a screwdriver), the designer has a moral obligation to seek
+other means to avoid misuse.  Perhaps the explosive screwdriver should be
+sold only with with a two-foot long handle, making it unsuitable for common
+domestic use, or as a separately packaged replacement handle in a six-inch
+thick lead box bedecked with scenes of mutilation.  If, however, the object
+is the best or only solution to a particular problem (only a gelignite
+screwdriver can remove red kryptonite screws from lead doorframes), it may
+also be morally unacceptable to suppress the product simply because it may
+have dangerous implications in the hands of the unwary.
+
+Hey, surprise, there's no easy answer...
+
+scott preece, gould/csd - urbana, uucp:	ihnp4!uiucdcs!ccvaxa!preece
+
+       [Let me commend Brian once again for having performed a truly
+        valuable service to the community.  (I notice his original message
+        is reappearing in many places!)  I don't think we should expect him
+        to try to respond to each such comment.  But -- given the ease with
+        which system and network security can be broken -- we may see lots
+        more of such analyses of OTHER breakins.  The sad part is that most
+        of these vulnerabilities are well known in the security community,
+        but few other people have yet been concerned enough to do anything,
+        including most system developers.  The consensus among security folks 
+        is that it will take a Chernobyl-like event in computer security
+        before most people wake up.  PGN]
+
+------------------------------
+
+Date: Thu, 25 Sep 86 17:36:43 EDT
+From: Stev Knowles <stev@BU-CS.BU.EDU>
+To: RISKS@CSL.SRI.COM
+Subject: F-16 simulator
+
+As I see it, you are all missing the point. A simulator *should* allow the
+plane to land with the gear up. A simulator should allow it to release a
+bomb in any position, *if the plane would*.  The simulator should not try
+and stop the pilot from doing stupid things, it should react as the plane
+would. *If the plane will not allow something*, then the simulation should
+not allow it.
+
+There is a difference. the *plane* should not allow a bomb to be detached if
+it will damage the plane. *But if it does* the software should too.
+
+stev knowles, boston university distributed systems group
+CSNET: stev@bu-cs.CSNET  UUCP:...harvard!bu-cs!stev  BITNET:ccsk@bostonu.BITNET
+  
+------------------------------
+
+Date: Sat, 27 Sep 1986  08:36 EDT
+From: LIN@XX.LCS.MIT.EDU
+To:   risks@CSL.SRI.COM
+Subject: Deliberate overrides?
+
+    From: Charles R. Fry <Chucko at GODZILLA.SCH.Symbolics.COM>
+    No matter how many automated controls we install on cars (and airplanes)
+    to prevent operators from exceeding their vehicles' limits, there will
+    always be a need to allow the deliberate violation of these limits.  
+
+This discussion about allowing overrides to programmed safety limits worries
+me.  It is certainly true that there are instances in which the preservation
+of life requires the operator to override these devices.  But these have to
+be weighed against the situations in which a careless operator will go
+beyond those limits when it is inappropriate.  I haven't heard much
+discussion about that, and maybe it is because it is very difficult
+(impossible?) for the safety machinery to tell when an operator is being
+careless given the operative conditions at the time.
+
+There is a tradeoff here that many have resolved categorically in favor of
+people being able to override computers.  I think only competent and
+sensible people people, under the right circumstances, should be able to do
+so.  The problem is to find a mechanical system capable of making these
+distinctions.  Thus, the comment that PGN omitted "[Chuck added an aside on
+the value of high performance driving schools.]" was, in my view, crucial to
+understanding the situation involved.  Maybe a partial solution would be to
+allow only drivers who have passed courses at high performance driving
+schools to override.
+
+     Herb                             [Shades of Chernobyl!  PGN]
+
+------------------------------
+
+Date: Sun, 28 Sep 86 22:12:58 EDT
+From: cpf@tcgould.tn.cornell.edu (Courtenay Footman)
+To: RISKS@csl.sri.com
+Subject: Viking Landers -- correction to RISKS-3.68
+
+  >Date: Wed, 24 Sep 86 18:01:18 pdt
+  >From: Dave Benson <benson%wsu.csnet@CSNET-RELAY.ARPA>
+  >                              ... Since the Viking Landers were the
+  >first man-made objects to land on Mars, ...
+
+Actually, the first man-made object to land on Mars was a Russian craft that
+sent about 30 seconds of carrier signal and then died.  Nobody knows exactly
+what happened to it.
+
+Courtenay Footman		ARPA:	cpf@lnsvax.tn.cornell.edu
+Lab. of Nuclear Studies		Usenet:	cornell!lnsvax!cpf
+Cornell University		Bitnet: cpf%lnsvax.tn.cornell.edu@WISCVM.BITNET
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

@@ -1,0 +1,578 @@
+precedence: bulk
+Subject: RISKS DIGEST 18.86
+
+RISKS-LIST: Risks-Forum Digest  Wednesday 5 March 1997  Volume 18 : Issue 86
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+
+  Contents:
+ActiveX security? TISK, TISK (Brent Laminack)
+Re: Comments and corrections on Authenticode (Li Gong, Jerry Leichter,
+    David Hopwood, A. Padgett Peterson, Fergus Henderson, Glenn Chambers, 
+    Steve Kilbane, Kevin McCurley)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: 4 Mar 1997 22:03:15 -0500
+From: brent@cc.gatech.edu (Brent Laminack)
+Subject: ActiveX security? TISK, TISK
+
+The recent comments about ActiveX and Authenticode have been useful and
+constructive, but have focused so far on how *an* ActiveX control operates.
+We have yet to cross into that shadowy world that RISKS readers are all to
+familiar with. The relm of what I call TISK: Timings, Interactions and
+Side-effect Kollisions (sic), as in the support people saying "TISK, TISK
+Joe User has a problem that we can't duplicate here..."
+
+Consider two ActiveX controls.  One provides a control similar to the Win95
+"Start" button with all the commands on the user's computer presented in a
+list to choose from.  Suppose it keeps these command names in a preferences
+file such as C:\windows\mycommands.  The file may contain a list such as:
+Word, Excel, format c:, IE3, etc.
+
+Consider a second ActiveX control that provides a "cron" facility.  This
+automatically wakes up at a specified time and executes a list of commands
+for housekeeping such as backup, defrag, etc.  Suppose it keeps its list of
+commands in, say, for instance C:\windows\mycommands.  You see it coming,
+right? The second control finds the file written by the first one and
+dutifully fires up Word, Excel, and then formats the C drive.  Commands after
+this one are of diminishing consequence.
+
+OK, you're stuck.  Your hard disk is wiped.  Where are the fingerprints for
+Authenticode? Even if you do get them, who are you going to sic the law
+enforcement people on? Both controls did exactly what they were designed to
+do, exactly what they advertised to do.  Who are you going to sue? Obviously
+neither "misbehaved." What did in your disk was an unforeseen interaction
+between the two.  TISK, TISK.  I imagine that with a bit of thought work it
+would be possible to come up with a co-operating gang of ActiveX controls to
+do deliberate theft via collusion where each program is only doing what it's
+"supposed" to, yet the total of their activity is much greater than the sum
+of the parts.  Yes, non-linearity is clearly at work here in the interaction
+of the components.  The only way to avoid this would be to strictly decouple
+them, by not allowing any to share information with the other, such as
+giving each its own private file-space to write in.  This, alas is not the
+case.
+
+Brent Laminack (brent@ecweb.com)
+
+------------------------------
+
+Date: Tue, 4 Mar 1997 23:01:47 -0800
+From: Li Gong <gong@games.Eng.Sun.COM>
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+I certainly will not be the only person to feel the need to respond to Bob
+Atkinson's article in RISKS-18.85.  I emphasize that this is a technical,
+not political, response.  Basically, 2 comments and 1 challenge to Bob and
+Microsoft.
+
+> And, as implemented contractually and technically in the present
+> release of Authenticode, when you sign code you _are_ most certainly
+> taking explicit responsibility as the code's publisher, an action
+> not to be taken lightly from a legal point of view.
+
+Saying code signing gives you accountability is too simplistic.
+First, you might not have an audit trail to use as supporting
+evidence.  Second, history says that if a piece of software needs to
+carry serious, legally binding liability, there would not be a
+Microsoft or a software industry in general.  Thus accountability is a
+potential, not a reality.
+
+> ... Authenticode is still the only actually-deployed code signing ...
+
+Netscape Navigator 4.0beta has code signing (originally shipped 1996),
+and JavaSoft's JDK1.1 has applet signing (alpha last Nov and final
+version shipped Feb 97).  (Potential bugs is a different discussion.)
+
+Now the challenge.  Java has the potential to give you fine-grained access
+control, whether the code is signed or not.  To realize this potential
+today, one might have to customize the SecurityManager.  Future versions of
+JDK will make such functionality easier to use.
+
+ActiveX/Authenticode, however, does not seem to have such a potential.  So
+tell me how to configure a Win95 system such that an ActiveX control (or
+component or whatever) can read/write only to directory /tmp (or C:\tmp)
+while it is prevented from all other file I/O?
+
+Li Gong, Java Security Architect, JavaSoft
+
+------------------------------
+
+Date: Tue,  4 Mar 97 23:18:55 EDT
+From: Jerry Leichter <leichter@lrw.com>
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+Bob Atkinson argues that digital signatures on downloaded code, at the least,
+allow you to identify someone who sent you "bad code" for legal action.
+
+There is so much wrong with this claim that it's hard to imagine anyone would
+make it.  To mention just two things:
+
+	1.  The "evidence" - the digital signature - that would presumably
+		be used against the attacker is stored ... on the very machine
+		that is being attacked.  On a system like Windows 95, which
+		provides absolutely no internal protection, that evidence will
+		last for a few milliseconds.  (Admittedly, a protected system
+		like NT *could* write secure logs of signatures that had been
+		recently accepted.  However, it'll be quite some time - if it
+		ever happens - before the existing base of unprotected systems
+		is replaced by protected ones.)
+
+	2.  Mr. Atkinson makes the assumption that the malicious code can
+		be identified.  Sure, if it immediately does something that
+		you can see, things are easy.  But if it does something
+		indirect; or waits until executed the 100th time; or modifies
+		some *other* program so that *it* later does something nasty;
+		then tracking the down the source of the original corruption
+		will be extremely difficult.  Hell, tracking down "memory
+		poisoning" *bugs* is extremely difficult - and these are
+		random events that make no direct attempt to cover their
+		tracks.
+
+The traditional boxed software set from a local store is safe for many
+reasons - but some of the important ones related to the inherent limitations
+of the traditional distribution medium.  It's fairly difficult and expensive
+to put together the boxes, documented, printed CD's, and such.  Distributing
+them to stores adds much more expense - and at each step of the way, there
+are people to talk to, papers to sign, money to change hands, records to be
+made.  The advantage of on-line distribution is that it cuts away all these
+layers and delays and costs.  But in doing so, it also makes attacks much
+cheaper, easier, and more anonymous.  A signed piece of code shares one
+characteristic with software in a box: A mark that can, with reasonable
+though varying confidence, be ascribed to the person who created the boxed
+set/signed software object.  But the two are different in so many other
+fundamental ways that to attempt to argue the acceptability of one on the
+basis of experience with the other is simple sophistry.
+
+"People want nifty things on their machines; they don't want security
+mechanisms getting in the way."  People haven't yet been badly burned.  Look
+how many years it took to get even rudimentary safety devices into cars.
+
+Jerry
+
+------------------------------
+
+Date: Tue, 4 Mar 1997 04:49:45 GMT
+From: David Hopwood <hopwood@zetnet.co.uk>
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+I interpreted Theodore Ts'o as meaning checks on the signer, not the signed
+code - but in any case, the fact that there is no means of auditing and
+certifying the security of controls can only worsen the situation, not
+improve it.
+
+>Software developers, as they always have been, ...
+
+By saying "as they always have been", you seem to be suggesting that this
+kind of security attack is a serious concern for _all_ applications. That is
+far from true; it normally only applies (with varying seriousness) to
+network servers and clients, suid/sgid programs, helper apps, plug-ins, and
+other programs that are passed data from a source which is less trusted than
+the program itself. If all programs were passed data from untrusted sources,
+computer security in general would be in much more of a mess than it is
+currently in.
+
+In cases where a program acts on untrusted data, it isn't valid to make a
+judgement of its security simply on the basis of trusting that the writer of
+the program is not malicious. You also have to consider how competent they
+are at writing secure code.
+
+Users of ActiveX are being encouraged (by Microsoft's documentation - I can
+provide examples if needed) to accept or reject controls based on whether
+they think the signer is malicious, not the stronger, and more relevant
+criterion of the author's competence. If they were to actually make realistic
+security decisions based on that stricter criterion, they should IMHO not
+be running any code whose URL and version number is specified by a web
+page that they have no reason to trust, as is typically the case when an
+ActiveX control is downloaded.
+
+>... the overall system infrastructure ... has mechanisms for classifying 
+>ActiveX components as "safe for scripting" and "unsafe for scripting;" ...
+>"safe for initialization" ...
+
+These mechanisms are not sufficient; in practice, it isn't reasonable to
+expect developers never to create controls with exploitable bugs. Writing
+code that must be secure against data-driven attacks is hard, especially in
+languages such as C and C++ that have unchecked pointers and array
+accesses. If that were not the case, why are buffer overflow and similar
+attacks against suid Unix programs so common?
+
+In Unix, normally only suid/sgid programs, and server daemons, are worth
+attacking in this way. Now, all signed ActiveX controls are worth attacking.
+If you can exploit a control to run arbitrary code, you can ensure that
+users will see someone else's signature when running your code, which is
+something that you would only normally be able to do by forging that
+signature. The user cannot trace the malicious code to its author; instead
+the trace will end at the unfortunate person or company whose control was
+exploitable.
+
+The situation is arguably worse than for conventional data-driven attacks,
+because it's effectively impossible to revoke a signed ActiveX control, if
+the attacker retains a copy of it. The most you can do is release a control
+with the same CLSID and a higher version number, and make sure that everyone
+who could be attacked has a copy of the new version in their control cache
+(the %windir%\occache directory). But that means everyone who uses ActiveX!
+
+Anyone who does not have the updated version in their cache will simply
+download the copy of the old, exploitable version that was retained by the
+attacker. (Actually, there is also an implementation bug in the versioning
+mechanism in IE 3.0x, which means that the cache contents don't matter; an
+attacker can always cause an old version of a control to be downloaded).
+
+The basic problem is that the architecture of ActiveX effectively makes _all_
+code used in controls security-critical. It must be assumed that there exist
+signed controls that can be used to run arbitrary code. I've seen several
+controls that crash IE if-and-only-if they are given long parameter strings
+(unfortunately for me, the resulting processor exception seems to be caught
+without generating an error log or stack trace, which is likely to make
+exploiting this a tedious, but not impossible, process). I've also found a
+control which can be exploited in a different way to run arbitrary commands,
+but I'm still discussing the situation with the control's signer.
+
+I do, however, intend to release that exploit publically, because I think
+it is the only way to demonstrate clearly the significance of data-driven
+attacks against ActiveX. Microsoft's response so far to concerns about
+ActiveX security has been one of denial and spin-doctoring; that has
+certainly influenced my decision to make the exploit public (that, and the
+fact that this particular exploit is trivial to implement once you know
+which control is involved).
+
+>[...]
+
+I entirely reject the claim that ActiveX provides the same level of
+accountability as is provided by traditional shrink-wrapped software
+distribution. In the shrink-wrap model, you trust the shop that is selling
+you the software. There is also no opportunity for untrusted data to be
+passed to the application when it is installed. With ActiveX, you have no
+basis on which to trust the web site which points to the control, because
+that site is not authenticated. Untrusted data can be passed to the control
+by its parameters (or using scripts, if _in the signer's opinion_, it is
+safe for scripting).
+
+Given these differences, the shrink-wrap analogy is simply invalid.
+
+In principle I think that digital signatures and/or secure channels can be
+used to provide a reasonable degree of accountability, but Authenticode is
+not, IMO, a good example of how systems using digital signatures should be
+designed.
+
+>[...]
+>In the absence of the user bypassing the system's security infrastructure,
+>which as was mentioned is highly discouraged, then should the system be
+>attacked by a malicious ActiveX control, some piece of malicious or
+>negligent digitally-signed code that was downloaded is ultimately
+>responsible for carrying out the attack or allowing it to occur.
+
+Note that this argument does not distinguish between "malicious" and
+"negligent" code, either here or later in the article.
+
+>The presence of digital signatures on code does not remove the need for law
+>enforcement agencies to do their investigative work when confronted with a
+>crime [...]
+
+Let's be clear about this; an audit log is not feasible for ActiveX
+controls, because it could easily be overwritten or forged once a control is
+running.  It is feasible for technologies that attempt to run code in a
+restricted environment.
+
+>[...] once the actual offending code is identified.
+
+Again, note that "offending code" here can mean the "negligent" code that
+allows an attack to be lauched by some other party.
+
+>And, as implemented contractually and technically in the
+>present release of Authenticode, when you sign code you _are_ most certainly
+>taking explicit responsibility as the code's publisher, an action not to be
+>taken lightly from a legal point of view.
+
+So if your code has an exploitable bug, you are taking legal responsibility
+for any damage done as a result of that? I think not; not only is there no
+legal precedent for this as far as I know, I suspect most software publishers
+would have to think very hard about whether they should continue to sign code
+under that agreement, if they can be held responsible for anything that the
+code does.
+
+If there is not, in fact, any legal responsibility for writing exploitable
+code, and strong reasons to believe that a substantial minority of controls
+will be exploitable, the rest of your argument stands on very shaky ground.
+
+David Hopwood  david.hopwood@lmh.ox.ac.uk, hopwood@zetnet.co.uk
+
+------------------------------
+
+Date: Tue, 4 Mar 1997 17:47:40 -0500 (EST)
+From: "A. Padgett Peterson" <PADGETT@hobbes.orl.mmc.com>
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+Pardon me if I tend to read this with the same sort of skepticism as Brad
+Silverberg's pronouncement that all web browsers have the same
+vulnerabilities.
+
+Coming from the same company that gave us WORD macro viruses by the simple
+expedient of granting control to the opened document and making it
+impossible for the user to turn macros off *even if they want to*, why
+should we expect anything different here?  An .EXE must be executed.  ZIP
+files must be unzipped.  Java must be enabled.  In each case the user has a
+choice and can place a scanner/checker/validator/debugger between the
+download and the execution if desired.
+
+Thus far, every request to "just say no" to MS has been rebuffed (WORD 7.0a
+and Office 97 do have a "warning" that is simple to turn off but no way to
+simply disallow macros altogether).
+
+I do not disagree that sometimes I am willing to "trust" certain parties
+for download but that is primarily because I have initiated the contact
+and have been able to examine the download prior to allowing it to execute.
+
+Could be in the minority, but do not want anything to happen on my machine
+that I have not given explicit approval for or requested. Is one thing to
+push a button and say OK, another to have something occur without my
+knowledge.
+
+For one thing, my machines often are operating on the ragged edge. For
+another, what you request may not be feasible. Have experienced to much
+software that I knew I was installing (and had backed up relevant areas
+first) blow up on me to grant *any* global permissions. What works with W95
+may not work so well with Novell DOS 7.0.
+
+My *choice* is to limit the functionality of my PC to those things which I
+allow it to do. Thusfar MicroSoft's intention in those programs I have
+purchased seems to be increasingly to take that choice away from me. There
+does not seem to be anything in your words which would change my mind.
+
+Padgett
+
+------------------------------
+
+Date: 5 Mar 1997 14:00:45 GMT
+From: fjh@mundook.cs.mu.OZ.AU (Fergus Henderson)
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+>First, a correction.  Microsoft does not have any 'certification procedures'
+>with respect to the integrity or lack thereof of third party applications
+>against security attacks.
+
+That is precisely Theodore Y. Ts'o's point: Microsoft does not have any
+certification procedures that could prevent such attacks.  As a result,
+there are significant risks associated with the use of Microsoft's Active X
+technology.
+
+>Software developers, as they always have been, have the responsibility of 
+>themselves exercising appropriate diligence in this regard.
+
+True, but because third parties can provide potentially hostile input to
+Active X controls -- at least for those classified as "safe for
+initialization" -- the "appropriate diligence" for such an active X control
+is much greater than that required for an ordinary application.  The
+"appropriate diligence" required is similar to the diligence required for a
+Unix setuid executable.  And past experience suggests that this high level
+of diligence is often lacking: setuid programs are very often the cause of
+security holes.
+
+>Users want and demand a rich computing experience.
+
+Yes, but users also "want and demand" to be able to log into systems without
+having to type in any silly passwords...  it is our job as computer
+professionals to educate users about the risks involved and wherever
+possible to protect them from such risks.
+
+>We have decades if not centuries of experience with this model of conduct
+>between supplier and customer. It seems to work pretty darn well.
+
+Yes.  One of the reasons it works so well is that there is a reasonably
+hefty financial hurdle that you need to overcome in order to distribute
+software using traditional distribution channels.  However the Internet
+promises to change that.  The Internet is a very low entry-cost distribution
+mechanism, and while that is a very desirable property, it is not without
+its associated risks.  Lowering the entry cost increases the chance of
+abuse.  Furthermore, automating the process increases the chance that abuse
+may go unnoticed.  So even if Active X were to faithfully imitate
+traditional distribution channels in every other way, the risk may well be
+much higher.  That is why I think we need to move to technologies that offer
+better security that either Active X or traditional distribution channels.
+Java applets are one such technology.
+
+>2. The code could be signed, and then downloaded by IE3, and accepted by the
+>user. That is, the crooks can if they like leave their clear, unsmudged
+>fingerprints all over their illegal device. This makes catching and
+>convicting the responsible party somewhat easier.
+
+A thief would of course be foolish to leave their own fingerprints on an
+illegal device.  It would be much more sensible for them to sign with a
+stolen key.  Now of course it may well be difficult for thieves to steal
+Microsoft's key, but all it takes is _one_ careless vendor who doesn't guard
+their key well...
+
+Fergus Henderson <fjh@cs.mu.oz.au>  WWW: <http://www.cs.mu.oz.au/~fjh>
+
+------------------------------
+
+Date: Tue, 4 Mar 1997 20:38:56 -0500 (EST)
+From: gchamber@mail.bright.net (Glenn Chambers)
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+I can't resist pointing out that Microsoft has suffered from several highly
+publicized incidents where they have shipped virus-laden MS Word(TM)
+documents on CD-ROMs, or placed them on their public web pages, etc.
+
+Because (as nearly as I can tell from outside) it is entirely possible to
+'sign' an *already infected* ActiveX component, it's only a matter of time
+before virus infected web pages make their debut.
+
+Until and unless an 'Active-X sandbox' of strength equal to Java's is
+imposed, I'm sticking to non-Wintel hardware and software, and being very
+leery of what software I let execute on my machine.
+
+Glenn Chambers  gchamber@bright.net  Toledo, OH
+
+------------------------------
+
+Date: Wed, 5 Mar 1997 09:56:46 GMT
+From: Steve_Kilbane@cegelecproj.co.uk
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85) 
+
+> As the architect and primary implementor of the Authenticode code-signing
+> technology (boy, that'll get me mail :-)
+
+It will indeed.
+
+> found in Internet Explorer 3 and in
+> Windows NT 4, I think my perhaps somewhat lengthy and clearly very biased
+> perspective on some recent articles might be of interest to others.
+
+Indeed. Good answers: calm, considered, and admitting that the rest of the
+world both exists and has impact. It's a pity that Microsoft's (and other
+company's) press releases weren't so rational - it would stop rants like
+mine.
+
+<Steve_Kilbane@cegelecproj.co.uk>
+
+------------------------------
+
+Date: Wed, 5 Mar 1997 03:38:54 -0700 (MST)
+From: Kevin McCurley <mccurley@swcp.com>
+Subject: Re: Comments and corrections on Authenticode (Atkinson, RISKS-18.85)
+
+I am sometimes reticent to discuss glaring security holes in public, but
+when a security mechanism is employed as a marketing tool, I believe it
+becomes fair game for criticism.  Microsoft appears to have made a sincere
+effort to improve security with Authenticode, and Bob Atkinson gave a rather
+lucid explanation of the goals of Authenticode.  Unfortunately, as a
+security mechanism, ActiveX with Authenticode has a rather big hole in it.
+
+First, there are no mechanisms to prevent a web page from invoking the ActiveX
+components served by another page or already installed on the users disk.  For
+several weeks the page at http://www.digicrime.com/activex was happily
+invoking an ActiveX component referenced and downloaded by clients from the
+Microsoft home page.  When you loaded the page from DigiCrime with Microsoft
+Internet Explorer, you were presented with an official looking seal from
+Microsoft certifying that the code you were about to install was written by
+them.  And apparently it was.  The second time you visited the page, the code
+was just invoked without warning.  If you visited the Microsoft page first and
+then the DigiCrime page, the code from Microsoft was invoked without notice.
+
+Second, ActiveX controls have no inherent protection from the problem of
+stack smashing, which is one of the most common forms of software security
+problems.  The technique is rather technical, but the effect is that some
+programs can be caused to execute a sequence of instructions supplied by the
+argument to the program (via a web page).  The technique is accomplished
+when an argument is used to overwrite fixed-length buffers allocated on the
+stack, depositing instructions on the stack.  This technique is rather
+tedious to carry out, and does not work on all code.  On the other hand,
+writing safe code is a very difficult task, and any code that uses standard
+C library calls like gets() or sprintf() to handle arguments is likely to be
+vulnerable.  The technique has been well known to hackers for a long time,
+and has been used to abuse many Unix network programs, including passwd,
+syslog, rdist, crontab, NCSA's web server, rlogin, talkd, mountd, and
+sendmail.  Note that Java is explicitly designed to prevent stack smashing.
+
+Combining these two features of ActiveX, Authenticode becomes largely
+irrelevant.  Code may be signed by the author, who was certified by a
+competent authority to be a reputable software developer.  The user reviews
+the certification at install time, and accepts it on the basis of the
+reputation of the developer.  The user then forgets about the code for some
+weeks to come.  Later on, he or she visits a page of a hacker, or a page of a
+web site that has been broken into by a hacker, and invokes the code with
+arguments supplied by the hacker.  The code may appear to do what it's
+supposed to, or appear to do nothing at all while it's erasing the web
+browser's history.  The user may not even be aware that code is executing.
+The user goes on to about 50 other pages that night, and shuts off their
+machine with no evidence of a problem.  When they reboot they may have a huge
+problem, depending on what the code was reprogrammed to do.  The Authenticode
+scenario suggests that the user can now call their lawyer to sue someone, but
+who do they sue?  The hacker that the FBI can't track?  The well intentioned
+but pressured software developer?  The certification authority like Verisign
+that have forty page disclaimers of liability?  Microsoft, who developed the
+ActiveX and Authenticode technology?  None of the above I think.  And even if
+someone could be sued, is this an acceptable substitute for having their
+machine work for their business?
+
+My final criticism of Authenticode is unverified, in part because the public
+documents on the technique are rather vague.  There appear to be no
+mechanisms for revocation of certificates that are already installed on
+machines.  According to the document located at
+http://www.microsoft.com/workshop/prog/security/authcode/codesign.htm, the
+default expiration date for Authenticode certificates is the year 2039,
+which means that no certificate should be expected to expire for a while.
+If code is only re-verified when the certificate expires, then no buggy code
+will ever be replaced.  If code is verified only at installation time, then
+this is even worse.
+
+I should point out that none of this has happened in real life yet, in part
+because technologies like ActiveX are in their infancy and are not yet
+widely deployed.  Once it's out there, I maintain that the problems will
+only be worse, as it is extremely difficult to keep track of the constant
+stream of security announcements.  As I write this, Microsoft is scrambling
+to patch an unrelated security bug in MSIE 3.0 (see Risks 18.85).  Clearly
+it's not unusual to ship code with serious security bugs, because every
+vendor is doing it in their haste to ship product.
+
+It has been argued that the Java sandbox approach is too restrictive, and that
+"Users want and demand a rich computing experience".  This may be true, but
+the rewards have to be something better than dancing bears in order to justify
+the risks.  We take risks in life every day, but we do so on the basis of a
+continual risk/benefit analysis.  Users may be willing to take the risks
+associated with network computing if they are presented with an accurate
+representation of the risk they are taking, and are given tools to manage and
+understand their risk.  I can't see how Authenticode accomplishes this because
+it represents an oversimplification of a very complicated subject.  In
+addition, the move to integrate a user's desktop into the Internet will only
+lead to more confusion from users as they try to understand risks coming at
+them from all directions.
+
+Kevin McCurley
+
+------------------------------
+
+Date: 15 Aug 1996 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Or use Bitnet LISTSERV.  Alternatively,
+ (via majordomo) DIRECT REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+=> The INFO file (submissions, default disclaimers, archive sites, .mil/.uk
+ subscribers, copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ The ftp.sri.com site risks directory also contains the most recent 
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   get illustrative.PS
+
+------------------------------
+
+End of RISKS-FORUM Digest 18.86 
+************************
+

@@ -1,0 +1,636 @@
+precedence: bulk
+Subject: Risks Digest 20.37
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 4 May 1999  Volume 20 : Issue 37
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/20.37.html>
+and at ftp.sri.com/risks/ .
+
+  Contents:
+Revisiting the USS Yorktown dead in the water (Mike Martin)
+Netfill scams 900,000 credit cards (PGN)
+Australian Securities & Investment Commission's April Foolery 
+    (Pauline van Winsen)
+Re: Bloatware Debate (RA Downes, Jonathan Goldberg, Henry Baker, RA Downes)
+Interesting results with MapQuest (Matthew Delaney)
+New risk of ITAR? (David Lesher)
+Risks of "Discovery" hounds (Russ Cooper)
+Outdated address books (Robert David Graham)
+Israeli scientist reports discovery of advance in code breaking (Edupage)
+Re: CIH virus (Matthew Todd)
+Re: MS-Outlook 98 risk of mislaying messages in Outlook today (Jedediah Grant)
+Smart Card Forum Privacy Symposium, 20 May 1999 (Donna Farmer)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Tue, 4 May 1999 17:26:00 +1000 
+From: "Martin, Mike" <mmartin@sbnsw.com.au>
+Subject: Revisiting the USS Yorktown dead in the water (PGN, RISKS-19.88 ff.)
+
+The RISKS discussion related to a zero-divide in an NT application on a Navy
+ship, that crippled the ship for some time.
+
+Scientific American finally caught up with the topic in November 1998
+(www.sciam.com/1998/1198issue/1198techbus2.html), although the report added
+little new to what has appeared already in RISKS. Then in the March 1999
+issue (which I have just received) there is a letter from Harvey McKelvey,
+former director of Navy programs for CAE Electronics, the firm which
+apparently built the misbehaving application
+(www.sciam.com/1999/0399issue/0399letters.html).
+
+McKelvey writes that the failure, "was not the result of any system software
+or design deficiency but rather a decision to allow the ship to manipulate
+the software to stimulate [sic] machinery casualties for training purposes
+and the 'tuning' of propulsion machinery operating parameters. In the usual
+shipboard installation, this capability is not allowed."
+
+McKelvey adds that CAE Electronics expressed "serious concern" when this
+test was proposed.
+
+So it seems that as long as there are no "machinery casualties", everything
+will be fine. Then again, the incident may have provided useful information
+to improve system robustness.
+
+Mike Martin <mmartin@sbnsw.com.au>
+
+------------------------------
+
+Date: Tue, 4 May 99 8:39:45 PDT
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Netfill scams 900,000 credit cards
+
+Netfill, which provides access to pornographic Web sites, has apparently
+billed something like 900,000 credit-card numbers for services.  Federal
+regulators claim that the owner, Kenneth H. Taves, has been squirreling
+millions of dollars in offshore banks.  FTC officials have not yet
+determined how the numbers were acquired -- perhaps he may have used a
+"number generating program"!  [Source: *San Francisco Chronicle*, 4 May
+1999, A3]
+
+------------------------------
+
+Date: Tue, 4 May 1999 08:38:02 +1000 (EST)
+From: Pauline van Winsen <Pauline.van.Winsen@eserv.com.au>
+Subject: Australian Securities & Investment Commission's April Foolery
+
+The Australian Securities & Investment Commission created a hoax Web site:
+http://www.smbi.com.au on April 1st this year. The site boasted that punters
+would triple their money if they invested their money in Millennium Bug
+Insurance.  The site attracted $4 million worth of interest from people who
+were fooled by the web site. Only a few alerted ASIC that the company didn't
+seem legit.  The site was designed to educate the public about the risks of
+investing in Internet ventures.
+
+Full Story at:
+http://www.theaustralian.com.au/index.asp?URL=/national/4291177.htm
+
+Pauline van Winsen, Senior Technical Consultant      pauline@eserv.com.au
+eServ Pty Ltd                 http://www.eserv.com.au/people/pauline.html      
+
+  [Ah, yes, the adage seems to be,
+  "If it has to do with the Internet, 
+  it must be worth investing in."  PGN]
+
+------------------------------
+
+Date: Sun, 02 May 1999 16:12:13 +0000
+From: main@radsoft.net (RA Downes)
+Subject: Re: Bloatware Debate (Downes, RISKS-20.35)
+
+A certain "Johnny" has written to me from Microsoft because of my posting in
+RISKS-20.35 about MS bloat. The tone was a thinly disguised threat. In his
+opening, "Johnny" stated that the "bloat" of MS RegClean was due no doubt to
+having static links. Discussing the sweeping ramifications of such a
+statement is unnecessary here. The mind boggles, it is sufficient to
+state. The MSVC runtime is a mere 250,000 bytes and in fact is not
+statically linked anyway to MS RegClean, AFAIK [as far as I know]. MS
+RegClean is an MFC app and will by default use the dynamically linked MFC
+libraries. And even if its static code links were an overhead here they
+would add but a small fraction of the total bloat, say 40KB at most.
+
+For whatever reason, I decided to download the latest version of MS RegClean
+from BHS again and pluck it apart. This is what I found. I have tried - and
+it has been difficult - to keep subjective comments out of this report.
+
+Current Status of RegClean Version 4.1a Build 7364.1
+====================================================
+
+Image Size (Unzipped and ready to run): 837,632 bytes (818KB)
+=============================================================
+(Subjective comment removed.)
+
+Import Tables
+=============
+The import section in the PE header. This gives an indication of just
+how (in)effective the use of Bjarne's C++ has been. In this case, the
+verdict is: "pretty horrible". A walloping 7,680 bytes are used for the
+names of the relocatable Win32 imports. These are the actual names of
+the functions (supposedly) called. MS RegClean does not call most of
+these functions - they remain because an MFC template was originally
+used, most likely borrowed from another application, and it was never
+"cleaned". This is corroborated by what is found among the "Windows
+resources": over half a dozen standard menus, assorted graphic images,
+print preview resources, etc. that have nothing to do with the
+application at hand.
+
+Resources
+=========
+Please understand that resources not only bloat an executable with their
+own size, but with additional reference data, in other words the bloat
+factor of an unused or bad resource is always somewhat larger than the
+size of the bloating resource itself.
+
+Accelerators
+============
+Sixteen (16) unused accelerators from an MFC template were found: Copy,
+New, Open, Print, Save, Paste, "Old Undo", "Old Cut", Help, Context
+Help, "Old Copy", "Old Insert", Cut, Undo, Page Up, Page Down. MS
+RegClean uses only one accelerator itself, not listed here.
+
+Bitmaps
+=======
+This was a particularly sorry lot. The main bloat here was a splash
+screen bitmap weighing in (no RLE compression of course) at over 150KB.
+Further, Ctl32 static library bitmaps were found, meaning MS RegClean is
+still linking with the old Ctl32v2 static library which was obsolete
+five years ago and which automatically adds another 41KB to the image
+size.
+
+Cursors
+=======
+Six (6) cursors were found, none of which have anything to do with this
+application.
+
+Dialogs
+=======
+A very messy chapter indeed. MS RegClean walks around with eighteen (18)
+hidden dialogs, of which only one or at the most two are ever used. The
+others are just - you took the words out of my mouth - junk. The
+findings (read it and weep):
+
+*) Eleven (11) empty dialogs with the caption "My Page" and the static
+text "Todo", all identical, all empty, and of course all unused. This is
+a wonder in and of itself.
+*) The main "wizard" dialog actually used by the application is left
+with comment fields to help the programmers reference the right controls
+in their code (subjective comment removed).
+*) A "RegClean Options" dialog which AFAIK is never used.
+*) A "New (Resource)" dialog, probably a part of the development
+process, just stuffed in the stomach at sew-up time and left there for
+posterity.
+*) A "Printing in Progress" dialog.
+*) A "Print Preview" control bar dialog.
+
+Icons
+=====
+MS RegClean has three icons, all with images of 48x48 in 256 colors (of
+course). The funniest thing here is that the authors of MS RegClean have
+extracted the default desktop icon from shell32.dll, which is available
+at runtime as a resident resource anyway and at no image bloat overhead
+at all, and included it in toto in their executable.
+
+Menus
+=====
+MS RegClean has eight (8) menus, at least half of these are simply junk
+left around by the MFC template. Another menu indicates that the authors
+of RegClean have in fact worked from an internal Microsoft Registry tool
+- rather bloated in itself it seems.
+
+String Table(s)
+===============
+Actually it need only be one string table, but Microsoft itself has
+never learned this. The findings here were atrocious. And you must
+remember that strings stored in a string table are stored in Unicode,
+which means that their bloat automatically doubles. Further, MS's way of
+indexing strings in a string table means a 512 byte header block must be
+created for every string grouping, and strings are grouped according to
+the high 12 bits of their numerical identifiers (yes they are 16-bit
+WORD identifiers). Meaning indiscriminate or random numbering of string
+table entries will make an otherwise innocent application literally
+explode.
+
+347 (three hundred forty seven, yep, your video driver is not playing
+tricks on you) string table entries were found in MS RegClean, including
+16 identical string entries with the MS classic "Open this document" as
+well as archaic MFC template toggle keys texts which are not used here
+(or almost anywhere else today). Most of these strings have - of course
+- nothing to do with the application at hand.
+
+Toolbars
+========
+Toolbars are a funny MS way of looking at glyph bitmaps for use in
+toolbar controls. MS RegClean has two - one which may be used by the
+application, and one which was part of the original MFC template and
+never removed.
+
+Total Accountable Resource Bloat
+================================
+The total accountable (i.e. what can be directly calculated at this
+stage) resource bloat of MS RegClean 4.1a Build 7364.1 is over 360,000
+bytes (350KB).
+
+Total Accountable Code Bloat
+============================
+Harder to estimate, but considering that most of the code is never used,
+only part of an MFC template that the authors of MS RegClean lack the
+wherewithal to remove, the original estimate of a total necessary image
+size of 45KB for the entire application must still stand.
+
+In Conclusion
+=============
+Bloat is not a technical issue, but verily a way of thinking, a "state
+of mind". Its cure is a simple refusal to accept, and a well directed,
+resounding "clean up your act and clean up your code!"
+
+PS. Send feedback on RegClean to regclean@microsoft.com
+
+RA Downes, Radsoft Laboratories  http://www.radsoft.net
+
+------------------------------
+
+Date: Mon, 3 May 1999 16:47:29 -0500
+From: Jonathan_Goldberg@mastercard.com
+Subject: Re: The Bloatware Debate
+
+People seem to be talking about this as the result of mental aberrations
+common in Redmond.  I think that this misses the point.  Bloated software is
+the predictable result of the incentives operating in the software industry.
+In part, this is a perfectly rational use of resources.  Code compactness,
+like any other desirable engineering outcome, must be traded off against
+things such as cost and time to market.  As hardware gets cheaper relative
+to programmer time, it is reasonable to use more hardware and less
+programming effort.  Microsoft's monopoly exacerbates this tendency.  As
+long as they can annoy people into buying their software because there is no
+viable alternative (taking into account factors such as training costs,
+interoperability, and the Company approved software list), Microsoft faces
+the tradeoff of spending their money on compact code or your money on
+hardware.  It's not a hard choice.
+
+------------------------------
+
+Date: Mon, 03 May 1999 15:24:14 -0700
+From: Henry Baker <hbaker@netcom.com>
+Subject: Re: The Bloatware Debate (Downes, RISKS-19.35)
+
+> One of the chief hallmarks of early UNIX was how simple, compact programs
+> worked well together....
+
+To better understand bloatware, we may have to look to evolutionary biology.
+For example, peacocks have enormous tails and deer have antlers that
+certainly can't be explained by the usual 'survival of the fittest' kinds of
+arguments.  The prodigious amount of energy required to grow these
+appendages has to reduce the animal's ability to run away from danger or
+survive an extended lack of food.  Matt Ridley's 1993 book "The Red Queen"
+(ISBN 0-14-016772-2) is an outstanding discussion of the new thinking about
+such things in the field of biology.
+
+According to a Red Queen type of argument, bloatware will survive _precisely
+because it is bloatware_ -- the bloat is a kind of 'display' similar to
+peacock tails or antlers used to prove the vigor of its creator, as only a
+truly vigorous creator could afford to waste the prodigious sums required to
+implement gross and useless appendages like 'Clippy'.
+
+------------------------------
+
+Date: Mon, 03 May 1999 01:46:36 +0000
+From: main@radsoft.net (RA Downes) 
+Subject: Re: Bloatware Debate
+
+Bloatware is something we are very sensitized to here. The way we see it,
+there is no excuse, because there is no reason.
+
+I personally accepted Brian W. Kernighan's calculations back in the old days
+about a 10% bloat with C versus assembler because the rewards were tangible
+and far outweighed the bloat: you got largely (according to Steve Johnson
+94%) platform independent code, saving countless man-hours of work.
+
+But ever since the popular inception of MS Windows and furthermore MS's MFC
+things have been way out of control. This is partly due to C++ and partly,
+if not largely, due to MS and their MFC itself. A typical Win16 application
+was 5KB, yet the same skeleton if built with the MFC back then was ten times
+that size. And Bjarne's words echoed in your ear: "C++ produces no
+noticeable overhead versus C." It simply was not so, and never will be so.
+
+With time the MFC overhead has been reduced somewhat, but programmers of
+today, raised on OO and C++ as opposed to what others have gone through,
+are simply not taught to be conservative and minimalistic.
+
+I received a letter yesterday from someone who had been reading the Risks
+Digest, and reported on a party he had attended some years earlier. The
+conversation turned inevitably toward software, and he mentioned that he
+often must really tweak code to get it compact and fast. Another person at
+the party, from you guessed it Redmond Washington, said that was *not* the
+way things were done there; she said that if they ever ran into performance
+problems, they just "threw more hardware at it."
+
+So there are several issues involved all at once, and AFAIK the only way to
+fight this, for stop it we must, is to expose it and make even ordinary end
+users understand what it's all about, and perhaps by a concerted effort we
+can turn back the tide.
+
+Rick Downes, Radsoft Laboratories  http://www.radsoft.net
+
+------------------------------
+
+Date: Mon, 03 May 1999 01:49:46 -0400
+From: Matthew Delaney <delaney@ucs.net>
+Subject: Interesting results with MapQuest
+
+I was recently searching for a road in Albany, NY (USA). I went to MapQuest
+(www.mapquest.com) as I often do when searching for an address.  I entered,
+in the address field, "Route 85" and then Albany and NY in the city and
+state fields. Knowing this is an actual road, and having seen it on MapQuest
+Albany maps before, I expected MapQuest to locate it. However, it returned
+"Address: 85 Rita Ln Albany NY 12211-2321 US."  I repeated this same request
+several times, to the same result. Even more interesting, when I started
+clicking around the map or changing my zoom level, the top of the map
+displays "Your search origin is: Route 85, Albany, NY, US."
+
+Obviously MapQuest is attempting to make a guess on my request, and in this
+case, getting it very wrong. Normally if it can not find the address you
+request, it tells you so at the top of the map and then normally displays a
+city level map. However, in this case, it made no indication that it was
+making a guess.
+
+Just because data is returned, it isn't necessarily what you expect it is.
+
+Matthew Delaney <delaney@ucs.net>
+
+------------------------------
+
+Date: Sat, 1 May 1999 22:48:35 -0400 (EDT)
+From: David Lesher <wb8foz@nrk.com>
+Subject: New risk of ITAR?
+
+ http://www.washingtonpost.com/wp-srv/WPlate/1999-05/01/169l-050199-idx.html
+
+   Serbs Listening In on Pilots:
+   Some Attacks Thwarted Because of Allied Jets' Unsecure Radio Gear
+   By Dana Priest, *The Washington Post*, 1 May 1999; Page A01
+   
+   Yugoslav forces have apparently thwarted some NATO air attacks because
+   at times allied pilots speak to each other and to ground-based air
+   controllers over open communications systems, according to NATO
+   officials and U.S. intelligence reports ...
+
+OOPS!  It seems as if not all NATO members *have* interoperable
+voice-encryption gear in their aircraft...
+
+The RISK? Law of Unintended Consequences, maybe? Sometimes suppressing an
+export market for 1979 reasons bites you on the backside in 1999...
+
+Can PGPphone work on a CRM-114, maybe?
+
+wb8foz@nrk.com  [v].(301) 56-LINUX
+
+------------------------------
+
+Date: Mon, 3 May 1999 13:44:09 -0400 
+From: Russ <Russ.Cooper@rc.on.ca>
+Subject: Risks of "Discovery" hounds
+
+May 3rd, numerous sources published a link to what they believed was
+Microsoft Windows NT 4.0 Service Pack 5. SP5 represents a return to service
+packs every 6 months from Microsoft after SP4 took nearly 18 months to get
+released.
+
+Unfortunately, for some, it turned out that the publicly accessible file was
+actually a Release Candidate version of SP5, and not the Final RTM
+version. Microsoft's web release mechanisms are, well, in flux right now and
+often take longer than people expect. As such, various components of such a
+release are often put in place before others. In this case, the 32MB
+self-extracting zip file of the SP RC was likely placed in a public location
+to verify, privately, that beta testers could actually access it correctly
+via the public site. For such a test, there's no need to ensure the file is
+the final RTM, just use what's at hand.
+
+Despite no public acknowledgement from Microsoft, and despite the Windows NT
+Downloads Home Page still featuring SP4 as its "featured download", a few,
+probably, well intentioned soles started sending notes to various lists and
+posting the link on their home page as "SP5 RTM".
+
+Likely an age old risk, the issue of "official" information. As the
+moderator of NTBugtraq, I put out a message today telling everyone that the
+link was *NOT* the "official" version of SP5 and that they should avoid
+it. Downloading the version that was provided via the link would, at least,
+mean two copies of a 32MB file needed to be downloaded, and at worst, could
+cause serious problems due to its lack of completeness.
+
+At the time of writing, however, Microsoft had made no "official"
+announcements...nor should they. They have *NOT* made an "official"
+announcement of it being available, so why make an announcement that says as
+much.
+
+Whether people chose to listen to my NTBugtraq "official" message on the
+subject or not is a matter of trust, but its no more "official" than those
+saying SP5 RTM is available, is it.
+
+FYI, whenever Microsoft makes a large download available from the 'net,
+backbones tend to suffer due to the huge volume of downloads that
+ensues. False messages about the availability of something like SP5 could
+lead to spikes in traffic unnecessarily, and other sundry problems. At
+least, it compounds the issues surrounding web distribution of large files.
+
+Russ - NTBugtraq moderator
+
+------------------------------
+
+Date: Sat, 1 May 1999 20:21:22 -0700
+From: "Robert David Graham" <rob@netice.com>
+Subject: Outdated address books
+
+When registering the domain for the startup I work for, I apparently
+re-registered an old domain that somebody else let lapse. As a result, I
+occasionally get mail destined for people in that old domain.
+
+The majority of such e-mail are actual correspondences because people
+haven't updated their address books. To illustrate the RISK, consider the
+following e-mail I received:
+
+> Xxxxx,
+>
+> I'll be away now for 8 weeks and will be having my mail intercepted by
+> our receptionist who is the kind of person who would have me sacked for
+> the type of mail that I've been receiving lately, so could you please
+> not send me any messages until I return.
+>
+> Also, when mail is sent to a list of people including myself, the mail
+> comes into our server as an inbound message failure, and then gets read
+> by the receptionist before forwarding. Unfortunately this is what
+> happened to the previous message 'ouch!' - hopefully the attachment
+> wasn't opened.
+>
+> cheers,
+> Yyyyy
+
+I enjoy contemplating the forged e-mails I could send him (which will get
+intercepted by the secretary). Any ideas?
+
+Robert Graham, CTO, Network ICE
+
+------------------------------
+
+Date: Mon, 3 May 1999 11:56:16 -0600
+From: Edupage Editors <edupage@franklin.oit.unc.edu>
+Subject: Israeli scientist reports discovery of advance in code breaking 
+
+Israeli computer scientist Adi Shamir is expected to present a paper
+outlining the design of a yet-to-be-built-machine that could quickly
+decipher computer generated codes.  Shamir -- who represents the 'S' in RSA
+encryption design -- will present his paper this week at the International
+Association for Cryptographic Research in Prague, which begins Monday.
+Shamir's idea would combine existing technology into a special task computer
+that would make factoring numbers as long as 150 digits much easier.  As a
+result, codes accepted as reasonably secure for financial transactions and
+government communications would be much easier to decipher.  Researchers say
+the machine could be built at a relatively low cost, and that key systems of
+512 bits or less (keys of about 140 digits or less) would be vulnerable.
+Longer 1,024-bit keys would still be out of reach for Shamir's new machine.
+(*The New York Times*, 2 May 1999; Edupage, 3 May 1999)
+
+------------------------------
+
+Date: Mon, 3 May 1999 13:49:37 +0600
+From: "Matthew Todd" <matthew@mail.cmb.ac.lk>
+Subject: Re: CIH virus
+
+The [Colombo] Sunday Times
+
+http://www.lacnet.org/suntimes/990502/spec.html
+http://www.lacnet.org/suntimes/990502/plusm.html#label0
+http://www.lacnet.org/suntimes/990502/plusm.html#1LABEL1
+http://www.lacnet.org/suntimes/990502/bus2.html#2LABEL2
+
+and Sunday Observer
+
+http://www.lanka.net/lakehouse/1999/05/02/fea33.html
+
+of 2 May 1999 both carry extensive coverage of the impact of the CIH virus,
+both in Sri Lanka and the rest of the world.
+
+Some of those affected here include:
+
+Yes FM, where one presenter reported the loss of five years' worth of data.
+John Keells Computer Services, where IT Manager of Software Development
+Services, Milinda Gunasena, was unaware of the virus and lost over 200 files
+and spent all day cleaning the system.
+DHL lost 15 computers, Forbes Tea Department three, and NIIT, an Information
+Technology firm lost five machines.
+
+The total damage here appears to be far less than in some other countries,
+notably South Korea, but this has clearly been a very serious incident
+throughout the region.
+
+Although these articles also contain some technical inaccuracies common in
+mass media coverage of events such as this, there are also some interesting
+rumours/myths which are also originating: "At least four computer vendors
+who did not wish to be identified said they suspected the virus originated
+from a particular company" meaning it had been released by an anti-virus
+software supplier...
+
+Much of the coverage here has highlighted the fact that this virus seems to
+have done most of its damage in Asia, and that this is largely due to the
+extensive use of pirated software. This is largely due to inadequate
+legislation and enforcement -- currently in Sri Lanka, the law does not
+specifically protect copyright and intellectual property rights in computer
+software, and no doubt this is also true in much of the rest of Asia.
+However, the problem is not only inadequate legislation. It is possible to
+buy a licensed and up to date version of a program here if you have
+sufficient money, however, the cost of much of the "standard" software which
+everybody wants is very high -- this is largely due to the huge profits
+which organisations like Microsoft chooses to make -- and the fact that many
+hardware vendors install software (illegally?) at the point of sale, means
+that many users have no idea of the origin or provenance of the software
+they use.
+
+Much has also been made in the press here of the lateness of the warnings
+put out by the national IT bodies such as CINTEC. The possibility is even
+hinted at, and no doubt will meet with some public approval, that the
+lateness of the warnings makes anyone who knew about the virus in advance
+responsible.
+
+Results (apart from the damage done):
+
+- sales of anti-virus software have soared. Presumably these are all
+original disc rather than pirated, and will come with the appropriate
+periodic upgrades.
+
+- CINTEC (national IT council) is to establish some form of early warning
+section to keep the user community better informed.
+
+Outstanding issues (inter alia)(many no doubt familiar to RISKS readers):
+
+- Giving appropriate warnings in time -- the danger of "crying wolf" needs
+to be borne in mind. Also the risk of media caused panic should be borne in
+mind by any group set up by CINTEC.
+
+- Establishing appropriate legislation and enforcement regarding software
+piracy.
+
+- Better education of IT users, not just to purchase anti-virus products,
+but to introduce procedures for ensuring they are used and kept up to date.
+
+------------------------------
+
+Date: Mon, 3 May 1999 07:18:25 +0100
+From: GRANT Jedediah <jgrant@namsa.nato.int>
+Subject: Re: MS-Outlook 98 risk of mislaying messages in Outlook today
+
+	I've also encountered subject item noted in RISKS.  However, it is
+possible using the Advanced Find for a user to see the messages dropped on
+Outlook Today.  A simple advanced find with no parameters other than to look
+for all messages in the users mailbox will reveal the hidden items in
+Outlook Today as located in the "Top of Information Store" folder.
+
+J. Grant (jgrant@namsa.nato.int)
+
+------------------------------
+
+Date: Mon, 3 May 1999 14:16:30 -0400
+From: "Donna Farmer" <dfarmer@smartcardforum.org>
+Subject: Smart Card Forum Privacy Symposium, 20 May 1999
+
+'Enabling Privacy in a Virtual World' 20 May 1999 
+See http://www.smartcardforum.org or by call (202) 530-5306.
+
+For information about The Smart Card Forum:
+Patrick Corman, Corman Communications, (650) 326-9648  patrick@cormancom.com
+Nancy MacGregor <nancy@cormancom.com> (415) 643-0766
+
+------------------------------
+
+Date: 23 Sep 1998 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent) 
+ if possible and convenient for you.  Alternatively, via majordomo, 
+ SEND DIRECT E-MAIL REQUESTS to <risks-request@csl.sri.com> with one-line, 
+   SUBSCRIBE (or UNSUBSCRIBE) [with net address if different from FROM:] or
+   INFO     [for unabridged version of RISKS information]
+ .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+ .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites, 
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All 
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 19" for volume 19]
+ or http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+ PostScript copy of PGN's comprehensive historical summary of one liners:
+   illustrative.PS at ftp.sri.com/risks .
+
+------------------------------
+
+End of RISKS-FORUM Digest 20.37 
+************************

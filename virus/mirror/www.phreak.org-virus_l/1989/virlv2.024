@@ -1,0 +1,246 @@
+VIRUS-L Digest             Tuesday, 24 Jan 1989         Volume 2 : Issue 24
+
+Today's Topics:
+Ken Hoover's Sick Mac
+Features of Blackjack Virus (PC)
+Checksum programs and Otto's principles
+Mac problems part III
+
+---------------------------------------------------------------------------
+
+Date:         Tue, 24 Jan 89 10:22:22 EST
+From:         Joe McMahon <XRJDM@SCFVM.GSFC.NASA.GOV>
+Subject:      Ken Hoover's Sick Mac
+
+First, you MUST get a more recent version of Interferon. I can't
+stress this enough. Version 1.0 is *full* of holes, and two out of the
+5 known viruses didn't even exist when it was written.
+
+I will send you the most recent copies I have of both Virus RX and
+Interferon. Please rerun the tests and let me know if the problem is
+trapped by these newer versions.
+
+Note to all Mac disinfectors: It is IMPERATIVE that you stay up to
+date on anti-viral software. The virus writers ARE getting copies of
+the programs, and they ARE trying to write around them.
+
+ --- Joe M.
+
+------------------------------
+
+Date:    24 January 89, 17:25:02 +0100 (MEZ)
+From:    Otto Stolz <RZOTTO@DKNKURZ1.BITNET>
+Subject: Features of Blackjack Virus (PC)
+
+Hello,
+
+perhaps you remember the virus incident I reported on this list, on 2
+September 88, 14:44:40 +0200 (MESZ).  This note is intended to present
+some of the results and insights I gained since.  Most of the facts
+presented here have not been detected by myself; rather I have to
+thank several people in the local area, and several VIRUS-L
+subscribers, for their hints and contributions.
+
+This virus has been termed "Blackjack", which is a pun on the German
+name "17+4" of the popular card game.  Blackjack reveals its existence
+by the length of infected COM-files, which is 1704 Bytes too large.
+
+As with the Israeli virus strains, the virus has a two-stage
+life-cycle:
+
+- - when you invoke an infected program, Blackjack will infect RAM;
+
+- - when Blackjack is active in RAM, it will infect every COM file being
+  invoked.  This can be exploited for an easy test, e.g.:
+     copy con: test.com
+     {ALT-144} {ALT-205} {Blank} {CTRL-z} {return}
+     dir test.com
+     test
+     dir test.com
+  In the second line above, every brace-pair represents one byte entered;
+  if you key in these bytes correctly, you'll read a Capital Letter E
+  with Acute Accent, a Horizontal Double-Line Segment, a Blank, a Circum-
+  flex Accent, and a Capital Letter Z.  The 1st dir-command, above,
+  should report that
+  TEST.COM is 3 bytes long; if the 2nd dir reports 1707 bytes, instead,
+  your RAM, and hence the TEST.COM file, are infected by some virus--most
+  probably Blackjack.
+
+Blackjack infects only COM-files which are at least 3 Bytes long, and
+it does so only once for any given file.  It overwrites the 1st three
+bytes with a JMP to the beginning of the viral code, which is appended
+to the file.  The 2 byte address of this JMP instruction is probably
+the reason why only COM files are susceptible to infection.  Blackjack
+retains the file's time stamp.  It even infects read-only files; on
+write-protected floppy disks, it attempts writing 5 times per file,
+thus revealing its activity.
+
+In the infected file, the viral code is cryptographically encoded,
+using a simple Vigenere code depending on the length of the file; only
+the instructions for decoding the encrypted part of the code are in
+plain machine-language.  This is obviously intended as a impediment
+against disassembling.  Hence, every copy of the virus looks different
+(depending on the length of the file).
+
+On invocation of an infected program, Blackjack installs itself in RAM
+(if no copy is already installed), then replaces the JMP instruction
+with its former contents and resumes normal program operation.
+
+The storage map shows that Blackjack has tinkered with the free
+storage pointer-chain to hide the fact that it has hooked interrupt
+21.  Hence, only a minor part of Blackjack is visible in the storage
+map.
+
+In every year, from October to December, Blackjack will interfere with
+CGA or EGA operated screens, moving randomly chosen characters down,
+like falling leaves in autumn.  After a while, you'll have a big heap
+of characters at the bottom of your screen, and as you cannot see
+anymore what the computer is trying to display, you'll probably have
+to restart the system.  This behaviour has been predicted by two
+people, who have disassembled Blackjack, and has later been observed
+on many EGA-equipped ATs.
+
+Together with two students, I have written a VIRCHECK program to check
+for Blackjack in RAM and in disk files.  VIRCHECK exploits the
+signaling device Blackjack uses to ensure at most one active copy to
+detect Blackjack in RAM; it searches the files for the few
+instructions which are alike in every copy, to detect infected files.
+At our consultant desk, everybody can obtain a copy of VIRCHECK
+(Pascal source, and EXE-file), plus a 16 kByte memo (in German) and
+the 3 Byte TEST.COM (cf. above).
+
+An employee of a nearby software-house, who has detected Blackjack, in
+the 1st time, has circulated a DELVIRUS program to detect Blackjack
+and, optionally, repair infected files (taking the original contents
+of the 1st three bytes from the viral code meant to replace them, as
+explained above.  As the DELVIRUS's source is not available to the
+public (nor to myself), we do not distribute this program (nor
+recommend its use).
+
+That's it, folks.  I hope I didn't bore you.
+             Otto
+
+[Ed. Thanks for the detailed description, Otto!]
+
+------------------------------
+
+Date:        Tue,  24 Jan 89 18:42:12 +0200
+From:        Y. Radai <RADAI1@HBUNOS.BITNET>
+Subject:     Checksum programs and Otto's principles
+
+  David Chess writes:
+>                                              Consider, for instance,
+>a modification-detection program that works using a nice long CRC
+>(at least 30 bits), and that uses a "user-selectable" polynomial
+>(for instance, the program might prompt the user for a long string
+>when it's first run, and use that to find an irreducible polynomial).
+>...
+>I think I would claim that knowing all about the checking program,
+>including having the commented source code, would do the virus-writer
+>NO GOOD AT ALL in trying to defeat it (as long as the user's secret
+>key isn't known, of course).  ...
+
+>Objections?
+
+  Yes, I have objections.  Even assuming a program which is based on a
+user-selected or randomly selected polynomial (and many checksum
+programs are not based on this), the problem with the great majority
+of such programs is that the authors seem to think that it's suffi-
+cient to checksum every file and that the only danger is that someone
+might discover the generating polynomial or secret key or by other
+means succeed in forging a checksum.  That's *not* the only danger.
+The main danger is that there are "loopholes" in OSs, particularly in
+DOS, which can be exploited to circumvent the checksum scheme, and
+it's *much* simpler to exploit such a loophole (if you can think of
+one) than to forge a checksum.  (The most trivial example of a loop-
+hole is forgetting that the boot sector contains executable code and
+therefore thinking that checksumming can be restricted to files
+alone.)  Altogether, I know of 6 loopholes.
+
+  Now of the 7 freeware checksum programs which which I am familiar,
+not a single one takes these loopholes into consideration, and that
+includes the one published by Fred Cohen in the April 88 issue of
+Computers & Security.  As for commercial programs, there is one,
+VirAlarm (an Israeli product, not to be confused with Lasertrieve's
+product having the same name), which presently takes into account 5 of
+the 6 loopholes.  (Since I have mentioned the 6th one to the authors,
+it will undoubtedly be incorporated into their next version.)  Unfor-
+tunately I am not familiar with any other commercial products, so I
+can't say whether any of them block these loopholes as well, but I'd
+be willing to bet that none of them blocks more than 4 of the loop-
+holes, and the great majority not more than two of them.
+
+  In a VIRUS-L posting of mine in September I mentioned that I was
+preparing a paper on checksum programs as an anti-viral measure, in
+which these loopholes would be described.  I much too optimistically
+stated that the paper would be ready in a few weeks.  Unfortunately,
+the project has taken much more time than I thought (it's already
+about 700 lines long) and I have lots of other work to do, so it
+probably won't be ready for another month or two.  I take this oppor-
+tunity to apologize to those who wrote to me asking for information
+concerning these loopholes.  (BTW, the question arises whether by pub-
+lishing these loopholes I wouldn't be doing more service to the cre-
+ators of viruses, some of whom are possibly on this list, than to the
+writers of anti-virus software.  Anyone got any advice on this?)
+
+  In any case, I do not agree with David's implication that the "First
+Main Proposition of Virus Hunting" which was stated by Otto Stolz is
+too strong, at least not because of the reasoning which David has
+given.  For just as I discovered an unblocked loophole in VirAlarm by
+knowing how it works, so some virus creator might discover a new one
+even in a checksum program which blocks all presently known loopholes.
+
+  By the way, as has been implied by some contributors, the
+propositions mentioned by Otto were stated much earlier by Fred Cohen.
+In Computers & Security, V6, N6, p. 30 they appear in the following
+words: "any particular virus can be detected by a particular detection
+scheme" and "any particular detection scheme can be circumvented by a
+particular virus", or more compactly, "no infection can exist that
+cannot be detected, and no mechanism can exist that cannot be
+infected."
+
+                                           Y. Radai
+                                           Hebrew Univ. of Jerusalem
+
+  P.S.  The offer by Yuval Tal in V2 #21 to send VirAlarm to anyone
+who requests it was completely irresponsible since it is a commercial
+product.
+
+[Ed. Thank you for bringing that to our attention.]
+
+------------------------------
+
+Date:         Tue, 24 Jan 89 20:18:59 ECT
+From:         Ken Hoover <CONSP21@BINGVMA.BITNET>
+Subject:      Mac problems part III
+
+  I was pleased to find a response to my message of less than 24 hours
+ago sitting in my mailbox.  Scott (@DUVM) was quick enough to notice
+that the locked disk was the instigator of my printer troubles.
+However, there's more to report.
+
+  Rather than send a third essage on the same subject to this list, I
+worked with the user in question for a few minutes.  As I noted in the
+second (shorter) message, by setting the system date back 20 days or
+so, the disk mysteriously unlocked itself and we were able to print
+(only) one document (from MacWrite) before the bomb returned with
+error code 28.
+
+  Stupid me forgot to look and see if the disk had re-locked itself.
+
+  I'm less worried about the printing problem than I am about the
+possibility that we have some sort of mac disk-locking bug.  I'm going
+to get back to that user as soon as I can to see what (if anything)
+has happened in the last 24 hours.
+
+Kenneth J. Hoover
+UG Consultant, Public Terminal and Microcomputer Complex
+SUNY-Binghamton  (Binghamton, NY, USA)
+
+Disclaimer : These are my opinions.  I'm not paid enough to represent
+             my employers'.
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

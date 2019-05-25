@@ -1,0 +1,332 @@
+25-Sep-86 21:05:18-PDT,16107;000000000000
+Mail-From: NEUMANN created at 25-Sep-86 21:01:58
+Date: Thu 25 Sep 86 21:01:58-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS-3.67 DIGEST
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday 25 September 1986  Volume 3 : Issue 67
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Old GAO Report on Medical Device Software (Chuck Youman)
+  Re: Stanford breakin, RISKS-3.62 DIGEST (Darrel VanBuer)
+  Re: Passwords and the Stanford break-in (RISKS-3.61) (Dave Sherman)
+  Re: role of simulation - combat simulation for sale (Jon Jacky)
+  MIT Symposium on economic impact of military spending (Richard Cowan)
+  "Friendly" missiles and computer error -- more on the Exocet (Rob MacLachlan)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.
+  Summary Contents in MAXj for each i; Vol 1: RISKS-1.46; Vol 2: RISKS-2.57.)
+
+----------------------------------------------------------------------
+
+Date: Thu, 25 Sep 86 13:49:08 -0500
+To: risks@csl.sri.com
+From: Chuck Youman <m14817@mitre.ARPA>
+Organization: The MITRE Corp., Washington, D.C.
+Subject: Old GAO Report on Medical Device Software
+
+I recently ran across an old report (Aug. 5, 1981) from the U.S. General
+Accounting Office (GAO) on the subject "Software Used in Medical Devices
+Needs Better Controls To Avoid Compromising Patient Safety (AFMD-81-95).
+I don't recall seeing it mentioned in this forum or in SEN.  The 
+report is 8 pages and can be ordered from the GAO at P.O. Box 6015,
+Gaithersburg, MD 20877.
+
+To briefly summarize the report, they identified 78 cases involving
+unreliable computerized medical devices that occurred from June 1976 to
+August 1979.  They state that the believe this is only a small fraction of
+the total cases that occurred.  They examined 24 of the cases and found 13
+of them had software problems.  In their report they give two examples:  a
+blood gas analyzer and a computerized electrocardiogram interpretation
+software package.
+
+They concluded:
+
+Advances in computer technology have brought about far more reliable 
+hardware.  However, software has been and remains a problem area, regardless
+of whether it is used in medical or business applications.  We believe the
+use of software in medical devices is emerging as a troublesome area and
+requires the attention of the Bureau [i.e., the FDA].
+
+The use of performance standards, as authorized by the Medical Device
+Amendments of 1976, is a possible mechanism to help control the performance
+of software in computerized medical devices.  Unfortunately, the time-
+consuming process for developing standards together with the large number
+of standards to be developed makes it very unlikely that any standards will
+be available soon.  This, coupled with the relatively fast pace at which
+computer technology changes, makes it unlikely that the standards when 
+developed will be timely enough to validate software in medical devices.
+Therefore, we believe the Bureau needs to explore other alternatives for
+validating and certifying that the software in medical devices works as
+expected.
+
+Charles Youman (youman@mitre.arpa)
+
+------------------------------
+
+Date: Wed, 24 Sep 86 09:35:37 pdt
+From: hplabs!sdcrdcf!darrelj@ucbvax.Berkeley.EDU (Darrel VanBuer)
+Organization: System Development Corporation R&D, Santa Monica
+To: hplabs!CSL.SRI.COM!RISKS
+Subject: Re: Stanford breakin, RISKS-3.62 DIGEST
+
+I think many of the respondents misunderstand what went wrong: there was no
+failure in the 4.2 trusted networking code.  It correctly communicated the
+message that "someone logged in as X at Y wants to run program Z at W".  The
+failure of security was that
+  1)  the "someone" was not in fact X because of some failure of security
+      (e.g. poor password).
+  2)  the real X who had legitimate access on W had previously created a file
+      under some user id at W saying X at Y is an OK user.
+  3)  the real X was lazy about withdrawing remote privileges (not essential,
+      but widens the window of opportunity.
+
+There's a tough tradeoff between user convenience in a networked environment
+and security.  Having to enter a password for every remote command is too
+arduous for frequent use.  Interlisp-D has an interesting approach:
+  1.  Try a generic userid and password.
+  2.  Try a host-specific userid and password.
+In either case, if it does not have these items in its cache, it prompts the
+user.  The cache is cleared on logout and at certain other times which
+suggest the user has gone away (e.g. 20 minutes without activity).
+Passwords are never stored in long term or publically accessible locations.
+It's also less convenient than 4.2 since you need to resupply IDs after
+every cache flush.  It also has the opening for lazy users to use the same
+ID and password at every host so that the generic entry is enough.
+
+Darrel J. Van Buer, PhD, System Development Corp., 2525 Colorado Ave
+Santa Monica, CA 90406, (213)820-4111 x5449
+...{allegra,burdvax,cbosgd,hplabs,ihnp4,orstcs,sdcsvax,ucla-cs,akgua}
+                                                            !sdcrdcf!darrelj
+VANBUER@USC-ECL.ARPA
+
+------------------------------
+
+From: mnetor!lsuc!dave@seismo.CSS.GOV
+Date: Thu, 25 Sep 86 12:48:55 edt
+To: mnetor!CSL.SRI.COM!RISKS
+Subject: Re: Passwords and the Stanford break-in (RISKS-3.61)
+
+There's another risk which isn't related to the problems of the networking
+code which Brian Reid described. Most users will have the same password on
+all machines. So where the intruder becomes root on one machine, he need
+merely modify login to store passwords for him, and will very quickly amass
+a collection of login-password combinations which have a very high
+probability of working all over the network.
+
+I'm not sure what the solution is to this one, except, as has been pointed
+out, to be aware that the network is as vulnerable as its weakest link.
+Sure, people should use different passwords, but the burden of remembering
+passwords for many different machines can become onerous. Perhaps building a
+version of the machine name into the password can help mnemonically - i.e.
+use the same password with a different final letter indicating which machine
+it is.
+
+I use two passwords for the several accounts I have: one for the machines
+under my control and one for guest accounts on other organizations' systems.
+That way no-one who collects passwords on someone else's system will be able
+to use them to break into Law Society machines.
+
+Dave Sherman, The Law Society of Upper Canada, Toronto
+dave@lsuc.UUCP
+{ ihnp4!utzoo  seismo!mnetor  utai  hcr  decvax!utcsri  } !lsuc!dave
+
+    [Mnemonics with one-letter differences are clearly easy to break.
+     Also, it does not really matter how many passwords you have if 
+     they are stored somewhere for automatic remote access...  The
+     more realistic point is that network security is an intrinsically 
+     nontrivial problem.  PGN]
+
+------------------------------
+
+Date: Thu, 25 Sep 86 17:10:09 PDT
+From: jon@june.cs.washington.edu (Jon Jacky)
+To: risks@CSL.SRI.COM
+Subject: Re: role of simulation - combat simulation for sale
+
+I came across the following advertisement in AVIATION WEEK AND SPACE TECHNOLOGY,
+June 16, 1986, p. 87:
+
+SURVIVE TOMORROW'S THREAT - <illegible> Equipment and Tactics Against Current
+	and Future Threats
+
+FSI's dynamic scenario software programs such as "War Over Land," "AirLand
+Battle," and "Helicopter Combat" provide realistic simulation of a combat
+environment.  These programs use validated threat data to evaluate the 
+effectiveness of individual weapons or an integrated weapons system.  The 
+easy-to-utilize programs are already in use by the Army, Navy, Air Force, and
+many prime defense contractors.  Evaluate your system on a DoD-accepted model.
+For more information, contact ... ( name, address, contact person).
+
+(end of excerpt from ad)
+
+The ad doesn't really say how you run this simulation, but kind of implies 
+you can actually test real electronic warfare equipment with it.  Needless to
+say, an interesting issue is, how comprehensive or realistic is this "validated
+(by whom? how?) threat data?"  I checked the bingo card with some interest.
+And this ad is just one example of the genre - p. 92 of the same issue 
+advertises a product called "SCRAMBLE! Full mission simulators," showing 
+several high-resolution out-the-window flight simulator displays of aerial
+combat.
+
+-Jonathan Jacky, University of Washington
+
+------------------------------
+
+Date: Thu 25 Sep 86 17:42:50-EDT
+From: Richard A. Cowan <COWAN@XX.LCS.MIT.EDU>
+Subject: MIT Symposium on economic impact of military spending
+To: [...] risks@CSL.SRI.COM [...]
+
+[The following seminar, sponsored by MIT, may be of interest to RISKS Readers.]
+
+     November Symposium: "What are the effects of military spending?"
+                MIT Technology and Culture Seminar
+                   Saturday, November 1, 1986
+                    9am-3pm, MIT Room 26-100
+Topics:
+
+Bernard O'Keefe
+  --Chairman of the Executive Committee, EG&G, Inc.
+"Are we focusing on the military confrontation with the USSR
+ while ignoring the trade war with the Japanese?"
+
+Seymour Melman, 
+  --Professor of Industrial Engineering, Columbia University
+"Do present rates of military spending make capital effectively
+ available for civilian industry?"
+
+Alice Tepper-Martin,
+  --Executive Director, Council on Economic Priorities
+"If military spending is "only" about six or seven percent of the
+ GNP, why worry?"
+
+Frederick Salvucci
+  --Secretary of Transportation and Construction for Massachusetts
+"Where will the funds for our national infrastructure come from?"
+
+Barry Bluestone
+  --Professor of Economics, Boston University
+"The arms race and unemployment."
+
+John Kenneth Galbraith
+  --Professor of Economics, Harvard University
+"Does the military-industrial complex really exist, and what is its impact?"
+
+------------------------------
+
+Date: Thu, 25 Sep 1986  21:23 EDT
+From: Rob MacLachlan <RAM@C.CS.CMU.EDU>
+To:   risks@CSL.SRI.COM
+Subject: "Friendly" missiles and computer error -- more on the Exocet
+       
+   [We have been around on this case in the past, with the "friendly" theory
+    having been officially denied. This is the current item in my summary list:
+       !!$ Sheffield sunk during Falklands war, 20 killed.  Call to London
+           jammed antimissile defenses.  Exocet on same frequency.  
+           [AP 16 May 86](SEN 11 3)                 
+    However, there is enough new material in this message to go at it once
+    again!  But, please reread RISKS-2.53 before responding to this.  PGN]
+
+    I recently read a book about electronic warfare which had some
+things to say about the Falklands war incident of the sinking of the
+Sheffield by an Exocet missile.  This has been attributed to a
+"computer error" on the part of a computer which "thought the missile
+was friendly."  My conclusions are that:
+ 1] Although a system involving a computer didn't do what what one
+    might like it to do, I don't think that the failure can reasonably
+    be called a "computer error".
+ 2] If the system had functioned in an ideal fashion, it would
+    probably have had no effect on the outcome.
+
+The chronology is roughly as follows:
+
+The Sheffield was one of several ships on picket duty, preventing
+anyone from sneaking up on the fleet.  It had all transmitters
+(including radar) off because it was communicating with a satellite.
+
+Two Argentinan planes were detected by another ship's radar.  They
+first appeared a few miles out because they had previously been flying
+too low to be detected.  The planes briefly activated their radars,
+then turned around and went home.
+
+Two minutes later a lookout on the Sheffield saw the missile's flare
+approaching.  Four seconds later, the missile hit.  The ship eventually
+sank, since salvage efforts were hindered by uncontrollable fires.
+
+What actually happened is that the planes popped up so that the could
+acquire targets on their radars, then launched Exocet missiles and
+left.  (The Exocet is an example of a "Fire and Forget" weapon.  Moral
+or not, they work.)  The British didn't recognize that they had been
+attacked, since they believed that the Argentinans didn't know how to
+use their Exocet missiles.
+
+It is irrelevent that the Sheffield had its radar off, since the
+missile skims just above the water, making it virtually undetectable
+by radar.  For most of the flight, it proceeds by internal guidance,
+emitting no telltale radar signals.  About 20 seconds before the end
+of the flight, it turns on a terminal homing radar which guides it
+directly to the target.  The Sheffield was equipped with an ESM
+receiver, whose main purpose is to detect hostile radar transmissions.
+
+The ESM receiver can be preset to sound an alarm when any of a small
+number of characteristic radar signals are received.  Evidently the
+Exocet homing radar was not among these presets, since there would
+have been a warning 20 sec before impact.  In any case, the ESM
+receiver didn't "think the missile was friendly", it just hadn't been
+told it was hostile.  It should be noted that British ships which were
+actually present in the Falklands were equipped with a shipboard
+version of the Exocet.
+
+If the failure was as deduced above, then the ESM receiver behaved
+exactly as designed.  It is also hard to conceive of a design change
+which would have changed the outcome.  The ESM receiver had no range
+information, and thus was incapable of concluding "anything coming
+toward me is hostile", even supposing the probably rather feeble
+computer in the ESM receiver were cable of such intelligence.
+
+In any case, it is basically irrelevant that the ESM receiver didn't
+do what it might have done, since by 20 seconds before impact it was
+too late.  The Sheffield had no "active kill" capability effective
+against a missile.  Its anti-aircraft guns were incapable of shooting
+down a tiny target skimming the water at near the speed of sound.
+
+It is also poossible to cause a missile to miss by jamming its radar,
+but the Sheffield's jamming equipment was old and oriented toward
+jamming russian radars, rather than smart western radars which
+wheren't even designed when the Sheffield was built.  The Exocet has a
+large bag of tricks for defeating jammers, such as homing in on the
+jamming signal.
+
+In fact, the only effective defense against the Exocet which was
+available was chaff: a rocket dispersed cloud of metalized plastic
+threads which confuses radars.  To be effective, chaff must be
+dispersed as soon as possible, preferably before the attack starts.
+After the Sheffield, the British were familiar with the Argentinan
+attack tactics, and could launch chaff as soon as they detected the
+aircraft on their radars.  This defense was mostly effective.
+
+Ultimately the only significant mistake was the belief that the
+Argentinans wouldn't use Exocet missiles.  If this possibility was
+seriously analysed, then the original attack might have been
+recognized.  The British were wrong, and ended up learning the hard
+way.  Surprise conclusion: mistakes can be deadly; mistakes in war are
+usually deadly.
+
+I think that the most significant "risk" revealed by this event is
+tendency to attribute the failure of any system which includes a
+computer (such as the British Navy) to "computer error".
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

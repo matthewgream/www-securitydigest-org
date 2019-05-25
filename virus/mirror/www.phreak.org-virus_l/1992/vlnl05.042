@@ -1,0 +1,810 @@
+VIRUS-L Digest   Tuesday, 25 Feb 1992    Volume 5 : Issue 42
+
+Today's Topics:
+
+Re: WP.EXE appended to, up front (PC)
+Re: Conflicting Software & Odd Behaviour (PC)
+Re: exact damage of Michelangelo on 3-06 (PC)
+Re: Floppy boot sectors & viruses (PC)
+Re: FORMS virus (PC)
+Re: F-prot and non-executable files (PC)
+Re: fullview program (PC)
+Re: Homegrown virus defense (PC)
+Re: looking for... (PC)
+Why couldn't Clean-up v.86 clean Ohio? (PC)
+Re: Michelangelo (2nd try) (PC)
+Re: F-Prot 2.02D/DOS 2.11 (PC)
+Re: Michelangelo's handicaps. (PC)
+Re: Ohio Virus? (PC)
+Question on Michelangelo Date-Trigger (PC)
+Re: Preventing virus infection by disabling the hard disk (PC)
+Verbatim Disks & Michaelangelo (PC)
+Michaelangelo follow-up (PC)
+Virus Calendar
+Re: Iraqi Virus Question?
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 24 Feb 92 05:52:29 +0000
+From:    cgordon@vpnet.chi.il.us (gordon hlavenka)
+Subject: Re: WP.EXE appended to, up front (PC)
+
+ FRYSTD@ACAD.LVC.EDU (Michael Fry) writes:
+>We found several files on a directory with WordPerfect 5.0 with size
+>increases ranging from 380 to 3000+ bytes.
+>
+>The .BAT files in that other directory were inspected.  They seemed to
+>have their old sizes (not confirmed, but about right) but their
+>content had been replaced by garbage (mostly null characters).  One
+
+I had a very similar occurence on one of my machines.  Several files
+changed sizes, and several EXEs and PIFs were prepended with trash.
+The cause was traced to the use of Disk Technician Gold's
+defragmentation utility.  Apparently it doesn't get along well with
+all systems.  (No, I didn't defrag under Windows!)
+
+>...  Too neat to be a bug, eh?
+
+Not necessarily :-(
+
+- --
+- -----------------------------------------------------
+Gordon S. Hlavenka            cgordon@vpnet.chi.il.us
+ Official Supporter of the Barry/Walsh ticket in '92
+
+------------------------------
+
+Date:    24 Feb 92 16:24:55 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Conflicting Software & Odd Behaviour (PC)
+
+IRMSS907@SIVM.BITNET (Mignon Erixon-Stanford, Academic Systems Head) writes:
+
+>    Am I right in concluding that Central Point's memory resident
+> software is erroneously recognized as a virus by McAfee's WSCAN?
+
+You are right to conclude that:
+
+1) CPAV uses for some viruses the same scan strings as SCAN;
+
+2) CPAV makes no effort to ecrypt (even trivially) those scan strings
+neither on the disk, nor in memory;
+
+3) SCAN does not actually check the memory for viruses (where they
+should be); it just scans it for scan strings.
+
+While (1) is not a big problem, (2) means that CPAV is -really-
+stupid, and (3) means that SCAN is only moterately stupid. :-)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 16:32:29 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: exact damage of Michelangelo on 3-06 (PC)
+
+mmeijer@accucx.cc.ruu.nl (Maarten Meijer) writes:
+
+> Could someone tell us what the exact damage would be on the ominous 6
+> March when the Michelangelo virus awakes? The rumours vary on this
+> subject. Does it only affects e.g. the partition table, does it
+> destroy the FAT (in/excluding its copy), or does it really perform a
+> low level format of the hard disk.
+
+Neither of the above. On March 6 the Michelangelo virus will overwrite
+the disk(ette) it has been booted from with that happens to be in
+memory from address 5000:0000h (probably zeroes). It will overwrite
+tracks 0 to 255, sides 0 to 3. The range of the sectors overwritten
+depends on the disk: it is sectors 1-9 for 360 Kb 5.25" floppies, 1-17
+for hard disks, 1-14 for everything else.
+
+Due to a bug in the virus, it will not stop after reaching track 255,
+but will go back to track 0 and so on ad infinitum.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 16:39:04 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Floppy boot sectors & viruses (PC)
+
+padgett%tccslr.dnet@mmc.com (A. Padgett Peterson) writes:
+
+> This is the reason I do not bother in the FixFBR program to try to retrieve
+> the original boot sector. Instead, for any of the four main floppy disk types
+> 360k & 1.2 Mb 5 1/4, 720k & 1.44 Mb 3 1/2, I simply replace the "infected"
+> boot record with a complete new one consisting of a "generic" table and my
+> SafeFBR code that checks the integrity of the system and displays a message
+> if there is a problem. Since the Floppy boot record cannot be trusted, it
+
+Please, note also that this will make an infected system diskette
+non-bootable, while disinfecting it with a virus-specific program
+might (in most, but not all) cases preserve bootability...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 16:41:56 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FORMS virus (PC)
+
+aconway@vax1.tcd.ie writes:
+
+> I heard a scare item on an Irish radio station this morning about a
+> virus called "Forms", which, according to the annoucer will trash PC
+> system files on the 23rd of the month.
+
+Hmmm.... There is a virus, called Form (not Forms), which activates on
+24th (not 23rd) on every month, but as far as I remember, it does
+something with the speaker and does not trash files...
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 16:45:29 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: F-prot and non-executable files (PC)
+
+IQUILD92@IRLEARN.UCD.IE (Ivan Quill) writes:
+
+> executable files.  This raises the question, can a virus hide in a
+> text file, and then transfer itself elsewhere?  We have no reason to
+
+Several viruses infect non-executable files, not in order to hide, but
+simply due to bugs. One of the notorious ones is Frodo.
+
+Remember, in order to get infected, you must execute the virus code.
+How often do you execute .DOC files?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 16:53:51 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: fullview program (PC)
+
+HAYES@urvax.urich.edu writes:
+
+> I am please to report the availability of FULLVIEW.ZIP.  The program was
+> mentionned by Patrick Toulme on the FIDO Virus_info conference.  Following is
+> the excerpt of Patrick's message which prompted me to request the program:
+
+Please note that this program hangs on a Toshiba T1000 computer with
+both Toshiba DOS 2.11 and MS-DOS 5.0, leaving the floppy motor on. I
+guess there are still some bugs to be fixed, or this kind of computer
+needs a special excluding port list.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 17:01:38 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Homegrown virus defense (PC)
+
+FRYSTD@ACAD.LVC.EDU (Michael Fry) writes:
+
+>      My own program isn't real simple.  It attempts to defeat virus tampering
+>  with other files (to infect or to "go off"). It hooks BIOS disk service to
+>  enforce write protection for:
+>      1.   Critical regions of my hard disk (MBR, boot sectors, hidden area
+>           between MBR and first boot sector, etc.)
+>      2.   The boot sectors of all floppies
+>      3.   Specified files (from a prepared list), like COMMAND.COM, hidden
+>           system files, frequently run software, itself, etc.
+
+Therefore, your anti-virus program is a so-called Monitorig program.
+It is a TSR, which monitors disk access and expects to catch any virus
+activity, like updating executable code.
+
+Well, sorry to disappoint you, but such programs offer virtually -no-
+protection. Not just your program - any programs of this type. First,
+they are useless against boot and master boot sector infectors, and
+next, they can be trivially bypassed or deactivated by a virus.
+
+>      I guess that makes it similar to Ross Greenburg's old FLUSHOT software
+
+Right, FluShot+ is a monitor. It offers no serious protection against
+the modern virus technology. Just like your program.
+
+>  (superceded by VIRX?), but not as comprehensive (or friendly).  But it does
+>  a nice comprehensive protection (of file content, length, time stamp,
+>  attributes, FAT entries) and rarely warns me about dangerous, but intended,
+>  activity by other software.
+
+I haven't seen your program, so I cannot decide how comprehensive it
+is, but it provides NO protection against most modern viruses.
+
+>      As proud as I am of my little package, it has a gaping hole.  An MBR
+
+Yep...
+
+>  virus will succeed in writing the MBR, since it acts before my protection
+
+Right.
+
+>  software gets to load.  But won't feature #2 catch an MBR virus in the act
+>  of trying to infect its first floppy (after it has infected my hard drive)?
+
+Nope. The virus installs itself in memory before your program. It
+intercepts the interrupt vectors before your program. It receives
+control -after- your program, and unless it is buggy (like most
+viruses are), you have no way to intercept its activities.
+
+>  No. (Exercise.)  And I might not have been able to see why not without
+>  reading what professional virus-fighters have to say.
+
+See above.
+
+>      I have an MBR version that stealths the hard drive DOS partition(s)
+>  into existence at startup time, (so the hard drive looks non-DOS to a
+>  booting floppy) and a hard drive boot sector that checks for tampering with
+>  the MBR, but I don't even use that myself, for fear of the consequences of
+
+It is almost useless against MBR infectors. Remember, such viruses
+load in memory before DOS, they infect the physical hard disk, not a
+logical partition, and they are using BIOS calls. Regardless what you
+have installed in the MBR, it can "hide" the disk only from DOS, there
+is no way to hide it from the BIOS. Well, of course, you could
+indicate via the CMOS setup (if you have such thing) that there is no
+hard disk in the system, but this is another story.
+
+>  such a customized MBR and boot sector.  I now use FIXMBR to protect my MBR
+>  from unknown viruses.  That does not need to be upgraded (only packages
+>  that search for known viruses need frequent upgrades), and the replacement
+>  MBR is essentially a new standard, rather than my customized version.
+
+Right, programs like FIXMBR provide signifficant protection against
+such viruses.
+
+>      Virus fighting is extremely slippery business.
+
+Indeed!
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 17:35:09 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: looking for... (PC)
+
+suned1!slced1.Nswses.Navy.Mil!lev@elroy.Jpl.Nasa.Gov (Lloyd E Vancil) writes:
+
+> I'm trying to locate a program called PROTEC.COM.  This program
+> prohibits writes to the C: drive.
+
+> Any thoughts?
+
+Forget it. It does its "protection" by simply intercepting INT 13h and
+therefore is just crap, since it can be easily bypassed by most modern
+viruses.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 24 Feb 92 17:36:23 +0000
+From:    joer@lawlords.law.csuohio.edu (Joe Rosenfeld)
+Subject: Why couldn't Clean-up v.86 clean Ohio? (PC)
+
+Greetings:
+
+had a strange problem today.  I found an infected 5.25 inch 360 KB
+floppy infected with the Ohio virus.  I tried to clean it with
+McAfee's Clean-up version 86B and it recognized the virus but could
+not clean the boot sector.  Can anyone explain why this happened and
+why F-Prot 2.2D worked?
+
+Thanks for the info!
+
+Regards!
+
+- -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Joe Rosenfeld
+Automation Librarian
+CSU Law Library
+
+joer@lawlords.law.csuohio.edu
+loki@asgard.csuohio.edu
+
+"Now my name is on the line ... how could people get
+so unkind?"
+
+------------------------------
+
+Date:    24 Feb 92 17:40:15 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Michelangelo (2nd try) (PC)
+
+wayner@teknetix.com (Jim Wayner) writes:
+
+> The McCafee CLEAN program annihlated the partition table on a 340 IDE
+> meg disk with 4 partitions when trying to clean the MichelanGelo
+> virus.  All the data and programs on the disk were lost.  oops.
+
+Yet another report that CLEAN is sometimes damaging disks when
+removing Michelangelo... Obviously the people at McAfee Associates
+must -very- carefully check this...
+
+> I couldn't find this documented, but it seems to re-write the master
+> boot record.  After trying this on a couple of systems w/
+> Michelangelo, it seemed to eliminate the virus.  Any comments on
+> whether this is sufficient to eliminate the virus?
+
+Yes. FDISK /MBR removes any MBR infector. Unfortunately, only FDISK
+that comes with DOS 5.0 can do that, but fortunately, it works even if
+the hard disk has an older DOS version.
+
+> What is the potential for this to spread on a Novell network?  It
+
+This virus -cannot- spread through the network. It is a master boot
+sector infector. Only file infecting viruses can sometimes (not
+always) spread though a LAN.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 24 Feb 92 17:55:28 +0000
+From:    atman@ecst.csuchico.edu (Thin Layer Of Pond Scum)
+Subject: Re: F-Prot 2.02D/DOS 2.11 (PC)
+
+LZM@UVMVM.BITNET (Lynne Meeks) writes:
+>We're having some trouble getting F-Prot (2.02D) to run successfully
+>with AT&T DOS 2.11 (Yes, I know this is very old but fiscal
+>constraints what they are not everyone has upgraded to a modern
+>version of DOS)
+>
+>What happens is we run F-Prot and get the message:
+>'*.TX0 not found'
+>then we get the DOS prompt
+>
+>The English.TX0 file IS there; the same F-prot disk works fine on
+>the same machine with 3.2 or 3.3 DOS.
+
+AT&T DOS 2.11 does not support argv[0], the location in which the
+executable was found.  A change directory to fprot's directory prior
+to execution should take care of this problem.
+
+The only way I know around this (from the author's point of view) is
+to allow the executable to modify itself to embed the necessary path
+information.  This is undesirable for a number of obvious reasons; you
+are right, the only good answer is to get the BIOS upgrade and run DOS
+3 or higher.  :-(
+
+Shaun.
+
+- --
+  atman@ecst.csuchico.edu  ||  This .sig contains 8% post industrial fiber.
+
+  "Bless me, Father, for I have sinned --"
+  "Ego te absolvo, son," said the Poet, and plunged the knife into his throat.
+
+------------------------------
+
+Date:    24 Feb 92 17:51:02 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Michelangelo's handicaps. (PC)
+
+Landen@RRJ.FRG.EUR.NL writes:
+
+> In all the coverage about the Michelangelo virus I have missed a few
+> points.  I've browsed through the virus code and I've done a few (very
+> limited) tests with the virus on a PC. As far as I could tell (I
+> didn't go into it too deeply) the virus has two 'bugs'.
+
+In fact, it has three... :-)
+
+> Bug 1:
+> The virus tells time (checks for march 6th) by checking the PC clock
+> via BIOS int 1Ah. This interrupt is available only in AT-compatible
+> computers and above.  Soit seems that the virus will not do its
+> destructive work on PC-type computers.  An attempt to trigger the
+> virus on an XT failed.
+
+Perfectly right. With one exception - some XTs (called "Turbo XTs")
+also support INT 1Ah.
+
+> Bug 2:
+> I have been unable to infect 3.5" floppy disks (720's as well as
+> 1.44's) other than by simply copying a 5.25" image over a 3.5" floppy.
+> This might lead to the conclusion that only systems with a 5.25" A:
+> drive can be infected.
+
+Not exact. The virus can infect floppies of any size, but it checks
+any disk being accessed, and if it is not in drive A: (physical drive
+00h), the virus does not infect it.
+
+> The combination of these two bugs would lead to the conclusion that
+> only the owners of AT's (or higher) with 5.25" A: drives should fear
+
+No, the disk drive size has nothing to do with the infectablility.
+
+> Michelangelo's birthday. IMO this disqualifies most of the computer
+> population.
+
+Do you think so? I got the impression that the current population of
+ATs and above already outnumbers the population of XTs...
+
+Regards,
+Vesselin
+
+P.S. Today we received 28 mailbags (!) with mail from users requesting
+a Michelangelo disinfecting program. (Prof. Brunnstein has announced
+on the radio and the TV that we provide one for free.) This is the
+mail, received only during the weekend. I fear to think what we'll
+receive tomorrow... And the telephone just does not stop ringing...
+:-( This whole thing definitively gets out-of-hand...
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    24 Feb 92 18:07:52 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Ohio Virus? (PC)
+
+treeves@magnus.acs.ohio-state.edu (Terry N Reeves) writes:
+
+> >> Ohio virus is real there are 5 or 6 variations on it at least. It is a
+> >
+> >Let's not exaggerate. Ohio is juts one of the Den Zuk variants and the
+> >whole Den Zuk family consists of 4 different viruses.
+
+> maybe this depends on who you ask and how they define varient.  I
+
+I do not depend on the oppinions of people I am asking, when the
+matter is so sensitive. What I wrote was based on what I -know-, not
+on what I have heard. We (the VTC-Hamburg) have only 4 different Den
+Zuk viruses in our virus collection. Our virus collection is combined
+from the virus collections of:
+
+	- Laboratory of Computer Virology, Sofia
+	- Virus Test Center, Hamburg (prior to August 1st, 1991)
+	- Fridrik Skulason
+	- Dr. Alan Solomon
+	- John McAfee
+	- Central Point Software
+	- Andrzej Kadlof (Poland)
+	- Certus
+	- NCSA
+
+Some of the people mentioned above have not send us updates for some
+time, but nevertheless, the whole thing is pretty impressive. The
+whole thing occupies about 1600 directories, 3100 executable files,
+about 60 Mb disk space...  It contains about 1200 (slightly less)
+different virus variants. New viruses are received literally every day.
+
+We consider two virus variants as being different, if they differ by
+at least one bit in their non-variable-data areas. For instance, we
+count 2 variants for Disk Killer, although they differ only by one
+ASCII character.
+
+> based my count on information from a major antivirus software author.
+
+Have in mind that the anti-virus software vendors have interest to
+report that their programs can detect more viruses. I know about at
+least one product, which counts viruses that are able to infect both
+COM and EXE files as two different viruses. We are not selling
+anti-virus programs; we are a non-profit research institution, so I am
+interested in the -truth-, not in reporting as many viruses as
+possible. I might be mistaken, of course, so if you happen to know
+about any Ohio or other Den Zuk variant that we don't know, we'll
+appreciate a copy of it.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 24 Feb 92 13:38:40 -0500
+From:    TENCATI@NSSDCA.GSFC.NASA.GOV (NSI Security Manager +1-202-434-4541)
+Subject: Question on Michelangelo Date-Trigger (PC)
+
+This question may have been asked/answered already, but does merely
+setting the system date ahead on the 5th (to the 7th) cause the
+trigger mechanism never to go off?
+
+It would seem that if true, as an interim measure until all systems
+could be scanned, that the systems just be set so that Friday, the 6th
+of March never comes....
+
+Ron Tencati
+NASA Science Internet
+- ------------------------------------------------------------------------------
+NASA Science Internet (TCP/IP & DECnet)| NSI/IP: Tencati@Nssdca.Gsfc.Nasa.Gov
+Security and Incident Response Office  | NSI/SPAN: NCF::TENCATI/15548::TENCATI
+Suite 950                              | Tele - +1-202-434-4541
+700 Thirteenth St., NW                 | FAX  - +1-202-434-4599
+Washington, D.C. 20005; USA            | Beeper +1-800-759-7243, Pin:5460866
+- ------------------------------------------------------------------------------
+
+------------------------------
+
+Date:    24 Feb 92 18:37:14 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Preventing virus infection by disabling the hard disk (PC)
+
+mathews@kong.gsfc.nasa.gov (Jason Mathews - 514) writes:
+
+> Before testing new software on my 286/386 machines, I disable the hard
+> disk by changing the CMOS hard disk type to 0 and reboot from a
+> write-protected floppy disk.  I proceed to evaluate the new software
+> on floppy disk and monitor for any suspicious activity.
+
+> It seems that DOS and most programs cannot access the hard disk from
+> this point.  However, are there any viruses (actual or theoretical)
+> that can infect the hard disk after the CMOS disabled it?
+
+For sure none of the currently existing viruses will bypass this
+protection. The hard disk is not accessible even throuth BIOS calls.
+However, I will not take the responsability to state that it is really
+impossible to access the disk and that no future virus will be able to
+do that. Note that in this case my reaction ("who knows, might be
+possible") is caused mainly because I am not informated well enough
+(read: ignorant) on this (hardware) matter.
+
+Any comments from the more knowledgeable people are welcome. Is it
+possible to access the hard disk (maybe through the ports) if the CMOS
+says "no hard disk available"?
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Mon, 24 Feb 92 11:31:28 -0600
+From:    THE GAR <GLWARNER@SAMFORD.BITNET>
+Subject: Verbatim Disks & Michaelangelo (PC)
+
+Can anyone confirm or deny the presence of Michaelangelo on
+preformatted Verbatim floppy disks?
+
+I have a student who came into my office today with Michaelangelo
+on a 1.2 MB preformatted Verbatim Disk that she says she took out
+of a cellophane wrapped box today, and it is infected.  She has
+gone home to get me the rest of the box, and to run SCAN on the
+hard drive of her home machine, which is the only machine she has
+used it in.
+
+She claims she never uses disks from anywhere else on her home machine.
+
+Someone mentioned that they had had a similar experience in the VIRUS-L
+Digest, but I never saw a confirmation or an official statement by
+Verbatim.
+
+Please call if you have any information, or reply at the above address.
+
+Gary Warner
+Samford University Computer Services
+Birmingham, Alabama
+(205) 870-2477
+
+(BTW, McAfee's VSHIELD has thwarted two attempts of Michaelangelo on
+ campus so far.  One of the machines was infected by a cold boot, but
+ was discovered on the next boot of the machine.  The other machine was
+ not allowed to Warm boot from Michaelangelo disk.)
+
+------------------------------
+
+Date:    Tue, 25 Feb 92 07:30:03 -0600
+From:    THE GAR <GLWARNER@SAMFORD.BITNET>
+Subject: Michaelangelo follow-up (PC)
+
+Yesterday I posted a question regarding VERBATIM disks and
+Michaelangelo.  Since then I have been contacted by Verbatim, and
+informed that it is "utterly impossible" that pre-formatted Verbatim
+disks contain the Michaelangelo virus.  They are formatted from a UNIX
+based machine, that does some sort of high-speed binary format that is
+supposedly totally unrelated to DOS and thus could not carry this
+DOS-based boot sector virus.
+
+Also, taking my sample of Michaelangelo, on a 1.2MB disk, I made my
+1.2MB my A: drive and infected my hard drive.  Then I made my 1.44MB
+drive A: and attempted to infect a 720K and a 1.44MB floppy in the A:
+drive of an infected machine for over 3 hours last night.  I formatted
+the 720K in the infected machine, copied files to it, saved a
+wordperfect document to it, deleted files on it, and generally wore it
+out.  I was unable to infect the floppy.  When I formatted the 1.44 MB
+disk in drive A: it was unreadable.  I formatted it without incident
+on another machine and again, I got the "general failure reading drive
+A: abort retry or fail" message, when I tried to read anything from it
+on the Michaelangelo machine.  Taking it back to the first machine, it
+was also unreadable.  Almost as if infecting it makes it unreadable by
+DOS.  (This was MS-DOS 5.0).  I removed Michaelangelo from the hard
+drive, rebooted, and had no problems formatting, reading, and writing
+to the 1.44MB disk.  I then swapped my A and B drives (via
+ribbon cable) and booted again from my infected 1.2MB.  The hard drive
+was once more infected.  I then rebooted, and did a DIR A: on a clean
+disk.  Presto!  My 5.25" disk was infected by a DIR command, while my
+3.5" could not be infected.  Period.  On drive A:.
+
+I have noticed a comment of a similar nature in today's VIRUS-L.
+Could one of our "virus experts" make comment?
+
+Also, when I have infected machines that are running Zenith DOS 3.3+,
+I have been unable to infect a machine "properly".  Instead, the
+Michaelangelo virus goes on the hard drive and corrupts the partition
+table, making the drive unbootable.  (Booting from drive A: and using
+McAfee's CLEAN removes the virus, but still leaves Drive C:
+unbootable.  Norton fixed that.) One of the machines was a Zenith 386,
+the other was an IBM AT (running Zenith DOS).
+
+Lastly, I don't believe my IBM PCs on campus are going to trigger on March 6,
+even if they are infected.  I am going now to test that.  (by infecting one
+and making it March 6 and seeing what happens.)  The date on my PCs on campus
+is Jan 1 1980, until the user tells it otherwise, which would already be after
+the trigger date.
+
+I am rather urgent to find out about this.  Currently our computer
+labs are protected with VSHIELD, but none of the other computers on
+campus are protected at all.  I have the opportunity, if I can
+convince management that there is "grave risk" to buy anti-virus
+software every machine on campus.  At this point, I can't say that
+I believe we are at "grave risk" from Michaelangelo, despite the fact
+that I have seen it on two floppies on my own campus!   My PS/2s, ALRs and
+Zenith 286/386 machines all have 3.5" A: drives, most of my PCs don't have
+internal clocks, which leaves me with a bunch of Zenith 159 machines as my
+primary concern, and a few scattered clones.
+
+Please respond ASAP with information regarding:
+
+    can a 3.5" be accidentally infected?
+    has the virus been seen/shipped on 3.5" diskettes?
+    can Zenith DOS 3.3+ machines spread the virus?
+    can an IBM PC, with an internal clock trigger the virus?
+    can an IBM PC without an internal clock?  (I don't think so).
+
+Thanks for your timely replies.  I realize the danger of this virus,
+but I think there is an equal danger of getting our virus information
+from CNN and allowing ourselves to be stirred into a panic by the
+media, and people who will profit from our virus scare.  (No offense
+intended to any virus software vendors reading this, many of whom are
+giving free use of their software because they care about our data
+safety.)  I think a lot of us are letting ourselves spread second hand
+information.  I know I have (some guy from San Jose called for a newspaper
+interview, where I dutifully reported what information I had gathered from
+my second hand sources.  I now regret it.)
+
+
+ /++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\
+!  Later        +   Systems Programmer                                 !
+!  Gary Warner  +   Samford University Computer Services               !
+!               +   II TIMOTHY 2:15                                    !
+ \+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++/
+
+------------------------------
+
+Date:    Mon, 24 Feb 92 14:50:00 +0000
+From:    Roy Coates <ROY@mvax1.me.liverpool.ac.uk>
+Subject: Virus Calendar
+
+First, my apologies to UK readers who may have already seen this message.
+
+I am compiling a 'calendar' of signifcant dates with respect to PC
+viruses.  I figured that this could be a handy tool in helping to
+prepare for possible outbreaks.  the response so far from the UK has
+been good with people sending both dates, and requests for the
+finished list.
+
+If you have dates, please send them to me direct at:-
+
+	ROY@UK.AC.LIVERPOOL.ME.MVAX1
+
+and I'll post the finished calendar back to VIRUS-L
+
+Many thanks,
+
+	Roy Coates
+	Liverpool University
+	England.
+
+------------------------------
+
+Date:    24 Feb 92 17:25:14 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Iraqi Virus Question?
+
+HSR4@vax.oxford.ac.uk (Bald Oldie) writes:
+
+> The creator (whose name I do not have to hand) appeared to claim that
+> he could install his product onto a target machine WITHOUT requiring
+> an intervention by the operator of the target machine.  Previously
+
+No way. Can't be done.
+
+> users were required to either manually install LapLink on a target
+> machine, or type in DOS commands so that the target machine would
+> allow control via the RS232 port.
+
+Right. LapLink requires the user to use the CTTY COMx command, in
+order to transfer itself to the remote machine. (That is, the CTTY
+command has to by issued by the operator on the remote machine.)
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 42]
+*****************************************

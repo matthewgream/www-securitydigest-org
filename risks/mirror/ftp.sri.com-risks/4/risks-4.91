@@ -1,0 +1,488 @@
+28-May-87 23:25:36-PDT,25089;000000000000
+Mail-From: NEUMANN created at 28-May-87 23:24:48
+Date: Thu 28 May 87 23:24:48-PDT
+From: RISKS FORUM    (Peter G. Neumann -- Coordinator) <RISKS@CSL.SRI.COM>
+Subject: RISKS DIGEST 4.91 
+Sender: NEUMANN@CSL.SRI.COM
+To: RISKS-LIST@CSL.SRI.COM
+
+RISKS-LIST: RISKS-FORUM Digest  Thursday, 28 May 1987  Volume 4 : Issue 91
+
+           FORUM ON RISKS TO THE PUBLIC IN COMPUTER SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Electromagnetic Interference in Japan (Lindsay F. Marshall) 
+  Risk of Inappropriate Technology to Prevent Password Overwrite 
+    (Paul Stachour)
+  Passwords and Statistics (Earl Boebert)
+  Why Cellular phones at the Indy 500? (Robert Adams)
+  Information Security Products and Services Catalog by NSA (Kurt F. Sauer)
+  Re: TRW "Credentials" (John R. Levine)   [Other messages overlapped, omitted]
+  Phalanx Schmalanx (PGN, Mike Trout, Torkil Hammer)
+  Laser guides (Jon A. Tankersley)
+  Re: Risks of running Risks (Jeff Woolsey, Will Martin)
+  Re: Computer thefts (David Phillip Oster)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+(Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM)
+  (Back issues Vol i Issue j available in CSL.SRI.COM:<RISKS>RISKS-i.j.  MAXj:
+  Summary Contents Vol 1: RISKS-1.46; Vol 2: RISKS-2.57; Vol 3: RISKS-3.92.)
+
+----------------------------------------------------------------------
+
+From: "Lindsay F. Marshall" <lindsay%kelpie.newcastle.ac.uk@Cs.Ucl.AC.UK>
+To: risks@csl.sri.com
+Date: Thu, 28 May 87 9:40:09 BST
+Subject: Electromagnetic Interference (in Japan)
+
+CHIPS ARE DOWN OVER ELECTRONIC POLLUTION  (The Guardian, 26 May 1987)
+
+Japan is engulfed in an "electronic smog" which has caused deaths and injuries,
+and jammed an airport radar system, according to recent findings.
+
+Electronic smog occurs when electromagnetic waves from equipment like personal
+computers and electronic game machines "escape" and trigger other machines.  An
+electromagnetic wave can also be caused by a mere spark.  An electric spark
+from a crane operating in a valve plant set off a lathe-operating robot in
+1982 killing an assembly-line worker.
+
+A simple household device like a television aerial booster can have dire
+consequences.  Osaka International Airport's radar screens were jammed by
+electromagnetic waves from a nearby television aerial booster.  The fault
+and its cause were discovered.  But the Ministry of post and
+Telecommunications (MPT), which has set up a group to investigate the
+problem, admits that an air crash could have occurred.
+
+Forty-two people were injured last September when two cars on a
+roller-coaster crashed.  The MPT suspects electromagnetic waves from an
+unknown source were to blame.  It says that communications at a busy railway
+switching point have been jammed by waves from television game machines.  Train
+doors have inadvertently opened several times.  The MPT wants manufacturers to 
+redesign their electronic goods so that the waves cannot escape.
+
+Lindsay F. Marshall, Computing Lab., U of Newcastle upon Tyne, Tyne & Wear, UK
+JANET: lindsay@uk.ac.newcastle.cheviot  ARPA: lindsay%cheviot.newcastle@ucl-cs
+PHONE: +44-91-2329233                   UUCP: <UK>!ukc!cheviot!lindsay
+
+   [Remember the item in RISKS-4.89 attributing at least six Japanese 
+   robot-related deaths to electromagnetic interference.   PGN]
+       [[By the way, Lindsay's message said "lather-operating robot".
+       As this case was not a close shave, I assume it was a typo.]]
+
+------------------------------
+
+Date:  Thu, 28 May 87 07:52 CDT
+From:  Stachour@HI-MULTICS.ARPA
+Subject:  Risk of Inappropriate Technology to Prevent Password Overwrite
+To:  RISKS@CSL.SRI.COM
+
+  In Risks Digest 4.86, PGN comments on the over-long password, and the
+article by Bill Young in IEEE Symposium on Security and Privacy, April 1987.
+I agree that most of us do a bad job of mapping our specifications to our
+implementations, and Bill does an excellect job of pointing out one way to
+overcome this risk.
+  However, I believe that the case Bill points out is but one case of a very
+general problem that has been solved in a different manner, in a much less
+risky way.  Specifically, the specification that was violated in the
+implementation can be summarized as "A data area is overwritten by a method
+that should have no access to that data area."  This over-writing problem is
+quite general: it happens for arrays (such as when strings are implemented
+as array of characters), for improperly based structures, and other places.
+  The particular error cited by Bill Young could not have happened if the
+implementation had been in a language such as PL/I or Ada, where
+over-running the bounds of an array is a required run-time check (in the
+cases where the compiler cannot determine at compile-time that the
+assignment is not 100% safe) instead of in a language like C where all the
+effort is on the programmer, and no help is given to her by the language.
+Such checks are clearly not new technology, since Multics (written in PL/I)
+has been doing such for over 20 years.  Nor is the technology new to
+hardware, since the Burroughs B5500-series and MCP (written in Algol) has
+also been checking for a similar period.
+  One of the reasons for the reliability of Multics and MCP is that they do
+NOT depend on perfect programmers, but use both the language run-time
+(checking software descriptors) and hardware (segmentation, rings, ...)  to
+check for common overwrite errors and other access violations.
+  I would personally prefer to put my faith in a compiler generating
+correct code and the run-time for the language checking descriptors properly 
+than putting my faith in every coder of every array-reference in every
+program, even where all such programs have been "proved" to be correct,
+simply due to the sheer size and difficulty of such proofs, and the high
+probabiliy of an error in the proof, or in the configuration-control
+of different versions (one proved correct, a different one installed)
+of the software, or some other error that makes the proof "non-valid".
+
+  This leads to my question:
+    What RISK do we bring on to ourselves (both personally and
+professionally) when we ALLOW inapproprate technologies to be used
+(or in many cases, forced by others) that thereforce create unreliable,
+non-robust software, when both the hardware and software technology
+to prevent many of the problems have existed long enough that every
+reasonable person working in software should be aware of them.
+[I know that many people today only study the things of the current
+generation, done simply and incorrectly for simple systems,
+and don't understand much else, but that's another question.]
+
+Paul Stachour, Honeywell & University of Minnesota, Stachour@UMN-CS.EDU
+
+------------------------------
+
+Date:  Tue, 26 May 87 10:50 CDT
+From:  Boebert@HI-MULTICS.ARPA
+Subject:  Passwords and Statistics
+To:  risks@CSL.SRI.COM
+
+From the Computer Shopper, May 1987:
+
+Password Snatcher -- RS-232 Data tap.  Lets you actually "see" the data
+being sent or received on an RS-232 line.  Connect a terminal or microcomputer
+to the tap connector to capture data, or connect a serial printer to get a 
+hard copy.  Jumpers allow for routing TD, RD, or both to the tap.  $29.95.
+
+         [Great jumpers.  A Computershopper must be like a grasshopper.  PGN]
+
+Re the statistics on use of opposite-sex names for passwords:  The best
+rebuttal to this kind of statistical argument came from the redoubtable
+John W. Campbell:  The laws of population growth tell us that
+approximately half the people who were ever born in the history of the
+world are now dead.  There is therefore a 0.5 probability that this
+message is being read by a corpse.
+
+------------------------------
+
+From: adams%littlei%reed%tektronix.tek.com@RELAY.CS.NET 
+To: tektronix!comp-risks%reed.uucp@RELAY.CS.NET 
+Date: Tue May 26 15:00:45 1987
+From: adams@littlei.UUCP (Robert Adams) 
+Subject: Why Cellular phones at the Indy 500?
+
+    While watching the Indianapolis 500 on TV this Sunday, I saw them do a
+feature on one of the car crews that were using a celluar phone to talk to
+the driver on the track.  You see, most crews use some sort of CB or
+shortwave set to talk between the pit and the driver and the TV announcers
+are always talking about what they overheard on the radios.  This one car
+had a celluar phone and the crew would phone the driver to discuss things.
+This seemed really strange to me until I realized that the use of the phone
+meant that no one could legally listen in on their conversations.
+    Everyday someone discovers a new way to use that law.
+
+Robert Adams, Intel Corp., ISO Systems Development, Hillsboro, OR
+
+------------------------------
+
+Date:     Thu, 28 May 87 3:09:56 CDT
+From:     "Kurt F. Sauer" <ks%a.cs.okstate.edu@RELAY.CS.NET>
+To:       Risks Digest <risks@CSL.SRI.COM>
+Subject:  Information Security Products and Services Catalog by NSA
+
+RISKS Readers who have a professional or personal interest in information
+security on a practical level might be interested to learn that I have just
+received my copy of the April 1987 Information Security Products and Services 
+Catalogue, prepared by the National Security Agency.  There are no protective 
+markings on the document, and (since they're VERY CLEAR when things *aren't* 
+public-domain) I presume it is available on request by writing to
+
+    Director, National Security Agency, 9800 Savage Road, 
+    Fort George G. Meade MD 20755-6000
+
+Anyway, it's in interesting compendium of companies who provide
+communications and information systems security devices and services.
+According to some accompanying document(s), "...this catalogue will be
+distributed quarterly to [organizations] who received [certain lists]
+previously...  Plans are under way to request that they be provided through
+the Government Printing Office on a subscription basis."
+
+The document is in 5 parts and lists companies and equipments thus:
+
+	(1)  Endorsed Cryptographic Products List
+	(2)  NSA Endorsed Data Encryption Standard (DES) Products List
+	(3)  Protected Services List
+	(4)  Evaluated Products List
+	(5)  Preferred Products List
+
+Also included is a brief, but informative, description of categories of
+information which requires security, information about purchase and restric-
+tions on the purchase of these devices and services.
+
+Happy hunting!   Kurt F. Sauer, Director of Operations, Decision Studies Group,
+  Inc./OP, Post Office Box 701318, Tulsa, OK 74170-1318,  Tel +1 918 749 0893
+
+------------------------------
+
+Date: Mon, 25 May 87 12:57:07 EDT
+From: johnl@ima.ISC.COM (John R. Levine)
+To: risks@csl.sri.com
+Subject: Re: TRW "Credentials"
+
+Ron Heiby wrote in RISKS-4.89 about a report in Insight magazine on TRW's new
+"Credentials" that gives you access to your TRW credit record for $35/year.
+
+The current issue of Forbes also reports on this new so-called service.
+Forbes points out that TRW is required by law to provide a copy of one's
+credit record for free any time credit is denied because of a credit report,
+and for a nominal reproduction fee at any other time.  They express
+incredulity that people seem willing to pay $35 for what they could already
+get for free.  In addition, TRW encourages the Credentials customers to add
+extra information voluntarily to their credit records under the dubious
+theory that this will help them to get credit in the future.  People seem to
+think that because their info is in TRW's computer it will be more credible.*
+
+John Levine, ima!johnl or Levine@YALE.somethingorother
+
+* - Not a pun, no matter what you may think.
+
+------------------------------
+
+Date: Tue 26 May 87 11:25:41-PDT
+From: Peter G. Neumann <Neumann@CSL.SRI.COM>
+Subject: More on the Stark 
+To: RISKS@CSL.SRI.COM
+
+An article by Molly Moore of the Washington Post appeared in the SF
+Chronicle, 26 May 1987, pp. 13 and 14.  It adds lots more details on the
+Stark and its equipment.  The computers were programmed to give a LOUD alarm
+that the missiles had been launched, even when NOT in the mode to fire the
+Phalanx automatically.  Perhaps the radar scans only in the direction that
+the Phalanx was pointing?  (We have already noted reports that the computers
+were not even working at the time, although there is also a denial by the
+Captain.)  On the other hand, the fact that the use of computers in this
+context for automatic firing of the Phalanx is deemed unsafe is of great
+interest to RISKS.  Reliance on continual preparedness in the defensive use
+of unreliable systems with unprepared personnel seems quite risky.  
+
+    [Thus the next item is relevant, for further background.  However,
+    let me again remind contributors to cite your references carefully.
+    I have rejected a few items that say "I vaguely remember seeing 
+    somewhere that ... ."  Also, please try harder to avoid wild
+    speculation.]
+
+------------------------------
+
+To: seismo!comp-risks@seismo.CSS.GOV
+From: rpics!brspyr1.BRS.Com!miket@seismo.CSS.GOV (Mike Trout)
+Subject: Phalanx Schmalanx
+Date: 28 May 87 21:22:33 GMT
+
+Regarding the recent USS Stark incident, much has been written about the
+Phalanx anti-missile system mounted on the ship.   Generally, Pentagon
+spokespeople--parrotted by the news media and net posters--have stated some
+variation of the following:
+
+"If only {choose one or more of the following}:
+
+	A) the Phalanx had been switched to "automatic"
+	B) the ship's stern, where the Phalanx is mounted, had been pointing
+           toward the incoming missile(s)
+	C) the crew had been alert/warned in time to properly use the Phalanx
+	D) the Phalanx had been operating properly (crew allegations of
+           assorted Phalanx malfunctions/down time/maintenance problems)
+
+then the Phalanx would have easily blown the incoming missile(s) away and we
+would all live happily ever after."
+
+This universal faith in the Phalanx is a dangerous belief that I take exception
+to.  Contrary to the way the Navy and the media talks, Phalanx is a very new
+weapon that has NEVER been used in combat conditions.  
+
+History tells us that military hardware testing conditions and combat "real
+world" conditions probably don't even lie in the same universes.  US military
+hardware testing, driven by profit motives and military career advancement, is
+particularly atrocious.  Everything I've ever discovered about this situation
+leads me to believe that to get a good idea of how a weapon will really
+perform, the best strategy is to utterly IGNORE test results.
+
+The things that the "military-industrial complex" (MIC) (why is that a taboo
+term these days?--Eisenhower coined it) will do to test a weapon are truly
+bizarre.  Drones (moving at the breakneck speed of 60 mph, without evasive
+action) have been painted with gloss red enamel to absorb more laser energy,
+to "prove" that lasers can shoot down planes.  Gigantic aluminum foil
+bull's-eyes have been arranged on the ground so that the Pershing II's radar
+could find its target.  Over 160 mobility tests of the M1 tank resulting in
+the tank's breakdown were thrown out as "invalid", while the single test in
+which the tank didn't break down was presented as the final result.  Every
+single test of the GLCM cruise missile has been altered to cover up grossly
+unacceptable navigational errors.
+
+Most of the Phalanx testing data I'm aware of shows excellent results,
+usually on the order of 80% of incoming targets hit.  But as I've stated
+before, that may mean nothing at all.  One problem in the Phalanx testing
+the MIC doesn't like to talk about is that even if the incoming missile is
+hit, the hit takes place so close to the ship that the ship is still blasted
+by the missile's wreckage.  The Phalanx's MAXIMUM range is only about 1.5
+miles, and most anti-ship missiles cover that distance in just a few
+seconds.  This problem becomes worrisome when you consider that of the four
+Exocets that hit British ships off the Falklands, THREE were duds, including
+the one that hit the HMS Sheffield.  But the devastation caused by a dud
+missile was still severe enough to wreck or sink the ships hit.  Even
+without an exploding warhead, an anti-ship missile is a large, heavy object
+travelling at high speed carrying fuel tanks at least partially filled with
+various formulas of highly volatile rocket fuel.  The force of the missile
+mass times its velocity is transferred as heat to the ship, resulting in the
+possibility of a devastating fire--the greatest danger to modern warships.
+Even if an incoming missile is exploded by the Phalanx, most of the
+missile's mass will still strike the ship.  The mass will, of course, be
+dispersed by the explosion--the amount depending on how close to the ship
+the missile was when the missile exploded--and the velocity will be reduced
+as well.  Hopefully this will be enough to save the ship, but even so a ship
+peppered by high speed flaming debris may be out of action for some time.
+
+Also, remember that the Exocet is a fairly old design as anti-ship missiles go.
+Most of the newer designs are faster, have better guidance, and might not be
+duds.  The new Soviet SS-N-22 supposedly almost hides behind wavetops while
+travelling at better than double the Exocet's speed.
+
+The Phalanx's gun--a 20mm gatling--is an excellent, proven weapon that has
+performed extremely well in real world plane-to-plane combat.  But
+plane-to-plane combat is a different environment than ship-to-missile
+combat.  I've never heard of a pilot shooting down a missile coming at his
+plane with a 20mm gatling, or with any other weapon for that matter.  Years
+ago, the US Army had a weapon called the "Chapparal", which was a 20mm
+gatling mounted on an armored personnel carrier.  Admittedly, there weren't
+many opportunities to try it out against enemy air, but it died a quiet
+death.  I know some Army commanders complained about its short range and
+high ammunition consumption.
+
+This Phalanx faith also makes me worry about the AEGIS cruiser idea.  The
+AEGIS is crammed with all kinds of anti-air and anti-missile stuff,
+including multiple Phalanx systems, and nearly everybody thinks of it as
+being able to instantly produce an inpenetrable shield.  But I can't help
+thinking about an interview with the Second Fleet commander a couple of
+years ago.  He said if a real war broke out, he'd send all his AEGIS
+cruisers home.  He contented that its high-powered radar, tracking, ECM, and
+weapons control electronics puts out such a blatant electromagnetic
+signature that it would attract every Soviet plane, ship, and sub within
+hundreds of miles.  Sort of like a bug light that attracts so many bugs that
+despite its excess power, it can't kill the bugs fast enough and it clogs
+and shorts out.
+
+So let's not get carried away by the Phalanx.  It wasn't supposed to be a
+perfect missile defense system, but the MIC has to justify all that expense.
+It's probably useful as a last-ditch emergency measure, but thinking of it
+as a missile umbrella leads to a "crutch mentality" that neglects more
+useful missile defenses like air cover, anti-AIRCRAFT weapons, electronic
+countermeasures/chaff, and evasive action.
+
+Michael Trout (miket@brspyr1) =-=-=-=-=-=-= UUCP:ihnp4!dartvax!brspyr1!miket
+BRS Information Technologies, 1200 Rt. 7, Latham, N.Y. 12110  (518) 783-1161
+
+------------------------------
+
+Date: Tue, 26 May 87 13:33:17 PDT
+From: sdcsvax!sdcrdcf!psivax!torkil@ucbvax.Berkeley.EDU (Torkil Hammer)
+To: sdcrdcf!CSL.SRI.COM!RISKS
+Subject: Re: Stark
+
+American commentators have the curious notion that, when English-speaking
+soldiers die, it must be explained as a result of human errors, but when
+their foreign speaking counterparts go the ultimate way of soldiers, it is
+considered a victory.  Compare the newsmedia coverage of the Sheffield and
+Stark incidents with the Libya and Grenada ones.
+
+It looks to me, that the only risk involved is one of messing with guys
+packing Exocets, and ramifications depend on what language you speak.
+
+The technical discussion in this newsgroup has barely mentioned that
+Exocets are smart missiles with an unusually high rate of 'success', as
+seen from the launching end.  Which translates to an equally high
+rate of 'failure' as seen from the targets.
+
+So a technical discussion on the failure of the ships' defenses must
+logically be followed by a discussion on why the second missile arrived
+without exploding.  Rather atypical for Exocets.  Usually they do.
+Computer failure?
+
+torkil hammer, Pacesetter Systems Inc., Sylmar, CA
+
+------------------------------
+
+From: "Jon A. Tankersley" <apctrc!zjat02@seismo.CSS.GOV>
+Subject: Laser guides (RISKS-4.90)
+Date: 27 May 87 14:57:43 GMT
+
+Seems to me that the laser guided technology is about the same as the wire
+guided technology of the Arab-Israeli War.  Wire guided TOW missles could
+be easily defeated by spraying the general direction of origin.  Many
+Israeli tanks ended the war with lots of wires draped over them.
+
+The only 'smart' way that weapons can work is by adding intelligence, but
+that can even cause problems (Berserker SF series by Saberhagen, etc.)
+
+-tank-   Amoco Production Co, Tulsa Research Center    [Tanks.]
+
+------------------------------
+
+Date: Tue, 26 May 87 09:47:16 PDT
+From: Jeff Woolsey <woolsey@nsc.NSC.COM> 
+Subject: Re: Risks of running Risks                          ["One" the record]
+
+  >    After 14 days (326 hours), your message has not yet been              |
+  >fully delivered.  Attempts to deliver the message will continue           |
+  >for 178956963 more days.  No further action is required by you.           V
+  >   [********* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = !!!!
+
+That number is 0xAAAAAAA _+ 7 (1 week).   Even the machine shrieks in
+astonishment at having to keep retrying that long.
+
+Jeff Woolsey	National Semiconductor Corporation
+...!nsc!woolsey -or- woolsey@nsc.COM -or- woolsey@umn-cs.ARPA
+
+------------------------------
+
+Date:     Tue, 26 May 87 15:45:47 cdt
+From:     Will Martin -- AMXAL-RI <wmartin@ALMSA-1.ARPA>
+To:       RISKS FORUM <RISKS@CSL.SRI.COM>
+Subject:  Re:  Risks of running RISKS (RISKS 4.88)
+
+It was mail to me that generated that erroneous mailer barf message that
+told you it was going to keep trying for 178 million-odd more days...
+
+Sorry about that... Our net-host 750 has a flaky clock, even though it keeps
+getting parts replaced by maintenance, and in that instance it crashed
+briefly and came up with a system time thirteen days in the future.  Since,
+at the same time, our main user machine had been down and mail to it was
+sitting in the queue on the 750, the mail process on the 750 thought it was
+two weeks since they had been queued and so merrily generated a great spew
+of garbage mailer messages. I still don't know what is causing them to have
+that enormous number of days displayed. We get all sorts of strange numbers
+showing up in that field...
+
+Anyway, when I noticed this, we cut off outgoing mail and I did a mass
+delete of all message traffic with a "Waiting mail" subject line.
+Unfortunately, it appears some slipped out before we caught them. Sigh...
+
+If you see any again, please ignore them. (Though I'm sure you don't need
+any more junk mail like that cluttering up your inbox.)
+                                                          Will Martin
+
+------------------------------
+
+To: comp-risks@ucbvax.Berkeley.EDU
+From: oster%dewey.soe.Berkeley.EDU@Berkeley.EDU (David Phillip Oster)
+Subject: Re: Computer thefts (re: RISKS-4.82)
+Date: 28 May 87 23:52:27 GMT
+
+Apple computer sells a thing called a "security kit" that permanently
+attaches a steel shackle to a Macintosh and Keyboard. With a steel
+cable passing through both shackles, and padlocked to a water pipe, it
+makes the Macintosh hard to steal. (Good for students.)
+
+I don't know whether this feature was preserved in the new Macintosh
+SE and Macintosh II, nor what it costs. 
+
+The security kit does not protect the mouse, which can be easily
+unscrewed and walked off with, but it should help cut down thefts of
+the whole machine. 
+
+Many third party vendors sell kits to lock computers down. Most work by
+permanently fastening a baseplate to the desk under the machine with a tough
+adhesive. Apple's version at least will not ruin a student's dorm's desk.
+-- David
+           [I hate to think of the flood resulting when 
+           someone decides to cut the water pipe.  PGN]
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************
+-------

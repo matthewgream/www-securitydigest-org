@@ -1,0 +1,614 @@
+VIRUS-L Digest             Thursday, 22 Dec 1988        Volume 1 : Issue 57
+
+Today's Topics:
+Dirty Dozen
+Boot Sectors on IBM disks (PC)
+Leisure Suit Larry 'virus' (PC)
+BRAIN in the USSR (PC)
+Re: Write Protect Gritch & You can't fool the... (PC)
+Call for papers - 12th National Computer Security Conference
+Amiga virus could survive warm boot
+
+---------------------------------------------------------------------------
+
+Date: Wed, 21 Dec 88 14:30:42 -0800
+From: Steve Clancy <SLCLANCY@UCI.BITNET>
+Subject: Dirty Dozen
+
+Re: J.D. Abolins comment about beggining another Dirty Dozen list:
+
+I was also quite a fan of the list, and have lost track of Eric
+Newhouse.  Apparently he has dropped out of sight??  I would be most
+willing to help work on such a list.  I have been collecting some
+"badware" which mostly fall into the category of pirated software,
+hacked software, or a very few legitamate trojan horses.  No viruses,
+though.  I agreee that a more comprehensive, and perhaps broader
+scoped list is needed.  And something that carries some authority with
+it(???).  The Dirty Dozen tended to be circulated mostly around BBSes,
+and microcomputer users, rather than in the corporate environment.
+
+If anyone else, is interested in making efforts in this direction,
+speak up, and perhaps we can put something together.
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+|   Steve Clancy                      |  WELLSPRING RBBS            |
+|   Biomedical Library                |  714-856-7996  24 HRS       |
+|   P.O. Box 19556                    |  300-9600 N,8,1             |
+|   University of California, Irvine  |  714-856-5087  nites/wkends |
+|   Irvine, CA  92713                 |  300-1200 N,8,1             |
+|                                     |                             |
+|   SLCLANCY@UCI                      |  "Are we having fun yet?"   |
+|   SLCLANCY@ORION.CF.UCI.EDU         |                             |
+|                                     |                             |
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+------------------------------
+
+Date:         Wed, 21 Dec 88 18:19:21 EST
+From:         Steve <XRAYSROK@SBCCVM.BITNET>
+Subject:      Boot Sectors on IBM disks (PC)
+
+   Regarding BOOT sectors and some of Homer Smith's questions:
+
+   As Joe Simpson points out, all disks have a boot sector on them.
+It is important to understand the functionality of the boot sector.
+When you power up the computer, it immediately loads some instructions
+from ROM and runs them.  Among other things (like doing some
+self-checks), these instructions for example tell the computer to try
+to read disk drive A: (depending upon your configuration of course).
+If there is a formatted diskette present, then it loads the boot
+sector and does *whatever* the boot sector tells it to, even if it's a
+non-system diskette.
+
+   All MSDOS-formatted disks have a boot sector containing
+instructions, regardless of whether or not the diskette was formatted
+with the system option (doubters, go look at the boot sector on a
+non-bootable disk).  In fact, the boot sectors of system and
+non-system diskettes are identical.  The difference between system and
+non-system disks *for* *the* *IBM* *PC* is not in the boot sector, but
+in the presence or absence of system files on the disk (that's easy to
+check: just format a disk *without* the system option and then copy
+the system files onto the disk and see if it works [Assuming that
+you're running MSDOS, these files are ibmbio.com, ibmdos.com, and
+command.com, the first two of which are *hidden*.].  It does.  Either
+that or examine the boot sector bit for bit).  All the system option
+does is tell the machine to copy these three files after formatting.
+The directory, FAT, and sectoring get setup during the format (with
+erasure of anything that may have been on the disk before formatting).
+
+   The instructions found on the boot sector normally tell the
+computer to go find certain system files on the disk, load them into
+memory, and run them.  This is how DOS gets going.  If the system
+files are not found, then an error message like "Non-system disk or
+disk error Replace and strike any key when ready" is displayed and the
+computer waits for you to respond.
+
+   It should be clear that it would be very easy for a virus to put
+instructions in the boot sector (regardless of what option was used
+when formatting the disk) telling the computer (when booted) to go
+find some virus file on the disk, load it into memory, and then go
+back and excute the real boot sector (which was moved by the virus to
+some other part of the disk), leaving many users none the wiser.  Even
+if it's a non-system diskette, the computer doesn't know that (upon
+booting) until it loads the boot sector and executes it and doesn't
+find any system files (but if there is a boot virus present, the virus
+gets run first before the "Non-system disk ..." message gets
+displayed).  This is true regardless of whether the disk even has any
+files on it.  A large virus may not be able to fit entirely in the
+boot sector, but that's no problem; it can store instructions in good
+sectors which it labels as "bad" (so that DOS won't overwrite them),
+or in hidden files (which could be discovered).
+
+   It should also be pointed out (as I'm sure it has been many times
+on this list) that utilities such as DIR or FORMAT are programs and
+can be infected with a virus (so just doing a DIR can infect any disks
+you happen to have in any of your drives at that time).
+
+   It would be a good idea to think about all this in the context of
+real, known viruses, so I'm hoping somebody will be able to put
+together a compilation of discriptions of all known viruses, variants,
+and their characteristics.
+
+Something about write tabs: We have a genuine 6MHz IBM PC AT which I
+have discovered can write to the disk *if* the write tab is
+transparent.
+
+Steven C. Woronick      |  Disclaimer: These are my own opinions/ideas.
+Physics Dept.           |        Always check things out for yourself...
+SUNY at Stony Brook, NY |
+Acknowledge-To: <XRAYSROK@SBCCVM>
+
+------------------------------
+
+Date: Wed, 21-Dec-88 19:26:29 PST
+From: portal!cup.portal.com!dan-hankins@Sun.COM
+Subject: Leisure Suit Larry 'virus' (PC)
+
+     There was some discussion of this on the network where I work.
+The consensus was that it is a Trojan, not a virus; it gets loaded
+into memory when LSL is run, then remains and destroys things, but
+does not copy itself to other programs, not even other copies of LSL.
+
+Dan Hankins
+
+------------------------------
+
+Date:     Wed, 21 Dec 88 21:53:34 PST
+From:     Robert Slade <USERCE57@UBCMTSG.BITNET>
+Subject:  BRAIN in the USSR (PC)
+
+     No one has cross posted it yet, but RISKS 7.96 has an article
+about virus infection in the USSR.  They have, of course, developed
+the ultimate anti virus program, the details of which remain a state
+secret ...
+
+     Also, 7.97 reports on an article which implies that virus
+infections are one-in-a-million.
+
+------------------------------
+
+Date:         Wed, 21 Dec 88 17:47:57 EST
+From:         "Christian J. Haller" <CJH@CORNELLA.ccs.cornell.edu>
+Subject:      Re: Write Protect Gritch & You can't fool the... (PC)
+
+>Date: Wed, 21 Dec 88 09:43:09 EST
+>From: Don Alvarez <boomer@space.mit.edu>
+>Subject: Write Protect Gritch
+>    ...
+>    I know Ken doesn't like people flaming on the list, so maybe I'll
+>    get booted for saying this, but PLEASE, if somebody asks a question
+>    which has a simple, yes or no answer, and you want to respond with
+>    an nth generation rumor of unknown origin, keep it short...
+
+I did my homework before I wrote my opinion.  I already knew about the
+documented BIOS interrupt limitations.  There are undocumented BIOS
+calls, and there are non-BIOS hardware calls.
+
+When the PC was a baby, one or two software vendors (obscure ones) had
+a copy protection scheme that involved writing something to their own
+diskettes, whether write protected or not, on the user's machine.
+Sorry, I don't remember the package.  Somebody noticed this and asked
+IBM about it.  Of course it wasn't documented.  It wasn't DOS or BIOS.
+The answer was no, it couldn't be done, but the fact remained that it
+was being done, and eventually, informally, not for attribution, quietly,
+those who were asking got word that it could be done, in software.
+The technique was not part of the answer.  I have no proof.  It may
+have been an undocumented feature of the early diskette drives, long
+ago de-featured.  I don't know.  But the facts of the case seemed clear
+at the time, and that was the basis for my position that write protect
+tabs are not certain protection on a PC.
+
+>Date: Wed, 21 Dec 88 11:40 EST
+>From: X-=*REB*=-X <KREBAUM@VAX1.CC.LEHIGH.EDU>
+>Subject: You can't fool the write protect line w/software (PC)
+>
+>According to the  circut diagram  from IBM for  IBM  5.25"  diskette
+>drives...
+>  . . .       Thus, all the talk recently of this
+>being controlled by software is incorrect.
+>
+>Richard Baum & John Hunt
+>[Ed. Thanks guys!  The only possible weak link then would be a
+>malfunctioning write-protect sensor (normally an optic sensor, I
+>believe).
+
+Nope, it's mechanical in IBM PC's.
+Yes, thanks guys.  I do appreciate the research.  I am almost but not
+quite convinced that the unattributable IBM source I mentioned above
+was wrong, or that newer drives are indeed absolutely hardware protected.
+The only remaining loopholes are in Len Levine's not-yet-conclusive
+research (see his V1 #54 contribution) that disk controller ROM is loaded
+into RAM at boot time.  You could tweak it as you liked, then!  You could
+prevent it from being reloaded, you could change the logic states.
+In short, you could lie to the disk controller about the write protect
+status.  It is possible that the hardware protection is absolute, but
+I agree with Len Levine that the question is still open, and I for one
+would never trust an IBM Tech Ref manual to tell the whole story.  I've
+been living with those suckers for about seven years, and they get less
+informative every year.
+
+- -Chris Haller
+Acknowledge-To: <CJH@CORNELLA>
+
+------------------------------
+
+Date:  Wed, 21 Dec 88 23:15 EST
+From: Jack Holleran <Holleran@DOCKMASTER.ARPA>
+Subject:  Call for papers - 12th National Computer Security Conference
+
+************************************************************************
+*                     CALL  FOR  PAPERS                                *
+************************************************************************
+
+                           12th
+          NATIONAL  COMPUTER  SECURITY  CONFERENCE
+    Sponsored by the National Computer Security Center and
+      the National Institute of Standards and Technology
+
+              Information Systems Security:
+       Solutions for Today - Concepts for Tomorrow
+
+                   10-13 OCTOBER 1989
+              BALTIMORE  CONVENTION  CENTER
+                  BALTIMORE,  MARYLAND
+
+This conference provides a forum for the Government and the private sector
+to share information on technologies, present and future, that are designed
+to meet the ever-growing challenge of telecommunications and automated
+information systems security .  The conference will offer multiple tracks
+for the needs of users, vendors, and the research and development
+communities.  The focus of the conference will be on:  Systems Application
+Guidance,  Security Education and Training, Evaluation and Certification,
+Innovations and New Products, Management and Administration, and Disaster
+Prevention and Recovery.  We encourage submission of papers on the following
+topics of high interest:
+
+Systems Application Guidance         Innovations and New Products
+   - Access Control Strategies         - Approved/Endorsed Products
+   - Achieving Network Security        - Audit Reduction Tools and Techniques
+   - Building on Trusted Computing     - Biometric Authentication
+      Bases                            - Data Base Security
+   - Integrating INFOSEC into Systems  - Personal Identification and
+   - Securing Heterogeneous Networks      Authentication
+   - Secure Architectures              - Smart Card Applications
+   - Small Systems Security            - Tools and Technology
+
+Disaster Prevention and Recovery     Management and Administration
+   - Assurance of Service              - Accrediting Information Systems
+   - Computer Viruses                     and Networks
+   - Contingency Planning              - Defining and Specifying Computer
+   - Disaster Recovery                    Security Requirements
+   - Malicious Code                    - Ethics and Social Issues
+   - Survivability                     - Life Cycle Management
+   - Managing Risk                     - Role of Standards
+
+Evaluation and Certification         Security Education and Training
+- - Assurance and Analytic Techniques    - Building Security Awareness
+- - Covert Channel Analysis              - Keeping Security In Step With
+- - Conducting Security Evaluations         Technology
+- - Experiences in Applying              - Policies, Standards, and Guidelines
+   Verification Techniques             - Preparing Security Plans
+- - Formal Policy Models
+- - Understanding the Threat
+
+
+BY FEBRUARY 17, 1989: Send five copies of your draft paper* to one of the
+                      following addresses.  Include the topical category of
+                      your paper, author('s) name, address, and telephone
+                      number on the cover sheet only.
+
+ 1.  FOR PAPERS SENT VIA   Computer Security Conference
+     U.S. MAIL ONLY:       ATTN:  Carolyn Copsey, C2
+                           National Computer Security Center
+                           Fort George G. Meade, MD 20755-6000
+
+ 2.  FOR PAPERS SENT VIA   Computer Security Conference
+     COURIER SERVICES      c/o Carolyn Copsey, ATTN:  C2
+     (FEDERAL EXPRESS,     National Computer Security Center
+     OVERNIGHT EXPRESS,    911 Elkridge Landing Road
+     EMERY, UPS, etc.):    Linthicum, MD  21090
+
+
+ 3.  VIA E-MAIL:           NCSC12@DOCKMASTER.ARPA   (1 copy only)
+
+
+BY MAY 12, 1989:   Speakers selected to participate in the conference will be
+                   notified.
+
+BY JUNE 30, 1989:  Final, camera-ready papers are due.
+
+
+* Government employees or those under Government sponsorship must so
+   identify their papers.
+
+For additional information, please call Carolyn Copsey at (301) 859-4466.
+Queries may also be sent to NCSC12@DOCKMASTER.ARPA via e-mail.
+
+------------------------------
+
+Date: Wed, 21 Dec 88 14:15:38 -0800
+From: Steve Clancy <SLCLANCY@UCI.BITNET>
+Subject: Amiga virus could survive warm boot
+
+After reading the discussions regarding viruses that can support a
+warm boot, I remembered some material I had seen a few months ago
+regarding Amiga microcomputer viruses that did the same thing.  Here
+are some of the messages from back then that were gleaned from
+compuserve and Amiga BBSes.
+
+
+ Article 10437 of 10516, Fri 11:32.
+ Subject: Amiga VIRUS
+ From: bill@cbmvax.UUCP (Bill Koester CATS)
+ Date: 13 Nov 87 19:32:05 GMT
+
+         THE AMIGA VIRUS - Bill Koester (CATS)
+
+When I first got a copy of the Amiga VIRUS I was interested to
+see how such a program worked. I dissassembled the code to a disk
+file and hand commented it. This article will try to pass on some
+of the things I have learned through my efforts.
+
+                  1) Definition.
+                  2) Dangers.
+                  3) Mechanics
+                  4) Prevention
+
+1. - Definition.
+- ----------------
+
+The Amiga VIRUS is simply a modification of the boot block of an
+existing DOS boot disk. Any disk that can be used to boot the
+Amiga (ie workbench) has a reserved area called the boot block.
+On an Amiga floppy the bootblock consists of the first two
+sectors on the disk. Each sector is 512 bytes long so the boot
+block contains 1024 bytes. When KickStart is bringing up the
+system the disk in drive 0 is checked to see if it is a valid DOS
+boot disk. If it is, the first two sectors on the disk are loaded
+into memory and executed. The boot block normally contains a
+small bit of code that loads and initializes the DOS. If not for
+this BOOT CODE you would never see the initial CLI. The normal
+BOOT CODE is very small and does nothing but call the DOS
+initialization. Therefore, on a normal DOS boot disk there is
+plenty of room left unused in the BOOT BLOCK.
+
+The VIRUS is a replacement for the normal DOS BOOT CODE. In
+addition to performing the normal DOS startup the VIRUS contains
+code for displaying the VIRUS message and infecting other disks.
+Once the machine is booted from an infected disk the VIRUS
+remains in memory even after a warm start. Once the VIRUS is
+memory resident the warm start routine is affected, instead of
+going through the normal startup the VIRUS checks the boot disk
+in drive 0 for itself. If the VIRUS in memory sees that the boot
+block is not infected it copies itself into the boot block
+overwriting any code that was there before. It is in this manner
+that the VIRUS propagates from one disk to another. After a
+certain number of disks have been infected the VIRUS will print a
+message telling you that Something wonderful has happened.
+
+
+2. - Dangers.
+- -------------
+
+When the VIRUS infects a disk the existing boot block is
+overwritten. Since some commercial software packages and
+especially games store special information in the boot block the
+VIRUS could damage these disks. When the boot block is written
+with the VIRUS, any special information is lost forever. If it
+was your only copy of the game then you are out of luck and
+probably quite angry!!
+
+3. - Mechanics.
+- ---------------
+
+Here is a more detailed description of what the virus does. This
+is intended to be used for learning and understanding ONLY!! It
+is not the authors intention that this description be used to
+create any new strains of the VIRUS. What may have once been an
+innocent hack has turned into a destructive pain in the #$@ for
+many people. Lets not make it any worse!!
+
+   a.)   Infiltration.
+
+This is the first stage of viral infection. The machine is
+brought up normally by reading the boot block into memory. When
+control is transferred to the boot block code, the virus code
+immediately copies the entire boot block to $7EC00, it then JSR's
+to the copied code to wedge into the CoolCapture vector. Once
+wedged in, control returns to the loaded boot block which
+performs the normal dos i the system.
+
+   b.)   Hiding Out.
+
+At this point the syem CoolCapture vector has been replaced and
+points to code thin the virus. When control is routed through
+the CoolCapte vector the virus first checks for the left mouse
+button,  it is down the virus clears the CoolCapture wedge and
+retuns to the system. If the left mouse button is not pressed
+t virus replaces the DoIO code with its own version of DoIO a
+returns to the system.
+
+   c.)   Spreading.
+
+The code far has been concerned only with making sure that at
+any gin time the DoIO vector points to virus code. This is
+where e real action takes place. On every call to DoIO the
+virus hecks the io_Length field of the IOB if this length is
+equato 1024 bytes then it could possibly be a request to read
+t in the strap code and this is a boot
+block read request. Inot installed. If we
+are reading the boot block we JSR to te old DoIO code to read
+the boot block and then control retrns to us. After reading, the
+checksum for the virus boot bk is
+already infected so just return. If they are not equala counter
+is incremented and the copy of the virus at $7EC0is written to
+the boot block on the disk. If the counter ANed with $F is equal
+to 0 then a rastport and bitmap are conected by a VIRUS >
+< Another masterpiece of the Mega-MightySCA >
+
+4. - Prevention.
+- ----------------
+
+How do you otect yourself from the virus?
+
+1) Never warm start the machine, always power down first. (works
+but not to practical!)
+
+2) Always hold down the left mouse button when rebooting. (Also
+works, but only because the VIRUS code checks for
+                                                 3) Obtain a copy of VCheck1.1 d
+into the public domain. VCheck.1 was posted to usnet and will
+also be posted to BIX. ( Jut like the real thing the best course
+of action is educatio and prevention!)
+
+- ----
+AMIGA ZONE       Sec: 2
+Theme:WARNING!!  AMIGA VIRUS ON THE
+To:    BEARDLOVER      By:  BARDLOVER
+Date:  10/09/87  3:42  Num: 16,622
+Title: R#16606HERE'S THE INFO!
+- ----
+
+Received: by MAINE (Mailer X1.24iscussion" <CSNEWS@MAINE>
+To:       7GMADISO@POMONA
+Date:    Tue, 6 Oct 1987 10:42 EDT
+
+
+From: SLCLANCY@UCI
+Newsgrups: comp.sys.amiga
+Subject: IMPORTANT WARNING ... Amiga Vius Loose ... PLEASE READ
+Message-ID: <15589@amdahl.amdahl.com>
+Date: 4 Oct 87 13:24:48 GMT
+Organization: Amdahl Corporation,  Sunnyvale, CA 94086
+Lines: 190
+Keywords: virus trojan worm program infected disk
+
+[ Some days you eat the lke we've been spared such crap until now, but this higg
+notice shows we are not immune to attacks on our machines by the "Dark Side
+of the Force"!
+
+Any further inforation on this (or other such nastiness) would be greatly
+appreciated!
+
+Doc, if you are reading this, *please* post the Sectorama program that I
+emailed you several weeks ago ASAP!
+
+/kim
+
+
+
+The following is a thread from Compuserve:
+
+=========================================================================
+
+#: 87294 S3/Hot News & Rumors
+    02-ct-87  02:41:08
+Sb: #WARNING! Virus loose!
+Fm: Larry Phillre are a variety of programs
+that are variously known as Trjan Horses, Bombs, and Viruses. While Bombs
+are generally destructive (as evidenced by their name), and Trojan Horses
+re either destructive or for the purpose of theft of data, Viruses have
+been known to be benign or malignant both. A Vive it may or may not be, it will 
+                                                                               n
+infected disk. All works normally, with no sign tt the machine with the CTRL-Amn
+uninfeted disk, the virus is transferred to the boot disk, and it oo
+becomes a "carrier", ready to pass it on, and so on.
+
+The presence of the virus can be detected by looking at block 1 on a disk.
+Normally, this will have random data or a pattern of data in it, but you
+will be able to see the virus tor 1). If the virus is present, run INSTALL on tL
+will rewrite sectors 0 and 1, killing the virus. Then's power. If you have bootn
+infected disk, and havect the disk.
+
+There have been a couple of reports of a mewas trashed by the virus. The messag:
+"Something wondesame message that appears in block 1 of an infected disk.
+
+Watch for it... stomp it out.
+
+Regards, Larry.
+
+
+#: 87306 S3/Hot News & Rumors
+    02-Oct-87  04:43:21
+Sb: #8729ni 73260,1413
+To: Larry Phillips/SYSOP 76703,4322 (X)
+
+Lart, but I thought that re-booting the
+system was supposed tirus be
+transmited?
+
+     Also, should someone without the ability to look at a disk in the way
+you suggested run across this message will a cold reboot solve the problem
+(so gain)? Will initalizing an
+"infected" disk (after a cold boot) remove the infection? (along with anything
+else on the u think that this message is important enough
+to go at the head of the forum-so that you see it when you enter the foruot onlo
+aTRL-Amiga-Amiga). The virus
+itself is contained in the "boohen you reboot with an
+uninfected disk, the virus writes it infecting it as well.
+
+  A cold reboot (power off, power on) will indeed remove it from the
+memory. The problem is, is infected before you would think to go through
+this procedure.
+
+  As for looking at the disk to determine if the virus is there, the
+program to use is "Sectorama", which is in DL 9 as SEC.ARC. Perhaps
+someone will come up with a program that will detect and kill the virus,
+giving you a warning at the same time.
+
+  I do think it's important, and we will probably put it into one of the
+Data Libraries and mention it in the short bulletin which everyone will
+see upon entry to the forum.
+
+Regards, Larry.
+
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+|   Steve Clancy                      |  WELLSPRING RBBS            |
+|   Biomedical Library                |  714-856-7996  24 HRS       |
+|   P.O. Box 19556                    |  300-9600 N,8,1             |
+|   University of California, Irvine  |  714-856-5087  nites/wkends |
+|   Irvine, CA  92713                 |  300-1200 N,8,1             |
+|                                     |                             |
+|   SLCLANCY@UCI                      |  "Are we having fun yet?"   |
+|   SLCLANCY@ORION.CF.UCI.EDU         |         -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+--------------------------virus-l
+
+
+VIRUS-L Digest             Thursday, 22 Dec 1988        Volume 1 : Issue 58
+
+Today's Topics:
+Brain surviving warm boot (PC)
+RE: FORMAT command (PC)
+
+---------------------------------------------------------------------------
+
+Date:         Thu, 22 Dec 88 8:50 EST
+From:         Don Kazem <DKAZEM@NAS.BITNET>
+Subject:      Brain surviving warm boot (PC)
+
+I first brought up this issue about the Brain Virus being able to
+sustain itself even after a warm boot and it being able to write to a
+write protected disk. These were my findings and I posted them to the
+list. As far as I am concerned they were accurate.
+
+To do away with all the flames, I have requsitioned another dual
+floppy machine (the same as the one used in my first test). I will
+repeat the tests that yielded such controversial results and will
+post the results back to the list.  Until then please hold on to your
+flames.
+
+          Don Kazem
+          National Academy of Sciences
+          DKAZEM@NAS.BITNET
+
+------------------------------
+
+Date: Thu, 22 Dec 88 09:04 MST
+From: GORDON_A%CUBLDR@VAXF.COLORADO.EDU
+Subject: RE: FORMAT command (PC)
+
+To Homer re FORMAT...regarding your hard disk low level format, what
+kind of computer did you say you have?  Did you say your computer
+supported a hard- disk?
+
+The DOS FORMAT command does NOT destroy data on the disk.  It wipes
+out the FAT, which is kind of like the card catalog and releases all
+locations so that they can be written over.  If you use NORTON
+utilities or something similar, you will see on a disk that had data
+on it and was FORMATted, that the items in the root directory can be
+listed, only with '?' in place of the first character.  These items
+can then be restored, since the directory listing also gives the 1st
+sector or cluster location.  If the files are contiguous they can be
+saved.  All this means that a virus residing in the data area will not
+be erased, but it isn't safe either, unless other factors are
+implemented.  I think that during the FORMAT, DOS will skip over areas
+deemed bad during the low level format.  Presumably a virus could lock
+out these sectors so that they could be used for the virus's purposes.
+
+Allen
+
+------------------------------
+
+End of VIRUS-L Digest
+*********************

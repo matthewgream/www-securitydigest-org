@@ -1,0 +1,568 @@
+VIRUS-L Digest   Friday, 23 Aug 1991    Volume 4 : Issue 147
+
+Today's Topics:
+
+System Layers and Hiding Places
+Questions regarding Novell, Viruses & policy
+Types of virus
+Ghosting
+Hardware and software protection mechanisms
+Re: Can virus infect PC data diskettes? (PC)
+RE: Hard disk locking (PC)
+Revised Product Test for VIRx - - Version 1.7
+Computer Insecurity Terminology
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Thu, 22 Aug 91 15:15:29 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: System Layers and Hiding Places
+
+  >From:    p1@arkham.wimsey.bc.ca (Rob Slade)
+
+  >                     Hiding in System Layers
+
+  >if a computer is easy to use, it is easy to misuse.
+  >If a password is hard to guess, it is hard to remember.  If
+  >access to information is simple for the owner, it is simple for
+  >the "cracker".
+
+I think Rob had tongue in check  when posting this,  something that is
+evident when the rest  of the piece is  read but can  creep up on  the
+unsuspecting   easily.   That    these    axioms  are   archaic  is an
+understatement even to an antediluvian  individual such as myself, but
+to an undergraduate receiving  his/her/etc. first taste of   JCL, they
+may seem proverbial.
+
+Passwords are a  case in point: one  can be completely unguessable but
+easy to remember  if  an  algorithm  is used  (something essential for
+access to  a large number  of processors) and if  made  up  of  two or
+three, one  of which is  numerical, can  be even  harder to crack. For
+instance,  1991  might be the "Year  of  the Worm", the  month: August
+(08),  and the particular system   "Plato". This month's password  for
+"Plato" might be WOR08PLA  - an eight character  password that is easy
+to remember yet nearly impossible to  crack.  Unique for every system,
+and easy to change monthly.
+
+  >The additional layers in an operating system, and the fact that
+  >a great deal of management takes place automatically, without the
+  >user's awareness, is an ideal situation for a viral program.
+  >Since many legitimate and necessary operations and changes are
+  >performed without the user being aware of it, viral operations
+  >can also proceed at a level completely hidden from the user.
+  >Also, because the user is basically unaware of the structure and
+  >operations of the computer, changes to that structure and
+  >operation are difficult to detect.
+
+True, and many  viruses rely  on this  - however, this   relates to  a
+"plain vanilla"  operating system.  Nothing says  that  you cannot add
+integrity  management routines at any layer  other than no-one sems to
+have done  so yet.  In the IBM   PC, it  is entirely  possible  to add
+integrity management at the BIOS level and to maintain integrity up to
+the user level. This can also be done transparantly to the user unless
+an exception occurs.
+
+The key is to simplify authorized actions  for authenticated users and
+not just make others difficult, but make them impossible.
+
+                                                         Padgett
+
+------------------------------
+
+Date:    Thu, 22 Aug 91 15:16:11 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Questions regarding Novell, Viruses & policy
+
+  >From:    cumber@runx.oz.au (Cumberland Newspapers)
+
+  >       1)      Do there exist viruses that can infect novell fileservers ?
+  >               (I don't mean .EXEs or .COMs or whatever on the server but
+  >                the files that it runs like .NLMs etc )
+
+There has been a report of one that may do  this (GP1) but  I have not
+seen it. The capability is feasible but would not be simple.
+
+[Ed. The most recent report of the GP1 virus that I've seen is in the
+August 1991 issue of Virus Bulletin.  On page 9, Eric Babcock (of
+Novell Inc.) describes the virus in reasonable detail.  From his
+description, it appears that GP1 does not circumvent Novell
+file/directory protection per se; it merely watches the Novell
+function calls for a specific form of login request which does not use
+encrypted passwords and then broadcasts this information over a
+network socket.  This looks (to me) to be entirely different, albeit
+potentially harmful in itself, than a virus which can circumvent a
+server's file access control and actually write to a file to which the
+user has no write permission.]
+
+  >       2)      Is there a way of putting a task on the server that scans for
+  >               viruses when users try to conect ?
+
+I recommend to Netware prople that the login  script contain "SCAN NUL
+/M /CHKHI" and errorlevel branches if the client is found  infected to
+be effective.* Combined with Scanning of outside floppies,  a checksum
+integrity routine on the clients,  and  a periodic checksum validation
+of server files from a known clean  system,  it would be difficult for
+anything to get in.
+
+          3)      Is there some way I can keep the viruses off the executables
+                  on the server ?
+
+Proper use   of  the rights   flags to    make  executables and  their
+directories read only is a good start. Use  of a  scratch directory(s)
+and copying flies from  read-only repositories  is effective for those
+unruly applications that insist on being able  to write to themselves.
+RAMdisks on the client are even better.
+
+                                                         Padgett
+
+* - At present I know of no virus scanner other than McAfee's that can
+scan memory only for resident  viruses  (and he does not document it).
+The CHKHI switch for high memory is a recent addition.
+
+------------------------------
+
+Date:    22 Aug 91 19:41:23 +0000
+>From:    AL380749@vmtecchi.chi.itesm.mx
+Subject: Types of virus?
+
+Hello I just wanted to ask u about three kinds of virus , how to
+prevent them what are they and what does they do, all of these for my
+homework, Thank you.
+
+------------------------------
+
+Date:    Thu, 22 Aug 91 18:32:40 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Ghosting
+
+	Recently several vendors have been taken to task for false
+positives resulting from signature strings being found in memory that
+match viruses.  Generally, this occurs in two cases: first following
+the execution of another anti-viral product that has left its own
+strings in memory, and second folowing execution of a program that one
+had a virus but has been removed.
+
+	Once the mechanisms involved are understood, readers should be
+able to understand why this occurs, and why they should be grateful
+that it does not happen more often:
+
+	In the dark distant past (like 1990), Ghosting did not occur
+since most anti-viral products did not bother to check memory at all &
+were content just to analyze the files on disks. Those that did
+usually confined themselves to the viruses that posed a danger to the
+anti-virus product or which pactised "stealth" to hid their traces. In
+those cases the only choice was to find them in memory since, when
+resident, they either could not be found on the disk or would triger
+their bomb on detection of anti-viral activity.
+
+	Quickly though, vendors found it necessary to at least have
+the capability to find ALL viruses in memory, not just the dangerous
+ones and ghosting began. Since it was only an occational problem, and
+usually involved other anti-viral products, not much was done about
+it. Also, recent versions of some anti-viral software has been subject
+to a much more disturbing phenomena, that of missing some active
+infections, and makes vendors doubly cautios about any changes that
+might trigger a "false negative" - declaring a PC clean when it is
+infected.
+
+	The major problem today is the method of scanning memory for
+viruses.  Users are demanding ever faster operation while the increase
+in viral numbers is having the opposite effect.
+
+	Vendors face the problem that while most viruses are
+relatively easy find in a program (commands are usually found at
+specific offsets), in memory the viral signature could be anywhere
+(well, almost anywhere) in memory. We are starting to see products
+that are more specific about where they look but while some viruses
+will only inhabit certain locations, others could be anywhere in RAM,
+high or low.
+
+	The major reason for this is that the vectors used to execute
+a virus while generally an explicit JMP in a program, are often hidden
+several layers down in memory and cannot be relied upon. Consequently,
+when a virus hunter finds a match in memory, there is often no way to
+tell if it is active or just a fragment and when in doubt, they MUST
+report a positive.
+
+	Now the reason ghosting is not more prevalent than it is is
+because anti-viral products tend to be rather large (v80 of a popular
+one occupies over 170k fully expanded) and the memory they use is
+cleared by the load.
+
+	Consequently, if two anti-viral programs are executed, for the
+second to detect ghosting from the first, the second had to be smaller
+than the first, or had to start from a lower memory location (an
+interesting experiment I may try RSN).
+
+	Logically, ghosting would be somewhat more likely if a scanner
+was run while a non-encrypting TSR with expanded strings was already
+resident.  Could provide some interesting effects.
+
+	In any event, as the number of viruses (and signatures)
+continue to increase and the avaialble signatures decrease, it would
+not be surprising to see the tendancy for ghosting as a result of
+using multiple products to increase.
+
+	Meanwhile, we still have the second of the two causes of
+ghosting to account for: the "disinfected" file.
+
+	Here we have an oddity of DOS at work, the cluster. Consider a
+2k .COM file that contracts the Jerusalem (1808 bytes) virus. Many
+older machines with 32 Mb disks use a 4096 byte (4K) cluster size.
+This is the minimum disk quanta that DOS can allocate so the original
+file occupied 1 cluster (the minimum). Not surprisingly, the infected
+file also occupied 1 cluster, just filling more of it.
+
+	When the virus disinfectant came along, chances are that it
+just removed the virus vector at the start of the program, replaced
+the first few bytes with the ones from the original file that the
+virus stored, and adjusted the file size. The virus is now
+disconnected and the code following the program is just noise.
+
+	However, unless the viral code is stripped off manually, it is
+still there and when the program is executed next, the whole cluster
+is mapped into memory and often into the disk buffer (though these
+generally have a finer granularity). If the program was larger than
+the scanner that runs next (obviously not in the example) or goes TSR,
+guess what is liable to happen ?
+
+	Again, the scanner cannot tell that the viral code is
+disconnected since a signature check is often only 10-20 bytes, just
+that it found a match & pop goes the weasel.
+
+	Personally, I cannot fault a vendor that gives me an
+occasional false positive since there are other tools to use in
+determining whether it was real. It is the false negatives that worry
+me.
+
+						Padgett
+
+------------------------------
+
+Date:    Fri, 23 Aug 91 01:02:00 +0000
+>From:    William Hugh Murray <0003158580@mcimail.com>
+Subject: Hardware and software protection mechanisms
+
+> My opinion is that such programs are not a very good idea. As I already
+> said, all of them can be bypassed, if enough effort is applied.
+
+In security, we call this Jakes' law.  The law says "Anything hit with a big
+enough hammer will fall to pieces."  Anything built by man can be broken by
+man.  The trick is to make the cost of the break exceed the value while
+not spending more to avoid the loss than taking it would cost you.
+
+That having been said, there is still a kernel of truth here.  That is,
+hardware mechanisms may not be as vulnerable to software is as is other
+software.  On the other hand, the strength of hardware mechanisms is
+limited by the laws of physics, while software mechanisms can be made
+arbitrarily strong.
+
+William Hugh Murray
+
+------------------------------
+
+Date:    Fri, 23 Aug 91 12:56:00 +1200
+>From:    "Mark Aitchison, U of Canty; Physics" <PHYS169@csc.canterbury.ac.nz>
+Subject: Re: Can virus infect PC data diskettes? (PC)
+
+masticol@athos.rutgers.edu (Steve Masticola) writes:
+> 1. Can a virus infect data diskettes and propagate from them (possibly
+> by rewriting the boot track)?
+
+Yes. The definition of a "data diskette" is simply one which won't
+load DOS, but it will still try - then give a message to the effort
+you should try another. This message, and code to try to load the
+system, is on the boot sector which viruses attack. The virus infects
+even if the operating system can't be loaded from that disk by the
+original boot sector which is then called!
+
+> 2. Can viruses infect data files (not executables) downloaded from
+> BBSes?
+
+Yes. Remember that "data files" in some case are executed, not many,
+though.  Think of spreadsheets with complex calculations in the cells.
+Few viruses, however, attack anything other than the boot sector and
+.EXE & .COM files.
+
+> Also, if someone has a pointer to an archive with info about PC
+> viruses (in plain text), or good magazine articles, I'd appreciate
+> knowing that, too.
+
+There probably should be a FAQ for this newsgroup, however the closest
+thing is a monthly posting that lists anonymous ftp sites where you
+can get information.
+
+Mark Aitchison, Physics, University of Canterbury, New Zealand.
+
+------------------------------
+
+Date:    Fri, 23 Aug 91 15:57:00 +0100
+>From:    "Olivier M.J. Crepin-Leblond" <UMEEB37@VAXA.CC.IMPERIAL.AC.UK>
+Subject: RE: Hard disk locking (PC)
+
+   First of all, I seem to remember that the original question was
+dealing with the use of a computer in an office by unauthorised users.
+The PC was accidentally infected with Spanish Telecom as a result. A
+great number of methods to lock the hard disk have then been
+suggested, some being *VERY* expensive indeed.
+   I believe that the use of the keyboard lock situated on virtually
+any PC is a suitable deterrent. Remember that the office environment
+is supposed to be a "friendly" environment. ie: NO HACKERS. If no
+keyboard lock is available, then use the SETUP program to change the
+hard disk number. Only viciously determined users will want to pass
+the test of guessing the reason for an "Invalid Media Type" error.
+   Now if one deals with hackers, then I must say that a PC is a very
+insecure box. Why pay as much in additional hardware, customised
+locks, locking of the case, clamping of the PC on the desk, and of the
+desk on the floor, and adding an alarm system ? :-) Has anyone heard
+of having a PC in a locked office ?  For classified data, I suggest
+the use of a removable hard disk, or floppies, both of which are
+stored away in a safe, or locked cupboard.
+   These solutions, albeit less exotic than on-line passwords, are
+much cheaper.
+
+Olivier M.J. Crepin-Leblond, Research Student, Communications Systems,
+   Electrical Engineering Dept., Imperial College, London, UK.
+
+------------------------------
+
+Date:    Fri, 16 Aug 91 15:24:37 -0600
+>From:    Chris McDonald ASQNC-TWS-R-SO <cmcdonal@wsmr-emh03.army.mil>
+Subject: Revised Product Test for VIRx - - Version 1.7
+
+*******************************************************************************
+                                                                          PT-41
+ 								      July 1991
+ 							    Revised August 1991
+*******************************************************************************
+
+1.  Product Description:  VIRx is a copyrighted program written by Ross M.
+Greenberg to detect computer viruses and malicious programs.  VIRx is the
+detection portion (VPCScan) of the commercial protection program VIREX-PC
+(reference PT-23, revised May 1991).
+
+2.  Product Acquisition:  The program is free.  Mr. Greenberg has made it
+available on many bulletin boards and software repositories, to include the
+MS-DOS repository on simtel20 [192.88.110.20].  The current path on simtel20 is
+pd1:<msdos.trojan-pro>virx17.zip.
+
+3.  Product Tester:  Chris Mc Donald, Computer Systems Analyst, Information
+Systems Command, White Sands Missile Range, NM 88002-5506, DSN:  258-4176, DDN:
+cmcdonal@wsmr-emh03.army.mil or cmcdonald@wsmr-simtel20.army.mil.
+
+[Ed. The remainder of this product review is available by anonymous
+FTP on cert.sei.cmu.edu in the pub/virus-l/docs/reviews directory.]
+
+------------------------------
+
+Date:    06 Aug 91 16:45:25 +0000
+>From:    vail@tegra.com (Johnathan Vail)
+Subject: Computer Insecurity Terminology
+
+		  Dictionary of Computer Insecurity
+
+	     Compiled by Johnathan Vail (vail@tegra.com)
+
+
+This list started out as a collection of a few computer virus related
+terms that I wrote for discussion in comp.virus.  Several people have
+contributed comments and suggestion to my original list.  Tom
+Zmudzinski contributed an excellent list of computer security terms
+that now form the bulk of this list.  At this time, I will serve as
+the focus and maintainer of this list.  Please submit any comments and
+additions to me.  My address is vail@tegra.com.
+
+
+HISTORY:
+
+	 6 Aug 1991 JV	- First release.
+
+________________________________________________________________________
+
+
+async interrupt (attack) - to exploit system vulnerabilities arising
+    from deficiencies in the interrupt management facilities of an
+    operating system.
+
+
+back door - This is an undocumented feature added to a product which
+    can allow those who know about it to gain access to features that are
+    otherwise protected.  The original Tempest video game was supposed to
+    have a key sequence that would allow the author of the firmware to get
+    free games in an arcade.  Some military systems are rumored to have
+    back doors in their software that prevents their being used against
+    the countries that built them.
+
+
+blivet (attack) - Unrestricted use of a limited resource (e.g., spool
+    space on a multi-user system).  [Classically defined as "ten pounds of
+    horsesh*t in a five pound bag".]
+
+
+browsing - Gaining unauthorized read-only access to files.
+
+
+C2 Catch-22  - Refers to the paradox that all federal computers are
+    required to be certified to the C2 level of Trust (or better) by 1992
+    (especially if they are to be permitted access to a network), yet
+    because no C2 certification has ever been performed with the network
+    software active, NSA will revoke the certification of any system as
+    soon as it is connected to a network.  [Also "C2-by-'92 Catch-22".]
+
+
+cascading - To gain additional privileges on a host (or within a
+    process) by using those privileges legitimately (if perhaps unwisely)
+    granted to casual users.
+
+
+crayola books - A disparaging reference to the "rainbow books",
+    commonly used when referring to the upcoming rewrite of NSA's
+    technical computer security guidelines.
+
+
+crypt (attack) - Stealing the system password file and looking for
+    known encrypted passwords.
+
+
+data diddling - To alter another's data (especially, to do so subtly
+    so it will not be detected); a major breach of the hacker ethic.
+
+
+dictionary (attack) - Trying a dictionary of commonly used or vendor
+    installed passwords.
+
+
+ethical hacker - Someone who espouses the view that he/she may
+    "ethically" penetrate any computer or network so long as no data is
+    altered.  [Colloquially among computer security professionals: a dead
+    hacker (or one who has ceased hacking).]
+
+
+hacker ethic - ["Data is free."]  The point of view that all
+    information is (or at least, should be) freely available to anyone who
+    wishes to read it.  When used ironically, it refers to the propensity
+    of some less-than-ethical hackers to justify even the most blatant
+    disregard for the rights of others by claiming that they did no harm.
+
+
+leapfrog (attack) - Using userid and password information obtained
+    illicitly from one host (e.g., downloading a file of account IDs and
+    passwords, tapping TELNET, etc.) to compromise another host.  Also, to
+    TELNET through one or more hosts in order to confuse a trace (standard
+    hacker procedure).
+
+
+magic cookie - This is a usually benign feature added to a product by
+    the programmer without official knowledge or consent.  One example of
+    the is the 'xyzzy' command in Data General's AOS operating system.
+    Another is the "RESIST THE DRAFT" message in an unused sector of Apple
+    Logo.
+
+
+masquerading - To assume the identity of another user to gain
+    unauthorized access to a host or network.
+
+
+mockingbird - Software that intercepts communications (especially
+    logon processes) between users and hosts and provides system-like
+    responses to the users while obtaining information (especially account
+    IDs and passwords).
+
+
+pest - A set of instructions that self-replicates uncontrollably,
+    eventually rendering a network or system unusable via a
+    blivet attack.
+
+
+phage - An autonomous program that inserts malicious code into
+    other autonomous programs (e.g., a computer worm or probe
+    that carries a virus or trojan horse program).
+
+
+probe - A non-self-replicating, autonomous program (or set of
+    programs) that has the ability to execute indirectly
+    through a network or multi-partition computer system
+    (e.g., various hacker utilities).
+
+
+rainbow books - NSA's technical computer security guidelines.
+    So named because each of the books is published with a
+    different color cover.  [See "crayola books".]
+
+
+scavenging - To exploit unerased residual data.
+
+
+spoofing - To exploit the inability of a host's remote users to verify
+    at any given time that they are actually communicating with the
+    intended system or process.
+
+
+stealth virus - This is a type of virus that attempts to hide its
+    existence.  A common way of doing this on IBM PCs is for the virus to
+    hook itself into the BIOS or DOS and trap sector reads and writes that
+    might reveal its existence.
+
+
+trapdoor - A method of bypassing a sequence of instructions, often
+    some part of the security code (e.g. the computer logon).
+
+
+time bomb - This is code or a program that checks the systems clock in
+    order to trigger its active symptoms.  The popular legend of the time
+    bomb is the programmer that installs one in his employer's computers
+    to go off in case he is laid off or fired.
+
+
+trojan (horse) - This is some (usually nasty) code that is added to,
+    or in place of, a harmless program.  This could include many viruses
+    but is usually reserved to describing code that does not replicate
+    itself.
+
+
+unknown system-state (attack) - To exploit the conditions that occur
+    after a partial or total system crash (e.g., some files remain open
+    without an end-of-file condition allowing an intruder to obtain
+    unauthorized access to other files by reading beyond the real EOF when
+    service is resumed).
+
+
+virus - a piece of code that is executed as part of another program
+    and can replicate itself in other programs.  The analogy to real
+    viruses is pertinent ("a core of nucleic acid, having the ability to
+    reproduce only inside a living cell").  Most viruses on PCs really are
+    viruses.
+
+
+worm - A self-replicating, autonomous program (or set of programs)
+    that can replicate itself, usually over a network.  A worm is a
+    complete program by itself unlike a virus which is part of another
+    program.  Robert Morris's program, the Internet Worm, is an example of
+    a worm although it has been mistakenly identified in the popular media
+    as a virus.
+
+________________________________________________________________________
+
+"Always Mount a Scratch Monkey""
+ _____
+|     | Johnathan Vail | n1dxg@tegra.com
+|Tegra| (508) 663-7435 | N1DXG@448.625-(WorldNet)
+ -----  jv@n1dxg.ampr.org {...sun!sunne ..uunet}!tegra!vail
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 147]
+******************************************

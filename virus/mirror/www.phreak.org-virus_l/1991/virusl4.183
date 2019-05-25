@@ -1,0 +1,743 @@
+VIRUS-L Digest   Monday,  7 Oct 1991    Volume 4 : Issue 183
+
+Today's Topics:
+
+Re: New virus (PC)
+DEC PathWorks and Virus propagation.
+Bug in SAFEMBR (PC)
+Re: Bulgarian virus writers (PC)
+VIRx v1.8 is released
+STONED Virus - information please! (PC)
+Virus that infects only floppies? (PC)
+"Better DOS than DOS" and viri (OS/2) (PC)
+Re: DIR II (Cluster) Virus (PC)
+The (Lack of an) Ultimate Solution
+New file on risc (PC)
+Review of Virus Buster (PC)
+Antiviral contact list (mostly PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    04 Oct 91 09:56:12 +0000
+>From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: New virus (PC)
+
+ish@ire.msk.su (Shulman Ilya A.) writes:
+
+>  It's size is 1024 (1536 in memory) in this case he allocate 1-2 last cluster
+s
+>  due to disk structure
+
+To elaborate this: The virus occupies two clusters when the cluster
+size is less than 1024 bytes (2 sectors). This happens on 1.2 and 1.44
+Mb diskettes.
+
+>  It infects files only when somebody want to access files/directory
+>  Also it didn't infect files that has the small size, I checked 512,1024 and
+>  2048 bytes, 512 and 1024 were free
+
+Thanks for reminding about that; I forgot to mention it. The virus
+indeed performs some checks on the file length. The smallest
+infectable files are 2048 bytes. There is also an upper limit, but
+it's quite large - somthing about 4 Mb.
+
+> >The virus is also a stealth virus.  While it is active in memory
+> >it is difficult to detect.
+>        ^^^^^^^^^^^^^^^^^^^^ actual size of the disk :-) but
+
+You probably mean that if you know the exact full size of your disk,
+you'll notice when it changes. However, I don't think that many users
+will notice even when the size of 360 Kb diskette gets changed from
+354 to 353 Kb, let alone the larger media... :-)
+
+>  1 insert protected flopyy disk to drive and try to delete files from
+>    it. If virus is active then you don't get any error messages
+>    N.B. on 3.5" disks some strange errors may be get such as
+>    Devide Overflow
+
+Yes, indeed, that's because the virus "swallows" the error... :-)
+Thans for pointing out this.
+
+>  2 check last cluster in the 1 and 2nd copies of FAT if in first you found
+>    EOF but in second not than it may be thesignal that those virus is hear.
+
+Sometimes DOS updates the second copy of the FAT itself, so this
+method is unreliable. I have observed several cases in which the EOF
+mark was present in both copies of the FAT. Better check whether the
+hex representation of the EOF mark in the FAT is 0(F)FFEh (means
+virus), or 0(F)FFFh (means normal EOF). Anyway, the virus does not use
+this strange mark for self-recognition, so IMHO the strange value is
+a bug un the virus code.
+
+>  The virus has been named in SU ( as far as it appeared here in early summer)
+>  as DRIVER-1024 (due to scheme of infection) or DIR but not DIR-2
+
+That's because the Dir virus is not spread in the SU... :-) Anyway,
+how does Bezrukov call this virus? It's a bit difficult to apply his
+notation to it...
+
+>  Few Tips for anti-virus developer.
+
+>    if you find COM or EXE file with some data at offset
+
+...and if the file attributes for this entry do not indicate System,
+Directory, or VolumeLabel.
+
+>   2 There were the situation when disk was infected and virus occypies not
+>     the last cluster and not even near. That is why I think that there may
+>     be situation when 2 or more copies of virus may be present on one disk
+
+Have you really observed such situation?! It shouldn't be possible,
+according to the virus code... The virus installs itself on the last
+cluster of the disk, which is not marked as bad.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev         Universitaet Hamburg, FB Informatik - AGN
+Bontchev@Informatik.Uni-Hamburg.de   Schlueterstrasse 70, D-2000 Hamburg 13
+New address after October 1, 1991:   Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 13:05:45 +0100
+>From:    "Pete Lucas" <PJML@ibma.nerc-wallingford.ac.uk>
+Subject: DEC PathWorks and Virus propagation.
+
+Does anyone have any experience of viruses in an environment that uses
+the DEC PathWorks (PCSA) software to provide virtual disks to a number
+of PCs?  The environment is:-
+                    DEC VAX/VMS 5.4 on a VAX 6410
+                    DECNET over thinwire Ethernet.
+                    PC-DOS3.3 and 4.01 on approx 45 PCs.
+
+In particular, my interest is in whether a virus such as 1701 or 1704
+can 'take up residence' on a virtual-disk on the VAX/VMS system. If it
+does take up residence, how would i go about removing it?  One of the
+networked PCs has been caught with 1701 and i need to know if the rest
+of the PCs are going to get it too.  Somehow, i suspect that the
+subtle differences in filestore structure between DOS and VMS will
+prevent such a problem; can someone confirm or deny my assumption?
+
+DEC have, so far, been somewhat reluctant to give me a definitive answer.
+
+ Pete Lucas   PJML@UK.AC.NWL.IA    PJML%IA.NWL.AC.UK@UKACRL   G6WBJ.ampr.org
+
+Please use the following addresses for reply:          +     \/Natural
+                                                       +    \/\Environment
+JANET    : PJML@UK.AC.NERC-WALLINGFORD.IBMA            +   \/\/Research
+Internet : PJML%IA.NWL.AC.UK@NSFNET-RELAY.AC.UK        +  \/\/\Council
+EARN     : PJML%UK.AC.NWL.IA@UKACRL                    +  NERC Computer Service
+s
+RADIO    : G6WBJ@GB7SDN.GBR.EU  {144.650MHz}           +   Holbrook House
+SPAN     : STAR::\PJML%IA.NWL.AC.UK@NSFNET-RELAY.AC.UK +    Station Road
+PHONE    : +44 (0)793 411613   (subject to change)     +     SWINDON SN1 1DE
+FAX      : +44 (0)793 411503                           +      GREAT BRITAIN
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 10:49:11 -0400
+>From:    padgett%tccslr.dnet@mmc.com (A. Padgett Peterson)
+Subject: Bug in SAFEMBR (PC)
+
+Bug reported in SAFEMBR: Possibly this was because it was uuencoded and
+not xxencoded. Others have reported satsfactory receipt.
+					Padgett
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 18:04:00 +0100
+>From:    "Olivier M.J. Crepin-Leblond" <UMEEB37@VAXA.CC.IMPERIAL.AC.UK>
+Subject: Re: Bulgarian virus writers (PC)
+
+>Date:    Thu, 03 Oct 91 15:17:39 -0500
+>From:    ROsman%ASS%SwRI05@D26VS046A.CCF.SwRI.EDU
+>Subject: Why Bulgaria?
+>
+>This may be a FAQ, but I haven't seen it go by in the last year, so here goes?
+>
+>I have noticed that a large number of viruses are listed with Bulgaria
+>as their origin.  Does anyone have a notion why ?
+[...]
+
+>Date:    Fri, 04 Oct 91 09:36:52 +0100
+>From:    Anthony Appleyard <XPUM04@prime-a.central-services.umist.ac.uk>
+>Subject: Bulgarian virus writers (PC)
+[...]
+[ V. Bontchev wrote:]
+>on  the VIRUS echo on FidoNet, but nobody payed any serious attention... I have
+>reports that this virus is escaped Bulgaria and is extremely widespread  in the
+>Soviet Union, Poland, and probably Norway.".
+[...]
+[ A. Appleyard commented:]
+>If these two disastrously productive virus  writers  are  operating  openly, as
+>seems from the above, can't the government or law courts of Bulgaria act
+ against
+>them??  like the  USA  courts  did with Morris and his Internet worm that time.
+
+I'd also like to know how and why do all these viruses get exported so
+easily.  Is Bulgaria such an important source of software ? Do the
+virus writers have accomplices who export infected programs ?
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 16:36:53 +0000
+>From:    rock.concert.net!trent@mcnc.org (C. Glenn Jordan -- Microcom)
+Subject: VIRx v1.8 is released
+
+Microcom, Inc and Ross Greenberg released the version 1.8 update to
+the popular free virus detection program VIRx Monday. The archive as
+distributed, VIRX18.ZIP, is 65888 bytes long and is internally dated
+to 9-30-91, 00:00. It contains :
+
+        File           Length
+        --------       ------
+        $TOC           804
+        WHATSNEW.18    7680
+        VIREX.TXT      7040
+        README.VRX     12672
+        VIRX.EXE       93490
+
+The program VIRX.EXE has a CRC-32 of 9f3acb4f, says PKZIP 1.01. Anyone
+may use VIRx for free, including institutions and corporations. There
+is no shareware fee. It may not be sold. It is available for download
+from Compuserve and GEnie, and will be on SIMTEL-20 if conditions
+permit.
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 15:31:30 -0500
+>From:    <dklash%sedofis@sed.BITNET>
+Subject: STONED Virus - information please! (PC)
+
+Hello!
+
+Well, here at work we've finally got our first virus, the STONED virus.
+
+We are using McAfee v82 to scan and clean the infected disks.  But I
+have some questions:
+
+1) How does the STONED virus propagate itself?  If it is just on the
+boot sector of a data disk and I access that disk via a program from a
+"clean" system, will it propagate?  Seems to me that the STONED virus
+must be running in memory to be able to propagate
+
+2) It seems that if I copy files from a STONED disk to a non-infected
+disk, the virus is not transmitted to the clean disk (assuming the
+system I run the COPY from is clean in the 1st place).  Is this always
+true?
+
+3) On some occassions when using McAfee's CLEAN 82 on a floppy that
+SCAN 82 discovered STONED on, CLEAN says it cleaned the disk but
+another SCAN still says STONED is there.  Note that the PC has been
+cleaned of the virus.  Is this perhaps just an image or signature left
+behind and that the virus really has been removed?
+
+4) Can McAfee SCAN 82 make mistakes?  One office seems to have had all
+of their floppies infected, even those that haven't been used in
+awhile.  The PC we checked the disks from registers clean (we always
+power down and boot from a known good disk to run SCAN from).  Is
+McAfee providing false information or are the disks really infected
+(and the virus has been lying "dormant")?
+
+That's enough for now - I'll be checking the FTP sites for
+virus-related info.
+
+Thanks in advance for any info that can be provided.
+
+Dave
+
+
+------------------------------
+
+Date:    04 Oct 91 15:21:49 -0400
+>From:    Jon Freivald <70274.666@CompuServe.COM>
+Subject: Virus that infects only floppies? (PC)
+
+>Does anybody out there know of a virus which affects only floppy
+>drives, and not hard drives?  Whenever I try to read, write, or format
+>a floppy disk in either a 5 1/4" 1.2 MB or a 3.5" 1.44 MB drive, I get
+>errors ranging from data errors to track 0 bad..... I am cuurently
+>running MS-DOS 5.0 on 386-25.  Could this be a virus, or is it more
+>likely a hardware problem ( i.e., disk drive controller)?
+>Any help would be greatly appreciated....
+
+I had a VERY similar problem.  Are you by chance using QEMM?  If so,
+remove "ROM" from the command line in your config.sys and see if the
+problem goes away -- did for me!
+
+The next step would be to try a known good controller - either put it
+in the suspect box, or put the suspect floppies in a known good box...
+
+Jon
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 21:56:25 +0000
+>From:    leo@hoss.unl.edu (Leo Chouinard)
+Subject: "Better DOS than DOS" and viri (OS/2) (PC)
+
+Does anyone have a reading on how MS-DOS viri will behave for DOS
+programs run under OS/2 2.0?  I would guess that the better OS/2 is at
+emulating DOS, the better such viri will do.  I'd hope it might stop
+some of them, however.
+
+In conjunction, how will anti-viral programs now commonly used under
+DOS fare at protecting OS/2 machines?  For example, the "device
+driver" monitoring programs that many of us run - will it be possible
+to get OS/2 to use those "drivers" to check the DOS programs we run
+under OS/2?  (I'm guessing it will.)
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 22:06:57 +0000
+>From:    mrs@netcom.com (Morgan Schweers)
+Subject: Re: DIR II (Cluster) Virus (PC)
+
+Greetings,
+    Add Greece to the sightings of this virus...
+
+    Anyhow, a few minor additions...  This virus actually *DOES* use
+a particular mostly-undocumented interrupt.  It does not call the
+interrupt directly, but rather uses the location to determine the location
+of the 'real' INT 21h.  (As far as I can tell, that is.  I'm sure Joe Wells
+knows more than I about that subject.)
+
+    The next version of CLEAN will remove the DIR II virus.  (Tentatively V84)
+It was interesting...  I was told at first that some people felt it couldn't
+be done within the methods that our program uses.  Well, it may not be as
+blazingly fast as some of my other removers, but it will remove the virus
+successfully.  (I haven't had a problem yet, but it's still in Beta...)
+It's not slow, either.
+
+    The hope around the block these days is that we can stop this puppy
+before it spreads too far.  (I'll admit, I'm just hoping it doesn't make
+it into the USA.  As soon as it does, all hell is going to break loose if
+only a few anti-virus products are working against it.)
+
+                                                 --  Morgan Schweers
+- --
+mrs@netcom.com   |   Morgan Schweers   |  Happiness is the planet Earth in your
+ms@gnu.ai.mit.edu|   These messages    |  rear view mirror.  --  Jeff Glass
+Kilroy Balore    |   are not the       +--------------------------------------
+Freela           |   opinion of anyone.|  I *AM* an AI.  I'm not real...
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 17:32:04 -0400
+>From:    Arthur Gutowski <AGUTOWS@WAYNEST1.BITNET>
+Subject: The (Lack of an) Ultimate Solution
+
+>Date:    Thu, 03 Oct 91 20:41:20 -0700
+>From:    turtle@darkside.com (Fred Waller)
+>Subject: Ultimate solution
+>
+>Writes bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev):
+>
+> > I claim that the increasing number of anti-virus programs is
+> > a consequence of the increasing number of viruses.
+>
+> Such a claim might be more believable if most viruses had appeared
+> *before* scanners first started to appear.  They did not.
+
+Yes, but the question to ask is, "Would more viruses had appeared on
+the scene *even if* scanners had not?"  My inclination is to believe
+they would.  Look at the Mac world.  Scanners/Disinfectors have appeared
+on this platform, but the number (read: strains, variants, and new kinds)
+of viruses (not infection count) has not increased with the voracity
+that the PC world has experienced.
+
+> > The hardware solutions are indeed very useful and I wellcome
+> > them, but just as the software ones they cannot be the ultimate
+> > solution to the problem.
+>
+> A great deal depends on how one defines "ultimate solution". If, by
+> "ultimate solution", it is meant that people will stop writing
+> viruses (or stop writing any other kind of program), then of course
+> there will never be one. But if by "ultimate solution" is meant that
+> the computers will become so much less vulnerable to virus infection
+> that, for practical purposes, the threat will become more nearly
+> insignificant, then it is certainly possible.
+>
+> Hardware defenses are the only reliable defenses. This is simply
+> because no software attack is ever capable of overcoming a hardware
+> defense. Conversely, it is not possible to design a foolproof, or
+> even a reasonably-effective, software defense. The attempt to do so
+> is a delusion, a hopeless pursuit of the Holy Grail. Software can
+> defeat software only for a short while - until the next generation
+> of software attack is designed. Then the cycle starts all over.
+> Ad infinitum. Nor can hardware defenses be derived from symbolic/
+> software considerations. They must be designed on their own.
+>
+> Hardware, on the other hand, stops software attacks - and no new
+> or improved software version can overcome it - ever.
+
+I disagree.  Even hardware solutions can be overcome by the ignorant
+or impatient.  The most effective of solutions comes with a combination
+of hardware and software.  Software alone cannot stop viruses altogether.
+Nor can hardware alone (See Star Trek, the Next Generation, there was
+an interesting episode a while back about the Enterprise becoming
+"infected"...if I recall correctly, it was because of "mites"...little
+hardware creatures that had gotten into the ship's systems.  Granted,
+a little far feteched by today's standards, but who's to say that there
+won't come a day when we can create (or encounter) infectious "beings"?)
+
+There is no ultimate solution to the problem, but there are reasonable
+approaches, both hardware and software.  (See Padgett Peterson's
+paper on the six-byte integrity checking, and some of the programs he
+and others have written, as well as his recent "Interesting Laptop
+Configuration" posting).
+
+> After all, a simple write-
+> protect tab, which is nothing more than a humble fragment of black
+> paper, stops ALL known viruses 100% of the time... far more
+> effectively than ANY software written to date.  And far more
+> cheaply, too.
+> ...
+> The next generation of viruses will be just as
+> impotent against the humble write-protect tab as was the first ---
+> and all generations after it. There will NEVER be a virus capable
+> of defeating a write protect tab. The write-protect tab DOES NOT
+> NEED to evolve, or be improved, or redesigned to stop viruses.
+> It will continue stopping them - forever. That's how hardware
+> protection works.
+
+>From:    dave@tygra.Michigan.COM (David Conrad)
+>
+>Yes, a write-protect tab will stop all viruses.  It will also stop all
+>application programs which write any data to the disk.  In fact, it
+>renders disks almost useless for storage, except for invariant
+>programs and data.
+>
+>Recall the two 'Laws' for protection which someone has in their sig:
+>"First Law: Don't buy a computer."
+>"Second Law: If you buy a computer, don't turn it on."
+
+I agree with Dave, here.  What's the use of having a computer if you
+can't share data?  Answer:  There is none.  100% security = 100%
+non productivity.  You might as well power it down, lock it in a
+lead safe, cast it in cement, and drop it to the bottom of a shark-
+infested sea (cf. Gene Spafford), and we're back in the forties.
+
+> > Speak only for the IBM PC world. In the Mac world exactly the
+> > opposite is true - very few virus variants.
+>
+> It is much more difficult to write "illegitimate" code for the Mac
+> OS because Apple does not make its details known, and additionally
+> keeps changing the OS at every redesign of the machines.  No, the
+> comparison is not valid.  Also, do all the antivirus software
+> publishers service both markets? And what is the relative size of
+> each?  The Macintosh population is but a small fraction of the PC
+> population. It's less interesting as a market, both for viruses and
+> for antiviruses.
+
+Yes, but the Apple OS is still *software*, isn't it.  For that matter,
+so is MVS and VM, and we see very few mainframe viruses, too.
+
+> >.....we'd better drop this discussion, shall we?
+>
+> In my experience, people who feel vulnerable in an argument are
+> the ones who ask to drop a particular subject. If the manner of the
+
+Or, maybe we're just growing weary of going around and about the same
+points over and over again.  I for one, am growing tired of paging
+through mounds of postings with nothing new to say.  The simple fact is
+viruses are here, they're not going to stop until the writers decide to
+stop writing them, and I think that *anything* that can be done to
+slow them down, even a little bit, is useful.
+
+Returning from my soapbox,
+                        Art
+Arthur Gutowski
+MVS System Programmer and defacto Local Virus Expert for:
+Wayne State University
+Detroit, Michigan
+Agutows@Waynest1  or  Agutows@cms.cc.wayne.edu
+
+------------------------------
+
+Date:    Sun, 06 Oct 91 17:47:48 -0500
+>From:    James Ford <JFORD@UA1VM.BITNET>
+Subject: New file on risc (PC)
+
+The file "virx18.zip" has been placed on risc.ua.edu (130.160.4.7) for
+anonymous FTPing in the directory pub/ibm-antivirus.
+
+Thanks to C. Glenn Jordan for uploading it.
+- ----------
+Swallowing angry words is much easier than having to eat them.
+- ----------
+James Ford -  Consultant II, Seebeck Computer Center
+              The University of Alabama (in Tuscaloosa, Alabama)
+              jford@ua1vm.ua.edu, jford@risc.ua.edu
+
+------------------------------
+
+Date:    Thu, 03 Oct 91 10:47:08 -0700
+>From:    Rob Slade <rslade@kea.bc.ca>
+Subject: Review of Virus Buster (PC)
+
+PCVRBSTR.RVW   910919
+                               Comparison Review
+
+Company and product:
+
+Leprechaun Software Pty Ltd
+PO Box 134
+Lutwyche  Queensland  4030
+Australia
+(07) 252 4037
+fax: (07) 252 4071
+BBS: (07) 252 4104
+Leprechaun International
+2284 Pine Warbler Way
+Marietta Georgia 30062 USA
+404 971 8900
+fax 404 971 8988
+Roger Thompson <70451.3621@CompuServe.COM>
+Virus Buster v. 3.75, Sep. 91
+
+
+Summary:
+
+Very complete range of antiviral protection programs, including
+change detection, resident and non-resident scanning, activity
+monitor and operation restriction.
+
+Cost
+
+Rating (1-4, 1 = poor, 4 = very good)
+      "Friendliness"
+            Installation      3
+            Ease of use       3
+            Help systems      3
+      Compatibility           3
+      Company
+            Stability         3
+            Support           2
+      Documentation           3
+      Hardware required       4
+      Performance             3
+      Availability            2
+      Local Support
+
+General Description:
+
+Virus Buster offers a very wide variety of antiviral protection,
+and is suitable for both novice and experienced users.  BUSTER and
+WATCHDOG/PROTECT are non-resident and resident change detection
+software, respectively.  In addition, WATCHDOG provides activity
+monitoring and operation restriction.  FIDO/Phideaux allows
+WATCHDOG to run under Windows.  DOCTOR and VBSHIELD provide non-
+resident and resident signature scanning.  DISKLOK provides access
+restriction to the hard disk and detection/disinfection of boot
+sector viri: KEYLOK restricts access to the computer if left
+unattended.  VBCOPY checks files for viral signatures during copy
+operations.  VBSAVER provides other Virus Buster programs with the
+ability to detect stealth viri.  A file browser, LIST, and a task
+scheduler, ONCEADAY, are also included.
+
+                  Comparison of features and specifications
+
+
+
+User Friendliness
+
+Installation
+
+The package is shipped on dual media.  The 360K disks are non-
+writable, the 720K disk is writable, but protected.
+
+The manual is dauntingly thick, but the first page provides
+information on installation, and clearly outlines the "Standard"
+and "Default" methods for installation.
+
+Installation is quite intelligent.  Time to install will vary
+greatly depending upon the options chosen.  As is indicated in the
+manual, default installation can be quite lengthy.
+
+Ease of use
+
+Most of the programs run with a mouse sensitive menuing interface,
+but there is also an option to use command line switches for those,
+more familiar with the system, who wish faster and more direct
+control.
+
+Menu and mouse use is well explained in the manual, and should
+present no difficulty to anyone.  It is, however, not quite
+standard for those used to a CUA interface.
+
+Help systems
+
+A number of help systems are available, and help for menu items is
+context sensitive.  It is, however, fairly brief in most cases.
+
+A very nice feature is the fact that some characteristic
+information is given about any virus detected, rather than merely
+a name.
+
+Compatibility
+
+The programs appear to be well behaved.  Provision has been made
+for the WATCHDOG TSR to work under Windows.
+
+The PROTECT program is one which adds information to program files
+in order to detect any changes made to the files.  As has been
+noted with other, similar, programs in the past, this practice may
+conflict with programs which already have internal self checks.
+However, a number of such programs, modified by PROTECT, showed no
+problem in subsequent runs.
+
+Company Stability
+
+The company has apparently enjoyed sufficient success as to open an
+office in the United States this year.
+
+Company Support
+
+The documentation lists numbers for voice, fax and BBS in
+Australia, and the manual stresses the use of the BBS for support.
+A small window in the lower right hand corner of the screen
+continually scrolls through the phone and fax numbers for the North
+American office (which I received my copy from), as well as the
+serial number: a nice feature when calling for support.
+
+Documentation
+
+Although the printed documentation is the size of a significant
+novel, the arrangement of the material is thoughtful and well
+presented.  Chapter 1 is a single page, which explains how to
+install the program.  Subsequent chapters explain: how the manual
+works, how the program works, how the interface works, how
+installation works and so forth.  (If I may be permitted a small
+"peeve", the typeface is awful.)  Much information is duplicated in
+many chapters as many of the programs have common options.
+
+Chapter 18 is a good description of the virus situation - with the
+one proviso that it overemphasizes the value of "buy only
+commercial" as a defence against viri.  The statement that "no
+professional software house releases virii ..." may be
+syntactically correct, but is misleading in terms of the actual
+safety of commercial software.
+
+(Although I had received version 3.75 of the software by the time
+this review was complete, I had not yet received the latest version
+of the documentation.)
+
+Hardware Requirements
+
+None stated.
+
+Performance
+
+The DOCTOR scanning program is fairly slow in terms of the current
+generation of scanners.  It also "triggered" falsely on a number of
+other antiviral programs, although it did not give any false
+postitives on 80 meg worth of other software.  Although it was able
+to find the BRAIN and Stoned viri on disk, it was unable to find
+them in memory.  Stoned was removed from the hard disk with no
+problems, but remained active and infectious.
+
+The description of VBSAVER's operation is very short, although
+perhaps understandably so in view of the battle for security
+technology between virus writers and antiviral developers.  The
+documentation seems to imply that VBSAVER is ineffective until
+invoked, and in tests it was unable to assist in identification of
+stealth boot viri, although the DOCTOR program did state that a
+stealth virus might be operating, and recommended rebooting.
+
+DISKLOK is unusual among hard disk access restriction programs in
+that it stores copies of the original system areas and restores
+them if any change is detected, thus defeating most boot sector
+viri including Stoned.  DISKLOK can be bypassed, but the manual is
+quite clear about possible dangers and what to do about them.
+
+WATCHDOG was effective in preventing writing to disks during
+testing.  Any attempt to write to a protected area generates an
+alert window.  The menu allows the user to allow or disallow the
+operation, and, optionally, provides information on the action
+detected.
+
+Local Support
+
+None provided.
+
+Support Requirements
+
+Virus Buster can be almost fully utilized by a novice user.  Expert
+help in installation should provide a very high level of
+protection.
+
+                                 General Notes
+
+Virus Buster provides one of the most complete defences against
+viral attack yet reviewed, ranking with pre version 2.00 FPROT in
+the range of protection provided.  The help systems, interface and
+manual should allow it to provide a high level of protection to
+even naive users.  A weakness in the area of detection of memory
+resident viral programs should be addressed, but the combination of
+defences does not seriously weaken the overall protection delivered
+by the package.
+
+copyright Robert M. Slade, 1991   PCVRBSTR.RVW   910919
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      CyberStore               |  turn it on."
+User                (Datapac 3020 8530 1030)| Richards' 2nd Law
+Security           Canada V7K 2G6           | of Data Security
+
+------------------------------
+
+Date:    Fri, 04 Oct 91 09:52:33 -0700
+>From:    Rob Slade <rslade@kea.bc.ca>
+Subject: Antiviral contact list (mostly PC)
+
+Abacus
+5370 52nd St., SE
+Grand Rapids, MI   49512
+USA
+Computer Viruses: a high tech disease, Ralf Burger, 1988, 1-55755-043-3
+
+ACM Press
+Computers Under Attack: intruders, worms and viruses, Peter J. Denning, ed.,
+0-201-53067-8
+
+Sandy Jenish, Dave Reid (VP Marketing)
+Advanced Gravis Computer Technology
+7033 Antrim Avenue
+Burnaby, B. C.
+V5J 4M5
+604-434-7274
+Telecopier: (604) 434-7809
+Advanced Security for PC and Mac
+
+[Ed...  Due to the length of this list, I've deleted the remainder of
+the names and made the entire file available by anonymous FTP on
+cert.sei.cmu.edu in the file pub/virus-l/docs/reviews/slade.contacts]
+
+=============
+Vancouver          p1@arkham.wimsey.bc.ca   | "If you do buy a
+Institute for      Robert_Slade@mtsg.sfu.ca |  computer, don't
+Research into      CyberStore               |  turn it on."
+User                (Datapac 3020 8530 1030)| Richards' 2nd Law
+Security           Canada V7K 2G6           | of Data Security
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 183]
+******************************************

@@ -1,0 +1,398 @@
+VIRUS-L Digest   Friday, 18 May 1990    Volume 3 : Issue 98
+
+Today's Topics:
+
+News from Bulgaria (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+LEHIIBM1.BITNET for BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+------------------------------------------------------------
+
+Date:    Fri, 18 May 90 09:55:45 +0000
+From:    frisk@rhi.hi.is (Fridrik Skulason)
+Subject: News from Bulgaria (PC)
+
+The following article was written by Vesselin Bontchev from Bulgaria, who
+is now back home and without E-Mail access.  It is possible to reach him
+via a FidoNet BBS in Bulgaria, though.
+
+
+     1. The Dark Avenger virus.
+     - I found two new mutations of this virus. Well, maybe
+"mutations" is not the correct word. In the first of them,
+the first 16 characters of the string "Eddie lives...
+somewhere in time!" were replaced with blanks. In the second
+example, all strings (the message above, the copyright
+message and the "Diana P." string) were replaced with
+blanks.
+     - The author of the Dark Avenger virus (The bastard! I
+still cannot determine who he is.) has released the source
+code of his virus. It is full with ironic comments about me.
+Of course, now we have to expect lots of new, similar
+viruses to appear. At least, this leaded to one good thing -
+the source helped me very much in disassembling the V2000
+virus.
+     - I received a rather offensive anonymous letter from
+this person. In it he claims to be also the author of both
+the V2000 (I trust this) and the Number of the Beast viruses
+(the latter is unlikely).
+
+     2. The V2000 virus.
+     - It turned out that the example of this virus I sent
+to some of the antivirus researchers was not the original
+version. The original contains the string "Only the Good die
+young..." instead of the "Copy me - I want to travel"
+message. Also a small piece of code in the original version
+was patched to contain the "666" string. (That is, the
+version you have contains this string, the original does
+not.)
+     - There exists also a small mutation of the version you
+have. The only difference is that the `C' character in the
+word "Copy" was changed to `Z'.
+     - When describing the V2000 virus, I stated that it
+halts the computer if you run a program which contains the
+string "Copyright (c) 1989 by Vesselin Bontchev". This is
+not quite correct. In fact, the programs are only checked
+for the "Vesselin Bontchev" part of the string.
+     - I obtained John McAfee's program Clean, version 60.
+In the accompanying documentation he states about the V2000
+virus that "The virus is very virulent and has caused system
+crashes and lost data, as well as causing some systems to
+become non-bootable after infection". This is not very
+correct, or at least, there is much more to be said. The
+virus is exactly as virulent as the Dark Avenger virus, and
+for the same reason. It infects files not only when one
+executes them, but also when one reads or copies them. This
+is achieved exactly in the same manner as in the Dark
+Avenger. The systems become non-bootable when the virus
+infects the two hidden files of the operating system - it
+cannot distinguish them from the regular .COM files. By the
+way, the Dark Avenger virus often causes the same effect.
+And at last, but not least (:-)), the virus is highly
+destructive - just as the Dark Avenger is. It destroys the
+information on a randomly selected sector on the disk once
+in every 16 runs of an infected program. The random function
+is exactly the same, and the counters (0 to 15 and for the
+last attacked sector) are exactly the same and on the same
+offsets in the boot sector as with the Dark Avenger virus.
+The main difference is that the destroyed sector is
+overwritten not with a part of the virus body, but with the
+boot sector instead. This makes a bit more difficult to
+discover which files are destroyed - the boot sector is
+contained in many "good" programs, such as FORMAT, SYS, NDD.
+Also, the nastiest thing - the damage function is not
+performed via INT 26h (which can be intercepted). The virus
+determines the address of the device driver for the
+respective disk unit (using an undocumented DOS function
+call, of course. I begin to wonder if Ralf Brown did any
+good when he made the information in the INTERxyy file
+available :-)). Then it performs a direct call to that
+address. The device driver in DOS does its work and issues
+the appropriate INT 13h. However the virus has scanned the
+controllers' ROM space and has determined the original
+address of the interrupt handler - just as the Dark Avenger
+virus does. Then it has temporary replaced the INT 13h
+vector with the address of this handler. The result is that
+the damage function cannot be intercepted.
+     - Also this virus (unlike Dark Avenger) supports PC-DOS
+version 4.0 and will work (and infect) under it.
+     - The bytes 84 A8 A0 AD A0 20 8F 2E in the virus body
+are the name "Diana P.", this time written in cyrillics.
+
+     3. The Number of the Beast.
+     - Three new versions of this virus have appeared. None
+of them contains the "666" string any more. I have
+difficulties to tell the exact order in which these versions
+were created. In all of them the virus writer has tried to
+stick more code - but the place is *really* too small. In
+one of them he abandoned the DOS version check; in
+another there is no error checking. I call these versions
+V512-B, V512-C and V512-D respectively. The bad news is that
+John McAfee's program SCAN in no longer able to find them. I
+do not think that this effect is achieved intentionally,
+maybe John just picked a bad search string.
+     - In these mutations some of the earlier design bugs in
+the virus were improved. For instance, all of them are able
+to extract correctly the name of the command interpreter on
+boot time - even if it is not in the root directory. Also,
+the infected program don't always exit at DOS prompt when
+run on a clear system. The virus saves the first one (or
+two, this depends of the concrete mutation) byte of the
+original file in its own body. Then, when the infected file
+is executed, the virus reads the first byte after the end of
+file and compares it with the saved one. If these bytes
+match, the virus tries read the original 512 bytes and to
+execute the file. If they don't, the file is considered as
+damaged and the virus terminates the program (and exits at
+DOS prompt).
+     - This virus contains a bug I didn't mentioned in my
+description. This is a design bug, not a programmer's one.
+The problem is that the virus is not always able to check
+successfully if it is already present in memory. It compares
+the program, which has intercepted the INT 21h vector with
+its own body. However it does not try to be the first
+program on this vector - like the Dark Avenger virus does.
+Now suppose that your COMMAND.COM is infected and that you
+have a lot of TSR programs in your AUTOEXEC.BAT file, all of
+which intercept INT 21h. Of course, each of them will become
+infected. However each of them will cause a new copy of the
+virus to be loaded also - since the first program has
+intercepted INT 21h and the virus in the next program will
+not be able to find that it is already present in memory.
+Since every copy of the virus will occupy a DOS I/O buffer,
+the operating system will run out of buffers soon. This will
+lead to bad performance and system crashes.
+
+     4. The Stoned (Marijuana, New Zealand) virus.
+     This virus appeared in Bulgaria in late December, 1989.
+I have a disassembly of it, made by Joe Hirst (I received it
+from Morton Swimmer). (By the way, Joe Hirst's listings are
+really excellent. But why he does not use mnemonic or at
+least address-specific labels?) Unfortunately, the virus
+which appeared in our country is not exactly the same.
+According to Joe Hirst's listing, the virus places the
+original partition sector of the infected hard disk on side
+0, cylinder 0, sector 2. With the example I have, the place
+is at side 0, cylinder 0, sector 7. This conforms better
+with the description of the virus, made by Prof. Harold
+Highland in "Computers & Security". Also some instructions
+of Joe Hirst's listing have been optimized a bit (i.e., XOR
+BX,BX instead of MOV BX,0). I really cannot understand why
+this was done, since the virus fits on one sector and it is
+useless to make it shorter. Another change is that the code
+which displays the "Your PC is now Stoned" message is no
+more implemented as a subroutine - since it is called only
+once. Anyway, all the antivirus programs I have against this
+virus, are able to recognize it and to cure the infected
+disks. Therefore I conclude that this mutation is well known
+in the Western countries.
+
+     5. The Disk Killer (Ogre) virus.
+     I received a report (along with an example) about this
+virus on April 13, 1990 (another "Black Friday" :-)). The
+virus was on a diskette, brought with a computer from
+Taiwan. I would like to thank to Morton Swimmer, whose
+disassembly listing of the virus helped me very much to
+understand how the virus works and how to design a program
+against it; and to Fridrik Skulason, whose antivirus package
+F-PROT and especially the program F-DISINF was used as a
+"first-aid" tool. John McAfee's Clean program is also able
+to cure this virus, but it does not free the clusters marked
+as bad. Interestingly enough, this virus contains a piece of
+code, the purpose of which is to determine at boot time if
+the virus is already present in memory. This is the first
+boot sector infector I see which will not load itself
+several times in memory if you boot from an infected
+non-system disk and press several times the "any key" when
+the appropriate message is displayed. By the way, has
+anybody designed a program to recover from the damage done
+by this virus? This has to be possible, since the virus
+simply encrypts the sectors on your disk, XORing them with
+0AAAAh and 5555h alternatively.
+
+     6. The Amstrad virus.
+     A new mutation of this virus was created in our
+country. It is based on the 299 version, but the text
+message has gone. Instead, there is a piece of code, which
+causes PARITY ERROR with a probability of 1/2 when an
+infected program is run. The new mutation is only 277 bytes
+long. As far as I know, this is the shortest virus in the
+IBM PC world. I really cannot understand why the virus
+writers out there do bother to change such a stupid virus as
+the Amstrad one is.
+
+     7. The 4096 virus.
+     No, we don't have this virus in Bulgaria, at least -
+not yet. But Morton Swimmer gave me a copy of an infected
+file. I studied it a bit and now I can say that this is the
+virus which is the easiest one to get rid of. Just run an
+infected file - to ensure that the virus is in memory. Then
+for each directory of your disks execute the commands
+          copy *.com nul
+          copy *.exe nul
+     After this turn the computer off to remove the virus
+from memory. That's all - your files are no longer infected.
+
+     8. The Toothless virus (V534).
+     This virus came from the Soviet Union and is probably
+created there. I have a Russian program against it. In the
+accompanying documentation the virus is called "a version of
+the 648 (Vienna) virus, made by a clumsy programmer". This
+definition is quite exact. The virus is really very similar
+to the Vienna one, with some parts of code removed and other
+slightly changed. It is a non-resident virus. It infects
+only .COM files in the current and in the root directory.
+The directories, listed in the PATH variable are *not*
+searched - the code for finding this variable in the
+environment is entirely removed. The destructive function is
+also removed. The infected files are marked not with a 62
+seconds mark in their time of last update. Instead, a month
+equal to 13 in the date of last update is used. This is
+rather boring, since it can be easily seen (by obtaining a
+directory listing) and some programs (e.g., Norton
+Utilities) treat such things as "not a proper directory
+entry". The virus increases the length of the infected files
+by 534 bytes. Only files with length between 256 and 64000
+bytes are attacked (the first of these numbers was 10 in the
+Vienna virus). The virus is not very virulent - I have only
+one report about it. The man who reported it brought me an
+infected COMMAND.COM and said that its length had changed
+once a bit - "about 500 bytes" - and the month in the file
+date has changed to 13. When I was able to confirm that this
+is indeed a new virus, I checked all his files, but found
+nothing more than that infected COMMAND.COM.
+     If the virus infects a file with the ReadOnly attribute
+set, this attribute is cleared after the infection. This is
+due to a bug in the virus code.
+     The virus is assembled with a strange assembler (A86?).
+Its disassembly listing cannot be assembled back with MASM
+or TASM to produce exactly the same code.
+
+     2. The Murphy viruses.
+     The first of them appeared few weeks ago. It infects
+both .COM and .EXE files, is memory resident,
+non-destructive and infects files both when one executes or
+just copies them. Its infective length is 1277 bytes. To be
+infected, the files have to be greater than the infective
+length. A closer look revealed that:
+     - The most important parts of the virus were directly
+got from the Dark Avenger virus. These include the
+installation in memory, the controllers' ROM scan, the way
+files are infected.
+
+     - This is the first virus, which not only supports
+PC-DOS version 4.0 (for instance V2000 does this), but also
+uses it. It infects files also when the function 6C00h
+(extended open/create) is executed.
+     - If the virus is loaded in memory between 10 and 11
+a.m., the computer's speaker is turned on and is reset on
+every DOS function call. This emits a strange "shuffling"
+noise - one can almost hear how the computer "thinks".
+     - The virus contains the message " Hello, I'm Murphy.
+Nice to meet you friend. I'm written since Nov/Dec.
+Copywrite (c)1989 by Lubo & Ian, Sofia, USM Laboratory. ".
+This message is never displayed. The "USM Laboratory" is
+non-existent. "Lubo & Ian" do exist however. More about this
+later.
+     - The virus does not infect .COM files, greater than
+64226 bytes. However, files greater than 64003 bytes refuse
+to run when infected.
+     - File type (.EXE vs. .COM) is determined both by the
+file extension and by the file's first two bytes. The check
+is made only for `MZ', not for `ZM'.
+     - Since it is able to find the original INT 13h handler
+(via the ROM scan - as the Dark Avenger virus does), the
+virus cannot be stopped by a TSR which only hooks the INT
+13h vector. It can be detected however, by programs such as
+FluShot+, which look also for the Open-with-write-access
+function (AX=3D02h; INT 21h).
+     - The virus infects the command interpreter as soon as
+an infected program is run. This is done in the same manner
+as in the Dark Avenger virus.
+     - The virus has its own critical error handler.
+     A few days ago, a young man came to me and said that he
+has a new virus, that cannot be stopped by a memory resident
+program. Since I received lots of reports for new viruses in
+the last month (see the descriptions above) and since most
+of the Bulgarian viruses use to circumvent the memory
+resident protection programs, I was not very surprised. I
+asked him about the main symptoms of the virus - what does
+it infect (files/boot sectors), infective length, how does
+it show itself (messages displayed, tunes played), does it
+contain some strings and so on. He said that the virus
+contains a message in which it names itself Murphy. "Oh,
+yes," I said, "I already know this one. It's rather common".
+"It's impossible that you already know it", replied the
+young man, "I created it yesterday and have not released it
+yet!"
+     It turned out that he spoked about a new version of the
+Murphy virus. He was very surprised that an early version of
+his virus has escaped and spread all over the country. He
+thought a bit, then he said: "Oh, yes, now I remember. A few
+months ago all my diskettes were stolen. Between them was
+the diskette, containing the virus". Some jerks are *really*
+irresponsible!!!
+     What to do with such types?! It's impossible to
+prosecute them - we do not have the appropriate laws (and
+his virus was even not destructive). The old good physical
+punishment comes in mind, but I'm against violence. Besides,
+he looked so naive - he even didn't realized that his virus
+is able to circumvent only the INT 13h monitors. And this
+kind of virus writers is the most boring and dangerous one.
+With the "genial" virus writers (e.g., the author of the
+Number of the Beast) one can at least expect that if he
+gives them some interesting work, pays them well and so on,
+they will use their skills for something useful instead of
+creating viruses. But the "apprentices" like the one I met
+are even not skilled enough to create their own virus - they
+steal the main ideas form someone else or just modify an
+existing virus. They consider creating a virus as some kind
+of sport, as a way to proof themselves that they are
+SOMETHING...
+     Anyway, the new version of the Murphy virus (I call it
+Murphy-2) has infective length of 1521 bytes. All the other
+properties are the same, except the damage function. Now
+every exact hour the virus jumps to the ROM Basic
+interpreter - since (as the author of the virus says)
+"everyone ought to learn Basic". This may cause loss of
+data, if you are editing a large document and have not saved
+your changes. Also, the message in the virus has shorten a
+bit. Now it reads " It's me - Murphy.  Copywrite (c)1990 by
+Lubo & Ian, Sofia, USM Laboratory. " There is also a minor
+change in the way the virus checks if it is already present
+in memory. Murphy-1 uses function 4B59h and Murphy-2 uses
+function 4B4Dh of INT 21h.
+     As I already said above, the "USM Laboratory" is
+non-existent. "Lubo & Ian" stays for Lubomir Mateev Mateev,
+Sofia, ul. "Budapeshta" 14, tel. 80-28-26 and for Iani
+Lubomirov Brankov, Mihailovgrad, ul. "G. Damianov" 6, tel.
+2-13-34 respectively. At least, these names, addresses and
+phones are written in the source listing of Murphy-2, which
+I received from one of the authors (Lubomir Mateev, more
+exactly).
+
+    10. Last minute update - the V800 virus.
+     I was already sending this letter, when a new virus
+popped up. I haven't studied it yet. At a first glance, it
+has the following properties:
+     - The virus infects .COM-files in a rather strange way.
+Large parts of them can be found in the virus body and parts
+of the virus can be found in the file (before the end of the
+original - non-infected - file). It does not infect files
+with size less than 1024 bytes. It seems that COMMAND.COM is
+never infected (there is a check for 'CO' and 'MM' in the
+virus body). Sometimes the virus can attach itself multiple
+times to a file. Files grow by 800 bytes after each
+infection.
+     - Files are infected both when one executes them and
+when one copies them.
+     - The virus is memory resident. It uses 8 K of memory.
+I still cannot figure out why so much memory is needed.
+     - The virus is able to fetch the original INT 13h
+handler in PC-DOS version 3.30. This is achieved in the same
+manner as in the Number of the Beast (512) virus.
+     - The virus does not intercept INT 21h. Instead, it
+intercepts INT 2Ah, function 82h. This interrupt is called
+on every DOS function call, which deals with files.
+     - The virus is encrypted. It seems that the encrypted
+part does not change from file to file (as the Cascade virus
+does), but I'm not sure.
+     - When the virus decrypts itself in memory, the string
+"Live after Death" appears in its body. I have suspicions
+that this virus was also created by the Dark Avenger.
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 3 Issue 98]
+*****************************************

@@ -1,0 +1,882 @@
+VIRUS-L Digest   Wednesday,  2 Dec 1992    Volume 5 : Issue 193
+
+Today's Topics:
+
+Re: FDISK /MBR and FORM Virus (PC)
+Re: McAfee VIRUSCAN V99 uploaded to SIMTEL20 (PC)
+Re: MODE.COM vs. DAME virus (PC)
+Re: Mr. Slade's listings
+Re: Need Info about INVOLVE virus (PC)
+Re: HELP! (RE: IBM PASSWORD) (PC)
+Re: Newest and best scanner? (PC)
+Re: SCAN 95b doesn't find MtE in EXE files (PC)
+Re: VSIGN - question. (PC)
+Re: Viruses Signature (PC)
+Re: WARNING: Clean V97 and Freddy (PC)
+CatchMtE update (PC)
+Is this a new virus? (PC)
+Re: Form virus infection in Germany (PC)
+Re: Norton best (PC))
+Filler virus (PC)
+Re: Checking high memory with VSCAN (PC)
+Flash BIOS Danger? (PC)
+Re: Click, Click, Click when I typed help format (PC)
+Right Said Fred
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.) Please sign submissions with
+your real name.  Send contributions to VIRUS-L@LEHIGH.EDU.
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  A FAQ (Frequently
+Asked Questions) document and all of the back-issues are available by
+anonymous FTP on cert.org (192.88.209.5).  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+<krvw@CERT.ORG>.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    26 Nov 92 14:45:11 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: FDISK /MBR and FORM Virus (PC)
+
+gscobie@castle.edinburgh.ac.uk (G J Scobie) writes:
+
+> Thanks for all the info regarding FDISK /MBR.  However, I attempted to
+> disinfect a PS/2 Model 55 with the FORM virus using a coldboot from my
+> DOS 5.0 disk created for such a purpose, ran FDISK /MBR and then ran
+
+Form is a boot sector infector (NOT a -master- boot sector infector),
+so FDISK/MBR cannot be used to remove it. FDISK/MBR rewrites only the
+Master Boot Record. It can be used to remove master boot sector
+infectors like Stoned or Michelangelo, but not boot sector infectors
+like Ping Pong or Form.
+
+> F-PROT 2.05 and it still reported FORM as being present in the boot
+
+Versions of F-Prot before 2.06a have a bug which prevents them from
+removing the Form virus, if it has stored the original boot sector on
+a track beyond track 255. Nothing will be damaged; F-Prot will just
+refuse to remove the virus. Version 2.06 has the bug fixed.
+
+> sector.  Using SYS.COM, then running F-PROT again showed the disk to
+
+Yes. SYS rewrites the two hidden DOS files AND the DOS boot sector
+(where the Form virus resides), therefore it can be used to remove
+this virus.
+
+> On a similar topic I see that SYS.COM works fine under DOS 5.0 for
+> this virus but under DOS 3.3 I have heard reports of there being
+> insufficent room to tranfer system when attempting to disinfect a FORM
+> infected hard disk. Is this due to the IO.SYS and MSDOS.SYS having to
+> be in a particular location? I suspect so but again I do not have the
+
+Yes. The two hidden DOS files must fulfill the following conditions:
+
+1) Their directory entries must be the first two in the root
+directory.
+
+2) The files must come in that order - first the IO file and then the
+DOS file.
+
+3) The must occupy the first clusters on the disk and all their
+clusters must have consecutive numbers. That is, the files must not be
+fragmented.
+
+In DOS 5.0 the restrictions are not so strong. In fact, there is only
+one restriction - the directory entries of those two files must be in
+the first sector of the root directory. The files themselves can
+reside anywhere on the disk.
+
+> means to disinfect. So do I have to delete the hidden system files
+> first and then SYS?
+
+This might not be sufficient. Just deleting the files will leave
+exactly as much space as they used to occupy. If SYS refuses to
+install DOS on a particular volume, it is because this space is not
+sufficient... I would advise you either to upgrade to DOS 5.0, or to
+use a third-party utility (e.g., Norton's Disk Doctor) to "make the
+disk bootable".
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 15:21:01 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: McAfee VIRUSCAN V99 uploaded to SIMTEL20 (PC)
+
+aryeh@mcafee.com (McAfee Associates) writes:
+
+> WHAT'S NEW
+
+>      A new Dark Avenger Mutation Engine (DAME or MtE) detector has
+> been added in this realese.  This detector is different from the
+> previous version and should offer a higher rate of detection as well
+> as greatly reduce the number of false alarms.
+
+I already posted a (longish) test of SCAN 99 for MtE-detection. I
+would like to shortly emphasize an important point here.
+
+Users who are suspecting an infection by an MtE-based virus, must run
+SCAN 99 with the /A option. Only with this option it achieved reliable
+detection of the MtE-based viruses in our tests. This is not mentioned
+in the documentation, and without this option SCAN 99 misses about one
+infected file in every 15. This happens only with the Fear and Questo
+(and possibly Insufficient) viruses; the others are always detected
+reliably, even without the /A option.
+
+>      NETSCAN Version 99-B replaces Version 99, which wouldn't scan some
+> network drives.  Version 99 was not released on the Internet.
+
+Also, SCAN 99 is not able to scan networked drives any more - you must
+use NETSCAN for that. A pity; SCAN 97 -was- able to scan networked
+drives... :-(
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 15:27:55 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: MODE.COM vs. DAME virus (PC)
+
+woody@knapper.cactus.org (Woody Baker) writes:
+
+> We got a positive indication of the DAME virus on an old compaq dos disk.
+
+See the FAQ about information how to report such cases. In this case,
+it is difficult to help you, because you don't say WHICH scanner you
+have used to detect the virus and WHAT version of the scanner it
+was... :-( It seems that you have used some version of McAfee's SCAN,
+but I am not certain about it...
+
+> mode.com is the only file identified.  It appears to have a length of about
+> 4k or so.  Dame was not found in memory, just on this disk.  Dumping the
+> file with psa Dump utility, shows a batch of strings at offset c60..
+> "The compaq...version 3.1" etc.  The file ends at offset 1050.  This is
+
+Well, it's normal to find such strings in a DOS utility, no?
+
+> from a copy.  That is, I copied the mode.com off to dame.vir on the hard
+> disk.  The info I see on Dame indicates that it is a stealth virus, and 
+> adds about 3K to the file.  It appends it's self to the end of the file.
+
+It seems that your information is from VIRLIST.TXT, in which case it
+means that you have indeed used SCAN. Sorry, the information is wrong.
+There's no such thing as "the DAME virus". There is a library (called
+MtE, by the way), which can be used to make extremely polymorphic
+viruses. Several such viruses already exist, but none of them is fully
+stealth. They are all -polymorphic-, but VIRLIST.TXT has no field for
+that information...
+
+> I have a hard time believeing that mode was less than 1K long, when offset
+> c60 has an obvious string that belongs there.  I presume that this is a
+> false positive?  Any comments?
+
+Mode is about 14 Kb in MS-DOS 5.0. You are probably confusing it with
+MORE.COM, which is about 3 Kb (it used to be 300 bytes in DOS 3.30...
+sigh...).
+
+In any case, you probably have a false positive. I suggest that you
+report it to the producer of the scanner used by you. If you have used
+SCAN, I strongly advise you to upgrade to version 99 - the previous
+ones are unreliable in detecting the MtE-based viruses.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 15:43:52 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Mr. Slade's listings
+
+fc@turing.duq.edu (Fred Cohen) writes:
+
+> I am constantly amazed that ASP has not yet made Mr. Slade's lists.
+
+It's up to Mr. Slade to reply to this, of course, but I personally got
+the impression that he lists mainly public domain and shareware
+products...
+
+Or do you mean his product -reviews-? Well, have you send him a copy
+of your product for evaluation? If you did, it would be really nice to
+see a report about it - from my own experience, it's an excellent
+resident integrity checker (integrity shell, according to your
+terminology), although it's rather clumsy to install and maintain,
+especially by inexperienced users...
+
+> We have been in the antivirus business since 1986, and yet the list
+> has hundreds of products/services/research groups/BBSs/etc. that have
+> been in existence for far less time, and with a very broad range of
+> different expertise.  I simply cannot believe that Mr. Slade is not
+> aware of the existence of ASP.
+
+Uhm, forgive me, but the first time when I saw the name of your
+company, I thought "Ha, what does Fred Cohen have in common with the
+Association of Shareware Professionals? Is his product shareware?"...
+The name of your company sounds very confusing to those who have
+experience mainly in the BBS world...
+
+> 	And then we have the hundreds of bug reports and fixes posted
+> about various products on Virus-L.  Why is this?  Don't these companies
+> deal with their customers over the phone?  Or is it just PR to keep
+> their names in front of the Virus-L public all the time?
+
+Well, most of the bug reports are by people who have found them; not
+by the producers of the products... :-) IMHO, it's a good idea to
+share such knowledge with the other readers of Virus-L/comp.virus, so
+that they are warned about the bug...
+
+Besides, nowadays most progressive software producers tend to provide
+some kind of support for their products on the net - this is cheaper
+both for them and for their customers...
+
+> 	I wish Virus-L's moderator would make a defined policy about
+> what goes on V-L and stick to it.  I could use the daily plug for my
+> products and services too, and yet we don't see all that much PR from
+> many of the companies that have products, only a small number that seem
+> to be in the Virus-L elite.
+
+Your product is excellent from the security point of view. I would
+just like to see it with a better user interface. And if you make it
+shareware and upload it to a few ftp sites, that will be a real bonus!
+This way it will reach much more users...
+
+Currently I have seen only two shareware integrity checkers that are
+worth the disk space they occupy - Integrity Master and VDS.
+Unfortunately, neither of them is as secure as your product. On the
+top of that, VDS is incompatible with user-installable volumes (e.g.,
+Stacker, DiskReet, DiskManager), and Integrity Master creates one
+files with checksums in -each- directory containing executable
+files... :-(
+
+> 	By the way, Today, ASP created over 1500 new viruses (using our
+> automated program evolution system), and NONE of the scanners listed as
+> the best around detected ANY OF THEM!  That means that the current
+> detection rate of the best scanners in the world is only 50\%, and in 
+> another few days, we could knock their detection rates down to under 10\%
+> without much effort!  When will we start to see analysis based on the
+
+Dr. Cohen, it is statements like the above that are damaging your
+reputation... Do you -really- mean that your company has created 
+1500 new viruses? Do you understand how it will be interpreted by 
+the average person/journalist?
+
+Furthermore, at least -you- must know that the scanners are able to
+detect only -known- viruses, therefore testing them with -new- (i.e.,
+unknown) viruses is an extremely silly idea... Or are you trying to
+sarcastic in some subtle way that I fail to understand? If this is
+the case, what is the probability that LOTS of other people will
+misunderstand you too?
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 16:14:31 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Need Info about INVOLVE virus (PC)
+
+dhnguyen@vmsclst1.sc.csupomona.edu writes:
+
+> hello, I am new here. I hope someone could give me some information
+> about the INVOLVE virus.  I know that it changes the date on the files
+> that it infects.  One thing I ran across that bothers me.  I deleted
+> all the files that SCAN reports and rescan the system with "No virus
+> found" message.  Then about a month after, close to the same date,
+> SCAN reported "INVOLVE virus found."  I have not load any new file to
+> the system during that one month period.  Any information wil be
+> greatly appreciated.
+
+Hmmm... Which version of SCAN? SCAN 99 never reports such name when
+run on our virus collection. Also, no such name is listed in
+VIRLIST.TXT. On the top of that, I have never heard about a virus with
+this name... Maybe Aryeh can comment?
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 08:33:14 +0000
+From:    duck@nuustak.csir.co.za (Paul Ducklin)
+Subject: Re: HELP! (RE: IBM PASSWORD) (PC)
+
+Thus spake AMN@vms.brighton.ac.uk (Anthony Naggs):
+>Here's a variation:
+>Install an extra bank of switches on new system boards, more technical
+>customers could then remove the PC case and alter the switches to
+>select the BIOS features desired.  
+
+Aren't some PC manufacturers using Flash-RAM or EEPROM these days for
+holding BIOS code? Certainly there are modems around [Zyxel?] which
+utilise EEPROM and not ROM, so the manufacturer can make firmware 
+upgrades and bug fixes available on their BBS.
+
+This would certainly seem to be more user-friendly -- and much more 
+flexible -- than a return to the DIP-switch days! A suitable hardware
+interlock could be used to ensure that subversive BIOS reprogramming
+could not be carried out [a simple push-button would do -- most viruses
+don't have fingers :-)].
+
+- -- 
+- --..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--..--
+Paul Ducklin                                       duck@nuustak.csir.co.za
+
+  CSIR Computer Virus Research Lab * Box 395 * Pretoria * 0001 S Africa
+
+------------------------------
+
+Date:    26 Nov 92 16:17:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Newest and best scanner? (PC)
+
+gnash@ee.uts.edu.au (Greg Nash) writes:
+
+> >As far as I know, the latest version of TbScan is 4.3.
+> I have the Beta release 5.00, and rather like it.  I think the
+> full version is now available to registered users... I haven't chased
+> it up yet but will soon.
+
+We are both wrong, I recently downloaded version 5.01 from Simtel20...
+:-) I haven't played enough with it yet, but from the description it
+seems that this is a BIG improvement on the previous versions of the
+product.
+
+It is now a full-featured package, containing all known kinds of
+anti-virus defense: scanner, resident scanner, integrity checker,
+resident integrity checker, monitor, boot sector/CMOS save/restore
+program, heuristic scanner, heuristic remover, generic remover, file
+wiping, bulk disk on-the-fly encryption... Having in mind that the
+same company also sells hardware virus protection, this makes the
+list pretty complete... About the only thing I did not see was an
+access-control system, a backup program, and a virus-specific
+disinfector...
+
+BTW, the integrity checking seemed -very- weak to me, but I have not
+tested it completely... On the other side, the generic disinfector is
+a very nice idea and sounds very promising... I have not seen anything
+like this implemented yet... No, it's different from the "generic
+remover" in Untouchable (which I tend to call "heuristic remover"),
+although this is a feature also present in the package...
+
+> >have fired... In version 4.3 it is possible to turn off the (long)
+> >explanation of each heuristic each time that it is used, but it is
+> >still not possible to disable the heuristics completely.
+
+> or you can write a program that hooks into tbscanx.  Info on how to
+> do this is in the .doc files.
+
+No, thanks. I am not going to spend that much effort, when I can just
+use another user-programmable scanner (HTScan), which can work with the
+same signature database, supports an even more flexible signature
+format, and does not spit its heuristic opinion in the report
+files... (Not that it is without drawbacks; if only I could turn off
+all these stupid warnings about the incorrect file date/time or if at
+least I could exclude them from the report files...)
+
+Besides, if I -really- need to use TbScan's report files, I would
+rather write an awk script to sieve out the reports about "unknown
+viruses", instead of wasting my time to write my own scanner, using the
+resident scanner's API... But I doubt that I'll do even this, just to
+test the scanner... I have a policy to tend to refuse to test
+products, which are "not suitable for testing"... :-)
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 16:45:31 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: SCAN 95b doesn't find MtE in EXE files (PC)
+
+Stefano_Turci@f108.n391.z9.virnet.bad.se (Stefano Turci) writes:
+
+> May be I didn't explain it well, I didn't compress it with LZEXE, I
+> just took a COM file with a length of XXX bytes and converted it to a
+> EXE file with a length of XXX+32 bytes, simply adding a 32 bytes long
+> header.
+
+Oh, I see, I was confused that you have actually LZEXE'd them... But
+then, F-Prot doesn't claim to be able to scan inside files converted
+to EXE, right? :-) It only claims to scan inside files compressed with
+LZEXE, PKLite, Diet, and ICE...
+
+>  FS> I am not at all surprised that my scanner, as well as the others
+>  FS> missed the virus - actually, no matter how you had encrypted it, it
+>  FS> probably would be missed.
+
+> I didn't encrypt it, I just converted it from COM to EXE.
+
+In fact, the term "encryption" is incorrectly applied to viruses. They
+do not encrypt themselves (except maybe Cheeba, which uses a trivial
+kind of Vigenere cipher to encrypt its payload); they -encode-
+themselves. Converting a COM file to EXE format is a kind of encoding,
+because you change the entry point "look alike"...
+
+> I just had a look inside on how F-prot works :-) and these are the
+> results.
+
+> This is a part of the log:
+
+> [deleted]
+
+> .\0001.EXE  Infection: MtE (?)
+> .\0002.EXE  Infection: MtE (?)
+
+Hmmm... F-Prot prints a question mark on those replicants of the
+MtE-based viruses, which are not encrypted...
+
+> The difference between 0003.EXE and 0002.EXE is one byte added at the
+> end of the body, so they are virtually the same file.
+
+> The fact is that F-prot misses all the converted infected files if the
+> length of the body is greater than 5120 bytes.
+
+Oh... It's, of course, up to Frisk to answer to this, but it indeed
+seems like a bug to me...
+
+> How can you assume that if the length of the body is greater than 5120
+> bytes then the file can't be infected by Mte ?
+
+Maybe because none of the known MtE-based viruses increases the file
+size by more than 5 Kb?
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 17:20:37 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: VSIGN - question. (PC)
+
+eres@trboun.bitnet (M.HAKKI ERES) writes:
+
+> i've detected vsign virus with f-prot 2.05 in a 386 machine, but it
+> can not disinfect it. is there any other way of cleaning it? as far as
+
+Version 2.06a of F-Prot can disinfect it. McAfee's CLEAN 97 can
+disinfect it too.
+
+> i know it is a boot sector virus, shall i try NDD /REBUILD or FDISK
+> /MBR? any comments.
+
+Don't know about NDD, but FDISK/MBR (in DOS 5.0 only) does remove it.
+Just don't forget to cold boot from an uninfected write-protected
+system diskette first...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 17:15:23 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: Viruses Signature (PC)
+
+rol@grasp1.univ-lyon1.fr (Paul Rolland) writes:
+
+> Could someone tell me where I can find the most complete list of
+> viruses signature for PC, and the way to use it ?
+
+A very good list of virus signatures is maintained by Jan Terpstra. it
+can be obtained from Simtel20 or its mirrors, e.g.
+
+	oak.oakland.edu:/pub/msdos/trojan-pro/vsig9210.zip
+
+"The way to use it" is either of the two user-programmable scanners
+that support this signature format - TbScan or HTScan. They can be
+obtained from the same place, same directory. The archive names are
+tbav501.zip and htscan19.zip respectively.
+
+Also, a very good list of virus signatures is regularly published by
+Virus Bulletin. It can be used (after some editing) by HTScan.
+However, I am not aware of this list being available in electronic
+form.
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 17:27:33 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: Re: WARNING: Clean V97 and Freddy (PC)
+
+sapao@dcc.ufmg.br writes:
+
+> Clean v97 does not work disinfecting the Freddy virus. Scan v97 reports:
+>   The Jeru [Jeru] virus was found...
+
+SCAN is wrong (as usually) on the identification of this virus. It
+even does not belong to the Jerusalem family. Just take a look at the
+way it infects the COM files - it appends itself to them, while all
+Jerusalems are prependers...
+
+> Using clean to remove the virus will corrupt the files, which will hang
+> the computer when run. All files tested hanged the computer, even those
+> which size was exactly the same as before the infection. 
+> Clean reported multiple infections in COM files, and seems to wipe out
+> the begining of the program until it removes the virus signature.
+
+Yeah, those are the sad consequences of lack of exact virus
+identification before trying to disinfect a virus... SCAN is extremely
+poor on identification. CLEAN does some additional checks, but even it
+is far away from exact identification... While exact virus
+identification on scanning only is not that essential, failing to do
+it on virus removal means a risk to destroy the user's data, as your
+test are demonstrating...
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    26 Nov 92 18:01:07 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: CatchMtE update (PC)
+
+Hello, everybody!
+
+I just received a new version of CatchMtE - 1.8. According to the
+author, the old version has a bug which sometimes (very rarely)
+prevents it from scanning some specific COM files for MtE-based
+viruses. I wasn't able to find the bug in our tests, but after all, we
+used only about 16,000 MtE samples... :-)
+
+Anyway, the new version has been put on our anonymous ftp site. It can
+be reached as
+
+	ftp.informatik.uni-hamburg.de:/pub/virus/progs/catchm18.zip
+
+Users of the older versions are urged to upgrade. I would also
+appreciate if maintainers of the other archive sites that carry
+anti-virus related stuff obtain this program too and make it available
+(it's freeware), in order to reduce the load on our slooooowwww
+communication line... :-)
+
+Regards,
+Vesselin
+- -- 
+Vesselin Vladimirov Bontchev          Virus Test Center, University of Hamburg
+Tel.:+49-40-54715-224, Fax: +49-40-54715-226      Fachbereich Informatik - AGN
+< PGP 2.0 public key available on request. > Vogt-Koelln-Strasse 30, rm. 107 C
+e-mail: bontchev@fbihh.informatik.uni-hamburg.de    D-2000 Hamburg 54, Germany
+
+------------------------------
+
+Date:    Thu, 26 Nov 92 23:23:05 +0000
+From:    trinh@camins.camosun.bc.ca
+Subject: Is this a new virus? (PC)
+
+One PC at our site has a strange virus and we're not sure whether
+we've got rid of it or not.  Here's what happened:
+
+- - The system hung during booting from the HD, displaying two colorful
+patterns on top of the CMOS screen.
+
+- - A clean boot from floppy would allow access to the HD as ussual.
+
+- - McAfee Scan 97 detected [Stoned] but Clean couldn't find it.
+
+- - F-prot 2.05 found Stoned and removed it.
+
+- - A second run of F-Prot found Michaengelo but unable to remove it.
+
+- - Scan also found [Mich] but also unable to clean it.
+
+- - Fdisk /mbr did get rid of the Michaengelo look alike and the system
+reboot successfully from the HD. F-Prot and Scan then gave the system
+a clean bill of virus.
+
+- - Scanning all the floppies used on this PC shown one infected with
+michaengelo, boot the system with this disk would get us back to the
+beginning.
+
+So would anyone please tell me what virus is this one, thanks.
+
+(will report more behavior of this virus if noone can identify it)
+
+Thinh Trinh - Com.Sc.Dept., Camosun College, B.C., Canada
+Email: trinh@camins.camosun.bc.ca
+Tel. (604) 370-4465
+
+------------------------------
+
+Date:    Fri, 27 Nov 92 09:41:07 +0000
+From:    mcafee@netcom.com (McAfee Associates)
+Subject: Re: Form virus infection in Germany (PC)
+
+Hello Dave Hanson,
+
+cfsc-hga-gc-mis@augsburg-emh1.arm (david hanson) writes:
+>Report of Computer Virus Infection in Garmisch-Partenkirchen, Germany.
+>
+>On 18 November 1992, we discovered the FORM virus on the boot
+>sector of 12 of our PC hard disks.
+[...deleted...]
+>Question:  Outside of using a commercial anti-virus package,
+>           is there any way of eliminating this virus "manually"
+>           (ie. editing sectors on the disk)?
+
+The DOS SYS command can be used to overwrite the boot sector of
+infected disks to remove the virus.  Afterwards, run the DOS CHKDSK /F
+command to recover any clusters marked as bad by the virus (if using
+DOS 5.00, make sure your disk can have CHKDSK /F run safely on it, or
+upgrade to MS-DOS 5.00a).
+
+Regards,
+
+Aryeh Goretsky
+Technical Support
+- -- 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+McAfee Associates, Inc.  | Voice (408) 988-3832 | INTERNET:
+3350 Scott Blvd, Bldg 14 | FAX   (408) 970-9727 | mcafee@netcom.COM
+Santa Clara, California  | BBS   (408) 988-4004 | CompuServe ID: 76702,1714
+95054-3107  USA          | USR HST Courier DS   | or GO MCAFEE
+Support for SENTRY/SCAN/NETSCAN/VSHIELD/CLEAN/WSCAN/NETSHIELD/TARGET/CONFIG MGR
+
+------------------------------
+
+Date:    Fri, 27 Nov 92 08:19:16 -0500
+From:    Wolfgang Stiller <72571.3352@compuserve.com>
+Subject: Re: Norton best (PC))
+
+  007 <sbonds@jarthur.Claremont.EDU> writes:
+
+ > Some of the programs I'm biased in favor of:
+ >  + F-prot
+ >  + Integrity Master
+
+ > What I'd like to see in an integrity checker.
+ >    + Integrity data kept off the hard drive, or in a single file on the hard
+ >      drive.
+ >    + Option to tell the program never to check certain files, such as
+Stacker
+ >      volumes which will almost always show up as changed.
+ >    + The same "clean boot" notice as above.
+ >
+ > What do all you developers think?  Any of these reasonable?
+
+What you'd like to see in an Integrity Checker is certainly reasonable.
+
+I think, you've probably already got everything that your asking for <g>.
+
+Integrity Master has always allowed you to keep your integrity data on
+a diskette (but I guess you known that).  Integrity Master has had an
+option to exclude specific files and directories ever since release
+1.21a (June 92).  Although Integrity Master will scan memory for known
+viruses, I strongly encourage cold boots.  As a matter of fact, when
+you install, Integrity Master's will suggest cold boots if you
+indicate virus checking as your purpose.  It presents this on screen
+and also in the customized check list that it prepares for printing or
+viewing.
+
+Regards, Wolfgang                           Wolfgang Stiller
+                                            Stiller Research
+                                            2625 Ridgeway St.
+                                            Tallahassee, FL 32310
+                                            U.S.A.
+
+------------------------------
+
+Date:    27 Nov 92 23:16:47 +0000
+From:    brill@aecom.yu.edu
+Subject: Filler virus (PC)
+
+	Scan 99 detected "Filler" active in the memory of my computer.
+When I booted from a write-protected floppy the nasty virus was not
+found, no matter how many times I tried.  By the way, I have CPAV
+constantly running and it did not detect anything wrong.
+	Does anybody know anything about Filler ?
+	What can I do to get rid of the virus ?
+ 
+Responses to my e-mail address will be greatly appreciated, but
+posting a reply will be also great.
+
+		Shlomo Brill - Albert Einstein College of Medicine - N.Y
+		brill@aecom.yu.edu 
+
+------------------------------
+
+Date:    Fri, 27 Nov 92 21:39:20 +0000
+From:    vess@Cadence.COM (Vess Kavalov)
+Subject: Re: Checking high memory with VSCAN (PC)
+
+ianst@qdpii.comp.qdpi.oz.au (Ian Staples) writes:
+>mcafee@netcom.com (McAfee Associates) writes:
+>>When SCAN is run with the /CHKHI switch, it actually checks base
+>>(system) memory from 0-640Kb, upper memory from 640-1,024Kb, and the
+>>high memory area from 1,024-1,088Kb (actually less 16 bytes which are
+>>used to control access to that region).
+>>
+>>These are all areas that can be accessed by DOS (with appropriate
+>>drivers, such as HIMEM.SYS and EMM386.EXE, or third-party memory
+>>managing products such as QEMM, 386^MAX, and so forth).
+>>
+>>While some programs do take advantage of memory above this region,
+>>they do not so much actually execute stored above that 1,088Kb region
+>>then bankswitch it in and out of the lower regions.  Because of this,
+>>there are no reasons to check above the 1,088Kb region for viruses--of
+>>course, if someone writes a virus that does work in extended or
+>>expanded memory, we will add detection of it.
+>
+>Hmmm... does this imply that once we all have OS/2 or whatever on 386s
+>or better, and 32-bit applications addressing oceans of flat memory
+>space then we will have to wait forever for SCAN or some other to scan
+>the whole bloody lot when we boot up each morning?
+
+No. Well, maybe not forever, but as far as there are no native 32-bit
+viruses (I have never heard of any of these) this will not
+benecessary.  The only problem is that if you have an active DOS
+session, you might have to close it to eliminate a possible memory
+resident virus.
+
+Jivko					:vess@cadence.com
+
+------------------------------
+
+Date:    Sat, 28 Nov 92 03:13:34 +0000
+From:    ddavis@osiris.cso.uiuc.edu (Dave Davis)
+Subject: Flash BIOS Danger? (PC)
+
+I've noticed many PC clone vendors are shipping motherboards with
+flash BIOS chips.  These can be updated by the user (according to the
+ads).  How susceptible is this arrangement to a virus attack?  This
+may be a naive question, as I have not seen one of the machines (yet).
+Perhaps the set-up prevents unauthorized modifications?
+
+dave
+ddavis@aeha1.apgea.army.mil (preferred address)
+
+------------------------------
+
+Date:    Fri, 27 Nov 92 15:57:45 -0500
+From:    Peter Schepers <schepers@watserv1.uwaterloo.ca>
+Subject: Re: Click, Click, Click when I typed help format (PC)
+
+danielh@hadar.fai.com (Danial Ho) writes:
+>I experienced some weird behavior on my PC.  When I typed "help
+>format" or "format /?" on DOS 5.0, the screen will display
+>
+>CLICK:
+
+This is not a virus, just the Logitech mouse CLICK program,
+interfering with the format command. As near as I can tell, everything
+will work fine, just those annoying 'click:' messages will appear
+whenever you go to format. (I didn't realize it also did it with 'HELP
+FORMAT'... I was also running the Logitech software, and got those
+'click:' messages)
+
+Peter Schepers
+
+------------------------------
+
+Date:    Fri, 27 Nov 92 12:36:26 -0500
+From:    Brian Seborg <seborg@first.org>
+Subject: Right Said Fred
+
+For once I have to agree with Fred regarding his comments about the use of
+this board by some vendor's as a user support service.  I also agree with
+the point about making the criterion of virus testing known so that it 
+can be replicated (I think Vesselin did a good job in his recent MtE
+report, Rob, were you paying attention?).  I disagree with some extent
+to his implication that zoo testing is not useful by his bringing up ASP.
+Specifically, I think that since most users do not have access to zoos of
+viruses which would allow them to make their own decisions, it is necessary
+for those who do to test the claims of anti-virus producers.  I think if a 
+company puts out a press release which says that they can detect MtE based
+viruses, then they damn well better be able to prove it.  If they do not
+stand up to tests, then they are negligent in their own quality control if
+not outright guilty of false-advertising.  I do agree that a reality 
+check needs to be applied to zoo tests in order that users can assess how
+meaningful it is for them that an anti-virus product can catch the Coffee-
+shop virus versus how important it is that it catch the Stoned or Jerusalem
+virus.  But there is also something else which needs to be observed.  If an
+antivirus product is unable to detect the MtE viruses dependably, then one
+has to ask whether that company may have reached its technological limits.
+If you miss it, then are you missing a more fundamental skill?  Have the
+limits of understanding been met?  If so, get out of the business.  This
+lack of capability speaks of the R&D departments not keeping up with the 
+bleeding edge.  Fred is right, Scanners are not sufficient, products based
+on integrity are necessary.  There is only so long that string based scann-
+ers can keep up, and perhaps MtE has sounded the death knell for many of
+those who have fallen by the way-side.  Scanners should be a line of
+defense, or a tool in the arsenal, but we need to move to integrity based
+products in order to have any chance of keeping apace with the current 
+spread of new and hard-to-detect viruses.  
+
+
+Sincerely,
+
+Brian H. Seborg
+VDS Advanced Research Group
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 193]
+******************************************

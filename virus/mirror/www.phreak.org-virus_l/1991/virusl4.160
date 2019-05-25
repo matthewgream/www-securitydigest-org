@@ -1,0 +1,540 @@
+VIRUS-L Digest   Monday, 16 Sep 1991    Volume 4 : Issue 160
+
+Today's Topics:
+
+Re: LANs and virus propagation (PC)
+McAfee scan+clean 72v76, 'error in EXE file' (PC)
+Erasing disks with magnets
+Multiple Boot Sector Infections (PC)
+Keypress virus and COM files (PC)
+Virus Information Summary List... (PC)
+Extra file in F-PROT 2.00? (PC)
+Re: Mac vs. PC virus frequency
+Clean-Up: Where ?? (PC)
+Possible Autocad virus (PC)
+Vi-Spy query (PC)
+Re:hard disk locaking (PC)
+SITELOCK query
+Testing antiviral utilities
+Re: Virus Simulator (long) (PC)
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  Please sign submissions with your real name.  Send
+contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU (that's equivalent to
+VIRUS-L at LEHIIBM1 for you BITNET folks).  Information on accessing
+anti-virus, documentation, and back-issue archives is distributed
+periodically on the list.  Administrative mail (comments, suggestions,
+and so forth) should be sent to me at: krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    Mon, 09 Sep 91 04:08:30 +0000
+>From:    mrs@netcom.com (Morgan Schweers)
+Subject: Re: LANs and virus propagation (PC)
+
+kev@inel.gov writes:
+>It is my understanding that standard NetWare disk device drivers do
+>not support direct sector addressing through either the BIOS interrupt
+>13h or DOS interrupts 25h and 26h.  I also believe that the MBR is
+>different than a standard DOS MBR.
+
+     That doesn't matter at boot time.  At boot time the INT 13h
+handlers are in BIOS, and the server software hasn't been loaded yet.
+The virus will operate fine, until the server loads.  At the time that
+the server attempts to load, it will probably have a problem with
+loading up some data.  The reason for this is that the virused often
+overwrite needed data areas.  This is all assuming that your server is
+loaded from a floppy, of course, and has no DOS area.  If there is a
+DOS partition from which the network boots, then the virus will
+probably work fine.
+
+>As such, a virus which infects the
+>DOS boot record or the MBR would likely overwrite areas of the disk
+>used by NetWare.  In doing so, would cause the system to crash, or
+>prevent the server from loading properly.  Therefor it seems that
+>booting a server from a boot sector infected diskette would likely do
+>terminal damage and could not execute normally.  So in theory, it is
+>*not* possible to infect a Novell file server with a boot sector virus
+>by booting the server from an infected diskette.  Any comments?
+
+    It's clearly possible to INFECT the server, however it's not going
+to WORK well.  Since the server rarely (if ever) needs to access a
+floppy, it's certainly not going to spread.
+
+    The problem we run across is that the virus *DOES* do some damage
+to important data areas on the hard drive, and thus when we restore the
+partition table the system is still not working correctly.  Our
+recommendation for handling BSI's on networks is to backup (as best you
+can) and reformat the drive.  (Low Level *NOT* necessary, but you *MUST*
+overwrite the partition sector.)
+
+>As for file infecting viruses:
+>
+>If an executable file, which is stored in the DOS partition, were to
+>become infected with a normal file infecting virus, would it be
+>possible for this virus to execute properly?  (i.e. SERVER.EXE) It
+>seems that a file infecting virus could *not* successfully write to a
+>NetWare partition because of the redirection of BIOS and DOS
+>interrupts.  I also don't believe that the virus would be able to see
+>a file being opened by NetWare.  Is my understanding correct, or am I
+>off track?
+
+    Unfortunately, I don't think that's correct technically.  I am not
+a complete Netware expert, but it is my belief that right NOW Netware
+keeps DOS in memory somewhere and passes interrupts through to it.
+
+    Now, a virus like the Jerusalem would be SOL, because the Int 21h/4Bh
+call isn't used, but it's possible that the viruses which infect even on
+Open would work.  I haven't tried this as yet, but will be doing so soon.
+*grin*  (This is the reason I have a server available for use/abuse...)
+
+>A final question, not intended as a malevolent thought provocation!
+>Could a "NetWare-specific" virus be written that could spread through
+>normal file infection, normal DOS boot record infection, and could
+>distinguish between a normal boot record and a NetWare boot record,
+>and infect both?  It seems possible.  Any thoughts?
+
+    This isn't necessary.  There is no *REAL* difference between a Novell
+partition table and a DOS partition table.  In fact, a Partition Table
+is a Partition table and can't usually be attributed to one OS or another.
+The problem faced is the overwriting of important data, and the swap into
+protected mode.  Moreover, the spread of BSI's across the network is
+*VERY* difficult, and would probably require that the destination machine
+already be infected.
+
+   On the subject of file infectors, good security is your first and best
+defense.  A properly secured Novell server is immune to viral attacks.
+(Note:  This means that the FILES on the server are immune.  The server
+iself CANNOT be infected from a station without either a NLM/VAP specific
+virus (of which there are, thankfully, none) or a BSI, which will likely
+crash the server.)
+
+    Please note that I am *NOT* a Novell Certified Genius, and these are my
+experiences and Best Guesses involving Netware.  If someone would like to
+slap me in the face with the facts, I'll shaddup&siddown.  *grin*
+
+> Kevin Hemsley
+
+- --
+mrs@netcom.com   |   Morgan Schweers   |  Happiness is the planet Earth in your
+ms@gnu.ai.mit.edu|   These messages    |  rear view mirror.  --  Jeff Glass
+Kilroy Balore    |   are not the       +--------------------------------------
+Freela           |   opinion of anyone.|  I *AM* an AI.  I'm not real...
+
+------------------------------
+
+Date:    Mon, 09 Sep 91 16:51:52 +1000
+>From:    Chuck Meo <cm@yarra.pyramid.com.au>
+Subject: McAfee scan+clean 72v76, 'error in EXE file' (PC)
+
+I am using a slightly outdated version of the McAfee anti-virals and we
+recently had an outbreak of slow virus attack around these parts.
+
+While the tools cleaned up the viruses OK, I found to my dismay that several
+exe files (e.g 123, window dos, word perfect) were corrupted afterwards--see
+header.
+
+I was able to recover from backups, but I'm after explanations/comments as to
+what happened. I can think of at least a few:
+
+1. Broken clean.exe, or bad interaction with some feature of these exe's.
+
+2. False positive followed by removal of sequences which were actually part
+of the program.
+
+3. A very clever virus passing itself off as the slow virus.
+
+4. Something else :-)
+
+All of the infected programs ran OK until I cleaned them.
+Please mail and I will summarise if the responses are interesting.
+
+Chuck
+
+------------------------------
+
+Date:    Mon, 09 Sep 91 13:13:25 -0500
+>From:    "The Radio Gnome" <V2002A@TEMPLEVM.BITNET>
+Subject: Erasing disks with magnets
+
+Hi,
+
+     While a permanent magnet can be great for wiping 5 1/4"
+diskettes, you run the risk of magnetizing any ferrous shutter cover
+on a 3.5" diskette.  A bulk AC eraser leaves no residual magnetic
+charge (when used properly), but costs more.
+
+     We erase 5-1/4"s with a 25lb head positioning magnet from a DEC
+Rk-06.  It never fails...
+
+     Re: Virus simulators, Can we expect such a beast for the MAC now? :-<
+
+     Andy Wing     V2002A%TEMPLEVM.BITNET@PUCC.PRINCETON.EDU
+
+------------------------------
+
+Date:    Mon, 09 Sep 91 11:32:00 -0600
+>From:    "Rich Travsky 3668 (307) 766-3663/3668" <RTRAVSKY@corral.uwyo.edu>
+Subject: Multiple Boot Sector Infections (PC)
+
+I recently had occaision to clean up a group of pcs, each having 3
+boot sector infections (ping pong, typo, and stoned).  I wanted
+a sample of ping pong,  but all I got was stoned (no puns intended ;)
+
+This brings up a wuestion or two in my mind.  Stoned was the result
+when I tried to get a sample of pong (by feeding it a disk and accessing
+it), but disinfecting with FPROT ver 1.16, Stoned was found first.
+
+What is the relationship (if any) between what's found in memory versus
+what's in the boot sectors when dealing with multiple boot sector
+infectors?  Is it the order the machine is in infected in?  Something
+in the virus' code (well, obviously something in the code) making one
+predominate over another?  Something in the PC's configuration?
+(These were Epson Equitys I and II.)
+
+Richard Travsky
+Division of Information Technology     RTRAVSKY @ CORRAL.UWYO.EDU
+University of Wyoming                  (307) 766 - 3663 / 3668
+
+P.S. These Epsons gave us a scare.  We booted from floppies, but
+couldn't access the hard disks.  The Epson manual said play with the
+setup command, but the machines told us it was an unsupported command
+(or words to that effect).  Decision time.  We started the machines
+back up, disinfected a virus from the boot sector, and then turned off
+the power, hoping that this would prevent re-infection from memory.
+Well, seems to have worked ok, as FPROT said the virus was gone.  Had
+to do this procedure twice, once for each virus.  I don't know if I'd
+recommend this way of doing things, but it was the only option open to
+us.  Comments anyone?
+
+The Epson Equity Is also scared us when we turned off the power, the
+machine said "wait while hard disk is parked"; we were worried the
+virus could slip back in somehow.  Luckily, apparently not.
+
+------------------------------
+
+Date:    Tue, 10 Sep 91 08:10:00 +1000
+>From:    CCDBH@cc.newcastle.edu.au
+Subject: Keypress virus and COM files (PC)
+
+>Date:    Thu, 05 Sep 91 19:55:00 +0000
+>From:    mcafee@netcom.com (McAfee Associates)
+>Subject: Re: scan (PC)
+
+ZDCBCRAMER@qut.edu.au writes:
+<<some of message deleted>
+>>We had someone come in the other day with a disk infected with the
+>>Keypress virus, the infected files had been renamed to .BAD.
+>>
+>>So I renamed them to .COM and scanned them, no virus.  When we checked
+>>they were .EXE files, so we renamed them and guess what, scan found
+>>the keypress virus.
+
+<Since the KeyPress virus only infects .EXE files only, we do not, by
+<default look for it in .COM files.  If you wish to force VIRUSCAN to
+<look inside of files with non-standard extensions, either use the /E
+<option to add the extension to the default list of extensions scanned
+<or use the /A option to force VIRUSCAN to search through all files
+<on the disk (lengthy, but useful).
+
+<<more of message deleted>
+
+The strain of the Keypress virus that I have had to deal with does
+infect .com files including COMMAND.COM. Maybe McAfee's should
+re-think their scan approach for keypress?
+
+Bruce Hodge
+Computer Support Officer
+Newcastle University Australia
+CCDBH@CC.NEWCASTLE.EDU.AU
+
+------------------------------
+
+Date:    Tue, 10 Sep 91 17:35:07 -0500
+>From:    x91scott@techno.nepean.uws.EDU.AU (Scott Golby)
+Subject: Virus Information Summary List... (PC)
+
+Hello There,
+	    I was after a virus information file called I believe
+VSUMX108.ZIP or what ever is the Latest Virus Information Summary for
+the IBM PC.  I asked in the comp.virus news area and was told
+cert.sei.cmu.edu would be the place to get this file from.  I had a
+quite extensive look but was unable to find it...
+   This is either because :-
+	 a) I'm Blind  (Probably true   :-)  )
+	 b) It isn't really there at all..
+In either case would you be able to direct me to where I could find
+this file?
+
+[Ed. The virus summary listing is indeed not available on
+cert.sei.cmu.edu, due to Ms. Hoffman's licensing restrictions.  Other
+VIRUS-L/comp.virus archive sites, however, do carry it - notably
+risc.ua.edu.]
+
+    Thanks,
+- --
+*******************************************************************************
+*  Scott Golby                      x91scott@techno.nepean.uws.edu.au         *
+*  University of Western Sydney, Nepean - Kingswood                           *
+*  Australia.                       IRC NAME = DATA-LORE                      *
+*******************************************************************************
+
+------------------------------
+
+Date:    10 Sep 91 09:34:10 +0000
+>From:    zlsiial@cs.man.ac.uk
+Subject: Extra file in F-PROT 2.00? (PC)
+
+I notice that the file prot200.zip released from Simtel on August 30
+contains two files VIRSTOP.EXE and VIRSTOP.BIN, both 8191 bytes long.
+VIRSTOP.EXE runs and installs itself even if VIRSTOP.BIN has been
+deleted.  Is VIRSTOP.BIN therefore an unnecessary file released with
+the others by mistake?
+
+			-- A. V. Le Blanc
+			University of Manchester
+			LeBlanc@uk.ac.mcc
+
+------------------------------
+
+Date:    10 Sep 91 07:57:12 +0000
+>From:    browncow@pain.chaos.spc.com (Howard Cheng)
+Subject: Re: Mac vs. PC virus frequency
+
+s870694@minyos.xx.rmit.OZ.AU (Alfred Porziella) writes:
+
+>  Also where can I get some Info on Mac viruses, I want to know how
+>  widespread viruses are on the Mac compared to the DOS PC's.
+
+>From my experience with Macintoshes, most of the people I know of have
+virus protection on their computers.  All of the Mac viruses currently
+circulating are benign--none of them were intentionally made to
+destroy your hard disk or anything, but they can cause problems if
+they're infecting your system.  You can get an excellent virus-killing
+program called DISINFECTANT (v. 2.5.1 right now) from any good FTP
+station, such as SUMEX-AIM.STANFORD.EDU in the /info-mac library.
+It's freeware, so use it and enjoy it.
+
+                         browncow@pain.chaos.spc.com
+              Public Access Information Network  (818/776-1447)
+                            ++ Waffle BBS v1.64 ++
+
+------------------------------
+
+Date:    10 Sep 91 17:12:33 +0000
+>From:    meyer@fuhainf2.fernuni-hagen.de (Bernd Meyer)
+Subject: Clean-Up: Where ?? (PC)
+
+PLEASE HELP!!  i want to get rid of the "stoned" virus, which can be
+removed by "clean-up".  unfortunately i cannot find clean-up on any
+ftp-server. can someone please tell me, wehere to find it ? a request
+to archie was unsuccessful.  thanks...  berndd
+
+- --
+Bernd Meyer, LG Praktische Informatik IV, FernUniversitaet Hagen, D-5800 Hagen
+Bahnhofstrasse 46/48, FRG, Phone: +49 2331 181677,    ** db6ag@db0hag **
+meyer@fernuni-hagen.de     or    meyer@dhafeu61.bitnet
+s=meyer; ou=vax1; ou=informatik; p=fernuni-hagen; a=dbp; c=de
+
+------------------------------
+
+Date:    Tue, 10 Sep 91 12:50:05 -0600
+>From:    Bob Brown <BBROWN%HARPERVM.BITNET@mitvma.mit.edu>
+Subject: Possible Autocad virus (PC)
+
+Has anyone heard of a virus that infects Autocad and pops up an alien
+who moves his mouth for appr. 1 second and then dissappears?  We tried
+using scanv80 and IBM's virscan, but neither could find an infection.
+Has anyone else seen this or have ideas?
+
+- -boB
+- ----------------------------------------------------------------------
+BBROWN@HARPERVM            ****  ****    Bob Brown
+Harper Community College   **  **  **    Systems Programmer
+Palatine IL USA            ****  ****    "...Boink"
+
+------------------------------
+
+Date:    Tue, 10 Sep 91 19:25:10 -0400
+>From:    Robert Kahn <kahn@cunixf.cc.columbia.edu>
+Subject: Vi-Spy query (PC)
+
+We are evaluating MacAfee and Vi-Spy.  Vi-Spy seems more complex to
+use, but it's advantage is that it's memory-resident module
+(comparable to VSHIELD) takes only 6K.  How can it be so much smaller?
+Are folks using Vi-Spy?
+
+Robert Kahn
+Computer & Media Services
+Health Sciences Library
+Columbia University
+kahn@cunixf.cc.columbia.edu
+
+------------------------------
+
+Date:    Wed, 11 Sep 91 11:12:00 +1000
+>From:    S.CHAN@qut.edu.au
+Subject: Re:hard disk locaking (PC)
+
+We have been using a simple solution. The solution is using Disk
+Manager to change the type of you hard disk from r/w to read only.
+This should work for all types of drive. This should be ok in an
+office environment where protection is for accedental infection.  You
+cannot protect hard disk from a hacker or anybody who did it on
+purpose.
+
+------------------------------
+
+Date:    Wed, 11 Sep 91 01:53:28 -0500
+>From:    Finnegan Southey <ACDFINN@VM.UOGUELPH.CA>
+Subject: SITELOCK query
+
+     Has anyone used an anti-virus product called SITELOCK?  If so
+please direct me to any reference or tell me about your experiences
+with it.  Is there a review available?  Please direct all mail
+directly to me and I will summarize for the list if there is
+sufficient interest.  Thanks in advance...
+                                           ...Finn
+
+- -----------------------------------------------------------------------------
+ Finnegan Southey - CCS HELP DESK, University of Guelph, Ontario, CANADA
+     BitNet: ACDFINN.VM.UOGUELPH.CA  CoSy: fsouthey@COSY.UOGUELPH.CA
+                   UNIX: cs0836@snowhite.cis.uoguelph.ca
+           You are in a maze of twisty little passages, all alike.
+
+------------------------------
+
+Date:    Tue, 10 Sep 91 22:08:35 -0700
+>From:    turtle@darkside.com (Fred Waller)
+Subject: Testing antiviral utilities
+
+Writes Padgett Peterson (padgett%tccslr.dnet@mmc.com):
+
+ > Well, this is not quite true, the means are redily available,
+ > it is having a good sample of viruses to test that is the
+ > problem for most people.
+
+ Of course! Having the hardware (a computer with a hard disk) is
+ certainly not the problem I had in mind. I clearly explained that
+ most prospective buyers of antivirus softeware could not obtain
+ the large collection of viruses that is necessary to determine
+ whether a given virus scanner does or does not work as intended.
+ It's not getting a hard disk that's the problem. It's the jealously-
+ guarded "samples".  Without them, testing is impossible.
+
+ That is the perceived "hole" that programs such as Rosenthal
+ Engineering's Virus Simulator try to fill. It is a very real market
+ need. For all practical purposes, prospective buyers of antivirus
+ software are being asked to buy a product with no measure of
+ performance other than the word of the manufacturer. Any self-
+ respecting Purchasing Agent should have trouble swallowing such
+ a proposition without question.
+
+ The situation is akin to a software publisher asking you to buy
+ his program because "it would prevent your computer from having
+ problems", but offered no hard evidence of its effectiveness.
+ Snake oil.  Then comes Rosenthal Engineering and offers a product
+ that seems to show that the Emperor really wears no clothes, so
+ the publishers all protest that the idea is useless. It's not
+ useless; it shows that the Emperor wears no clothes, and _that's_
+ its usefulness.
+
+------------------------------
+
+Date:    Mon, 09 Sep 91 17:35:28 +0000
+>From:    as194@cleveland.Freenet.Edu (Doren Rosenthal)
+Subject: Re: Virus Simulator (long) (PC)
+
+ Virus Simulator 2.0 (PC)
+
+ Thanks  to all those who tried my Virus Simulator 2.0 and responded  by  E-
+ MAIL or through this forum.
+
+ There  seems to be considerable misunderstanding and controversy  about  my
+ Virus  Simulator 2.0 shareware. Many of the questions and  comments  people
+ raised  could  be addressed simply by reading the DOC file and  trying  the
+ software for themselves. It can be downloaded from a number of sources   in
+ just  a few minutes, the whole thing including documentation is  less  than
+ 58k  (VIRSIM20.COM SLO-Bytes BBS (805) 528-3753 or ask your local board  to
+ post it).
+
+ All  my  Virus  Simulator  does is create files,  boot  sector  and  memory
+ simulations that set off virus detectors. These are not real viruses.  They
+ are  safe,  sterile and won't reproduce by themselves etc. All they  do  is
+ pretend  to  be  viruses  so  users can  test  drive  virus  detectors  for
+ themselves.  If  an  anti-virus  program reports any  of  the  hundreds  of
+ simulations, it will most likely find their real counterparts. If not,  all
+ that  is demonstrated is that my validation test suite doesn't  fool  their
+ software or their software doesn't report my pretend viruses.
+
+ Virus Simulator is not intended to replace the comprehensive collection  of
+ real viruses developers of anti-virus products use in house for testing. It
+ is  designed  to be helpful to end users who wish to  try  different  virus
+ detecting  programs themselves and rarely have access to the many  hundreds
+ of  real  viruses  that are simulated. You'll also be  seeing  it  used  to
+ demonstrate anti-virus software at several upcoming computer shows.
+
+ Using  my Virus Simulator, educators can now reinforce lessons on  computer
+ security  with a homework assignment that includes detecting a (all  be  it
+ simulated) virus. This is far more dramatic than just reading about it in a
+ book.
+
+ Those  people concerned about Virus Simulator being used to cause  mischief
+ will  notice  that  all the simulations are clearly labeled  as  such.  You
+ needn't  run (or boot from) the simulations, but if you do they  will  only
+ display that they are a simulation from Rosenthal Engineering. You can view
+ them with an editor and read that message in plain ASCII as well. The  boot
+ sector simulations and hundreds of files are only written to a floppy  disk
+ along  with  documentation files describing them as simulations.  Even  the
+ floppy disk's subdirectory is labeled \VIRUS.
+
+ When Virus Simulator is run, it will verify and announce itself in my voice
+ to  anyone  nearby. Anytime it generates a simulated test  virus,  it  will
+ again announce, in my voice, what's happening. Additionally, when the virus
+ in  memory  option is selected, a warning message flashing "TEST  VIRUS  IN
+ MEMORY"   is  displayed  continuously.  System  administrators   who   have
+ difficulty  dealing  with  these simulations, are  going  to  have  serious
+ problems when confronted with a real stealth virus.
+
+ To remove any of my simulations you can use the DOS ERASE, DEL, FORMAT etc.
+ All  these  functions  are  much more dangerous  in  malicious  hands  than
+ anything  my Virus Simulator can do. A person bent on causing problems  has
+ far  more damaging software available as public information. I won't  dwell
+ on this but Ralf Burger describes this in some detail in his book "Computer
+ Viruses  -  A  High Tech Disease" you can get through  any  public  library
+ (ABACUS 1988, ISBN 1-55755-043-3).
+
+ I  make Virus Simulator available generally to all as shareware. It's  been
+ suggested  that it would be better to suppress Virus Simulator  2.0,  limit
+ access   to  such  a  program  and  release  it  only  through   recognized
+ organizations,  on  a need to know basis. These organizations are  free  to
+ develop  whatever  validation schemes they'd care to. Presently  users  can
+ take advantage of my independent impartial simulator without having to  get
+ it from any self serving anti-virus product vendor or organization.
+
+ I  just  don't believe there's any way to substitute  for  actually  trying
+ software  for yourself. Anyone is welcome to try my Virus Simulator 2.0  as
+ shareware  for  themselves. Any producers of anti-virus  products  who  are
+ disappointed in the results demonstrated when using my Virus Simulator with
+ their  products, are welcome to contact me directly in confidence. I'll  do
+ my  best  to  see that future revisions of  my  simulator  validates  their
+ products the best it can.
+
+ Comments and constructive criticism is always appreciated....
+
+ Thank you
+
+ Doren Rosenthal                       Voice phone (805) 541-0910
+ Rosenthal Engineering
+ 3737 Sequoia
+ San Luis Obispo, CA   USA 93401
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 4 Issue 160]
+******************************************

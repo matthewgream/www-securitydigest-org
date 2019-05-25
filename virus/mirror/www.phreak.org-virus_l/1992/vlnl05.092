@@ -1,0 +1,816 @@
+VIRUS-L Digest   Thursday, 23 Apr 1992    Volume 5 : Issue 92
+
+Today's Topics:
+
+The security problem in Novell NetWare (PC)
+F-Prot & DATAMON (PC)
+Question - Azusa (PC)
+On searchiong the original INt 13h (PC)
+Don't understand Norvegian infection... (PC)
+Re: Polymorphic Viruses (PC)
+Question re anti-virus products (PC)
+Re: Vlad the Inhaler? (Win 3.1 upgrade) (PC)
+Re: Polymorphic List (PC)
+Filler warning with SCAN & CPAV (PC)
+Re: Defence from mutating viruses. (PC)
+New Datalock variant found (PC)
+RE: Mutant detection (PC)
+Biohazard symbol for computer viruses?
+lies and damn lies
+CODE 252 Virus - Rival Vaccine info (Mac)
+Checklist part 9
+
+VIRUS-L is a moderated, digested mail forum for discussing computer
+virus issues; comp.virus is a non-digested Usenet counterpart.
+Discussions are not limited to any one hardware/software platform -
+diversity is welcomed.  Contributions should be relevant, concise,
+polite, etc.  (The complete set of posting guidelines is available by
+FTP on cert.sei.cmu.edu or upon request.)  Please sign submissions
+with your real name.  Send contributions to VIRUS-L@IBM1.CC.LEHIGH.EDU
+(that's equivalent to VIRUS-L at LEHIIBM1 for you BITNET folks).
+Information on accessing anti-virus, documentation, and back-issue
+archives is distributed periodically on the list.  Administrative mail
+(comments, suggestions, and so forth) should be sent to me at:
+krvw@CERT.SEI.CMU.EDU.
+
+   Ken van Wyk
+
+----------------------------------------------------------------------
+
+Date:    16 Apr 92 16:54:41 +0000
+From:    bontchev@fbihh.informatik.uni-hamburg.de (Vesselin Bontchev)
+Subject: The security problem in Novell NetWare (PC)
+
+As I promised, here is an extract of the document that mentioned the
+problem:
+
+> What really caused Jon's test results?  Well I believe that the following
+> is what really happened in Paramus that day.  In pre-NetWare 386
+> systems the server evaluated your rights to a directory at the time the
+> directory handle is allocated.  This information is not updated until the
+> directory handle is reevaluated (reallocated, or changed).  This causes a
+> discrepancy between the reported rights and the actual rights.  To
+> complicate the issue even further, there are different versions of the
+> RIGHTS program available that show different rights.  One version
+> displays your actual rights to the directory handle while another version
+> displays your "granted" rights.  This only matters when you have just
+> changed your rights to a directory to which you have already mapped a
+> drive.  Then your "granted" rights will be different from your actual
+> rights.  I surmise that this is what happened in Paramus.  During the
+> testing they simply revoked a right and then ran the test.  This caused
+> the apparent breach of security.  As a side light, let me point out that a
+> similar thing happens with security equivalence.  Your equivalence is
+> determined when you login and will not be changed by changes to the
+> system during your session (ie. if you are supervisor equivalent and that
+> is removed, you will remain equivalent until you logout).
+
+The document is by James Brown (James_Brown@NPD.Novell.COM) and he
+further suggests that for any security-related problems and especially
+viruses you contact Eric Babcock at (801) 429-7895. Unfortunately, I
+don't have Eric Babcock's e-mail address.
+
+Now, maybe I misunderstand what the above quote really says, but to me
+it means that some versions of the NetWare have a serious security
+bug - the rights that you revoke remain in effect until you logout.
+
+Could somebody who knows Novel NetWare well explain us whether it is
+really so, and if yes, in which versions of the NetWare is this bug
+really present.
+
+Regards,
+Vesselin
+- --
+Vesselin Vladimirov Bontchev        Virus Test Center, University of Hamburg
+Bontchev@Informatik.Uni-Hamburg.De  Fachbereich Informatik - AGN, rm. 107 C
+Tel.:+49-40-54715-224, Fax: -226    Vogt-Koelln-Strasse 30, D-2000, Hamburg 54
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 12:01:58 -0600
+From:    "Norm J. Harman Jr." <NHARMAN@UKANVM.BITNET>
+Subject: F-Prot & DATAMON (PC)
+
+  Hello,
+The following message appears on several known to be clean machines.
+
+    c:\virstop
+    VIRSTOP cannot be installed.
+    This may be caused by an active virus or an incompatible DOS.
+
+Config.sys
+  FILES=40
+  BUFFERS=30
+  DEVICE=C:\DOS\EMM.SYS
+  DEVICE=C:\UTIL\FPROT\VIRSTOP.EXE
+  DEVICE=C:\DOS\SETVER.EXE
+
+Autoexec.bat
+  @echo off
+  ...  < deleted >
+  c:\pctools\pc-cache
+  DATAMON /TRACKER+
+
+Obviously virstop is indeed loaded.  If the DATAMON line is REMoved then all is
+fine and we get the normal message "VIRSTOP is allready loaded." DATAMON is
+PC-Tools v7.1 Data Monitor.  My Question is has Virstop been disabled?  Will it
+detect a virus on this machine.  In general how can a user verify that the
+anti-virus software he/she has installed is actually operating as expected?
+Would it be possible for AV authors to include a test string/file (NOT A VIRUS)
+just a file that contains some dummy string that the software looks for?
+Then at any time the user could verify the proper operation of his software.
+
+
+                                   Thank You in advance,
+                                   Norm J. Harman Jr.
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 13:04:50 -0400
+From:    LQ4@psuvm.psu.edu
+Subject: Question - Azusa (PC)
+
+I am looking for information on a virus that was identified as Azusa
+using the f-prot virus detection software.  I know one of our units
+was infected and I was able to deal with it.  However, curiosity has
+me wishing additional details. . .  Information can be directed to me
+personally.
+
+     Thanks!
+           Pam
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 11:37:49 -0500
+From:    miguel@roxanne.nuclecu.unam.mx (Miguel de Icaza A.)
+Subject: On searchiong the original INt 13h (PC)
+
+>> How do you find the Int13 entry point?  Simple, really.  Use
+>> DEBUG to search system ROM for typical int13 code, and try it:
+>
+>> C:>DEBUG
+>
+>> - - s f000:0 l FFFF 80 FA 80
+>
+> Good guess... But totally wrong. :-) On my XT the INT 13h handler for
+> the hard disk is on the hard disk controllers's EPROM and is at
+> address 0C800:0000h.
+
+Have you ever tried Thunderbyte Scan? it has an option (-direct), this
+options allows TBSCAN to run and scan your disk without risk (no
+matter if a virus is resident in memory), because the programs
+includes a debugger (I think Vesselin calls this tunneling) which is
+able to find the entry point for Int 21h and Int 13h thus skipping any
+TSR monitor/virus loaded in RAM.
+
+Miguel de Icaza
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 11:57:24 -0500
+From:    miguel@roxanne.nuclecu.unam.mx (Miguel de Icaza A.)
+Subject: Don't understand Norvegian infection... (PC)
+
+Vesselin Bontchev writes:
+
+> work if (1) the virus modifies the FST in memory, or (2) uses the
+> Norvegian infection method (Frisk, is there a virus which actually
+> uses it? Which one?), or (3) masquerades writes as reads like the
+
+What is the Norvegian infection method?
+
+Miguel de Icaza
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 20:03:11 +0000
+From:    goldsmit@iguana.cis.ohio-state.edu (eric richey goldsmith)
+Subject: Re: Polymorphic Viruses (PC)
+
+I am new to this news group - please bear with me.  I am taking a
+technical writing class this quarter in which writing is done in
+groups.  My group has tentatively decided on the topic of identifying
+polymorphic viruses.  We are all computer science majors but have
+little experience with viruses.  One of our concerns is that there may
+not be enough information available on the topic to write a 20 page
+document.  Can anyone make any suggestions as to whether they think
+this topic would be 'researchable'.  Can anyone provide sources of
+information for polymorphic viruses for PC's (IBM).  ANY input would
+be appreciated.  Thanks.
+
+------------------------------
+
+Date:    Thu, 16 Apr 92 20:48:05 +0000
+From:    mkarg@wpi.WPI.EDU (Michael Joseph Karg)
+Subject: Question re anti-virus products (PC)
+
+	What software at ftp site 129.109.9.21 would be the best to
+have in cases of an infection?  Are any of these any good?  I've heard
+quite a bit of talk about what is better.  I currently own McFee's
+Scan and that is all.  Replies via news of e-mail appreciated.
+
+Mike.
+
+- --
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+mkarg@wpi.wpi.edu (Michael J. Karg)
+- -the plain brown .signature-
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+------------------------------
+
+Date:    Fri, 17 Apr 92 03:13:15 +0000
+From:    dmarcher@acsu.buffalo.edu (Dave Archer)
+Subject: Re: Vlad the Inhaler? (Win 3.1 upgrade) (PC)
+
+HODGE@astro.pc.ab.com (24893, HODGE,ROBERT E.) writes:
+>dmarcher@acsu.buffalo.edu (Dave Archer) writes:
+>>   I upgraded to Windows 3.1, and had an interesting problem.  My D:
+>> drive got semi-trashed and I saw that a task with the title "Vlad the
+>> Inhaler" was running.
+
+>  That phrase, "Vlad the Inhaler", shows up in the file NWRES.DLL, which
+>is part of the Norton Desktop program.  (At least on my system.)
+
+Yes.  Somebody from Symantec confirmed that "Vlad the
+Inhaler" is an, ah, feature of Norton Desktop for Windows.
+
+Trashed disk most likely a conflict with the new version of
+SmartDrive & my SCSI drive.
+
+No virus (Oh joy!).
+
+Dave
+
+- ---
+  Dave Archer  |  Internet: dmarcher@acsu.buffalo.edu
+               |    Bitnet: V116KZND@UBVMS
+               |     GEnie: D.ARCHER
+
+------------------------------
+
+Date:    Fri, 17 Apr 92 21:45:57 +0000
+From:    Fridrik Skulason <frisk@complex.is>
+Subject: Re: Polymorphic List (PC)
+
+In Message 9 Apr 92 03:09:00 GMT, 0004886415@mcimail.com (Joe Wells) writes:
+
+>The subject of Polymorphic viruses seems to be poping up here and there. So
+>here is a list of the current viruses of this ilk:
+
+Perhaps it is necessary to divide the polymorphic viruses into several
+groups - depending on how great the variability is.  Assuming the
+viruses are encrypted, and we only consider the difference between
+different instances of the decryption routines, I see the following
+possibilities:
+
+ 1) Identical code - only different constants.  This does not qualify as
+    polymorphism in my opinion.
+
+ 2) Identical code, but with "garbage" instructions in between.
+
+ 3) Variable code, but the differences are small enough so that a
+    single virus signature (possibly including a wildcard) is possible.
+    (Ontario is an example of this),
+
+ 4) Veriable code, but it is possible to use a small set of signatures,
+    (Whale falls into this category).
+
+ 5) Code too variable for signatures to be possible - such as the MtE.
+
+- -frisk
+
+------------------------------
+
+Date:    Fri, 17 Apr 92 21:19:12 +0700
+From:    swimmer@stage.hanse.de (Morton Swimmer)
+Subject: Filler warning with SCAN & CPAV (PC)
+
+kenm@maccs.dcss.mcmaster.ca (...Jose) writes:
+> 	A colleague has the following, peculiar problem: He loads the
+> CPAV TSR from his AUTOEXEC.BAT, and later tries to use McAfee's SCAN.
+> SCAN will sometimes report that the FILLER virus is there, ubt often
+> will not.  Oddly, CPAV doesn't seem to know about FILLER, so he's a
+> wee bit nervous.
+
+This doesn't surprise me a bit. CPAV and other scanner do not mix
+well. What probably is happening is that CPAV is not excrypting the
+scan strings in memory, so scan SCAN thinks it sees that virus when it
+scans memory. Try deinstalling CPAV.
+
+Cheers, Morton
+
+- ---
+sent by stage.hanse.de
+
+------------------------------
+
+Date:    Sat, 18 Apr 92 13:34:38 +0300
+From:    kiae!rtech!vl!ALS@vl.ts.kiev.ua
+Subject: Re: Defence from mutating viruses. (PC)
+
+rmg536668@uxa.cso.uiuc.edu (Ryan M. Grant) writes to:
+
+>   kiae!rtech!vl!ALS@vl.ts.kiev.ua writes:
+
+>   >    ... made some
+>   >    testing of what would be if I can change some codes of MS-DOS resident
+>   >    part to make it more virus-safe.
+>   >    ...changes in MSDOS.SYS (in memory, of course, not
+>   >    in disk file).
+>
+>           Does this mean I run the program from the command line?
+>           Can I set it up, in other words, not to run?
+
+     Yes, you can or you can't run it. So for everyday work you run it
+but in few cases, when you try to restore loosed data from disk,
+reformat it and so on you can't install this antiviral systems.
+
+>   >    [RLock can remove the read-only bit]
+>
+>           If your program can remove the read-ony bit, how hard would it be
+>           for a virus programmer who has seen your program?
+
+   By the way, my program makes ReadOnly bit stronger but not removes it.
+Virus programmer can remove this defence if and only if:
+
+           1. He has all DOS'es, for what this defence was made
+              (now - MS-DOS 4.0, 4.01 and 5.0, tomorrow MS-DOS 6.0 and
+               may be COMPAQ-DOS or DR-DOS)
+
+           2. He has all my programs for these DOS'es, because even in
+              DOS 4.01 and DOS 5.0 changes in MSDOS.SYS are differs greatly
+
+
+>   >    prevent direct access to disk
+>   >    to all programs EXCEPT COMMAND.COM.
+>
+>           Do any programs useful try this? Disk caches?
+>           (Just looked and norton cache uses DOS, but how about the others?)
+
+    NCACHE don't, but it uses other virus-like trick, so you can load it before
+my programs. But many of Norton Utilities, such as NDD, UNERASE, CALIBRATE
+really do. And at least one editor ( BRIEF, if I am not mistaken ) accesses
+disk directly via Int 13.
+
+>   >    As a result only very DOS-depended viruses can ignore this defence.
+>
+>           What could they do?  Are DOS versions that hard to keep track of?
+>           What if DOS 5 sticks around a while?
+
+  They could restore modified parts of MSDOS.SYS and IO.SYS. Just now it's
+not very hard to do it. But if somebody can support this idea (or can support
+me :-) and can write
+such defence for other DOSes or regularly place it at other positions of
+MSDOS.SYS and IO.SYS then virus had to:
+
+         1. Define difference between PC-DOS, MS-DOS, DR-DOS, ..., of the
+            same version, because all of them answer: "I am DOS X.Y",
+            but their codes differs too much
+
+         2. Have in its (virus) codes original and not very short parts of
+            IO.SYS and MSDOS.SYS files for any of the above DOSes
+            (to replace by them modified parts of files)
+
+         3. Select concrete position and length of modified files
+
+         4. And be sure that with new DOS version all this big efforts
+            would be lost.
+
+
+Alexander Shehovtsov
+- --
+Alexander Shehovtsov,      (044) 266-70-28 (9:00 - 18:00 Kiev, Ukraine) voice
+           als@vl.ts.kiev.ua    Relcom | 2:463/30.5  or  2:463/34.4   FidoNet
+
+------------------------------
+
+Date:    18 Apr 92 10:38:13 -0400
+From:    "Tarkan Yetiser" <TYETISER@ssw02.ab.umd.edu>
+Subject: New Datalock variant found (PC)
+
+   Hello everyone,
+It was brought to our attention that a variant of Datalock virus is
+found in the wild (DC/Virginia area). We received a copy of the virus,
+and did a quick-and-dirty analysis. It appears that the virus is a new
+strain of Datalock, or rather a hacked and a very buggy version of
+Datalock.
+   The only reason for our concern (and thus this posting) is that the
+latest versions of common virus scanners (Scan 89b, F-prot 2.03a) fail
+to identify the virus in EXE files. Our VDSFSCAN fails in a similar
+way, but works when WHOLE flag is set to YES (meaning scan every byte
+of the file). Original Datalock signatures are valid and can be used to
+identify the virus. Being quite dumb, this variant is not a serious
+threat.
+   Here is an overview based on a preliminary analysis. The following
+information may be inaccurate, so you are warned. Also, we would like
+to mention that the analysis was done using Dis86 (an interactive
+debugger written by James R. Van Zandt (603-888-2272), and the program
+is available on Simtel and its mirrors):
+- ---------------------------------------------------------------------
+* Location/Date: DC/Virginia area, April 1992
+* Related virus(es): Datalock
+* Suggested name: Datalock-2
+* Responds to RU-THERE calls as follows:
+   ...
+   mov  AH, BEh
+   int  21h
+   cmp  AX, 4321h
+   jz   virus_is_resident
+   ...
+  (In English, the virus establishes a new function for Int 21h, and
+   sets the contents of AX register to 4321h to indicate its presence.)
+* Signature to identify the virus:
+
+   C3 1E A1 2C 00 50 8C D8 48 8E D8 81 2E 03 00 80 00 40 8E D8
+
+* Takes 80h paragraphs (or 2K) of memory when resident. Directly
+  manipulates memory control blocks to remain resident.
+* Hooks INT 21h, and during infection INT 24h
+* Virus body is appended to the end of files, and file size grows by
+  1043 bytes. Both EXE and COM files are infected similarly. Due to
+  bugs in the viral code, infected EXE programs will not further the
+  infection. Original CS:IP is left intact, and scanners checking
+  around the entry point will not be able to find it.
+* For COM programs, a jump is inserted at the beginning of the program
+  so that the control is directed to the virus at the end of the file.
+* Damage trigger: After 1 (or more) hour of memory residency. Uses DOS
+  INT 21h with subfunc 2Ch, and checks CH (hour).
+* Payload: Formats track 0 on any diskettes in drive A: and B:, and
+  second physical hard disk (81h).
+* Infection trigger: Load/exec (4b00), open existing gile (3d), and
+  find first (11h). Checks for READ-ONLY attribute, and changes it to
+  ARCHIVE if necessary. File date/time stamp as well as the original
+  attribute is preserved after infection. Files less than 9316 bytes
+  are not infected. There are many instances of hooking INT 24h and
+  restoring it, suggesting sloppy coding. Infects COMMAND.COM. Due to a
+  bug, the virus will corrupt files besides COM and EXE, such as the
+  ones with TXT extension.
+* Does NOT contain the string 'Datalock version 1.0'
+* Note: The virus is well-behaved enough to spread in network
+  environments if Modify and Write rights are given. However, we did
+  not get a chance to test this hypothesis. (The LAN admin here keeps a
+  butcher's knife in the ofice; yes yes, he is a CNE and knows all
+  about viruses :-)).
+
+Regards,
+
+Tarkan Yetiser
+VDS Advanced Research Group               P.O. Box 9393
+(410) 247-7117                            Baltimore, MD 21228
+e-mail:  tyetiser@ssw02.ab.umd.edu
+
+------------------------------
+
+Date:    Sat, 18 Apr 92 15:37:00 +0000
+From:    Joe Wells <0004886415@mcimail.com>
+Subject: RE: Mutant detection (PC)
+
+tyetiser@ssw02.ab.umd.edu Tarkan Yetiser responds to me:
+
+JW: However, there are already scanners that will detect Pogue, as well as
+>>  the Mutation Engine. McAfee's scan claims 100 accuracy, Alan Soloman
+>>  (at my last discussion with him) was at 99% on the MTE, Fridrik I know
+>>  is working on it and undoubtedly will be detecting it very soon, and
+>>  our product, Novi 1.1 is currently at about 99.7% on the MTE (current
+>>  misses being failures of the Engine to work properly, detection for
+>>  which I have yet to add).
+
+TY: I don't have my calculator handy, but how do these people come up with
+> these numbers? Science, magic or marketing? I mean, 99.7% is pretty close.
+> Such accuracy!
+
+I don't know how the others got their numbers but I made a few thousand
+infections and checked what I missed, all the time trying to eliminate
+false positives. Current theoretical false positive rate is 1 in 422,000.
+(Quick, find your calculator.) :-)
+
+And add one more scanner to the list: Sweep by Sophos.
+
+>   Much truth in that. But if the end-user is only exposed to hype and
+>misinformation, how can he expect to see the light? Almost all major
+>anti-viral developers boast about their capability to identify four-digit
+>virus variants.
+
+Ah yes, the numbers game. I'm looking forward to the McScanner of 2001
+(Over 30 billion detected!).
+
+>> Actually, since virus-writers have aimed viruses at specific products,
+>> there is no reason not to use more than one.
+
+>   Oh, yeah? The pie is big enough, and the end-user is supposed to pay
+>the bill for defeating their knight's foes.
+
+Exactly! As viruses become more and more "just another business expense",
+people will have more than one--as is already true for word processors,
+graphics programs, databases, disk utilities, backup programs, etc.
+
+>> been doing compatibility testing on my machine for AVPD members and
+>> others, at lease to the extent of scanning each other. I generally have
+>> the latest versions of CPAV, NAV, ViruSafe, McAfee, Virex-PC, Virx, Virus
+>> Buster, Untouchable, AV Toolkit, F-Prot, PCRX, PC-Cillin, and Novi on
+>> one of my test machines for just such testing.
+
+>   Petty cash, donation, hobby, or complimentary versions of each one?
+>Maybe, it's just know thy competition.
+
+Generally as a favor for the techies I know well at each company. Someone
+else at our company does the competitive intelligence.
+
+>   You are right. Isn't it about time the end-user is made aware of better
+>solutions? Many people out there do not have the expertise/time/interest to
+>perform a sound evaluation and then choose something that better suits
+>their personal as well as organizational needs?
+
+And virtually no reviewers know how to test whole "products". All they seem
+to be able to do is run scanners against a few kilobytes of different viruses
+and chalk up numbers--the "hundreds and hundreds" numbers game again.  Odd
+since only about a hundred viruses have ever been seen at more than a
+couple of sites "in the wild." (IBM lists 82 viruses with more than one
+incident reported, including only 21 with more than 10!) And some of the
+"Hundreds" marketeers' products miss some of those 21!
+
+The only review I have seen to date that had a full product review--including
+an "unknown virus detection" catagory was the National Software Testing Lab's
+Software Digest Report of November 1991. They based their analysis on the
+twelve points listed in Peter Denning's "Computers Under Attack" (ACM Press
+1990).
+
+FYI, the 12 points (which NSTL actually expanded upon) are:
+
+ 1. Impact on System Performance
+ 2. Dependence on User Intervention
+ 3. Impact on Productivity
+ 4. False Alarm Rate
+ 5. User Experience and Acceptance
+ 6. Effectiveness Against Viruses (Including scanning numbers.)
+ 7. Post Mortem Analysis (Audit trail, etc)
+ 8. Impact on System Resources
+ 9. Compatibility
+10. Training/Usability
+11. Supplier/Developer Background
+12. Additional Features (NSTL looked at 60)
+
+"May the twelve points of Peter rest on your future analytical meditations."
+                            (-: Mediocrates :-)
+
+>> Joseph Wells - Virus Specialist|- Certus International - (216)546-1500
+>> Novi Development Team Leader - 0004886415@mcimail.com - CIS 70750,3457
+
+>  Aha, so you do this for a living. Keep up the good work. I hear NOVI
+>is well-designed and has convenient features for networked environments.
+
+Yes I do. Yes it is. Novi ranked #1 in the NSTL report above and got the
+only perfect "10" in "detects unknown viruses". :-)
+
+Joe
+
+======================================================================
+Joseph Wells - Virus Specialist|- Certus International - (216)546-1500
+Novi Development Team Leader - 0004886415@mcimail.com - CIS 70750,3457
+======================================================================
+
+------------------------------
+
+Date:    16 Apr 92 13:02:20 +0000
+From:    A.APPLEYARD@fs1.metallurgy.umist.ac.uk
+Subject: Biohazard symbol for computer viruses?
+
+Someone said that there is no ambiguity between biological and
+computer viruses in using biohazard tape to warn of both, since
+"computer floppies etc aren't likely to get biocontaminated". Aren't
+they!? If a PC is used in a lab that handles bio-infected matter,
+animals, etc, there is every chance that computer-associated matter
+will get biocontaminated! Anyway, the biohazard destructor man wants
+to be able to routinely destroy anything with a biohazard label on
+without having to wonder whether it is a computer- associated item or
+not, and without having to waste vehicle fuel and incinerator fuel etc
+taking a Michelangelo-infected diskpack or whatever to a secure
+incinerator as if it was a boxful of cholera-infected animal
+dissection bits or whatever.
+
+------------------------------
+
+Date:    Wed, 22 Apr 92 19:38:00 -0400
+From:    fc <FBCohen@DOCKMASTER.NCSC.MIL>
+Subject: lies and damn lies
+
+          I have been misquoted a lot, but that last virus-l goes a
+bit too far.  I never said that because you can't get 100% of all
+viruses you shouldn't try - and it was not a hypothesis.  It was (and
+still is) a proven theorem.  I also said "There ain't a horse that
+caint be rode, there aint a man that can't be throwed" - in other
+words - there's no perfect defense, but there's no perfect attack
+either.
+
+          As to getting large percentages of viruses (or at least
+large classes) I have never said you shouldn't try - but I have said
+that scanners are not as cost effective as integrity techniques as a
+day-to-day practice.  I backed it up with some numbers and invited
+others to debate the issue.  So far - all of the other analyses have
+agreed with mine.
+
+          As for the book - yes, it describes how two secure systems
+may produce an insecure network when combined - and many other things
+that may have long and short term impact.  As for advertising on V-L I
+have to agree - all the other companies seem to use V-L to sell their
+products.  I have written to Ken about it before, but he didn't want
+to publish my opinion on that subject - perhaps this one will make it.
+Having said that, I won't tell you wjere to get the book unless you
+contact me directly - after all - that would be advertising.  FC
+
+[Moderator's note: As I said in my note to you, it was not your
+_opinion_ that I rejected in your posting, Dr. Cohen.  Your posting
+would have been accepted had it adhered to my guidelines - one of
+which is that messages be _polite_.  I welcome discussion on the
+product announcements which I allow here on the group; based on
+feedback from readers, I have accepted the announcements because they
+provide a public service.  However, if the majority of the group feels
+that they should be eliminated because they are commercial, I will
+reject all announcements of commercial products.]
+
+------------------------------
+
+Date:    18 Apr 92 09:16:00 +0000
+From:    Werner Uhrig <werner@cs.utexas.edu>
+Subject: CODE 252 Virus - Rival Vaccine info (Mac)
+
+Resent-From: Werner Uhrig <werner@rascal.ics.utexas.edu>
+[ NOTE: I will continue to forward all release info by any anti-viral
+	author or publisher (with permission) sent to me. ---Werner ]
+
+	 New Rival Vaccine released to combat CODE 252 Virus
+
+Contact:
+Microseeds Publishing,Inc.
+Web Phillips
+5801 Benjamin Center Drive, Suite 103
+Tampa, Florida 33634
+813-882-8635
+Link:MICROPUB
+
+Tampa, FL, April 17,1992 - Microseeds Publishing,Inc. released
+a new vaccine for Rival, their anti-virus program for the Macintosh,
+to combat the new Macintosh virus "CODE 252".
+
+The CODE 252 vaccine is available in the Microseeds Publishing Third Party
+updates section of AppleLink, America Online, CompuServe, and the
+Microseeds Publishing BBS (813-885-2686).  Rival owners, who subcribe to
+the Rival Express Service, will be automatically sent the CODE 252 vaccine
+via U.S. mail.
+
+
+Rival Refresh 1.1.9v is an application that will update your copy
+of Rival 1.1.4 or later to the current version, Rival 1.1.9v.
+
+Rival 1.1.9v may be used with System 6 and System 7, and also contains
+an updated vaccine file to combat the CODE 252 virus as of 4/17/92.
+
+Rival 1.1.9v is compatible with More Disk Space.
+
+System Requirements: 6.0 or later
+Memory Requirements: 1MB or higher
+Hardware Requirements: Mac Plus or better
+Rival Requirements: 1.1.4 or later
+
+Microseeds Publishing distributes Rival Refresh free of charge, but please
+remember that Rival itself is a commercial program and should not be given
+away! Thanks.
+
+- ----------------------------------------------
+Rival Refresh 1.1.9v Instructions
+- ----------------------------------------------
+To update your copy of Rival, double-click on Rival Refresh to open it. Then
+select the copy of Rival on your hard disk, and click the Refresh button. In a
+few seconds, you will be notified that the update was successful.  You must
+restart for the update to take effect.
+
+Note to System 7 users:  If you put Rival Refresh on your hard disk, you can
+update Rival by simply dragging your copy of Rival and "drop it into" the Rival
+Refresh icon.  You'll be notified that the update was successful, and your copy
+of Rival will return to its original location automatically.  If Rival is not
+already in the Control Panels folder, move it there and restart.
+
+
+- ----------------------------------------------------------------------------
+
+		[ text from the update floppy (I think) ]
+
+
+- -----------------------------------
+Rival Vaccines 4/17/92
+- ----------------------------------
+Read Me First: Rival Vaccines 4/17/92
+- ----------------------------------
+- ----------------------------------
+Enclosed is the Rival vaccine to protect against and eradicate the CODE 252
+virus. All previous vaccines for Rival are also included as of 4/17/92.
+
+These vaccines can only be used with Rival versions 1.1.4 or later,
+and cannot be used with earlier versions.
+
+System Requirements: 6.0 or later
+Memory Requirements: 1MB or higher
+Hardware Requirements: Mac Plus or better
+
+Microseeds Publishing distributes Rival vaccines free of charge, but please
+remember that Rival itself is a commercial program and should not be given
+away! Thanks.
+
+- ----------------------------------------------
+Instructions for installing new Rival Vaccines
+- ----------------------------------------------
+
+1. Pull down the Apple menu and choose Control Panel.
+
+2. Click on the Rival icon in the Control Panel window.
+
+3. Click on the Volumes icon in the Rival mode selector.
+
+4. Use Rival's file list to open the volumes and folders the vaccines are
+located in; double-click on a volume or folder icon to open it and display its
+contents.
+
+5. Click on the vaccine you wish to install; shift-click to select several
+vaccines at once.
+
+ 6. Click the Install button to install the vaccine(s). It will take a few
+seconds to install each vaccine. When they're installed, Rival will display the
+list of vaccines, where you'll see the new vaccine(s) added to the list. NOTE:
+To find more about about a vaccine (or the virus it protects against),
+double-click on its name.
+
+
+
+
+------------------------------
+
+Date:    Fri, 17 Apr 92 19:03:31 -0700
+From:    rslade@sfu.ca (Robert Slade)
+Subject: Checklist part 9
+
+
+
+920417   PRTCKL9.CVP
+
+                    Antiviral checklist - part 9
+
+                          For each office: (cont.)
+
+_ Memory and disk mapping utilities
+
+In an earlier column I mentioned the need for memory and disk lists
+for each computer.  These areas do not need to be checked constantly,
+in most situations, so there is no need for a copy of these utilities
+with each computer.  The utilities should, however, be available
+quickly and easily, should anything prompt a check.  Checks should
+also be done on a regular basis, and these tools can be used on each
+computer in turn.
+
+Having said that, many of the utilities needed are already a part of
+the operating system.  In the MS-DOS world, CHKDSK, while it will not
+show you a graphical map of the disk, will provide information on the
+number of bad sectors or hidden files.  With MS-DOS 5, the MEM
+program provides needed information regarding memory and interrupt
+usage.  The Mac world, and the GUI OSes in general, tend to provide
+less of these tools, but I believe that ResEdit is now part of the
+Mac OS.
+
+In any case, these utilities are widely available both commercially
+and as shareware.  Commercial utility packages often do "double
+duty": PCTOOLS probably is sold most often for its backup capability,
+but can provide helpful information for other areas as well.
+Shareware tools sometimes lack the interface of the commercial tools,
+and more often are dedicated to a single task, but frequently have
+useful features not found in their commercial counterparts.  (Neither
+PCTOOLS nor Norton have the ease of access to specific sectors that
+the shareware SHOWFAT has.)
+
+I would also like, at this point, to bring up a related issue.  I
+have been receiving feedback, from many sources, all tending to the
+same theme: "why not just scan the computer and have done with it."
+It has, perhaps, escaped the attention of these readers that at no
+point in this checklist have I required the purchase of any specific
+antiviral software.  This is deliberate for three reasons.  First,
+this checklist is intended as a conceptual guide and is, as far as
+possible, intended for the non-specialist user of any system.
+Second, it is intended to show that virus protection is possible
+without specialized software (although antiviral software can ease
+the burden tremendously.)  Third, the most important aspect of virus
+protection is that the user know the system.  That cannot happen if
+the user is relying on some "magic bullet": there never will be a
+magic bullet that will give 100% protection.
+
+copyright Robert M. Slade, 1992   PRTCKL9.CVP   920417
+
+==============
+Vancouver                               | "A ship in a harbour
+Institute for  Robert_Slade@sfu.ca      |  is safe, but that is
+Research into  rslade@cue.bc.ca         |  not what ships are
+User           CyberStore Dpac 85301030 |  built for."
+Security       Canada V7K 2G6           |           John Parks
+
+
+------------------------------
+
+End of VIRUS-L Digest [Volume 5 Issue 92]
+*****************************************

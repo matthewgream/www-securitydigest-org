@@ -1,0 +1,605 @@
+Subject: RISKS DIGEST 12.57
+REPLY-TO: risks@csl.sri.com
+
+RISKS-LIST: RISKS-FORUM Digest  Monday 28 October 1991  Volume 12 : Issue 57
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+  Contents:
+DSA/DSS -- Digital Signatures (Ron Rivest)
+Porn-Sabotage in Italian newspaper (Enrico Musio)
+Re: MCI Friends & Family (Allan Meers)
+Do floor vibrations damage disks? (Magnus Redin)
+Re: Software migration at Johnson Space Center (Doug Burke)
+A New Twist on "Speed Controlled by Radar" (Andrew C. Green)
+Call for Papers ESORICS-92 (Yves Deswarte)
+
+ The RISKS Forum is moderated.  Contributions should be relevant, sound, in 
+ good taste, objective, coherent, concise, and nonrepetitious.  Diversity is
+ welcome.  CONTRIBUTIONS to RISKS@CSL.SRI.COM, with relevant, substantive 
+ "Subject:" line.  Others may be ignored!  Contributions will not be ACKed.  
+ The load is too great.  REQUESTS please to RISKS-Request@CSL.SRI.COM.  For
+ vol i issue j, type "FTP CRVAX.SRI.COM<CR>login anonymous<CR>AnyNonNullPW<CR>
+ CD RISKS:<CR>GET RISKS-i.j<CR>" (where i=1 to 12, j always TWO digits).  Vol i
+ summaries in j=00; "dir risks-*.*<CR>" gives directory; "bye<CR>" logs out.
+ The COLON in "CD RISKS:" is essential.  "CRVAX.SRI.COM" = "128.18.10.1".
+ <CR>=CarriageReturn; FTPs may differ; UNIX prompts for username, password.
+ ALL CONTRIBUTIONS CONSIDERED AS PERSONAL COMMENTS; USUAL DISCLAIMERS APPLY.
+ Relevant contributions may appear in the RISKS section of regular issues
+ of ACM SIGSOFT's SOFTWARE ENGINEERING NOTES, unless you state otherwise.
+
+----------------------------------------------------------------------
+
+Date: Sat, 26 Oct 91 23:12:33 EDT
+From: rivest@theory.lcs.mit.edu (Ron Rivest)
+Subject: DSA/DSS -- Digital Signatures
+
+Director, Computer Systems Laboratory
+ATTN: Proposed FIPS for DSS
+Technology Building, Room B-154
+National Institute of Standards and Technology
+Gaithersburg, MD  20899
+
+Dear Director,
+
+I'm writing to comment on the public-key digital signature algorithm, which you
+call ``DSA'', that you have proposed to become a standard.  This letter is in
+response to your request for comments to this proposal.  Although I have other
+comments about this algorithm (to be made in another letter), and I believe
+that an RSA-based standard would serve the country much better, I will restrict
+my comments here to just a discussion of your proposed key size of 512 bits for
+the DSA.  I believe that a national standard based on such a fixed small key
+size would serve our country very poorly---you are unnecessarily risking
+catastrophic failure of the integrity of our financial, industrial, and
+governmental information-processing systems.
+
+To begin with, I question the rationale for having a fixed key-size at all as
+part of your proposal.  Clearly, one needs a minimum key-size to prevent users
+from choosing keys-sizes that are too short to be secure.  And one might want a
+maximum key-size so one can design efficient yet fully-compatible
+implementations.  Yet there is no obvious reason why the minimum required
+key-size and the maximum allowed key-size should be the same.
+
+Indeed, your ``one size fits all'' proposal is a very poor match to the
+engineering and security needs of most public-key applications.  Typically,
+there are many users, each of whom has a public key used by others to verify
+his digital signatures.  Such applications are invariably based on the use of
+``certificates,'' so verifiers can assure themselves that they are verifying
+signatures with the appropriate public key.  A certificate is a message
+associating a user's name with his public key; this message is itself signed by
+a ``certifying authority'' whose public key is widely known.  A typical
+signature verification then normally consists of two verifications: one to
+verify the certifying authority's signature on the user's certificate, and then
+another to actually verify the user's signature.
+
+(As a side note, I observe that this typical structure contradicts your claim
+that signing is done more often than verification. In my experience,
+verification is typically done at least twice as often as signing.)
+
+A certificate-based application thus incorporates two basic kinds of
+signatures: ordinary user signatures and signatures by a ``certifying
+authority.''  The latter kind form the backbone of the integrity of the entire
+application, since the ability to forge certificates would give an attacker
+essentially unlimited power to corrupt the system.  I consider it essential in
+secure public-key system design to have certifying authorities use the maximum
+allowable key-size.  This size is typically much larger than what an ordinary
+user might select for his own public-key size.  As an example, in an RSA-based
+scheme, certifying authorities might use keys of 1024 bits, whereas ordinary
+users might choose key sizes of 500--800 bits.
+
+In a typical application, the trade-off between security and performance
+mandates the use of different key-sizes in different parts of the system.
+Certifying authorities, or users with very valuable data, must use very long
+keys to achieve the highest possible security level.  Other users, with reduced
+security requirements and/or more stringent performance requirements, will use
+shorter keys.  Trying to make ``one size fit all'' results either in
+unacceptably low security for all users (because all certificates will be
+suspect) or unacceptably poor performance for some users.
+
+In a public-key system based on number theory, there is no valid technical
+reason for requiring a fixed key size.  The underlying number-theoretic
+algorithms can support arbitrary key sizes.  Users and certifying authorities
+should be able to choose key sizes according to their requirements.
+
+I now turn to a discussion of the particular key size you have chosen: 512
+bits.  (By key size, here, I refer to the size of the prime modulus p.)  I
+argue here that if you are going to insist on having a fixed key size, then 512
+bits is far too short.
+
+I note that you provide no rationale for the choice of your key size.  While it
+is my belief that you have been co-opted by the NSA (who fears the use of
+widely distributed public keys as a basis for encryption algorithms), I will
+restrict my discussion to technical matters rather than political speculation.
+
+In order to estimate the key size necessary, one needs to understand the
+computational resources available to an imagined potential attacker, and the
+computational difficulty of the underlying cryptanalytic problem.  Let me
+address each of these issues in turn.
+
+How much computational power can an imagined attacker bring to bear to
+``break'' the system?  This depends on the time period we are talking about
+(since technology is rapidly evolving) and the financial resources of the
+attacker (to purchase the necessary computing power).
+
+It is necessary to know the expected lifetime of the proposed standard in order
+to know what level of security to aim for.  A scheme that is considered
+``secure'' today may not be secure in the year 2000, and a scheme considered
+secure in the year 2000 may not be secure in the year 2010.  Computer
+technology is evolving at an incredible pace, and is likely to continue to do
+so for the next few decades.  The security of cryptographic schemes thus tends
+to ``erode'' steadily over time, and the design of cryptographic systems must
+envision and plan for such erosion.
+
+I would suggest that a digital signature standard should be designed with a
+minimum expected lifetime of at least 25 years.  That is, one should design so
+that a system adopted in the year 1992 should still be secure in the year 2017.
+It should not be possible for an attacker in 2017 to forge a signature, using
+the computers available then.
+
+Where does ``25 years'' come from?  To consider the only available precedent of
+the lifetime of a NIST cryptographic standard, I note that the DES was adopted
+in 1976 and seems likely to still be in widespread use by 1996, twenty years
+later.  After a cryptographic signature standard has been terminated, one needs
+to have an additional period of time where the validity of signatures can still
+be assured.  For example, it is not uncommon to require that signed documents
+be retained and be considered legally binding for seven years.  A signature
+produced in the year 2010 should still be verifiable in the year 2017, with an
+understood assurance that it wasn't just recently forged.  I consider a 25-year
+expected lifetime a minimum reasonable requirement for a digital signature
+standard.
+
+What kind of computational power will be available to an attacker in the year
+2017?  It is widely asserted that computational power (per dollar spent) is
+increasingly at approximately 40% per year.  Some of my colleagues assert that
+45% is a better estimate, but I'll stick to the more conservative estimate.
+This means that we have an approximate doubling of computer power (per dollar)
+every two years, and an approximate increase of a factor of 4500 after
+twenty-five years.  Let's round this off to 5000 for our back-of-the-envelope
+calculations (corresponding to 25.3 years at 40% growth/year).  In the year
+2017, I expect computer power will be about 5000 times cheaper than it is now.
+
+How big an attack should one prepare for?  Let me suggest that a national
+digital signature standard should, at a minimum, be able to withstand an attack
+costing an attacker $25 million.  This amount of money is easily available to
+large corporations, drug dealers, and third-world countries.  There is no
+reason that our national security, in terms of the integrity of our electronic
+business, financial, and governmental information-processing systems, should be
+vulnerable to an attack costing only $25 million.  Indeed, it is easy to make
+an argument for a much higher threshold; it is not hard to imagine scenarios in
+which the benefit of a successful attack exceeds $25 million.  However, I'll
+continue our back-of-the-envelope calculation with the $25 million figure.
+
+How much computing power can one buy for $25 million?  Today, a workstation
+with 100 MIPS (million instructions per second) can be probably be purchased in
+quantity for about $5,000.  An attacker wouldn't need all of the peripherals
+(screen, floppy disk, mouse, nice cabinent, etc.), and could economize by
+sharing power supplies, fans, etc.  He is basically interested in having many
+processors, each with a reasonable amount of memory.  Let me estimate that such
+a ``stripped-down'' 100-MIPS processor would have an amortized cost today of
+$1,000.
+
+A convenient unit of computation is a ``MIPS-year''---the amount of computation
+performed by a one-MIPS processor running for a year.  A MIPS-year thus
+corresponds to about 32 trillion basic operations.  If we assume that a
+100-MIPS processor lasts for about 10 years, we obtain an amortized cost
+estimate for today of $100 per MIPS-year of computation.  (Here we are buying
+``computation by the yard''; our yard is one MIPS-year, and it should cost
+about $100 in quantity.  The details of buying computational power in 2017 I
+leave to your imagination; a simple cost-effective way might be to spend
+considerably more than \$25 million to purchase hardware, and then to resell
+the hardware after the computation is done.)
+
+We therefore can estimate that an attacker with $25 million to spend today
+could purchase about 250,000 MIPS-years of computation.  In the year 2017, he
+will be able to purchase about 5000 times as much, or 1.25 billion MIPS-years.
+I believe that a digital signature standard adopted today should, at a minimum,
+be able to withstand an attack of 1.25 billion MIPS-years.  (This sounds like a
+lot of computation, but you can see from my arguments above that this is in
+fact a rather conservative estimate of the security requirement for such a
+standard.)
+
+How large a key-size is needed to withstand an attack of 1.25 billion
+MIPS-years? This depends, of course, on the cryptanalytic problem to be solved.
+In the case of your proposed DSA, the basic cryptanalytic problem is the
+``discrete logarithm problem'': computing x, given g, p and g^x mod p.  Using
+the best-known algorithms for this problem, the number of operations required
+is approximately
+
+	L(p) = e^{ sqrt{ ln p  ln ln p}} .
+
+The state of the art in algorithms for the discrete logarithm problem is still
+evolving, but the above formula certainly seems like a very conservative
+estimate of what will be possible in 2017, since it represents what is possible
+today.  For example, with a 512-bit prime p (as in your proposal), we see that
+only
+
+	L(2^{512}) = 6.7 x 10^19 operations
+		   = 2.1 million MIPS-years
+
+of computation are required to ``break'' a 512-bit problem.  Thus, we see that
+your proposed DSA is over 500 times weaker than a conservative analysis
+suggests is required.
+
+Another way of stating the above result is that the DSA, as proposed, has a
+maximum expected secure lifetime of approximately six years.  (Since 250,000 x
+1.4^6.33 is greater than 2.1 million.)
+
+Setting L(p) equal to 1.2 billion MIPS-years, and solving for p, we find that
+the DSA should be using keys of at least 640 bits, minimum.
+
+This is, as noted, a conservative estimate.  It doesn't plan for improvements
+in the state of the art of algorithms for solving the discrete logarithm
+problem, which can have a dramatic effect on the key size required.  It has no
+margin built-in for faster-than-expected improvements in hardware,
+longer-than-expected use of the DSA, or richer-than-expected adversaries.  The
+ability to harness for free ``unused'' processor cycles over large networks of
+workstations could also dramatically increase the computational ability of an
+adversary, thereby altering the equation further in his favor.  For these
+reasons, and as a matter of sound conservative design, I feel that a
+substantial ``margin of safety'' should be built into the standard.  Most
+importantly, certifying authorities should have generous key-sizes allowed.  I
+would strongly recommend allowing key sizes of at least 1024 bits for
+certifying authorities, and at least 800 bits for users, in any digital
+signature standard. I feel that anything less is short-sighted and risky,
+possibly verging on the irresponsible.  In cryptographic systems, responsible
+design is conservative design; generous allowance must be made for unforeseen
+developments.
+
+For all the above reasons, I feel very strongly that your DSA proposal, with
+its proposed 512-bit keys, is not sufficiently secure to be acceptable as a
+national signature standard.
+
+Sincerely,
+
+Ronald L. Rivest, Professor of Computer Science, MIT, Cambridge, Mass. 02139
+
+------------------------------
+
+Date: Mon, 28 Oct 91 13:12:47 MET
+From: Enrico Musio <ele9059@cdc835.cdc.polimi.it>
+Subject: Porn-Sabotage in Italian newspaper
+
+Two national newspapers (Corriere Della Sera and La Repubblica) reported on
+25,26,27 October on a series of incidents occured to a third Italian
+newspaper,La Notte, circulated in Milan metropolitan area.
+
+On Thursday 24 October someone (probably an insider) altered an advertisement
+for a coffee brand,exploiting the lack of acces control of the computer
+system used by the editorial staff to prepare the journal.
+
+Each occurrence of the word 'coffee', including the headline, was changed to
+the four-letter (in Italian too.. :-) bad word commonly used to denote the
+female sexual organ.
+
+The fact was discovered too late to block distribution of the first printing 
+of the morning edition (35.000 copies).
+
+The day after,the prankster stroke back,twice.  He (or she) turned a definition
+in a crossword puzzle into an obscene phrase, and in the horoscope suggested
+to Capricorn-born :"explain as soon as possible a misunderstanding with a
+colleague:just put your hands on her ***" (politely: 'her buttocks'). The
+horoscope modify was caught in time by an emergency revision task-force,but the
+crossword wasn't.
+
+The journalists have been denouncing the RISKy situation since last winter, and
+are ready to withdraw their signatures from articles if lasts the present
+situation in which everyone with minimal skills can modify everything,even the
+camera-ready files.
+
+An internal inquiry was open and a denouncement versus unknown presented to law
+enforcers.
+
+Enrico Musio, Politecnico di Milano , Italy  ele9059@cdc835.cdc.polimi.it 
+
+------------------------------
+
+Date: Fri, 25 Oct 91 11:07:07 PDT
+From: Allan.Meers@ebay.sun.com (Allan Meers - Sun Education/Professional Services)
+Subject: re: MCI Friends & Family
+
+Calling the 800-FRIENDS number lets you quickly build a list of all the
+listed "friends and family" of anyone currently on the service, and with
+the zip code, you can build an "ever-widening" circle of connections.
+
+If I were a skip-tracer, tracking down a pastdue bill payer, OR trying to find
+an estranged spouse, or anyone who wishes not to be found, this could be an
+absolute boon.  Even if you don't subscribe to the MCI service, people who call
+you do, and I only need to know of one of your family or friends phone numbers
+- and if they use MCI, and have your number listed, it becomes all but "public"
+information.
+
+I would expect that any phone company like MCI, or the 800-FRIENDS number to
+access their database, would utilize CALLER-ID to track who is calling them.  I
+am a fan of CALLER-ID, and believe it to be a valuable tool against this kind
+of possible abuse.  If only they would use it for security instead of just
+phone marketing.
+
+There are some other interesting risks when scanning the databases of your
+friends and family for occurences of your phone number:
+
+        I actually felt insulted that my older brother had all of our
+        9 other brothers and sisters listed, BUT NOT ME !   I wonder
+        why he didn't feel that I should be listed ?
+
+        A couple of the phone numbers listed were wrong, either because
+        of a transposed digit, or because the phone number has changed.
+        This means that you think you are getting a discount when you
+        call your brother, but in fact, since the number is wrong, you
+        are not.  You might have been better off with another company that
+        doesn't require a pre-planned list of numbers.
+
+        Not only do you have to have them on your list, but they also
+        have to be an MCI customer for you to get the discount.  I think
+        you also have to be on their list for that discount.  This means
+        that you don't save if you are making calls to any companies or
+        people unless they are pre-planned, and inserted on your F&F list.
+        There may be a delay between the time you ask that they be listed,
+        and the listing becomes effective.
+
+        I was listed on 6 different F&F databases.  So far, MCI has called
+        me 3 different times for 3 of those 6 F&F's.  They tell you
+        whether or not your listed F&F has accepted (they are on the
+        "MEMBERS" list).  If they are on the "NOMINEES" list, there is
+        a notation for "Not called/accepted yet", or "Did Not Accept",
+        which means you told the MCI salesman no.
+
+        1 of the entries for me is listed "Did Not Accept" (it must be
+        they way they list "he said no thanks and hung up on me").
+        Even with that entry, I am still receiving other calls.  I expect
+        a call for EVERY person who lists me, because apparently they
+        don't cross-reference F&F lists for your number to see if you
+        have been contacted already.  Either that, or they are hoping
+        to wear me down.
+
+        There is a look up service were you can check your account for
+        the inclusion of a specific number, rather than just relisting
+        all of them.  Every number I tried was marked "not in your
+        calling circle", even tho they are listed on the big list.  MCI
+        must have serious problems with their database lookup scheme.
+
+        2 numbers listed on the members list were reported as
+        "number not in the MCI plan" when I tried to look that number
+        and zipcode up for their list.  This is another occurence
+        which leads you to believe you are saving when you call them,
+        but in reality, you are not.  Both of those people were listed
+        on other lists as "Did Not Accept", and I know that neither
+        has chosen MCI as their plan.  The people calling them
+        are quite fooled however into thinking they are discount calls.
+
+        MCI has a very aggressive phone marketing strategy, and very much
+        a part of their tactics, is to call you once a family member
+        has been signed-up and say "Don't you want them to save money?".
+        If you don't sign up, you make your mom pay a lot more for calls.
+        Of course, the hazards, pitfalls and misconceptions arn't well
+        explained on the phone or in the literature.
+
+        The phone company can be helpful in translating a phone number
+        into a geographical area, while the post office will help
+        translate geo-info into zip-code info.
+
+This service isn't for me - not with all the other flat-rate discount plans
+from other companies that don't require pre-planned, constantly updated,
+limited use, publicly available lists of your personal contacts.
+
+------------------------------
+
+Date: Mon, 28 Oct 1991 01:03:02 GMT
+From: redin@lysator.liu.se (Magnus Redin)
+Subject: Do floor vibrations damage disks?
+
+Has anyone had experience with locating a computer hall on the same floor (slab
+of concrete) as a machine shop?  Do the vibrations damage the disks?
+
+Magnus Redin, Lysator Computer Club Magnus redin, Rydsv{gen 240C26, 
+582 51 LINK|PING, SWEDEN         Phone: Sweden (0)13 260046 (Answering machine)
+
+------------------------------
+
+Date: Sun, 27 Oct 91 19:05:36 PST
+From: "Doug Burke" <douglasburke@msavc.enet.dec.com>
+Subject: Re: Software migration at Johnson Space Center (Bouchard, RISKS-12.48)
+
+>2) Unisys A-Series (Burroughs) and 1100-Series (Univac/Sperry) ... go from
+>desktop processing to major mainframe class processing power with NO required
+>changes to the software...
+
+As I said, I am not a salesman.  However, it's necessary that the record be set
+straight.  Being conservative, the VAX line spans more than 50 specific
+machines from Desktop, to Mainframe and SMP Mainframe Clusters, including
+server, Fault Tolerant, and high availability systems all using exactly the
+same operating system VAX/VMS.  The range extends from roughly under .8 MIPS,
+to over 5000 MIPS, in increments of 2 to 3 MIPS.  All code written on VAX/VMS
+is binary compatible across all of these lines with "NO required changes to the
+software".  I have been lead to believe that this gives Digital Equipment the
+"largest RANGE" given the above criteria.
+
+I must, unfortunately beg ignorance of the Unisys line.  Making claims of
+"largest RANGE" though, can be highly subjective, and must be extensively
+qualified when dealing in the information processing environment.  This is a
+risk that everyone working in the this field deals with on a daily basis.
+
+Doug Burke, Senior Software Specialist, Digital Equipment (Malaysia),
+doug.burke@msa.mts.dec.com
+
+------------------------------
+
+Date: Mon, 28 Oct 1991 09:54:29 CST
+From: acg@hermes.dlogics.com
+Subject: A New Twist on "Speed Controlled by Radar"
+
+The current discussions regarding bridge warning signs that don't work and
+AT&T's problems with warning signals being ignored bring to mind a recent
+experience of mine. I'll leave the evaluation of RISKS to the readership.
+ 
+There was until recently a rather bad intersection on Route 41 north of
+Chicago, where an expressway was interrupted by a traffic light at Clavey Rd.
+(This has finally been replaced by an overpass.) As this stop was very
+unexpected for northbound traffic speeding out of the city, the intersection
+was one of the deadliest in the state. Numerous crashes occurred when 3-D
+drivers (Drugged, Drowsy or Drunk) failed to notice the stoplight and plowed
+into stopped vehicles. Adding strobe lights to the red traffic lights gave
+too-little advance warning, and bump strips (like those at toll plazas) kept
+nearby residents awake at all hours.
+
+As an additional remedy, radar transmitters were mounted behind signs on
+overpasses near the intersection. The idea was that they would trigger radar
+detectors in oncoming traffic and slow it down. I can attest from first-hand
+experience that they worked awfully well; my detector would go completely
+bonkers about two miles before the intersection, giving me plenty of warning to
+slow down.
+ 
+So far, so good, but after a short time, the transmitters apparently failed (or
+were shut down; unfortunately I don't have the details).  Nevertheless, the
+experiment raises some questions in my mind: How would anyone in an official
+capacity such as the State Police discover that the transmitters had suddenly
+failed and the hazard had escalated? (I rather doubt that they have their own
+radar detectors in the squad cars!) More to the point, how would they be able
+to enforce the speed limits or get coherent radar gun readings in an area
+flooded with bogus signals? I'm not taking a position on the 55 mph speed limit
+here (and I've had no difficulties with the local constabulary :-), but we know
+how difficult it is to fight a ticket imposed by radar gun. I wonder if the
+transmitted radar "flood" interfered with speed radar guns, and if so, how they
+knew where the limits of the range were. The basic idea of slowing a portion of
+the oncoming traffic with radar seems viable, but the attendant RISKS of
+error-detection (false indicated speeds and system failure) seem a bit unclear.
+
+Andrew C. Green, Datalogics, Inc., 441 W. Huron, Chicago, Il. 60610    
+(312) 266-4431  UUCP: ..!uunet!dlogics!acg   Internet: acg@dlogics.com
+
+------------------------------
+
+Date: Mon, 28 Oct 91 17:28:16 +0100
+From: Yves Deswarte <deswarte@laas.laas.fr>
+Subject: Call for Papers ESORICS-92
+
+ESORICS-92                                             	 CALL FOR PAPERS
+
+        European Symposium on Research in Computer Security
+
+              Toulouse, France, November 23-25, 1992
+                        Sponsored by AFCET
+
+AIMS AND TOPICS: The aim of this symposium is to further the progress
+of research in computer security by bringing together researchers in
+this area, by promoting the exchange of ideas with system developers
+and by encouraging links with researchers in areas related to computer
+science, information theory and artificial intelligence.
+
+Papers are solicited in the following areas:
+
+Theoretical Foundations of Security
+- security models, contribution of models for knowledge representation
+- contribution of formal logic and information theory
+- formal development techniques
+
+Secure Computer Systems
+- operating system security, network security
+- security management
+- virus and worms
+- contribution of artificial intelligence
+- contribution of new architectures and new technologies
+
+Applications Requesting Security
+- data bases, knowledge bases, transaction systems
+- process control, real time
+- distributed applications
+
+Cryptography
+- applications
+- validation of protocols
+- authentication: protocols, key management, processes
+
+Security Verification and Evaluation
+- formal methods
+- measure and evaluation of risks
+- measure and evaluation of security
+- criteria
+
+Software Development Environments for Security
+
+Operation of Secure Systems
+- management
+- intrusion detection
+
+This list is not exhaustive. Research papers, position papers and panel
+proposals will be welcomed.
+
+
+SUBMISSIONS: Five copies of papers or panel proposals should be submitted
+to the program chair by April 3, 1992 at the following address:
+
+                      Jean-Jacques Quisquater
+                        AFCET - ESORICS-92
+                      156, boulevard Pereire
+                       75017 Paris - France
+
+The texts must be submitted in French or in English. Papers should be limited
+to 6000 words, full page figures being counted as 300 words.  Each paper must
+in clude a short abstract and a list of keywords indicating subject
+classification. Papers will be refereed and the final choice will be made by
+the Program Committee. Notification of acceptance will be sent by June 15,
+1992, and camera-ready copy will be due on September 1, 1992.
+
+Panel proposals should include title, proposed chair, tentative panelists, a 2
+or 3 paragraphs description of the subject, format of the presentation, and
+rationale for the panel.
+
+For further information and/or copy of the advance program when available, send
+E-mail to:
+                       deswarte@laas.fr
+or write to:
+              AFCET, 156 bd Pereire, 75017 Paris, France.
+
+
+IMPORTANT DATES:
+Submission deadline: April 3, 1992
+Acceptance notification: June 15, 1992
+Camera-ready copy due: September 1, 1992
+
+GENERAL CHAIR: Gerard Eizenberg (ONERA-CERT, France)
+
+PROGRAM COMMITTEE 
+CHAIR: Jean-Jacques Quisquater (UCL, Belgium)
+Bruno d'Ausbourg (ONERA-CERT, France)
+Joachim Biskup (Universitat Hildesheim, Germany) 
+Peter Bottomley (RSRE, United Kingdom)
+David Chaum (CWI, Netherlands)
+Yvo Desmedt (University of Wisconsin-Milwaukee, USA)
+Yves Deswarte (LAAS-CNRS & INRIA, France)
+Gerard Eizenberg (ONERA-CERT, France)
+Amos Fiat (University of Tel-Aviv, Israel)
+Dieter Gollmann (University of London, United Kingdom)
+Franz-Peter Heider (GEI, Germany) 
+Jeremy Jacob (Oxford University, United Kingdom)
+Helmut Kurth (IABG, Germany) 
+Peter Landrock (Aarhus University, Denmark)
+Jean-Claude Laprie (LAAS-CNRS, France)
+Teresa Lunt (SRI, USA)
+John McDermid (University of York, United Kingdom)
+John McLean (NRL, USA)
+Catherine Meadows (NRL, USA)
+Jonathan Millen (MITRE, USA)
+Emilio Montolivo (Fondazione Ugo Bordoni, Italy)
+Alfredo de Santis (Universita di Salerno, Italy)
+Einar Snekkenes (NDRE, Norway)
+Marie-Jeanne Toussaint (Universite de Liege, Belgium)
+Kioumars Yazdanian (ONERA-CERT, France)
+
+ORGANISING COMMITTEE
+CHAIR: Yves Deswarte (LAAS-CNRS & INRIA)
+Laurent Cabirol (SCSSI)
+Jean-Francois Cornet (CORESIA)
+Michel Dupuy (ENST)
+Marie-Therese Ippolito (LAAS-CNRS)
+Paul Richy (CNET)
+Pierre Rolin (ENSTA)
+Kioumars Yazdanian (ONERA-CERT)
+
+===== Yves Deswarte - LAAS-CNRS & INRIA - 31077 Toulouse (France) =====
+==== E-mail:deswarte@laas.fr - Tel:+33/61336288 - Fax:+33/61336411 ====
+
+------------------------------
+
+End of RISKS-FORUM Digest 12.57
+************************

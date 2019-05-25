@@ -1,0 +1,513 @@
+RISKS-LIST: RISKS-FORUM Digest  Saturday, 31 October 1987  Volume 5 : Issue 52
+
+        FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS 
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+Contents:
+  Risks in intelligent security algorithms (Peter J. Denning)
+  Computer's Normal Operation Delays Royal Visit (Mark Brader)
+  Public notice of a security leak (Rob van Hoboken based on Nils Plum)
+  sc.4.1 update dangerous (Fen Labalme)
+  Mitsubishi MU-2 problems (Peter Ladkin)
+  Autopilots and conflicting alarms (Matt Jaffe, Joe Morris)
+  New encryption method (Stevan Milunovic)
+  The Stock Market and Program Trading (Dan Blumenthal, Brent Laminack)
+  Minuteman Missiles... (John J. McMahon)
+
+The RISKS Forum is moderated.  Contributions should be relevant, sound, in good
+taste, objective, coherent, concise, nonrepetitious.  Diversity is welcome. 
+Contributions to RISKS@CSL.SRI.COM, Requests to RISKS-Request@CSL.SRI.COM.
+For Vol i issue j, FTP SRI.COM, CD STRIPE:<RISKS>, GET RISKS-i.j.
+Volume summaries for each i in max j: (i,j) = (1,46),(2,57),(3,92),(4,97).
+
+----------------------------------------------------------------------
+
+Date: Fri, 30 Oct 87 13:25:45 pst
+From: Peter J. Denning <pjd@riacs.edu>
+Subject: Risks in intelligent security algorithms
+
+On October 29 I was ensnared by a design flaw in the security system of the
+parking garage of the San Francisco airport.  The same system is undoubtedly
+used at other airports.  I had returned from a trip that morning and paid
+$88 for 8 days.  I returned the same evening to fetch my wife, who returned
+from a trip.  On presenting my ticket, the attendant said the computer said
+I owed $99, rather than the $1 I was expecting to pay.  Guards appeared and
+instructed us to go to the garage office to discuss the matter with garage
+officials.  After some discussion the garage official allowed us to leave,
+paying $1.
+
+Here's what happened.  The garage security system is set up to prevent a
+customer from obtaining a second entry ticket on his return and thereby
+underpaying.  When I entered the garage 8 days ago, a video camera recorded
+my license number and associated it the parking ticket dispensed by the
+machine; the resulting license-ticket entry record was placed in a database
+later that night.  When I checked out, an exit record of my license-ticket
+pair was made, and scheduled to cancel the entry record during the late
+night computer run.  However, when I attempted to check out the second time,
+I had not been there long enough for a new license-ticket entry record to be
+placed in the database; accordingly the standard database check found the
+still unpurged record of my first entry and computed that I owed for 9 days.
+
+The garage official apologized for the inconvenience and said the system is
+needed to prevent fraud and occasionally someone stumbles into a false
+alarm.  There is no interest in changing the system or posting notices
+warning customers to keep their receipts if they return to the garage a
+second time in one day.
+
+------------------------------
+
+Date: Thu, 29 Oct 87 14:18:17 EST
+From: msb@sq.com (Mark Brader)
+To: risks@csl.sri.com
+Subject: Computer's Normal Operation Delays Royal Visit
+
+  From an article in MODERN RAILWAYS, September 1987, by Roger Ford,
+  on the opening of the Docklands Light Railway (DLR) in London.
+  Submitted to RISKS (and slightly edited) by Mark Brader:
+
+Ironically, the 'problems' the daily press reported at the Royal Opening
+were caused by the automatic system working properly.  The royal train
+(number E2R -- a nice touch that) was timetabled to leave Island Gardens
+station at 15:30.  As the royal party was early, the control room dispatched
+the train manually rather than keep Her Majesty waiting for five minutes.
+
+This meant overriding the computer, which was operating in regulated
+mode.  Unfortunately, computers are less sensitive to royal protocol,
+and when E2R arrived at Mud Chute station [!] five minutes early, it was given
+a "dwell time" of several minutes to bring it in line with the timetable.
+
+If you happen to be on board a stationary train with your Sovereign,
+two minutes is a very long time, so the train captain reverted to manual ...
+
+One of the golden rules for bodyguards is that you leave a vehicle or
+building first.  As the train rolled to a halt in Poplar station,
+a security man used the emergency exit so he could get out first.
+Not only did this stop the train by interrupting the door-safety
+interlock circuit, it stopped it short of the docking beacon.
+Unless the train receives a message from the beacon it does not know
+it is in a station and the doors won't open.
+
+I was standing next to the manager of the doorgear suppliers at the time
+and can vouch for the fact that time also stretches agonisingly when
+there is the possibility that Her Majesty is being isolated from her loyal
+subjects in Docklands by your product!
+
+In the light of this, I wonder whether anyone has thought to give the
+police and counter-terrorist organisations a briefing on the features
+of automatic railway operation.
+
+------------------------------
+
+Date: Wed, 28 Oct 87 21:18:02 MET
+To: risks@csl.sri.com
+From: RCOPROB%HDETUD1.BITNET@wiscvm.wisc.edu
+Subject: Public notice of a security leak
+
+From: Rob van Hoboken           +31 15 78-3813       RCOPROB  at HDETUD1
+
+I found the following gem in issue 10 (July 1987) of MVS update, a publication
+of Xephon aimed at the MVS systems programmer.
+
+> Dynamically making programs APF authorized
+>
+> The following procedure should work under any release of MVS.
+>
+> The standard way of making progrmas APF authorised is to link them into an
+> authorised library specified in the SYS1.PARMLIB member IEAAPFnn with the
+> link-edit attibute of AC=1.  Changes to such a library specification will
+> require a re-IPL.
+> If authorised programs are to be executed under TSO, they must be put into
+> a table in the Link Pack Area: TSO commands go into table IKJEFTE2 and called
+> programs go into IKJEFTE8.  Any changes to these tables require a re-IPL
+> with the CLP option to make them effective.
+> It is, therefore, convenient to be able to turn on and off the APF
+> authorisation dynamically for any program that does not have the AC=1
+> attribute, in any library upon request.
+> Just be aware that this can be a security exposure.
+> The solution:
+> The method is to have a user SVC that sets or removes the APF bit in the
+> control block JSCB.  This SVC is probably well known but it is, together
+> with the following two macros, a pre-requisite to many homegrown functions
+> that help to make life easier.
+> The following SVC can be enhanced by adding installation dependent security
+> checks:
+> * authorisation svc 235 type 4
+> *   r0 = 1 turns on auth
+> *   r0 ne 1 turns off auth
+> *
+>    code follows
+
+Personally I would rather omit the name of the author to protect the guilty
+(but most of all his company), but since there was a copyright statement on
+the publication:
+(C) Nils Plum, Systems Programmer (Denmark).
+
+In effect this persons describes a hole in his installation, and proudly
+tells us that many of his tools depend on it.  Probably (I've seen it in
+several installations) the "installation dependent security checks" were
+removed at some time to make "all those goodies available to us users".
+
+The worst part is that a lot of software companies ship out programs that
+actually need these kind of trapdoors to function at all.  I have written
+to some of these companies with a description of the problem, proof of its
+existence and a work around.  I got laughed at, made rediculous and told
+to not to spread the word.  One of these people (a real big company!!!) even
+told me: (direct quote!)
+"it must be safe, even the CIA uses it"
+
+Can anyone help me to a userid + phone number on either Mr. Plum's installation
+or the CIA?
+
+Rob van Hoboken, Delft University of Technology, Computing Center
+
+------------------------------
+
+To: "Peter G. Neumann" <KL.SRI.Com!RISKS@sun.com>
+Subject: sc.4.1 update dangerous
+Date: 29 Oct 87 12:25:42 PST (Thu)
+From: Fen Labalme <sun!megatest!elvis.fen@ucbvax.Berkeley.EDU>
+
+The new release (4.1) to the public domain spreadsheet "sc" has a
+noncompatible change that, along with an overlapping windows Sun environment
+and an ambiguous (but fairly standard) naming convention, conspired to
+destroy a database.
+
+I maintain a database of members of a Spring Water Cooperative at my
+workplace in North San Jose.  Each member contributes $3 a month to enjoy
+unlimited use of a bottled water cooler.  The record of accounts is kept in
+a database maintained by sc.
+
+The entry for a member for any particular month (say, [K1]) is the minimum
+of the total_amount_contributed [A7] minus the sum of payments so far
+[@sum(d7:J7)] and the current ammount due [K0].  As a sc.3.1 expression,
+[@min(A7-@sum(D7:J7),K0)].
+
+This morning our /usr/local manager installed sc.4.1 naming it
+/usr/local/bin/sc (simply replacing its predecessor).
+
+Soon after, a member gave me his dues for the month.  I opened sc in a
+window that had its right half hidden by an overlapping window, yet I had
+access to the total_amount_contributed column.  Thus I did not notice that
+the right half of the spreadsheet was blank! I updated his account and saved
+the database.
+
+What I didn't realize is that sc.4.1 didn't recognize this usage of @min(),
+as this had changed, and when it saved the database, it simply and quietly
+ignored (read: deleted) all of the entries which it didn't "understand".
+
+Thank Zippy for disk-to-paper dumps!
+         					-fen
+
+P.S. I am sorry to see this useful function disappear.  The README states
+that the "range" function should be used in its stead, but I havn't yet
+figured out how.  Old and new expressions for table entries appear below:
+
+	old:   @min(A7-@sum(D7:J7),K0)
+	new:   A7-@sum(D7:J7)<K0?A7-@sum(D7:J7):K0
+
+Fen Labalme, Megatest Corp, VLSI Systems Division, 880 Fox Lane, San Jose,
+CA 95131  (408) 437-9700 x3382
+                "megatest!fen"@riacs.ARPA   UUCP: ucbvax!sun!megatest!fen
+
+------------------------------
+
+Date: Fri, 30 Oct 87 11:07:59 PDT
+From: ladkin@kestrel.ARPA (Peter Ladkin)
+To: risks@csl.sri.com
+Subject: Mitsubishi MU-2 problems
+
+if anyone would like detailed knowledge of the mu-2 accident rate,
+i can look up some analyses i have. please send me mail.
+
+roughly, there have been a number of unexplained `uncontrolled descents
+into terrain' with the mu-2. of the order of a dozen, mostly with
+experienced pilots, although not with a lot of mu-2 experience.
+some others that have been explained concern the proper operation of
+the autopilot. autopilots with altitude hold can enter an unstable
+feedback loop. e.g. the plane is trimmed to hold altitude, and deviates,
+say down. the pilot pulls up, whereupon the autopilot senses control
+pressure and commands down to counteract the pull-up. the pilot pulls
+harder, exacerbating the problem. the mu-2 is a very clean aircraft 
+and can exceed `never-exceed' speed very fast in a dive from cruise
+speed. faster than about 115 per cent of this speed, and the aircraft
+starts to break. speculation is that the pilots don't figure out the
+problem before they reach these critical speeds. other speculation is
+that there is a failure mode of runaway nose-down trim caused by the
+autopilot. even other speculation is that control of the aircraft is 
+coming up against human-factors issues that were (and still are)
+poorly understood. it's clear that many of the accidents are
+pilot-induced, as with many very-high-performance planes. 
+
+peter ladkin, ladkin@kestrel.arpa
+
+   [Late word from Nancy Leveson suggests that the equipment in question is
+   analog rather than digital, but that is still quite computer related... PGN]
+
+------------------------------
+
+To: Joe Morris (jcmorris@mitre.arpa) <jcmorris%mitre.arpa@ROME.UCI.EDU>
+Cc: RISKS%csl.sri.com@ROME.UCI.EDU
+Subject: Autopilots and conflicting alarms
+Date: Thu, 29 Oct 87 12:11:11 -0800
+From: Matt Jaffe <jaffe@commerce.UCI.EDU>
+
+In RISKS 5:51, Joe Morris commented on conflicting alarms in a 727 accident.
+My aero engineering days are a few years back, but I seem to recall that a
+stall warning caused by high angle of attack (which translates to a function
+of [low] indicated airspeed and dynamic load, the product of weight and
+G-loading, assumed to be close to 1 for an airliner in cruise condition) and
+overspeed warning caused by Mach number limitations (it is the Mach buffet
+that is the problem at that point, not the dynamic pressure) occur together
+at that point in the flight regime so aptly named the "coffin corner".  That
+point, unfortunately, is also the point of maximum specific range, is it
+not? (Which is why all airlines always try to fly as close to it as possible.)
+
+Several points seem worth noting:
+  (1)  Airline flight crews know about the coffin corner, they fly close 
+       to it all the time, do they not?  The presence of the two
+       alarms should not be considered as contradictory; they are
+       both correct and indicate an unambiguous situation for which recovery
+       procedures are (or should be) well known.
+
+  (2)  As to whether the two-alarm condition is confusing, the presence of 
+       two alarms that must be interpreted by the human operators 
+       (as opposed to a single, "coffin corner" alarm) is a function of 
+       the use of analog-mechanical alarm systems.
+       The stall warning system operates (I presume) off of angle of attack;
+       the overspeed warning off of Mach number (pitot differential and
+       temperature). Neither system is connected to the other, the design 
+       would be cumbersome, expensive, and risk-inducing.  Interpretation 
+       of the two-alarm condition is properly (for the analog-mechanical 
+       case) left to the human being. The introduction of digital,
+       autopilots offers a chance to improve the situation somewhat.
+       Instead of merely duplicating the set of alarms provided by the
+       older technology devices, good digital system design would add the logic
+       to check for both conditions and then generate a new, unambiguous, 
+       "coffin corner" alarm.  What is cumbersome and risky for a mechanical 
+       system is much easier and hence perhaps appropriate for digital
+       technology.  The use of digital computers to detect, interpret, and
+       indicate  conditions caused by the interaction of multiple factors
+       is a chance to reduce risk.  
+
+------------------------------
+
+Organization: The MITRE Corp., Washington, D.C.
+To: risks@csl.sri.com
+Cc: jaffe@commerce.uci.edu
+Subject: Aircraft control systems
+Date: Sat, 31 Oct 87 14:59:11 EST
+From: Joe Morris (jcmorris@mitre.arpa) <jcmorris@mitre.arpa>
+
+Matt Jaffe's comments are well taken, but I would like to add a few closing
+notes:
+ 
+o His comments about "coffin corner" are correct.  From what I've read (no,
+  I'm not a heavy-iron pilot) the best efficiency can generally be found
+  where the Mach buffet meets the stall warning.  One mark of a good pilot 
+  is the ability to find the best compromise between performance and safety
+  margin.
+ 
+o The 727 crash I referred to, however, involved a *false* high-speed warning.
+  The cockpit instruments indicated an airspeed of 420 kt at 24,800 feet msl
+  with a rate of climb of 6,500 feet per minute.  (not 30,000 feet...my error)
+  This is far above the performance possible for the aircraft.  The readings
+  were consistent with the pitot heads becoming blocked as the aircraft climbed
+  through 16,000 feet.
+
+o Finally, the integration of various sources of data to produce situation-
+  specific alarms is not only a good idea, but is being done in various
+  implementations already.  (I assume that someone is working on a "coffin
+  corner" warning; I'm not in a position to routinely see such stuff.)  the
+  problem is that regardless of the way in which data is processed, the GIGO
+  principle still applies, and the sensors are of necessity still mechanical
+  analog devices.  If the primary data source is lying, the user of the data
+  may detect that conflicting information is being received, but it's not 
+  always possible to determine which of several sources has failed.  The
+  Air Florida crash in Washington is another example of exactly this kind
+  of situation.
+
+Oh yes...from time to time PGN asks for specific citations of incidents.  The
+accident I was citing was Northwest Airlines, Boeing 727-251, N274US, near
+Teiells, New York, 1 December 1974.  
+
+------------------------------
+
+Date: Fri 30 Oct 87 09:13:29-PST
+From: Stevan Milunovic <Milunovic@KL.SRI.Com>
+Subject: New encryption method 
+
+New Method to Protect Privacy of Computerized Data is Patented,
+By STACY V. JONES, c. 1987 N.Y. Times News Service, 31 Oct 1987.
+
+    WASHINGTON - A professor of computer science at a Virginia college has
+invented a new method of protecting the privacy of computerized data.
+He was granted a patent this week for a cryptographic system that he
+describes as much less time consuming than present methods.
+    Professor Hito Asai of Christopher Newport College in Newport News
+received patent 4,703,503 for what he describes as simple mathematic
+computation, technically known as Vector Boolean algebra. The computer
+data is enciphered with a long numerical key. According to Asai, an
+eavesdropper who attacks the enciphered text would face a
+time-consuming process. He plans to offer licenses to computer and
+communications manufacturers.
+    
+    [It may take even less time for the cracker to break, if the
+    long key is stored or transmitted in the clear...  Simple
+    numerical algorithms may also be subject to inversion.  But this
+    is certainly worth investigating.  PGN] 
+
+------------------------------
+
+Date: Fri, 30 Oct 87 05:15:13 EST
+From: db@tcgould.tn.cornell.edu (Dan)
+To: risks@csl.sri.com
+Subject: The Stock Market and Program Trading
+
+I used to work on an index arbitrage trading desk and I downloaded and
+executed the baskets of stock orders that Mr. Nelson mentions in the Wall
+St. Article of Oct. 13, cited a few issues back. He relates a horror story
+of someone pushing a button over and over after not getting any response and
+buying $100M instead of $25M worth of stock -- I heard this almost two years
+ago. Supposedly, the culprit was his printer being offline, and not printing
+the orders as they were sent down to the exchange. Currently, software
+distributed to brokerage houses by the NYSE has safeguards against this,
+such as ignoring input until transmission of a set of orders is complete.
+(Not everyone uses this software, though.)
+
+We've also seen share volumes of unheard of proportions. One statistic on TV
+was that there were more shares traded last week than in all of 1965.  One
+explanation for this is the size of the orders allowed on the exchange's
+computer systems. Until last December, an order through DOT (the system which
+handles "market" orders) was limited to 2000 shares. Since then, that limit
+has been raised to 30,000. With the ability to transmit 100 orders per
+minute, one PC AT has the capability to buy or sell up to 3 million shares
+per minute. And there are many systems of this type on the street.  (Of
+course, that does not mean that these machines are continuously in use or
+always dealing in volumes of 30,000 shs/order.)
+
+Are these trades being done completely without human intervention? The
+answer is no. The program trading most often referred to is index arbitrage.
+Arbitrage takes advantage off price discrepancies of the same good in
+different markets, and involves buying the underpriced one and selling the
+overpriced one. The most common index arbitrage is done on the S&P 500 and
+its corresponding futures. The futures market at the Chicago Mercantile
+Exchange still uses open outcry (a la Trading Places) to do business. This
+means that, although the computer screen may tell you that now is the time
+to buy stocks and sell futures, you'd better make sure your guy in Chicago
+did his job and got you a good price on the futures before you push your
+button and buy $x million worth of stock. There's substantial monetary risk
+involved, and most (if not all) traders would not surrender that decision to
+a computer.
+
+The portfolio insurance mentioned a few issues ago deals only in futures,
+which again means trading via open outcry, and not with computers. Computers
+are used in this strategy for modeling purposes, to tell the portfolio
+manager how many futures he should sell to hedge his market exposure.
+
+The only programs I've heard of that may possibly do transactions strictly by
+computer are AI programs that try to anticipate very short-term trends in
+the market and buy or sell just before the market moves in that direction.
+I have not seen these, and don't know how well they work, how widely they
+are used, or how "automatic" they are.
+
+As far as I can see, it is just the *ability* to move large amounts of
+money in and out of the market very quickly that has changed things.
+Computers are still not decision-makers, although they do provide real-
+time data and much quicker reaction time to that data. But alot can 
+happen in the five minutes it would take to buy or sell all 500 stocks
+in the S&P 500. It is the trader who makes the judgement whether 
+the transaction could be profitable or not.
+
+It should be noted that the DOT system was not allowed to be used for
+index arbitrage programs for the rest of the week after the big drop
+last Monday (10/19), yet the daily volume was still much higher than
+had ever been seen before. In addition, the President of the Chicago
+Mercantile Exchange said that program trading accounted for only about
+10% of the volume on the NYSE on 10/19. (New York Times, 10/28, p.D11)
+I would take this to mean that the programs were not the driving force
+in the market moves, and that it was real selling.
+
+It is possible to do these transactions without computers, but harder
+to make them profitable because of the extra time involved when human 
+agents are used, and therefore much less likely that they occurred when
+using the computers was not allowed. The time windows for the existence
+of profitable market spreads are often as short as 30 seconds.
+
+One argument defending program trading's market impact on stock prices is
+that it reflects real selling or buying. S&P 500 futures should trade around
+their "fair value," which is a premium over the S&P 500 index number based
+on interest rates and dividend flow. If buying or selling moves the price of
+the futures too far above or below the fair value, arbitragers can take
+advantage of this mispricing. But if the price of the futures is pushed
+below its fair value, it is because people are selling futures instead of
+stocks. If the futures market weren't there, these people would be selling
+stocks. It's almost like a simplified Rube Goldberg diagram. Instead of
+selling stocks directly, you sell futures which causes someone else to sell
+stocks because you have made them overvalued compared to futures.
+
+Once again, computers are blamed without much real knowledge of the process
+involved. The conventional wisdom is that program trading is completely
+automatic, without human intervention. Yet it is the human trader who is in
+control of the two transactions involved -- one talking to a guy
+in a futures pit shouting and making strange hand signals, and another
+typing a few keystrokes at a keyboard.
+
+Dan Blumenthal
+
+db@tcgould.tn.cornell.edu
+
+------------------------------
+
+From: itm!brent@csl.sri.com (Brent)
+Subject: Program trading (Re: RISKS DIGEST 5.51)
+Date: 29 Oct 87 20:48:11 GMT
+Organization: In Touch Ministries, Atlanta, GA
+To: <risks@csl.sri.com>
+
+    In light of recent Wall Street instabilities and previous discussion
+in RISKS about computer voting fraud, some history might be in order.
+
+    Thomas Alva Edison's first commercial invention was an electric
+voting booth.  The votes were electrically and instantly tabulated.
+Unfortunately, American politics at the time wasn't interested in either
+fast or accurate vote-counting.  The machine was a commercial failure.
+Edison vowed then and there never to develop a machine that there 
+wasn't a ready market for.  His next invention was the ticker-tape.
+
+    In light of the ensuing century, perhaps we would have been
+better off if the response to his machines were reversed :-).
+
+            Brent Laminack  (gatech!itm!brent)
+
+------------------------------
+
+Date:    Thu, 29 Oct 87 13:35:34 PST
+From: fasteddy%sdcdcl.span@VLSI.JPL.NASA.GOV (John J. McMahon, STX/COBE x4333)
+Subject: Minuteman Missiles...
+To: risks@csl.sri.com
+
+WTOP, the local all-news radio station in Washington D.C., reported the 
+following on 28 October 1987.  Unfortunately, I was riding along in my
+car when I heard this, so it isn't verbatim. 
+
+3 years ago, at a SAC missile base in the midwest, a Minuteman III missile
+malfunctioned.  The missile was carrying three nuclear warheads, and went
+into launch mode.  Technicians couldn't understand what was going on, since 
+there was no alert occurring at the time.  Their immediate reaction was to
+take a large armored personel carrier (APC) and park it on the missile silo.  
+Assuming the silo doors opened, the APC would fall into the silo, and hopefully
+stop the missile.  Missiles apparently do not arm their payloads until they are
+off the ground.  The report went on to say that the missile did not launch,
+and that the fault was tracked to a problem in the guidance system.  The
+incident was never reported to the Strategic Air Command, local officials,
+or apparently anyone outside the missile base.
+
+According to this, the only way we can stop a malfunctioning missile is
+to drop a big 'rock' on it.
+
+John McMahon, FastEddy@Dftnic.Gsfc.Nasa.Gov (Internet), FastEddy@Iafbit(Bitnet)
+
+------------------------------
+
+End of RISKS-FORUM Digest
+************************

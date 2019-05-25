@@ -1,0 +1,594 @@
+precedence: bulk
+Subject: Risks Digest 22.40
+
+RISKS-LIST: Risks-Forum Digest  Tuesday 26 November 2002  Volume 22 : Issue 40
+
+   FORUM ON RISKS TO THE PUBLIC IN COMPUTERS AND RELATED SYSTEMS (comp.risks)
+   ACM Committee on Computers and Public Policy, Peter G. Neumann, moderator
+
+***** See last item for further information, disclaimers, caveats, etc. *****
+This issue is archived at <URL:http://catless.ncl.ac.uk/Risks/22.40.html>
+and by anonymous ftp at ftp.sri.com, cd risks .
+
+  Contents:
+Massive identity theft ring broken up (PGN)
+Identity thieves strike eBay (Monty Solomon)
+eBay sends plaintext password changes (Brian R. Neumann)
+More on the Breeders Cup Pick-6 fix (PGN)
+Windows quietly deletes Unix files (Doug McIlroy)
+Patch slip-up raises security questions (Robert Lemos via Monty Solomon)
+RIAA orders US Navy to surrender (Tim Finin via Dave Farber)
+Re: Computer problem caused fatal pipeline rupture (Pekka Pihlajasaari)
+Re: Readability of ATC displays at the London Area Control Centre
+  (Peter B. Ladkin)
+UK Publishes Security Requirements for e-Voting (Ian Cuddy)
+Re: UK Publishes Security Requirements for e-Voting (Rebecca Mercuri)
+REVIEW: "The Privacy Papers", Rebecca Herold (Rob Slade)
+REVIEW: "Security, ID Systems and Locks", Joel Konicek/Karen Little (Rob Slade)
+Abridged info on RISKS (comp.risks)
+
+----------------------------------------------------------------------
+
+Date: Tue, 26 Nov 2002 19:17:11 PST
+From: "Peter G. Neumann" <neumann@csl.sri.com>
+Subject: Massive identity theft ring broken up
+
+Identity theft has long been a concern in RISKS, where we have reported
+numerous cases.  (For example, see my Illustrative Risks compendium,  
+  http://www.csl.sri.com/neumann/illustrative.html
+for browsing -- click on Identity Theft -- or .ps and .pdf for printing.)
+
+In the early days, most of the cases involved one-on-one usurpation or
+masquerading as a particular individual, going back even further than the
+infamous Terry Rogan case.  More recently, identity theft is becoming an
+industry in its own right, with massive acquisition of personal data
+sufficient to do serious damage on a large scale.
+
+In the most recent cases, billed as probably the largest yet in the U.S., at
+least 30,000 people have been victimized as a result of an employee of a
+Long Island NY software company using a Ford Motor Credit Company code to
+access Experian.  He obtained credit histories on people at the request of
+an identity theft ring operating in Brooklyn and the Bronx, to whom he sold
+that information for $60 a pop.  Together with information the ring had
+already obtained, this enabled them to clean out the victims' bank accounts,
+make bogus loans, max out existing and newly obtained credit cards, etc.
+This operation had apparently been going on for three years, until -- in
+response to numerous complaints -- the FBI was able to arrest three people,
+who appeared in court yesterday in Manhattan.  Victims are asked to call the
+Federal Trade Commission hot line at 1-877-IDTHEFT, or access www.ftc.gov.
+[Source: Benjamin Weiser, *The New York Times*, beginning on the front page,
+26 Nov 2002; PGN-ed]
+
+  [Also noted by Alan P. Burke
+    http://www.msnbc.com/modules/exports/ct_email.asp?/news/839678.asp
+  PGN]
+
+------------------------------
+
+Date: Sat, 23 Nov 2002 22:40:50 -0500
+From: Monty Solomon <monty@roscom.com>
+Subject: Identity thieves strike eBay
+
+Paul Festa, CNET News.com, 22 Nov 2002
+
+When Deborah Fraser's credit card number was stolen, the thief didn't use it
+to buy a new car or a high-end laptop. Instead, the number was used to buy
+something potentially much more valuable--a domain name with the word "ebay"
+in it.  In Fraser's case, that was the domain name "change-ebay.com," a scam
+Web site where an unknown number of eBay users may have been tricked into
+handing over their eBay username and password.  ...
+
+http://news.com.com/2100-1017-966835.html
+
+------------------------------
+
+Date: Thu, 21 Nov 2002 14:28:17 -0700
+From: "Brian R. Neumann" <brian@iswaycool.com>
+Subject: eBay sends plaintext password changes
+
+I went to change my password for eBay after seeing the article "What's real,
+what's a scam? eBay users wondering",
+(http://www.msnbc.com/news/837882.asp).  There are significant security
+issues with eBay's password changing mechanism.
+
+When a user changes their password using the method provided by eBay, the
+new password is sent over the Internet unencrypted! This is especially bad
+given that there are a large number of users changing passwords given the
+scammers and legitimate eBay change requests mentioned in the above article.
+
+EBay's security policy states that they always encrypt your password. It's
+true that they do perform a lightweight encryption for sign-in. If you click
+the "Secure sign in (SSL) " link on the login screen, your login information
+is passed via SSL. This is a good thing.
+
+However, when you go to change your password, only the old password is
+encrypted. That is, YOUR NEW PASSWORD IS SENT UNENCRYPTED OVER THE
+INTERNET. You can log in securely once your password is set, but there's no
+way to securely set your password in the first place.
+
+I've used a packet sniffer (Ethereal) to verify this. When you change your
+password via the method eBay provides you, (My eBay, Preferences, Change My
+password) and enter your information into the form, the following string is
+sent unencrypted over the Internet:
+
+  MfcISAPICommand=HandleNewPassword&from=###&userid=EBAYUSERNAME
+  &pass=ENCRYPTED_OLD_PASSWORD&npass=UNENCRYPTED_NEW_PASSWORD
+  &rpass=UNENCRYPTED_NEW_PASSWORD
+
+Note that the username and new password are plainly visible. Encrypting the
+old password doesn't help at this point as it's about to be changed. We want
+the _new_ one encrypted.
+
+So exactly how can I feel secure on eBay?
+
+An unscrupulous person at an ISP could take advantage of this by sending out
+faked ebay change-password e-mails and sniffing for password changes coming
+through.  While the user would think everything is secured, they've just
+given away the new password.  All kinds of personal data is then available
+within the user knowing the account has been compromised.
+
+------------------------------
+
+Date: Tue, 26 Nov 2002 16:07:01 PST
+From: RISKS List Owner <risko@csl.sri.com>
+Subject: More on the Breeders Cup Pick-6 fix (RISKS-22.33 and 39)
+
+Subsequent analysis has now uncovered evidence that the Drexel frat buddies
+were apparently also able to collect on winning bets that had not yet
+claimed by the intended winners.  (Over 14 years ago, we reported a lottery
+scam in RISKS-6.77, 4 May 1988, in which someone with insider access to the
+Pennsylvania lottery system had fabricated a ticket for an unclaimed winning
+combination and attempted to collect before the expiration date.
+Unfortunately for him, he had used the wrong card stock from the would-be
+winning ticket -- each region had a different stock -- and thus he was
+caught.)
+
+------------------------------
+
+Date: Fri, 15 Nov 2002 12:38:43 -0500
+From: Doug McIlroy <doug@pierce.cs.dartmouth.edu>
+Subject: Windows quietly deletes Unix files
+
+How Windows deleted all the files in my Unix home directory.
+
+My department has a typical distributed computing environment.  Unix/Linux
+workstations anywhere can remotely mount the file systems from central Unix
+servers.  By the magic of Samba, Windows systems can also remotely mount
+file systems from the same servers.
+
+Not long ago, I logged into an NT machine that I'd never used before and was
+pleased to find that I was already a registered user with my customary login
+directory.  How convenient!
+
+At logout, NT announced "Saving your settings" and stayed in that state for
+a remarkably long time.  Back at Linux on my desk, I found my home directory
+curdled.  The directory structure remained, but the files were gone
+throughout the directory tree.  In their place was Microsoft boilerplate,
+such as "Favorites", to help me enjoy the good things of life like MSN and
+ESPN.
+
+What had happened was that my NT account had mistakenly been configured to
+set a "roving profile" to be my remote home directory.  In the course of
+"saving your settings", Windows evidently assessed the profile as weird and
+quietly cleaned it up.  Thus Windows, which is usually reluctant to remove
+even one file locally without asking for confirmation, blasted away 6000
+files on a remote machine with impunity.  Why not?  They were mere Unix
+files.
+
+------------------------------
+
+Date: Sat, 23 Nov 2002 23:11:32 -0500
+From: Monty Solomon <monty@roscom.com>
+Subject: Patch slip-up raises security questions
+
+Article by Robert Lemos, CNET News.com, 21 Nov 2002
+
+The questionable handling of a fix for a recent widespread software
+vulnerability has some administrators worried that developers can't be
+trusted to make security a top priority.  
+
+Last week, the Internet Software Consortium withheld the patch for a
+critical flaw in the domain name system (DNS) software from a large number
+of researchers, asking instead that each person send the organization an
+e-mail request in order to get the fix. The software, known as the Berkeley
+Internet Name Domain (BIND) program, performs a critical function as the
+address book for the Net.  The delay, coupled with messages sent to several
+administrators urging them to pay to become part of an early-warning group
+run by the ISC, has some security experts worried that security is taking a
+backseat to secrecy and money.  ...
+  http://news.com.com/2100-1001-966666.html
+
+------------------------------
+
+Date: Mon, 25 Nov 2002 10:09:09 -0500
+From: Tim Finin <finin@cs.umbc.edu>
+Subject: RIAA orders US Navy to surrender (via Dave Farber's IP)
+
+As seen in *The Register*:
+
+  RIAA orders US Navy to surrender
+  By Andrew Orlowski in San Francisco
+  http://www.theregister.co.uk/content/6/28263.html
+
+  In a timely reminder of who's really in charge here, the Recording
+  Industry Association of America (RIAA) has mounted a daring raid on the US
+  Navy.
+
+  Acting unilaterally at the behest of the RIAA, Navy officials confiscated
+  100 computers on suspicion of harboring illegally downloaded MP3s, The
+  Capital, an Annapolis, MD daily reports. A Naval official quoted confirms
+  the raid, adding that punishment ranges from "court martial to loss of
+  leave and other restrictions".
+
+  For the RIAA, there are no half measures: you're either with them, or
+  against them. So even if you're risking having your ass blown off for your
+  country, there's no mercy. ...
+
+and in the Capital-Gazette Newspapers (Annapolis):
+   http://www.hometownannapolis.com/cgi-bin/read/live/11_23-19/NAV
+and on slashdot:
+   http://yro.slashdot.org/yro/02/11/24/2010223.shtml?tid=103
+
+Archives at: http://www.interesting-people.org/archives/interesting-people/
+
+-------------------------------------
+
+Date: Tue, 26 Nov 2002 01:49:38 +0200
+From: Pekka Pihlajasaari <pekka@data.co.za>
+Subject: Re: Computer problem caused fatal pipeline rupture (RISKS-22.36)
+
+It is ingenuous to suggest that the Bellingham, Washington pipeline rupture
+was a result of a computer/software fault. The NTSB accident report clearly
+attributes the failure to a combination of quality assurance lapses and
+operational errors.
+
+Although some of these are related to the SCADA environment, they are
+strongly overshadowed by:
+* multiple errors in the configuration and installation of a pressure
+  relief valve upstream from the rupture,
+* physical damage by excavators to the pipeline during construction work, and
+* failure of the pipeline operator to act on inspection reports
+  suggesting damage in the vicinity of the construction area.
+
+The report states that had the pipeline not been damaged, the pressure surge
+allowed even by the faulty relief valve would most likely not have resulted
+in a rupture.
+
+In this case, it seems that process-wide safety controls were in place and
+would have protected the pipeline from failure if the human factors of
+management and operational procedures had connected the reported system
+anomalies with a potential failure.
+
+A classic combination of multiple independent failures occurring within
+sufficiently close proximity where any single event would not have
+compromised the overall system integrity.
+
+Regulatory bodies will rightly bring up this incident when organisations
+involved in hazardous operations complain about the level of regulatory
+compliance procedures to which they are required to comply.
+
+Pekka Pihlajasaari <pekka@data.co.za>  Data Abstraction (Pty) Ltd
+
+------------------------------
+
+Date: Tue, 19 Nov 2002 08:23:58 +0100
+From: "Peter B. Ladkin" <ladkin@rvs.uni-bielefeld.de>
+Subject: Re: Readability of ATC displays at the London Area Control Centre
+
+In RISKS-22.09, Chris Brady reported on a BBC News article concerning
+readability problems of the controllers' display screens at the UK's New
+En-Route Centre (NERC), now the London Area Control Centre (LACC), for the
+London Flight Information Region, which came on-line in January 2002 after
+nearly a decade of development.
+
+Brady said
+  "Obviously no-one thought to ask the controllers if they
+  could actually read the screens clearly".
+
+I replied in Risks 22.12:
+
+  "On the contrary, controllers were evaluating and training on the system
+  for at least two years before it went live in January, and it is public
+  knowledge that they were very active with their feedback......."
+
+I followed it up. It appears that the Head of Human Factors at National Air
+Traffic Services (NATS, the UK ATC service provider) identified a legibility
+problem with the size of text on the screens already in January 1997. It
+seems indeed that this problem was not adequately addressed before the NERC
+went live five years later, as the BBC and Brady reported.
+
+The source of this information is a letter which appeared in The Ergonomist,
+the organ of The Ergonomics Society ( http://www.ergonomics.org.uk ) in June
+2002 from Barry Kirwan, who was Head of Human Factors at NATS from September
+1996 until March 2000.
+
+The letter says that Kirwan and two other NATS ergonomists visited the NERC
+in January 1997 and "identified a number of problems, including a
+significant one with the legibility of the text on the
+screens. Legibility... is a function of a number of factors.... but the main
+problem seemed to be simply the size of text, given the viewing distance
+afforded by the work-station layout. Since this text referred to all of the
+main information available to the controller, including flight levels, we
+considered this an important issue."
+
+The letter goes on to describe Kirwan's attempts to have the issue
+addressed, and some organisational difficulties he encountered. He considers
+his group's "impact on the NERC interface" to be "relatively unsuccessful"
+and suggests some organisational reasons for it.  Concerning the issue Brady
+and I discussed, he says "There was also advice from controllers, but some
+controllers' advice was seen as more valid than others'."
+
+I recommend reading the letter in full.
+
+Peter B. Ladkin, University of Bielefeld, http://www.rvs.uni-bielefeld.de
+
+------------------------------
+
+Date: Thu, 21 Nov 2002 19:54:35 -0000
+From: "Ian Cuddy" <ic@egovmonitor.com>
+Subject: UK Publishes Security Requirements for e-Voting
+
+  [You may reproduce this article on condition that
+    "eGov monitor Weekly
+  www.egovmonitor.com/newsletter/signup.asp" is included at the top and
+  "Copyright KAM 2002" is included at the bottom.
+  Ian Cuddy, Chief Editor, eGov monitor  www.egovmonitor.com
+  T 020 7384 1551  F 020 7384 2551  E ic@egovmonitor.com]
+
+UK Publishes Security Requirements for e-Voting (eGov monitor Weekly)
+www.egovmonitor.com/newsletter/signup.asp
+
+The UK Government has released a new set of security requirements that will
+form the baseline for all future implementations of electronic voting
+systems.
+
+This first statement of technical requirements will apply to the second
+phase of electoral modernisation pilots taking place in local government
+elections next May.  The document was drawn up following an "urgent"
+consultation with IT suppliers earlier this year.
+
+The security requirements are considered by the Government to represent the
+standard by which security measures for e-voting can be considered "adequate
+and acceptable". This working definition is expected to change as local
+councils and their IT partners gain more experience of the practical
+arrangements of running e-voting systems.
+
+The criteria for the main security controls have been based on a
+"best-of-breed" set of principles compiled from various sources, including
+those used by the California Internet Voting Task Force.  These principles -
+dealing with issues such as system reliability, voter authenticity and data
+integrity - have been translated into 15 high-level "control objectives",
+such as guaranteeing the confidentiality of the vote until it is counted.
+If fully met, this should ensure that threats associated with the use of
+e-voting systems and services are properly countered, the document claims.
+
+The actions necessary to implement each of the 15 control objectives form
+the technical security requirements, outlining, for example, the mechanisms,
+systems or procedure that should be in place.
+
+The document does not explain how this will be achieved.
+
+http://www.local-regions.odpm.gov.uk/elections/pdf/evoting.pdf
+- Ian Cuddy, eGov monitor Weekly, Copyright KAM 2002
+
+------------------------------
+
+Date: Sat, 23 Nov 2002 18:44:50 -0500
+From: "Notable Software" <notable@mindspring.com>
+Subject: Re: UK Publishes Security Requirements for e-Voting (Cuddy, R-22.40)
+
+The United Kingdom and other European countries have begun initiatives to
+convert all or part of their voting to electronic balloting (kiosk/DREs
+and/or Internet-based) systems.  Europe appears to be rushing ahead to
+deploy computer voting technologies with serious sociological and
+technological downsides, such as lack of auditability, and increased
+opportunities for vote selling, monitoring, coercion, and denial of service
+attacks.  During mid-October, 2002 I visited England, on the invitation of
+the Foundation for Information Policy Research, to meet with and brief
+members of the UK Cabinet and Parliament regarding this subject, and to
+provide technical lectures at the Royal Academy of Engineering and Cambridge
+University.  My comments to the Cabinet are on the Cabinet Office's official
+website at http://www.edemocracy.gov.uk -- a mildly corrected version is
+posted *here.  I also formally submitted an additional follow-up comment as
+part of their "In the Service of Democracy" consultation, which explains why
+Internet voting is not appropriate for UK democratic elections.
+
+  [Links can be found on Rebecca's Web site 
+    www.notablesoftware.com/evote.html 
+  Her testimony and comments should be looked at to gain some perspective
+  on the scope and extent of the problem of implementing Internet and 
+  electronic voting.  In the light of that testimony, the uk decision to
+  proceed seems very RISKY indeed.  PGN]
+
+------------------------------
+
+Date: Wed, 20 Nov 2002 08:03:00 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "The Privacy Papers", Rebecca Herold
+
+BKPRVPAP.RVW   20020926
+
+"The Privacy Papers", Rebecca Herold, 2002, 0-8493-1248-5, U$69.95
+%A   Rebecca Herold
+%C   920 Mercer Street, Windsor, ON   N9A 7C2
+%D   2002
+%G   0-8493-1248-5
+%I   Auerbach Publications
+%O   U$69.95 +1-800-950-1216 auerbach@wgl.com orders@crcpress.com
+%P   679 p.
+%T   "The Privacy Papers: Managing Technology, Consumer, Employee,
+      and Legislative Actions"
+
+The preface asserts that this volume is intended as an introduction to
+privacy for C-level executives.  (I assume that means "Chief"
+executive officers, security officers, information officers, and the
+like, rather than referring to the grades they made in school.)  This
+assertion is a bit odd, both in terms of the enormous size of the
+volume, and in terms of the statement, in the foreword, that the
+papers are included based on the editors personal choice.
+
+The introduction gives a historical look at early US privacy law.
+
+Part one deals with business organization issues, including papers on the
+privacy of employee e-mail (case studies that are often unresolved), e-mail
+pornography policy (have one), computer forensics and privacy (almost no
+content), policies for secure personal data (random security topics),
+security awareness (good program, but generic and not tailored for privacy),
+the case for privacy (vague thoughts, no case), attorney-client privilege
+and electronic data transmission (careless use of communications technology
+may void privilege), computer crime and analysis of computer evidence (you
+can get evidence from computers), a tale of two spies (spies may use
+computers), (US) federal laws affecting information systems auditors (more
+politics than details), computer forensics (*extremely* vague), the
+dangerous precedent set in the use of electronic identifiers (various cases
+linked *only* by the fact that *none* have been tested in court and
+therefore no precedents have been set), jurisdictional issues (almost
+irrelevant to privacy), anonymity on the net (generic), erosion of
+confidentiality (anecdotal reports), export regulations for cryptography
+(irrelevant to privacy), security awareness training (irrelevant), security
+standards (irrelevant to privacy), chief medical information officers (oddly
+irrelevant), information security management in healthcare (interesting and
+detailed), criminal activity on the Internet (clear but not much detail),
+identify theft (interesting but undetailed), identity theft (US-centric and
+not always helpful), obtaining information from ISPs (information service
+providers) (detailed content on a complex topic).
+
+Part two reviews tools and related technology.  The first paper not
+only does not advise on its stated topic, selecting a cryptographic
+system, but it demonstrates essentially no understanding of
+cryptographic concepts, and a truly astonishing range of errors. 
+(There definitely are inherent differences between symmetric and
+asymmetric encryption, asymmetric encryption does not use digital
+signatures, but provides for them, and the electronic codebook mode of
+DES [Data Encryption Standard] is not less able to provide
+authentication than the chaining modes.)  Other essays deal with new
+paradigms for steganography (pointless), cookies and web bugs (a brief
+and limited apologia), online profiling (a political report on online
+business), intrusion detection systems (a review of a conference on
+the topic), Internet acceptable use policies (banal and unhelpful),
+ethics and the Internet (a brief take, only marginally about privacy),
+security of wireless LANs (long out of date), customer relationship
+management and data warehousing (little about privacy), anonymity,
+privacy, and trust (brief and random), Web certification (promotional
+piece for ICSA Labs), and an exhortation to get people to sign a
+confidentiality agreement.
+
+Part three is about US laws and issues.  The pieces in this section
+are primarily either documents prepared by government departments, or
+prepared testimony before legislative committees (and sometimes both). 
+There is a FAQ (Frequently Asked Questions list) on the HIPAA (Health
+Insurance Portability and Accountability Act) privacy rule prepared by
+the Department of Health and Human Services, testimony on HIPAA, a
+non-detailed description of the provisions of the Financial Services
+Modernization Act, a list of US laws with privacy provisions and
+another of proposed laws as of July 2001, testimony about privacy in
+wiretap laws, and a report on the Carnivore system.
+
+Part four turns to international laws and issues.  The European Union
+directive on privacy is attacked as a barrier to trade, there is a
+detailed (but not very interesting or helpful) review of the EU
+directive and how it is implemented by some of the member states, a
+Department of Commerce description of the Safe Harbor program, and a
+list of international privacy laws.
+
+While isolated articles in this volume are interesting, the reader
+would have to be rather ignorant about privacy issues in order to get
+much out of the text overall.
+
+copyright Robert M. Slade, 2002   BKPRVPAP.RVW   20020926
+rslade@vcn.bc.ca  rslade@sprint.ca  slade@victoria.tc.ca p1@canada.com
+http://victoria.tc.ca/techrev    or    http://sun.soci.niu.edu/~rslade
+
+------------------------------
+
+Date: Thu, 14 Nov 2002 07:51:18 -0800
+From: Rob Slade <rslade@sprint.ca>
+Subject: REVIEW: "Security, ID Systems and Locks", Joel Konicek/Karen Little
+
+BKSIDSAL.RVW   20021012
+
+"Security, ID Systems and Locks", Joel Konicek/Karen Little, 1997,
+0-7506-9932-9, U$39.99
+%A   Joel Konicek
+%A   Karen Little
+%C   225 Wildwood Street, Woburn, MA  01801
+%D   1997
+%G   0-7506-9932-9
+%I   Butterworth-Heinemann/CRC Press/Digital Press
+%O   U$39.99 800-272-7737 www.bh.com/bh/ dp-catalog@bh.com
+%P   244 p.
+%T   "Security, ID Systems and Locks: The Book on Electronic Access
+      Control"
+
+This is an easy to read, illustrated, quick guide to a lot (not all)
+of physical security.
+
+Chapter one introduces electronic access control, primarily access
+cards and sensor systems.  Then we got back to ancient history:
+chapter two looks at old fort and defensive technology, which lives on
+both in concepts and in terms still used.  Credentials, such as
+identification and authentication systems, cards, and biometrics, are
+reviewed in chapter three.  Chapter four deals with barriers like
+doors and locks, concentrating on electronic systems.  Oddly, the
+issue of power failure is not addressed, although there is a good
+section on fire exits.  Sensors, as the input part of an alarm or
+control system, are discussed in chapter five.  There is a simple
+guide to (mostly Wintel) computers in chapter six.  Cabling and other
+technology that may be used for communications in a security system is
+examined in chapter seven.  Systems design, in chapter eight,
+scrutinizes a variety of aspects, some of which have been previously
+covered.  Chapter nine, entitled system integration, is actually more
+system design.  Chapter ten looks at how a number of companies are
+using electronic access.
+
+While limited to electronic systems, the book is a very reasonable
+guide to a lot of physical security technology.
+
+copyright Robert M. Slade, 2002   BKSIDSAL.RVW   20021012
+rslade@vcn.bc.ca  rslade@sprint.ca  slade@victoria.tc.ca p1@canada.com
+
+------------------------------
+
+Date: 29 Mar 2002 (LAST-MODIFIED)
+From: RISKS-request@csl.sri.com
+Subject: Abridged info on RISKS (comp.risks)
+
+ The RISKS Forum is a MODERATED digest.  Its Usenet equivalent is comp.risks.
+=> SUBSCRIPTIONS: PLEASE read RISKS as a newsgroup (comp.risks or equivalent)
+ if possible and convenient for you.  Alternatively, via majordomo,
+ send e-mail requests to <risks-request@csl.sri.com> with one-line body
+   subscribe [OR unsubscribe]
+ which requires your ANSWERing confirmation to majordomo@CSL.sri.com .
+ If Majordomo balks when you send your accept, please forward to risks.
+ [If E-mail address differs from FROM:  subscribe "other-address <x@y>" ;
+ this requires PGN's intervention -- but hinders spamming subscriptions, etc.]
+ Lower-case only in address may get around a confirmation match glitch.
+   INFO     [for unabridged version of RISKS information]
+ There seems to be an occasional glitch in the confirmation process, in which
+ case send mail to RISKS with a suitable SUBJECT and we'll do it manually.
+   .MIL users should contact <risks-request@pica.army.mil> (Dennis Rears).
+   .UK users should contact <Lindsay.Marshall@newcastle.ac.uk>.
+=> The INFO file (submissions, default disclaimers, archive sites,
+ copyright policy, PRIVACY digests, etc.) is also obtainable from
+ http://www.CSL.sri.com/risksinfo.html  ftp://www.CSL.sri.com/pub/risks.info
+ The full info file will appear now and then in future issues.  *** All
+ contributors are assumed to have read the full info file for guidelines. ***
+=> SUBMISSIONS: to risks@CSL.sri.com with meaningful SUBJECT: line.
+=> ARCHIVES are available: ftp://ftp.sri.com/risks or
+ ftp ftp.sri.com<CR>login anonymous<CR>[YourNetAddress]<CR>cd risks
+   [volume-summary issues are in risks-*.00]
+   [back volumes have their own subdirectories, e.g., "cd 21" for volume 21]
+ http://catless.ncl.ac.uk/Risks/VL.IS.html      [i.e., VoLume, ISsue].
+   Lindsay Marshall has also added to the Newcastle catless site a
+   palmtop version of the most recent RISKS issue and a WAP version that
+   works for many but not all telephones: http://catless.ncl.ac.uk/w/r
+ http://the.wiretapped.net/security/info/textfiles/risks-digest/ .
+ http://www.planetmirror.com/pub/risks/ ftp://ftp.planetmirror.com/pub/risks/
+==> PGN's comprehensive historical Illustrative Risks summary of one liners:
+    http://www.csl.sri.com/illustrative.html for browsing,
+    http://www.csl.sri.com/illustrative.pdf or .ps for printing
+
+------------------------------
+
+End of RISKS-FORUM Digest 22.40
+************************
